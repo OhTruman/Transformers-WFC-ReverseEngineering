@@ -1,0 +1,76 @@
+function TnAiActionTrypticonMortar.OnInitialize  (script 30 bytes)
+  0000: TnAiActionPlayAnimation.OnInitialize(Blueprint)
+  000b: self._MortarBlueprint = TnAiActionTrypticonMortarBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTrypticonMortar.OnBind  (script 50 bytes)
+  0000: TnAiActionPlayAnimation.OnBind()
+  0006: self._NextAllowedUseTime = (obj'Engine.Engine'.static.GetWorldTime() + self._MortarBlueprint.DelayBeforeAvailable)
+  002f: return nothing
+  0031: <eos>
+
+function TnAiActionTrypticonMortar.OnSetUpConditions  (script 55 bytes)
+  0000: if !((obj'Engine.Engine'.static.GetWorldTime() < self._NextAllowedUseTime)) goto 0x001f
+  001d: return false
+  001f: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0030: return return
+  0036: <eos>
+
+function TnAiActionTrypticonMortar.OnStart  (script 110 bytes)
+  0000: self._ProjectileCount = 0
+  0007: self._FireProjectileTimer.Start(delegate.FireProjectile, self._MortarBlueprint.IntroDelay, )
+  0032: self._NextAllowedUseTime = (obj'Engine.Engine'.static.GetWorldTime() + self._MortarBlueprint.DelayBetweenAvailableUses)
+  005b: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  0067: return return
+  006d: <eos>
+
+function TnAiActionTrypticonMortar.OnUpdate  (script 97 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._TransformerController.Enemy)) goto 0x0031
+  0026: return Succeed()
+  0031: self._FireProjectileTimer.Tick(DeltaTime)
+  0049: return OnUpdate(ExpectedEffects, DeltaTime)
+  005a: return return
+  0060: <eos>
+
+function TnAiActionTrypticonMortar.OnFinish  (script 33 bytes)
+  0000: TnAiActionPlayAnimation.OnFinish(CurrentState)
+  000b: self._FireProjectileTimer.Clear()
+  001e: return nothing
+  0020: <eos>
+
+function TnAiActionTrypticonMortar.OnAnimationComplete  (script 62 bytes)
+  0000: if !(self._TransformerController.AiWorldState.GetBoolValue(obj'TnAiWorldStateTargetIsDead')) goto 0x0031
+  0024: Succeed()
+  002e: goto 0x003b
+  0031: Fail()
+  003b: return nothing
+  003d: <eos>
+
+function TnAiActionTrypticonMortar.FireProjectile  (script 202 bytes)
+  0000: AddAdd_PreInt(self._ProjectileCount)
+  0007: if !((self._ProjectileCount < self._MortarBlueprint.NumberOfProjectiles)) goto 0x004a
+  001f: self._FireProjectileTimer.Start(delegate.FireProjectile, self._MortarBlueprint.LoopDelay, )
+  004a: MouthLocation = self._TransformerPawn.Mesh.GetSocketWorldLocation(self._MortarBlueprint.MouthSocket)
+  007a: Proj = self._TransformerPawn.Spawn(self._MortarBlueprint.ProjectileClass, , , MouthLocation, , , , )
+  00ac: if !((Proj != none)) goto 0x00c7
+  00b7: TnAiActionTrypticonMortar.OnProjectileSpawned(Proj, MouthLocation)
+  00c7: return nothing
+  00c9: <eos>
+
+function TnAiActionTrypticonMortar.OnProjectileSpawned  (script 238 bytes)
+  0000: if !(((self._TransformerController.Enemy != none) && !self._TransformerController.Enemy.bDeleteMe)) goto 0x0050
+  0033: self._TargetLocation = self._TransformerController.Enemy.Location
+  0050: Direction = (self._TargetLocation - Location)
+  0062: Proj.Init(obj'Core.Math'.static.Normal(Direction))
+  0085: HomingProj = TnProjectileHoming(Proj)
+  0095: if !((HomingProj != none)) goto 0x00c1
+  00a0: HomingProj.SetTarget(self._TransformerController.Enemy)
+  00c1: self._TransformerPawn.PlaySound(self._MortarBlueprint.FireSound, , , , Location, )
+  00eb: return nothing
+  00ed: <eos>
+
+function TnAiActionTrypticonMortar.CanInterruptNow  (script 36 bytes)
+  0000: return (self._TransformerController.GetWorldStateInt(obj'TnAiWorldStateReaction') == 3)
+  001d: return return
+  0023: <eos>

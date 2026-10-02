@@ -1,0 +1,65 @@
+function TnFlyingFollowCameraBehavior.Activate  (script 79 bytes)
+  0000: TnFlyingFollowCameraBehavior.UpdateAnchorPoint(0.0, Result.Rotation, Result.OrbitLocationOffset)
+  002b: self._YawVelocity = 0.0
+  0036: self._PitchVelocity = 0.0
+  0041: self._OldOffset = self.AnchorOffset
+  004c: return nothing
+  004e: <eos>
+
+function TnFlyingFollowCameraBehavior.SetActor  (script 14 bytes)
+  0000: self._Target = A
+  000b: return nothing
+  000d: <eos>
+
+function TnFlyingFollowCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self._Anchor = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function TnFlyingFollowCameraBehavior.UpdateAnchorPoint  (script 402 bytes)
+  0000: if !((self._Anchor == none)) goto 0x000d
+  000b: return nothing
+  000d: NewOffset = self.AnchorOffset
+  0018: (NewOffset.Y += (((obj'Core.Math'.static.Sign(self._YawVelocity) * (self._YawVelocity * 0.0054932)) * (self._YawVelocity * 0.0054932)) * self.AnchorYawOffsetScalar))
+  0065: if !((CamRotation.Pitch < 0)) goto 0x00b0
+  007b: (NewOffset.Z += ((cast3f(CamRotation.Pitch) * 0.0054932) * self.AnchorPitchDownOffsetScalar))
+  00ad: goto 0x00e2
+  00b0: (NewOffset.Z += ((cast3f(CamRotation.Pitch) * 0.0054932) * self.AnchorPitchUpOffsetScalar))
+  00e2: (NewOffset.Z -= (((self._YawVelocity * 0.0054932) * (self._YawVelocity * 0.0054932)) * self.AnchorPitchYawVelocityScalar))
+  0115: NewOffset = TnFlyingFollowCameraBehavior.AdjustAnchorOffset(NewOffset, OrbitOffset, CamRotation)
+  0130: NewOffset = obj'Core.Math'.static.VLerp(self._OldOffset, NewOffset, self.OffsetLerpValue)
+  0158: self._Anchor.Location = (self._Target.Location + (NewOffset >> CamRotation))
+  0184: self._OldOffset = NewOffset
+  018f: return nothing
+  0191: <eos>
+
+function TnFlyingFollowCameraBehavior.AdjustAnchorOffset  (script 256 bytes)
+  0000: if !((self._Target == none)) goto 0x0011
+  000b: return IdealAnchorOffset
+  0011: IdealAnchorLocation = (self._Target.Location + (IdealAnchorOffset >> CamRotation))
+  0034: IdealCameraLocation = (self._Target.Location + ((IdealAnchorOffset + OrbitOffset) >> CamRotation))
+  005e: if !((self._Target.TraceCamera(HitLocation, HitNormal, IdealAnchorLocation, IdealCameraLocation, , obj'Core.Math'.static.MakeVector(self.CollisionSize, self.CollisionSize, self.CollisionSize), , ) != none)) goto 0x00f3
+  00b0: Adjustment = (obj'Core.Math'.static.VSize((HitLocation - IdealCameraLocation)) / obj'Core.Math'.static.VSize((IdealAnchorLocation - IdealCameraLocation)))
+  00e6: return (Adjustment * IdealAnchorOffset)
+  00f3: return IdealAnchorOffset
+  00f9: return return
+  00ff: <eos>
+
+function TnFlyingFollowCameraBehavior.Update  (script 593 bytes)
+  0000: PreviousYaw = cast3f(Result.OrbitRotation.Yaw)
+  0023: PreviousPitch = cast3f(Result.OrbitRotation.Pitch)
+  0046: TargetYawVelocity = ((self.MaxYawVelocity * 182.0444489) * CI.RightStickInputX)
+  006a: TargetYawAcceleration = (obj'Core.Math'.static.FClamp((TargetYawVelocity - self._YawVelocity), (-self.MaxYawAcceleration * 182.0444489), (self.MaxYawAcceleration * 182.0444489)) - (self._YawVelocity * self.YawDamping))
+  00af: (self._YawVelocity += (TargetYawAcceleration * DeltaTime))
+  00c2: NewYaw = (PreviousYaw + (self._YawVelocity * DeltaTime))
+  00db: TargetPitchVelocity = ((self.MaxPitchVelocity * 182.0444489) * CI.RightStickInputY)
+  00ff: TargetPitchAcceleration = (obj'Core.Math'.static.FClamp((TargetPitchVelocity - self._PitchVelocity), (-self.MaxPitchAcceleration * 182.0444489), (self.MaxPitchAcceleration * 182.0444489)) - (self._PitchVelocity * self.PitchDamping))
+  0144: (self._PitchVelocity += (TargetPitchAcceleration * DeltaTime))
+  0157: NewPitch = (PreviousPitch + (self._PitchVelocity * DeltaTime))
+  0170: Result.OrbitRotation.Yaw = cast44(NewYaw)
+  0193: Result.OrbitRotation.Pitch = cast44(obj'Core.Math'.static.FClamp(NewPitch, (self.PitchRange.Min * 182.0444489), (self.PitchRange.Max * 182.0444489)))
+  01ef: Result.OrbitRotation.Roll = cast44((self.RollDueToYawVelocity * self._YawVelocity))
+  0219: TnFlyingFollowCameraBehavior.UpdateAnchorPoint(DeltaTime, Result.Rotation, Result.OrbitLocationOffset)
+  0244: return Result
+  024a: return return
+  0250: <eos>

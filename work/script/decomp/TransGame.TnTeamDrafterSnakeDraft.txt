@@ -1,0 +1,108 @@
+function TnTeamDrafterSnakeDraft.OnDraft  (script 128 bytes)
+  0000: self.PartyCollection = ThePartyCollection
+  000b: self.GRI = obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI
+  002d: PreDraft()
+  0037: TnTeamDrafterSnakeDraft.ResetTeamAssignments()
+  003d: TnTeamDrafterSnakeDraft.SnakeDraft(MaxPlayersPerTeam)
+  0048: Result = TnTeamDrafterSnakeDraft.AreTeamsValid(MaxPlayersPerTeam)
+  005a: PostDraft()
+  0064: self.PartyCollection = none
+  006b: self.GRI = none
+  0072: return Result
+  0079: return return
+  007f: <eos>
+
+function TnTeamDrafterSnakeDraft.PreDraft  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTeamDrafterSnakeDraft.PostDraft  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTeamDrafterSnakeDraft.ResetTeamAssignments  (script 40 bytes)
+  0000: self.PartyCollection.ResetTeamAssignments()
+  0013: 0[self.TeamCounts] = 0
+  001c: 1[self.TeamCounts] = 0
+  0025: return nothing
+  0027: <eos>
+
+function TnTeamDrafterSnakeDraft.AreTeamsValid  (script 41 bytes)
+  0000: return ((0[self.TeamCounts] <= MaxPlayersPerTeam) && (1[self.TeamCounts] <= MaxPlayersPerTeam))
+  0022: return return
+  0028: <eos>
+
+function TnTeamDrafterSnakeDraft.AllScoresAreZero  (script 70 bytes)
+  0000: foreach self.GRI.PRIArray(PRI,) (end 0x0033)
+  0018: (TotalScore += PRI.GetScore())
+  0032: iternext
+  0033: iterpop
+  0034: return (TotalScore == cast3f(0))
+  003f: return return
+  0045: <eos>
+
+function TnTeamDrafterSnakeDraft.GetPRIForPlayer  (script 37 bytes)
+  0000: return TnPlayerReplicationInfo(self.GRI.FindPlayerByUniqueNetId(NetId))
+  001e: return return
+  0024: <eos>
+
+function TnTeamDrafterSnakeDraft.GetLevel  (script 9 bytes)
+  0000: return 0
+  0002: return return
+  0008: <eos>
+
+function TnTeamDrafterSnakeDraft.GetScore  (script 9 bytes)
+  0000: return 0
+  0002: return return
+  0008: <eos>
+
+function TnTeamDrafterSnakeDraft.CompareByLevel  (script 62 bytes)
+  0000: LevelA = GetLevel(IndexA)
+  0015: LevelB = GetLevel(IndexB)
+  002a: return (LevelB - LevelA)
+  0037: return return
+  003d: <eos>
+
+function TnTeamDrafterSnakeDraft.CompareByScore  (script 68 bytes)
+  0000: ScoreA = cast3f(GetScore(IndexA))
+  0017: ScoreB = cast3f(GetScore(IndexB))
+  002e: return cast44((ScoreB - ScoreA))
+  003d: return return
+  0043: <eos>
+
+function TnTeamDrafterSnakeDraft.Compare  (script 53 bytes)
+  0000: if !(TnTeamDrafterSnakeDraft.AllScoresAreZero()) goto 0x001d
+  0009: return TnTeamDrafterSnakeDraft.CompareByLevel(IndexA, IndexB)
+  001a: goto 0x002e
+  001d: return TnTeamDrafterSnakeDraft.CompareByScore(IndexA, IndexB)
+  002e: return return
+  0034: <eos>
+
+function TnTeamDrafterSnakeDraft.SnakeDraft  (script 275 bytes)
+  0000: self.Sorter.__Compare__Delegate = delegate.Compare
+  0018: self.Sorter.SortArray(GetSortCount())
+  0035: CurrentTeam = obj'Core.Random'.static.RandRangeInt(0, 2)
+  0051: I = 0
+  0058: if !((I < self.Sorter.SortedIndices.Length)) goto 0x0110
+  0071: SortedIndex = I[self.Sorter.SortedIndices]
+  008b: AssignToTeam(SortedIndex, cast3d(CurrentTeam))
+  00a1: if !((CurrentTeam[self.TeamCounts] >= MaxPlayersPerTeam)) goto 0x00be
+  00b6: ChangeCurrentTeam = true
+  00be: if !(((CurrentTeam[self.TeamCounts] - (1 - CurrentTeam)[self.TeamCounts]) >= 1)) goto 0x00e7
+  00df: ChangeCurrentTeam = true
+  00e7: if !(ChangeCurrentTeam) goto 0x0106
+  00f0: CurrentTeam = (1 - CurrentTeam)
+  00fe: ChangeCurrentTeam = false
+  0106: AddAdd_PreInt(I)
+  010d: goto 0x0058
+  0110: return nothing
+  0112: <eos>
+
+function TnTeamDrafterSnakeDraft.GetSortCount  (script 9 bytes)
+  0000: return 0
+  0002: return return
+  0008: <eos>
+
+function TnTeamDrafterSnakeDraft.AssignToTeam  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

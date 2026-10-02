@@ -1,0 +1,34 @@
+function TnSeqAct_AddImpulseToPawnInVolume.__Constructor__TnSeqAct_AddImpulseToPawnInVolume_0  (script 47 bytes)
+  0000: self.ImpulseDirection = InImpulseDirection
+  000b: self.RobotImpulse = InRobotImpulse
+  0016: self.VehicleImpulse = InVehicleImpulse
+  0021: self.TriggerVolume = InTriggerVolume
+  002c: return nothing
+  002e: <eos>
+
+function TnSeqAct_AddImpulseToPawnInVolume.Activated  (script 198 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Index = 0
+  001b: if !((Index < self.Targets.Length)) goto 0x00c3
+  002b: P = TnPawn(Index[self.Targets])
+  0041: if !((P == none)) goto 0x0086
+  004c: C = Controller(Index[self.Targets])
+  0062: if !((C != none)) goto 0x0086
+  006d: P = TnPawn(C.Pawn)
+  0086: if !(((P != none) && P.IsInVolume(self.TriggerVolume))) goto 0x00b9
+  00ae: TnSeqAct_AddImpulseToPawnInVolume.AddImpulse(P)
+  00b9: AddAdd_PreInt(Index)
+  00c0: goto 0x001b
+  00c3: return nothing
+  00c5: <eos>
+
+function TnSeqAct_AddImpulseToPawnInVolume.AddImpulse  (script 120 bytes)
+  0000: if !(P.get_IsInRobotForm()) goto 0x004b
+  0016: P.SetPhysics(2, , )
+  002d: P.Velocity = (self.ImpulseDirection * self.RobotImpulse)
+  0048: goto 0x0075
+  004b: P.Mesh.AddLinearVelocity((self.ImpulseDirection * self.VehicleImpulse), , )
+  0075: return nothing
+  0077: <eos>

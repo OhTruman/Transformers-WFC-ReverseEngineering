@@ -1,0 +1,385 @@
+function TnHUD.PostBeginPlay  (script 26 bytes)
+  0000: PostBeginPlay()
+  0006: self.HudMovie = self.DefaultHudMovie
+  0011: TnHUD.SetupNewHud()
+  0017: return nothing
+  0019: <eos>
+
+function TnHUD.Reset  (script 15 bytes)
+  0000: Reset()
+  0006: TnHUD.Cleanup()
+  000c: return nothing
+  000e: <eos>
+
+function TnHUD.PostMoveToSeamlessTravelWorld  (script 31 bytes)
+  0000: PostMoveToSeamlessTravelWorld(OldWorldInfo, NewWorldInfo, bIsReloadingMap)
+  0016: TnHUD.Cleanup()
+  001c: return nothing
+  001e: <eos>
+
+function TnHUD.Cleanup  (script 35 bytes)
+  0000: foreach self.TemporaryObserverClasses(ObserverClass,) (end 0x001f)
+  000f: RemoveHudDataObserver(ObserverClass)
+  001e: iternext
+  001f: iterpop
+  0020: return nothing
+  0022: <eos>
+
+function TnHUD.SetupNewHud  (script 77 bytes)
+  0000: if !((self.HudMovie != none)) goto 0x0034
+  000b: self.HudMovie.Start(false)
+  001f: self.HudMovie.SetFocus(false, false)
+  0034: if !((self.ScoreboardMovie != none)) goto 0x004a
+  003f: SetShowScores(false)
+  004a: return nothing
+  004c: <eos>
+
+function TnHUD.SetHudOverride  (script 82 bytes)
+  0000: if !((OverrideMovie == self.HudMovie)) goto 0x0011
+  000f: return nothing
+  0011: self.HudMovie.Close(true)
+  0025: if !((OverrideMovie == none)) goto 0x003e
+  0030: self.HudMovie = self.DefaultHudMovie
+  003b: goto 0x0049
+  003e: self.HudMovie = OverrideMovie
+  0049: TnHUD.SetupNewHud()
+  004f: return nothing
+  0051: <eos>
+
+function TnHUD.Destroyed  (script 23 bytes)
+  0000: self.ScoreboardMovie.Close(false)
+  0014: return nothing
+  0016: <eos>
+
+function TnHUD.Tick  (script 20 bytes)
+  0000: Tick(DeltaTime)
+  000b: TnHUD.CheckDataObservers()
+  0011: return nothing
+  0013: <eos>
+
+function TnHUD.ShowScores  (script 21 bytes)
+  0000: SetShowScores(!self.bShowScores)
+  0012: return nothing
+  0014: <eos>
+
+function TnHUD.SetShowScores  (script 250 bytes)
+  0000: args = args
+  000b: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0024: if !((ClassIsChildOf(self.WorldInfo.GetGameClass(), obj'TnCampaignGameBase') && ((GRI == none) || !GRI.get_CompetitiveScoring()))) goto 0x006b
+  0069: return nothing
+  006b: self.bShowScores = bNewValue
+  0078: if !(self.bShowScores) goto 0x00e3
+  0081: self.ScoreboardMovie.Start(false)
+  0095: self.ScoreboardMovie.SetFocus(true, true)
+  00aa: self.ScoreboardMovie.SetVisibility(true)
+  00be: self.ScoreboardMovie.Invoke(self.UpdatePlayerListDataCallback, args)
+  00e0: goto 0x00f7
+  00e3: self.ScoreboardMovie.Close(true)
+  00f7: return nothing
+  00f9: <eos>
+
+function TnHUD.ToggleHUD  (script 34 bytes)
+  0000: self.ToggleHudFlag = !self.ToggleHudFlag
+  000f: SetVisibility(self.ToggleHudFlag)
+  001f: return nothing
+  0021: <eos>
+
+function TnHUD.OnSetVisibility  (script 67 bytes)
+  0000: OnSetVisibility(bVisible)
+  000c: PC = TnPlayerController(self.PlayerOwner)
+  001c: if !((PC != none)) goto 0x0040
+  0027: PC.SetHudVisible(bVisible)
+  0040: return nothing
+  0042: <eos>
+
+function TnHUD.SetHudVisibilityDelegate  (script 31 bytes)
+  0000: UIController.InitializeHudVisibilityDelegate(delegate.UpdateVisibility)
+  001c: return nothing
+  001e: <eos>
+
+function TnHUD.ForceHudInvisible  (script 19 bytes)
+  0000: if !(self.HudVisible) goto 0x0010
+  0009: TnHUD.UpdateVisibility(false)
+  0010: return nothing
+  0012: <eos>
+
+function TnHUD.UpdateVisibility  (script 26 bytes)
+  0000: self.HudVisible = bVisible
+  000d: PropogateVisibility()
+  0017: return nothing
+  0019: <eos>
+
+function TnHUD.PropogateVisibility  (script 74 bytes)
+  0000: if !(self.HudVisible) goto 0x0020
+  0009: self.HudMovie.SetVisibility(true)
+  001d: goto 0x0047
+  0020: self.HudMovie.SetVisibility(false)
+  0034: if !(self.bShowScores) goto 0x0047
+  003d: ShowScores()
+  0047: return nothing
+  0049: <eos>
+
+function TnHUD.CheckDataObservers  (script 67 bytes)
+  0000: if !((self.HudMovie == none)) goto 0x000d
+  000b: return nothing
+  000d: foreach self.DataObservers(Observer,) (end 0x003f)
+  001c: Observer.CheckData(self.HudMovie, TnPlayerController(self.PlayerOwner))
+  003e: iternext
+  003f: iterpop
+  0040: return nothing
+  0042: <eos>
+
+function TnHUD.TestSetDataObserver  (script 20 bytes)
+  0000: Index[self.DataObservers] = Observer
+  0011: return nothing
+  0013: <eos>
+
+function TnHUD.ShowDebug  (script 52 bytes)
+  0000: nothing
+  0001: if !((DebugType == 'Game')) goto 0x0026
+  0014: self.DisplayGameDebug = !self.DisplayGameDebug
+  0023: goto 0x0031
+  0026: ShowDebug(DebugType)
+  0031: return nothing
+  0033: <eos>
+
+function TnHUD.DrawHUD  (script 179 bytes)
+  0000: DrawHUD()
+  0006: GRI = TnGameReplicationInfoGameBase(self.WorldInfo.GRI)
+  001f: EmptyArgs = EmptyArgs
+  002a: self.HudMovie.Invoke(self.StartMarkerUpdateCallBack, EmptyArgs)
+  004c: if !((((GRI != none) && (self.PlayerOwner != none)) && (self.PlayerOwner.Pawn != none))) goto 0x008e
+  007a: GRI.UpdateObjectiveManager(self)
+  008e: self.HudMovie.Invoke(self.FinishMarkerUpdateCallBack, EmptyArgs)
+  00b0: return nothing
+  00b2: <eos>
+
+function TnHUD.PostRender  (script 203 bytes)
+  0000: PostRender()
+  0006: if !(self.DisplayGameDebug) goto 0x0056
+  000f: self.Canvas.StrLen("X", XL, YL)
+  002f: self.WorldInfo.Game.DisplayDebug(self, YL, YPos)
+  0056: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  006f: if !(self.bShowDebugInfo) goto 0x00c8
+  0078: if !(ShouldDisplayDebug('AIRoutes')) goto 0x00c8
+  008e: foreach WI.AllControllers(obj'TnAiController', C) (end 0x00c7)
+  00ae: DrawRoute(C.Pawn)
+  00c6: iternext
+  00c7: iterpop
+  00c8: return nothing
+  00ca: <eos>
+
+function TnHUD.LongAdjustDebug  (script 18 bytes)
+  0000: self.ShowLongAdjustDebug = !self.ShowLongAdjustDebug
+  000f: return nothing
+  0011: <eos>
+
+function TnHUD.DrawLongAdjustDebug  (script 255 bytes)
+  0000: LongAdjusts = TnPlayerController(self.PlayerOwner).LongAdjustHistory.ValueSum()
+  0027: if !((LongAdjusts != cast3f(0))) goto 0x00fc
+  0034: self.Canvas.SetPos(100.0, 100.0)
+  0051: self.Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0074: if !((LongAdjusts > cast3f(5))) goto 0x00a1
+  0082: self.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  00a1: self.Canvas.DrawTextNormal(("Long Adjusts in last 5 seconds" @ cast55(TnPlayerController(self.PlayerOwner).LongAdjustHistory.ValueSum())), , , )
+  00fc: return nothing
+  00fe: <eos>
+
+function TnHUD.DrawDebugHUD  (script 24 bytes)
+  0000: if !(self.ShowLongAdjustDebug) goto 0x000f
+  0009: TnHUD.DrawLongAdjustDebug()
+  000f: DrawDebugHUD()
+  0015: return nothing
+  0017: <eos>
+
+function TnHUD.AddHudDataObserver  (script 46 bytes)
+  0000: Observer = new(nothing, nothing, ObserverClass, nothing, DeltaTime)
+  0014: self.DataObservers.AddItem(Observer)
+  0021: return Observer
+  0027: return return
+  002d: <eos>
+
+function TnHUD.RemoveHudDataObserver  (script 118 bytes)
+  0000: I = 0
+  0007: if !((I < self.DataObservers.Length)) goto 0x0073
+  0017: if !((I[self.DataObservers].get_Class() == ObserverClass)) goto 0x0069
+  0033: I[self.DataObservers].HandleRemoval(self.HudMovie, TnPlayerController(self.PlayerOwner))
+  005b: self.DataObservers.Remove(I,1)
+  0067: return nothing
+  0069: AddAdd_PreInt(I)
+  0070: goto 0x0007
+  0073: return nothing
+  0075: <eos>
+
+function TnHUD.NotifyScoreEvent  (script 95 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddFloatArgument(args, -1.0)
+  001d: obj'TnScaleformHelpers'.static.AddFloatArgument(args, ScoreChange)
+  003a: self.HudMovie.Invoke(self.PointEventScaleformCallback, args)
+  005c: return nothing
+  005e: <eos>
+
+function TnHUD.NotifyCausedDamage  (script 48 bytes)
+  0000: args = args
+  000b: self.HudMovie.Invoke(self.CausedDamageScaleformCallback, args)
+  002d: return nothing
+  002f: <eos>
+
+function TnHUD.ApplyBuff  (script 128 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddStringArgument(args, BuffId)
+  001d: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(cast3a(BuffType)))
+  003e: obj'TnScaleformHelpers'.static.AddFloatArgument(args, BuffTime)
+  005b: self.HudMovie.Invoke(self.ApplyBuffCallBack, args)
+  007d: return nothing
+  007f: <eos>
+
+function TnHUD.ReapplyBuff  (script 95 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddStringArgument(args, BuffId)
+  001d: obj'TnScaleformHelpers'.static.AddFloatArgument(args, BuffTime)
+  003a: self.HudMovie.Invoke(self.ReapplyBuffCallBack, args)
+  005c: return nothing
+  005e: <eos>
+
+function TnHUD.UnapplyBuff  (script 66 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddStringArgument(args, BuffId)
+  001d: self.HudMovie.Invoke(self.UnapplyBuffCallBack, args)
+  003f: return nothing
+  0041: <eos>
+
+function TnHUD.SetAbilityResource  (script 126 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(AbilityNumber))
+  001f: obj'TnScaleformHelpers'.static.AddFloatArgument(args, CooldownTime)
+  003c: obj'TnScaleformHelpers'.static.AddFloatArgument(args, NormalizedCooldownStart)
+  0059: self.HudMovie.Invoke(self.UpdateAbilityCooldownCallBack, args)
+  007b: return nothing
+  007d: <eos>
+
+function TnHUD.SetAbilityResourceReady  (script 126 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(AbilityNumber))
+  001f: obj'TnScaleformHelpers'.static.AddFloatArgument(args, -1.0)
+  003c: obj'TnScaleformHelpers'.static.AddFloatArgument(args, 0.0)
+  0059: self.HudMovie.Invoke(self.UpdateAbilityCooldownCallBack, args)
+  007b: return nothing
+  007d: <eos>
+
+function TnHUD.NotifyLevelUp  (script 97 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(NewLevel))
+  001f: obj'TnScaleformHelpers'.static.AddStringArgument(args, Specialty)
+  003c: self.HudMovie.Invoke(self.NotifyLevelUpCallBack, args)
+  005e: return nothing
+  0060: <eos>
+
+function TnHUD.UpdateObjectiveMarker  (script 802 bytes)
+  0000: if !((MarkerData.MarkerBase != none)) goto 0x00da
+  0016: if !(((self.PlayerOwner == none) || (self.PlayerOwner.Pawn == none))) goto 0x0039
+  0037: return nothing
+  0039: MarkerLocationWS = TnHUD.GetMarkerLocation(MarkerData)
+  004a: ObserverLocationWS = self.PlayerOwner.Pawn.Location
+  0067: DistanceToObj = obj'Core.Math'.static.VSize((ObserverLocationWS - MarkerLocationWS))
+  0084: MarkerLocationSS = self.Canvas.Project(MarkerLocationWS)
+  00a2: ObserverDirectionWS = cast39(self.PlayerOwner.PlayerCamera.CameraCache.POV.Rotation)
+  00d7: goto 0x00f8
+  00da: DistanceToObj = -1.0
+  00e5: MarkerLocationSS = vect(-1,-1,-1)
+  00f8: OwnerPawn = TnPawn(self.PlayerOwner.Pawn)
+  0111: if !((!self.HudVisible || (self.WorldInfo.Pauser != none))) goto 0x0134
+  0132: return nothing
+  0134: if !(MarkerData.MarkerType.DrawsSelf(OwnerPawn, MarkerData)) goto 0x019e
+  015f: MarkerData.MarkerType.Draw(OwnerPawn, MarkerData, MarkerLocationWS, ObserverLocationWS, ObserverDirectionWS, self.Canvas)
+  019b: goto 0x031f
+  019e: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(MarkerData.MarkerId))
+  01c8: obj'TnScaleformHelpers'.static.AddFloatArgument(args, DistanceToObj)
+  01e5: obj'TnScaleformHelpers'.static.AddFloatArgument(args, MarkerLocationSS.X)
+  020d: obj'TnScaleformHelpers'.static.AddFloatArgument(args, MarkerLocationSS.Y)
+  0235: obj'TnScaleformHelpers'.static.AddFloatArgument(args, MarkerLocationSS.Z)
+  025d: MarkerType = MarkerData.MarkerType.GetMarkerType(OwnerPawn, MarkerData)
+  028b: obj'TnScaleformHelpers'.static.AddStringArgument(args, MarkerType)
+  02a8: obj'TnScaleformHelpers'.static.AddStringArgument(args, MarkerData.Description)
+  02d0: MarkerData.MarkerType.AddDynamicParameters(OwnerPawn, MarkerData, args)
+  02fd: self.HudMovie.Invoke(self.UpdateObjectiveMarkerCallback, args)
+  031f: return nothing
+  0321: <eos>
+
+function TnHUD.GetMarkerLocation  (script 105 bytes)
+  0000: TargetableComponent = MarkerData.MarkerBase.FindComponent(obj'TnTargetableComponent')
+  0029: if !((TargetableComponent != none)) goto 0x0048
+  0034: return TargetableComponent.GetTargetSnapDesiredLocation()
+  0048: return MarkerData.MarkerBase.Location
+  0062: return return
+  0068: <eos>
+
+function TnHUD.AddObjective  (script 66 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddStringArgument(args, ObjectiveDescription)
+  001d: self.HudMovie.Invoke(self.AddObjectiveCallback, args)
+  003f: return nothing
+  0041: <eos>
+
+function TnHUD.CompleteObjective  (script 66 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddStringArgument(args, ObjectiveDescription)
+  001d: self.HudMovie.Invoke(self.CompleteObjectiveCallback, args)
+  003f: return nothing
+  0041: <eos>
+
+function TnHUD.NotifyAmmoAdded  (script 97 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(Amount))
+  001f: obj'TnScaleformHelpers'.static.AddStringArgument(args, WeaponName)
+  003c: self.HudMovie.Invoke(self.NotifyAmmoAddedCallback, args)
+  005e: return nothing
+  0060: <eos>
+
+function TnHUD.DisplayTutorialMessage  (script 157 bytes)
+  0000: PC = TnPlayerController(self.PlayerOwner)
+  0010: if !((PC == none)) goto 0x001d
+  001b: return nothing
+  001d: Profile = TnProfileSettings(PC.ProfileSettings)
+  0036: if !((Profile == none)) goto 0x0043
+  0041: return nothing
+  0043: if !(Profile.HasShownTutorialMessage(MessageType)) goto 0x0060
+  005e: return nothing
+  0060: self.TutorialDisplayer.AddMessage(self.HudMovie, PC, MessageType)
+  0082: Profile.MarkTutorialMessageAsShown(MessageType)
+  009a: return nothing
+  009c: <eos>
+
+function TnHUD.DisplayString  (script 66 bytes)
+  0000: obj'TnScaleformHelpers'.static.AddStringArgument(args, S)
+  001d: self.HudMovie.Invoke(MovieCallback, args)
+  003f: return nothing
+  0041: <eos>
+
+function TnHUD.DisplayColoredString  (script 205 bytes)
+  0000: I = 0
+  0007: if !((I < CS.StringParts.Length)) goto 0x00ba
+  0022: TextColorHex = ("#" $ ColorToHexColor(I[CS.StringParts].TextColor))
+  0058: HTMLString = (((((HTMLString $ "<font color='") $ TextColorHex) $ "'>") $ I[CS.StringParts].Text) $ "</font> ")
+  00b0: AddAdd_PreInt(I)
+  00b7: goto 0x0007
+  00ba: TnHUD.DisplayString(HTMLString, MovieCallback)
+  00ca: return nothing
+  00cc: <eos>
+
+function TnHUD.ColoredLocalizedMessage  (script 19 bytes)
+  0000: TnHUD.DisplayColoredString(CS, self.GameMessageCallBack)
+  0010: return nothing
+  0012: <eos>
+
+function TnHUD.LocalizedGameAnnouncement  (script 19 bytes)
+  0000: TnHUD.DisplayString(Announcement, self.GameAnnouncementCallBack)
+  0010: return nothing
+  0012: <eos>
+
+function TnHUD.LocalizedRewardAnnouncement  (script 19 bytes)
+  0000: TnHUD.DisplayString(Announcement, self.RewardAnnouncementCallBack)
+  0010: return nothing
+  0012: <eos>
+
+function TnHUD.DisplayBadConnectionAlert  (script 48 bytes)
+  0000: args = args
+  000b: self.HudMovie.Invoke(self.NotifyBadConnectionCallback, args)
+  002d: return nothing
+  002f: <eos>
+
+function TnHUD.NotifyCantTransform  (script 48 bytes)
+  0000: args = args
+  000b: self.HudMovie.Invoke(self.NotifyCantTransformCallback, args)
+  002d: return nothing
+  002f: <eos>

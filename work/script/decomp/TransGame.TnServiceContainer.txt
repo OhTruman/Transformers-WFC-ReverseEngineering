@@ -1,0 +1,51 @@
+function TnServiceContainer.get_Count  (script 14 bytes)
+  0000: return self._ServiceDescriptions.Length
+  0007: return return
+  000d: <eos>
+
+function TnServiceContainer.Add  (script 149 bytes)
+  0000: if !((TnServiceContainer.FindServiceIndex(Type) >= 0)) goto 0x0059
+  0011: LogInternal((("Error: Trying to add a service for " $ cast57(Type)) $ " more than once"), , , )
+  0057: return nothing
+  0059: Description.Type = Type
+  006f: Description.Service = Service
+  0085: self._ServiceDescriptions.AddItem(Description)
+  0092: return nothing
+  0094: <eos>
+
+function TnServiceContainer.Replace  (script 137 bytes)
+  0000: Index = TnServiceContainer.FindServiceIndex(Type)
+  0011: if !((Index < 0)) goto 0x006a
+  001c: LogInternal(("Error: Trying to replace a service that was never added for " $ cast57(Type)), , , )
+  0068: return nothing
+  006a: Index[self._ServiceDescriptions].Service = Service
+  0086: return nothing
+  0088: <eos>
+
+function TnServiceContainer.Remove  (script 122 bytes)
+  0000: Index = TnServiceContainer.FindServiceIndex(Type)
+  0011: if !((Index == -1)) goto 0x006b
+  0020: LogInternal(("Error: Trying to remove a service that was not added for " $ cast57(Type)), , , )
+  0069: return nothing
+  006b: self._ServiceDescriptions.Remove(Index,1)
+  0077: return nothing
+  0079: <eos>
+
+function TnServiceContainer.GetService  (script 60 bytes)
+  0000: Index = TnServiceContainer.FindServiceIndex(Type)
+  0011: if !((Index >= 0)) goto 0x0033
+  001c: return Index[self._ServiceDescriptions].Service
+  0033: return none
+  0035: return return
+  003b: <eos>
+
+function TnServiceContainer.FindServiceIndex  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < self._ServiceDescriptions.Length)) goto 0x0047
+  0017: if !((I[self._ServiceDescriptions].Type == Type)) goto 0x003d
+  0037: return I
+  003d: AddAdd_PreInt(I)
+  0044: goto 0x0007
+  0047: return -1
+  004d: return return
+  0053: <eos>

@@ -1,0 +1,114 @@
+function TnAnchor.Initialize  (script 14 bytes)
+  0000: self.P = Pn
+  000b: return nothing
+  000d: <eos>
+
+function TnAnchor.GetRecentAnchor  (script 169 bytes)
+  0000: if !((self.P == none)) goto 0x000d
+  000b: return none
+  000d: if !((self.RecentBestAnchor != none)) goto 0x0051
+  0018: DeltaTime = (self.P.WorldInfo.TimeSeconds - self.RecentBestAnchorTime)
+  003c: if !((DeltaTime < MaxAge)) goto 0x0051
+  004b: return self.RecentBestAnchor
+  0051: self.RecentBestAnchor = self.P.GetBestAnchor(self.P, self.P.Location, true, )
+  007f: self.RecentBestAnchorTime = self.P.WorldInfo.TimeSeconds
+  009c: return self.RecentBestAnchor
+  00a2: return return
+  00a8: <eos>
+
+function TnAnchor.IsNavigationPointSupported  (script 338 bytes)
+  0000: if !(Nav.IsBlocked()) goto 0x0018
+  0016: return false
+  0018: if !(Nav.IsDoubleJump()) goto 0x0030
+  002e: return false
+  0030: if !(((AirPathNode(Nav) != none) && ExcludeAirNodes)) goto 0x004d
+  004b: return false
+  004d: if !((TnInteractPathNode(Nav) != none)) goto 0x005f
+  005d: return false
+  005f: if !(Nav.bMover) goto 0x0073
+  0071: return false
+  0073: if !((Nav.get_Gated() && !Nav.bGateOpen)) goto 0x00a1
+  009f: return false
+  00a1: if !(Nav.IsOccupiedExcludeController(CheckPawn.Controller)) goto 0x00c7
+  00c5: return false
+  00c7: ToNavPointVector = obj'Core.Math'.static.Normal((Nav.Location - self.P.Location))
+  00f6: FacingVector = cast39(self.P.Rotation)
+  010c: Angle = (obj'Core.Math'.static.Acos((ToNavPointVector dot FacingVector)) * 57.2957802)
+  0138: if !((Angle > FrontAngle)) goto 0x0149
+  0147: return false
+  0149: return true
+  014b: return return
+  0151: <eos>
+
+function TnAnchor.InsertIntoBestNavigationPointArray  (script 104 bytes)
+  0000: if !((I < BestNavigationPointArray.Length)) goto 0x0048
+  0010: if !((CandidateNavigationPoint.DistanceSq < I[BestNavigationPointArray].DistanceSq)) goto 0x003e
+  003b: goto 0x0048
+  003e: AddAdd_Int(I)
+  0045: goto 0x0000
+  0048: BestNavigationPointArray.Insert(I,1)
+  0054: I[BestNavigationPointArray] = CandidateNavigationPoint
+  0065: return nothing
+  0067: <eos>
+
+function TnAnchor.GetBestAirNode  (script 71 bytes)
+  0000: foreach BestNavigationPointArray(BestNavigationPoint,) (end 0x003d)
+  000f: if !((AirPathNode(BestNavigationPoint.Nav) != none)) goto 0x003c
+  002a: iterpop
+  002b: return BestNavigationPoint.Nav
+  003c: iternext
+  003d: iterpop
+  003e: return none
+  0040: return return
+  0046: <eos>
+
+function TnAnchor.GetBestGroundNode  (script 71 bytes)
+  0000: foreach BestNavigationPointArray(BestNavigationPoint,) (end 0x003d)
+  000f: if !((AirPathNode(BestNavigationPoint.Nav) == none)) goto 0x003c
+  002a: iterpop
+  002b: return BestNavigationPoint.Nav
+  003c: iternext
+  003d: iterpop
+  003e: return none
+  0040: return return
+  0046: <eos>
+
+function TnAnchor.GetClosestUnoccupiedNavigationPointInFront  (script 555 bytes)
+  0000: AnchorNavPoint = GetRecentAnchor(MaxAnchorAge)
+  0015: if !((AnchorNavPoint == none)) goto 0x0022
+  0020: return none
+  0022: if !(TnAnchor.IsNavigationPointSupported(CheckPawn, AnchorNavPoint, ExcludeAirNodes, FrontAngle)) goto 0x00a8
+  0040: CandidateNavigationPoint.Nav = AnchorNavPoint
+  0056: CandidateNavigationPoint.DistanceSq = obj'Core.Math'.static.VSizeSq((AnchorNavPoint.Location - CheckPawn.Location))
+  0098: TnAnchor.InsertIntoBestNavigationPointArray(BestNavigationPointArray, CandidateNavigationPoint)
+  00a8: ReachSpecArray = AnchorNavPoint.GetReachSpecArray()
+  00c1: foreach ReachSpecArray(Spec,) (end 0x01b2)
+  00d0: NavPoint = Spec.GetEndNavigationPoint()
+  00e9: if !((NavPoint == none)) goto 0x00f8
+  00f4: iternext
+  00f5: goto 0x01b2
+  00f8: BackSpec = NavPoint.GetReachSpecTo(AnchorNavPoint)
+  0116: if !((BackSpec == none)) goto 0x0125
+  0121: iternext
+  0122: goto 0x01b2
+  0125: if !(!TnAnchor.IsNavigationPointSupported(CheckPawn, NavPoint, ExcludeAirNodes, FrontAngle)) goto 0x0149
+  0145: iternext
+  0146: goto 0x01b2
+  0149: CandidateNavigationPoint.Nav = NavPoint
+  015f: CandidateNavigationPoint.DistanceSq = obj'Core.Math'.static.VSizeSq((NavPoint.Location - CheckPawn.Location))
+  01a1: TnAnchor.InsertIntoBestNavigationPointArray(BestNavigationPointArray, CandidateNavigationPoint)
+  01b1: iternext
+  01b2: iterpop
+  01b3: if !(PreferAirNodes) goto 0x01e1
+  01bc: BestNavPoint = TnAnchor.GetBestAirNode(BestNavigationPointArray)
+  01cd: if !((BestNavPoint != none)) goto 0x01de
+  01d8: return BestNavPoint
+  01de: goto 0x0203
+  01e1: BestNavPoint = TnAnchor.GetBestGroundNode(BestNavigationPointArray)
+  01f2: if !((BestNavPoint != none)) goto 0x0203
+  01fd: return BestNavPoint
+  0203: if !((BestNavigationPointArray.Length != 0)) goto 0x0222
+  020f: return 0[BestNavigationPointArray].Nav
+  0222: return none
+  0224: return return
+  022a: <eos>

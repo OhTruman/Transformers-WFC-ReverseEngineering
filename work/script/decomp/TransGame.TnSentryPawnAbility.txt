@@ -1,0 +1,155 @@
+function TnSentryPawnAbility.ReplicatedEvent  (script 113 bytes)
+  0000: if !((VarName == 'bStopIdleSound')) goto 0x001c
+  0013: TnSentryPawnAbility.StopIdleSound()
+  0019: goto 0x0063
+  001c: if !((VarName == 'IsFlashBanged')) goto 0x004a
+  002f: if !(self.IsFlashBanged) goto 0x0041
+  0038: TnSentryPawnAbility.StartFlashBang()
+  003e: goto 0x0047
+  0041: TnSentryPawnAbility.StopFlashBang()
+  0047: goto 0x0063
+  004a: if !((VarName == 'Instigator')) goto 0x0063
+  005d: TnSentryPawnAbility.ApplyEnergonColor()
+  0063: TnSentryPawn.ReplicatedEvent(VarName)
+  006e: return nothing
+  0070: <eos>
+
+function TnSentryPawnAbility.ApplySentry  (script 209 bytes)
+  0000: TnSentryPawn.ApplySentry()
+  0006: if !((self.Lifetime > cast3f(0))) goto 0x0033
+  0013: self.DrainRate = (self._DestructiblePiece.GetHealth() / self.Lifetime)
+  0033: self.PitchSkelControl.DesiredBoneRotation = self.Rotation
+  0047: self.YawSkelControl.DesiredBoneRotation = self.Rotation
+  005b: PlayLocalDeactivateAnim()
+  0065: self.IdleAudioComponent = CreateAudioComponent(self.IdleSound, true, true, , , )
+  007f: self.Mesh.BlockCameras = false
+  0090: self.Mesh.SetBlockRigidBody(false)
+  00a4: self.Mesh.SetActorCollision(true, false)
+  00b9: self.Mesh.SetTraceBlocking(true, true)
+  00ce: return nothing
+  00d0: <eos>
+
+function TnSentryPawnAbility.PossessedBy  (script 71 bytes)
+  0000: PossessedBy(C, bVehicleTransition)
+  0011: AC = TnAiSentryController(C)
+  0021: if !((AC != none)) goto 0x0044
+  002c: AC.EnablePitchConstraints(self.PitchConstraintsInDegrees)
+  0044: return nothing
+  0046: <eos>
+
+function TnSentryPawnAbility.SetInstigator  (script 83 bytes)
+  0000: self.Instigator = NewInstigator
+  000b: NewTeam = TnFactionTeam(NewInstigator.GetTeam())
+  0029: if !((NewTeam != none)) goto 0x004a
+  0034: SetAITeam(NewTeam.get_Class())
+  004a: TnSentryPawnAbility.ApplyEnergonColor()
+  0050: return nothing
+  0052: <eos>
+
+function TnSentryPawnAbility.GetService  (script 54 bytes)
+  0000: if !((Type == 'TnTargetableService')) goto 0x0023
+  0013: return FindComponent(obj'TnTargetableComponent')
+  0023: return TnSentryPawn.GetService(Type)
+  002f: return return
+  0035: <eos>
+
+function TnSentryPawnAbility.Tick  (script 276 bytes)
+  0000: TnSentryPawn.Tick(DeltaTime)
+  000b: if !((cast3a(self.Role) == cast3a(3))) goto 0x00de
+  001b: MasterPawn = GetMaster()
+  002b: if !((((MasterPawn == none) || MasterPawn.IsDying()) || MasterPawn.IsDead())) goto 0x0073
+  0066: Kill()
+  0070: goto 0x00de
+  0073: ModifiedDamage = self.DamageTakenModifier.ModifyFloat((self.DrainRate * DeltaTime), MasterPawn, )
+  009e: self.DestructibleComponent.NotifyTrigger(ModifiedDamage, obj'HM_Engine.HmGenericDamageDestructionTrigger')
+  00bb: if !((GetHealth() <= cast3f(0))) goto 0x00de
+  00cd: HandleDeath(none, none, self.Location)
+  00de: if !(((self.PitchSkelControl != none) && (self._Enemy == none))) goto 0x0111
+  00f6: self.PitchSkelControl.DesiredBoneRotation.Pitch = 0
+  0111: return nothing
+  0113: <eos>
+
+function TnSentryPawnAbility.StopIdleSound  (script 43 bytes)
+  0000: if !((none != self.IdleAudioComponent)) goto 0x0028
+  000b: self.IdleAudioComponent.FadeOut(0.25, 0.0)
+  0028: return nothing
+  002a: <eos>
+
+function TnSentryPawnAbility.PlayDying  (script 40 bytes)
+  0000: TnSentryPawn.PlayDying(DamageType, HitLoc)
+  0010: self.bStopIdleSound = !self.bStopIdleSound
+  001f: TnSentryPawnAbility.StopIdleSound()
+  0025: return nothing
+  0027: <eos>
+
+function TnSentryPawnAbility.EnemyAcquired  (script 29 bytes)
+  0000: TnSentryPawn.EnemyAcquired()
+  0006: PlaySound(self.ActivateSound, , , , , )
+  001a: return nothing
+  001c: <eos>
+
+function TnSentryPawnAbility.CanReceiveDamageFrom  (script 63 bytes)
+  0000: if !(((InstigatedBy != none) && (InstigatedBy.Pawn == GetMaster()))) goto 0x002c
+  002a: return false
+  002c: return TnSentryPawn.CanReceiveDamageFrom(InstigatedBy)
+  0038: return return
+  003e: <eos>
+
+function TnSentryPawnAbility.ModifyDamage  (script 46 bytes)
+  0000: if !(ClassIsChildOf(DamageType, obj'TnDamageTypeMelee')) goto 0x0016
+  0010: return 3.4028234663852886e+38
+  0016: return TnSentryPawn.ModifyDamage(Damage, DamageType)
+  0027: return return
+  002d: <eos>
+
+function TnSentryPawnAbility.TakeFlashBangDamage  (script 9 bytes)
+  0000: TnSentryPawnAbility.StartFlashBang()
+  0006: return nothing
+  0008: <eos>
+
+function TnSentryPawnAbility.StartFlashBang  (script 189 bytes)
+  0000: self.IsFlashBanged = true
+  0008: if !((self.Controller != none)) goto 0x0048
+  0013: TnAiSentryController(self.Controller).SetDormant(true)
+  002c: SetTimer(obj'TnDamageTypeFlashBang'.static.default.DisableSentryTime, false, 'StopFlashBang', )
+  0048: self.Mesh.SetMaterialForAllElements(self.FlashBangMaterial)
+  0060: self.Mesh.SetVectorParam('Overshield_Color', obj'TnFlashBangMaterialOverrider'.static.default.MaterialColor)
+  008a: self.Mesh.SetScalarParam('Overshield_PowerUp', obj'TnFlashBangMaterialOverrider'.static.default.PowerUp)
+  00b4: TnSentryPawnAbility.ApplyEnergonColor()
+  00ba: return nothing
+  00bc: <eos>
+
+function TnSentryPawnAbility.StopFlashBang  (script 72 bytes)
+  0000: self.IsFlashBanged = false
+  0008: if !((self.Controller != none)) goto 0x002c
+  0013: TnAiSentryController(self.Controller).SetDormant(false)
+  002c: self.Mesh.ClearMaterials()
+  003f: TnSentryPawnAbility.ApplyEnergonColor()
+  0045: return nothing
+  0047: <eos>
+
+function TnSentryPawnAbility.ApplyEnergonColor  (script 65 bytes)
+  0000: TnInstigator = TnPawn(self.Instigator)
+  0010: if !((TnInstigator == none)) goto 0x001d
+  001b: return nothing
+  001d: TnInstigator._CharacterApplier.ApplyColorsToMesh(self.Mesh)
+  003e: return nothing
+  0040: <eos>
+
+function TnSentryPawnAbility.HealDamage  (script 40 bytes)
+  0000: self._DestructiblePiece.AddHealth((self.HealedMultiplier * Amount))
+  001f: return true
+  0021: return return
+  0027: <eos>
+
+function TnSentryPawnAbility.GetReferenceLocation  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function TnSentryPawnAbility.IsSameTeam  (script 36 bytes)
+  0000: if !((self.Instigator == Other)) goto 0x0011
+  000f: return true
+  0011: return TnSentryPawn.IsSameTeam(Other)
+  001d: return return
+  0023: <eos>

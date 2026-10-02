@@ -1,0 +1,26 @@
+function TnStatisticsBackendCheckpointTable.RecordCheckpointReached  (script 136 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((CP == self.LastCheckpoint)) goto 0x001e
+  001c: return nothing
+  001e: Stat.Dur = (cast3f(TnStatisticsBackendCheckpointTable.GetGameTime()) - self.LastCheckpointTime)
+  003e: Stat.CP = cast57(CP.Tag)
+  005f: self.Checkpoints.AddItem(Stat)
+  006c: self.LastCheckpoint = CP
+  0077: self.LastCheckpointTime = cast3f(TnStatisticsBackendCheckpointTable.GetGameTime())
+  0085: return nothing
+  0087: <eos>
+
+function TnStatisticsBackendCheckpointTable.RecordStartingFromCheckpoint  (script 28 bytes)
+  0000: self.LastCheckpoint = CP
+  000b: self.LastCheckpointTime = cast3f(TnStatisticsBackendCheckpointTable.GetGameTime())
+  0019: return nothing
+  001b: <eos>
+
+function TnStatisticsBackendCheckpointTable.GetGameTime  (script 78 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.GRI == none)) goto 0x002f
+  002d: return 0
+  002f: return WI.GRI.ElapsedTime
+  0047: return return
+  004d: <eos>

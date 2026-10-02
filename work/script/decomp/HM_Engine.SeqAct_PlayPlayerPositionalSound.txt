@@ -1,0 +1,78 @@
+function SeqAct_PlayPlayerPositionalSound.Reset  (script 17 bytes)
+  0000: Reset()
+  0006: self.IsPlaying = false
+  000e: return nothing
+  0010: <eos>
+
+function SeqAct_PlayPlayerPositionalSound.Activated  (script 159 bytes)
+  0000: Activated()
+  0006: if !((none == self.SoundToPlay)) goto 0x0013
+  0011: return nothing
+  0013: if !(0[self.InputLinks].bHasImpulse) goto 0x0069
+  0029: self.DelayRemaining = obj'Core.Random'.static.RandRangeFloat(self.DelayMin, self.DelayMax)
+  004c: 0[self.InputLinks].bHasImpulse = false
+  0061: self.IsPlaying = true
+  0069: if !(1[self.InputLinks].bHasImpulse) goto 0x009c
+  007f: 1[self.InputLinks].bHasImpulse = false
+  0094: self.IsPlaying = false
+  009c: return nothing
+  009e: <eos>
+
+function SeqAct_PlayPlayerPositionalSound.Update  (script 158 bytes)
+  0000: Activated()
+  000a: if !((none == self.SoundToPlay)) goto 0x0017
+  0015: return false
+  0017: if !(!self.IsPlaying) goto 0x0024
+  0022: return false
+  0024: (self.DelayRemaining -= DeltaTime)
+  0030: if !((self.DelayRemaining > 0.0)) goto 0x0041
+  003f: return true
+  0041: self.DelayRemaining = obj'Core.Random'.static.RandRangeFloat(self.DelayMin, self.DelayMax)
+  0064: if !((false == SeqAct_PlayPlayerPositionalSound.PlaySound())) goto 0x0072
+  0070: return false
+  0072: 0[self.OutputLinks].bHasImpulse = true
+  0087: if !((false == self.Looping)) goto 0x0095
+  0093: return false
+  0095: return true
+  0097: return return
+  009d: <eos>
+
+function SeqAct_PlayPlayerPositionalSound.CalculatePosition  (script 258 bytes)
+  0000: YawAngle = obj'Core.Random'.static.RandRangeFloat(0.0, 359.0)
+  0023: Transform = obj'Core.Math'.static.MakeAffineTransform(obj'Core.Math'.static.MakeRotatorDeg(0.0, YawAngle, 0.0), vect(0,0,0))
+  006b: Position.X = obj'Core.Random'.static.RandRangeFloat(self.DistanceMin, self.DistanceMax)
+  0099: Position.Y = 0.0
+  00af: Position.Z = 0.0
+  00c5: Position = obj'Core.Math'.static.RotateVector(Position, Transform)
+  00e8: (Position += SeqAct_PlayPlayerPositionalSound.GetReferencePoint())
+  00f5: return Position
+  00fb: return return
+  0101: <eos>
+
+function SeqAct_PlayPlayerPositionalSound.GetReferencePoint  (script 345 bytes)
+  0000: GetObjectVars(objVars, "Source Actor")
+  001d: if !((0 == objVars.Length)) goto 0x0092
+  0029: Audio = obj'Engine.Engine'.static.GetAudioDevice()
+  0042: if !((none == Audio)) goto 0x0073
+  004d: return obj'Core.Math'.static.MakeVector(0.0, 0.0, 0.0)
+  0070: goto 0x008f
+  0073: return 0[Audio.Listeners].Location
+  008f: goto 0x0152
+  0092: C = Controller(0[objVars])
+  00a4: if !(((none != C) && (none != C.Pawn))) goto 0x00dc
+  00c5: A = C.Pawn
+  00d9: goto 0x00ee
+  00dc: A = Actor(0[objVars])
+  00ee: if !((none == A)) goto 0x0143
+  00f9: LogInternal("Error: Non-actor object attached to 'Source Actor' object variable!", , , )
+  0143: return A.Location
+  0152: return return
+  0158: <eos>
+
+function SeqAct_PlayPlayerPositionalSound.PlaySound  (script 67 bytes)
+  0000: AC = GetWorldInfo().CreateAudioComponent(self.SoundToPlay, true, true, true, SeqAct_PlayPlayerPositionalSound.CalculatePosition(), false)
+  002d: if !((none == AC)) goto 0x003a
+  0038: return false
+  003a: return true
+  003c: return return
+  0042: <eos>

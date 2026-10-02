@@ -1,0 +1,149 @@
+function TnAiSentryController.get_CurrentTarget  (script 13 bytes)
+  0000: return self._CurrentTarget
+  0006: return return
+  000c: <eos>
+
+function TnAiSentryController.set_CurrentTarget  (script 74 bytes)
+  0000: if !((self._CurrentTarget != Value)) goto 0x0047
+  000f: self._CurrentTarget = Value
+  001a: self.Enemy = Pawn(Value)
+  002a: TnSentryPawn(self.Pawn).set_Enemy(Value)
+  0047: return nothing
+  0049: <eos>
+
+function TnAiSentryController.set_TargetTracker  (script 14 bytes)
+  0000: self._TargetTracker = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiSentryController.set_Invulnerable  (script 49 bytes)
+  0000: self.bGodMode = Value
+  000d: if !((self._SentryPawn != none)) goto 0x002e
+  0018: self._SentryPawn._Invulnerable = Value
+  002e: return nothing
+  0030: <eos>
+
+function TnAiSentryController.get_IsDormant  (script 14 bytes)
+  0000: return self._IsDormant
+  0007: return return
+  000d: <eos>
+
+function TnAiSentryController.get_KillOwner  (script 13 bytes)
+  0000: return self._KillOwner
+  0006: return return
+  000c: <eos>
+
+function TnAiSentryController.set_KillOwner  (script 14 bytes)
+  0000: self._KillOwner = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiSentryController.Possess  (script 145 bytes)
+  0000: nothing
+  0001: Possess(inPawn, bVehicleTransition)
+  0012: self._SentryPawn = TnSentryPawn(inPawn)
+  0022: if !((self._SentryPawn == none)) goto 0x0076
+  002d: LogInternal("ERROR: TnAiSentryControllers should only be use with TnSentryPawns", , , )
+  0076: self._TargetTracker.Initialize(self._SentryPawn)
+  008e: return nothing
+  0090: <eos>
+
+function TnAiSentryController.SetDormant  (script 83 bytes)
+  0000: if !((self._IsDormant == IsDormant)) goto 0x0013
+  0011: return nothing
+  0013: self._IsDormant = IsDormant
+  0020: if !(IsDormant) goto 0x0050
+  0029: TnAiSentryController.set_CurrentTarget(none)
+  0030: if !((self.Pawn != none)) goto 0x0050
+  003b: self.Pawn.StopFire(0)
+  0050: return nothing
+  0052: <eos>
+
+function TnAiSentryController.Tick  (script 120 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(!self._IsDormant) goto 0x0075
+  0016: self.bSeeFriendly = (TnWeaponRepair(self.Pawn.Weapon) != none)
+  0033: TnAiSentryController.set_CurrentTarget(TnAiSentryController.FindBestTarget())
+  003f: if !(TnAiSentryController.CanFireAtTarget()) goto 0x0060
+  0048: self.Pawn.StartFire(0)
+  005d: goto 0x0075
+  0060: self.Pawn.StopFire(0)
+  0075: return nothing
+  0077: <eos>
+
+function TnAiSentryController.FindBestTarget  (script 73 bytes)
+  0000: if !((self._ForcedTarget != none)) goto 0x0011
+  000b: return self._ForcedTarget
+  0011: if !(self.bSeeFriendly) goto 0x002e
+  001a: return self._TargetTracker.FindBestTeammate()
+  002e: return self._TargetTracker.FindBestEnemy()
+  0042: return return
+  0048: <eos>
+
+function TnAiSentryController.CanFireAtTarget  (script 163 bytes)
+  0000: if !((self._CurrentTarget == none)) goto 0x000d
+  000b: return false
+  000d: if !((self._SentryPawn == none)) goto 0x001a
+  0018: return false
+  001a: if !(!self._SentryPawn.CanFire()) goto 0x0034
+  0032: return false
+  0034: MaxAttackRangeSq = (self._SentryPawn._MaxAttackRange * self._SentryPawn._MaxAttackRange)
+  0058: EnemyDistSq = obj'Core.Math'.static.VSizeSq((self._SentryPawn.Location - self._CurrentTarget.Location))
+  008f: return (EnemyDistSq < MaxAttackRangeSq)
+  009c: return return
+  00a2: <eos>
+
+function TnAiSentryController.SeeEnemy  (script 52 bytes)
+  0000: SeeEnemy(Seen)
+  000b: if !(TnAiSentryController.CanTrackPawn(Seen)) goto 0x0031
+  0019: self._TargetTracker.RegisterEnemy(Seen)
+  0031: return nothing
+  0033: <eos>
+
+function TnAiSentryController.EnemyNotVisible  (script 111 bytes)
+  0000: EnemyNotVisible()
+  0006: if !(!self._SentryPawn.get_CanFireAtHiddenEnemies()) goto 0x006c
+  001e: if !(self._SentryPawn.IsSameTeam(self.Enemy)) goto 0x0054
+  0039: self._TargetTracker.UnregisterTeammate(self.Enemy)
+  0051: goto 0x006c
+  0054: self._TargetTracker.UnregisterEnemy(self.Enemy)
+  006c: return nothing
+  006e: <eos>
+
+function TnAiSentryController.SeeTeammate  (script 52 bytes)
+  0000: SeeTeammate(Seen)
+  000b: if !(TnAiSentryController.CanTrackPawn(Seen)) goto 0x0031
+  0019: self._TargetTracker.RegisterTeammate(Seen)
+  0031: return nothing
+  0033: <eos>
+
+function TnAiSentryController.CanTrackPawn  (script 41 bytes)
+  0000: return (self._SentryPawn._CanFireAtSentries || (TnSentryPawn(PawnToTrack) == none))
+  0022: return return
+  0028: <eos>
+
+function TnAiSentryController.ForceTarget  (script 14 bytes)
+  0000: self._ForcedTarget = NewForcedTarget
+  000b: return nothing
+  000d: <eos>
+
+function TnAiSentryController.NotifyKilled  (script 93 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: PawnBase = Pawn(self.Pawn.GetActorBase())
+  002b: if !(((PawnBase != none) && (PawnBase == KilledPawn))) goto 0x005a
+  0047: self.Pawn.Suicide()
+  005a: return nothing
+  005c: <eos>
+
+function TnAiSentryController.GetKillerController  (script 31 bytes)
+  0000: if !((self._KillOwner != none)) goto 0x0011
+  000b: return self._KillOwner
+  0011: return GetKillerController()
+  0018: return return
+  001e: <eos>
+
+function TnAiSentryController.EnablePitchConstraints  (script 27 bytes)
+  0000: self._TargetTracker.EnablePitchConstraints(PitchConstraintsInDegrees)
+  0018: return nothing
+  001a: <eos>

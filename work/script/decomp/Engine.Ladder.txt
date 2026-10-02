@@ -1,0 +1,11 @@
+function Ladder.SuggestMovePreparation  (script 127 bytes)
+  0000: if !((self.MyLadder == none)) goto 0x000d
+  000b: return false
+  000d: if !(!self.MyLadder.InUse(Other)) goto 0x0040
+  002a: self.MyLadder.PendingClimber = Other
+  003e: return false
+  0040: Other.Controller.bPreparingMove = true
+  005a: Other.Acceleration = vect(0,0,0)
+  0076: return true
+  0078: return return
+  007e: <eos>

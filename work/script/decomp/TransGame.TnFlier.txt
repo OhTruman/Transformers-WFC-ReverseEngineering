@@ -1,0 +1,51 @@
+function TnFlier.Initialize  (script 14 bytes)
+  0000: self.OwnerPawn = Owner
+  000b: return nothing
+  000d: <eos>
+
+function TnFlier.StartFlight  (script 195 bytes)
+  0000: if !((FP.Time == cast3f(0))) goto 0x001a
+  0018: return nothing
+  001a: self.OwnerPawn.SetPhysics(4, , )
+  0031: self.OwnerPawn.set_BaseAirSpeed(FP.Speed)
+  0054: self.OwnerPawn.AccelRate = self.FlightAccelRate
+  0068: self.Direction = FP.Direction
+  007e: self.Target = FP.Target
+  0094: self.FlightTimeRemaining = FP.Time
+  00aa: self.EndVelocityScaler = FP.EndVelocityScaler
+  00c0: return nothing
+  00c2: <eos>
+
+function TnFlier.ForceStopFlying  (script 25 bytes)
+  0000: if !(IsFlying()) goto 0x0016
+  000d: TnFlier.StopFlight()
+  0013: goto 0x0016
+  0016: return nothing
+  0018: <eos>
+
+function TnFlier.StopFlight  (script 176 bytes)
+  0000: if !(((cast3a(self.OwnerPawn.GetPhysics()) == cast3a(4)) && !self.OwnerPawn.IsBeingGrabbed())) goto 0x004f
+  0038: self.OwnerPawn.SetPhysics(2, , )
+  004f: self.OwnerPawn.RestoreDefaultAirMovement()
+  0062: (self.OwnerPawn.Velocity.X *= self.EndVelocityScaler)
+  0082: (self.OwnerPawn.Velocity.Y *= self.EndVelocityScaler)
+  00a2: self.FlightTimeRemaining = 0.0
+  00ad: return nothing
+  00af: <eos>
+
+function TnFlier.Update  (script 128 bytes)
+  0000: (self.FlightTimeRemaining -= DeltaTime)
+  000c: if !((self.FlightTimeRemaining <= cast3f(0))) goto 0x002d
+  0019: TnFlier.StopFlight()
+  001f: return vect(0,0,0)
+  002d: if !((self.Target != none)) goto 0x006c
+  0038: return (obj'Core.Math'.static.Normal((self.Target.Location - self.OwnerPawn.Location)) * self.FlightAccelRate)
+  0069: goto 0x0079
+  006c: return (self.Direction * self.FlightAccelRate)
+  0079: return return
+  007f: <eos>
+
+function TnFlier.IsFlying  (script 18 bytes)
+  0000: return (self.FlightTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>

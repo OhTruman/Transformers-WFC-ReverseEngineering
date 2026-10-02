@@ -1,0 +1,90 @@
+function TnBasicAnimator.get_AnimationPlayer  (script 13 bytes)
+  0000: return self._AnimationPlayer
+  0006: return return
+  000c: <eos>
+
+function TnBasicAnimator.get_IsPlayingAnimation  (script 28 bytes)
+  0000: return self._AnimationPlayer.IsPlayingAnimation()
+  0015: return return
+  001b: <eos>
+
+function TnBasicAnimator.Initialize  (script 58 bytes)
+  0000: self._AnimationPlayer.AnimNodeName = AnimNodeName
+  0014: self._AnimationPlayer.Initialize(Mesh)
+  002c: self._Mesh = Mesh
+  0037: return nothing
+  0039: <eos>
+
+function TnBasicAnimator.Update  (script 27 bytes)
+  0000: self._AnimationPlayer.Update(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnBasicAnimator.CustomAnimationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnBasicAnimator.CustomAnimationFailed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnBasicAnimator.EnqueueReplicatedAnimation  (script 25 bytes)
+  0000: TnBasicAnimator.EnqueueAnimation(Params, CompleteCallback, FailedCallback, true)
+  0016: return nothing
+  0018: <eos>
+
+function TnBasicAnimator.EnqueueLocalAnimation  (script 25 bytes)
+  0000: TnBasicAnimator.EnqueueAnimation(Params, CompleteCallback, FailedCallback, false)
+  0016: return nothing
+  0018: <eos>
+
+function TnBasicAnimator.EnqueueAnimation  (script 43 bytes)
+  0000: self._AnimationPlayer.EnqueueAnimation(Params, CompleteCallback, FailedCallback, Replicate)
+  0028: return nothing
+  002a: <eos>
+
+function TnBasicAnimator.SetReplicateCustomAnimToOwningPlayer  (script 28 bytes)
+  0000: self._AnimationPlayer.SetReplicateCustomAnimToOwningPlayer(Replicate)
+  0019: return nothing
+  001b: <eos>
+
+function TnBasicAnimator.IsPlayingNamedAnimation  (script 32 bytes)
+  0000: return self._AnimationPlayer.IsPlayingAnimation(AnimationName)
+  0019: return return
+  001f: <eos>
+
+function TnBasicAnimator.IsPlayingMaskedAnimation  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnBasicAnimator.StopAnimation  (script 34 bytes)
+  0000: nothing
+  0001: nothing
+  0002: self._AnimationPlayer.StopAnimation(BlendOutTime, AnimationToStop)
+  001f: return nothing
+  0021: <eos>
+
+function TnBasicAnimator.GetAnimationLength  (script 49 bytes)
+  0000: if !((self._Mesh == none)) goto 0x0011
+  000b: return 0.0
+  0011: return self._Mesh.GetAnimLength(AnimationName)
+  002a: return return
+  0030: <eos>
+
+function TnBasicAnimator.GetAnimationSequence  (script 45 bytes)
+  0000: if !((self._Mesh == none)) goto 0x000d
+  000b: return none
+  000d: return self._Mesh.FindAnimSequence(AnimationName)
+  0026: return return
+  002c: <eos>
+
+function TnBasicAnimator.Suspend  (script 22 bytes)
+  0000: self._AnimationPlayer.Suspend()
+  0013: return nothing
+  0015: <eos>
+
+function TnBasicAnimator.Resume  (script 22 bytes)
+  0000: self._AnimationPlayer.Resume()
+  0013: return nothing
+  0015: <eos>

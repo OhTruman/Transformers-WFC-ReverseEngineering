@@ -1,0 +1,9 @@
+function TnKillAwardRuleFirstKillAndFirstDeath.CheckRule  (script 160 bytes)
+  0000: if !(!self.FirstKillHappened) goto 0x009d
+  000b: Killer.NotifyXpEvent(obj'TnXpEventTypeFirstKill')
+  0023: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, 5891, 0)
+  0050: Killed.NotifyXpEvent(obj'TnXpEventTypeFirstDeath')
+  0068: TnPlayerReplicationInfo(Killed.PlayerReplicationInfo).IncrementGameStat(1.0, 5892, 0)
+  0095: self.FirstKillHappened = true
+  009d: return nothing
+  009f: <eos>

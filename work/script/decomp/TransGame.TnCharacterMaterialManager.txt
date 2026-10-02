@@ -1,0 +1,95 @@
+function TnCharacterMaterialManager.Initialize  (script 84 bytes)
+  0000: self.CLOAK.Initialize(OwnerPawn)
+  0018: self.FlashBang.Initialize(OwnerPawn)
+  0030: self.Overshield.Initialize(OwnerPawn)
+  0048: self.ActiveOverrides.Length = 3
+  0051: return nothing
+  0053: <eos>
+
+function TnCharacterMaterialManager.AddMesh  (script 50 bytes)
+  0000: nothing
+  0001: MaterialOverride = TnCharacterMaterialManager.GetOverride(Type)
+  0012: MaterialOverride.AddMesh(Mesh, Materials)
+  002f: return nothing
+  0031: <eos>
+
+function TnCharacterMaterialManager.RemoveMesh  (script 44 bytes)
+  0000: MaterialOverride = TnCharacterMaterialManager.GetOverride(Type)
+  0011: MaterialOverride.RemoveMesh(Mesh)
+  0029: return nothing
+  002b: <eos>
+
+function TnCharacterMaterialManager.Start  (script 189 bytes)
+  0000: if !((self.ActiveOverrides.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: if !((cast3a(Type)[self.ActiveOverrides] != none)) goto 0x0023
+  0021: return nothing
+  0023: Index = TnCharacterMaterialManager.FindHighestPriorityOverride()
+  002f: cast3a(Type)[self.ActiveOverrides] = TnCharacterMaterialManager.GetOverride(Type)
+  0048: if !((Index > cast3a(Type))) goto 0x0090
+  0059: Index[self.ActiveOverrides].Stop()
+  0072: cast3a(Type)[self.ActiveOverrides].Start()
+  008d: goto 0x00ba
+  0090: if !((Index == -1)) goto 0x00ba
+  009f: cast3a(Type)[self.ActiveOverrides].Start()
+  00ba: return nothing
+  00bc: <eos>
+
+function TnCharacterMaterialManager.Stop  (script 196 bytes)
+  0000: if !((self.ActiveOverrides.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: if !((cast3a(Type)[self.ActiveOverrides] == none)) goto 0x0023
+  0021: return nothing
+  0023: Index = TnCharacterMaterialManager.FindHighestPriorityOverride()
+  002f: if !((Index == cast3a(Type))) goto 0x00a1
+  0040: cast3a(Type)[self.ActiveOverrides].Stop()
+  005b: cast3a(Type)[self.ActiveOverrides] = none
+  006a: Index = TnCharacterMaterialManager.FindHighestPriorityOverride()
+  0076: if !((Index != -1)) goto 0x009e
+  0085: Index[self.ActiveOverrides].Start()
+  009e: goto 0x00c1
+  00a1: if !((Index < cast3a(Type))) goto 0x00c1
+  00b2: cast3a(Type)[self.ActiveOverrides] = none
+  00c1: return nothing
+  00c3: <eos>
+
+function TnCharacterMaterialManager.Tick  (script 60 bytes)
+  0000: Index = TnCharacterMaterialManager.FindHighestPriorityOverride()
+  000c: if !((Index != -1)) goto 0x0039
+  001b: Index[self.ActiveOverrides].Tick(DeltaTime)
+  0039: return nothing
+  003b: <eos>
+
+function TnCharacterMaterialManager.GetOverride  (script 52 bytes)
+  0000: switch (Type)
+  0007: case 0: (next 0x0012)
+  000c: return self.CLOAK
+  0012: case 1: (next 0x001d)
+  0017: return self.FlashBang
+  001d: case 2: (next 0x0028)
+  0022: return self.Overshield
+  0028: default:
+  002b: return none
+  002d: return return
+  0033: <eos>
+
+function TnCharacterMaterialManager.FindHighestPriorityOverride  (script 69 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.ActiveOverrides.Length)) goto 0x0038
+  0017: if !((Index[self.ActiveOverrides] != none)) goto 0x002e
+  0028: return Index
+  002e: AddAdd_PreInt(Index)
+  0035: goto 0x0007
+  0038: return -1
+  003e: return return
+  0044: <eos>
+
+function TnCharacterMaterialManager.OnTakeDamage  (script 22 bytes)
+  0000: self.Overshield.OnTakeDamage()
+  0013: return nothing
+  0015: <eos>
+
+function TnCharacterMaterialManager.IsActive  (script 33 bytes)
+  0000: return TnCharacterMaterialManager.GetOverride(Type).IsActive()
+  001a: return return
+  0020: <eos>

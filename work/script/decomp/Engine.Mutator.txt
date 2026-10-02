@@ -1,0 +1,132 @@
+function Mutator.PreBeginPlay  (script 17 bytes)
+  0000: if !(!Mutator.MutatorIsAllowed()) goto 0x000e
+  000b: DestroyActor()
+  000e: return nothing
+  0010: <eos>
+
+function Mutator.MutatorIsAllowed  (script 29 bytes)
+  0000: return !self.WorldInfo.IsDemoBuild()
+  0016: return return
+  001c: <eos>
+
+function Mutator.Destroyed  (script 38 bytes)
+  0000: self.WorldInfo.Game.RemoveMutator(self)
+  001d: Actor.Destroyed()
+  0023: return nothing
+  0025: <eos>
+
+function Mutator.Mutate  (script 43 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0028
+  000b: self.NextMutator.Mutate(MutateString, Sender)
+  0028: return nothing
+  002a: <eos>
+
+function Mutator.ModifyLogin  (script 43 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0028
+  000b: self.NextMutator.ModifyLogin(Portal, Options)
+  0028: return nothing
+  002a: <eos>
+
+function Mutator.ModifyPlayer  (script 38 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0023
+  000b: self.NextMutator.ModifyPlayer(Other)
+  0023: return nothing
+  0025: <eos>
+
+function Mutator.AddMutator  (script 52 bytes)
+  0000: if !((self.NextMutator == none)) goto 0x0019
+  000b: self.NextMutator = M
+  0016: goto 0x0031
+  0019: self.NextMutator.AddMutator(M)
+  0031: return nothing
+  0033: <eos>
+
+function Mutator.AlwaysKeep  (script 41 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0020
+  000b: return self.NextMutator.Mutator.AlwaysKeep(Other)
+  0020: return false
+  0022: return return
+  0028: <eos>
+
+function Mutator.IsRelevant  (script 81 bytes)
+  0000: bResult = Mutator.CheckReplacement(Other)
+  0012: if !((bResult && (self.NextMutator != none))) goto 0x0043
+  0028: bResult = self.NextMutator.Mutator.IsRelevant(Other)
+  0043: return bResult
+  004a: return return
+  0050: <eos>
+
+function Mutator.CheckRelevance  (script 48 bytes)
+  0000: if !(Mutator.AlwaysKeep(Other)) goto 0x0010
+  000e: return true
+  0010: bResult = Mutator.IsRelevant(Other)
+  0022: return bResult
+  0029: return return
+  002f: <eos>
+
+function Mutator.CheckReplacement  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Mutator.GetServerDetails  (script 139 bytes)
+  0000: I = ServerState.ServerInfo.Length
+  0017: ServerState.ServerInfo.Length = (I + 1)
+  0031: I[ServerState.ServerInfo].Key = "Mutator"
+  005c: I[ServerState.ServerInfo].Value = GetHumanReadableName()
+  0088: return nothing
+  008a: <eos>
+
+function Mutator.GetServerPlayers  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Mutator.ParseChatPercVar  (script 59 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x002e
+  000b: Cmd = self.NextMutator.ParseChatPercVar(Who, Cmd)
+  002e: return Cmd
+  0034: return return
+  003a: <eos>
+
+function Mutator.NotifyLogout  (script 38 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0023
+  000b: self.NextMutator.NotifyLogout(Exiting)
+  0023: return nothing
+  0025: <eos>
+
+function Mutator.NotifyLogin  (script 38 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0023
+  000b: self.NextMutator.NotifyLogin(NewPlayer)
+  0023: return nothing
+  0025: <eos>
+
+function Mutator.DriverEnteredVehicle  (script 43 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0028
+  000b: self.NextMutator.DriverEnteredVehicle(V, P)
+  0028: return nothing
+  002a: <eos>
+
+function Mutator.CanLeaveVehicle  (script 50 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0029
+  000b: return self.NextMutator.CanLeaveVehicle(V, P)
+  0029: return true
+  002b: return return
+  0031: <eos>
+
+function Mutator.DriverLeftVehicle  (script 43 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0028
+  000b: self.NextMutator.DriverLeftVehicle(V, P)
+  0028: return nothing
+  002a: <eos>
+
+function Mutator.InitMutator  (script 43 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0028
+  000b: self.NextMutator.InitMutator(Options, ErrorMessage)
+  0028: return nothing
+  002a: <eos>
+
+function Mutator.GetSeamlessTravelActorList  (script 43 bytes)
+  0000: if !((self.NextMutator != none)) goto 0x0028
+  000b: self.NextMutator.GetSeamlessTravelActorList(TravelToURL, ActorList)
+  0028: return nothing
+  002a: <eos>

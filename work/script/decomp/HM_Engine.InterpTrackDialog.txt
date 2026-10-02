@@ -1,0 +1,44 @@
+function InterpTrackDialog.UpdateTrack  (script 426 bytes)
+  0000: if !((self.Sounds.Length <= 0)) goto 0x000e
+  000c: return nothing
+  000e: DialogInst = InterpTrackInstDialog(TrInst)
+  001e: Actor = TrInst.GetGroupActor()
+  0037: bIsPlaybackAllowed = InterpTrackDialog.IsPlaybackAllowed(Actor)
+  0049: if !((!bJump && bIsPlaybackAllowed)) goto 0x0183
+  005f: GetSoundTrackKeyAtPosition(NewPosition, Key)
+  0073: if !((NewPosition > DialogInst.LastUpdatePosition)) goto 0x0183
+  008b: StartSoundIndex = -1
+  0096: if !(((StartSoundIndex < (self.Sounds.Length - 1)) && ((StartSoundIndex + 1)[self.Sounds].Time < DialogInst.LastUpdatePosition))) goto 0x00e1
+  00d7: AddAdd_Int(StartSoundIndex)
+  00de: goto 0x0096
+  00e1: EndSoundIndex = -1
+  00ec: if !(((EndSoundIndex < (self.Sounds.Length - 1)) && ((EndSoundIndex + 1)[self.Sounds].Time < NewPosition))) goto 0x012e
+  0124: AddAdd_Int(EndSoundIndex)
+  012b: goto 0x00ec
+  012e: if !(((StartSoundIndex != EndSoundIndex) && ((NewPosition - Key.Time) <= 0.5))) goto 0x0183
+  0160: DialogInst.PlayDialog(Key.Sound)
+  0183: DialogInst.LastUpdatePosition = (bJump ? 0.0 : NewPosition)
+  01a7: return nothing
+  01a9: <eos>
+
+function InterpTrackDialog.PreviewStopPlayback  (script 147 bytes)
+  0000: GroupInst = InterpGroupInst(TrInst.get_Outer())
+  0017: Seq = SeqAct_Interp(GroupInst.get_Outer())
+  002e: DialogTrackInst = InterpTrackInstDialog(TrInst)
+  003e: if !(!Seq.bIsPlaying) goto 0x0069
+  0052: DialogTrackInst.TermTrackInst(self)
+  0066: goto 0x007c
+  0069: DialogTrackInst.StopDialog()
+  007c: DialogTrackInst.LastUpdatePosition = 0.0
+  0090: return nothing
+  0092: <eos>
+
+function InterpTrackDialog.IsPlaybackAllowed  (script 62 bytes)
+  0000: PC = PlayerController(A)
+  0010: if !((none == PC)) goto 0x001d
+  001b: return true
+  001d: if !(PC.IsLocalPlayerController()) goto 0x0035
+  0033: return true
+  0035: return false
+  0037: return return
+  003d: <eos>

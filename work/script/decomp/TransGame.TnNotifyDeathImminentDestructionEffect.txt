@@ -1,0 +1,25 @@
+function TnNotifyDeathImminentDestructionEffect.get_DeathImminentLevel  (script 13 bytes)
+  0000: return self._DeathImminentLevel
+  0006: return return
+  000c: <eos>
+
+function TnNotifyDeathImminentDestructionEffect.set_DeathImminentLevel  (script 14 bytes)
+  0000: self._DeathImminentLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnNotifyDeathImminentDestructionEffect.BeginEffect  (script 167 bytes)
+  0000: DestructibleActor = TnDestructibleActor(GetAttachingActor())
+  0015: if !((DestructibleActor == none)) goto 0x0022
+  0020: return nothing
+  0022: if !((cast3a(DestructibleActor.Role) != cast3a(3))) goto 0x003d
+  003b: return nothing
+  003d: AttachedPawn = DestructibleActor._AttachedPawn
+  0051: if !((AttachedPawn == none)) goto 0x005e
+  005c: return nothing
+  005e: AiC = TnAiController(AttachedPawn.Controller)
+  0077: if !((AiC == none)) goto 0x0084
+  0082: return nothing
+  0084: AiC.SetWorldStateInt(obj'TnAiWorldStateDeathImminent', cast3a(self._DeathImminentLevel), )
+  00a4: return nothing
+  00a6: <eos>

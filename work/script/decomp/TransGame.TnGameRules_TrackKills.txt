@@ -1,0 +1,67 @@
+function TnGameRules_TrackKills.ShouldSubtractKill  (script 20 bytes)
+  0000: return (Killer == Killed)
+  000d: return return
+  0013: <eos>
+
+function TnGameRules_TrackKills.ShouldScoreKill  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGameRules_TrackKills.ScoreKill  (script 246 bytes)
+  0000: ScoreKill(Killer, Killed, DamageType)
+  0015: if !(((Killer == none) || (Killer.PlayerReplicationInfo == none))) goto 0x0038
+  0036: return nothing
+  0038: if !(!ShouldScoreKill(Killed)) goto 0x004e
+  004c: return nothing
+  004e: Score = (TnGameRules_TrackKills.ShouldSubtractKill(Killer, Killed) ? -1 : 1)
+  006f: if !((Score > 0)) goto 0x00e3
+  007a: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).AddKills(1, DamageType, Killed)
+  00a6: KillerPC = TnPlayerController(Killer)
+  00b6: if !(((KillerPC != none) && (Killed != none))) goto 0x00e3
+  00ce: TnGameRules_TrackKills.CheckKills(Killer, Killed, DamageType)
+  00e3: TnGameRules_TrackKills.ScoreAssists(Killer, Killed)
+  00f3: return nothing
+  00f5: <eos>
+
+function TnGameRules_TrackKills.ScoreAssists  (script 358 bytes)
+  0000: KilledPC = TnPlayerController(Killed)
+  0010: if !((KilledPC == none)) goto 0x001d
+  001b: return nothing
+  001d: DamageHistory = KilledPC.GetDamageHistory()
+  0036: if !((DamageHistory == none)) goto 0x0043
+  0041: return nothing
+  0043: DamageAggregate = DamageHistory.Aggregate()
+  005c: foreach DamageAggregate(R,) (end 0x00d6)
+  006b: if !(((R.Damager != Killer) && (R.Damager != Killed))) goto 0x00d5
+  00a1: AssisterPC = TnPlayerController(R.Damager)
+  00bc: AssisterDamage = R.Damage
+  00d2: goto 0x00d6
+  00d5: iternext
+  00d6: iterpop
+  00d7: if !(((AssisterPC == none) || AssisterPC.bDeleteMe)) goto 0x00f8
+  00f6: return nothing
+  00f8: if !((KilledPC.Pawn == none)) goto 0x010e
+  010c: return nothing
+  010e: AssisterPRI = TnPlayerReplicationInfo(AssisterPC.PlayerReplicationInfo)
+  0127: AssistPct = (AssisterDamage / KilledPC.Pawn.HealthMax)
+  014b: AssisterPRI.AddAssist(AssistPct)
+  0163: return nothing
+  0165: <eos>
+
+function TnGameRules_TrackKills.CountsAsAssist  (script 33 bytes)
+  0000: if !((Damage < (MaxHealth * 0.5))) goto 0x0018
+  0016: return false
+  0018: return true
+  001a: return return
+  0020: <eos>
+
+function TnGameRules_TrackKills.CheckKills  (script 169 bytes)
+  0000: TnKiller = TnPlayerController(Killer)
+  0010: TnKilled = TnPlayerController(Killed)
+  0020: if !((((TnKiller == none) || (TnKilled == none)) || !TnGameReplicationInfo(self.WorldInfo.GRI).ShowXpEvents())) goto 0x0062
+  0060: return nothing
+  0062: self.KillStreakAnnouncer.ScoreKill(Killer, Killed, DamageType)
+  0084: self.KillAwardManager.AwardKill(TnKiller, TnKilled, DamageType)
+  00a6: return nothing
+  00a8: <eos>

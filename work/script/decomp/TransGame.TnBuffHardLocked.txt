@@ -1,0 +1,7 @@
+function TnBuffHardLocked.GetBuffState  (script 92 bytes)
+  0000: InstigatorPawn = Pawn(self.Instigator)
+  0010: if !(((InstigatorPawn != none) && (InstigatorPawn.IsDying() || InstigatorPawn.IsDead()))) goto 0x004e
+  004b: return 1
+  004e: return TnBuff.GetBuffState()
+  0055: return return
+  005b: <eos>

@@ -1,0 +1,33 @@
+function TnAnimTree.HasPreviewTransformerChanged  (script 24 bytes)
+  0000: return (PropertyName == 'PreviewTransformer')
+  0011: return return
+  0017: <eos>
+
+function TnAnimTree.OnPostEditChange  (script 34 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !(TnAnimTree.HasPreviewTransformerChanged(PropertyName)) goto 0x001f
+  0019: TnAnimTree.OnTransformerChanged()
+  001f: return nothing
+  0021: <eos>
+
+function TnAnimTree.OnTransformerChanged  (script 56 bytes)
+  0000: if !((self.PreviewTransformer == none)) goto 0x000d
+  000b: return nothing
+  000d: self.PreviewAnimSets = self.PreviewTransformer.AnimSets
+  0021: self.PreviewSkelMesh = self.PreviewTransformer.SkelMesh
+  0035: return nothing
+  0037: <eos>
+
+function TnAnimTree.HasPreviewSkelMeshChanged  (script 35 bytes)
+  0000: if !(TnAnimTree.HasPreviewTransformerChanged(PropertyName)) goto 0x0010
+  000e: return true
+  0010: return HasPreviewSkelMeshChanged(PropertyName)
+  001c: return return
+  0022: <eos>
+
+function TnAnimTree.HasPreviewAnimSetsChanged  (script 35 bytes)
+  0000: if !(TnAnimTree.HasPreviewTransformerChanged(PropertyName)) goto 0x0010
+  000e: return true
+  0010: return HasPreviewAnimSetsChanged(PropertyName)
+  001c: return return
+  0022: <eos>

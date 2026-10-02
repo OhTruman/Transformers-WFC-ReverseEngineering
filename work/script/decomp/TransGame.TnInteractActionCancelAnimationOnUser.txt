@@ -1,0 +1,12 @@
+function TnInteractActionCancelAnimationOnUser.TriggerAction  (script 176 bytes)
+  0000: TnInteractAction.TriggerAction(Interact)
+  000b: User = Interact.GetCurrentUser()
+  0024: if !((User == none)) goto 0x0056
+  002f: LogInternal("No user to cancel animation on", , , )
+  0054: return nothing
+  0056: Service = TnAnimatorService(User.GetService('TnAnimatorService'))
+  007d: if !(EqualEqual_InterfaceInterface(Service, TnAnimatorService(none))) goto 0x0093
+  0091: return nothing
+  0093: Service.StopAnimation(0.2, )
+  00ad: return nothing
+  00af: <eos>

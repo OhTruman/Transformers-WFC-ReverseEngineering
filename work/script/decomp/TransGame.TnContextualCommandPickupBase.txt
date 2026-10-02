@@ -1,0 +1,18 @@
+function TnContextualCommandPickupBase.get_PickupType  (script 13 bytes)
+  0000: return self.PickupType_
+  0006: return return
+  000c: <eos>
+
+function TnContextualCommandPickupBase.set_PickupType  (script 14 bytes)
+  0000: self.PickupType_ = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnContextualCommandPickupBase.GetLocalizedDescription  (script 133 bytes)
+  0000: if !((self.PickupType_ != none)) goto 0x0024
+  000b: WeaponName = self.PickupType_.static.StaticGetHumanReadableName()
+  0024: Strang = Localize("ContextualCommands", self.LocalizedDescription, "TransGame")
+  0058: Strung = obj'Core.Strings'.static.Repl(Strang, "`p", WeaponName, )
+  0078: return Strung
+  007e: return return
+  0084: <eos>

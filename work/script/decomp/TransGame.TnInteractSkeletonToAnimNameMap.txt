@@ -1,0 +1,14 @@
+function TnInteractSkeletonToAnimNameMap.FindAnimation  (script 224 bytes)
+  0000: if !(((User == none) && (self.Mapping.Length > 0))) goto 0x002c
+  0019: return 0[self.Mapping].Animation
+  002c: UserSkeleton = User.GetInteractSkeletonType()
+  0045: foreach self.Mapping(entry,) (end 0x0081)
+  0054: if !((entry.SkeletonType == UserSkeleton)) goto 0x0080
+  006e: iterpop
+  006f: return entry.Animation
+  0080: iternext
+  0081: iterpop
+  0082: LogInternal(("Error: Could not find animation name mapping to skeleton type" @ cast56(UserSkeleton)), , , )
+  00cf: return 'None'
+  00d9: return return
+  00df: <eos>

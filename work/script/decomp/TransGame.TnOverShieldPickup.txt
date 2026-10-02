@@ -1,0 +1,27 @@
+function TnOverShieldPickup.GivenTo  (script 37 bytes)
+  0000: nothing
+  0001: ThisPawn.HealDamage(1.0, none, obj'TnHealTypeOverShieldPickup')
+  001f: DestroyActor()
+  0022: return nothing
+  0024: <eos>
+
+function TnOverShieldPickup.TryDroppedPickupFirstSpawn  (script 38 bytes)
+  0000: return Spawn(SpawnedPickupClass, , , StartLocation, StartRotation, , true, )
+  001f: return return
+  0025: <eos>
+
+function TnOverShieldPickup.AnnouncePickup  (script 75 bytes)
+  0000: AnnouncePickup(Other)
+  000b: TnWorldInfo(Other.WorldInfo)._DialogEventManager.Play(TnPawn(Other), self.PickupObtainedDialog, , , , )
+  0048: return nothing
+  004a: <eos>
+
+function TnOverShieldPickup.PickupAllowed  (script 100 bytes)
+  0000: PlayerPawn = TnPlayerPawn(Pickuper)
+  0010: if !(((PlayerPawn == none) || (PlayerPawn._SegmentedHealth == none))) goto 0x0033
+  0031: return false
+  0033: if !((PlayerPawn._SegmentedHealth.get_NormalizedOverShieldHealth() == 1.0)) goto 0x005b
+  0059: return false
+  005b: return true
+  005d: return return
+  0063: <eos>

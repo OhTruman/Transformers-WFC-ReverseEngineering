@@ -1,0 +1,10 @@
+function PhysicalMaterial.GetPhysicalMaterialProperty  (script 93 bytes)
+  0000: if !(((self.PhysicalMaterialProperty != none) && ClassIsChildOf(self.PhysicalMaterialProperty.get_Class(), DesiredClass))) goto 0x002d
+  0024: return self.PhysicalMaterialProperty
+  002a: goto 0x0056
+  002d: if !((self.Parent != none)) goto 0x0054
+  0038: return self.Parent.GetPhysicalMaterialProperty(DesiredClass)
+  0051: goto 0x0056
+  0054: return none
+  0056: return return
+  005c: <eos>

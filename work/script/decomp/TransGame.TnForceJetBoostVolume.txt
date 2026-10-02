@@ -1,0 +1,17 @@
+function TnForceJetBoostVolume.Touch  (script 75 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: P = TnPawn(Other)
+  002a: if !((P == none)) goto 0x0037
+  0035: return nothing
+  0037: P._ForceJetBoostInput = true
+  0048: return nothing
+  004a: <eos>
+
+function TnForceJetBoostVolume.UnTouch  (script 60 bytes)
+  0000: UnTouch(Other)
+  000b: P = TnPawn(Other)
+  001b: if !((P == none)) goto 0x0028
+  0026: return nothing
+  0028: P._ForceJetBoostInput = false
+  0039: return nothing
+  003b: <eos>

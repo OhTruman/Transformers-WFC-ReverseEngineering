@@ -1,0 +1,47 @@
+function TnAiActionPlayEMPReaction.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionPlayEMPReactionBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionPlayEMPReaction.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._BuffService = TnBuffService(GetService('TnBuffService', 2))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionPlayEMPReaction.OnSetUpConditions  (script 61 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateTurret') == 1)) goto 0x0025
+  0023: return false
+  0025: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0036: return return
+  003c: <eos>
+
+function TnAiActionPlayEMPReaction.OnStart  (script 119 bytes)
+  0000: self._TransformerController.StopMovement()
+  0013: SetCharacterState(1)
+  001e: self._BuffService.AddBuff(obj'TnBuffEmpGrenadeAiRobot', 0, self._TransformerPawn)
+  003d: self._BuffService.AddBuff(obj'TnBuffEmpGrenadeAiVehicle', 0, self._TransformerPawn)
+  005c: self._HasFinishedBuff = false
+  0064: return OnStart(ExpectedEffects)
+  0070: return return
+  0076: <eos>
+
+function TnAiActionPlayEMPReaction.OnUpdate  (script 174 bytes)
+  0000: if !(self._HasFinishedBuff) goto 0x002f
+  0009: (self._CooldownDuration -= DeltaTime)
+  0015: if !((self._CooldownDuration <= 0.0)) goto 0x002f
+  0024: return Succeed()
+  002f: if !(((!self._HasFinishedBuff && !self._BuffService.HasBuff(obj'TnBuffEmpGrenadeAiRobot')) && !self._BuffService.HasBuff(obj'TnBuffEmpGrenadeAiVehicle'))) goto 0x0096
+  007a: self._HasFinishedBuff = true
+  0082: self._CooldownDuration = self._Blueprint.CooldownDuration
+  0096: return OnUpdate(ExpectedEffects, DeltaTime)
+  00a7: return return
+  00ad: <eos>
+
+function TnAiActionPlayEMPReaction.OnFinish  (script 62 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x003b
+  001b: get_CurrentWorldState().SetIntValue(obj'TnAiWorldStateReaction', 11, )
+  003b: return nothing
+  003d: <eos>

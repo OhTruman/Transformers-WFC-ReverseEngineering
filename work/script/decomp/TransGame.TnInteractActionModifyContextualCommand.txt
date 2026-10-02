@@ -1,0 +1,18 @@
+function TnInteractActionModifyContextualCommand.TriggerAction  (script 181 bytes)
+  0000: if !((Interact.GetCurrentUser() == none)) goto 0x001b
+  0019: return nothing
+  001b: PC = TnPlayerController(Interact.GetCurrentUser().Controller)
+  0042: if !((PC == none)) goto 0x004f
+  004d: return nothing
+  004f: if !(self.AddCommand) goto 0x0091
+  0058: Command = CreateCommand()
+  006d: PC.ContextualCommander.RegisterContextualCommand(Command)
+  008e: goto 0x00b2
+  0091: PC.ContextualCommander.UnregisterContextualCommand(self.CommandClass)
+  00b2: return nothing
+  00b4: <eos>
+
+function TnInteractActionModifyContextualCommand.CreateCommand  (script 22 bytes)
+  0000: return new(nothing, nothing, self.CommandClass, nothing, DeltaTime)
+  000f: return return
+  0015: <eos>

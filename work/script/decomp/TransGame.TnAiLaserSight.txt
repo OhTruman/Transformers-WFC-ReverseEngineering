@@ -1,0 +1,81 @@
+function TnAiLaserSight.get_SightHitLocation  (script 13 bytes)
+  0000: return self._SightHitLocation
+  0006: return return
+  000c: <eos>
+
+function TnAiLaserSight.Initialize  (script 158 bytes)
+  0000: self._TransformerPawn = inPawn
+  000b: self._LaserInfo.Spread = Spread
+  0021: self._LaserInfo.DepthHalfRange = DepthHalfRange
+  0037: self._LaserInfo.HorizontalDepthRange = HorizontalDepthRange
+  004d: self._LaserInfo.LerpTime = LerpTime
+  0063: self._SightTargetLerper.SetRampTime(LerpTime)
+  007b: self._SightSpreadLerper.SetRampTime(LerpTime)
+  0093: self._Initialized = true
+  009b: return nothing
+  009d: <eos>
+
+function TnAiLaserSight.Start  (script 233 bytes)
+  0000: self._LaserInfo.LaserSightStart = SightTarget
+  0016: StartingPosition = ((self._SightTargetLerper.GetValue() == vect(0,0,0)) ? SightTarget : self._SightTargetLerper.GetValue())
+  005b: StartingSpread = ((self._SightSpreadLerper.GetValue() == cast3f(0)) ? self._LaserInfo.Spread : self._SightSpreadLerper.GetValue())
+  00a1: self._SightTargetLerper.Initialize(StartingPosition, SightTarget)
+  00be: self._SightSpreadLerper.Initialize(StartingSpread, self._LaserInfo.Spread)
+  00e6: return nothing
+  00e8: <eos>
+
+function TnAiLaserSight.SetSightTarget  (script 135 bytes)
+  0000: self._SightTargetLerper.ChangeEndVector(SightTarget)
+  0018: if !((self._TransformerPawn != none)) goto 0x003e
+  0023: self._TransformerPawn.ServerUpdateLaserSightTarget(SightTarget)
+  003b: goto 0x0084
+  003e: LogInternal(("ERROR: EngineTeam - _TransformerPawn was none in " $ cast57(GetFuncName())), , , )
+  0084: return nothing
+  0086: <eos>
+
+function TnAiLaserSight.Update  (script 505 bytes)
+  0000: if !(!self._Initialized) goto 0x000d
+  000b: return nothing
+  000d: self._SightTargetLerper.Update(DeltaTime)
+  0025: self._SightSpreadLerper.Update(DeltaTime)
+  003d: TraceStart = self._TransformerPawn.GetLaserSightStart()
+  0056: DesiredEnd = (self._SightTargetLerper.GetValue() + TnAiLaserSight.GetSightWave())
+  0077: Direction = obj'Core.Math'.static.Normal((DesiredEnd - TraceStart))
+  0094: TraceEnd = (DesiredEnd + (Direction * cast3f(10000)))
+  00af: (self._Spin += (cast3f(200) * DeltaTime))
+  00c1: DirRotation = cast50(Direction)
+  00ce: DirRotation.Roll = cast44((self._Spin * 182.0444489))
+  00ed: obj'Core.Math'.static.GetAxes(DirRotation, XAxis, YAxis, ZAxis)
+  010c: if !(((cast39(self._TransformerPawn.Rotation) dot Direction) > 0.7)) goto 0x0148
+  012d: self._TransformerPawn.StartLaserSight(self._LaserInfo)
+  0145: goto 0x015b
+  0148: self._TransformerPawn.StopLaserSight()
+  015b: TnAiLaserSight.UpdateBeam(0, (TraceEnd + ((ZAxis * self._SightSpreadLerper.GetValue()) * cast3f(2))), TraceStart)
+  018e: TnAiLaserSight.UpdateBeam(1, (TraceEnd + (YAxis * -self._SightSpreadLerper.GetValue())), TraceStart)
+  01bd: TnAiLaserSight.UpdateBeam(2, (TraceEnd + (YAxis * self._SightSpreadLerper.GetValue())), TraceStart)
+  01eb: self._SightHitLocation = TraceEnd
+  01f6: return nothing
+  01f8: <eos>
+
+function TnAiLaserSight.UpdateBeam  (script 119 bytes)
+  0000: HitActor = self._TransformerPawn.Trace(HitLocation, HitNormal, none, TraceEnd, TraceStart, , , , , )
+  002c: if !((HitActor == none)) goto 0x0057
+  0037: self._TransformerPawn.UpdateLaserSightEndPoint(Index, TraceEnd)
+  0054: goto 0x0074
+  0057: self._TransformerPawn.UpdateLaserSightEndPoint(Index, HitLocation)
+  0074: return nothing
+  0076: <eos>
+
+function TnAiLaserSight.Stop  (script 33 bytes)
+  0000: if !((self._TransformerPawn != none)) goto 0x001e
+  000b: self._TransformerPawn.StopLaserSight()
+  001e: return nothing
+  0020: <eos>
+
+function TnAiLaserSight.GetSightWave  (script 150 bytes)
+  0000: Time = self._TransformerPawn.WorldInfo.TimeSeconds
+  001d: WaveOffset.Y = (obj'Core.Math'.static.Cos(Time) * self._LaserInfo.HorizontalDepthRange)
+  0050: WaveOffset.X = (obj'Core.Math'.static.Sin((Time * cast3f(2))) * self._LaserInfo.DepthHalfRange)
+  0089: return WaveOffset
+  008f: return return
+  0095: <eos>

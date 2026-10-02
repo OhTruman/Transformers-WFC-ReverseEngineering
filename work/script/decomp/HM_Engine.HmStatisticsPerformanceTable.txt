@@ -1,0 +1,34 @@
+function HmStatisticsPerformanceTable.PopulateNativeStats  (script 7 bytes)
+  0000: sample
+  0005: nothing
+  0006: <eos>
+
+function HmStatisticsPerformanceTable.StatisticsSupported  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmStatisticsPerformanceTable.TurnOnCycleCounters  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmStatisticsPerformanceTable.sample  (script 499 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(!HmStatisticsPerformanceTable.StatisticsSupported()) goto 0x001a
+  0018: return nothing
+  001a: sample.Session_Id = Game.StatisticsSessionId
+  0039: sample.LocationX = Sampler.Location.X
+  0063: sample.LocationY = Sampler.Location.Y
+  008d: sample.LocationZ = Sampler.Location.Z
+  00b7: sample.Yaw = (0.0054932 * cast3f(Sampler.Rotation.Yaw))
+  00ea: sample.WorldTime = Sampler.WorldInfo.TimeSeconds
+  0112: if !((Sampler.WorldInfo.CurrentStreamingState != none)) goto 0x0162
+  012f: sample.StreamingState = cast57(Sampler.WorldInfo.CurrentStreamingState.Name)
+  0162: CM = CheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  018e: CP = CM.GetActiveCheckpoint()
+  01a7: if !((CP != none)) goto 0x01d3
+  01b2: sample.ActiveCheckpoint = cast57(CP.Tag)
+  01d3: HmStatisticsPerformanceTable.PopulateNativeStats(sample)
+  01de: self.Samples.Length[self.Samples] = sample
+  01f0: return nothing
+  01f2: <eos>

@@ -1,0 +1,8 @@
+function TnHudDataObserverWeaponMessage.CheckData  (script 138 bytes)
+  0000: if !(((PC.Pawn != none) && (TnWeapon(PC.Pawn.Weapon) != none))) goto 0x006b
+  0038: WeaponText = TnWeapon(PC.Pawn.Weapon).GetHudMessage()
+  0068: goto 0x0073
+  006b: WeaponText = ""
+  0073: ProcessNewValue(Movie, WeaponText)
+  0087: return nothing
+  0089: <eos>

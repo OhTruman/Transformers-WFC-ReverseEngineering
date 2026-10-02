@@ -1,0 +1,13 @@
+function TnVehicleBlockController.StartTimedBlock  (script 25 bytes)
+  0000: self.BlockTimer = SecondsToBlock
+  000b: SetBlocking(true)
+  0016: return nothing
+  0018: <eos>
+
+function TnVehicleBlockController.UpdateChildren  (script 54 bytes)
+  0000: if !(IsBlocking()) goto 0x0033
+  000d: (self.BlockTimer -= DeltaTime)
+  0019: if !((self.BlockTimer <= 0.0)) goto 0x0033
+  0028: SetBlocking(false)
+  0033: return nothing
+  0035: <eos>

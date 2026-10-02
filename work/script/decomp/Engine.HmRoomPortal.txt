@@ -1,0 +1,61 @@
+function HmRoomPortal.GetRoomVolume1  (script 13 bytes)
+  0000: return self.RoomVolume1
+  0006: return return
+  000c: <eos>
+
+function HmRoomPortal.GetRoomVolume2  (script 13 bytes)
+  0000: return self.RoomVolume2
+  0006: return return
+  000c: <eos>
+
+function HmRoomPortal.IsConnectedToTwoRoomVolumes  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmRoomPortal.IsValid  (script 138 bytes)
+  0000: WorldExtents = GetWorldExtents()
+  0010: WorldSizeSquared = ((WorldExtents.X * WorldExtents.X) + (WorldExtents.Y * WorldExtents.Y))
+  005c: return ((WorldSizeSquared >= 0.0001) && ((self.RoomVolume1 != none) || (self.RoomVolume2 != none)))
+  0083: return return
+  0089: <eos>
+
+function HmRoomPortal.CheckForErrors  (script 284 bytes)
+  0000: CheckForErrors()
+  0006: if !(((self.RoomVolume1 == none) && (self.RoomVolume2 == none))) goto 0x008c
+  001e: EmitCheckMessage(0, (cast56(self) @ "has no associated room volumes because it is not flush with the surface of a room volume!"), , )
+  008c: WorldExtents = GetWorldExtents()
+  009c: WorldSizeSquared = ((WorldExtents.X * WorldExtents.X) + (WorldExtents.Y * WorldExtents.Y))
+  00e8: if !((WorldSizeSquared < 0.0001)) goto 0x0119
+  00f7: EmitCheckMessage(0, (cast56(self) @ "is too small!"), , )
+  0119: return nothing
+  011b: <eos>
+
+function HmRoomPortal.OnStreamedOut  (script 12 bytes)
+  0000: Actor.OnStreamedOut()
+  0006: DestroyActor()
+  0009: return nothing
+  000b: <eos>
+
+function HmRoomPortal.GetWorldPosition  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmRoomPortal.GetWorldExtents  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmRoomPortal.GetWorldPlane  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmRoomPortal.GetWorldQuad  (script 22 bytes)
+  0000: P1
+  0005: P2
+  000a: P3
+  000f: P4
+  0014: nothing
+  0015: <eos>
+
+function HmRoomPortal.GetWorldBoundingBox  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

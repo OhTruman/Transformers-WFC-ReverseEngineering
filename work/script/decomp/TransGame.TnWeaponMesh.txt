@@ -1,0 +1,288 @@
+function TnWeaponMesh.set_ReferenceBoneName  (script 14 bytes)
+  0000: self._ReferenceBoneName = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponMesh.get_Location  (script 74 bytes)
+  0000: SMC = GetAnimatedMeshComponent()
+  0010: if !((SMC == none)) goto 0x0029
+  001b: return vect(0,0,0)
+  0029: return SMC.GetBoneLocation(self._ReferenceBoneName, 0)
+  0043: return return
+  0049: <eos>
+
+function TnWeaponMesh.get_Rotation  (script 93 bytes)
+  0000: SMC = GetAnimatedMeshComponent()
+  0010: if !((SMC == none)) goto 0x0029
+  001b: return rot(0,0,0)
+  0029: return obj'Core.Math'.static.QuatToRotator(SMC.GetBoneQuaternion(self._ReferenceBoneName, 0))
+  0056: return return
+  005c: <eos>
+
+function TnWeaponMesh.IsFiringSecondaryWeapon  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnWeaponMesh.Attach  (script 181 bytes)
+  0000: Attach(NewWeaponOwner, MeshCpnt, SocketName)
+  0015: if !((self.AnimatedMesh != none)) goto 0x0034
+  0020: TnWeaponMesh.SetupPhysics(self.AnimatedMesh.Mesh)
+  0034: TnWeaponMesh.ApplyCharacterColorsToWeapon(NewWeaponOwner)
+  003f: TnWeaponMesh.AddToCharacterMaterials()
+  0045: if !((self.IdleAnimation != 'None')) goto 0x00b2
+  0058: Node = AnimNodeSequence(GetAnimatedMeshComponent().FindAnimNode('Idle'))
+  0084: Node.SetAnim(self.IdleAnimation)
+  009c: Node.PlayAnim(true, , )
+  00b2: return nothing
+  00b4: <eos>
+
+function TnWeaponMesh.Detach  (script 15 bytes)
+  0000: TnWeaponMesh.RemoveFromCharacterMaterials()
+  0006: Detach()
+  000c: return nothing
+  000e: <eos>
+
+function TnWeaponMesh.AddToCharacterMaterials  (script 203 bytes)
+  0000: if !(((self.AnimatedMesh == none) || (self.AnimatedMesh.Mesh == none))) goto 0x0023
+  0021: return nothing
+  0023: CharacterMaterialService = TnWeaponMesh.GetCharacterMaterialService()
+  002f: if !(EqualEqual_InterfaceInterface(CharacterMaterialService, TnCharacterMaterialService(none))) goto 0x0045
+  0043: return nothing
+  0045: CharacterMaterialService.AddMesh(0, self.AnimatedMesh.Mesh, )
+  006a: if !((self.BuffMaterials.Length > 0)) goto 0x00c8
+  0076: CharacterMaterialService.AddMesh(1, self.AnimatedMesh.Mesh, self.BuffMaterials)
+  009f: CharacterMaterialService.AddMesh(2, self.AnimatedMesh.Mesh, self.BuffMaterials)
+  00c8: return nothing
+  00ca: <eos>
+
+function TnWeaponMesh.RemoveFromCharacterMaterials  (script 192 bytes)
+  0000: if !(((self.AnimatedMesh == none) || (self.AnimatedMesh.Mesh == none))) goto 0x0023
+  0021: return nothing
+  0023: CharacterMaterialService = TnWeaponMesh.GetCharacterMaterialService()
+  002f: if !(EqualEqual_InterfaceInterface(CharacterMaterialService, TnCharacterMaterialService(none))) goto 0x0045
+  0043: return nothing
+  0045: CharacterMaterialService.RemoveMesh(0, self.AnimatedMesh.Mesh)
+  0069: if !((self.BuffMaterials.Length > 0)) goto 0x00bd
+  0075: CharacterMaterialService.RemoveMesh(1, self.AnimatedMesh.Mesh)
+  0099: CharacterMaterialService.RemoveMesh(2, self.AnimatedMesh.Mesh)
+  00bd: return nothing
+  00bf: <eos>
+
+function TnWeaponMesh.GetCharacterMaterialService  (script 70 bytes)
+  0000: TnWeaponOwner = TnPawn(self.WeaponOwner)
+  0010: if !((TnWeaponOwner == none)) goto 0x001d
+  001b: return none
+  001d: return TnCharacterMaterialService(TnWeaponOwner.GetService('TnCharacterMaterialService'))
+  003f: return return
+  0045: <eos>
+
+function TnWeaponMesh.SetupPhysics  (script 59 bytes)
+  0000: if !((Mesh.PhysicsAsset == none)) goto 0x0016
+  0014: return nothing
+  0016: Mesh.SetPhysicsAsset(Mesh.PhysicsAsset, )
+  0038: return nothing
+  003a: <eos>
+
+function TnWeaponMesh.ApplyCharacterColorsToWeapon  (script 156 bytes)
+  0000: P = TnPawn(NewWeaponOwner)
+  0010: if !((P == none)) goto 0x001d
+  001b: return nothing
+  001d: self.MuzzleFlashLight.SetLightProperties(, P.get_EnergonColor(), )
+  0045: SMC = GetAnimatedMeshComponent()
+  0055: if !((SMC == none)) goto 0x0062
+  0060: return nothing
+  0062: if !((P._CharacterApplier == none)) goto 0x0078
+  0076: return nothing
+  0078: P._CharacterApplier.ApplyColorsToMesh(SMC)
+  0099: return nothing
+  009b: <eos>
+
+function TnWeaponMesh.SetWeaponGlow  (script 149 bytes)
+  0000: SetMaterialParameter(0, WeaponHeat)
+  0011: Index = 0
+  0018: if !((Index < self.WeaponEventSounds.Length)) goto 0x0092
+  0028: if !(((none != Index[self.WeaponEventSounds].WeaponAudioComponent) && (none != self.WeaponGlowSoundParameter))) goto 0x0088
+  0051: Index[self.WeaponEventSounds].WeaponAudioComponent.SetFloatParameter(self.WeaponGlowSoundParameter.Name, WeaponHeat)
+  0088: AddAdd_Int(Index)
+  008f: goto 0x0018
+  0092: return nothing
+  0094: <eos>
+
+function TnWeaponMesh.GetCurrentSpineWeaponRecoil  (script 13 bytes)
+  0000: return self.SpineRecoil
+  0006: return return
+  000c: <eos>
+
+function TnWeaponMesh.GetCurrentWeaponRecoil  (script 13 bytes)
+  0000: return self.RightHandRecoil
+  0006: return return
+  000c: <eos>
+
+function TnWeaponMesh.GetImpactDecalTemplate  (script 168 bytes)
+  0000: if !((Impact.HitInfo.PhysMaterial != none)) goto 0x0050
+  0021: MaterialProperty = TnPhysicalMaterialProperty(Impact.HitInfo.PhysMaterial.PhysicalMaterialProperty)
+  0050: if !((none != MaterialProperty)) goto 0x0079
+  005b: dt = MaterialProperty.GetWeaponSpecificDecal(self.WeaponEffectsType)
+  0079: if !((dt.Material != none)) goto 0x0095
+  008f: return dt
+  0095: return GetImpactDecalTemplate(Impact)
+  00a1: return return
+  00a7: <eos>
+
+function TnWeaponMesh.GetImpactSquibTemplate  (script 148 bytes)
+  0000: if !((none != PMaterial)) goto 0x0081
+  000b: MaterialProperty = TnPhysicalMaterialProperty(PMaterial.PhysicalMaterialProperty)
+  0024: if !((MaterialProperty != none)) goto 0x005e
+  002f: SquibSystem = MaterialProperty.GetWeaponSpecificEffect(self.WeaponEffectsType)
+  004d: if !((SquibSystem != none)) goto 0x005e
+  0058: return SquibSystem
+  005e: if !((PMaterial.ImpactEffect != none)) goto 0x0081
+  0072: return PMaterial.ImpactEffect
+  0081: return GetImpactSquibTemplate(PMaterial)
+  008d: return return
+  0093: <eos>
+
+function TnWeaponMesh.GetImpactSound  (script 236 bytes)
+  0000: if !((none != Impact.HitInfo.PhysMaterial)) goto 0x00d9
+  0021: MaterialProperty = TnPhysicalMaterialProperty(Impact.HitInfo.PhysMaterial.PhysicalMaterialProperty)
+  0050: if !((none != MaterialProperty)) goto 0x008a
+  005b: SC = MaterialProperty.GetWeaponSpecificImpactSound(self.WeaponEffectsType)
+  0079: if !((none != SC)) goto 0x008a
+  0084: return SC
+  008a: if !((none != Impact.HitInfo.PhysMaterial.ImpactSound)) goto 0x00d9
+  00b4: return Impact.HitInfo.PhysMaterial.ImpactSound
+  00d9: return GetImpactSound(Impact)
+  00e5: return return
+  00eb: <eos>
+
+function TnWeaponMesh.SetMaterialParameter  (script 57 bytes)
+  0000: ParameterName = TnWeaponMesh.FindMaterialParameter(Type)
+  0011: if !((ParameterName == 'None')) goto 0x0026
+  0024: return nothing
+  0026: TnWeaponMesh.SetMaterialScalarParameter(ParameterName, Value)
+  0036: return nothing
+  0038: <eos>
+
+function TnWeaponMesh.SetMaterialScalarParameter  (script 61 bytes)
+  0000: Mesh = GetAnimatedMeshComponent()
+  0010: if !((Mesh == none)) goto 0x001d
+  001b: return nothing
+  001d: Mesh.SetScalarParam(ParameterName, Value)
+  003a: return nothing
+  003c: <eos>
+
+function TnWeaponMesh.FindMaterialParameter  (script 109 bytes)
+  0000: I = 0
+  0007: if !((I < self.MaterialParameterModifiers.Length)) goto 0x005c
+  0017: if !((cast3a(I[self.MaterialParameterModifiers].Type) == cast3a(Type))) goto 0x0052
+  003b: return I[self.MaterialParameterModifiers].ParameterName
+  0052: AddAdd_PreInt(I)
+  0059: goto 0x0007
+  005c: return 'None'
+  0066: return return
+  006c: <eos>
+
+function TnWeaponMesh.SetMaterialParameterName  (script 100 bytes)
+  0000: I = 0
+  0007: if !((I < self.MaterialParameterModifiers.Length)) goto 0x0061
+  0017: if !((cast3a(I[self.MaterialParameterModifiers].Type) == cast3a(Type))) goto 0x0057
+  003b: I[self.MaterialParameterModifiers].ParameterName = ParameterName
+  0057: AddAdd_PreInt(I)
+  005e: goto 0x0007
+  0061: return nothing
+  0063: <eos>
+
+function TnWeaponMesh.SetDefrag  (script 76 bytes)
+  0000: if !(((self.AnimatedMesh == none) || (self.AnimatedMesh.Mesh == none))) goto 0x0023
+  0021: return nothing
+  0023: self.AnimatedMesh.Mesh.SetScalarParam(self.DefragShaderParamName, Value)
+  0049: return nothing
+  004b: <eos>
+
+function TnWeaponMesh.GetValidPickupMesh  (script 170 bytes)
+  0000: SkeletalPickup = SkeletalMeshComponent(self.PickupMesh)
+  0010: if !(((SkeletalPickup != none) && (SkeletalPickup.SkeletalMesh == none))) goto 0x0033
+  0031: return none
+  0033: StaticPickup = StaticMeshComponent(self.PickupMesh)
+  0043: if !(((StaticPickup != none) && (StaticPickup.StaticMesh == none))) goto 0x0066
+  0064: return none
+  0066: if !((self.PickupMaterialOverride != none)) goto 0x009d
+  0071: self.PickupMesh.ClearMaterials()
+  0084: self.PickupMesh.SetMaterial(0, self.PickupMaterialOverride)
+  009d: return self.PickupMesh
+  00a3: return return
+  00a9: <eos>
+
+function TnWeaponMesh.SetHolstered  (script 45 bytes)
+  0000: self._HolsterTimer.Start(delegate.HideWeapon, PlayEvent(7, ), )
+  002a: return nothing
+  002c: <eos>
+
+function TnWeaponMesh.HideWeapon  (script 14 bytes)
+  0000: SetHidden(true)
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponMesh.SetUnholstered  (script 46 bytes)
+  0000: SetHidden(false)
+  000b: self._HolsterTimer.Clear()
+  001e: PlayEvent(6, )
+  002b: return nothing
+  002d: <eos>
+
+function TnWeaponMesh.IncreaseHeat  (script 21 bytes)
+  0000: TnWeaponMesh.SetHeat((self.CurrentHeat + self.HeatPerShot))
+  0012: return nothing
+  0014: <eos>
+
+function TnWeaponMesh.ResetHeat  (script 14 bytes)
+  0000: TnWeaponMesh.SetHeat(0.0)
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponMesh.Tick  (script 76 bytes)
+  0000: if !((self.HeatCooldownTime > cast3f(0))) goto 0x0026
+  000d: TnWeaponMesh.SetHeat((self.CurrentHeat - (DeltaTime / self.HeatCooldownTime)))
+  0026: self._HolsterTimer.Tick(DeltaTime)
+  003e: Tick(DeltaTime)
+  0049: return nothing
+  004b: <eos>
+
+function TnWeaponMesh.SetHeat  (script 81 bytes)
+  0000: PreviousOverheat = self.CurrentHeat
+  000b: self.CurrentHeat = obj'Core.Math'.static.FClamp(Value, 0.0, 1.0)
+  002b: if !((self.CurrentHeat != PreviousOverheat)) goto 0x004e
+  003a: TnWeaponMesh.SetMaterialScalarParameter('Overheat', self.CurrentHeat)
+  004e: return nothing
+  0050: <eos>
+
+function TnWeaponMesh.GetPlayRate  (script 46 bytes)
+  0000: if !((cast3a(AnimEvent) == cast3a(4))) goto 0x001b
+  0010: return GetReloadSpeed()
+  001b: return GetPlayRate(AnimEvent)
+  0027: return return
+  002d: <eos>
+
+function TnWeaponMesh.GetReloadSpeed  (script 108 bytes)
+  0000: P = TnPawn(self.WeaponOwner)
+  0010: if !((((P != none) && P.HasSkill(obj'TnSkillFastReload')) && (obj'TnSkillFastReload'.static.default.ReloadSpeed > cast3f(0)))) goto 0x005f
+  0050: return obj'TnSkillFastReload'.static.default.ReloadSpeed
+  005f: return 1.0
+  0065: return return
+  006b: <eos>
+
+function TnWeaponMesh.CheckForErrors  (script 540 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.IdleAnimation != 'None')) goto 0x014e
+  0019: if !(((self.AnimatedMesh == none) || (self.AnimatedMesh.Mesh == none))) goto 0x007d
+  003a: EmitCheckMessage(0, "Idle animations require a mesh with an anim tree", , )
+  007a: goto 0x014e
+  007d: if !((self.AnimatedMesh.Mesh.AnimTreeTemplate == none)) goto 0x00d1
+  009a: EmitCheckMessage(0, "Idle animations require an anim tree", , )
+  00ce: goto 0x014e
+  00d1: if !((AnimNodeSequence(self.AnimatedMesh.Mesh.AnimTreeTemplate.FindAnimNode('Idle')) == none)) goto 0x014e
+  010a: EmitCheckMessage(0, "Idle animations require a sequence node named 'Idle'", , )
+  014e: if !(((((self.AnimatedMesh != none) && (self.AnimatedMesh.Mesh != none)) && (self.AnimatedMesh.Mesh.AnimTreeTemplate != none)) && (AnimNodeSlot(self.AnimatedMesh.Mesh.AnimTreeTemplate.FindAnimNode('Custom')) == none))) goto 0x0219
+  01c9: EmitCheckMessage(1, "Did you want animation blending? Add a slot node named 'Custom'.", , )
+  0219: return nothing
+  021b: <eos>

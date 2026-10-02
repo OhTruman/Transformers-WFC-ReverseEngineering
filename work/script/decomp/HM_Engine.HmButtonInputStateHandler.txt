@@ -1,0 +1,55 @@
+function HmButtonInputStateHandler.OnButtonEvent  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmButtonInputStateHandler.Initialize  (script 28 bytes)
+  0000: self.__OnButtonEvent__Delegate = ButtonEventDelegate
+  000b: GotoState('Released', , , )
+  0019: return nothing
+  001b: <eos>
+
+function HmButtonInputStateHandler.SetButtonEventDelegate  (script 14 bytes)
+  0000: self.__OnButtonEvent__Delegate = ButtonEventDelegate
+  000b: return nothing
+  000d: <eos>
+
+function HmButtonInputStateHandler.OnPress  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmButtonInputStateHandler.OnRelease  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmButtonInputStateHandler.Update  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmButtonInputStateHandler.Released.OnPress  (script 34 bytes)
+  0000: OnButtonEvent(1)
+  0011: GotoState('Pressed', , , )
+  001f: return nothing
+  0021: <eos>
+
+function HmButtonInputStateHandler.Pressed.BeginState  (script 22 bytes)
+  0000: self.CurrentPressedTime = 0.0
+  000b: self.ButtonTimedOut = false
+  0013: return nothing
+  0015: <eos>
+
+function HmButtonInputStateHandler.Pressed.Update  (script 68 bytes)
+  0000: (self.CurrentPressedTime += DeltaTime)
+  000c: if !((!self.ButtonTimedOut && (self.CurrentPressedTime >= self.ButtonTimeOut))) goto 0x0041
+  0028: OnButtonEvent(3)
+  0039: self.ButtonTimedOut = true
+  0041: return nothing
+  0043: <eos>
+
+function HmButtonInputStateHandler.Pressed.OnRelease  (script 65 bytes)
+  0000: if !(!self.ButtonTimedOut) goto 0x001f
+  000b: OnButtonEvent(2)
+  001c: goto 0x0030
+  001f: OnButtonEvent(4)
+  0030: GotoState('Released', , , )
+  003e: return nothing
+  0040: <eos>

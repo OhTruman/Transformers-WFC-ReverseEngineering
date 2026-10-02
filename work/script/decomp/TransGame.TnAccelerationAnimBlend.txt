@@ -1,0 +1,54 @@
+function TnAccelerationAnimBlend.Tick  (script 205 bytes)
+  0000: if !((DeltaTime <= cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: if !((self.SkelComponent == none)) goto 0x001c
+  001a: return nothing
+  001c: Owner = self.SkelComponent.Owner
+  0030: if !((Owner == none)) goto 0x003d
+  003b: return nothing
+  003d: (Weights += TnAccelerationAnimBlend.CalculateLinearVelocityWeights(Owner, DeltaTime))
+  0054: (Weights *= obj'Core.Math'.static.FMax(0.0, (vect(0,0,1) >> Owner.Rotation).Z))
+  0094: TnAccelerationAnimBlend.SetWeights(Weights.X, Weights.Y, Weights.Z)
+  00ca: return nothing
+  00cc: <eos>
+
+function TnAccelerationAnimBlend.SliderMove  (script 156 bytes)
+  0000: SliderIdx[self.Sliders].Position = NewValue
+  001c: Values = obj'Core.Math'.static.ClampLength(obj'Core.Math'.static.MakeVector(TnAccelerationAnimBlend.CalculateSliderValue(0), TnAccelerationAnimBlend.CalculateSliderValue(1), TnAccelerationAnimBlend.CalculateSliderValue(2)), 1.0)
+  0063: TnAccelerationAnimBlend.SetWeights(Values.X, Values.Y, Values.Z)
+  0099: return nothing
+  009b: <eos>
+
+function TnAccelerationAnimBlend.CalculateLinearVelocityWeights  (script 81 bytes)
+  0000: LocalVelocity = (obj'Core.Math'.static.ClampLength(Owner.Velocity, self.MaxVelocity) << Owner.Rotation)
+  003d: return (LocalVelocity / self.MaxVelocity)
+  004a: return return
+  0050: <eos>
+
+function TnAccelerationAnimBlend.SetWeights  (script 780 bytes)
+  0000: Motion = obj'Core.Math'.static.ClampLength(obj'Core.Math'.static.MakeVector(ForwardBackward, RightLeft, UpDown), 1.0)
+  0040: Length = obj'Core.Math'.static.VSize(Motion)
+  0056: if !((Length < 0.0001)) goto 0x0114
+  0065: 0[self.Children].Weight = 1.0
+  007d: 1[self.Children].Weight = 0.0
+  0095: 2[self.Children].Weight = 0.0
+  00ae: 3[self.Children].Weight = 0.0
+  00c7: 4[self.Children].Weight = 0.0
+  00e0: 5[self.Children].Weight = 0.0
+  00f9: 6[self.Children].Weight = 0.0
+  0112: return nothing
+  0114: Weights = (((obj'Core.Math'.static.MakeVector(obj'Core.Math'.static.Sign(Motion.X), obj'Core.Math'.static.Sign(Motion.Y), obj'Core.Math'.static.Sign(Motion.Z)) * Motion) * Motion) / Length)
+  01ad: 0[self.Children].Weight = (1.0 - Length)
+  01cc: 1[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, Weights.X)
+  01ff: 2[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, -Weights.X)
+  0235: 3[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, Weights.Y)
+  0269: 4[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, -Weights.Y)
+  029f: 5[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, Weights.Z)
+  02d3: 6[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, -Weights.Z)
+  0309: return nothing
+  030b: <eos>
+
+function TnAccelerationAnimBlend.CalculateSliderValue  (script 44 bytes)
+  0000: return ((Index[self.Sliders].Position - 0.5) * 2.0)
+  0025: return return
+  002b: <eos>

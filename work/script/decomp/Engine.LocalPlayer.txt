@@ -1,0 +1,136 @@
+function LocalPlayer.get_CurrentStorageDeviceId  (script 13 bytes)
+  0000: return self._CurrentStorageDeviceId
+  0006: return return
+  000c: <eos>
+
+function LocalPlayer.set_CurrentStorageDeviceId  (script 24 bytes)
+  0000: self._CurrentStorageDeviceId = Value
+  000b: OnStorageDeviceChange()
+  0015: return nothing
+  0017: <eos>
+
+function LocalPlayer.OnStorageDeviceChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function LocalPlayer.SpawnPlayActor  (script 12 bytes)
+  0000: URL
+  0005: OutError
+  000a: nothing
+  000b: <eos>
+
+function LocalPlayer.SendSplitJoin  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function LocalPlayer.GetActorVisibility  (script 7 bytes)
+  0000: TestActor
+  0005: nothing
+  0006: <eos>
+
+function LocalPlayer.OverridePostProcessSettings  (script 33 bytes)
+  0000: self.PostProcessSettingsOverride = OverrideSettings
+  000b: self.bOverridePostProcessSettings = true
+  0013: self.PPSettingsOverrideStartBlend = StartBlendTime
+  001e: return nothing
+  0020: <eos>
+
+function LocalPlayer.UpdateOverridePostProcessSettings  (script 14 bytes)
+  0000: self.PostProcessSettingsOverride = OverrideSettings
+  000b: return nothing
+  000d: <eos>
+
+function LocalPlayer.ClearPostProcessSettingsOverride  (script 11 bytes)
+  0000: self.bOverridePostProcessSettings = false
+  0008: return nothing
+  000a: <eos>
+
+function LocalPlayer.SetControllerId  (script 260 bytes)
+  0000: if !((self.ControllerId != NewControllerId)) goto 0x00f7
+  000f: LogInternal(((((cast57(self.Name) @ "changing ControllerId from") @ cast53(self.ControllerId)) @ "to") @ cast53(NewControllerId)), 'PlayerManagement', , )
+  0059: if !((self.Actor != none)) goto 0x0077
+  0064: self.Actor.PreControllerIdChange()
+  0077: CurrentControllerId = self.ControllerId
+  0082: self.ControllerId = -1
+  008d: OtherPlayer = self.ViewportClient.FindPlayerByControllerId(NewControllerId)
+  00ab: if !((OtherPlayer != none)) goto 0x00ce
+  00b6: OtherPlayer.SetControllerId(CurrentControllerId)
+  00ce: self.ControllerId = NewControllerId
+  00d9: if !((self.Actor != none)) goto 0x00f7
+  00e4: self.Actor.PostControllerIdChange()
+  00f7: OnNewControllerId()
+  0101: return nothing
+  0103: <eos>
+
+function LocalPlayer.HasAssignedController  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function LocalPlayer.OnNewControllerId  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function LocalPlayer.AddPostProcessChain  (script 27 bytes)
+  0000: self.PlayerPostProcess.AddPostProcessChain(Chain)
+  0018: return nothing
+  001a: <eos>
+
+function LocalPlayer.RemovePostProcessChain  (script 27 bytes)
+  0000: self.PlayerPostProcess.RemovePostProcessChain(Chain)
+  0018: return nothing
+  001a: <eos>
+
+function LocalPlayer.HasPostProcessChain  (script 32 bytes)
+  0000: return self.PlayerPostProcess.HasPostProcessChain(Chain)
+  0019: return return
+  001f: <eos>
+
+function LocalPlayer.AddPostProcessEffect  (script 27 bytes)
+  0000: self.PlayerPostProcess.AddPostProcessEffect(Effect)
+  0018: return nothing
+  001a: <eos>
+
+function LocalPlayer.AddPostProcessEffectToFront  (script 27 bytes)
+  0000: self.PlayerPostProcess.AddPostProcessEffectToFront(Effect)
+  0018: return nothing
+  001a: <eos>
+
+function LocalPlayer.RemovePostProcessEffect  (script 27 bytes)
+  0000: self.PlayerPostProcess.RemovePostProcessEffect(Effect)
+  0018: return nothing
+  001a: <eos>
+
+function LocalPlayer.InsertPostProcessingChain  (script 17 bytes)
+  0000: InChain
+  0005: InIndex
+  000a: bInClone
+  000f: nothing
+  0010: <eos>
+
+function LocalPlayer.RemovePostProcessingChain  (script 7 bytes)
+  0000: InIndex
+  0005: nothing
+  0006: <eos>
+
+function LocalPlayer.RemoveAllPostProcessingChains  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function LocalPlayer.GetPostProcessChain  (script 7 bytes)
+  0000: InIndex
+  0005: nothing
+  0006: <eos>
+
+function LocalPlayer.TouchPlayerPostProcessChain  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function LocalPlayer.CancelMatinee  (script 7 bytes)
+  0000: InitialNoSkipTime
+  0005: nothing
+  0006: <eos>
+
+function LocalPlayer.NotifyGameSessionEnded  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

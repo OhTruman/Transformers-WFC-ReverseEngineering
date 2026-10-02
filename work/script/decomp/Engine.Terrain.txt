@@ -1,0 +1,18 @@
+function Terrain.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Terrain.CalcLayerBounds  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Terrain.PostBeginPlay  (script 106 bytes)
+  0000: Terrain.CalcLayerBounds()
+  0006: I = 0
+  000d: if !((I < self.Layers.Length)) goto 0x0067
+  001d: if !((I[self.Layers].Setup != none)) goto 0x005d
+  0039: I[self.Layers].Setup.PostBeginPlay()
+  005d: AddAdd_Int(I)
+  0064: goto 0x000d
+  0067: return nothing
+  0069: <eos>

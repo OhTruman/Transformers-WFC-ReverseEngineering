@@ -1,0 +1,38 @@
+function CrowdAgent.Destroyed  (script 15 bytes)
+  0000: Actor.Destroyed()
+  0006: CrowdAgent.PlayDeathFX()
+  000c: return nothing
+  000e: <eos>
+
+function CrowdAgent.PlayDeath  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function CrowdAgent.PlayDeathFX  (script 80 bytes)
+  0000: if !(((self.DeathEffect == none) || (self.Health > 0))) goto 0x001a
+  0018: return nothing
+  001a: self.WorldInfo.GetEmitterPool().SpawnEmitter(self.DeathEffect, self.Location, self.Rotation, , , )
+  004d: return nothing
+  004f: <eos>
+
+function CrowdAgent.TakeDamage  (script 42 bytes)
+  0000: nothing
+  0001: nothing
+  0002: (self.Health -= cast44(DamageAmount))
+  0010: if !((self.Health <= 0)) goto 0x0027
+  001b: CrowdAgent.PlayDeath()
+  0021: SetCollision(false, false, false)
+  0027: return nothing
+  0029: <eos>
+
+function CrowdAgent.OverlappedActorEvent  (script 46 bytes)
+  0000: TakeDamage(cast3f(self.Health), none, self.Location, vect(0,0,0), obj'DamageType', , )
+  002b: return nothing
+  002d: <eos>
+
+function CrowdAgent.ScriptGetTeamNum  (script 71 bytes)
+  0000: if !(((self.Spawner != none) && (self.Spawner.Team != none))) goto 0x003b
+  0021: return cast3d(self.Spawner.Team.static.default.TeamIndex)
+  003b: return cast3d(255)
+  0040: return return
+  0046: <eos>

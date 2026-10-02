@@ -1,0 +1,17 @@
+function HmSoundDestructionEffectFactory.GetEffectDescription  (script 38 bytes)
+  0000: return ((self.Cue == none) ? "" : PathName(self.Cue))
+  001f: return return
+  0025: <eos>
+
+function HmSoundDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmSoundDestructionEffectFactory.DoCreateInstance  (script 79 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmSoundDestructionEffect', nothing, AttachTreeCallback)
+  0018: Effect._Cue = self.Cue
+  002c: Effect._TerminateSoundOnExitState = self.TerminateSoundOnExitState
+  0042: return Effect
+  0048: return return
+  004e: <eos>

@@ -1,0 +1,27 @@
+function SeqAct_LoadMap.BuildLoadingMovieURLOptions  (script 195 bytes)
+  0000: if !((obj'Core.Strings'.static.Len(self.LoadingMovieFileName) > 0)) goto 0x00b9
+  0016: return ((("?LoadingMovie=" $ self.LoadingMovieFileName) $ (self.bIsSkippable ? "?LoadingMovieSkipAllowed" : "?LoadingMovieSkipDisallowed")) $ (self.bPreload ? "?LoadingMovieLoadPreloaded" : "?LoadingMovieLoadStreamed"))
+  00b6: goto 0x00bc
+  00b9: return ""
+  00bc: return return
+  00c2: <eos>
+
+function SeqAct_LoadMap.GetMapURL  (script 13 bytes)
+  0000: return self.MapBaseLayerFileName
+  0006: return return
+  000c: <eos>
+
+function SeqAct_LoadMap.BuildURL  (script 26 bytes)
+  0000: return (GetMapURL() $ SeqAct_LoadMap.BuildLoadingMovieURLOptions())
+  0013: return return
+  0019: <eos>
+
+function SeqAct_LoadMap.Activated  (script 152 bytes)
+  0000: WI = GetWorldInfo()
+  0010: if !(((WI.Game != none) && (WI.Game.GetNumPlayers() > 1))) goto 0x005f
+  0048: OpenCmd = "servertravel"
+  005c: goto 0x006b
+  005f: OpenCmd = "open"
+  006b: WI.ConsoleCommand((OpenCmd @ BuildURL()), )
+  0095: return nothing
+  0097: <eos>

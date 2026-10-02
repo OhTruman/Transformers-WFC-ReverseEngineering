@@ -1,0 +1,14 @@
+function TnAbilitySpawnProjectile.ServerTriggerAbility  (script 267 bytes)
+  0000: if !((self.OwnerPawn.Controller == none)) goto 0x0016
+  0014: return nothing
+  0016: if !(((self.ImprovedProjectileSkill != none) && self.OwnerPawn.HasSkill(self.ImprovedProjectileSkill))) goto 0x004c
+  003e: ProjectileTypeToSpawn = self.ImprovedProjectileType
+  0049: goto 0x0057
+  004c: ProjectileTypeToSpawn = self.ProjectileType
+  0057: ThrowLoc = self.OwnerPawn.Mesh.GetSocketWorldLocation(self.SpawnSocket)
+  007e: Proj = self.OwnerPawn.Spawn(ProjectileTypeToSpawn, self.OwnerPawn, , (ThrowLoc + (self.SpawnLocationOffset >> self.OwnerPawn.Rotation)), , , , )
+  00c3: if !((Proj != none)) goto 0x0102
+  00ce: Proj.Init(cast39((self.OwnerPawn.Controller.Rotation + self.SpawnRotationOffset)))
+  0102: TnAbility.ServerTriggerAbility()
+  0108: return nothing
+  010a: <eos>

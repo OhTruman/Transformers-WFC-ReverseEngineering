@@ -1,0 +1,66 @@
+function HmDestructionEffect.BeginEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDestructionEffect.EndEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDestructionEffect.NotifyHit  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function HmDestructionEffect.NotifyRadiusHit  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function HmDestructionEffect.DrawDebugDisplay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDestructionEffect.SendActorSpawnEvent  (script 90 bytes)
+  0000: Observer = HmDestructionObserver(GetAttachingActor())
+  0015: if !(EqualEqual_InterfaceInterface(Observer, HmDestructionObserver(none))) goto 0x002b
+  0029: return nothing
+  002b: Observer.OnActorSpawn(self.Owner.GetHandle(), SpawnedActor)
+  0057: return nothing
+  0059: <eos>
+
+function HmDestructionEffect.SetOwner  (script 14 bytes)
+  0000: self.Owner = Owner_
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructionEffect.SetEffectToPieceTransform  (script 14 bytes)
+  0000: self.EffectToPieceTransform = EffectToPieceTransform_
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructionEffect.GetOwner  (script 13 bytes)
+  0000: return self.Owner
+  0006: return return
+  000c: <eos>
+
+function HmDestructionEffect.GetAttachingActor  (script 27 bytes)
+  0000: return self.Owner.GetAttachingActor()
+  0014: return return
+  001a: <eos>
+
+function HmDestructionEffect.GetEffectToPieceTransform  (script 13 bytes)
+  0000: return self.EffectToPieceTransform
+  0006: return return
+  000c: <eos>
+
+function HmDestructionEffect.GetEffectToActorTransform  (script 51 bytes)
+  0000: return obj'Core.Math'.static.CombineTransforms(self.EffectToPieceTransform, self.Owner.GetPieceToActorTransform())
+  002c: return return
+  0032: <eos>
+
+function HmDestructionEffect.GetEffectToWorldTransform  (script 100 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: return obj'Core.Math'.static.CombineTransforms(GetEffectToActorTransform(), obj'Core.Math'.static.MakeAffineTransform(AttachingActor.Rotation, AttachingActor.Location))
+  005d: return return
+  0063: <eos>

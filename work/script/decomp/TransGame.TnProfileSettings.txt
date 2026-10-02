@@ -1,0 +1,380 @@
+function TnProfileSettings.OnKeyArchiveReadComplete  (script 34 bytes)
+  0000: OnKeyArchiveReadComplete(bWasSuccessful)
+  000c: self.ChallengeManager.Initialize()
+  001f: return nothing
+  0021: <eos>
+
+function TnProfileSettings.OnSetToDefaults  (script 28 bytes)
+  0000: OnSetToDefaults()
+  0006: self.ChallengeManager.Initialize()
+  0019: return nothing
+  001b: <eos>
+
+function TnProfileSettings.OnInitialReadSystemProfileComplete  (script 98 bytes)
+  0000: OnInitialReadSystemProfileComplete()
+  0006: GetProfileSettingValueBool(2, Value)
+  0017: SetInvertY_Robot((Value != 0))
+  0029: SetInvertY_Car((Value != 0))
+  003b: SetInvertY_Tank((Value != 0))
+  004d: SetInvertY_Plane((Value != 0))
+  005f: return nothing
+  0061: <eos>
+
+function TnProfileSettings.GetIconicCharacter  (script 128 bytes)
+  0000: Characters = obj'TnProfileSettings'.static.default.PresetIconicCharacters
+  0014: foreach Characters(PresetCharacter,) (end 0x0067)
+  0023: if !(((PresetCharacter.Data.CharacterName == CharacterName) && TnProfileSettings.CanUsePresetCharacter(PresetCharacter))) goto 0x0066
+  0056: iterpop
+  0057: return PresetCharacter.Data
+  0066: iternext
+  0067: iterpop
+  0068: EmptyData = EmptyData
+  0073: return EmptyData
+  0079: return return
+  007f: <eos>
+
+function TnProfileSettings.CanUsePresetCharacter  (script 101 bytes)
+  0000: return ((!PresetCharacter.PlayInEditorOnly || obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor()) || obj'Engine.Engine'.static.GetCurrentWorldInfo().IsInEditor())
+  005e: return return
+  0064: <eos>
+
+function TnProfileSettings.GetAllIconicCharacterNames  (script 103 bytes)
+  0000: Characters = obj'TnProfileSettings'.static.default.PresetIconicCharacters
+  0014: foreach Characters(PresetCharacter,) (end 0x0059)
+  0023: if !(!TnProfileSettings.CanUsePresetCharacter(PresetCharacter)) goto 0x0037
+  0033: iternext
+  0034: goto 0x0059
+  0037: IconicCharacters.AddItem(PresetCharacter.Data.CharacterName)
+  0058: iternext
+  0059: iterpop
+  005a: return IconicCharacters
+  0060: return return
+  0066: <eos>
+
+function TnProfileSettings.FindIconicCharacter  (script 117 bytes)
+  0000: Characters = obj'TnProfileSettings'.static.default.PresetIconicCharacters
+  0014: foreach Characters(PCD,) (end 0x0067)
+  0023: if !(((PCD.Data.CharacterName == CharacterName) && TnProfileSettings.CanUsePresetCharacter(PCD))) goto 0x0066
+  0056: iterpop
+  0057: return PCD.Data
+  0066: iternext
+  0067: iterpop
+  0068: return EmptyCD
+  006e: return return
+  0074: <eos>
+
+function TnProfileSettings.GetCameraSensitivity  (script 20 bytes)
+  0000: return GetNormalizedPropertyValue(40)
+  000d: return return
+  0013: <eos>
+
+function TnProfileSettings.GetInvertY_Robot  (script 33 bytes)
+  0000: GetProfileSettingValueBool(41, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetInvertY_Robot  (script 21 bytes)
+  0000: SetProfileSettingValueBool(41, Value)
+  0012: return nothing
+  0014: <eos>
+
+function TnProfileSettings.GetInvertY_Car  (script 33 bytes)
+  0000: GetProfileSettingValueBool(42, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetInvertY_Car  (script 21 bytes)
+  0000: SetProfileSettingValueBool(42, Value)
+  0012: return nothing
+  0014: <eos>
+
+function TnProfileSettings.GetInvertY_Tank  (script 33 bytes)
+  0000: GetProfileSettingValueBool(43, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetInvertY_Tank  (script 21 bytes)
+  0000: SetProfileSettingValueBool(43, Value)
+  0012: return nothing
+  0014: <eos>
+
+function TnProfileSettings.GetInvertY_Plane  (script 33 bytes)
+  0000: GetProfileSettingValueBool(44, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetInvertY_Plane  (script 21 bytes)
+  0000: SetProfileSettingValueBool(44, Value)
+  0012: return nothing
+  0014: <eos>
+
+function TnProfileSettings.GetSwitchRightThumbstickAndB  (script 33 bytes)
+  0000: GetProfileSettingValueBool(45, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.GetUseAlternateControlScheme  (script 33 bytes)
+  0000: GetProfileSettingValueBool(46, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.GetAchievementCounter  (script 245 bytes)
+  0000: MappingIndex = self.AchievementMappings.Find('Achievement',Achievement)
+  001c: if !((MappingIndex == -1)) goto 0x006e
+  002b: LogInternal(("Error: Missing a profile mapping for achievement " $ cast52(Achievement)), , , )
+  006c: return 0
+  006e: ProfileId = MappingIndex[self.AchievementMappings].ProfileCounterId
+  008a: if !(!GetProfileSettingValueInt(ProfileId, Value)) goto 0x00e8
+  00a3: LogInternal(("Error: GetProfileSettingValueInt failed for ProfileId" @ cast53(ProfileId)), , , )
+  00e8: return Value
+  00ee: return return
+  00f4: <eos>
+
+function TnProfileSettings.IncrementAchievementCounter  (script 351 bytes)
+  0000: MappingIndex = self.AchievementMappings.Find('Achievement',Achievement)
+  001c: if !((MappingIndex == -1)) goto 0x006e
+  002b: LogInternal(("Error: Missing a profile mapping for achievement " $ cast52(Achievement)), , , )
+  006c: return 0
+  006e: ProfileId = MappingIndex[self.AchievementMappings].ProfileCounterId
+  008a: if !(!GetProfileSettingValueInt(ProfileId, NewValue)) goto 0x00e8
+  00a3: LogInternal(("Error: GetProfileSettingValueInt failed for ProfileId" @ cast53(ProfileId)), , , )
+  00e8: (NewValue += Amount)
+  00f4: if !(!SetProfileSettingValueInt(ProfileId, NewValue)) goto 0x0152
+  010d: LogInternal(("Error: SetProfileSettingValueInt failed for ProfileId" @ cast53(ProfileId)), , , )
+  0152: return NewValue
+  0158: return return
+  015e: <eos>
+
+function TnProfileSettings.SetBitNumberOnSetting  (script 221 bytes)
+  0000: MappingIndex = self.AchievementMappings.Find('Achievement',Achievement)
+  001c: if !((MappingIndex == -1)) goto 0x002d
+  002b: return 0
+  002d: SettingId = MappingIndex[self.AchievementMappings].ProfileCounterId
+  0049: GetProfileSettingValueInt(SettingId, Current)
+  005d: Current = (Current | cast44((cast3f(2) ** cast3f(BitNumber))))
+  0079: SetProfileSettingValueInt(SettingId, Current)
+  008d: I = 0
+  0094: if !((I < RequiredBits)) goto 0x00d0
+  00a3: if !(((Current & cast44((cast3f(2) ** cast3f(I)))) != 0)) goto 0x00c6
+  00bf: AddAdd_PreInt(Total)
+  00c6: AddAdd_PreInt(I)
+  00cd: goto 0x0094
+  00d0: return Total
+  00d6: return return
+  00dc: <eos>
+
+function TnProfileSettings.IsBitNumberSetOnSetting  (script 126 bytes)
+  0000: MappingIndex = self.AchievementMappings.Find('Achievement',Achievement)
+  001c: if !((MappingIndex == -1)) goto 0x002d
+  002b: return false
+  002d: SettingId = MappingIndex[self.AchievementMappings].ProfileCounterId
+  0049: GetProfileSettingValueInt(SettingId, Current)
+  005d: return ((Current & cast44((cast3f(2) ** cast3f(BitNumber)))) != 0)
+  0077: return return
+  007d: <eos>
+
+function TnProfileSettings.GetNextCampaignMapId  (script 290 bytes)
+  0000: if !((PreviousId == -1)) goto 0x0017
+  000f: return 0[self.DecepticonCampaignMapOrder]
+  0017: Index = self.DecepticonCampaignMapOrder.Find(PreviousId)
+  002a: if !((Index == -1)) goto 0x0054
+  0039: Index = self.AutobotCampaignMapOrder.Find(PreviousId)
+  004c: UsingAutobots = true
+  0054: if !((Index == -1)) goto 0x00cc
+  0063: LogInternal((("ERROR: Failed to find map (" $ cast53(PreviousId)) $ ") in the progression list.  Failed to update profile"), , , )
+  00c6: return PreviousId
+  00cc: Index = cast44((cast3f((Index + 1)) % cast3f((UsingAutobots ? self.AutobotCampaignMapOrder.Length : self.DecepticonCampaignMapOrder.Length))))
+  00f9: return (UsingAutobots ? Index[self.AutobotCampaignMapOrder] : Index[self.DecepticonCampaignMapOrder])
+  011b: return return
+  0121: <eos>
+
+function TnProfileSettings.CompleteMission  (script 195 bytes)
+  0000: SetProfileSettingValueBool(MapId, true)
+  0010: GetProfileSettingValueInt((MapId + 32), CurrentDifficulty)
+  0028: if !((Difficulty > CurrentDifficulty)) goto 0x004f
+  0037: SetProfileSettingValueInt((MapId + 32), Difficulty)
+  004f: NextMapId = TnProfileSettings.GetNextCampaignMapId(MapId)
+  0060: if !((NextMapId != -1)) goto 0x007f
+  006f: SetProfileSettingValueBool(NextMapId, true)
+  007f: FactionCheckpointProfileId = ((self.AutobotCampaignMapOrder.Find(MapId) == -1) ? 56 : 55)
+  00a2: SetProfileSettingValueInt(FactionCheckpointProfileId, GetNextAvailableCampaignMap(MapId))
+  00c0: return nothing
+  00c2: <eos>
+
+function TnProfileSettings.CheckForLevelCompletionAchievements  (script 462 bytes)
+  0000: HighestDifficulty = 3
+  0008: foreach self.AutobotCampaignMapOrder(MapId,) (end 0x0059)
+  0017: GetProfileSettingValueInt((MapId + 32), Difficulty)
+  002f: HighestDifficulty = obj'Core.Math'.static.Min(HighestDifficulty, Difficulty)
+  004a: if !((HighestDifficulty < 0)) goto 0x0058
+  0055: goto 0x0059
+  0058: iternext
+  0059: iterpop
+  005a: if !((HighestDifficulty >= 0)) goto 0x00d1
+  0065: AutobotComplete = true
+  006d: I = (11 + HighestDifficulty)
+  007c: if !((I >= 11)) goto 0x00aa
+  0088: PC.ClientUnlockAchievement(I)
+  00a0: SubtractSubtract_PreInt(I)
+  00a7: goto 0x007c
+  00aa: TnLocalPlayer(PC.Player).UnlockChassis("Car5")
+  00d1: HighestDifficulty = 3
+  00d9: foreach self.DecepticonCampaignMapOrder(MapId,) (end 0x012a)
+  00e8: GetProfileSettingValueInt((MapId + 32), Difficulty)
+  0100: HighestDifficulty = obj'Core.Math'.static.Min(HighestDifficulty, Difficulty)
+  011b: if !((HighestDifficulty < 0)) goto 0x0129
+  0126: goto 0x012a
+  0129: iternext
+  012a: iterpop
+  012b: if !((HighestDifficulty >= 0)) goto 0x01a2
+  0136: DecepticonComplete = true
+  013e: I = (24 + HighestDifficulty)
+  014d: if !((I >= 24)) goto 0x017b
+  0159: PC.ClientUnlockAchievement(I)
+  0171: SubtractSubtract_PreInt(I)
+  0178: goto 0x014d
+  017b: TnLocalPlayer(PC.Player).UnlockChassis("Jet8")
+  01a2: if !((AutobotComplete && DecepticonComplete)) goto 0x01cb
+  01b6: PC.ClientUnlockAchievement(27)
+  01cb: return nothing
+  01cd: <eos>
+
+function TnProfileSettings.GetNextAvailableCampaignMap  (script 88 bytes)
+  0000: NextMapId = TnProfileSettings.GetNextCampaignMapId(PreviousMapId)
+  0011: if !((PreviousMapId == -1)) goto 0x0026
+  0020: return NextMapId
+  0026: GetProfileSettingValueBool(NextMapId, IsAvailable)
+  003a: if !((IsAvailable == 0)) goto 0x004b
+  0045: return PreviousMapId
+  004b: return NextMapId
+  0051: return return
+  0057: <eos>
+
+function TnProfileSettings.ReachedCheckpoint  (script 128 bytes)
+  0000: CheckpointProperty = (MapId + 16)
+  000f: GetProfileSettingValueInt(CheckpointProperty, CurrentValue)
+  0023: if !((CurrentValue < CheckpointIndex)) goto 0x0046
+  0032: SetProfileSettingValueInt(CheckpointProperty, CheckpointIndex)
+  0046: FactionCheckpointProfileId = ((self.AutobotCampaignMapOrder.Find(MapId) == -1) ? 56 : 55)
+  0069: SetProfileSettingValueInt(FactionCheckpointProfileId, -1)
+  007d: return nothing
+  007f: <eos>
+
+function TnProfileSettings.GetCheckpointMissionComplete  (script 45 bytes)
+  0000: GetProfileSettingValueInt(((FactionIndex == 0) ? 55 : 56), Value)
+  0020: return Value
+  0026: return return
+  002c: <eos>
+
+function TnProfileSettings.HasShownTutorialMessage  (script 53 bytes)
+  0000: PropertyId = (60 + cast3a(MessageType))
+  0011: GetProfileSettingValueBool(PropertyId, HasShown)
+  0025: return (HasShown != 0)
+  002e: return return
+  0034: <eos>
+
+function TnProfileSettings.MarkTutorialMessageAsShown  (script 36 bytes)
+  0000: PropertyId = (60 + cast3a(MessageType))
+  0011: SetProfileSettingValueBool(PropertyId, true)
+  0021: return nothing
+  0023: <eos>
+
+function TnProfileSettings.HasShownAutobotCampaignComplete  (script 33 bytes)
+  0000: GetProfileSettingValueBool(50, HasShown)
+  0011: return (HasShown != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.HasShownDecepticonCampaignComplete  (script 33 bytes)
+  0000: GetProfileSettingValueBool(51, HasShown)
+  0011: return (HasShown != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.HasCompletedAutobotCampaign  (script 19 bytes)
+  0000: return TnProfileSettings.IsCampaignComplete(self.AutobotCampaignMapOrder)
+  000c: return return
+  0012: <eos>
+
+function TnProfileSettings.HasCompletedDecepticonCampaign  (script 19 bytes)
+  0000: return TnProfileSettings.IsCampaignComplete(self.DecepticonCampaignMapOrder)
+  000c: return return
+  0012: <eos>
+
+function TnProfileSettings.IsCampaignComplete  (script 64 bytes)
+  0000: foreach CampaignMapIds(MapId,) (end 0x0036)
+  000f: GetProfileSettingValueInt((MapId + 32), Difficulty)
+  0027: if !((Difficulty < 0)) goto 0x0035
+  0032: iterpop
+  0033: return false
+  0035: iternext
+  0036: iterpop
+  0037: return true
+  0039: return return
+  003f: <eos>
+
+function TnProfileSettings.SetHasShownAutobotCampaignComplete  (script 16 bytes)
+  0000: SetProfileSettingValueBool(50, true)
+  000d: return nothing
+  000f: <eos>
+
+function TnProfileSettings.SetHasShownDecepticonCampaignComplete  (script 16 bytes)
+  0000: SetProfileSettingValueBool(51, true)
+  000d: return nothing
+  000f: <eos>
+
+function TnProfileSettings.HasShownPlayCPFirstWarning  (script 33 bytes)
+  0000: GetProfileSettingValueBool(47, HasShown)
+  0011: return (HasShown != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetHasShownPlayCPFirstWarning  (script 16 bytes)
+  0000: SetProfileSettingValueBool(47, true)
+  000d: return nothing
+  000f: <eos>
+
+function TnProfileSettings.HasShownTutorialWarning  (script 33 bytes)
+  0000: GetProfileSettingValueBool(53, HasShown)
+  0011: return (HasShown != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetHasShownTutorialWarning  (script 16 bytes)
+  0000: SetProfileSettingValueBool(53, true)
+  000d: return nothing
+  000f: <eos>
+
+function TnProfileSettings.HasUploadedHardwareData  (script 33 bytes)
+  0000: GetProfileSettingValueBool(54, HasShown)
+  0011: return (HasShown != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetHasUploadedHardwareData  (script 16 bytes)
+  0000: SetProfileSettingValueBool(54, true)
+  000d: return nothing
+  000f: <eos>
+
+function TnProfileSettings.UseAllRegionMatchmaking  (script 33 bytes)
+  0000: GetProfileSettingValueBool(52, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.HasBootedGame  (script 33 bytes)
+  0000: GetProfileSettingValueBool(68, HasBooted)
+  0011: return (HasBooted != 0)
+  001a: return return
+  0020: <eos>
+
+function TnProfileSettings.SetHasBootedGame  (script 16 bytes)
+  0000: SetProfileSettingValueBool(68, true)
+  000d: return nothing
+  000f: <eos>

@@ -1,0 +1,24 @@
+function UIDataProvider_OnlinePlayers.OnRegister  (script 464 bytes)
+  0000: if !((InPlayer == none)) goto 0x007e
+  000b: WarnInternal((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "No player available (probably running in editor). Cannot register data provider."))
+  007c: return nothing
+  007e: UIDataProvider_OnlinePlayerDataBase.OnRegister(InPlayer)
+  0089: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  00a2: if !((self.Player != none)) goto 0x01cd
+  00ad: if !((OnlineSub != none)) goto 0x0167
+  00b8: PlayerInterface = OnlineSub.PlayerInterface
+  00cc: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00e3
+  00e0: goto 0x0164
+  00e3: WarnInternal((("OnlineSubsystem does not support the player interface. Can't retrieve recent players list for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  0164: goto 0x01cd
+  0167: WarnInternal((("No OnlineSubsystem present. Can't retrieve recent players list for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  01cd: return nothing
+  01cf: <eos>
+
+function UIDataProvider_OnlinePlayers.OnPlayersReadComplete  (script 79 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x004c
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x004c
+  004c: return nothing
+  004e: <eos>

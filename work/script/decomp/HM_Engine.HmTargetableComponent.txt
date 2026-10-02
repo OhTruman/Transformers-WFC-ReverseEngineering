@@ -1,0 +1,111 @@
+function HmTargetableComponent.CheckForAttachmentErrors  (script 362 bytes)
+  0000: if !((self.SMC == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(AtType) == cast3a(1))) goto 0x00bb
+  001d: if !((self.SMC.MatchRefBone(AtName) == -1)) goto 0x00bb
+  003f: LogInternal(((("Error: Targeting is broken.  Targetable Component Attachment Bone" @ cast57(AtName)) @ "could not be found on") @ cast56(self.SMC.SkeletalMesh)), , , )
+  00bb: if !((cast3a(AtType) == cast3a(2))) goto 0x0167
+  00cb: if !((self.SMC.GetSocketByName(AtName) == none)) goto 0x0167
+  00e9: LogInternal(((("Error: Targeting is broken.  Targetable Component Attachment Socket" @ cast57(AtName)) @ "could not be found on") @ cast56(self.SMC.SkeletalMesh)), , , )
+  0167: return nothing
+  0169: <eos>
+
+function HmTargetableComponent.Attached  (script 39 bytes)
+  0000: self.SMC = GetOwnerSkeletalMeshComponent()
+  0010: CheckForAttachmentErrors(self.AttachmentType, self.AttachmentName)
+  0024: return nothing
+  0026: <eos>
+
+function HmTargetableComponent.GetOwnerSkeletalMeshComponent  (script 45 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return none
+  000d: return self.Owner.FindActorComponent(obj'Engine.SkeletalMeshComponent')
+  0026: return return
+  002c: <eos>
+
+function HmTargetableComponent.GetFromActor  (script 45 bytes)
+  0000: if !((Source == none)) goto 0x000d
+  000b: return none
+  000d: return Source.FindActorComponent(obj'HmTargetableComponent')
+  0026: return return
+  002c: <eos>
+
+function HmTargetableComponent.UpdateTransform  (script 17 bytes)
+  0000: UpdateTransform()
+  0006: self.bCacheDirty = true
+  000e: return nothing
+  0010: <eos>
+
+function HmTargetableComponent.GetAttachedLocation  (script 319 bytes)
+  0000: if !((self.Owner == none)) goto 0x0019
+  000b: return vect(0,0,0)
+  0019: if !(!self.bCacheDirty) goto 0x002a
+  0024: return self._CachedLocation
+  002a: if !((self.SMC == none)) goto 0x003d
+  0035: AT = 0
+  003d: switch (AT)
+  0044: case 0: (next 0x0078)
+  0049: self._CachedLocation = (self.Owner.Location + (self.TargetOffset >> self.Owner.Rotation))
+  0075: goto 0x0132
+  0078: case 1: (next 0x00eb)
+  007d: Rot = obj'Core.Math'.static.QuatToRotator(self.SMC.GetBoneQuaternion(AtName, ))
+  00af: Loc = self.SMC.GetBoneLocation(AtName, )
+  00ce: self._CachedLocation = (Loc + (self.TargetOffset >> Rot))
+  00e8: goto 0x0132
+  00eb: case 2: (next 0x012f)
+  00f0: self.SMC.GetSocketWorldLocationAndRotation(AtName, Loc, Rot)
+  0112: self._CachedLocation = (Loc + (self.TargetOffset >> Rot))
+  012c: goto 0x0132
+  012f: default:
+  0132: return self._CachedLocation
+  0138: return return
+  013e: <eos>
+
+function HmTargetableComponent.GetTargetLocation  (script 28 bytes)
+  0000: return GetAttachedLocation(self.AttachmentType, self.AttachmentName)
+  0015: return return
+  001b: <eos>
+
+function HmTargetableComponent.AdjustAngleForMinMaxRadii  (script 158 bytes)
+  0000: if !((Distance < 1.0)) goto 0x0015
+  000f: return DefaultAngle
+  0015: SizeOfAngleAtDistance = (Distance * obj'Core.Math'.static.Tan((0.0174533 * DefaultAngle)))
+  0039: if !((SizeOfAngleAtDistance > MaxRadius)) goto 0x0065
+  0048: return (57.2957802 * obj'Core.Math'.static.Atan(MaxRadius, Distance))
+  0065: if !((SizeOfAngleAtDistance < MinRadius)) goto 0x0091
+  0074: return (57.2957802 * obj'Core.Math'.static.Atan(MinRadius, Distance))
+  0091: return DefaultAngle
+  0097: return return
+  009d: <eos>
+
+function HmTargetableComponent.GetAdjustedTargetAngle  (script 115 bytes)
+  0000: if !((cast3a(TargetPickingType) >= self.TargetPickers.Length)) goto 0x0018
+  0012: return 0.0
+  0018: return HmTargetableComponent.AdjustAngleForMinMaxRadii(Distance, cast3a(TargetPickingType)[self.TargetPickers].Angle, cast3a(TargetPickingType)[self.TargetPickers].MinRadiusCm, cast3a(TargetPickingType)[self.TargetPickers].MaxRadiusCm)
+  006c: return return
+  0072: <eos>
+
+function HmTargetableComponent.OnToggleTargetableComponent  (script 170 bytes)
+  0000: if !(0[inAction.InputLinks].bHasImpulse) goto 0x002a
+  001f: self.TargetType = 0
+  0027: goto 0x00a7
+  002a: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0054
+  0049: self.TargetType = 1
+  0051: goto 0x00a7
+  0054: if !(2[inAction.InputLinks].bHasImpulse) goto 0x007f
+  0074: self.TargetType = 2
+  007c: goto 0x00a7
+  007f: if !(3[inAction.InputLinks].bHasImpulse) goto 0x00a7
+  009f: self.TargetType = 3
+  00a7: return nothing
+  00a9: <eos>
+
+function HmTargetableComponent.IsEligibleForTargetAssist  (script 14 bytes)
+  0000: return self.EligibleForTargetAssist
+  0007: return return
+  000d: <eos>
+
+function HmTargetableComponent.GetTargetAssistStickynessStrafe  (script 13 bytes)
+  0000: return self.TargetAssistStickynessStrafe
+  0006: return return
+  000c: <eos>

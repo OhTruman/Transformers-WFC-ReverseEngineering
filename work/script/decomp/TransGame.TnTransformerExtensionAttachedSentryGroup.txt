@@ -1,0 +1,45 @@
+function TnTransformerExtensionAttachedSentryGroup.set_PawnFactory  (script 14 bytes)
+  0000: self._PawnFactory = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerExtensionAttachedSentryGroup.ApplyTransformerExtension  (script 174 bytes)
+  0000: if !((cast3a(P.Role) < cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: AP = TnAiPawn(P)
+  002b: if !((AP == none)) goto 0x0038
+  0036: return nothing
+  0038: Group = cast36(TnSentryGroupService(AP.GetService('TnSentryGroupService')))
+  0061: foreach self.Sentries(Blueprint,) (end 0x00aa)
+  0070: SentryPawn = TnTransformerExtensionAttachedSentryGroup.CreateSentry(Blueprint, AP)
+  0086: if !((Group != none)) goto 0x00a9
+  0091: Group.Add(SentryPawn)
+  00a9: iternext
+  00aa: iterpop
+  00ab: return nothing
+  00ad: <eos>
+
+function TnTransformerExtensionAttachedSentryGroup.CreateSentry  (script 282 bytes)
+  0000: P.Mesh.GetSocketWorldLocationAndRotation(Blueprint.AttachSocketName, SpawnLocation, SpawnRotation)
+  0036: SentryController = self._PawnFactory.SpawnWithoutFail(obj'TnAiSentryController', obj'TnSentryPawn', SpawnLocation, SpawnRotation, Blueprint.Sentry)
+  0073: SentryPawn = TnSentryPawn(SentryController.Pawn)
+  008c: SentryPawn.AttachToPawn(P, Blueprint.AttachSocketName)
+  00b4: SentryPawn._IsValidMeleeTarget = false
+  00c5: Team = TnFactionTeam(P.GetTeam())
+  00e3: if !((Team != none)) goto 0x010d
+  00ee: SentryPawn.SetAITeam(Team.get_Class())
+  010d: return SentryPawn
+  0113: return return
+  0119: <eos>
+
+function TnTransformerExtensionAttachedSentryGroup.CheckForTransformerErrors  (script 285 bytes)
+  0000: foreach self.Sentries(Blueprint,) (end 0x010e)
+  000f: if !((Blueprint.Sentry == none)) goto 0x005e
+  0025: get_Outer().EmitCheckMessage(0, "Attached sentry definition not set", , )
+  005e: if !(((Transformer.SkelMesh != none) && (Transformer.SkelMesh.FindSocket(Blueprint.AttachSocketName) == none))) goto 0x010d
+  00a6: get_Outer().EmitCheckMessage(0, ((("Attached sentry socket '" $ cast57(Blueprint.AttachSocketName)) $ "' not found in") @ cast56(Transformer.SkelMesh)), , )
+  010d: iternext
+  010e: iterpop
+  010f: TnTransformerExtension.CheckForTransformerErrors(Transformer)
+  011a: return nothing
+  011c: <eos>

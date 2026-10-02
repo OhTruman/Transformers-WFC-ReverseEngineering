@@ -1,0 +1,36 @@
+function LiftExit.CanBeReachedFromLiftBy  (script 98 bytes)
+  0000: return ((self.Location.Z < (Other.Location.Z + Other.GetCollisionHeight())) && Other.LineOfSightTo(self, ))
+  005b: return return
+  0061: <eos>
+
+function LiftExit.WaitForLift  (script 94 bytes)
+  0000: if !((self.MyLiftCenter != none)) goto 0x005b
+  000b: Other.DesiredRotation = cast50((self.Location - Other.Location))
+  0031: Other.Controller.WaitForMover(self.MyLiftCenter.MyLift)
+  005b: return nothing
+  005d: <eos>
+
+function LiftExit.SuggestMovePreparation  (script 470 bytes)
+  0000: if !(((self.MyLiftCenter == none) || (Other.Controller == none))) goto 0x0023
+  0021: return false
+  0023: if !((cast3a(Other.Physics) == cast3a(4))) goto 0x00a3
+  003c: if !((Other.AirSpeed > cast3f(0))) goto 0x00a1
+  0052: Other.Controller.MoveTimer = (2.0 + (obj'Core.Math'.static.VSize((self.Location - Other.Location)) / Other.AirSpeed))
+  00a1: return false
+  00a3: if !(((Other.Base == self.MyLiftCenter.Base) || Other.ReachedDestination(self.MyLiftCenter))) goto 0x0105
+  00e1: if !(CanBeReachedFromLiftBy(Other)) goto 0x00f5
+  00f3: return false
+  00f5: LiftExit.WaitForLift(Other)
+  0100: return true
+  0102: goto 0x01cd
+  0105: if !((self.MyLiftCenter != none)) goto 0x01cd
+  0110: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x01cc)
+  0130: if !(((((C.Pawn != none) && (C.PendingMover == self.MyLiftCenter.MyLift)) && self.WorldInfo.GRI.OnSameTeam(C, Other.Controller)) && C.Pawn.ReachedDestination(self))) goto 0x01cb
+  01bd: LiftExit.WaitForLift(Other)
+  01c8: iterpop
+  01c9: return true
+  01cb: iternext
+  01cc: iterpop
+  01cd: return false
+  01cf: return return
+  01d5: <eos>

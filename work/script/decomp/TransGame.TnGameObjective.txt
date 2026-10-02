@@ -1,0 +1,64 @@
+function TnGameObjective.get_AssociatedVolume  (script 13 bytes)
+  0000: return self.ObjectiveVolume
+  0006: return return
+  000c: <eos>
+
+function TnGameObjective.CheckForErrors  (script 99 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.ObjectiveVolume == none)) goto 0x0060
+  0011: EmitCheckMessage(0, "Game objective missing associated volume, will not work in game", , )
+  0060: return nothing
+  0062: <eos>
+
+function TnGameObjective.ReplicatedEvent  (script 46 bytes)
+  0000: if !((VarName == 'DefenderTeamIndex')) goto 0x0020
+  0013: DefendingTeamChanged()
+  001d: goto 0x002b
+  0020: ReplicatedEvent(VarName)
+  002b: return nothing
+  002d: <eos>
+
+function TnGameObjective.ActivateIfMatchingTeam  (script 25 bytes)
+  0000: TnGameObjective.SetActive((cast3a(self.DefenderTeamIndex) == cast3a(TeamIndex)))
+  0016: return nothing
+  0018: <eos>
+
+function TnGameObjective.SetActive  (script 26 bytes)
+  0000: self._Active = Activate
+  000d: OnChangeActiveState()
+  0017: return nothing
+  0019: <eos>
+
+function TnGameObjective.OnChangeActiveState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjective.SetTeam  (script 45 bytes)
+  0000: if !((NewTeamIndex == cast3a(self.DefenderTeamIndex))) goto 0x0013
+  0011: return nothing
+  0013: self.DefenderTeamIndex = cast3d(NewTeamIndex)
+  0020: DefendingTeamChanged()
+  002a: return nothing
+  002c: <eos>
+
+function TnGameObjective.ScriptGetTeamNum  (script 13 bytes)
+  0000: return self.DefenderTeamIndex
+  0006: return return
+  000c: <eos>
+
+function TnGameObjective.PostBeginPlay  (script 56 bytes)
+  0000: PostBeginPlay()
+  0006: if !((cast3a(self.Role) == cast3a(3))) goto 0x0035
+  0016: if !((self.ObjectiveVolume != none)) goto 0x0035
+  0021: self.ObjectiveVolume.SetAssociatedActor(self)
+  0035: return nothing
+  0037: <eos>
+
+function TnGameObjective.DefendingTeamChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjective.OnDefendingTeam  (script 38 bytes)
+  0000: return (cast3a(A.GetTeamNum()) == cast3a(self.DefenderTeamIndex))
+  001f: return return
+  0025: <eos>

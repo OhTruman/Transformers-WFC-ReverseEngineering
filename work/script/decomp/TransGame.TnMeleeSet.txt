@@ -1,0 +1,62 @@
+function TnMeleeSet.CheckMeleeAttacksForErrors  (script 75 bytes)
+  0000: J = 0
+  0007: if !((J < self.Attacks.Length)) goto 0x0048
+  0017: TnMeleeSet.CheckMeleeAnimations(J[self.Attacks].AnimName)
+  0033: TnMeleeSet.CheckMeleeAttackForErrors(J)
+  003e: AddAdd_PreInt(J)
+  0045: goto 0x0007
+  0048: return nothing
+  004a: <eos>
+
+function TnMeleeSet.CheckMeleeAttackForErrors  (script 91 bytes)
+  0000: if !((I[self.Attacks].DamageType == none)) goto 0x0058
+  001c: EmitCheckMessage(0, (("Attack" @ cast53(I)) @ "does not have damage type"), , )
+  0058: return nothing
+  005a: <eos>
+
+function TnMeleeSet.CheckMeleeAnimations  (script 449 bytes)
+  0000: AS = self.MeleeAnimSet.FindAnimSequence(AnimName)
+  001e: if !((AS != none)) goto 0x003b
+  0029: TnMeleeSet.CheckMeleeAnimation(AnimName, AS)
+  0039: return nothing
+  003b: CG = self.MeleeAnimSet.FindChooserGroup(AnimName)
+  0059: if !((CG.Anims.Length == 0)) goto 0x00c6
+  0070: EmitCheckMessage(0, ((("Could not find melee combo animation" @ cast57(AnimName)) @ "in animset") @ cast56(self.MeleeAnimSet)), , )
+  00c4: return nothing
+  00c6: foreach CG.Anims(WA,) (end 0x01bd)
+  00e0: AS = self.MeleeAnimSet.FindAnimSequence(WA.AnimName)
+  0109: if !((AS == none)) goto 0x01a1
+  0114: EmitCheckMessage(0, ((((("Could not find chooser group animation" @ cast57(WA.AnimName)) @ "in chooser group") @ cast57(CG.GroupName)) @ "in anim set") @ cast56(self.MeleeAnimSet)), , )
+  019e: goto 0x01bc
+  01a1: TnMeleeSet.CheckMeleeAnimation(WA.AnimName, AS)
+  01bc: iternext
+  01bd: iterpop
+  01be: return nothing
+  01c0: <eos>
+
+function TnMeleeSet.CheckMeleeAnimation  (script 141 bytes)
+  0000: SweepNotifies = AS.FindNotifiesOfType(obj'TnAnimNotify_DamageSweep')
+  001e: if !((SweepNotifies.Length == 0)) goto 0x008a
+  002a: EmitCheckMessage(0, (("Melee combo animation" @ cast57(AnimName)) @ "has no damage sweep notifies, it will not work"), , )
+  008a: return nothing
+  008c: <eos>
+
+function TnMeleeSet.CheckMeleeReactionsForErrors  (script 211 bytes)
+  0000: I = 0
+  0007: if !((I < self.Reactions.Length)) goto 0x00d0
+  0017: AnimName = I[self.Reactions].ReactAnim
+  0033: if !((AnimName == 'None')) goto 0x0049
+  0046: goto 0x00c6
+  0049: AS = self.MeleeAnimSet.FindAnimSequence(AnimName)
+  0067: if !((AS == none)) goto 0x00c6
+  0072: EmitCheckMessage(0, ((("Could not find melee react animation" @ cast57(AnimName)) @ "in animset") @ cast56(self.MeleeAnimSet)), , )
+  00c6: AddAdd_PreInt(I)
+  00cd: goto 0x0007
+  00d0: return nothing
+  00d2: <eos>
+
+function TnMeleeSet.CheckForErrors  (script 15 bytes)
+  0000: TnMeleeSet.CheckMeleeAttacksForErrors()
+  0006: TnMeleeSet.CheckMeleeReactionsForErrors()
+  000c: return nothing
+  000e: <eos>

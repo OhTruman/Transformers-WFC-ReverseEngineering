@@ -1,0 +1,120 @@
+function TnAiActionHealWithGrabbedObject.OnInitialize  (script 95 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionHealWithGrabbedObjectBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._Blueprint.WeaponClass, , , ))
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionHealWithGrabbedObject.OnBind  (script 57 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._Omega = TnOmegaSupremePawn(self._TransformerPawn)
+  0036: return nothing
+  0038: <eos>
+
+function TnAiActionHealWithGrabbedObject.OnSetUpConditions  (script 83 bytes)
+  0000: Battery = TnAiActionHealWithGrabbedObject.GetBattery()
+  000c: if !((Battery == none)) goto 0x0019
+  0017: return false
+  0019: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateGrabbedObject', Battery)
+  003b: return OnSetUpConditions(ExpectedEffects, Conditions)
+  004c: return return
+  0052: <eos>
+
+function TnAiActionHealWithGrabbedObject.OnStart  (script 264 bytes)
+  0000: self._IsCorrupted = false
+  0008: self._CurrentTime = 0.0
+  0013: Battery = TnOmegaBatteryDestructibleActor(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateGrabbedObject'))
+  003b: if !((Battery == none)) goto 0x0051
+  0046: return Fail()
+  0051: SetCharacterState(8)
+  005d: if !(Battery._IsCorrupted) goto 0x00c1
+  006f: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.CorruptedHealParams, delegate.SucceedCallback, delegate.FailCallback)
+  00a3: self._Omega.Corrupt()
+  00b6: self._IsCorrupted = true
+  00be: goto 0x00f5
+  00c1: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.HealthyHealParams, delegate.SucceedCallback, delegate.FailCallback)
+  00f5: return OnStart(ExpectedEffects)
+  0101: return return
+  0107: <eos>
+
+function TnAiActionHealWithGrabbedObject.OnUpdate  (script 44 bytes)
+  0000: if !(self._IsCorrupted) goto 0x0014
+  0009: TnAiActionHealWithGrabbedObject.SpawnCorruptionDestructibles(DeltaTime)
+  0014: return OnUpdate(ExpectedEffects, DeltaTime)
+  0025: return return
+  002b: <eos>
+
+function TnAiActionHealWithGrabbedObject.SpawnCorruptionDestructibles  (script 128 bytes)
+  0000: (self._CurrentTime += DeltaTime)
+  000c: Index = 0
+  0013: if !((Index < self._Blueprint.CorruptionDestructibles.Length)) goto 0x007d
+  002c: if !((Index < self.SpawnedCorruptionDestructibles.Length)) goto 0x003f
+  003c: goto 0x0073
+  003f: if !((self._CurrentTime >= Index[self._Blueprint.CorruptionDestructibles].AttachTime)) goto 0x0073
+  0068: TnAiActionHealWithGrabbedObject.SpawnCorruptionDestructible(Index)
+  0073: AddAdd_PreInt(Index)
+  007a: goto 0x0013
+  007d: return nothing
+  007f: <eos>
+
+function TnAiActionHealWithGrabbedObject.SpawnCorruptionDestructible  (script 221 bytes)
+  0000: AttachSocketName = Index[self._Blueprint.CorruptionDestructibles].AttachSocketName
+  0025: Destructible = obj'Engine.Allocation'.static.SpawnActor(obj'TnSpawnableDestructibleActor', self._TransformerPawn, self._TransformerPawn, self._TransformerPawn.Mesh.GetSocketWorldLocation(AttachSocketName), , true)
+  0070: if !((Destructible == none)) goto 0x007d
+  007b: return nothing
+  007d: Destructible.SetDestructibleBlueprint(Index[self._Blueprint.CorruptionDestructibles].DestructibleBlueprint)
+  00af: Destructible.AttachToPawn(self._TransformerPawn, AttachSocketName, 0)
+  00cd: self.SpawnedCorruptionDestructibles.AddItem(Destructible)
+  00da: return nothing
+  00dc: <eos>
+
+function TnAiActionHealWithGrabbedObject.OnFinish  (script 80 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 2)) goto 0x002d
+  0024: TnAiActionHealWithGrabbedObject.Heal()
+  002a: goto 0x0033
+  002d: TnAiActionHealWithGrabbedObject.ThrowGrabbedObject()
+  0033: if !(self._IsCorrupted) goto 0x0042
+  003c: TnAiActionHealWithGrabbedObject.DestroyCorruptionDestructibles()
+  0042: OnFinish(CurrentState)
+  004d: return nothing
+  004f: <eos>
+
+function TnAiActionHealWithGrabbedObject.DestroyCorruptionDestructibles  (script 97 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.SpawnedCorruptionDestructibles.Length)) goto 0x0051
+  0017: Index[self.SpawnedCorruptionDestructibles].ApplyDestructionTrigger(obj'TnHealDestructionTrigger')
+  0035: Index[self.SpawnedCorruptionDestructibles].DestroyActor()
+  0047: AddAdd_PreInt(Index)
+  004e: goto 0x0007
+  0051: self.SpawnedCorruptionDestructibles.Remove(0,self.SpawnedCorruptionDestructibles.Length)
+  005e: return nothing
+  0060: <eos>
+
+function TnAiActionHealWithGrabbedObject.GetBattery  (script 150 bytes)
+  0000: foreach self._TransformerController.AllActors(obj'TnOmegaBatteryDestructibleActor', PossibleBattery) (end 0x0088)
+  0020: GrabVictimService = TnLockOnVictimService(PossibleBattery.GetService('TnLockOnVictimService'))
+  0047: if !((NotEqual_InterfaceInterface(GrabVictimService, TnLockOnVictimService(none)) && GrabVictimService.CanBeLockedOnToByAttacker(self._TransformerPawn))) goto 0x0087
+  0079: Battery = PossibleBattery
+  0084: goto 0x0088
+  0087: iternext
+  0088: iterpop
+  0089: return Battery
+  008f: return return
+  0095: <eos>
+
+function TnAiActionHealWithGrabbedObject.ThrowGrabbedObject  (script 108 bytes)
+  0000: GrabAttackerService = TnGrabAttackerService(self._TransformerPawn.GetService('TnGrabAttackerService'))
+  0027: if !(NotEqual_InterfaceInterface(GrabAttackerService, TnGrabAttackerService(none))) goto 0x0069
+  003b: GrabAttackerService.AbortGrab()
+  004f: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateGrabbedObject', false, )
+  0069: return nothing
+  006b: <eos>
+
+function TnAiActionHealWithGrabbedObject.Heal  (script 108 bytes)
+  0000: Sentries = TnSentryGroupService(self._TransformerPawn.GetService('TnSentryGroupService'))
+  0027: if !(NotEqual_InterfaceInterface(Sentries, TnSentryGroupService(none))) goto 0x004f
+  003b: Sentries.Heal()
+  004f: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateEmote', false, )
+  0069: return nothing
+  006b: <eos>

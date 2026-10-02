@@ -1,0 +1,17 @@
+function Allocation.CreateObject  (script 53 bytes)
+  0000: nothing
+  0001: if !((OuterObject == none)) goto 0x001b
+  000c: return new(nothing, nothing, ObjectClass, nothing, GetRemoteRole)
+  001b: return new(OuterObject, nothing, ObjectClass, nothing, GetRemoteRole)
+  002e: return return
+  0034: <eos>
+
+function Allocation.SpawnActor  (script 72 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: if !((Spawner == none)) goto 0x0010
+  000e: return none
+  0010: return Spawner.Spawn(ActorClass, OuterActor, , Location, Rotation, , NoCollisionFail, )
+  0041: return return
+  0047: <eos>

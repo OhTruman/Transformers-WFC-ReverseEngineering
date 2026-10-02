@@ -1,0 +1,134 @@
+function OnlineRecentPlayersList.AddPlayerToRecentPlayers  (script 137 bytes)
+  0000: FindIndex = self.RecentPlayers.Find('Uid',NewPlayer.Uid)
+  0027: if !((FindIndex == -1)) goto 0x0086
+  0036: if !((self.RecentPlayersAddIndex >= self.MaxRecentPlayers)) goto 0x004c
+  0045: self.RecentPlayersAddIndex = 0
+  004c: if !(((self.RecentPlayersAddIndex + 1) >= self.RecentPlayers.Length)) goto 0x006e
+  005f: self.RecentPlayers.Length = (self.RecentPlayersAddIndex + 1)
+  006e: self.RecentPlayersAddIndex[self.RecentPlayers] = NewPlayer
+  007f: AddAdd_Int(self.RecentPlayersAddIndex)
+  0086: return nothing
+  0088: <eos>
+
+function OnlineRecentPlayersList.ClearRecentPlayers  (script 18 bytes)
+  0000: self.RecentPlayersAddIndex = 0
+  0007: self.RecentPlayers.Length = 0
+  000f: return nothing
+  0011: <eos>
+
+function OnlineRecentPlayersList.AddPartyToRecentParties  (script 165 bytes)
+  0000: FindIndex = self.RecentParties.Find('PartyLeader',PartyLeader)
+  001c: if !((FindIndex == -1)) goto 0x00a2
+  002b: if !((self.RecentPartiesAddIndex >= self.MaxRecentParties)) goto 0x0041
+  003a: self.RecentPartiesAddIndex = 0
+  0041: if !(((self.RecentPartiesAddIndex + 1) >= self.RecentParties.Length)) goto 0x0063
+  0054: self.RecentParties.Length = (self.RecentPartiesAddIndex + 1)
+  0063: self.RecentPartiesAddIndex[self.RecentParties].PartyLeader = PartyLeader
+  007f: self.RecentPartiesAddIndex[self.RecentParties].PartyMembers = PartyMembers
+  009b: AddAdd_Int(self.RecentPartiesAddIndex)
+  00a2: return nothing
+  00a4: <eos>
+
+function OnlineRecentPlayersList.ClearRecentParties  (script 18 bytes)
+  0000: self.RecentPartiesAddIndex = 0
+  0007: self.RecentParties.Length = 0
+  000f: return nothing
+  0011: <eos>
+
+function OnlineRecentPlayersList.GetPlayersFromRecentParties  (script 156 bytes)
+  0000: Players.Length = 0
+  0008: AddMemberAt = 0
+  000f: PartyIndex = 0
+  0016: if !((PartyIndex < self.RecentParties.Length)) goto 0x0099
+  0026: MemberIndex = 0
+  002d: if !((MemberIndex < PartyIndex[self.RecentParties].PartyMembers.Length)) goto 0x008f
+  004e: Players.Length = (AddMemberAt + 1)
+  005d: AddMemberAt[Players] = MemberIndex[PartyIndex[self.RecentParties].PartyMembers]
+  0085: AddAdd_Int(MemberIndex)
+  008c: goto 0x002d
+  008f: AddAdd_Int(PartyIndex)
+  0096: goto 0x0016
+  0099: return nothing
+  009b: <eos>
+
+function OnlineRecentPlayersList.GetPlayersFromCurrentPlayers  (script 74 bytes)
+  0000: Players.Length = 0
+  0008: PlayerIndex = 0
+  000f: if !((PlayerIndex < self.CurrentPlayers.Length)) goto 0x0047
+  001f: Players.AddItem(PlayerIndex[self.CurrentPlayers].NetId)
+  003d: AddAdd_Int(PlayerIndex)
+  0044: goto 0x000f
+  0047: return nothing
+  0049: <eos>
+
+function OnlineRecentPlayersList.GetSkillForCurrentPlayer  (script 100 bytes)
+  0000: PlayerIndex = 0
+  0007: if !((PlayerIndex < self.CurrentPlayers.Length)) goto 0x005b
+  0017: if !((PlayerIndex[self.CurrentPlayers].NetId == Player)) goto 0x0051
+  003a: return PlayerIndex[self.CurrentPlayers].Skill
+  0051: AddAdd_Int(PlayerIndex)
+  0058: goto 0x0007
+  005b: return 0
+  005d: return return
+  0063: <eos>
+
+function OnlineRecentPlayersList.GetTeamForCurrentPlayer  (script 101 bytes)
+  0000: PlayerIndex = 0
+  0007: if !((PlayerIndex < self.CurrentPlayers.Length)) goto 0x005b
+  0017: if !((PlayerIndex[self.CurrentPlayers].NetId == Player)) goto 0x0051
+  003a: return PlayerIndex[self.CurrentPlayers].TeamNum
+  0051: AddAdd_Int(PlayerIndex)
+  0058: goto 0x0007
+  005b: return 255
+  005e: return return
+  0064: <eos>
+
+function OnlineRecentPlayersList.SetLastParty  (script 47 bytes)
+  0000: self.LastParty.PartyLeader = PartyLeader
+  0016: self.LastParty.PartyMembers = PartyMembers
+  002c: return nothing
+  002e: <eos>
+
+function OnlineRecentPlayersList.ShowRecentPlayerList  (script 126 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((OnlineSub != none) && NotEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none)))) goto 0x0075
+  0043: return OnlineSub.PlayerInterfaceEx.ShowCustomPlayersUI(LocalUserNum, self.RecentPlayers, Title, Description)
+  0075: return false
+  0077: return return
+  007d: <eos>
+
+function OnlineRecentPlayersList.ShowRecentPartiesPlayerList  (script 141 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((OnlineSub != none) && NotEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none)))) goto 0x0084
+  0043: GetPlayersFromRecentParties(Players)
+  0052: return OnlineSub.PlayerInterfaceEx.ShowCustomPlayersUI(LocalUserNum, Players, Title, Description)
+  0084: return false
+  0086: return return
+  008c: <eos>
+
+function OnlineRecentPlayersList.ShowLastPartyPlayerList  (script 137 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((OnlineSub != none) && NotEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none)))) goto 0x0080
+  0043: return OnlineSub.PlayerInterfaceEx.ShowCustomPlayersUI(LocalUserNum, self.LastParty.PartyMembers, Title, Description)
+  0080: return false
+  0082: return return
+  0088: <eos>
+
+function OnlineRecentPlayersList.ShowCurrentPlayersList  (script 141 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((OnlineSub != none) && NotEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none)))) goto 0x0084
+  0043: GetPlayersFromCurrentPlayers(Players)
+  0052: return OnlineSub.PlayerInterfaceEx.ShowCustomPlayersUI(LocalUserNum, Players, Title, Description)
+  0084: return false
+  0086: return return
+  008c: <eos>
+
+function OnlineRecentPlayersList.SetCurrentPlayersList  (script 14 bytes)
+  0000: self.CurrentPlayers = Players
+  000b: return nothing
+  000d: <eos>
+
+function OnlineRecentPlayersList.GetCurrentPlayersListCount  (script 14 bytes)
+  0000: return self.CurrentPlayers.Length
+  0007: return return
+  000d: <eos>

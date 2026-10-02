@@ -1,0 +1,41 @@
+function TnTacticalAirPathNode.PostBeginPlay  (script 85 bytes)
+  0000: PostBeginPlay()
+  0006: self.Tactical.Initialize()
+  0019: TnGame(obj'Engine.Engine'.static.GetGame())._TacticalOctree.Add(HmOctreeInterface(self.Tactical))
+  0052: return nothing
+  0054: <eos>
+
+function TnTacticalAirPathNode.Destroyed  (script 94 bytes)
+  0000: Destroyed()
+  0006: if !(self.WorldInfo.IsInEditor()) goto 0x001e
+  001c: return nothing
+  001e: TnGame(obj'Engine.Engine'.static.GetGame())._TacticalOctree.Remove(self.Tactical._TacticalOctreeId)
+  005b: return nothing
+  005d: <eos>
+
+function TnTacticalAirPathNode.OnStreamedOut  (script 70 bytes)
+  0000: OnStreamedOut()
+  0006: TnGame(obj'Engine.Engine'.static.GetGame())._TacticalOctree.Remove(self.Tactical._TacticalOctreeId)
+  0043: return nothing
+  0045: <eos>
+
+function TnTacticalAirPathNode.Reset  (script 70 bytes)
+  0000: Reset()
+  0006: TnGame(obj'Engine.Engine'.static.GetGame())._TacticalOctree.Remove(self.Tactical._TacticalOctreeId)
+  0043: return nothing
+  0045: <eos>
+
+function TnTacticalAirPathNode.GetTactical  (script 13 bytes)
+  0000: return self.Tactical
+  0006: return return
+  000c: <eos>
+
+function TnTacticalAirPathNode.GetLocation  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function TnTacticalAirPathNode.GetRotation  (script 13 bytes)
+  0000: return self.Rotation
+  0006: return return
+  000c: <eos>

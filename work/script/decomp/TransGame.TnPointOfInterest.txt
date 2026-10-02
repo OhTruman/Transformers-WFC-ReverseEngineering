@@ -1,0 +1,106 @@
+function TnPointOfInterest.get_Enabled  (script 14 bytes)
+  0000: return self._Enabled
+  0007: return return
+  000d: <eos>
+
+function TnPointOfInterest.set_Enabled  (script 41 bytes)
+  0000: if !((self._Enabled == Value)) goto 0x0013
+  0011: return nothing
+  0013: self._Enabled = Value
+  0020: TnPointOfInterest.Refresh()
+  0026: return nothing
+  0028: <eos>
+
+function TnPointOfInterest.get_Description  (script 96 bytes)
+  0000: if !((self.DescriptionKey == "")) goto 0x000f
+  000c: return ""
+  000f: if !((self.LocalizedDescription == "")) goto 0x004c
+  001b: self.LocalizedDescription = Localize("PointOfInterest", self.DescriptionKey, "TransGame")
+  004c: return (self.KeyString @ self.LocalizedDescription)
+  0059: return return
+  005f: <eos>
+
+function TnPointOfInterest.get_FocusActor  (script 13 bytes)
+  0000: return self.Owner
+  0006: return return
+  000c: <eos>
+
+function TnPointOfInterest.get_FOV  (script 56 bytes)
+  0000: switch (self.ZoomLevel)
+  0007: case 0: (next 0x0012)
+  000c: return self.CloseFov
+  0012: case 1: (next 0x001d)
+  0017: return self.MediumFov
+  001d: case 2: (next 0x0028)
+  0022: return self.FarFov
+  0028: default:
+  002b: return EmptyFov
+  0031: return return
+  0037: <eos>
+
+function TnPointOfInterest.set_RefreshTime  (script 14 bytes)
+  0000: self._RefreshTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPointOfInterest.get_FocusAvailableSound  (script 13 bytes)
+  0000: return self._FocusAvailableSound
+  0006: return return
+  000c: <eos>
+
+function TnPointOfInterest.set_FocusAvailableSound  (script 14 bytes)
+  0000: self._FocusAvailableSound = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPointOfInterest.ReplicatedEvent  (script 28 bytes)
+  0000: if !((VarName == '_Enabled')) goto 0x0019
+  0013: TnPointOfInterest.Refresh()
+  0019: return nothing
+  001b: <eos>
+
+function TnPointOfInterest.Tick  (script 116 bytes)
+  0000: (self.RefreshTimer += DeltaTime)
+  000c: if !((self.RefreshTimer >= self._RefreshTime)) goto 0x002c
+  001b: TnPointOfInterest.Refresh()
+  0021: self.RefreshTimer = 0.0
+  002c: if !(self.DrawFocusableRadius) goto 0x0071
+  0035: obj'Engine.Debug'.static.DrawSphere(self.Owner.Location, self.FocusableRadius, 8, obj'Core.Colors'.static.Red(), )
+  0071: return nothing
+  0073: <eos>
+
+function TnPointOfInterest.Refresh  (script 27 bytes)
+  0000: if !(self._Enabled) goto 0x0012
+  0009: TnPointOfInterest.UpdateLocalPlayers()
+  000f: goto 0x0018
+  0012: TnPointOfInterest.DisableLocalPlayers()
+  0018: return nothing
+  001a: <eos>
+
+function TnPointOfInterest.UpdateLocalPlayers  (script 112 bytes)
+  0000: foreach self.Owner.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x006c)
+  0020: if !(TnPointOfInterest.CanPlayerFocus(PC)) goto 0x004e
+  002e: PC._PointOfInterestManager.Add(self)
+  004b: goto 0x006b
+  004e: PC._PointOfInterestManager.Remove(self)
+  006b: iternext
+  006c: iterpop
+  006d: return nothing
+  006f: <eos>
+
+function TnPointOfInterest.CanPlayerFocus  (script 117 bytes)
+  0000: if !((PC.Pawn == none)) goto 0x0016
+  0014: return false
+  0016: if !(self.FocusableRadiusEnabled) goto 0x006c
+  001f: return (obj'Core.Math'.static.VSizeSq((PC.Pawn.Location - self.Owner.Location)) <= obj'Core.Math'.static.Square(self.FocusableRadius))
+  006c: return true
+  006e: return return
+  0074: <eos>
+
+function TnPointOfInterest.DisableLocalPlayers  (script 66 bytes)
+  0000: foreach self.Owner.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x003e)
+  0020: PC._PointOfInterestManager.Remove(self)
+  003d: iternext
+  003e: iterpop
+  003f: return nothing
+  0041: <eos>

@@ -1,0 +1,53 @@
+function TnStatisticsCharacterTable.GetRestartCount  (script 162 bytes)
+  0000: RestartCount = 0
+  0007: I = 0
+  000e: if !((I < self.CharacterItems.Length)) goto 0x0095
+  001e: if !((I[self.CharacterItems].PlayerName == PC.GetHumanReadableName())) goto 0x008b
+  004c: if !((I[self.CharacterItems].RestartCount >= RestartCount)) goto 0x008b
+  006c: RestartCount = (I[self.CharacterItems].RestartCount + 1)
+  008b: AddAdd_PreInt(I)
+  0092: goto 0x000e
+  0095: return RestartCount
+  009b: return return
+  00a1: <eos>
+
+function TnStatisticsCharacterTable.RecordCharacter  (script 748 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return 0
+  000d: Stat.Session_Id = Game.StatisticsSessionId
+  002c: Stat.PlayerName = PC.GetHumanReadableName()
+  0050: Stat.RestartCount = TnStatisticsCharacterTable.GetRestartCount(PC)
+  006c: Character = PC.get_CurrentCharacter()
+  0085: I = 0
+  008c: if !((I < Character.WeaponTypes.Length)) goto 0x0100
+  00a7: Stat.ItemType = "Weapon"
+  00c0: Stat.Item = cast56(I[Character.WeaponTypes])
+  00e9: self.CharacterItems.AddItem(Stat)
+  00f6: AddAdd_PreInt(I)
+  00fd: goto 0x008c
+  0100: I = 0
+  0107: if !((I < Character.Skills.Length)) goto 0x017a
+  0122: Stat.ItemType = "Skill"
+  013a: Stat.Item = cast56(I[Character.Skills])
+  0163: self.CharacterItems.AddItem(Stat)
+  0170: AddAdd_PreInt(I)
+  0177: goto 0x0107
+  017a: I = 0
+  0181: if !((I < Character.Abilities.Length)) goto 0x01f6
+  019c: Stat.ItemType = "Ability"
+  01b6: Stat.Item = cast56(I[Character.Abilities])
+  01df: self.CharacterItems.AddItem(Stat)
+  01ec: AddAdd_PreInt(I)
+  01f3: goto 0x0181
+  01f6: Stat.ItemType = "Specialty"
+  0212: Stat.Item = Character.Specialty
+  0233: self.CharacterItems.AddItem(Stat)
+  0240: Stat.ItemType = "Chassis"
+  025a: Stat.Item = cast56(Character.ChassisType)
+  027d: self.CharacterItems.AddItem(Stat)
+  028a: Stat.ItemType = "Faction"
+  02a4: Stat.Item = cast52(Character.Faction)
+  02c7: self.CharacterItems.AddItem(Stat)
+  02d4: return Stat.RestartCount
+  02e5: return return
+  02eb: <eos>

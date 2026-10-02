@@ -1,0 +1,32 @@
+function TnAiActionCloak.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionCloakBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionCloak.OnBind  (script 76 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._AbilityIndex = get_AbilityManager().AddAbility(obj'TnAbilityCloakingAi')
+  0049: return nothing
+  004b: <eos>
+
+function TnAiActionCloak.OnSetUpConditions  (script 61 bytes)
+  0000: if !((get_AbilityManager().AbilityIsAvailable(self._AbilityIndex) == false)) goto 0x0025
+  0023: return false
+  0025: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0036: return return
+  003c: <eos>
+
+function TnAiActionCloak.OnStart  (script 86 bytes)
+  0000: SetCharacterState((1 | 8))
+  000f: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.SucceedCallback, delegate.FailCallback)
+  0043: return OnStart(ExpectedEffects)
+  004f: return return
+  0055: <eos>
+
+function TnAiActionCloak.OnFinish  (script 53 bytes)
+  0000: get_AbilityManager().TriggerAbility(self._AbilityIndex)
+  001d: self._TransformerController.FixDamageThreat(0)
+  0032: return nothing
+  0034: <eos>

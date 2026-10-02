@@ -1,0 +1,22 @@
+function TnBuffMinePooper.Apply  (script 52 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: BuffOwner.SetTimer(self.PoopRate, true, 'PoopMine', self)
+  0031: return nothing
+  0033: <eos>
+
+function TnBuffMinePooper.Unapply  (script 38 bytes)
+  0000: self.OwnerPawn.ClearTimer('PoopMine', self)
+  001d: TnBuff.Unapply()
+  0023: return nothing
+  0025: <eos>
+
+function TnBuffMinePooper.PoopMine  (script 160 bytes)
+  0000: if !((cast3a(self.OwnerPawn.Role) != cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: SourceLocation = (self.OwnerPawn.Location + (self.PoopOffset >> self.OwnerPawn.Rotation))
+  0047: Grenade = self.OwnerPawn.Spawn(obj'TnProjectileKamikazeMineKillstreak', , , SourceLocation, , , , )
+  0070: if !((Grenade == none)) goto 0x007d
+  007b: return nothing
+  007d: Grenade.Init(vect(0,0,0))
+  009d: return nothing
+  009f: <eos>

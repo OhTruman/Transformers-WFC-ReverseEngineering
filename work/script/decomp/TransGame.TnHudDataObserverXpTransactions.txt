@@ -1,0 +1,15 @@
+function TnHudDataObserverXpTransactions.CheckData  (script 304 bytes)
+  0000: if !(!PC._XpTransactionHandler.HasFinishedTransaction()) goto 0x0023
+  0021: return nothing
+  0023: TransactionId = PC._XpTransactionHandler.PopTransaction(Events)
+  004a: foreach Events(XpEvent,) (end 0x012c)
+  0059: AddNumberValue(args, 0, cast3f(TransactionId))
+  0070: AddNumberValue(args, 1, XpEvent.static.GetAwardAmount())
+  0093: AddStringValue(args, 2, XpEvent.static.GetAnnouncement())
+  00b7: AddStringValue(args, 3, XpEvent.static.GetDescription(PC))
+  00e0: AddStringValue(args, 4, XpEvent.static.GetExtraData(PC))
+  0109: Movie.Invoke(self.CallbackBindingName, args)
+  012b: iternext
+  012c: iterpop
+  012d: return nothing
+  012f: <eos>

@@ -1,0 +1,23 @@
+function TnMatchmakingTestingPolicy.HandleEnterPartyLobby  (script 115 bytes)
+  0000: Index = obj'Core.Random'.static.RandomInt(self._PlaylistIds.Length)
+  001f: LogInternal(("Playing playlist" @ cast53(Index[self._PlaylistIds])), 'DevAutomatedTesting', , )
+  004d: Game.PlayPlaylist(Index[self._PlaylistIds], self._HostType)
+  0070: return nothing
+  0072: <eos>
+
+function TnMatchmakingTestingPolicy.HandleEnterGameLobby  (script 99 bytes)
+  0000: TnOnlineTestingPolicy.HandleEnterGameLobby(Game)
+  000b: TimeUntilQuit = obj'Core.Random'.static.RandRangeFloat(self._RandomQuitInterval.Min, self._RandomQuitInterval.Max)
+  0044: self._Game.SetTimer(TimeUntilQuit, true, 'MakeRemotePlayerQuitGame', self)
+  0060: return nothing
+  0062: <eos>
+
+function TnMatchmakingTestingPolicy.HandleTick  (script 196 bytes)
+  0000: TnOnlineTestingPolicy.HandleTick(DeltaTime)
+  000b: if !(((TnGameLobbyGame(self._Game) != none) && (self._Game.GameReplicationInfo != none))) goto 0x00c1
+  0031: if !(self._Game.IsInState('FinalCountdown', )) goto 0x00c1
+  004a: LogInternal((("Game reached the final countdown after " @ cast53(self._Game.GameReplicationInfo.ElapsedTime)) @ " seconds, bailing out."), 'DevAutomatedTesting', , )
+  00b5: MakeHostQuitGame()
+  00bf: return nothing
+  00c1: return nothing
+  00c3: <eos>

@@ -1,0 +1,20 @@
+function TnRandomAnimBlend.OnBecomeRelevant  (script 149 bytes)
+  0000: if !(obj'Engine.Engine'.static.GetCurrentWorldInfo().IsInEditor()) goto 0x0026
+  0024: return nothing
+  0026: TheChosenOne = obj'Core.Random'.static.RandomInt(self.Children.Length)
+  0045: I = 0
+  004c: if !((I < self.Children.Length)) goto 0x0092
+  005c: I[self.Children].Weight = cast3f(((I == TheChosenOne) ? 1 : 0))
+  0088: AddAdd_PreInt(I)
+  008f: goto 0x004c
+  0092: return nothing
+  0094: <eos>
+
+function TnRandomAnimBlend.SliderMove  (script 171 bytes)
+  0000: OldIndex = cast44((SliderIdx[self.Sliders].Position * cast3f((self.Children.Length - 1))))
+  002b: NewIndex = cast44((NewValue * cast3f((self.Children.Length - 1))))
+  0045: SliderIdx[self.Sliders].Position = (cast3f(NewIndex) / cast3f((self.Children.Length - 1)))
+  0070: OldIndex[self.Children].Weight = 0.0
+  008c: NewIndex[self.Children].Weight = 1.0
+  00a8: return nothing
+  00aa: <eos>

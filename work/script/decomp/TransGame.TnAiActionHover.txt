@@ -1,0 +1,49 @@
+function TnAiActionHover.OnBind  (script 76 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0026: self._AbilityIndex = get_AbilityManager().AddAbility(obj'TnAbilityHoverAI')
+  0049: return nothing
+  004b: <eos>
+
+function TnAiActionHover.OnSetUpConditions  (script 74 bytes)
+  0000: if !((get_AbilityManager().AbilityIsAvailable(self._AbilityIndex) == false)) goto 0x0025
+  0023: return false
+  0025: if !(!TnAiActionHover.HasEnoughRoom()) goto 0x0032
+  0030: return false
+  0032: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0043: return return
+  0049: <eos>
+
+function TnAiActionHover.OnStart  (script 136 bytes)
+  0000: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(8))) goto 0x002a
+  001f: return Fail()
+  002a: self._TransformerController.StopMovement()
+  003d: self._TransformerController.MoveTarget = none
+  004d: SetCharacterState(0)
+  0058: get_AbilityManager().TriggerAbility(self._AbilityIndex)
+  0075: return OnStart(ExpectedEffects)
+  0081: return return
+  0087: <eos>
+
+function TnAiActionHover.OnUpdate  (script 66 bytes)
+  0000: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(3))) goto 0x002a
+  001f: return Succeed()
+  002a: return OnUpdate(ExpectedEffects, DeltaTime)
+  003b: return return
+  0041: <eos>
+
+function TnAiActionHover.OnFinish  (script 58 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateHover', true, )
+  0037: return nothing
+  0039: <eos>
+
+function TnAiActionHover.HasEnoughRoom  (script 165 bytes)
+  0000: Bounds = self._TransformerPawn.CollisionComponent.GetBounds()
+  0022: TraceEnd = self._TransformerPawn.Location
+  0036: (TraceEnd.Z += self._AcrobaticsService.get_JumpHeight())
+  005c: return (self._TransformerPawn.Trace(HitLocation, HitNormal, none, TraceEnd, self._TransformerPawn.Location, , Bounds.BoxExtent, , , ) == none)
+  009e: return return
+  00a4: <eos>

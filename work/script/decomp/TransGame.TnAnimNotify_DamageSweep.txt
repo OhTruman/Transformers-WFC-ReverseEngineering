@@ -1,0 +1,12 @@
+function TnAnimNotify_DamageSweep.Notify  (script 173 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: AsTnPawn = TnPawn(AnimSeqInstigator.SkelComponent.Owner)
+  0038: if !((AsTnPawn == none)) goto 0x0045
+  0043: return nothing
+  0045: MeleeService = TnMeleeService(AsTnPawn.GetRobotService('TnMeleeService'))
+  006c: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0082
+  0080: return nothing
+  0082: MeleeService.BeginDamageSweep(self.Duration, self.SocketName, self.Extent, self.ZOverride)
+  00aa: return nothing
+  00ac: <eos>

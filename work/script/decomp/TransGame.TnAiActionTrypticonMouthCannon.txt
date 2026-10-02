@@ -1,0 +1,72 @@
+function TnAiActionTrypticonMouthCannon.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTrypticonMouthCannonBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTrypticonMouthCannon.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionTrypticonMouthCannon.OnStart  (script 160 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: self._ProjectileCount = 0
+  002f: Params = self._Blueprint.Params
+  0043: Params.AnimName = self._Blueprint.InAnimation
+  0062: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.OnIntroAnimationComplete, delegate.FailCallback)
+  008d: return OnStart(ExpectedEffects)
+  0099: return return
+  009f: <eos>
+
+function TnAiActionTrypticonMouthCannon.OnIntroAnimationComplete  (script 9 bytes)
+  0000: TnAiActionTrypticonMouthCannon.PlayLoopAnimation()
+  0006: return nothing
+  0008: <eos>
+
+function TnAiActionTrypticonMouthCannon.PlayLoopAnimation  (script 147 bytes)
+  0000: AddAdd_PreInt(self._ProjectileCount)
+  0007: self._FireProjectileTimer.Start(delegate.FireProjectile, self._Blueprint.Delay, )
+  0032: Params = self._Blueprint.Params
+  0046: Params.AnimName = self._Blueprint.LoopAnimation
+  0065: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.OnLoopAnimationComplete, delegate.FailCallback)
+  0090: return nothing
+  0092: <eos>
+
+function TnAiActionTrypticonMouthCannon.OnLoopAnimationComplete  (script 149 bytes)
+  0000: if !((self._ProjectileCount < self._Blueprint.NumberOfProjectiles)) goto 0x0021
+  0018: TnAiActionTrypticonMouthCannon.PlayLoopAnimation()
+  001e: goto 0x0092
+  0021: self._FireProjectileTimer.Clear()
+  0034: Params = self._Blueprint.Params
+  0048: Params.AnimName = self._Blueprint.OutAnimation
+  0067: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.OnIntroAnimationComplete, delegate.FailCallback)
+  0092: return nothing
+  0094: <eos>
+
+function TnAiActionTrypticonMouthCannon.OnUpdate  (script 88 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0028
+  001d: return Succeed()
+  0028: self._FireProjectileTimer.Tick(DeltaTime)
+  0040: return OnUpdate(ExpectedEffects, DeltaTime)
+  0051: return return
+  0057: <eos>
+
+function TnAiActionTrypticonMouthCannon.FireProjectile  (script 245 bytes)
+  0000: MouthLocation = self._TransformerPawn.Mesh.GetSocketWorldLocation(self._Blueprint.MouthSocket)
+  0030: Direction = (self._Target.Location - MouthLocation)
+  004b: Proj = self._TransformerPawn.Spawn(self._Blueprint.ProjectileClass, , , MouthLocation, , , , )
+  007d: Proj.Init(Direction)
+  0095: HomingProj = TnProjectileHoming(Proj)
+  00a5: if !((HomingProj != none)) goto 0x00c8
+  00b0: HomingProj.SetTarget(self._Target)
+  00c8: self._TransformerPawn.PlaySound(self._Blueprint.FireSound, , , , MouthLocation, )
+  00f2: return nothing
+  00f4: <eos>
+
+function TnAiActionTrypticonMouthCannon.OnFinish  (script 33 bytes)
+  0000: self._FireProjectileTimer.Clear()
+  0013: OnFinish(CurrentState)
+  001e: return nothing
+  0020: <eos>

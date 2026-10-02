@@ -1,0 +1,33 @@
+function TnTacticalEvaluatorDefendActor.__Constructor__TnTacticalEvaluatorDefendActor_0  (script 14 bytes)
+  0000: self.WeightOfImportance = InWeightOfImportance
+  000b: return nothing
+  000d: <eos>
+
+function TnTacticalEvaluatorDefendActor.Score  (script 524 bytes)
+  0000: if !(((Searcher._DefendActor == none) || (Searcher.Enemy == none))) goto 0x0030
+  002a: return 0.0
+  0030: DefendToTactical = (Tactical._Location - Searcher._DefendActor.Location)
+  005d: DistanceToTactical = obj'Core.Math'.static.VSize(DefendToTactical)
+  0073: if !((DistanceToTactical < cast3f(1000))) goto 0x008a
+  0084: return 1.0
+  008a: DefendToEnemy = (Searcher.Enemy.Location - Searcher._DefendActor.Location)
+  00c0: DistanceToEnemy = obj'Core.Math'.static.VSize(DefendToEnemy)
+  00d6: ProjectedTacticalDistance = ((DefendToEnemy / DistanceToEnemy) dot DefendToTactical)
+  00ef: if !(((ProjectedTacticalDistance + cast3f((2 * 1000))) > DistanceToEnemy)) goto 0x0111
+  010b: return 0.0
+  0111: WeightDueToDistanceFromCenter = (1.0 - (obj'Core.Math'.static.FMin(self._MaxLateralDistance, obj'Core.Math'.static.FMax(0.0, (obj'Core.Math'.static.VSize((Tactical._Location - obj'Core.Math'.static.ClosestPointToLineSegment(Searcher.Enemy.Location, Searcher._DefendActor.Location, Tactical._Location))) - cast3f(1000)))) / self._MaxLateralDistance))
+  01b8: WeightDueToDistanceFromDefendActor = (1.0 - obj'Core.Math'.static.FMin(1.0, (obj'Core.Math'.static.FMax(0.0, (DistanceToTactical - self._MaxLongitudinalDistance)) / self._MaxLongitudinalDistance)))
+  01f8: return (WeightDueToDistanceFromCenter * WeightDueToDistanceFromDefendActor)
+  0205: return return
+  020b: <eos>
+
+function TnTacticalEvaluatorDefendActor.DrawDebug  (script 338 bytes)
+  0000: if !((Searcher._DefendActor == none)) goto 0x0016
+  0014: return nothing
+  0016: Target = Actor(Searcher.GetWorldStateSubject(obj'TnAiWorldStateTargetIsDead'))
+  0039: DefendToTarget = obj'Core.Math'.static.Normal((Target.Location - Searcher._DefendActor.Location))
+  0071: obj'Engine.Debug'.static.DrawLine(Searcher._DefendActor.Location, (Target.Location - DefendToTarget), obj'Core.Colors'.static.Green(), true)
+  00c4: Right = (DefendToTarget cross vect(0,0,1))
+  00de: obj'Engine.Debug'.static.DrawLine(((Target.Location - DefendToTarget) + (Right * cast3f(7000))), ((Target.Location - DefendToTarget) + (Right * cast3f(-7000))), obj'Core.Colors'.static.Green(), true)
+  014f: return nothing
+  0151: <eos>

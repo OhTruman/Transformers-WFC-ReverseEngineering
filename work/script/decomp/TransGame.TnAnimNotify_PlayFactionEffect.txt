@@ -1,0 +1,11 @@
+function TnAnimNotify_PlayFactionEffect.OnParticleSystemSpawned  (script 178 bytes)
+  0000: TransformerPawn = TnPawn(AnimSeqInstigator.SkelComponent.Owner)
+  0022: if !((TransformerPawn == none)) goto 0x0073
+  002d: SentryPawn = TnSentryPawn(AnimSeqInstigator.SkelComponent.Owner)
+  004f: if !((SentryPawn != none)) goto 0x0073
+  005a: TransformerPawn = SentryPawn.GetMaster()
+  0073: if !((TransformerPawn == none)) goto 0x0080
+  007e: return nothing
+  0080: PSC.SetColorParameter('Color', TransformerPawn.get_EnergonColor())
+  00af: return nothing
+  00b1: <eos>

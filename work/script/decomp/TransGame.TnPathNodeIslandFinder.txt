@@ -1,0 +1,66 @@
+function TnPathNodeIslandFinder.FindIslands  (script 52 bytes)
+  0000: TnPathNodeIslandFinder.GetUniqueNetworkIds(W, NetworkIds)
+  0010: foreach NetworkIds(Id,) (end 0x0030)
+  001f: TnPathNodeIslandFinder.FindIslandsInNetwork(W, Id)
+  002f: iternext
+  0030: iterpop
+  0031: return nothing
+  0033: <eos>
+
+function TnPathNodeIslandFinder.FindIslandsInNetwork  (script 215 bytes)
+  0000: TnPathNodeIslandFinder.GetNodesInNetwork(W, NetworkID, AllNetworkNodes)
+  0015: foreach AllNetworkNodes(N,) (end 0x00d3)
+  0024: ReachableNodes.Length = 0
+  002c: TnPathNodeIslandFinder.FindReachableNodes(N, ReachableNodes)
+  003c: if !((ReachableNodes.Length != AllNetworkNodes.Length)) goto 0x00d2
+  004d: PercentCoverage = (cast3f(ReachableNodes.Length) / cast3f(AllNetworkNodes.Length))
+  0065: N.EmitCheckMessage(0, ((("is part of an island which represents" @ cast55((PercentCoverage * 100.0))) $ "% of graph network") @ cast53(NetworkID)), , )
+  00d2: iternext
+  00d3: iterpop
+  00d4: return nothing
+  00d6: <eos>
+
+function TnPathNodeIslandFinder.GetUniqueNetworkIds  (script 105 bytes)
+  0000: foreach W.AllActors(obj'Engine.NavigationPoint', N) (end 0x0065)
+  0020: if !((NetworkIds.Find(N.GetNetworkID()) != -1)) goto 0x0049
+  0045: iternext
+  0046: goto 0x0065
+  0049: NetworkIds.AddItem(N.GetNetworkID())
+  0064: iternext
+  0065: iterpop
+  0066: return nothing
+  0068: <eos>
+
+function TnPathNodeIslandFinder.GetNodesInNetwork  (script 83 bytes)
+  0000: foreach W.AllActors(obj'Engine.NavigationPoint', N) (end 0x004f)
+  0020: if !((N.GetNetworkID() != NetworkID)) goto 0x0041
+  003d: iternext
+  003e: goto 0x004f
+  0041: Nodes.AddItem(N)
+  004e: iternext
+  004f: iterpop
+  0050: return nothing
+  0052: <eos>
+
+function TnPathNodeIslandFinder.FindReachableNodes  (script 269 bytes)
+  0000: NodeStack.AddItem(N)
+  000d: if !((NodeStack.Length > 0)) goto 0x010a
+  0019: ReachableNode = (NodeStack.Length - 1)[NodeStack]
+  002e: NodeStack.Remove((NodeStack.Length - 1),1)
+  003e: ReachableNodes.AddItem(ReachableNode)
+  004b: foreach ReachableNode.PathList(Spec,) (end 0x0106)
+  0063: if !((Spec.End.Nav == none)) goto 0x0086
+  0082: iternext
+  0083: goto 0x0106
+  0086: if !((ReachableNodes.Find(Spec.End.Nav) != -1)) goto 0x00b5
+  00b1: iternext
+  00b2: goto 0x0106
+  00b5: if !((NodeStack.Find(Spec.End.Nav) != -1)) goto 0x00e4
+  00e0: iternext
+  00e1: goto 0x0106
+  00e4: NodeStack.AddItem(Spec.End.Nav)
+  0105: iternext
+  0106: iterpop
+  0107: goto 0x000d
+  010a: return nothing
+  010c: <eos>

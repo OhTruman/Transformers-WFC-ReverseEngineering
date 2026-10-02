@@ -1,0 +1,177 @@
+function TnAiActionNavigatePathSection.get_PathSection  (script 13 bytes)
+  0000: return self._PathSection
+  0006: return return
+  000c: <eos>
+
+function TnAiActionNavigatePathSection.OnInitialize  (script 158 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionNavigatePathSectionBlueprint(Blueprint)
+  001b: self._GoalSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapGoalSet', self)
+  003a: self._GoalSet.InitializeFromTemplate(self._Blueprint.GoalSet)
+  005b: self._ActionSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapActionSet', self)
+  007a: self._ActionSet.InitializeFromTemplate(self._Blueprint.ActionSet)
+  009b: return nothing
+  009d: <eos>
+
+function TnAiActionNavigatePathSection.OnSetUpConditions  (script 209 bytes)
+  0000: Section = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: if !((Section == none)) goto 0x0035
+  0033: return false
+  0035: NextSection = Section.GetNext()
+  004e: if !((NextSection == none)) goto 0x0090
+  0059: obj'HM_Engine.HmGoap'.static.SetProperty(Conditions, obj'HM_Engine.HmGoap'.static.CreateBoolProperty(obj'TnAiWorldStateNavigatePath', false, none, true, false))
+  008d: goto 0x00c8
+  0090: obj'HM_Engine.HmGoap'.static.SetProperty(Conditions, obj'HM_Engine.HmGoap'.static.CreateBoolProperty(obj'TnAiWorldStateNavigatePath', true, NextSection, false, false))
+  00c8: return true
+  00ca: return return
+  00d0: <eos>
+
+function TnAiActionNavigatePathSection.OnBind  (script 44 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._PlanRunner.Initialize(self._TransformerController, self._GoalSet, self._ActionSet, none)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionNavigatePathSection.OnStart  (script 213 bytes)
+  0000: self._PathSection = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: self._TransformerController.SetWorldStateSubject(obj'TnAiWorldStateNavigatePath', self._PathSection)
+  0045: SetCharacterState(0)
+  0050: self._TransformerController.CancelMove()
+  0063: self._WaitingAtGate = TnAiActionNavigatePathSection.IsDestinationGatedClosed()
+  0070: if !(self._WaitingAtGate) goto 0x008f
+  0079: self._TransformerController.StopMovement()
+  008c: goto 0x0095
+  008f: TnAiActionNavigatePathSection.MoveTowardActor()
+  0095: self._PlanRunner.Resume()
+  00a8: obj'TnAiPlanningScheduler'.static.RequestReplan(self._PlanRunner, 1)
+  00c2: return OnStart(ExpectedEffects)
+  00ce: return return
+  00d4: <eos>
+
+function TnAiActionNavigatePathSection.OnUpdate  (script 269 bytes)
+  0000: Destination = NavigationPoint(TnAiActionNavigatePathSection.GetNextPoint())
+  0011: if !((((Destination != none) && (Destination != self._TransformerPawn.Anchor)) && Destination.bBlocked)) goto 0x0055
+  004a: return Fail()
+  0055: if !((self._WaitingAtGate && !TnAiActionNavigatePathSection.IsDestinationGatedClosed())) goto 0x0071
+  006b: TnAiActionNavigatePathSection.MoveTowardActor()
+  0071: self._PlanRunner.Update(DeltaTime)
+  0089: if !(!self._PlanRunner.get_HasPlan()) goto 0x00be
+  00a1: obj'TnAiPlanningScheduler'.static.RequestReplan(self._PlanRunner, 1)
+  00bb: goto 0x00f5
+  00be: if !((self._PlanRunner.get_TimeSinceLastFullPlan() > 0.5)) goto 0x00f5
+  00db: obj'TnAiPlanningScheduler'.static.RequestReplan(self._PlanRunner, 0)
+  00f5: return OnUpdate(ExpectedEffects, DeltaTime)
+  0106: return return
+  010c: <eos>
+
+function TnAiActionNavigatePathSection.OnFinish  (script 88 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0042
+  001b: self._TransformerController.AiWorldState.SetBoolValue(obj'TnAiWorldStateNavigatePath', true, self._PathSection)
+  0042: self._PlanRunner.Suspend()
+  0055: return nothing
+  0057: <eos>
+
+function TnAiActionNavigatePathSection.DrawPathSection  (script 157 bytes)
+  0000: idx = 1
+  0007: if !((idx < self._PathSection.get_NumberOfPoints())) goto 0x009a
+  0024: obj'Engine.Debug'.static.DrawLine(self._PathSection.GetPoint(idx).Location, self._PathSection.GetPoint((idx - 1)).Location, obj'Core.Colors'.static.White(), true)
+  0090: AddAdd_PreInt(idx)
+  0097: goto 0x0007
+  009a: return nothing
+  009c: <eos>
+
+function TnAiActionNavigatePathSection.DrawDestinationInfo  (script 282 bytes)
+  0000: obj'Engine.Debug'.static.DrawSphere(self._TransformerController.Pawn.Location, 20.0, 12, obj'Core.Colors'.static.Green(), true)
+  0045: obj'Engine.Debug'.static.DrawSphere(self._PathSection.GetPoint((self._PathSection.get_NumberOfPoints() - 2)).Location, 20.0, 12, obj'Core.Colors'.static.Red(), true)
+  00a6: obj'Engine.Debug'.static.DrawLine(self._TransformerController.Pawn.Location, self._PathSection.GetPoint((self._PathSection.get_NumberOfPoints() - 2)).Location, obj'Core.Colors'.static.White(), true)
+  0117: return nothing
+  0119: <eos>
+
+function TnAiActionNavigatePathSection.ReachedActor  (script 146 bytes)
+  0000: self._TransformerPawn.SetAnchor(NavigationPoint(TnAiActionNavigatePathSection.GetNextPoint()))
+  001e: if !((self._PathSection.get_NumberOfPoints() > 0)) goto 0x004a
+  0037: self._PathSection.RemoveSectionEnd()
+  004a: self._WaitingAtGate = TnAiActionNavigatePathSection.IsDestinationGatedClosed()
+  0057: self._TransformerController.CancelMove()
+  006a: if !(self._WaitingAtGate) goto 0x0089
+  0073: self._TransformerController.StopMovement()
+  0086: goto 0x008f
+  0089: TnAiActionNavigatePathSection.MoveTowardActor()
+  008f: return nothing
+  0091: <eos>
+
+function TnAiActionNavigatePathSection.IsDestinationGatedClosed  (script 75 bytes)
+  0000: DestinationNav = NavigationPoint(TnAiActionNavigatePathSection.GetNextPoint())
+  0011: return (((DestinationNav != none) && DestinationNav.bGated) && !DestinationNav.bGateOpen)
+  0044: return return
+  004a: <eos>
+
+function TnAiActionNavigatePathSection.MoveTowardActor  (script 136 bytes)
+  0000: self._WaitingAtGate = false
+  0008: if !((self._PathSection.get_NumberOfPoints() <= 1)) goto 0x002d
+  0021: Succeed()
+  002b: return nothing
+  002d: if !((self._TransformerController == none)) goto 0x0044
+  0038: Fail()
+  0042: return nothing
+  0044: Destination = TnAiActionNavigatePathSection.GetNextPoint()
+  0050: TnAiActionNavigatePathSection.TryJump()
+  0056: self._TransformerController.MoveTowardActor(Destination, Destination, delegate.FailCallback, delegate.ReachedActor)
+  0085: return nothing
+  0087: <eos>
+
+function TnAiActionNavigatePathSection.TryJump  (script 285 bytes)
+  0000: NewReachSpec = TnAiActionNavigatePathSection.GetNextReachSpec()
+  000c: if !((NewReachSpec == none)) goto 0x0019
+  0017: return nothing
+  0019: AiPawn = self._TransformerPawn
+  0024: if !((NewReachSpec.IsJumpRequired() && (AiPawn != none))) goto 0x011a
+  0047: End = NewReachSpec.GetEndNavigationPoint()
+  0060: LandingLocation = End.Location
+  0074: (LandingLocation.Z -= End.CylinderComponent.CollisionHeight)
+  009d: (LandingLocation.Z += AiPawn.GetCollisionHeight())
+  00c2: AiPawn.GetJumpVelocity(JumpVel, LandingLocation, AiPawn.Location)
+  00ed: RobotForm = AiPawn._RobotForm
+  0101: RobotForm.Jump(JumpVel, true)
+  011a: return nothing
+  011c: <eos>
+
+function TnAiActionNavigatePathSection.GetNextPoint  (script 136 bytes)
+  0000: if !((self._PathSection.get_NumberOfPoints() == 1)) goto 0x004b
+  0019: Point = self._PathSection.GetPoint((self._PathSection.get_NumberOfPoints() - 1))
+  0048: goto 0x007b
+  004b: Point = self._PathSection.GetPoint((self._PathSection.get_NumberOfPoints() - 2))
+  007b: return Point
+  0081: return return
+  0087: <eos>
+
+function TnAiActionNavigatePathSection.GetNextReachSpec  (script 163 bytes)
+  0000: StartPoint = NavigationPoint(self._PathSection.GetPoint((self._PathSection.get_NumberOfPoints() - 1)))
+  0034: EndPoint = NavigationPoint(self._PathSection.GetPoint((self._PathSection.get_NumberOfPoints() - 2)))
+  0069: if !(((StartPoint != none) && (EndPoint != none))) goto 0x009a
+  0081: return StartPoint.GetReachSpecTo(EndPoint)
+  009a: return none
+  009c: return return
+  00a2: <eos>
+
+function TnAiActionNavigatePathSection.OnUnbind  (script 28 bytes)
+  0000: OnUnbind()
+  0006: self._PlanRunner.Shutdown()
+  0019: return nothing
+  001b: <eos>
+
+function TnAiActionNavigatePathSection.ApplyOverride  (script 53 bytes)
+  0000: foreach self._ActionSet.Actions(A,) (end 0x0031)
+  0018: A.ApplyOverride(ActionOverride)
+  0030: iternext
+  0031: iterpop
+  0032: return nothing
+  0034: <eos>
+
+function TnAiActionNavigatePathSection.GetDescriptionDetail  (script 84 bytes)
+  0000: if !((self._PlanRunner._CurrentSolution != none)) goto 0x0047
+  0014: Result = (((Result $ "(") $ self._PlanRunner._CurrentSolution.GetDescription()) $ ")")
+  0047: return Result
+  004d: return return
+  0053: <eos>

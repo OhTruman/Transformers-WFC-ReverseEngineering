@@ -1,0 +1,40 @@
+function TnLoadProfileStatusMessageBox.Initialize  (script 20 bytes)
+  0000: Initialize(NewOwnerMovie)
+  000b: TnLoadProfileStatusMessageBox.UpdateStatus()
+  0011: return nothing
+  0013: <eos>
+
+function TnLoadProfileStatusMessageBox.Tick  (script 122 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(TnLoadProfileStatusMessageBox.UpdateStatus()) goto 0x006d
+  0014: Close()
+  001e: if !((self.InvokeMovie != none)) goto 0x006a
+  0029: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(self.InvokeParameter))
+  0048: self.InvokeMovie.Invoke(self.InvokeFunction, args)
+  006a: goto 0x0077
+  006d: UpdateText()
+  0077: return nothing
+  0079: <eos>
+
+function TnLoadProfileStatusMessageBox.UpdateStatus  (script 164 bytes)
+  0000: SetAButton("", , , )
+  000f: SetBButton("", , , )
+  001e: self.bShowDefaultButtons = false
+  0026: if !(!TnLoadProfileStatusMessageBox.GetPlayerController().get_ProfileReadInProgress()) goto 0x0044
+  003f: return true
+  0041: goto 0x009d
+  0044: SetText("$UIText.MessagePrompts.LoadingTitle", "$UIText.MessagePrompts.LoadingProfile", )
+  009b: return false
+  009d: return return
+  00a3: <eos>
+
+function TnLoadProfileStatusMessageBox.GetPlayerController  (script 75 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0041)
+  0039: iterpop
+  003a: return PC
+  0040: iternext
+  0041: iterpop
+  0042: return none
+  0044: return return
+  004a: <eos>

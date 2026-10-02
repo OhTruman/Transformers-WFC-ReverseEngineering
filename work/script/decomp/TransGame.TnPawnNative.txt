@@ -1,0 +1,35 @@
+function TnPawnNative.get_LastTakeHitInfo  (script 66 bytes)
+  0000: THI = self._LastTakeHitInfo
+  000b: THI.Momentum = (THI.Momentum / cast3f(10000))
+  0035: return THI
+  003b: return return
+  0041: <eos>
+
+function TnPawnNative.set_LastTakeHitInfo  (script 66 bytes)
+  0000: self._LastTakeHitInfo = Value
+  000b: (self._LastTakeHitInfo.Momentum *= cast3f(10000))
+  0024: self.LastTakeHitTimeout = (self.WorldInfo.TimeSeconds + self.TakeHitEffectDuration)
+  003f: return nothing
+  0041: <eos>
+
+function TnPawnNative.GetGravityZ  (script 21 bytes)
+  0000: return (GetGravityZ() * self.GravityScale)
+  000e: return return
+  0014: <eos>
+
+function TnPawnNative.GetTerminalVelocity  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnPawnNative.MoveToward  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPawnNative.PostMoveToward  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawnNative.IsRobot  (script 7 bytes)
+  0000: return return
+  0006: <eos>

@@ -1,0 +1,177 @@
+function HmDestructionState.Initialize  (script 170 bytes)
+  0000: self.Handle = Handle_
+  000b: self.Blueprint = Blueprint_
+  0016: self.ExistingEffect = ExistingEffect_
+  0021: foreach self.Blueprint.LinkBlueprints(LinkBlueprint,) (end 0x00a6)
+  0039: Link.NextStateHandle = LinkBlueprint.NextStateHandle
+  0058: Link.TransitionTrigger = LinkBlueprint.TransitionTrigger
+  0077: Link.Enabled = LinkBlueprint.Enabled
+  0098: self.Links.AddItem(Link)
+  00a5: iternext
+  00a6: iterpop
+  00a7: return nothing
+  00a9: <eos>
+
+function HmDestructionState.CreateEffects  (script 143 bytes)
+  0000: self.Effects.Length = 0
+  0008: if !((self.ExistingEffect != none)) goto 0x0020
+  0013: self.Effects.AddItem(self.ExistingEffect)
+  0020: foreach self.Blueprint.EffectFactories(EffectFactory,) (end 0x008b)
+  0038: if !(((EffectFactory == none) || EffectFactory.CreatesMeshEffect())) goto 0x005f
+  005b: iternext
+  005c: goto 0x008b
+  005f: Effect = EffectFactory.CreateInstance(Owner)
+  007d: self.Effects.AddItem(Effect)
+  008a: iternext
+  008b: iterpop
+  008c: return nothing
+  008e: <eos>
+
+function HmDestructionState.BeginEffects  (script 47 bytes)
+  0000: foreach self.Effects(Effect,) (end 0x0023)
+  000f: Effect.BeginEffect()
+  0022: iternext
+  0023: iterpop
+  0024: self.PlayingEffects = true
+  002c: return nothing
+  002e: <eos>
+
+function HmDestructionState.EndEffects  (script 47 bytes)
+  0000: foreach self.Effects(Effect,) (end 0x0023)
+  000f: Effect.EndEffect()
+  0022: iternext
+  0023: iterpop
+  0024: self.PlayingEffects = false
+  002c: return nothing
+  002e: <eos>
+
+function HmDestructionState.DrawDebugDisplay  (script 39 bytes)
+  0000: foreach self.Effects(Effect,) (end 0x0023)
+  000f: Effect.DrawDebugDisplay()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function HmDestructionState.GetEffects  (script 13 bytes)
+  0000: return self.Effects
+  0006: return return
+  000c: <eos>
+
+function HmDestructionState.GetName  (script 22 bytes)
+  0000: return self.Blueprint.StateName
+  000f: return return
+  0015: <eos>
+
+function HmDestructionState.GetHandle  (script 13 bytes)
+  0000: return self.Handle
+  0006: return return
+  000c: <eos>
+
+function HmDestructionState.IsPlayingEffects  (script 14 bytes)
+  0000: return self.PlayingEffects
+  0007: return return
+  000d: <eos>
+
+function HmDestructionState.ChooseNextStateHandle  (script 234 bytes)
+  0000: I = 0
+  0007: if !((I < self.Links.Length)) goto 0x0085
+  0017: switch (HmDestructionState.GetLinkMatch(I, DestructionTrigger))
+  0029: case 2: (next 0x004f)
+  002e: MatchingStates.AddItem(I[self.Links].NextStateHandle)
+  004c: goto 0x007b
+  004f: case 1: (next 0x0075)
+  0054: RelatedStates.AddItem(I[self.Links].NextStateHandle)
+  0072: goto 0x007b
+  0075: default:
+  0078: goto 0x007b
+  007b: AddAdd_PreInt(I)
+  0082: goto 0x0007
+  0085: if !((MatchingStates.Length != 0)) goto 0x00b1
+  0091: return obj'Core.Random'.static.RandomInt(MatchingStates.Length)[MatchingStates]
+  00b1: if !((RelatedStates.Length != 0)) goto 0x00dd
+  00bd: return obj'Core.Random'.static.RandomInt(RelatedStates.Length)[RelatedStates]
+  00dd: return -1
+  00e3: return return
+  00e9: <eos>
+
+function HmDestructionState.AcceptsDamageFromTrigger  (script 71 bytes)
+  0000: I = 0
+  0007: if !((I < self.Links.Length)) goto 0x003e
+  0017: if !((cast3a(HmDestructionState.GetLinkMatch(I, DestructionTrigger)) != cast3a(0))) goto 0x0034
+  0032: return true
+  0034: AddAdd_PreInt(I)
+  003b: goto 0x0007
+  003e: return false
+  0040: return return
+  0046: <eos>
+
+function HmDestructionState.HasAutomaticTransition  (script 29 bytes)
+  0000: return (self.Blueprint.AutomaticTransitionTime > 0.0)
+  0016: return return
+  001c: <eos>
+
+function HmDestructionState.GetAutomaticTransitionTime  (script 22 bytes)
+  0000: return self.Blueprint.AutomaticTransitionTime
+  000f: return return
+  0015: <eos>
+
+function HmDestructionState.IsFinalState  (script 17 bytes)
+  0000: return (self.Links.Length == 0)
+  000a: return return
+  0010: <eos>
+
+function HmDestructionState.GetBlueprint  (script 13 bytes)
+  0000: return self.Blueprint
+  0006: return return
+  000c: <eos>
+
+function HmDestructionState.NotifyHit  (script 76 bytes)
+  0000: nothing
+  0001: nothing
+  0002: foreach self.Effects(Effect,) (end 0x0048)
+  0011: Effect.NotifyHit(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0047: iternext
+  0048: iterpop
+  0049: return nothing
+  004b: <eos>
+
+function HmDestructionState.NotifyRadiusHit  (script 80 bytes)
+  0000: foreach self.Effects(Effect,) (end 0x004c)
+  000f: Effect.NotifyRadiusHit(EventInstigator, Damage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser)
+  004b: iternext
+  004c: iterpop
+  004d: return nothing
+  004f: <eos>
+
+function HmDestructionState.EnableLink  (script 93 bytes)
+  0000: I = 0
+  0007: if !((I < self.Links.Length)) goto 0x005a
+  0017: if !((I[self.Links].TransitionTrigger == DestructionTrigger)) goto 0x0050
+  0037: I[self.Links].Enabled = true
+  0050: AddAdd_PreInt(I)
+  0057: goto 0x0007
+  005a: return nothing
+  005c: <eos>
+
+function HmDestructionState.IsLinkEnabled  (script 98 bytes)
+  0000: I = 0
+  0007: if !((I < self.Links.Length)) goto 0x0059
+  0017: if !((I[self.Links].TransitionTrigger == DestructionTrigger)) goto 0x004f
+  0037: return I[self.Links].Enabled
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x0007
+  0059: return false
+  005b: return return
+  0061: <eos>
+
+function HmDestructionState.GetLinkMatch  (script 134 bytes)
+  0000: Link = Index[self.Links]
+  0011: if !(((Link.NextStateHandle > -1) && Link.Enabled)) goto 0x007c
+  0041: if !((Link.TransitionTrigger == DestructionTrigger)) goto 0x005e
+  005b: return 2
+  005e: if !(ClassIsChildOf(DestructionTrigger, Link.TransitionTrigger)) goto 0x007c
+  0079: return 1
+  007c: return 0
+  007f: return return
+  0085: <eos>

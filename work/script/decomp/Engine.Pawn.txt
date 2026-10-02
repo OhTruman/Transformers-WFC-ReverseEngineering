@@ -1,0 +1,1971 @@
+function Pawn.get_WorkingMovementCapabilities  (script 13 bytes)
+  0000: return self._WorkingMovementCapabilities
+  0006: return return
+  000c: <eos>
+
+function Pawn.set_WorkingMovementCapabilities  (script 14 bytes)
+  0000: self._WorkingMovementCapabilities = Value
+  000b: return nothing
+  000d: <eos>
+
+function Pawn.get_PrimaryMovementCapabilities  (script 13 bytes)
+  0000: return self._PrimaryMovementCapabilities
+  0006: return return
+  000c: <eos>
+
+function Pawn.set_PrimaryMovementCapabilities  (script 14 bytes)
+  0000: self._PrimaryMovementCapabilities = Value
+  000b: return nothing
+  000d: <eos>
+
+function Pawn.get_SecondaryMovementCapabilities  (script 13 bytes)
+  0000: return self._SecondaryMovementCapabilities
+  0006: return return
+  000c: <eos>
+
+function Pawn.set_SecondaryMovementCapabilities  (script 14 bytes)
+  0000: self._SecondaryMovementCapabilities = Value
+  000b: return nothing
+  000d: <eos>
+
+function Pawn.get_PawnDistancesManager  (script 36 bytes)
+  0000: return obj'Engine'.static.GetEngine().PawnDistancesManager
+  001d: return return
+  0023: <eos>
+
+function Pawn.ReplicatedEvent  (script 321 bytes)
+  0000: ReplicatedObject.ReplicatedEvent(VarName)
+  000b: if !((VarName == 'FlashCount')) goto 0x0028
+  001e: Pawn.FlashCountUpdated(true)
+  0025: goto 0x013e
+  0028: if !((VarName == 'HitLocationReplicated')) goto 0x0044
+  003b: Pawn.NewHitLocationReceived()
+  0041: goto 0x013e
+  0044: if !((VarName == 'FiringMode')) goto 0x0061
+  0057: Pawn.FiringModeUpdated(true)
+  005e: goto 0x013e
+  0061: if !((VarName == 'DrivenVehicle')) goto 0x008c
+  0074: if !((self.DrivenVehicle != none)) goto 0x0089
+  007f: NotifyTeamChanged()
+  0089: goto 0x013e
+  008c: if !((VarName == 'PlayerReplicationInfo')) goto 0x00ac
+  009f: NotifyTeamChanged()
+  00a9: goto 0x013e
+  00ac: if !((VarName == 'Controller')) goto 0x0125
+  00bf: if !(((self.Controller != none) && (self.Controller.Pawn == none))) goto 0x0122
+  00e0: PC = PlayerController(self.Controller)
+  00f0: if !((PC != none)) goto 0x0112
+  00fb: PC.ClientSetPawn(self)
+  010f: goto 0x0122
+  0112: self.Controller.Pawn = self
+  0122: goto 0x013e
+  0125: if !((VarName == 'bHidden')) goto 0x013e
+  0138: Pawn.UpdateLightEnvironmentStatus()
+  013e: return nothing
+  0140: <eos>
+
+function Pawn.ValidAnchor  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.FindOwningCell  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.ActorReachable  (script 17 bytes)
+  0000: Other
+  0005: bKnowVisible
+  000a: bNoAnchorCheck
+  000f: nothing
+  0010: <eos>
+
+function Pawn.SuggestJumpVelocity  (script 17 bytes)
+  0000: JumpVelocity
+  0005: Destination
+  000a: Start
+  000f: nothing
+  0010: <eos>
+
+function Pawn.GetJumpVelocity  (script 17 bytes)
+  0000: JumpVelocity
+  0005: Destintation
+  000a: Start
+  000f: nothing
+  0010: <eos>
+
+function Pawn.IsValidTargetFor  (script 7 bytes)
+  0000: C
+  0005: nothing
+  0006: <eos>
+
+function Pawn.IsValidEnemyTargetFor  (script 12 bytes)
+  0000: PRI
+  0005: bNoPRIisEnemy
+  000a: nothing
+  000b: <eos>
+
+function Pawn.IsInvisible  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.ForceHiddenFromActor  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Pawn.ForceVisibleToActor  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Pawn.GetNoiseLocation  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function Pawn.GetLocation  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function Pawn.SetAnchor  (script 7 bytes)
+  0000: NewAnchor
+  0005: nothing
+  0006: <eos>
+
+function Pawn.CanAnchor  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Pawn.GetBestAnchor  (script 22 bytes)
+  0000: TestActor
+  0005: TestLocation
+  000a: bStartPoint
+  000f: out_Dist
+  0014: nothing
+  0015: <eos>
+
+function Pawn.ReachedDestination  (script 7 bytes)
+  0000: Goal
+  0005: nothing
+  0006: <eos>
+
+function Pawn.ReachedPoint  (script 12 bytes)
+  0000: Point
+  0005: NewAnchor
+  000a: nothing
+  000b: <eos>
+
+function Pawn.ForceCrouch  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.ForceUnCrouch  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.SetPushesRigidBodies  (script 7 bytes)
+  0000: NewPush
+  0005: nothing
+  0006: <eos>
+
+function Pawn.GetReachThresholdAdjusts  (script 63 bytes)
+  0000: PawnThresholdAdjust = 0.0
+  000b: PawnUpThresholdAdjust = 0.0
+  0016: PawnDownThresholdAdjust = 0.0
+  0021: if !((Pawn(ReachGoal) != none)) goto 0x003c
+  0031: PawnThresholdAdjust = 20.0
+  003c: return nothing
+  003e: <eos>
+
+function Pawn.GetBoundingCylinder  (script 12 bytes)
+  0000: CollisionRadius
+  0005: CollisionHeight
+  000a: nothing
+  000b: <eos>
+
+function Pawn.IsValidEnemy  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Pawn.SpecialMoveTo  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Pawn.GetOriginalBaseEyeheight  (script 13 bytes)
+  0000: return default.BaseEyeHeight
+  0006: return return
+  000c: <eos>
+
+function Pawn.SetBaseEyeheight  (script 73 bytes)
+  0000: if !(!self.bIsCrouched) goto 0x001e
+  000b: self.BaseEyeHeight = GetOriginalBaseEyeheight()
+  001b: goto 0x0046
+  001e: self.BaseEyeHeight = obj'Core.Math'.static.FMin((0.8 * self.CrouchHeight), (self.CrouchHeight - cast3f(10)))
+  0046: return nothing
+  0048: <eos>
+
+function Pawn.PlayerChangedTeam  (script 24 bytes)
+  0000: Died(none, obj'DamageType', self.Location)
+  0015: return nothing
+  0017: <eos>
+
+function Pawn.Reset  (script 57 bytes)
+  0000: if !(((self.Controller == none) || self.Controller.bIsPlayer)) goto 0x0030
+  001f: DetachFromController()
+  002a: DestroyActor()
+  002d: goto 0x0036
+  0030: Actor.Reset()
+  0036: return nothing
+  0038: <eos>
+
+function Pawn.OnStreamedOut  (script 34 bytes)
+  0000: get_PawnDistancesManager().RemovePawn(self)
+  0019: Actor.OnStreamedOut()
+  001f: return nothing
+  0021: <eos>
+
+function Pawn.OnPieSessionEnding  (script 34 bytes)
+  0000: get_PawnDistancesManager().ForceRemovePawn(self)
+  0019: OnPieSessionEnding()
+  001f: return nothing
+  0021: <eos>
+
+function Pawn.GetAge  (script 29 bytes)
+  0000: return (self.WorldInfo.TimeSeconds - self.SpawnTime)
+  0016: return return
+  001c: <eos>
+
+function Pawn.OnDestroy  (script 43 bytes)
+  0000: self.WorldInfo.Game.NotifyExplicitDestroy(self)
+  001d: Actor.OnDestroy(Action)
+  0028: return nothing
+  002a: <eos>
+
+function Pawn.StopFiring  (script 53 bytes)
+  0000: if !((self.Weapon != none)) goto 0x002c
+  000b: self.Weapon.StopFire(self.Weapon.CurrentFireMode)
+  002c: return true
+  002e: return return
+  0034: <eos>
+
+function Pawn.StartFire  (script 49 bytes)
+  0000: if !(self.bNoWeaponFiring) goto 0x000b
+  0009: return nothing
+  000b: if !((self.InvManager != none)) goto 0x002e
+  0016: self.InvManager.StartFire(FireModeNum)
+  002e: return nothing
+  0030: <eos>
+
+function Pawn.StopFire  (script 38 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0023
+  000b: self.InvManager.StopFire(FireModeNum)
+  0023: return nothing
+  0025: <eos>
+
+function Pawn.SetFiringMode  (script 48 bytes)
+  0000: if !((cast3a(FiringModeNum) != cast3a(self.FiringMode))) goto 0x002d
+  0013: self.FiringMode = FiringModeNum
+  001e: self.bForceNetUpdate = true
+  0026: Pawn.FiringModeUpdated(false)
+  002d: return nothing
+  002f: <eos>
+
+function Pawn.FiringModeUpdated  (script 44 bytes)
+  0000: if !((self.Weapon != none)) goto 0x0029
+  000b: self.Weapon.FireModeUpdated(self.FiringMode, bViaReplication)
+  0029: return nothing
+  002b: <eos>
+
+function Pawn.IncrementFlashCount  (script 64 bytes)
+  0000: self.bForceNetUpdate = true
+  0008: AddAdd_Byte(self.FlashCount)
+  000f: if !((cast3a(self.FlashCount) == 0)) goto 0x0027
+  001c: (self.FlashCount += cast3d(2))
+  0027: SetFiringMode(FireModeNum)
+  0036: Pawn.FlashCountUpdated(false)
+  003d: return nothing
+  003f: <eos>
+
+function Pawn.ClearFlashCount  (script 39 bytes)
+  0000: if !((cast3a(self.FlashCount) != 0)) goto 0x0024
+  000d: self.bForceNetUpdate = true
+  0015: self.FlashCount = 0
+  001d: Pawn.FlashCountUpdated(false)
+  0024: return nothing
+  0026: <eos>
+
+function Pawn.SetFlashImpact  (script 118 bytes)
+  0000: self.bForceNetUpdate = true
+  0008: if !((Impact == self.FlashImpact)) goto 0x003c
+  001a: (self.FlashImpact.HitLocation += vect(0,0,1))
+  0039: goto 0x0047
+  003c: self.FlashImpact = Impact
+  0047: self.HitLocationReplicated = self.FlashImpact.HitLocation
+  005d: SetFiringMode(FireModeNum)
+  006c: Pawn.FlashImpactUpdated(false)
+  0073: return nothing
+  0075: <eos>
+
+function Pawn.ClearFlashImpact  (script 84 bytes)
+  0000: if !(!obj'Core.Math'.static.IsZero(self.FlashImpact.HitLocation)) goto 0x0051
+  0021: self.bForceNetUpdate = true
+  0029: self.FlashImpact = ClearedImpact
+  0034: self.HitLocationReplicated = self.FlashImpact.HitLocation
+  004a: Pawn.FlashImpactUpdated(false)
+  0051: return nothing
+  0053: <eos>
+
+function Pawn.FlashCountUpdated  (script 48 bytes)
+  0000: if !((cast3a(self.FlashCount) > 0)) goto 0x0021
+  000d: WeaponFired(bViaReplication, )
+  001e: goto 0x002d
+  0021: Pawn.WeaponStoppedFiring(bViaReplication)
+  002d: return nothing
+  002f: <eos>
+
+function Pawn.FlashImpactUpdated  (script 72 bytes)
+  0000: if !(!obj'Core.Math'.static.IsZero(self.FlashImpact.HitLocation)) goto 0x0039
+  0021: WeaponFired(bViaReplication, self.FlashImpact)
+  0036: goto 0x0045
+  0039: Pawn.WeaponStoppedFiring(bViaReplication)
+  0045: return nothing
+  0047: <eos>
+
+function Pawn.NewHitLocationReceived  (script 273 bytes)
+  0000: if !(((self.Weapon != none) && !obj'Core.Math'.static.IsZero(self.HitLocationReplicated))) goto 0x00f1
+  0023: RayDir = obj'Core.Math'.static.Normal((self.HitLocationReplicated - self.Weapon.GetShootingFromLocation()))
+  004e: self.FlashImpact.HitActor = Trace(self.FlashImpact.HitLocation, self.FlashImpact.HitNormal, none, (self.HitLocationReplicated + (RayDir * cast3f(32))), (self.HitLocationReplicated - (RayDir * cast3f(32))), true, TraceExtent, true, self.FlashImpact.HitInfo, 1)
+  00bf: if !((self.FlashImpact.HitActor == none)) goto 0x00ee
+  00d5: self.FlashImpact.HitLocation = self.HitLocationReplicated
+  00eb: goto 0x00ee
+  00ee: goto 0x0107
+  00f1: self.FlashImpact.HitLocation = self.HitLocationReplicated
+  0107: Pawn.FlashImpactUpdated(true)
+  010e: return nothing
+  0110: <eos>
+
+function Pawn.WeaponFired  (script 134 bytes)
+  0000: nothing
+  0001: AddAdd_Int(self.ShotCount)
+  0008: if !((self.Weapon != none)) goto 0x0030
+  0013: self.Weapon.PlayFireEffects(self.FiringMode, Impact)
+  0030: if !((Impact.HitActor != none)) goto 0x0083
+  0046: Impact.HitActor.TriggerStimulus(obj'StimulusType_WeaponFired', Impact.HitLocation, self.Controller)
+  0083: return nothing
+  0085: <eos>
+
+function Pawn.WeaponStoppedFiring  (script 45 bytes)
+  0000: self.ShotCount = 0
+  0007: if !((self.Weapon != none)) goto 0x002a
+  0012: self.Weapon.StopFireEffects(self.FiringMode)
+  002a: return nothing
+  002c: <eos>
+
+function Pawn.GetWeaponSpreadModifier  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Pawn.GetFireIntervalModifier  (script 13 bytes)
+  0000: return 1.0
+  0006: return return
+  000c: <eos>
+
+function Pawn.BotFire  (script 29 bytes)
+  0000: StartFire(ChooseFireMode())
+  0014: return true
+  0016: return return
+  001c: <eos>
+
+function Pawn.ChooseFireMode  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function Pawn.CanAttack  (script 45 bytes)
+  0000: if !((self.Weapon == none)) goto 0x000d
+  000b: return false
+  000d: return self.Weapon.CanAttack(Other)
+  0026: return return
+  002c: <eos>
+
+function Pawn.TooCloseToAttack  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Pawn.FireOnRelease  (script 40 bytes)
+  0000: if !((self.Weapon != none)) goto 0x001f
+  000b: return self.Weapon.FireOnRelease()
+  001f: return false
+  0021: return return
+  0027: <eos>
+
+function Pawn.HasRangedAttack  (script 16 bytes)
+  0000: return (self.Weapon != none)
+  0009: return return
+  000f: <eos>
+
+function Pawn.IsFiring  (script 40 bytes)
+  0000: if !((self.Weapon != none)) goto 0x001f
+  000b: return self.Weapon.IsFiring()
+  001f: return false
+  0021: return return
+  0027: <eos>
+
+function Pawn.NeedToTurn  (script 146 bytes)
+  0000: LookDir = cast39(self.Rotation)
+  000d: LookDir.Z = 0.0
+  0023: LookDir = obj'Core.Math'.static.Normal(LookDir)
+  0039: AimDir = (targ - self.Location)
+  004b: AimDir.Z = 0.0
+  0061: AimDir = obj'Core.Math'.static.Normal(AimDir)
+  0077: return ((LookDir dot AimDir) < 0.93)
+  008b: return return
+  0091: <eos>
+
+function Pawn.GetHumanReadableName  (script 44 bytes)
+  0000: if !((self.PlayerReplicationInfo != none)) goto 0x001f
+  000b: return self.PlayerReplicationInfo.GetHumanReadableName()
+  001f: return self.MenuName
+  0025: return return
+  002b: <eos>
+
+function Pawn.PlayTeleportEffect  (script 19 bytes)
+  0000: MakeNoise(1.0, )
+  0010: return nothing
+  0012: <eos>
+
+function Pawn.Teleport  (script 19 bytes)
+  0000: SetLocation(NewLocation)
+  0008: SetRotation(NewRotation)
+  0010: return nothing
+  0012: <eos>
+
+function Pawn.NotifyTeamChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.PossessedBy  (script 209 bytes)
+  0000: self.Controller = C
+  000b: self.NetPriority = 3.0
+  0016: self.NetUpdateFrequency = 100.0
+  0021: self.bForceNetUpdate = true
+  0029: if !((C.PlayerReplicationInfo != none)) goto 0x0051
+  003d: self.PlayerReplicationInfo = C.PlayerReplicationInfo
+  0051: Pawn.UpdateControllerOnPossess(bVehicleTransition)
+  005d: SetOwner(self.Controller)
+  0065: self.EyeHeight = self.BaseEyeHeight
+  0070: if !((PlayerController(C) != none)) goto 0x00c3
+  0080: if !((cast3a(self.WorldInfo.NetMode) != cast3a(0))) goto 0x00a1
+  0099: self.RemoteRole = 2
+  00a1: if !((self.Weapon != none)) goto 0x00c0
+  00ac: self.Weapon.ClientWeaponSet(false)
+  00c0: goto 0x00ce
+  00c3: self.RemoteRole = default.RemoteRole
+  00ce: return nothing
+  00d0: <eos>
+
+function Pawn.UpdateControllerOnPossess  (script 31 bytes)
+  0000: if !(!bVehicleTransition) goto 0x001c
+  000b: self.Controller.SetRotation(self.Rotation)
+  001c: return nothing
+  001e: <eos>
+
+function Pawn.UnPossessed  (script 51 bytes)
+  0000: self.bForceNetUpdate = true
+  0008: if !((self.DrivenVehicle != none)) goto 0x001e
+  0013: self.NetUpdateFrequency = 5.0
+  001e: self.PlayerReplicationInfo = none
+  0025: SetOwner(none)
+  0029: self.Controller = none
+  0030: return nothing
+  0032: <eos>
+
+function Pawn.GetDefaultCameraMode  (script 99 bytes)
+  0000: if !((((RequestedBy != none) && (RequestedBy.PlayerCamera != none)) && (RequestedBy.PlayerCamera.CameraStyle == 'Fixed'))) goto 0x0052
+  0048: return 'Fixed'
+  0052: return 'FirstPerson'
+  005c: return return
+  0062: <eos>
+
+function Pawn.DropToGround  (script 78 bytes)
+  0000: self.bCollideWorld = true
+  0008: if !(!IsDead()) goto 0x004b
+  0017: SetCollision(true, true, )
+  001d: SetPhysics(2, , )
+  002b: if !(IsHumanControlled()) goto 0x004b
+  0038: self.Controller.GotoState(self.LandMovementState, , , )
+  004b: return nothing
+  004d: <eos>
+
+function Pawn.CanGrabLadder  (script 102 bytes)
+  0000: return (((self.bCanClimbLadders && (self.Controller != none)) && (cast3a(self.Physics) != cast3a(9))) && ((cast3a(self.Physics) != cast3a(2)) || (obj'Core.Math'.static.Abs(self.Velocity.Z) <= self.JumpZ)))
+  005f: return return
+  0065: <eos>
+
+function Pawn.RecommendLongRangedAttack  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Pawn.RangedAttackTime  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function Pawn.SetWalking  (script 33 bytes)
+  0000: if !((bNewIsWalking != self.bIsWalking)) goto 0x001e
+  0011: self.bIsWalking = bNewIsWalking
+  001e: return nothing
+  0020: <eos>
+
+function Pawn.CanSplash  (script 136 bytes)
+  0000: if !(((((self.WorldInfo.TimeSeconds - self.SplashTime) > 0.15) && ((cast3a(self.Physics) == cast3a(2)) || (cast3a(self.Physics) == cast3a(4)))) && (obj'Core.Math'.static.Abs(self.Velocity.Z) > cast3f(100)))) goto 0x007f
+  0069: self.SplashTime = self.WorldInfo.TimeSeconds
+  007d: return true
+  007f: return false
+  0081: return return
+  0087: <eos>
+
+function Pawn.EndClimbLadder  (script 63 bytes)
+  0000: if !((self.Controller != none)) goto 0x001e
+  000b: self.Controller.EndClimbLadder()
+  001e: if !((cast3a(self.Physics) == cast3a(9))) goto 0x003c
+  002e: SetPhysics(2, , )
+  003c: return nothing
+  003e: <eos>
+
+function Pawn.ClimbLadder  (script 81 bytes)
+  0000: self.OnLadder = L
+  000b: SetRotation(self.OnLadder.WallDir)
+  001c: SetPhysics(9, , )
+  002a: if !(IsHumanControlled()) goto 0x004e
+  0037: self.Controller.GotoState('PlayerClimbing', , , )
+  004e: return nothing
+  0050: <eos>
+
+function Pawn.DisplayDebug  (script 2042 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: if !((self.PlayerReplicationInfo == none)) goto 0x007b
+  001f: Canvas.DrawTextNormal("NO PLAYERREPLICATIONINFO", false, , )
+  004f: (out_YPos += out_YL)
+  005b: Canvas.SetPos(4.0, out_YPos)
+  0078: goto 0x009d
+  007b: self.PlayerReplicationInfo.DisplayDebug(HUD, out_YL, out_YPos)
+  009d: Actor.DisplayDebug(HUD, out_YL, out_YPos)
+  00b2: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  00d5: Canvas.DrawTextNormal(("Health " $ cast55(self.Health)), , , )
+  00fd: (out_YPos += out_YL)
+  0109: Canvas.SetPos(4.0, out_YPos)
+  0126: if !(HUD.ShouldDisplayDebug('AI')) goto 0x01c7
+  0145: Canvas.DrawTextNormal(((((("Anchor " $ cast56(self.Anchor)) $ " Serpentine Dist ") $ cast55(self.SerpentineDist)) $ " Time ") $ cast55(self.SerpentineTime)), , , )
+  019e: (out_YPos += out_YL)
+  01aa: Canvas.SetPos(4.0, out_YPos)
+  01c7: if !(HUD.ShouldDisplayDebug('Physics')) goto 0x0423
+  01e6: T = ((((("Floor " $ cast58(self.Floor)) $ " DesiredSpeed ") $ cast55(self.DesiredSpeed)) $ " Crouched ") $ cast54(self.bIsCrouched))
+  0230: if !(((self.OnLadder != none) || (cast3a(self.Physics) == cast3a(9)))) goto 0x0270
+  024d: T = ((T $ " on ladder ") $ cast56(self.OnLadder))
+  0270: Canvas.DrawTextNormal(T, , , )
+  028b: (out_YPos += out_YL)
+  0297: Canvas.SetPos(4.0, out_YPos)
+  02b4: T = ("Collision Component:" @ cast56(self.CollisionComponent))
+  02d9: Canvas.DrawTextNormal(T, , , )
+  02f4: (out_YPos += out_YL)
+  0300: Canvas.SetPos(4.0, out_YPos)
+  031d: T = ("bForceMaxAccel:" @ cast54(self.bForceMaxAccel))
+  033e: Canvas.DrawTextNormal(T, , , )
+  0359: (out_YPos += out_YL)
+  0365: Canvas.SetPos(4.0, out_YPos)
+  0382: if !((self.Mesh != none)) goto 0x0423
+  038d: T = ((("RootMotionMode:" @ cast52(self.Mesh.RootMotionMode)) @ "RootMotionVelocity:") @ cast58(self.Mesh.RootMotionVelocity))
+  03df: Canvas.DrawTextNormal(T, , , )
+  03fa: (out_YPos += out_YL)
+  0406: Canvas.SetPos(4.0, out_YPos)
+  0423: if !(HUD.ShouldDisplayDebug('Camera')) goto 0x04b2
+  0442: Canvas.DrawTextNormal(((("EyeHeight " $ cast55(self.EyeHeight)) $ " BaseEyeHeight ") $ cast55(self.BaseEyeHeight)), , , )
+  0489: (out_YPos += out_YL)
+  0495: Canvas.SetPos(4.0, out_YPos)
+  04b2: if !((self.Controller == none)) goto 0x0558
+  04bd: Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  04dc: Canvas.DrawTextNormal("NO CONTROLLER", , , )
+  0501: (out_YPos += out_YL)
+  050d: Canvas.SetPos(4.0, out_YPos)
+  052a: HUD.PlayerOwner.DisplayDebug(HUD, out_YL, out_YPos)
+  0555: goto 0x057a
+  0558: self.Controller.DisplayDebug(HUD, out_YL, out_YPos)
+  057a: if !(HUD.ShouldDisplayDebug('Weapon')) goto 0x0632
+  0599: if !((self.Weapon == none)) goto 0x0610
+  05a4: Canvas.SetDrawColor(0, cast3d(255), 0, cast3d(255))
+  05c3: Canvas.DrawTextNormal("NO WEAPON", , , )
+  05e4: (out_YPos += out_YL)
+  05f0: Canvas.SetPos(4.0, out_YPos)
+  060d: goto 0x0632
+  0610: self.Weapon.DisplayDebug(HUD, out_YL, out_YPos)
+  0632: if !(HUD.ShouldDisplayDebug('Animation')) goto 0x07f7
+  0651: if !(((self.Mesh != none) && (self.Mesh.Animations != none))) goto 0x07f7
+  0672: AnimTreeRootNode = AnimTree(self.Mesh.Animations)
+  068b: if !((AnimTreeRootNode != none)) goto 0x07f7
+  0696: Canvas.DrawTextNormal(("AnimGroups count:" @ cast53(AnimTreeRootNode.AnimGroups.Length)), , , )
+  06d2: (out_YPos += out_YL)
+  06de: Canvas.SetPos(4.0, out_YPos)
+  06fb: I = 0
+  0702: if !((I < AnimTreeRootNode.AnimGroups.Length)) goto 0x07f7
+  071b: Canvas.DrawTextNormal((((((" GroupName:" @ cast57(I[AnimTreeRootNode.AnimGroups].GroupName)) @ "NodeCount:") @ cast53(I[AnimTreeRootNode.AnimGroups].SeqNodes.Length)) @ "RateScale:") @ cast55(I[AnimTreeRootNode.AnimGroups].RateScale)), , , )
+  07c4: (out_YPos += out_YL)
+  07d0: Canvas.SetPos(4.0, out_YPos)
+  07ed: AddAdd_Int(I)
+  07f4: goto 0x0702
+  07f7: return nothing
+  07f9: <eos>
+
+function Pawn.IsHumanControlled  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.IsLocallyControlled  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.IsPlayerPawn  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.WasPlayerPawn  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Pawn.IsFirstPerson  (script 56 bytes)
+  0000: PC = PlayerController(self.Controller)
+  0010: return ((PC != none) && PC.UsingFirstPersonCamera())
+  0031: return return
+  0037: <eos>
+
+function Pawn.ProcessViewRotation  (script 96 bytes)
+  0000: (out_ViewRotation += out_DeltaRot)
+  000d: out_DeltaRot = rot(0,0,0)
+  0020: if !((PlayerController(self.Controller) != none)) goto 0x005d
+  0030: out_ViewRotation = PlayerController(self.Controller).LimitViewRotation(out_ViewRotation, self.ViewPitchMin, self.ViewPitchMax)
+  005d: return nothing
+  005f: <eos>
+
+function Pawn.GetActorEyesViewPoint  (script 35 bytes)
+  0000: out_Location = GetPawnViewLocation()
+  0010: out_Rotation = GetViewRotation()
+  0020: return nothing
+  0022: <eos>
+
+function Pawn.GetViewRotation  (script 119 bytes)
+  0000: if !((self.Controller != none)) goto 0x001d
+  000b: return self.Controller.Rotation
+  001a: goto 0x006a
+  001d: if !((cast3a(self.Role) < cast3a(3))) goto 0x006a
+  002d: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x0069)
+  0044: if !((PC.ViewTarget == self)) goto 0x0068
+  0058: iterpop
+  0059: return PC.BlendedTargetViewRotation
+  0068: iternext
+  0069: iterpop
+  006a: return self.Rotation
+  0070: return return
+  0076: <eos>
+
+function Pawn.GetPawnViewLocation  (script 69 bytes)
+  0000: if !((IsDying() || IsDead())) goto 0x0022
+  001c: return self.Location
+  0022: return (self.Location + (vect(0,0,1) * self.BaseEyeHeight))
+  003e: return return
+  0044: <eos>
+
+function Pawn.GetWeaponStartTraceLocation  (script 65 bytes)
+  0000: nothing
+  0001: if !((self.Controller != none)) goto 0x002f
+  000c: self.Controller.GetPlayerViewPoint(POVLoc, POVRot)
+  0029: return POVLoc
+  002f: return GetPawnViewLocation()
+  003a: return return
+  0040: <eos>
+
+function Pawn.GetBaseAimRotation  (script 93 bytes)
+  0000: if !(((GetController() != none) && !Pawn.InFreeCam())) goto 0x0045
+  001d: GetController().GetPlayerViewPoint(POVLoc, POVRot)
+  003f: return POVRot
+  0045: POVRot = self.Rotation
+  0050: return POVRot
+  0056: return return
+  005c: <eos>
+
+function Pawn.InFreeCam  (script 93 bytes)
+  0000: PC = PlayerController(self.Controller)
+  0010: return (((PC != none) && (PC.PlayerCamera != none)) && (PC.PlayerCamera.CameraStyle == 'FreeCam'))
+  0056: return return
+  005c: <eos>
+
+function Pawn.GetAdjustedAimFor  (script 77 bytes)
+  0000: if !(((self.Controller == none) || (cast3a(self.Role) < cast3a(3)))) goto 0x0028
+  001d: return GetBaseAimRotation()
+  0028: return self.Controller.GetAdjustedAimFor(W, StartFireLoc)
+  0046: return return
+  004c: <eos>
+
+function Pawn.SetViewRotation  (script 42 bytes)
+  0000: if !((self.Controller != none)) goto 0x001f
+  000b: self.Controller.SetRotation(NewRotation)
+  001c: goto 0x0027
+  001f: SetRotation(NewRotation)
+  0027: return nothing
+  0029: <eos>
+
+function Pawn.PawnCalcCamera  (script 38 bytes)
+  0000: return CalcCamera(fDeltaTime, out_CamLoc, out_CamRot, out_FOV)
+  001f: return return
+  0025: <eos>
+
+function Pawn.InGodMode  (script 36 bytes)
+  0000: return ((self.Controller != none) && self.Controller.bGodMode)
+  001d: return return
+  0023: <eos>
+
+function Pawn.AffectedByHitEffects  (script 36 bytes)
+  0000: return ((self.Controller == none) || self.Controller.bAffectedByHitEffects)
+  001d: return return
+  0023: <eos>
+
+function Pawn.InPseudoGodMode  (script 36 bytes)
+  0000: return ((self.Controller != none) && self.Controller.bPseudoGodMode)
+  001d: return return
+  0023: <eos>
+
+function Pawn.NearMoveTarget  (script 67 bytes)
+  0000: if !(((self.Controller == none) || (self.Controller.MoveTarget == none))) goto 0x0023
+  0021: return false
+  0023: return ReachedDestination(self.Controller.MoveTarget)
+  003c: return return
+  0042: <eos>
+
+function Pawn.GetMoveTarget  (script 35 bytes)
+  0000: if !((self.Controller == none)) goto 0x000d
+  000b: return none
+  000d: return self.Controller.MoveTarget
+  001c: return return
+  0022: <eos>
+
+function Pawn.SetMoveTarget  (script 34 bytes)
+  0000: if !((self.Controller != none)) goto 0x001f
+  000b: self.Controller.MoveTarget = NewTarget
+  001f: return nothing
+  0021: <eos>
+
+function Pawn.LineOfSightTo  (script 45 bytes)
+  0000: nothing
+  0001: return ((self.Controller != none) && self.Controller.LineOfSightTo(Other, chkLocation, ))
+  0026: return return
+  002c: <eos>
+
+function Pawn.AdjustedStrength  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function Pawn.HandlePickup  (script 54 bytes)
+  0000: MakeNoise(0.2, )
+  0010: if !((self.Controller != none)) goto 0x0033
+  001b: self.Controller.HandlePickup(Inv)
+  0033: return nothing
+  0035: <eos>
+
+function Pawn.ReceiveLocalizedMessage  (script 72 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !((PlayerController(self.Controller) != none)) goto 0x0045
+  0014: PlayerController(self.Controller).ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0045: return nothing
+  0047: <eos>
+
+function Pawn.ClientMessage  (script 55 bytes)
+  0000: nothing
+  0001: if !((PlayerController(self.Controller) != none)) goto 0x0034
+  0011: PlayerController(self.Controller).ClientMessage(S, Type, )
+  0034: return nothing
+  0036: <eos>
+
+function Pawn.FinishedInterpolation  (script 13 bytes)
+  0000: DropToGround()
+  000a: return nothing
+  000c: <eos>
+
+function Pawn.JumpOutOfWater  (script 79 bytes)
+  0000: Falling()
+  000a: self.Velocity = (jumpDir * self.WaterSpeed)
+  001c: self.Acceleration = (jumpDir * self.AccelRate)
+  002e: self.Velocity.Z = self.OutofWaterZ
+  0044: self.bUpAndOut = true
+  004c: return nothing
+  004e: <eos>
+
+function Pawn.ModifyVelocity  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.FellOutOfWorld  (script 114 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x006f
+  0010: self.Health = -1.0
+  001b: Died(none, dmgType, self.Location)
+  0030: if !((dmgType == none)) goto 0x006f
+  003b: SetPhysics(0, , )
+  0049: SetHidden(true)
+  0054: self.LifeSpan = obj'Core.Math'.static.FMin(self.LifeSpan, 1.0)
+  006f: return nothing
+  0071: <eos>
+
+function Pawn.OutsideWorldBounds  (script 82 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x001b
+  0010: KilledBy(self)
+  001b: SetPhysics(0, , )
+  0029: SetHidden(true)
+  0034: self.LifeSpan = obj'Core.Math'.static.FMin(self.LifeSpan, 1.0)
+  004f: return nothing
+  0051: <eos>
+
+function Pawn.UnCrouch  (script 34 bytes)
+  0000: if !((self.bIsCrouched || self.bWantsToCrouch)) goto 0x001f
+  0014: ShouldCrouch(false)
+  001f: return nothing
+  0021: <eos>
+
+function Pawn.ShouldCrouch  (script 16 bytes)
+  0000: self.bWantsToCrouch = bCrouch
+  000d: return nothing
+  000f: <eos>
+
+function Pawn.AdjustCollisionSize  (script 17 bytes)
+  0000: NewRadius
+  0005: NewHeight
+  000a: bClientSimulation
+  000f: nothing
+  0010: <eos>
+
+function Pawn.EndCrouch  (script 37 bytes)
+  0000: (self.EyeHeight -= HeightAdjust)
+  000c: (self.OldZ += HeightAdjust)
+  0018: SetBaseEyeheight()
+  0022: return nothing
+  0024: <eos>
+
+function Pawn.StartCrouch  (script 37 bytes)
+  0000: (self.EyeHeight += HeightAdjust)
+  000c: (self.OldZ -= HeightAdjust)
+  0018: SetBaseEyeheight()
+  0022: return nothing
+  0024: <eos>
+
+function Pawn.RestartPlayer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.ShouldIgnoreForces  (script 14 bytes)
+  0000: return self.bIgnoreForces
+  0007: return return
+  000d: <eos>
+
+function Pawn.AddVelocity  (script 230 bytes)
+  0000: nothing
+  0001: if !((ShouldIgnoreForces(DamageType) || (NewVelocity == vect(0,0,0)))) goto 0x002e
+  002c: return nothing
+  002e: if !(((cast3a(self.Physics) == cast3a(1)) || (((cast3a(self.Physics) == cast3a(9)) || (cast3a(self.Physics) == cast3a(8))) && (NewVelocity.Z > default.JumpZ)))) goto 0x008c
+  007e: SetPhysics(2, , )
+  008c: if !(((self.Velocity.Z > default.JumpZ) && (NewVelocity.Z > cast3f(0)))) goto 0x00d7
+  00c0: (NewVelocity.Z *= 0.5)
+  00d7: (self.Velocity += NewVelocity)
+  00e3: return nothing
+  00e5: <eos>
+
+function Pawn.KilledBy  (script 77 bytes)
+  0000: self.Health = 0.0
+  000b: if !((EventInstigator != none)) goto 0x0031
+  0016: Killer = EventInstigator.Controller
+  002a: self.LastHitBy = none
+  0031: Died(Killer, obj'DmgType_Suicided', self.Location)
+  004a: return nothing
+  004c: <eos>
+
+function Pawn.TakeFallingDamage  (script 339 bytes)
+  0000: if !((self.Velocity.Z < (-0.5 * self.MaxFallSpeed))) goto 0x00eb
+  0021: if !((cast3a(self.Role) == cast3a(3))) goto 0x00e8
+  0031: MakeNoise(1.0, )
+  0041: if !((self.Velocity.Z < (cast3f(-1) * self.MaxFallSpeed))) goto 0x00e8
+  0064: EffectiveSpeed = self.Velocity.Z
+  007a: if !(TouchingWaterVolume()) goto 0x0092
+  0087: (EffectiveSpeed += cast3f(100))
+  0092: if !((EffectiveSpeed < (cast3f(-1) * self.MaxFallSpeed))) goto 0x00e8
+  00aa: TakeDamage(((-100.0 * (EffectiveSpeed + self.MaxFallSpeed)) / self.MaxFallSpeed), none, self.Location, vect(0,0,0), obj'DmgType_Fell', , )
+  00e8: goto 0x0150
+  00eb: if !((self.Velocity.Z < (-1.4 * self.JumpZ))) goto 0x011f
+  010c: MakeNoise(0.5, )
+  011c: goto 0x0150
+  011f: if !((self.Velocity.Z < (-0.8 * self.JumpZ))) goto 0x0150
+  0140: MakeNoise(0.2, )
+  0150: return nothing
+  0152: <eos>
+
+function Pawn.Restart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.ClientRestart  (script 51 bytes)
+  0000: self.Velocity = vect(0,0,0)
+  0013: self.Acceleration = vect(0,0,0)
+  0026: SetBaseEyeheight()
+  0030: return nothing
+  0032: <eos>
+
+function Pawn.ClientSetLocation  (script 43 bytes)
+  0000: if !((self.Controller != none)) goto 0x0028
+  000b: self.Controller.ClientSetLocation(NewLocation, NewRotation)
+  0028: return nothing
+  002a: <eos>
+
+function Pawn.ClientSetRotation  (script 39 bytes)
+  0000: if !((self.Controller != none)) goto 0x0024
+  000b: self.Controller.ClientSetRotation(NewRotation, )
+  0024: return nothing
+  0026: <eos>
+
+function Pawn.FaceRotation  (script 113 bytes)
+  0000: if !(!Pawn.InFreeCam()) goto 0x006e
+  000b: if !((cast3a(self.Physics) == cast3a(9))) goto 0x0032
+  001b: NewRotation = self.OnLadder.WallDir
+  002f: goto 0x0066
+  0032: if !(((cast3a(self.Physics) == cast3a(1)) || (cast3a(self.Physics) == cast3a(2)))) goto 0x0066
+  0054: NewRotation.Pitch = 0
+  0066: SetRotation(NewRotation)
+  006e: return nothing
+  0070: <eos>
+
+function Pawn.EncroachingOn  (script 102 bytes)
+  0000: if !((Other.bWorldGeometry || Other.bBlocksTeleport)) goto 0x0028
+  0026: return true
+  0028: if !((((self.Controller == none) || !self.Controller.bIsPlayer) && (Pawn(Other) != none))) goto 0x005d
+  005b: return true
+  005d: return false
+  005f: return return
+  0065: <eos>
+
+function Pawn.EncroachedBy  (script 48 bytes)
+  0000: if !(((Pawn(Other) != none) && (Vehicle(Other) == none))) goto 0x002d
+  0022: Pawn.gibbedBy(Other)
+  002d: return nothing
+  002f: <eos>
+
+function Pawn.gibbedBy  (script 100 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: if !((Pawn(Other) != none)) goto 0x004c
+  0022: Died(Pawn(Other).Controller, obj'DmgType_Telefragged', self.Location)
+  0049: goto 0x0061
+  004c: Died(none, obj'DmgType_Telefragged', self.Location)
+  0061: return nothing
+  0063: <eos>
+
+function Pawn.JumpOffPawn  (script 510 bytes)
+  0000: FlatVelocity = (self.Base.Velocity * vect(1,1,0))
+  0024: FlatOffset = ((self.Location - self.Base.Location) * vect(1,1,0))
+  004f: if !((self.Base.Location.Z > self.Location.Z)) goto 0x007f
+  007d: return nothing
+  007f: if !((obj'Core.Math'.static.VSizeSq(FlatVelocity) > cast3f(0))) goto 0x00ba
+  009f: Direction = -obj'Core.Math'.static.Normal(FlatVelocity)
+  00b7: goto 0x0127
+  00ba: if !((obj'Core.Math'.static.VSizeSq(FlatOffset) > cast3f(0))) goto 0x00f3
+  00da: Direction = obj'Core.Math'.static.Normal(FlatOffset)
+  00f0: goto 0x0127
+  00f3: Direction = obj'Core.Math'.static.Normal((obj'Core.Random'.static.RandomUnitVector() * vect(1,1,0)))
+  0127: SecondsToClearCylinder = 0.2
+  0132: VerticalVelocity = 1000.0
+  013d: self.Base.GetBoundingCylinder(CylinderRadius, CylinderHeight)
+  015a: Speed = (CylinderRadius / SecondsToClearCylinder)
+  016c: self.Velocity.X = (Direction.X * Speed)
+  0194: self.Velocity.Y = (Direction.Y * Speed)
+  01bc: self.Velocity.Z = (self.Base.Velocity.Z + VerticalVelocity)
+  01ed: SetPhysics(2, , )
+  01fb: return nothing
+  01fd: <eos>
+
+function Pawn.BaseChange  (script 192 bytes)
+  0000: if !(((Pawn(self.Base) != none) && ((self.DrivenVehicle == none) || !self.DrivenVehicle.IsBasedOn(self.Base)))) goto 0x007d
+  003c: if !(!Pawn(self.Base).CanBeBaseForPawn(self)) goto 0x007d
+  005a: Pawn(self.Base).CrushedBy(self)
+  0073: JumpOffPawn()
+  007d: Dyn = DynamicSMActor(self.Base)
+  008d: if !(((Dyn != none) && !Dyn.CanBasePawn(self))) goto 0x00bd
+  00b3: JumpOffPawn()
+  00bd: return nothing
+  00bf: <eos>
+
+function Pawn.CanBeBaseForPawn  (script 14 bytes)
+  0000: return self.bCanBeBaseForPawns
+  0007: return return
+  000d: <eos>
+
+function Pawn.CrushedBy  (script 124 bytes)
+  0000: TakeDamage((((1.0 - (OtherPawn.Velocity.Z / cast3f(400))) * OtherPawn.Mass) / self.Mass), OtherPawn.Controller, self.Location, (0.5 * OtherPawn.Velocity), obj'DmgType_Crushed', , )
+  0079: return nothing
+  007b: <eos>
+
+function Pawn.DetachFromController  (script 183 bytes)
+  0000: nothing
+  0001: if !(((self.Controller != none) && (self.Controller.Pawn == self))) goto 0x00b4
+  0022: OldController = self.Controller
+  002d: self.Controller.PawnDied(self)
+  0041: if !((self.Controller != none)) goto 0x005f
+  004c: self.Controller.UnPossess()
+  005f: if !((((bDestroyController && (OldController != none)) && !OldController.bDeleteMe) && !OldController.bIsPlayer)) goto 0x00ad
+  00a1: OldController.DestroyActor()
+  00ad: self.Controller = none
+  00b4: return nothing
+  00b6: <eos>
+
+function Pawn.Destroyed  (script 113 bytes)
+  0000: DetachFromController()
+  000b: if !((self.InvManager != none)) goto 0x0022
+  0016: self.InvManager.DestroyActor()
+  0022: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x003d
+  003b: return nothing
+  003d: SetAnchor(none)
+  0048: self.Weapon = none
+  004f: get_PawnDistancesManager().RemovePawn(self)
+  0068: Actor.Destroyed()
+  006e: return nothing
+  0070: <eos>
+
+function Pawn.PreBeginPlay  (script 62 bytes)
+  0000: if !((self.HealthMax == cast3f(0))) goto 0x0018
+  000d: self.HealthMax = default.Health
+  0018: Actor.PreBeginPlay()
+  001e: self.Instigator = self
+  0025: self.DesiredRotation = self.Rotation
+  0030: self.EyeHeight = self.BaseEyeHeight
+  003b: return nothing
+  003d: <eos>
+
+function Pawn.PostBeginPlay  (script 378 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.SplashTime = 0.0
+  0011: self.SpawnTime = self.WorldInfo.TimeSeconds
+  0025: self.EyeHeight = self.BaseEyeHeight
+  0030: self._WorkingMovementCapabilities.CylinderHeight = self.CylinderComponent.CollisionHeight
+  004f: self._WorkingMovementCapabilities.CylinderRadius = self.CylinderComponent.CollisionRadius
+  006e: if !(((self.WorldInfo.bStartup && (self.Health > cast3f(0))) && !self.bDontPossess)) goto 0x00a6
+  009c: SpawnDefaultController()
+  00a6: if !((((cast3a(self.Role) == cast3a(3)) && (self.InvManager == none)) && (self.InventoryManagerClass != none))) goto 0x015e
+  00d0: self.InvManager = Spawn(self.InventoryManagerClass, self, , , , , , )
+  00ec: if !((self.InvManager == none)) goto 0x014a
+  00f7: LogInternal((((("Warning! Couldn't spawn InventoryManager" @ cast56(self.InventoryManagerClass)) @ "for") @ cast56(self)) @ GetHumanReadableName()), , , )
+  0147: goto 0x015e
+  014a: self.InvManager.SetupFor(self)
+  015e: get_PawnDistancesManager().AddPawn(self)
+  0177: return nothing
+  0179: <eos>
+
+function Pawn.SpawnDefaultController  (script 154 bytes)
+  0000: if !((self.Controller != none)) goto 0x0050
+  000b: LogInternal(((("SpawnDefaultController" @ cast56(self)) @ ", Controller != None") @ cast56(self.Controller)), , , )
+  004e: return nothing
+  0050: if !((self.ControllerClass != none)) goto 0x0077
+  005b: self.Controller = Spawn(self.ControllerClass, , , , , , , )
+  0077: if !((self.Controller != none)) goto 0x0097
+  0082: self.Controller.Possess(self, false)
+  0097: return nothing
+  0099: <eos>
+
+function Pawn.OnAssignController  (script 189 bytes)
+  0000: if !((inAction.ControllerClass != none)) goto 0x008e
+  0014: if !((self.Controller != none)) goto 0x002a
+  001f: DetachFromController(true)
+  002a: self.Controller = Spawn(inAction.ControllerClass, , , , , , , )
+  004f: self.Controller.Possess(self, false)
+  0064: if !((AIController(self.Controller) != none)) goto 0x008b
+  0074: self.ControllerClass = class<AIController>(self.Controller.get_Class())
+  008b: goto 0x00ba
+  008e: WarnInternal("Assign controller w/o a class specified!")
+  00ba: return nothing
+  00bc: <eos>
+
+function Pawn.OnGiveInventory  (script 356 bytes)
+  0000: if !(inAction.bClearExisting) goto 0x0025
+  0012: self.InvManager.DiscardInventory()
+  0025: if !((inAction.InventoryList.Length > 0)) goto 0x0113
+  003a: idx = 0
+  0041: if !((idx < inAction.InventoryList.Length)) goto 0x0110
+  005a: InvClass = idx[inAction.InventoryList]
+  0074: if !((InvClass != none)) goto 0x00c5
+  007f: if !((FindInventoryType(InvClass, false) == none)) goto 0x00c2
+  0095: CreateInventory(InvClass, !((idx == 0) && inAction.ActivateInventory))
+  00c2: goto 0x0106
+  00c5: inAction.ScriptLog("WARNING: Attempting to give NULL inventory!", )
+  0106: AddAdd_Int(idx)
+  010d: goto 0x0041
+  0110: goto 0x0161
+  0113: inAction.ScriptLog("WARNING: Give Inventory without any inventory specified!", )
+  0161: return nothing
+  0163: <eos>
+
+function Pawn.Gasp  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.SetMovementPhysics  (script 68 bytes)
+  0000: if !(self.PhysicsVolume.bWaterVolume) goto 0x0023
+  0012: SetPhysics(3, , )
+  0020: goto 0x0041
+  0023: if !((cast3a(self.Physics) != cast3a(2))) goto 0x0041
+  0033: SetPhysics(2, , )
+  0041: return nothing
+  0043: <eos>
+
+function Pawn.AdjustDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function Pawn.SetHealth  (script 67 bytes)
+  0000: if !((Amount < cast3f(0))) goto 0x001b
+  000d: self.Health = 0.0
+  0018: goto 0x0040
+  001b: self.Health = Amount
+  0026: if !((self.Health >= self.HealthMax)) goto 0x0040
+  0035: self.Health = self.HealthMax
+  0040: return nothing
+  0042: <eos>
+
+function Pawn.AddHealth  (script 25 bytes)
+  0000: SetHealth((self.Health + Amount))
+  0016: return nothing
+  0018: <eos>
+
+function Pawn.GetHealth  (script 13 bytes)
+  0000: return self.Health
+  0006: return return
+  000c: <eos>
+
+function Pawn.GetHealthMax  (script 13 bytes)
+  0000: return self.HealthMax
+  0006: return return
+  000c: <eos>
+
+function Pawn.GetNormalizedHealth  (script 60 bytes)
+  0000: ActualHealthMax = GetHealthMax()
+  0010: if !((ActualHealthMax <= cast3f(0))) goto 0x0023
+  001d: return 0.0
+  0023: return (GetHealth() / ActualHealthMax)
+  0035: return return
+  003b: <eos>
+
+function Pawn.HealDamage  (script 98 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return false
+  0012: if !((!IsDead() && (self.Health < self.HealthMax))) goto 0x0059
+  0032: self.Health = obj'Core.Math'.static.FMin(self.HealthMax, (self.Health + Amount))
+  0054: return true
+  0056: goto 0x005b
+  0059: return false
+  005b: return return
+  0061: <eos>
+
+function Pawn.GetRigidBodyIsAwake  (script 41 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return false
+  000d: return self.Mesh.RigidBodyIsAwake()
+  0022: return return
+  0028: <eos>
+
+function Pawn.GetSkeletonBounds  (script 27 bytes)
+  0000: return self.Mesh.GetBounds()
+  0014: return return
+  001a: <eos>
+
+function Pawn.GetBoneLocation  (script 51 bytes)
+  0000: return ((self.Mesh != none) ? self.Mesh.GetBoneLocation(BoneName, ) : self.Location)
+  002c: return return
+  0032: <eos>
+
+function Pawn.GetBoneOrientation  (script 52 bytes)
+  0000: return obj'Core.Math'.static.QuatToRotator(self.Mesh.GetBoneQuaternion(BoneName, ))
+  002d: return return
+  0033: <eos>
+
+function Pawn.PruneDamagedBoneList  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.TakeRadiusDamageOnBones  (script 344 bytes)
+  0000: Pawn.PruneDamagedBoneList(Bones)
+  000b: idx = 0
+  0012: if !((idx < Bones.Length)) goto 0x014a
+  0022: HitInfo.BoneName = idx[Bones]
+  003e: HitInfo.HitComponent = self.Mesh
+  0054: BoneLoc = self.Mesh.GetBoneLocation(idx[Bones], )
+  0079: Dir = (BoneLoc - HurtOrigin)
+  008b: Dist = obj'Core.Math'.static.VSize(Dir)
+  00a1: Dir = obj'Core.Math'.static.Normal(Dir)
+  00b7: if !(bFullDamage) goto 0x00ce
+  00c0: DamageScale = 1.0
+  00cb: goto 0x00e7
+  00ce: DamageScale = (1.0 - (Dist / DamageRadius))
+  00e7: if !((DamageScale > 0.0)) goto 0x0138
+  00f6: TakeDamage((DamageScale * BaseDamage), InstigatedBy, BoneLoc, ((DamageScale * Momentum) * Dir), DamageType, HitInfo, DamageCauser)
+  0138: bResult = true
+  0140: AddAdd_Int(idx)
+  0147: goto 0x0012
+  014a: return bResult
+  0151: return return
+  0157: <eos>
+
+function Pawn.NotifyTakeHit  (script 58 bytes)
+  0000: if !((self.Controller != none)) goto 0x0037
+  000b: self.Controller.NotifyTakeHit(InstigatedBy, HitLocation, Damage, DamageType, Momentum)
+  0037: return nothing
+  0039: <eos>
+
+function Pawn.SetKillInstigator  (script 87 bytes)
+  0000: if !(((InstigatedBy != none) && (InstigatedBy != self.Controller))) goto 0x0025
+  001c: return InstigatedBy
+  0022: goto 0x004a
+  0025: if !((DamageType.static.default.bCausedByWorld && (self.LastHitBy != none))) goto 0x004a
+  0044: return self.LastHitBy
+  004a: return InstigatedBy
+  0050: return return
+  0056: <eos>
+
+function Pawn.TakeDamageHealthBelowZero  (script 140 bytes)
+  0000: PC = PlayerController(self.Controller)
+  0010: if !((PC != none)) goto 0x003c
+  001b: PC.ClientPlayForceFeedbackWaveform(DamageType.static.default.KilledFFWaveform)
+  003c: Killer = SetKillInstigator(InstigatedBy, DamageType)
+  0056: self.TearOffMomentum = GetDeathMomentum(Momentum, DamageType)
+  0070: Died(Killer, DamageType, HitLocation)
+  0089: return nothing
+  008b: <eos>
+
+function Pawn.TakeDamage  (script 910 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(((cast3a(self.Role) < cast3a(3)) || IsDead())) goto 0x0023
+  0021: return nothing
+  0023: if !((DamageType == none)) goto 0x00d4
+  002e: if !((InstigatedBy == none)) goto 0x006b
+  0039: WarnInternal("No damagetype for damage with no instigator")
+  0068: goto 0x00c9
+  006b: WarnInternal(((("No damagetype for damage by " $ cast56(InstigatedBy.Pawn)) $ " with weapon ") $ cast56(InstigatedBy.Pawn.Weapon)))
+  00c9: DamageType = obj'DamageType'
+  00d4: Damage = obj'Core.Math'.static.FMax(Damage, 0.0)
+  00ef: if !((((cast3a(self.Physics) == cast3a(1)) || (cast3a(self.Physics) == cast3a(10))) && DamageType.static.default.bExtraMomentumZ)) goto 0x0168
+  0125: Momentum.Z = obj'Core.Math'.static.FMax(Momentum.Z, (0.4 * obj'Core.Math'.static.VSize(Momentum)))
+  0168: Momentum = (Momentum / self.Mass)
+  017a: if !((self.DrivenVehicle != none)) goto 0x01b1
+  0185: self.DrivenVehicle.AdjustDriverDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType)
+  01b1: actualDamage = Damage
+  01bc: AdjustDamage(actualDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser)
+  01e9: if !((self.WorldInfo.Game != none)) goto 0x0233
+  01fd: self.WorldInfo.Game.ReduceDamage(actualDamage, self, InstigatedBy, HitLocation, Momentum, DamageType)
+  0233: Actor.TakeDamage(actualDamage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  025c: (self.Health -= actualDamage)
+  0268: if !((HitLocation == vect(0,0,0))) goto 0x028a
+  027f: HitLocation = self.Location
+  028a: PlayHit(actualDamage, InstigatedBy, HitLocation, DamageType, Momentum, HitInfo)
+  02b2: if !(((InstigatedBy != none) && (InstigatedBy != self.Controller))) goto 0x02d9
+  02ce: self.LastHitBy = InstigatedBy
+  02d9: if !((self.Health <= cast3f(0))) goto 0x0307
+  02e6: TakeDamageHealthBelowZero(InstigatedBy, HitLocation, Momentum, DamageType)
+  0304: goto 0x037b
+  0307: AddVelocity(Momentum, HitLocation, DamageType, HitInfo)
+  0325: Pawn.NotifyTakeHit(InstigatedBy, HitLocation, actualDamage, DamageType, Momentum)
+  0344: if !((self.DrivenVehicle != none)) goto 0x037b
+  034f: self.DrivenVehicle.NotifyDriverTakeHit(InstigatedBy, HitLocation, actualDamage, DamageType, Momentum)
+  037b: MakeNoise(1.0, )
+  038b: return nothing
+  038d: <eos>
+
+function Pawn.GetDeathMomentum  (script 13 bytes)
+  0000: return Momentum
+  0006: return return
+  000c: <eos>
+
+function Pawn.GetTeamNum  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.GetTeam  (script 158 bytes)
+  0000: if !(((self.Controller != none) && (self.Controller.PlayerReplicationInfo != none))) goto 0x003c
+  0021: return self.Controller.PlayerReplicationInfo.Team
+  0039: goto 0x0097
+  003c: if !((self.PlayerReplicationInfo != none)) goto 0x0059
+  0047: return self.PlayerReplicationInfo.Team
+  0056: goto 0x0097
+  0059: if !(((self.DrivenVehicle != none) && (self.DrivenVehicle.PlayerReplicationInfo != none))) goto 0x0095
+  007a: return self.DrivenVehicle.PlayerReplicationInfo.Team
+  0092: goto 0x0097
+  0095: return none
+  0097: return return
+  009d: <eos>
+
+function Pawn.IsSameTeam  (script 79 bytes)
+  0000: return (((Other != none) && (Other.GetTeam() != none)) && (Other.GetTeam() == GetTeam()))
+  0048: return return
+  004e: <eos>
+
+function Pawn.Died  (script 737 bytes)
+  0000: if !((Killer != none)) goto 0x0024
+  000b: Killer = Killer.GetKillerController()
+  0024: if !((DamageType == none)) goto 0x003a
+  002f: DamageType = obj'DamageType'
+  003a: if !(((self.bDeleteMe || (self.WorldInfo.Game == none)) || self.WorldInfo.Game.bLevelChange)) goto 0x0078
+  0076: return false
+  0078: if !(((DamageType.static.default.bCausedByWorld && ((Killer == none) || (Killer == self.Controller))) && (self.LastHitBy != none))) goto 0x00c0
+  00b5: Killer = self.LastHitBy
+  00c0: if !(self.WorldInfo.Game.PreventDeath(self, Killer, DamageType, HitLocation)) goto 0x010c
+  00ef: self.Health = cast3f(obj'Core.Math'.static.Max(cast44(self.Health), 1))
+  010a: return false
+  010c: self.Health = cast3f(obj'Core.Math'.static.Min(0, cast44(self.Health)))
+  0127: TriggerEventClass(obj'SeqEvent_Death', self, , )
+  0139: foreach self.LatentActions(Action,) (end 0x0168)
+  0148: if !((Action != none)) goto 0x0167
+  0153: Action.AbortFor(self)
+  0167: iternext
+  0168: iterpop
+  0169: self.LatentActions.Length = 0
+  0171: if !((self.DrivenVehicle != none)) goto 0x01a6
+  017c: self.Velocity = self.DrivenVehicle.Velocity
+  0190: self.DrivenVehicle.DriverDied()
+  01a3: goto 0x01c4
+  01a6: if !((self.Weapon != none)) goto 0x01c4
+  01b1: self.Weapon.HolderDied()
+  01c4: if !((self.Controller != none)) goto 0x01fe
+  01cf: self.WorldInfo.Game.Killed(Killer, self.Controller, self, DamageType)
+  01fb: goto 0x022f
+  01fe: self.WorldInfo.Game.Killed(Killer, Controller(self.Owner), self, DamageType)
+  022f: self.DrivenVehicle = none
+  0236: if !((self.InvManager != none)) goto 0x027d
+  0241: self.InvManager.OwnerEvent('Died')
+  025d: if !(ShouldDestroyInventoryManagerWhenDying()) goto 0x027d
+  026a: self.InvManager.DestroyActor()
+  0276: self.InvManager = none
+  027d: (self.Velocity.Z *= 1.3)
+  0294: if !(IsHumanControlled()) goto 0x02b9
+  02a1: PlayerController(self.Controller).ForceDeathUpdate()
+  02b9: self.NetUpdateFrequency = default.NetUpdateFrequency
+  02c4: PlayDying(DamageType, HitLocation)
+  02d8: return true
+  02da: return return
+  02e0: <eos>
+
+function Pawn.ShouldDestroyInventoryManagerWhenDying  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Pawn.IsDead  (script 44 bytes)
+  0000: return (((self.Health <= cast3f(0)) || self.bDeleteMe) || IsPendingKill())
+  0025: return return
+  002b: <eos>
+
+function Pawn.Falling  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.HitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Landed  (script 50 bytes)
+  0000: TakeFallingDamage()
+  000a: if !(!IsDead()) goto 0x002f
+  0019: Pawn.PlayLanded(self.Velocity.Z)
+  002f: return nothing
+  0031: <eos>
+
+function Pawn.HeadVolumeChange  (script 192 bytes)
+  0000: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(3)) || (self.Controller == none))) goto 0x0028
+  0026: return nothing
+  0028: if !(((self.HeadVolume != none) && self.HeadVolume.bWaterVolume)) goto 0x00a0
+  0047: if !(!newHeadVolume.bWaterVolume) goto 0x009d
+  005b: if !(((self.Controller.bIsPlayer && (self.BreathTime > cast3f(0))) && (self.BreathTime < cast3f(8)))) goto 0x0092
+  008c: Pawn.Gasp()
+  0092: self.BreathTime = -1.0
+  009d: goto 0x00bd
+  00a0: if !(newHeadVolume.bWaterVolume) goto 0x00bd
+  00b2: self.BreathTime = self.UnderWaterTime
+  00bd: return nothing
+  00bf: <eos>
+
+function Pawn.TouchingWaterVolume  (script 55 bytes)
+  0000: foreach TouchingActors(obj'PhysicsVolume', V) (end 0x002d)
+  0017: if !(V.bWaterVolume) goto 0x002c
+  0029: iterpop
+  002a: return true
+  002c: iternext
+  002d: iterpop
+  002e: return false
+  0030: return return
+  0036: <eos>
+
+function Pawn.IsInPain  (script 79 bytes)
+  0000: foreach TouchingActors(obj'PhysicsVolume', V) (end 0x0045)
+  0017: if !((V.bPainCausing && (V.DamagePerSec > cast3f(0)))) goto 0x0044
+  0041: iterpop
+  0042: return true
+  0044: iternext
+  0045: iterpop
+  0046: return false
+  0048: return return
+  004e: <eos>
+
+function Pawn.BreathTimer  (script 120 bytes)
+  0000: if !(self.HeadVolume.bWaterVolume) goto 0x006a
+  0012: if !((((self.Health < cast3f(0)) || (cast3a(self.WorldInfo.NetMode) == cast3a(3))) || (self.DrivenVehicle != none))) goto 0x0049
+  0047: return nothing
+  0049: Pawn.TakeDrowningDamage()
+  004f: if !((self.Health > cast3f(0))) goto 0x0067
+  005c: self.BreathTime = 2.0
+  0067: goto 0x0075
+  006a: self.BreathTime = 0.0
+  0075: return nothing
+  0077: <eos>
+
+function Pawn.TakeDrowningDamage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.CheckWaterJump  (script 634 bytes)
+  0000: if !((AIController(self.Controller) != none)) goto 0x00c5
+  0010: if !(((self.Controller.InLatentExecution(self.Controller.503) && (self.Controller.MoveTarget != none)) && !self.Controller.MoveTarget.PhysicsVolume.bWaterVolume)) goto 0x00a4
+  0072: Checkpoint = obj'Core.Math'.static.Normal((self.Controller.MoveTarget.Location - self.Location))
+  00a1: goto 0x00af
+  00a4: Checkpoint = self.Acceleration
+  00af: Checkpoint.Z = 0.0
+  00c5: if !((Checkpoint == vect(0,0,0))) goto 0x00e9
+  00dc: Checkpoint = cast39(self.Rotation)
+  00e9: Checkpoint.Z = 0.0
+  00ff: checkNorm = obj'Core.Math'.static.Normal(Checkpoint)
+  0115: Checkpoint = (self.Location + ((1.2 * self.CylinderComponent.CollisionRadius) * checkNorm))
+  013e: Extent = (self.CylinderComponent.CollisionRadius * vect(1,1,0))
+  0161: Extent.Z = self.CylinderComponent.CollisionHeight
+  0180: HitActor = Trace(HitLocation, HitNormal, none, Checkpoint, self.Location, true, Extent, , , 8)
+  01a8: if !(((HitActor != none) && (Pawn(HitActor) == none))) goto 0x0271
+  01c5: WallNormal = (cast3f(-1) * HitNormal)
+  01d9: Start = self.Location
+  01e4: (Start.Z += self.MaxOutOfWaterStepHeight)
+  01fb: Checkpoint = (Start + ((3.2 * self.CylinderComponent.CollisionRadius) * WallNormal))
+  0224: HitActor = Trace(HitLocation, HitNormal, none, Checkpoint, Start, true, , , , 8)
+  0248: if !(((HitActor == none) || (HitNormal.Z > 0.7))) goto 0x0271
+  026f: return true
+  0271: return false
+  0273: return return
+  0279: <eos>
+
+function Pawn.DoJump  (script 338 bytes)
+  0000: if !((((self._WorkingMovementCapabilities.bJumpCapable && !self.bIsCrouched) && !self.bWantsToCrouch) && (((cast3a(self.Physics) == cast3a(1)) || (cast3a(self.Physics) == cast3a(9))) || (cast3a(self.Physics) == cast3a(8))))) goto 0x0149
+  0064: if !((cast3a(self.Physics) == cast3a(8))) goto 0x0089
+  0074: self.Velocity = (self.JumpZ * self.Floor)
+  0086: goto 0x00c8
+  0089: if !((cast3a(self.Physics) == cast3a(9))) goto 0x00b2
+  0099: self.Velocity.Z = 0.0
+  00af: goto 0x00c8
+  00b2: self.Velocity.Z = self.JumpZ
+  00c8: if !((((self.Base != none) && !self.Base.bWorldGeometry) && (self.Base.Velocity.Z > 0.0))) goto 0x0139
+  010e: (self.Velocity.Z += self.Base.Velocity.Z)
+  0139: SetPhysics(2, , )
+  0147: return true
+  0149: return false
+  014b: return return
+  0151: <eos>
+
+function Pawn.PlayDyingSound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.PlayHit  (script 154 bytes)
+  0000: if !(((Damage <= cast3f(0)) && ((self.Controller == none) || !self.Controller.bGodMode))) goto 0x0032
+  0030: return nothing
+  0032: if !(((self.WorldInfo.TimeSeconds - self.LastPainTime) > 0.1)) goto 0x0083
+  0051: PlayTakeHit(HitLocation, Damage, DamageType, InstigatedBy)
+  006f: self.LastPainTime = self.WorldInfo.TimeSeconds
+  0083: self.LastPainTime = self.WorldInfo.TimeSeconds
+  0097: return nothing
+  0099: <eos>
+
+function Pawn.TurnOff  (script 234 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0018
+  0010: self.RemoteRole = 1
+  0018: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(1)) && (self.Mesh != none))) goto 0x0084
+  003e: self.Mesh.bPauseAnims = true
+  004f: if !((cast3a(self.Physics) == cast3a(10))) goto 0x0084
+  005f: self.Mesh.PhysicsWeight = 1.0
+  0073: self.Mesh.bUpdateKinematicBonesFromAnimation = false
+  0084: SetCollision(true, false, )
+  008a: self.bNoWeaponFiring = true
+  0092: self.Velocity = vect(0,0,0)
+  00a5: SetPhysics(0, , )
+  00b3: self.bIgnoreForces = true
+  00bb: if !((self.Weapon != none)) goto 0x00e7
+  00c6: self.Weapon.StopFire(self.Weapon.CurrentFireMode)
+  00e7: return nothing
+  00e9: <eos>
+
+function Pawn.PlayWeaponSwitch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.IsDying  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Pawn.Dying.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.HitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.HeadVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.PhysicsVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.Falling  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.BreathTimer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.FellOutOfWorld  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.PlayWeaponSwitch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.PlayNextAnimation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.BaseChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.Landed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.Dying.Died  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Pawn.Dying.IsDying  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Pawn.Dying.OutsideWorldBounds  (script 55 bytes)
+  0000: SetPhysics(0, , )
+  000e: SetHidden(true)
+  0019: self.LifeSpan = obj'Core.Math'.static.FMin(self.LifeSpan, 1.0)
+  0034: return nothing
+  0036: <eos>
+
+function Pawn.Dying.Timer  (script 28 bytes)
+  0000: if !(!PlayerCanSeeMe()) goto 0x000e
+  0008: DestroyActor()
+  000b: goto 0x0019
+  000e: SetTimer(2.0, false, , )
+  0019: return nothing
+  001b: <eos>
+
+function Pawn.Dying.TakeDamage  (script 167 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((cast3a(self.Physics) != cast3a(10))) goto 0x0020
+  0012: SetPhysics(2, , )
+  0020: if !(((cast3a(self.Physics) == cast3a(0)) && (Momentum.Z < cast3f(0)))) goto 0x0063
+  004a: (Momentum.Z *= cast3f(-1))
+  0063: (self.Velocity += ((cast3f(3) * Momentum) / (self.Mass + cast3f(200))))
+  0082: if !((DamageType == none)) goto 0x0098
+  008d: DamageType = obj'DamageType'
+  0098: (self.Health -= Damage)
+  00a4: return nothing
+  00a6: <eos>
+
+function Pawn.Dying.BeginState  (script 321 bytes)
+  0000: if !((self.bTearOff && (cast3a(self.WorldInfo.NetMode) == cast3a(1)))) goto 0x0032
+  0024: self.LifeSpan = 2.0
+  002f: goto 0x003d
+  0032: SetTimer(5.0, false, , )
+  003d: if !((cast3a(self.Physics) != cast3a(10))) goto 0x005b
+  004d: SetPhysics(2, , )
+  005b: SetCollision(true, false, )
+  0061: if !((self.Controller != none)) goto 0x0098
+  006c: if !(self.Controller.bIsPlayer) goto 0x008c
+  007e: DetachFromController()
+  0089: goto 0x0098
+  008c: self.Controller.DestroyActor()
+  0098: foreach TouchingActors(obj'Actor', A) (end 0x0118)
+  00af: if !(A.FindEventsOfClass(obj'SeqEvent_Touch', TouchEvents)) goto 0x0117
+  00cf: I = 0
+  00d6: if !((I < TouchEvents.Length)) goto 0x010f
+  00e6: SeqEvent_Touch(I[TouchEvents]).NotifyTouchingPawnDied(self)
+  0105: AddAdd_Int(I)
+  010c: goto 0x00d6
+  010f: TouchEvents.Length = 0
+  0117: iternext
+  0118: iterpop
+  0119: foreach BasedActors(obj'Actor', A) (end 0x013d)
+  0129: A.PawnBaseDied()
+  013c: iternext
+  013d: iterpop
+  013e: return nothing
+  0140: <eos>
+
+function Pawn.PlayDying  (script 67 bytes)
+  0000: GotoState('Dying', , , )
+  000e: self.bReplicateMovement = false
+  0016: self.bTearOff = true
+  001e: (self.Velocity += self.TearOffMomentum)
+  002a: SetPhysics(2, , )
+  0038: self.bPlayedDeath = true
+  0040: return nothing
+  0042: <eos>
+
+function Pawn.TornOff  (script 34 bytes)
+  0000: if !(!self.bPlayedDeath) goto 0x001f
+  000b: PlayDying(self.HitDamageType, self.TakeHitLocation)
+  001f: return nothing
+  0021: <eos>
+
+function Pawn.PlayTakeHit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.CannotJumpNow  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Pawn.PlayLanded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.GetVehicleBase  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Pawn.Suicide  (script 14 bytes)
+  0000: KilledBy(self)
+  000b: return nothing
+  000d: <eos>
+
+function Pawn.CanThrowWeapon  (script 40 bytes)
+  0000: return ((self.Weapon != none) && self.Weapon.CanThrow())
+  0021: return return
+  0027: <eos>
+
+function Pawn.StartDriving  (script 105 bytes)
+  0000: StopFiring()
+  000a: if !((self.Health <= cast3f(0))) goto 0x0019
+  0017: return nothing
+  0019: self.DrivenVehicle = V
+  0024: self.bForceNetUpdate = true
+  002c: ShouldCrouch(false)
+  0037: self.bIgnoreForces = true
+  003f: self.bCanTeleport = false
+  0047: self.BreathTime = 0.0
+  0052: V.AttachDriver(self)
+  0066: return nothing
+  0068: <eos>
+
+function Pawn.StopDriving  (script 336 bytes)
+  0000: if !((self.Mesh != none)) goto 0x004b
+  000b: if !((default.Mesh != none)) goto 0x0037
+  0016: self.Mesh.SetCullDistance(default.Mesh.CachedCullDistance)
+  0037: self.Mesh.SetShadowParent(none)
+  004b: self.bForceNetUpdate = true
+  0053: if !((V != none)) goto 0x0071
+  005e: V.StopFiring()
+  0071: if !((cast3a(self.Physics) == cast3a(10))) goto 0x0083
+  0081: return nothing
+  0083: self.DrivenVehicle = none
+  008a: self.bIgnoreForces = default.bIgnoreForces
+  0097: SetHardAttach(false)
+  00a2: self.bCanTeleport = true
+  00aa: self.bCollideWorld = true
+  00b2: if !((V != none)) goto 0x00d1
+  00bd: V.DetachDriver(self)
+  00d1: SetCollision(true, true, )
+  00d7: if !((cast3a(self.Role) == cast3a(3))) goto 0x014d
+  00e7: if !((self.PhysicsVolume.bWaterVolume && (self.Health > cast3f(0)))) goto 0x0119
+  0108: SetPhysics(3, , )
+  0116: goto 0x0127
+  0119: SetPhysics(2, , )
+  0127: SetBase(none, , , )
+  0135: if !(ShouldUnhideWhenStopsDriving()) goto 0x014d
+  0142: SetHidden(false)
+  014d: return nothing
+  014f: <eos>
+
+function Pawn.ShouldUnhideWhenStopsDriving  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Pawn.AddDefaultInventory  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.CreateInventory  (script 52 bytes)
+  0000: nothing
+  0001: if !((self.InvManager != none)) goto 0x002b
+  000c: return self.InvManager.CreateInventory(NewInvClass, bDoNotActivate)
+  002b: return none
+  002d: return return
+  0033: <eos>
+
+function Pawn.FindInventoryType  (script 53 bytes)
+  0000: nothing
+  0001: return ((self.InvManager != none) ? self.InvManager.FindInventoryType(DesiredClass, bAllowSubclass) : none)
+  002e: return return
+  0034: <eos>
+
+function Pawn.DrawHUD  (script 38 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0023
+  000b: self.InvManager.DrawHUD(H)
+  0023: return nothing
+  0025: <eos>
+
+function Pawn.ThrowActiveWeapon  (script 31 bytes)
+  0000: if !((self.Weapon != none)) goto 0x001c
+  000b: TossWeapon(self.Weapon, , )
+  001c: return nothing
+  001e: <eos>
+
+function Pawn.TossWeapon  (script 260 bytes)
+  0000: nothing
+  0001: default=false
+  0006: if !((hmsZeroVelocity || (ForceVelocity != vect(0,0,0)))) goto 0x0036
+  0028: TossVel = ForceVelocity
+  0033: goto 0x0088
+  0036: GetActorEyesViewPoint(POVLoc, POVRot)
+  004a: TossVel = cast39(POVRot)
+  0057: TossVel = ((TossVel * ((self.Velocity dot TossVel) + cast3f(500))) + vect(0,0,200))
+  0088: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  00a7: Weap.DropFrom(((self.Location + ((0.8 * self.CylinderComponent.CollisionRadius) * X)) - ((0.5 * self.CylinderComponent.CollisionRadius) * Y)), TossVel, )
+  0101: return nothing
+  0103: <eos>
+
+function Pawn.SetActiveWeapon  (script 38 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0023
+  000b: self.InvManager.SetCurrentWeapon(NewWeapon)
+  0023: return nothing
+  0025: <eos>
+
+function Pawn.GetCollisionRadius  (script 40 bytes)
+  0000: return ((self.CylinderComponent != none) ? self.CylinderComponent.CollisionRadius : 0.0)
+  0021: return return
+  0027: <eos>
+
+function Pawn.GetCollisionHeight  (script 40 bytes)
+  0000: return ((self.CylinderComponent != none) ? self.CylinderComponent.CollisionHeight : 0.0)
+  0021: return return
+  0027: <eos>
+
+function Pawn.GetCollisionExtent  (script 71 bytes)
+  0000: Extent = (GetCollisionRadius() * vect(1,1,0))
+  001f: Extent.Z = GetCollisionHeight()
+  003a: return Extent
+  0040: return return
+  0046: <eos>
+
+function Pawn.IsStationary  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Pawn.SpawnedByKismet  (script 33 bytes)
+  0000: if !((self.Controller != none)) goto 0x001e
+  000b: self.Controller.SpawnedByKismet()
+  001e: return nothing
+  0020: <eos>
+
+function Pawn.DoKismetAttachment  (script 786 bytes)
+  0000: if !(((self.Mesh != none) && (Action.BoneName != 'None'))) goto 0x011a
+  0029: bValidSocket = (self.Mesh.GetSocketByName(Action.BoneName) != none)
+  0054: bValidBone = (self.Mesh.MatchRefBone(Action.BoneName) != -1)
+  0083: if !((!bValidBone && !bValidSocket)) goto 0x011a
+  009b: LogInternal(((((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(get_Class())) @ cast57(GetFuncName())) @ "bone or socket") @ cast57(Action.BoneName)) @ "not found on actor") @ cast56(self)) @ "with mesh") @ cast56(self.Mesh)), , , )
+  011a: if !((bValidBone || bValidSocket)) goto 0x02ff
+  012e: bOldCollideActors = Attachment.bCollideActors
+  0144: bOldBlockActors = Attachment.bBlockActors
+  015a: Attachment.SetCollision(false, false, )
+  0169: Attachment.SetHardAttach(Action.bHardAttach)
+  018b: if !((bValidBone && !bValidSocket)) goto 0x0234
+  01a1: if !(Action.bUseRelativeOffset) goto 0x01e1
+  01b3: Attachment.SetLocation(self.Mesh.GetBoneLocation(Action.BoneName, ))
+  01e1: if !(Action.bUseRelativeRotation) goto 0x0234
+  01f3: Attachment.SetRotation(obj'Core.Math'.static.QuatToRotator(self.Mesh.GetBoneQuaternion(Action.BoneName, )))
+  0234: Attachment.SetBase(self, , self.Mesh, Action.BoneName)
+  025c: if !(Action.bUseRelativeRotation) goto 0x02a0
+  026e: Attachment.SetRelativeRotation((Attachment.RelativeRotation + Action.RelativeRotation))
+  02a0: if !(Action.bUseRelativeOffset) goto 0x02e3
+  02b2: Attachment.SetRelativeLocation((Attachment.RelativeLocation + Action.RelativeOffset))
+  02e3: Attachment.SetCollision(bOldCollideActors, bOldBlockActors, )
+  02fc: goto 0x030f
+  02ff: Actor.DoKismetAttachment(Attachment, Action)
+  030f: return nothing
+  0311: <eos>
+
+function Pawn.OnSetMaterial  (script 61 bytes)
+  0000: if !((self.Mesh != none)) goto 0x003a
+  000b: self.Mesh.SetMaterial(Action.MaterialIndex, Action.NewMaterial)
+  003a: return nothing
+  003c: <eos>
+
+function Pawn.OnSkeletalMeshChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.GetSkeletalMesh  (script 18 bytes)
+  0000: default=0
+  0005: return self.Mesh
+  000b: return return
+  0011: <eos>
+
+function Pawn.OnTeleport  (script 635 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x007c
+  0019: LogInternal((((("Error: Trying to teleport" @ cast56(self)) @ "via kismet") @ cast56(Action)) @ "is not allowed on network clients"), , , )
+  007a: return nothing
+  007c: Action.GetObjectVars(objVars, "Destination")
+  00a1: Action.GetObjectVars(targetVars, "Target")
+  00c1: idx = targetVars.Find(self.Controller)
+  00d4: if !(((idx == -1) || (idx > objVars.Length))) goto 0x00fc
+  00f5: idx = 0
+  00fc: idx = idx
+  0107: if !(((idx < objVars.Length) && (destActor == none))) goto 0x0189
+  0124: destActor = Actor(idx[objVars])
+  013a: C = Controller(destActor)
+  014a: if !(((C != none) && (C.Pawn != none))) goto 0x017f
+  016b: destActor = C.Pawn
+  017f: AddAdd_Int(idx)
+  0186: goto 0x0107
+  0189: if !(((destActor != none) && SetLocation(destActor.Location))) goto 0x0237
+  01aa: PlayTeleportEffect(false, true)
+  01b6: if !(Action.bUpdateRotation) goto 0x0234
+  01c8: SetRotation(destActor.Rotation)
+  01d9: if !((self.Controller != none)) goto 0x0220
+  01e4: self.Controller.SetRotation(destActor.Rotation)
+  01fe: self.Controller.ClientSetRotation(destActor.Rotation, )
+  0220: self.DesiredRotation = destActor.Rotation
+  0234: goto 0x0259
+  0237: WarnInternal(("Unable to teleport to" @ cast56(destActor)))
+  0259: if !((self.Controller != none)) goto 0x0278
+  0264: self.Controller.OnTeleport(none)
+  0278: return nothing
+  027a: <eos>
+
+function Pawn.EffectIsRelevant  (script 305 bytes)
+  0000: nothing
+  0001: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x0021
+  001a: return bForceDedicated
+  0021: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(2)) && (self.WorldInfo.Game.NumPlayers > 1))) goto 0x0085
+  0059: if !(bForceDedicated) goto 0x0064
+  0062: return true
+  0064: if !((IsHumanControlled() && IsLocallyControlled())) goto 0x0082
+  0080: return true
+  0082: goto 0x0094
+  0085: if !(IsHumanControlled()) goto 0x0094
+  0092: return true
+  0094: if !(((SpawnLocation != self.Location) || ((self.WorldInfo.TimeSeconds - self.LastRenderTime) < 1.0))) goto 0x0128
+  00c4: foreach LocalPlayerControllers(obj'PlayerController', P) (end 0x0127)
+  00db: if !(((P.ViewTarget != none) && ((P.Pawn == self) || CheckMaxEffectDistance(P, SpawnLocation, CullDistance)))) goto 0x0126
+  0123: iterpop
+  0124: return true
+  0126: iternext
+  0127: iterpop
+  0128: return false
+  012a: return return
+  0130: <eos>
+
+function Pawn.GetSoundLocation  (script 7 bytes)
+  0000: SocketName
+  0005: nothing
+  0006: <eos>
+
+function Pawn.BecomeViewTarget  (script 39 bytes)
+  0000: if !((self.PhysicsVolume != none)) goto 0x0024
+  000b: self.PhysicsVolume.NotifyPawnBecameViewTarget(self, PC)
+  0024: return nothing
+  0026: <eos>
+
+function Pawn.GetController  (script 55 bytes)
+  0000: if !((self.Controller != none)) goto 0x0014
+  000b: return self.Controller
+  0011: goto 0x002e
+  0014: if !((self.DrivenVehicle != none)) goto 0x002e
+  001f: return self.DrivenVehicle.Controller
+  002e: return none
+  0030: return return
+  0036: <eos>
+
+function Pawn.NotifyNearlyShot  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Pawn.UpdateLightEnvironmentStatus  (script 179 bytes)
+  0000: if !(((self.Mesh == none) || (self.Mesh.LightEnvironment == none))) goto 0x0023
+  0021: return nothing
+  0023: if !((self.bHidden && self.Mesh.LightEnvironment.bEnabled)) goto 0x0069
+  0049: self.Mesh.LightEnvironment.SetEnabled(false)
+  0066: goto 0x00b0
+  0069: if !((!self.bHidden && !self.Mesh.LightEnvironment.bEnabled)) goto 0x00b0
+  0093: self.Mesh.LightEnvironment.SetEnabled(true)
+  00b0: return nothing
+  00b2: <eos>
+
+function Pawn.SetHidden  (script 21 bytes)
+  0000: Actor.SetHidden(bNewHidden)
+  000c: Pawn.UpdateLightEnvironmentStatus()
+  0012: return nothing
+  0014: <eos>
+
+function Pawn.GetMeshComponent  (script 13 bytes)
+  0000: return self.Mesh
+  0006: return return
+  000c: <eos>
+
+function Pawn.SetWalkOffLedge  (script 46 bytes)
+  0000: self.bAvoidLedges = !CanWalkOffLedges
+  000f: self.bStopAtLedges = !CanWalkOffLedges
+  001e: self.bCanWalkOffLedges = CanWalkOffLedges
+  002b: return nothing
+  002d: <eos>
+
+function Pawn.DebugFindPathOn  (script 11 bytes)
+  0000: self.DebugFindPath = true
+  0008: return nothing
+  000a: <eos>
+
+function Pawn.DebugFindPathOff  (script 11 bytes)
+  0000: self.DebugFindPath = false
+  0008: return nothing
+  000a: <eos>
+
+function Pawn.PrePlayerKicked  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

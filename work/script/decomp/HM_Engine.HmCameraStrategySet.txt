@@ -1,0 +1,49 @@
+function HmCameraStrategySet.CreateStrategy  (script 139 bytes)
+  0000: if !((TypeName == none)) goto 0x0047
+  000b: LogInternal(("ERROR: Unable to create camera strategy for " $ InstanceName), , , )
+  0045: return none
+  0047: Strategy = new(none, (Prefix $ InstanceName), TypeName, nothing, AttachTreeCallback)
+  0066: Strategy.Initialize(Prefix)
+  007e: return Strategy
+  0084: return return
+  008a: <eos>
+
+function HmCameraStrategySet.InitCameras  (script 258 bytes)
+  0000: I = 0
+  0007: if !((I < self.Strategies.Length)) goto 0x00ff
+  0017: if !((I[self.Strategies].Strategy == none)) goto 0x0084
+  0033: I[self.Strategies].Strategy = HmCameraStrategySet.CreateStrategy(I[self.Strategies].N, Prefix, I[self.Strategies].StrategyClass)
+  0081: goto 0x00f5
+  0084: PackageStrategy = I[self.Strategies].Strategy
+  00a0: I[self.Strategies].Strategy = HmCameraStrategy(PackageStrategy.Clone(, ))
+  00d1: I[self.Strategies].Strategy.CloneBehaviors()
+  00f5: AddAdd_PreInt(I)
+  00fc: goto 0x0007
+  00ff: return nothing
+  0101: <eos>
+
+function HmCameraStrategySet.SetupAssetChangeNotifies  (script 125 bytes)
+  0000: if !(!IsPlayInEditor) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.Strategies.Length)) goto 0x007a
+  0024: if !((I[self.Strategies].Strategy == none)) goto 0x0043
+  0040: goto 0x0070
+  0043: I[self.Strategies].Strategy.AddAssetChangedObserver(delegate.OnStrategyChanged)
+  0070: AddAdd_PreInt(I)
+  0077: goto 0x0014
+  007a: return nothing
+  007c: <eos>
+
+function HmCameraStrategySet.OnStrategyChanged  (script 14 bytes)
+  0000: NotifyAssetChangedObservers(self)
+  000b: return nothing
+  000d: <eos>
+
+function HmCameraStrategySet.GetStrategy  (script 75 bytes)
+  0000: Index = self.Strategies.Find('Type',CS)
+  001c: if !((Index == -1)) goto 0x002d
+  002b: return none
+  002d: return Index[self.Strategies].Strategy
+  0044: return return
+  004a: <eos>

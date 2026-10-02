@@ -1,0 +1,18 @@
+function TnAttackerBasedThreatLevelEvaluator.set_ThreatLevelPerAttacker  (script 14 bytes)
+  0000: self._ThreatLevelPerAttacker = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAttackerBasedThreatLevelEvaluator.OnInitialize  (script 48 bytes)
+  0000: TnThreatLevelEvaluator.OnInitialize()
+  0006: self.TCS = TnActionTargetClaimService(self._Owner.GetService('TnActionTargetClaimService'))
+  002d: return nothing
+  002f: <eos>
+
+function TnAttackerBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 99 bytes)
+  0000: P = TnPawn(Threat)
+  0010: if !((P == none)) goto 0x0021
+  001b: return 0.0
+  0021: return (cast3f((P.get_NumAiTargeters() - ((Threat == self._OwnerController.Enemy) ? 1 : 0))) * self._ThreatLevelPerAttacker)
+  005c: return return
+  0062: <eos>

@@ -1,0 +1,4396 @@
+function PlayerController.get_CheatManager  (script 13 bytes)
+  0000: return self._CheatManager
+  0006: return return
+  000c: <eos>
+
+function PlayerController.get_IsExternalUIOpen  (script 14 bytes)
+  0000: return self._IsExternalUIOpen
+  0007: return return
+  000d: <eos>
+
+function PlayerController.get_PendingAdjustmentClientError  (script 24 bytes)
+  0000: return self.PendingAdjustment.ClientError
+  0011: return return
+  0017: <eos>
+
+function PlayerController.get_IsControllerConnected  (script 134 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !((LP == none)) goto 0x0022
+  001b: return self._IsControllerConnected
+  0022: if !(((self.OnlineSub == none) || EqualEqual_InterfaceInterface(self.OnlineSub.SystemInterface, OnlineSystemInterface(none)))) goto 0x0053
+  004c: return self._IsControllerConnected
+  0053: return self.OnlineSub.SystemInterface.IsControllerConnected(LP.ControllerId)
+  007f: return return
+  0085: <eos>
+
+function PlayerController.OnAudioFinished  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ClientDrawCoordinateSystem  (script 77 bytes)
+  0000: nothing
+  0001: LogInternal("ClientDrawCoordinateSystem", , , )
+  0022: obj'Debug'.static.DrawCoordinateSystem(AxisLoc, AxisRot, Scale, bPersistentLines)
+  004a: return nothing
+  004c: <eos>
+
+function PlayerController.SetNetSpeed  (script 7 bytes)
+  0000: NewSpeed
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.GetPlayerNetworkAddress  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.GetServerNetworkAddress  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.ConsoleCommand  (script 12 bytes)
+  0000: Command
+  0005: bWriteToLog
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.PreClientTravel  (script 29 bytes)
+  0000: LongTimeout()
+  000a: self.bHasServerAllowedClientGameplayToStart = false
+  0012: self.bHasServerSentInitialStreamingState = false
+  001a: return nothing
+  001c: <eos>
+
+function PlayerController.ClientTravel  (script 22 bytes)
+  0000: URL
+  0005: TravelType
+  000a: bSeamless
+  000f: MapPackageGuid
+  0014: nothing
+  0015: <eos>
+
+function PlayerController.ServerNotifyClientTravelFinished  (script 12 bytes)
+  0000: BaseLevelPackageName
+  0005: bIsSeamlessTravel
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.HasClientTravelFinished  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.HasClientPackageMapSyncFinished  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.GetCurrentClientMapName  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.HasClientSpawnedActor  (script 7 bytes)
+  0000: inActor
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.NeedsHandleSeamlessTravelPlayer  (script 58 bytes)
+  0000: GE = GameEngine(obj'Engine'.static.GetEngine())
+  001e: return GE.NeedsHandleSeamlessTravelPlayer(self)
+  0033: return return
+  0039: <eos>
+
+function PlayerController.AllowClientGameplayToStart  (script 21 bytes)
+  0000: ClientAllowClientGameplayToStart()
+  000a: self.bHasServerAllowedClientGameplayToStart = true
+  0012: return nothing
+  0014: <eos>
+
+function PlayerController.DisallowClientGameplayToStart  (script 93 bytes)
+  0000: LogInternal((("Gameplay start has been disallowed for client '" $ GetHumanReadableName()) $ "'"), , , )
+  0047: self.bHasServerAllowedClientGameplayToStart = false
+  004f: self.ServerStartGameplayRemainingTimeout = self.ServerStartGameplayTimeout
+  005a: return nothing
+  005c: <eos>
+
+function PlayerController.ClientAllowClientGameplayToStart  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.HasServerAllowedClientGameplayToStart  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.HasCompleteGameContext  (script 75 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0016
+  0014: return false
+  0016: if !((self.WorldInfo.GRI.GameClass == none)) goto 0x0035
+  0033: return false
+  0035: if !((self.PlayerReplicationInfo == none)) goto 0x0042
+  0040: return false
+  0042: return true
+  0044: return return
+  004a: <eos>
+
+function PlayerController.CanCloseLoadingMovie  (script 66 bytes)
+  0000: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(3)) && !self.bHasServerSentInitialStreamingState)) goto 0x0028
+  0026: return false
+  0028: if !(!HasCompleteGameContext()) goto 0x0039
+  0037: return false
+  0039: return true
+  003b: return return
+  0041: <eos>
+
+function PlayerController.UpdateURL  (script 17 bytes, native 546)
+  0000: NewOption
+  0005: NewValue
+  000a: bSave1Default
+  000f: nothing
+  0010: <eos>
+
+function PlayerController.GetDefaultURL  (script 7 bytes)
+  0000: Option
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.CopyToClipboard  (script 7 bytes)
+  0000: Text
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.PasteFromClipboard  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.FirePlayerSpawnEvents  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.SetAllowMatureLanguage  (script 7 bytes)
+  0000: bAllowMatureLanguge
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.SetAudioGroupVolume  (script 12 bytes)
+  0000: GroupName
+  0005: Volume
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.SetAmbientAudioZone  (script 25 bytes)
+  0000: self.AmbientAudioZone = Zone
+  000b: PlayerController.ServerSetAmbientAudioZone(Zone)
+  0016: return nothing
+  0018: <eos>
+
+function PlayerController.ServerSetAmbientAudioZone  (script 14 bytes)
+  0000: self.AmbientAudioZone = Zone
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.ClientConvolve  (script 12 bytes)
+  0000: C
+  0005: H
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.ServerProcessConvolve  (script 12 bytes)
+  0000: C
+  0005: H
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.CheckSpeedHack  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.FindStairRotation  (script 7 bytes, native 524)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.ForceClearUnpauseDelegates  (script 52 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x0031
+  0014: self.WorldInfo.Game.ForceClearUnpauseDelegates(self)
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.CanBeKicked  (script 20 bytes)
+  0000: return !IsDead()
+  000d: return return
+  0013: <eos>
+
+function PlayerController.OnExternalUIChanged  (script 16 bytes)
+  0000: self._IsExternalUIOpen = bIsOpening
+  000d: return nothing
+  000f: <eos>
+
+function PlayerController.CanUnpauseExternalUI  (script 49 bytes)
+  0000: return (((!self._IsExternalUIOpen || self.bPendingDelete) || self.bPendingDestroy) || self.bDeleteMe)
+  002a: return return
+  0030: <eos>
+
+function PlayerController.OnStorageDeviceChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.NotifyDeviceSelectComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnFlushContentComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnReadContentComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.NotifyLoginChange  (script 553 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x00a5
+  002a: PrimaryStatus = self.OnlineSub.PlayerInterface.GetLoginStatus(LocalUserNum)
+  0052: PreviousPrimaryStatus = self.OnlineSub.PlayerInterface.GetPreviousLoginStatus(LocalUserNum)
+  007a: SecondaryStatus = self.OnlineSub.PlayerInterface.GetSecondaryLoginStatus(LocalUserNum)
+  00a2: goto 0x00bd
+  00a5: PrimaryStatus = 0
+  00ad: PreviousPrimaryStatus = 0
+  00b5: SecondaryStatus = 0
+  00bd: LogInternal(("Login Change: Active Player" @ cast53(LocalPlayer(self.Player).ControllerId)), 'DevOnline', , )
+  00fe: LogInternal((((("Login Change: Player" @ cast52(LocalUserNum)) @ "changed") @ cast52(LoginType)) @ "login status"), 'DevOnline', , )
+  014e: LogInternal(((("Login Change: Primary login status is" @ cast52(PrimaryStatus)) $ ", was") @ cast52(PreviousPrimaryStatus)), 'DevOnline', , )
+  019d: LogInternal(("Login Change: Secondary login status is" @ cast52(SecondaryStatus)), 'DevOnline', , )
+  01dc: if !((cast3a(LocalUserNum) != LocalPlayer(self.Player).ControllerId)) goto 0x01fd
+  01fb: return nothing
+  01fd: PlayerController.InitUniquePlayerId()
+  0203: ClientSetOnlineStatus()
+  020d: OnNotifyLoginChange(LoginType, PrimaryStatus, SecondaryStatus)
+  0226: return nothing
+  0228: <eos>
+
+function PlayerController.OnNotifyLoginChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.FellOutOfWorld  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnControllerChanged  (script 301 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !(((((LP != none) && (LP.ControllerId == ControllerId)) && self.WorldInfo.IsConsoleBuild()) && ((self.WorldInfo.Game == none) || !self.WorldInfo.Game.get_IsAutomatedTesting()))) goto 0x012a
+  0087: self._IsControllerConnected = bIsConnected
+  0094: LogInternal(((((("Received gamepad connection change for player" @ cast53(obj'UIInteraction'.static.GetPlayerIndex(ControllerId))) $ ": gamepad") @ cast53(ControllerId)) @ "is now") @ (bIsConnected ? "connected" : "disconnected")), , , )
+  012a: return nothing
+  012c: <eos>
+
+function PlayerController.CanUnpauseControllerConnected  (script 18 bytes)
+  0000: return get_IsControllerConnected()
+  000b: return return
+  0011: <eos>
+
+function PlayerController.PostBeginPlay  (script 250 bytes)
+  0000: Controller.PostBeginPlay()
+  0006: ResetCameraMode()
+  0010: self.MaxTimeMargin = obj'GameInfo'.static.default.MaxTimeMargin
+  0024: self.MaxResponseTime = (default.MaxResponseTime * self.WorldInfo.TimeDilation)
+  003f: self.ServerStartGameplayRemainingTimeout = self.ServerStartGameplayTimeout
+  004a: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x0069
+  0063: PlayerController.SpawnDefaultHUD()
+  0069: SetViewTarget(self, )
+  0075: self.LastActiveTime = self.WorldInfo.TimeSeconds
+  0089: self.OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  00a2: if !((self.OnlineSub != none)) goto 0x00f7
+  00ad: self.OnlineDisconnector = self.OnlineSub.GetOnlineDisconnector()
+  00c6: self._SessionJoiner = self.OnlineSub.GetOnlineSessionJoiner()
+  00df: self._SessionJoiner.set_OnlineSub(self.OnlineSub)
+  00f7: return nothing
+  00f9: <eos>
+
+function PlayerController.ReceivedPlayer  (script 39 bytes)
+  0000: if !((LocalPlayer(self.Player) != none)) goto 0x0024
+  0010: RegisterPlayerDataStores()
+  001a: RegisterOnlineDelegates()
+  0024: return nothing
+  0026: <eos>
+
+function PlayerController.ResetTimeMargin  (script 34 bytes)
+  0000: self.TimeMargin = -0.1
+  000b: self.MaxTimeMargin = obj'GameInfo'.static.default.MaxTimeMargin
+  001f: return nothing
+  0021: <eos>
+
+function PlayerController.LongTimeout  (script 77 bytes)
+  0000: LogInternal((((GetHumanReadableName() @ " (") $ cast56(self)) $ ") using long network timeout"), 'DevNet', , )
+  0042: self.bShortConnectTimeOut = false
+  004a: return nothing
+  004c: <eos>
+
+function PlayerController.ServerShortTimeout  (script 507 bytes)
+  0000: if !(!self.bShortConnectTimeOut) goto 0x01f8
+  000b: LogInternal((((GetHumanReadableName() @ " (") $ cast56(self)) $ ") using short network timeout"), 'DevNet', , )
+  004e: self.bShortConnectTimeOut = true
+  0056: PlayerController.ResetTimeMargin()
+  005c: if !((self.WorldInfo.Pauser != none)) goto 0x00b1
+  0070: foreach AllActors(obj'Actor', A) (end 0x00ad)
+  0087: if !(!A.bOnlyRelevantToOwner) goto 0x00ac
+  009b: A.bForceNetUpdate = true
+  00ac: iternext
+  00ad: iterpop
+  00ae: goto 0x01f8
+  00b1: if !((self.WorldInfo.Game.NumPlayers < 8)) goto 0x0165
+  00cf: foreach AllActors(obj'Actor', A) (end 0x0161)
+  00e6: if !(((A.NetUpdateFrequency < cast3f(1)) && !A.bOnlyRelevantToOwner)) goto 0x0160
+  0112: A.SetNetUpdateTime(obj'Core.Math'.static.FMin(A.NetUpdateTime, (self.WorldInfo.TimeSeconds + (0.2 * obj'Core.Random'.static.FRand()))))
+  0160: iternext
+  0161: iterpop
+  0162: goto 0x01f8
+  0165: foreach AllActors(obj'Actor', A) (end 0x01f7)
+  017c: if !(((A.NetUpdateFrequency < cast3f(1)) && !A.bOnlyRelevantToOwner)) goto 0x01f6
+  01a8: A.SetNetUpdateTime(obj'Core.Math'.static.FMin(A.NetUpdateTime, (self.WorldInfo.TimeSeconds + (0.5 * obj'Core.Random'.static.FRand()))))
+  01f6: iternext
+  01f7: iterpop
+  01f8: return nothing
+  01fa: <eos>
+
+function PlayerController.ServerGivePawn  (script 18 bytes)
+  0000: GivePawn(self.Pawn)
+  000f: return nothing
+  0011: <eos>
+
+function PlayerController.KickWarning  (script 23 bytes)
+  0000: ReceiveLocalizedMessage(obj'GameMessage', 15, , , )
+  0014: return nothing
+  0016: <eos>
+
+function PlayerController.AddCheats  (script 36 bytes)
+  0000: if !((self._CheatManager != none)) goto 0x000d
+  000b: return nothing
+  000d: self._CheatManager = new(self, nothing, self.CheatClass, nothing, GetRemoteRole)
+  0021: return nothing
+  0023: <eos>
+
+function PlayerController.RemoveCheats  (script 10 bytes)
+  0000: self._CheatManager = none
+  0007: return nothing
+  0009: <eos>
+
+function PlayerController.SpawnDefaultHUD  (script 66 bytes)
+  0000: if !((LocalPlayer(self.Player) == none)) goto 0x0012
+  0010: return nothing
+  0012: LogInternal(cast57(GetFuncName()), , , )
+  0023: self.myHUD = Spawn(obj'HUD', self, , , , , , )
+  003f: return nothing
+  0041: <eos>
+
+function PlayerController.Reset  (script 205 bytes)
+  0000: DrivenVehicle = Vehicle(self.Pawn)
+  0010: if !((DrivenVehicle != none)) goto 0x002f
+  001b: DrivenVehicle.DriverLeave(true)
+  002f: if !((self.Pawn != none)) goto 0x0053
+  003a: PawnDied(self.Pawn)
+  0049: UnPossess()
+  0053: Controller.Reset()
+  0059: SetViewTarget(self, )
+  0065: ResetCameraMode()
+  006f: PlayerController.ResetAudio()
+  0075: self.WaitDelay = (self.WorldInfo.TimeSeconds + cast3f(2))
+  008f: FixFOV()
+  0099: if !(self.PlayerReplicationInfo.bOnlySpectator) goto 0x00bc
+  00ab: GotoState('Spectating', , , )
+  00b9: goto 0x00ca
+  00bc: GotoState('PlayerWaiting', , , )
+  00ca: return nothing
+  00cc: <eos>
+
+function PlayerController.ClientReset  (script 100 bytes)
+  0000: ResetCameraMode()
+  000a: PlayerController.ResetAudio()
+  0010: SetViewTarget(self, )
+  001c: ShouldSpectate = ((self.PlayerReplicationInfo != none) && self.PlayerReplicationInfo.bOnlySpectator)
+  003f: GotoState((ShouldSpectate ? 'Spectating' : 'PlayerWaiting'), , , )
+  0061: return nothing
+  0063: <eos>
+
+function PlayerController.CleanOutSavedMoves  (script 17 bytes)
+  0000: self.SavedMoves = none
+  0007: self.PendingMove = none
+  000e: return nothing
+  0010: <eos>
+
+function PlayerController.PreControllerIdChange  (script 60 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !((LP != none)) goto 0x0039
+  001b: ClientStopNetworkedVoice()
+  0025: ClearOnlineDelegates()
+  002f: UnregisterPlayerDataStores()
+  0039: return nothing
+  003b: <eos>
+
+function PlayerController.PostControllerIdChange  (script 126 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !((LP != none)) goto 0x007b
+  001b: PlayerController.InitUniquePlayerId()
+  0021: RegisterPlayerDataStores()
+  002b: RegisterOnlineDelegates()
+  0035: ClientSetOnlineStatus()
+  003f: assert((self.WorldInfo.Game != none))
+  0054: if !(!self.WorldInfo.Game.bRequiresPushToTalk) goto 0x007b
+  0071: ClientStartNetworkedVoice()
+  007b: return nothing
+  007d: <eos>
+
+function PlayerController.GetOnlineSubsystem  (script 49 bytes)
+  0000: if !((self.OnlineSub == none)) goto 0x0024
+  000b: self.OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0024: return self.OnlineSub
+  002a: return return
+  0030: <eos>
+
+function PlayerController.InitInputSystem  (script 336 bytes)
+  0000: if !((self.PlayerInput == none)) goto 0x002b
+  000b: assert((self.InputClass != none))
+  0017: self.PlayerInput = new(self, nothing, self.InputClass, nothing, GetRemoteRole)
+  002b: if !((self.Interactions.Find(self.PlayerInput) == -1)) goto 0x0054
+  0042: self.Interactions.Length[self.Interactions] = self.PlayerInput
+  0054: if !((self.ForceFeedbackManagerClassName != "")) goto 0x009f
+  0060: FFManagerClass = class<ForceFeedbackManager>(DynamicLoadObject(self.ForceFeedbackManagerClassName, obj'Core.Class', ))
+  0080: if !((FFManagerClass != none)) goto 0x009f
+  008b: self.ForceFeedbackManager = new(self, nothing, FFManagerClass, nothing, GetRemoteRole)
+  009f: RegisterOnlineDelegates()
+  00a9: GameSeq = self.WorldInfo.GetGameSequence()
+  00c3: if !((GameSeq != none)) goto 0x012c
+  00ce: GameSeq.FindSeqObjectsByClass(obj'SeqAct_Interp', true, AllInterpActions)
+  00ec: I = 0
+  00f3: if !((I < AllInterpActions.Length)) goto 0x012c
+  0103: SeqAct_Interp(I[AllInterpActions]).AddPlayerToDirectorTracks(self)
+  0122: AddAdd_Int(I)
+  0129: goto 0x00f3
+  012c: SetOnlyUseControllerTiltInput(false)
+  0137: SetUseTiltForwardAndBack(true)
+  0142: SetControllerTiltActive(false)
+  014d: return nothing
+  014f: <eos>
+
+function PlayerController.ReplicatedEvent  (script 52 bytes)
+  0000: Controller.ReplicatedEvent(VarName)
+  000b: if !(((VarName == 'PlayerReplicationInfo') && !self.bReceivedUniqueId)) goto 0x0031
+  002b: PlayerController.InitUniquePlayerId()
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.InitUniquePlayerId  (script 525 bytes)
+  0000: if !((self.PlayerReplicationInfo != none)) goto 0x01b2
+  000b: LocPlayer = LocalPlayer(self.Player)
+  001b: if !(((((LocPlayer != none) && (self.PlayerReplicationInfo != none)) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x01af
+  005f: self.OnlineSub.PlayerInterface.GetUniquePlayerId(cast3d(LocPlayer.ControllerId), PlayerID)
+  0091: self.PlayerReplicationInfo.SetUniqueId(PlayerID)
+  00a9: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x01af
+  00c2: if !(NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none))) goto 0x010c
+  00df: GameSettings = self.OnlineSub.GameInterface.GetGameSettings(GetGameSessionName())
+  010c: PlayerController.ServerSetUniquePlayerId(PlayerID, ((GameSettings != none) && GameSettings.bWasFromInvite))
+  0133: self.bReceivedUniqueId = true
+  013b: if !((self.PlayerReplicationInfo.PlayerSkill > 0)) goto 0x0163
+  014f: PlayerController.ServerSetPlayerSkill(self.PlayerReplicationInfo.PlayerSkill)
+  0163: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.ReservationInterface, OnlineReservationInterface(none)))) goto 0x01af
+  018d: self.OnlineSub.ReservationInterface.NotifyPlayerConnected(PlayerID)
+  01af: goto 0x020a
+  01b2: LogInternal((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) $ ": PlayerReplicationInfo is None....aborting."), 'DevOnline', , )
+  020a: return nothing
+  020c: <eos>
+
+function PlayerController.ServerSetUniquePlayerId  (script 351 bytes)
+  0000: if !((self.bPendingDestroy || self.bReceivedUniqueId)) goto 0x0016
+  0014: return nothing
+  0016: if !(!IsPlayerAllowed(UniqueId)) goto 0x0070
+  002a: LogInternal((("Player" @ obj'OnlineSubsystem'.static.UniqueNetIdToString(UniqueId)) @ "was kicked"), , , )
+  005f: ClientWasKicked(0)
+  006b: DestroyActor()
+  006e: return nothing
+  0070: self.PlayerReplicationInfo.SetUniqueId(UniqueId)
+  0088: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x00ed
+  00b2: self.OnlineSub.GameInterface.RegisterPlayer(GetGameSessionName(), self.PlayerReplicationInfo.UniqueId, bWasInvited)
+  00ed: if !((cast3a(self.WorldInfo.NetMode) != cast3a(3))) goto 0x013f
+  0106: self.WorldInfo.Game.UpdateGameplayMuteList(self)
+  0123: self.WorldInfo.Game.RecalculateSkillRating()
+  013f: self.bReceivedUniqueId = true
+  0147: OnPlayerAccepted(UniqueId, bWasInvited)
+  015c: return nothing
+  015e: <eos>
+
+function PlayerController.IsPlayerAllowed  (script 349 bytes)
+  0000: if !(self.WorldInfo.Game.AccessControl.IsIDBanned(UniqueId)) goto 0x0060
+  002d: LogInternal((self.PlayerReplicationInfo.GetPlayerAlias() @ "is banned, kicking..."), , , )
+  005e: return false
+  0060: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x00b7
+  008a: GameSettings = self.OnlineSub.GameInterface.GetGameSettings(GetGameSessionName())
+  00b7: if !((((self.WorldInfo.IsConsoleBuild() && (GameSettings != none)) && !GameSettings.bIsLanMatch) && !self.OnlineSub.UniqueNetIdHasValue(UniqueId))) goto 0x0154
+  0110: LogInternal((self.PlayerReplicationInfo.GetPlayerAlias() @ "is not validated/signed in, kicking..."), , , )
+  0152: return false
+  0154: return true
+  0156: return return
+  015c: <eos>
+
+function PlayerController.OnPlayerAccepted  (script 79 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.ReservationInterface, OnlineReservationInterface(none)))) goto 0x004c
+  002a: self.OnlineSub.ReservationInterface.NotifyPlayerConnected(UniqueId)
+  004c: return nothing
+  004e: <eos>
+
+function PlayerController.ServerSetPlayerSkill  (script 23 bytes)
+  0000: self.PlayerReplicationInfo.PlayerSkill = PlayerSkill
+  0014: return nothing
+  0016: <eos>
+
+function PlayerController.ClientInitializeDataStores  (script 169 bytes)
+  0000: LogInternal((">> PlayerController::ClientInitializeDataStores for player" @ cast56(self)), 'DevDataStore', , )
+  004e: RegisterPlayerDataStores()
+  0058: LogInternal(("<< PlayerController::ClientInitializeDataStores for player" @ cast56(self)), 'DevDataStore', , )
+  00a6: return nothing
+  00a8: <eos>
+
+function PlayerController.RegisterPlayerDataStores  (script 23 bytes)
+  0000: RegisterCustomPlayerDataStores()
+  000a: RegisterStandardPlayerDataStores()
+  0014: return nothing
+  0016: <eos>
+
+function PlayerController.RegisterCustomPlayerDataStores  (script 1498 bytes)
+  0000: PlayerName = ((self.PlayerReplicationInfo != none) ? self.PlayerReplicationInfo.PlayerName : "None")
+  0027: LP = LocalPlayer(self.Player)
+  0037: LogInternal(((((((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")") @ "LP:") $ ((LP != none) ? cast57(LP.Name) : "None")), 'DevDataStore', , )
+  00a2: if !((LP != none)) goto 0x0598
+  00ad: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  00c6: if !((DataStoreManager != none)) goto 0x0598
+  00d1: self.CurrentPlayerData = PlayerOwnerDataStore(DataStoreManager.FindDataStore('PlayerOwner', LP))
+  00fd: if !((self.CurrentPlayerData == none)) goto 0x027e
+  0108: self.CurrentPlayerData = DataStoreManager.CreateDataStore(self.PlayerOwnerDataStoreClass)
+  0126: if !((self.CurrentPlayerData != none)) goto 0x020c
+  0131: if !(DataStoreManager.RegisterDataStore(self.CurrentPlayerData, LP)) goto 0x0172
+  0151: if !((self.PlayerReplicationInfo != none)) goto 0x016f
+  015c: self.PlayerReplicationInfo.BindPlayerOwnerDataProvider()
+  016f: goto 0x0209
+  0172: LogInternal((((((("Failed to register 'PlayerOwner' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "CurrentPlayerData:") $ ((self.CurrentPlayerData != none) ? cast57(self.CurrentPlayerData.Name) : "None")), 'DevDataStore', , )
+  0209: goto 0x027b
+  020c: LogInternal(((((("Failed to create 'PlayerOwner' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ") using class") @ cast56(self.PlayerOwnerDataStoreClass)), 'DevDataStore', , )
+  027b: goto 0x02da
+  027e: LogInternal((((("'PlayerOwner' data store already registered for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  02da: self.OnlinePlayerData = UIDataStore_OnlinePlayerData(DataStoreManager.FindDataStore('OnlinePlayerData', LP))
+  0306: if !((self.OnlinePlayerData == none)) goto 0x0537
+  0311: PlayerDataStoreClass = class<UIDataStore_OnlinePlayerData>(DataStoreManager.FindDataStoreClass(obj'UIDataStore_OnlinePlayerData'))
+  0334: if !((PlayerDataStoreClass != none)) goto 0x049f
+  033f: self.OnlinePlayerData = DataStoreManager.CreateDataStore(PlayerDataStoreClass)
+  035d: if !((self.OnlinePlayerData != none)) goto 0x0428
+  0368: if !(!DataStoreManager.RegisterDataStore(self.OnlinePlayerData, LP)) goto 0x0425
+  038a: LogInternal((((((("Failed to register 'OnlinePlayerData' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "OnlinePlayerData:") $ ((self.OnlinePlayerData != none) ? cast57(self.OnlinePlayerData.Name) : "None")), 'DevDataStore', , )
+  0425: goto 0x049c
+  0428: LogInternal(((((("Failed to create 'OnlinePlayerData' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ") using class") @ cast56(PlayerDataStoreClass)), 'DevDataStore', , )
+  049c: goto 0x0534
+  049f: LogInternal((((("Failed to find valid data store class while attempting to register the 'OnlinePlayerData' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0534: goto 0x0598
+  0537: LogInternal((((("'OnlinePlayerData' data store already registered for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0598: LogInternal((((((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  05d7: return nothing
+  05d9: <eos>
+
+function PlayerController.RegisterStandardPlayerDataStores  (script 933 bytes)
+  0000: PlayerName = ((self.PlayerReplicationInfo != none) ? self.PlayerReplicationInfo.PlayerName : "None")
+  0027: LP = LocalPlayer(self.Player)
+  0037: if !((LP != none)) goto 0x03a2
+  0042: LogInternal(((((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0081: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  009a: if !((DataStoreManager != none)) goto 0x03a2
+  00a5: DataStoreManager.GetPlayerDataStoreClasses(PlayerDataStoreClasses)
+  00bd: ClassIndex = 0
+  00c4: if !((ClassIndex < PlayerDataStoreClasses.Length)) goto 0x03a2
+  00d4: PlayerDataStoreClass = ClassIndex[PlayerDataStoreClasses]
+  00e5: if !((PlayerDataStoreClass != none)) goto 0x0398
+  00f0: PlayerDataStore = DataStoreManager.FindDataStore(PlayerDataStoreClass.static.default.Tag, LP)
+  011c: if !((PlayerDataStore == none)) goto 0x0331
+  0127: LogInternal((((((((("    Registering standard player data store '" $ cast57(PlayerDataStoreClass.Name)) $ "' for player") @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "LP:") $ ((LP != none) ? cast57(LP.Name) : "None")), 'DevDataStore', , )
+  01c6: PlayerDataStore = DataStoreManager.CreateDataStore(PlayerDataStoreClass)
+  01e4: if !((PlayerDataStore != none)) goto 0x02b4
+  01ef: if !(!DataStoreManager.RegisterDataStore(PlayerDataStore, LP)) goto 0x02b1
+  0211: LogInternal((((((((("Failed to register '" $ cast57(PlayerDataStoreClass.static.default.Tag)) $ "' data store for player:") @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "PlayerDataStore:") $ ((PlayerDataStore != none) ? cast57(PlayerDataStore.Name) : "None")), 'DevDataStore', , )
+  02b1: goto 0x032e
+  02b4: LogInternal(((((((("Failed to create '" $ cast57(PlayerDataStoreClass.static.default.Tag)) $ "' data store for player:") @ cast56(self)) @ "(") $ PlayerName) $ ") using class") @ cast56(self.PlayerOwnerDataStoreClass)), 'DevDataStore', , )
+  032e: goto 0x0398
+  0331: LogInternal((((((("'" $ cast57(PlayerDataStoreClass.static.default.Tag)) $ "' data store already registered for player:") @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0398: AddAdd_Int(ClassIndex)
+  039f: goto 0x00c4
+  03a2: return nothing
+  03a4: <eos>
+
+function PlayerController.UnregisterPlayerDataStores  (script 927 bytes)
+  0000: PlayerName = ((self.PlayerReplicationInfo != none) ? self.PlayerReplicationInfo.PlayerName : "None")
+  0027: LP = LocalPlayer(self.Player)
+  0037: if !((LP != none)) goto 0x039c
+  0042: LogInternal(((((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0081: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  009a: if !((DataStoreManager != none)) goto 0x0332
+  00a5: if !((self.CurrentPlayerData != none)) goto 0x0170
+  00b0: if !(!DataStoreManager.UnregisterDataStore(self.CurrentPlayerData)) goto 0x0166
+  00cd: LogInternal((((((("Failed to unregister 'PlayerOwner' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "CurrentPlayerData:") $ ((self.CurrentPlayerData != none) ? cast57(self.CurrentPlayerData.Name) : "None")), 'DevDataStore', , )
+  0166: self.CurrentPlayerData = none
+  016d: goto 0x01c8
+  0170: LogInternal((((("'PlayerOwner' data store not registered for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  01c8: self.OnlinePlayerData = none
+  01cf: OnlinePlayerDataStore = UIDataStore_OnlinePlayerData(DataStoreManager.FindDataStore('OnlinePlayerData', LP))
+  01fb: if !((OnlinePlayerDataStore != none)) goto 0x02c8
+  0206: if !(!DataStoreManager.UnregisterDataStore(OnlinePlayerDataStore)) goto 0x02c5
+  0223: LogInternal((((((("Failed to unregister 'OnlinePlayerData' data store for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "OnlinePlayerDataStore:") $ ((OnlinePlayerDataStore != none) ? cast57(OnlinePlayerDataStore.Name) : "None")), 'DevDataStore', , )
+  02c5: goto 0x0325
+  02c8: LogInternal((((("'OnlinePlayerData' data store not registered for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0325: UnregisterStandardPlayerDataStores()
+  032f: goto 0x035d
+  0332: LogInternal("Data store client not found!", 'DevDataStore', , )
+  035d: LogInternal((((((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  039c: return nothing
+  039e: <eos>
+
+function PlayerController.UnregisterStandardPlayerDataStores  (script 562 bytes)
+  0000: PlayerName = ((self.PlayerReplicationInfo != none) ? self.PlayerReplicationInfo.PlayerName : "None")
+  0027: LP = LocalPlayer(self.Player)
+  0037: if !((LP != none)) goto 0x022f
+  0042: LogInternal(((((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0081: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  009a: if !((DataStoreManager != none)) goto 0x01f0
+  00a5: DataStoreManager.GetPlayerDataStoreClasses(PlayerDataStoreClasses)
+  00bd: ClassIndex = 0
+  00c4: if !((ClassIndex < PlayerDataStoreClasses.Length)) goto 0x01f0
+  00d4: PlayerDataStoreClass = ClassIndex[PlayerDataStoreClasses]
+  00e5: if !((PlayerDataStoreClass != none)) goto 0x01e6
+  00f0: PlayerDataStore = DataStoreManager.FindDataStore(PlayerDataStoreClass.static.default.Tag, LP)
+  011c: if !((PlayerDataStore != none)) goto 0x01e6
+  0127: if !(!DataStoreManager.UnregisterDataStore(PlayerDataStore)) goto 0x01e6
+  0144: LogInternal((((((((("Failed to unregister '" $ cast57(PlayerDataStore.Tag)) $ "' data store for player:") @ cast56(self)) @ "(") $ PlayerName) $ ")") @ "PlayerDataStore:") $ ((PlayerDataStore != none) ? cast57(PlayerDataStore.Name) : "None")), 'DevDataStore', , )
+  01e6: AddAdd_Int(ClassIndex)
+  01ed: goto 0x00c4
+  01f0: LogInternal((((((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  022f: return nothing
+  0231: <eos>
+
+function PlayerController.SetPlayerDataProvider  (script 397 bytes)
+  0000: PlayerName = ((self.PlayerReplicationInfo != none) ? self.PlayerReplicationInfo.PlayerName : "None")
+  0027: LogInternal((((((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ "):") @ cast56(DataProvider)), 'DevDataStore', , )
+  0070: if !((self.CurrentPlayerData == none)) goto 0x0085
+  007b: RegisterPlayerDataStores()
+  0085: if !((self.CurrentPlayerData != none)) goto 0x00e5
+  0090: if !((DataProvider != none)) goto 0x00b6
+  009b: self.CurrentPlayerData.SetPlayerDataProvider(DataProvider)
+  00b3: goto 0x00e2
+  00b6: LogInternal("NULL data provider specified!", 'DevDataStore', , )
+  00e2: goto 0x0141
+  00e5: LogInternal((((("'PlayerOwner' data store not yet registered for player:" @ cast56(self)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0141: LogInternal(((((((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())) @ "(") $ PlayerName) $ "):") @ cast56(DataProvider)), 'DevDataStore', , )
+  018a: return nothing
+  018c: <eos>
+
+function PlayerController.ReloadProfileSettings  (script 64 bytes)
+  0000: if !(((self.OnlinePlayerData != none) && (self.OnlinePlayerData.ProfileProvider != none))) goto 0x003d
+  0021: self.OnlinePlayerData.ProfileProvider.RefreshProfileData()
+  003d: return nothing
+  003f: <eos>
+
+function PlayerController.SetRumbleScale  (script 34 bytes)
+  0000: if !((self.ForceFeedbackManager != none)) goto 0x001f
+  000b: self.ForceFeedbackManager.ScaleAllWaveformsBy = ScaleBy
+  001f: return nothing
+  0021: <eos>
+
+function PlayerController.GetRumbleScale  (script 55 bytes)
+  0000: retval = 1.0
+  000b: if !((self.ForceFeedbackManager != none)) goto 0x002a
+  0016: retval = self.ForceFeedbackManager.ScaleAllWaveformsBy
+  002a: return retval
+  0030: return return
+  0036: <eos>
+
+function PlayerController.IsControllerTiltActive  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.SetControllerTiltDesiredIfAvailable  (script 7 bytes)
+  0000: bActive
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.SetControllerTiltActive  (script 7 bytes)
+  0000: bActive
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.SetOnlyUseControllerTiltInput  (script 7 bytes)
+  0000: bActive
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.SetUseTiltForwardAndBack  (script 7 bytes)
+  0000: bActive
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.IsKeyboardAvailable  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.IsMouseAvailable  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.ClientGotoState  (script 87 bytes)
+  0000: nothing
+  0001: if !((((NewLabel == 'Begin') || (NewLabel == 'None')) && !IsInState(NewState, ))) goto 0x0046
+  0039: GotoState(NewState, , , )
+  0043: goto 0x0054
+  0046: GotoState(NewState, NewLabel, , )
+  0054: return nothing
+  0056: <eos>
+
+function PlayerController.AskForPawn  (script 88 bytes)
+  0000: if !(GamePlayEndedState()) goto 0x0026
+  000d: ClientGotoState(GetStateName(), 'Begin')
+  0023: goto 0x0055
+  0026: if !((self.Pawn != none)) goto 0x0043
+  0031: GivePawn(self.Pawn)
+  0040: goto 0x0055
+  0043: self.bFrozen = false
+  004b: ServerRestartPlayer()
+  0055: return nothing
+  0057: <eos>
+
+function PlayerController.GivePawn  (script 58 bytes)
+  0000: if !((NewPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Pawn = NewPawn
+  0018: NewPawn.Controller = self
+  0028: ClientRestart(self.Pawn)
+  0037: return nothing
+  0039: <eos>
+
+function PlayerController.Possess  (script 426 bytes)
+  0000: nothing
+  0001: if !((((self.PlayerCamera == none) && ((cast3a(self.WorldInfo.NetMode) == cast3a(0)) || (cast3a(self.WorldInfo.NetMode) == cast3a(3)))) && IsLocalPlayerController())) goto 0x0107
+  0051: LogInternal(((((("ERROR:" @ "PlayerController '") @ cast56(self)) @ " attempting to possess pawn '") @ cast56(aPawn)) @ " with a NULL PlayerCamera!!! Deleting both the pawn and the controller."), 'AI', , )
+  00f6: aPawn.DestroyActor()
+  0102: DestroyActor()
+  0105: return nothing
+  0107: if !(!self.PlayerReplicationInfo.bOnlySpectator) goto 0x01a1
+  011b: if !((aPawn.Controller != none)) goto 0x014b
+  012f: aPawn.Controller.UnPossess()
+  014b: aPawn.PossessedBy(self, bVehicleTransition)
+  0165: self.Pawn = aPawn
+  0170: self.Pawn.bStasis = false
+  0181: PlayerController.ResetTimeMargin()
+  0187: Restart(bVehicleTransition)
+  0197: FireTouchEvents()
+  01a1: PlayerController.FirePlayerSpawnEvents()
+  01a7: return nothing
+  01a9: <eos>
+
+function PlayerController.FireTouchEvents  (script 171 bytes)
+  0000: foreach self.Pawn.TouchingActors(obj'Actor', A) (end 0x00a7)
+  0020: I = 0
+  0027: if !((I < A.GeneratedEvents.Length)) goto 0x00a6
+  0040: TouchEvent = SeqEvent_Touch(I[A.GeneratedEvents])
+  005f: if !(((TouchEvent != none) && TouchEvent.bPlayerOnly)) goto 0x009c
+  007e: TouchEvent.CheckTouchActivate(A, self.Pawn, )
+  009c: AddAdd_Int(I)
+  00a3: goto 0x0027
+  00a6: iternext
+  00a7: iterpop
+  00a8: return nothing
+  00aa: <eos>
+
+function PlayerController.AcknowledgePossession  (script 100 bytes)
+  0000: if !((LocalPlayer(self.Player) != none)) goto 0x0061
+  0010: self.AcknowledgedPawn = P
+  001b: if !((P != none)) goto 0x0056
+  0026: P.SetBaseEyeheight()
+  0039: P.EyeHeight = P.BaseEyeHeight
+  0056: PlayerController.ServerAcknowledgePossession(P)
+  0061: return nothing
+  0063: <eos>
+
+function PlayerController.ServerAcknowledgePossession  (script 65 bytes)
+  0000: if !((((P != none) && (P == self.Pawn)) && (P != self.AcknowledgedPawn))) goto 0x0033
+  002d: PlayerController.ResetTimeMargin()
+  0033: self.AcknowledgedPawn = P
+  003e: return nothing
+  0040: <eos>
+
+function PlayerController.UnPossess  (script 116 bytes)
+  0000: if !((self.Pawn != none)) goto 0x006a
+  000b: SetLocation(self.Pawn.Location)
+  001c: self.Pawn.RemoteRole = 1
+  002d: self.Pawn.UnPossessed()
+  0040: CleanOutSavedMoves()
+  004a: if !((GetViewTarget() == self.Pawn)) goto 0x006a
+  005e: SetViewTarget(self, )
+  006a: self.Pawn = none
+  0071: return nothing
+  0073: <eos>
+
+function PlayerController.PawnDied  (script 59 bytes)
+  0000: if !((P != self.Pawn)) goto 0x0011
+  000f: return nothing
+  0011: if !((self.Pawn != none)) goto 0x002d
+  001c: self.Pawn.RemoteRole = 1
+  002d: Controller.PawnDied(P)
+  0038: return nothing
+  003a: <eos>
+
+function PlayerController.ClientSetPawn  (script 47 bytes)
+  0000: self.Pawn = P
+  000b: if !((self.ViewTarget == self)) goto 0x0022
+  0016: SetViewTarget(self, )
+  0022: FireTouchEvents()
+  002c: return nothing
+  002e: <eos>
+
+function PlayerController.ClientSetHUD  (script 110 bytes)
+  0000: if !((self.myHUD != none)) goto 0x0017
+  000b: self.myHUD.DestroyActor()
+  0017: if !((newHUDType == none)) goto 0x002c
+  0022: self.myHUD = none
+  0029: goto 0x006b
+  002c: self.myHUD = Spawn(newHUDType, self, , , , , , )
+  0048: if !((self.myHUD != none)) goto 0x006b
+  0053: self.myHUD.SpawnScoreBoard(newScoringType)
+  006b: return nothing
+  006d: <eos>
+
+function PlayerController.HandlePickup  (script 42 bytes)
+  0000: ReceiveLocalizedMessage(Inv.MessageClass, , , , Inv.get_Class())
+  0027: return nothing
+  0029: <eos>
+
+function PlayerController.CleanupPRI  (script 57 bytes)
+  0000: if !((self.PlayerReplicationInfo == none)) goto 0x000d
+  000b: return nothing
+  000d: self.WorldInfo.Game.AddInactivePRI(self.PlayerReplicationInfo, self)
+  002f: self.PlayerReplicationInfo = none
+  0036: return nothing
+  0038: <eos>
+
+function PlayerController.ReceiveLocalizedMessage  (script 109 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(1)) || (self.WorldInfo.GRI == none))) goto 0x0035
+  0033: return nothing
+  0035: if !((Message == none)) goto 0x0042
+  0040: return nothing
+  0042: Message.static.ClientReceive(self, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  006a: return nothing
+  006c: <eos>
+
+function PlayerController.ClientPlaySound  (script 25 bytes)
+  0000: ClientHearSound(ASound, self, self.Location, false)
+  0016: return nothing
+  0018: <eos>
+
+function PlayerController.HearSoundFinished  (script 77 bytes)
+  0000: self.HearSoundActiveComponents.RemoveItem(AC)
+  000d: if !(!AC.IsPendingKill()) goto 0x004a
+  0025: AC.ResetToDefaults()
+  0038: self.HearSoundPoolComponents.Length[self.HearSoundPoolComponents] = AC
+  004a: return nothing
+  004c: <eos>
+
+function PlayerController.GetPooledAudioComponent  (script 27 bytes)
+  0000: ASound
+  0005: SourceActor
+  000a: bStopWhenOwnerDestroyed
+  000f: bUseLocation
+  0014: SourceLocation
+  0019: nothing
+  001a: <eos>
+
+function PlayerController.ClientHearSound  (script 156 bytes)
+  0000: if !((SourceActor == none)) goto 0x0041
+  000b: AC = GetPooledAudioComponent(ASound, SourceActor, bStopWhenOwnerDestroyed, true, SourceLocation)
+  0031: if !((AC == none)) goto 0x003e
+  003c: return nothing
+  003e: goto 0x0086
+  0041: AC = GetPooledAudioComponent(ASound, SourceActor, bStopWhenOwnerDestroyed, !obj'Core.Math'.static.IsZero(SourceLocation), SourceLocation)
+  0079: if !((AC == none)) goto 0x0086
+  0084: return nothing
+  0086: AC.Play()
+  0099: return nothing
+  009b: <eos>
+
+function PlayerController.Kismet_ClientPlaySound  (script 232 bytes)
+  0000: nothing
+  0001: if !((SourceActor != none)) goto 0x00e5
+  000c: AC = SourceActor.CreateAudioComponent(ASound, false, true, , , )
+  002f: if !((AC != none)) goto 0x00e5
+  003a: AC.__OnAudioFinished__Delegate = OnAudioFinishedHandler
+  004e: AC.VolumeMultiplier = VolumeMultiplier
+  0062: AC.PitchMultiplier = PitchMultiplier
+  0076: AC.bAutoDestroy = true
+  0087: if !((SocketName != 'None')) goto 0x00ae
+  009a: AC.SocketName = SocketName
+  00ae: AC.FadeIn(FadeInTime, 1.0)
+  00cb: if !(bSuppressSpatialization) goto 0x00e5
+  00d4: AC.bAllowSpatialization = false
+  00e5: return nothing
+  00e7: <eos>
+
+function PlayerController.Kismet_ClientStopSound  (script 137 bytes)
+  0000: if !((SourceActor == none)) goto 0x0012
+  000b: SourceActor = self
+  0012: foreach SourceActor.ComponentList(obj'AudioComponent', AC) (end 0x0085)
+  0032: if !(((AC.SoundCue == ASound) && (AC.FadeOutStopTime < 0.0))) goto 0x0084
+  0064: AC.FadeOut(FadeOutTime, 0.0)
+  0081: iterpop
+  0082: return nothing
+  0084: iternext
+  0085: iterpop
+  0086: return nothing
+  0088: <eos>
+
+function PlayerController.ClientPlayActorFaceFXAnim  (script 48 bytes)
+  0000: if !((SourceActor != none)) goto 0x002d
+  000b: SourceActor.PlayActorFaceFXAnim(AnimSet, GroupName, SeqName)
+  002d: return nothing
+  002f: <eos>
+
+function PlayerController.ClientMessage  (script 118 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(1)) || (self.WorldInfo.GRI == none))) goto 0x0033
+  0031: return nothing
+  0033: if !((Type == 'None')) goto 0x0055
+  0046: Type = 'Event'
+  0055: TeamMessage(self.PlayerReplicationInfo, S, Type, MsgLifeTime)
+  0073: return nothing
+  0075: <eos>
+
+function PlayerController.TeamMessage  (script 262 bytes)
+  0000: nothing
+  0001: if !((self.myHUD != none)) goto 0x0033
+  000c: self.myHUD.Message(PRI, S, Type, MsgLifeTime)
+  0033: if !((((Type == 'Say') || (Type == 'TeamSay')) && (PRI != none))) goto 0x0091
+  0068: S = ((PRI.PlayerName $ ": ") $ S)
+  0089: bIsUserCreated = true
+  0091: if !((self.Player != none)) goto 0x0103
+  009c: if !((!bIsUserCreated || (bIsUserCreated && PlayerController.CanViewUserCreatedContent()))) goto 0x0103
+  00bd: LocalPlayer(self.Player).ViewportClient.ViewportConsole.OutputText(S)
+  00ec: LogInternal(("Message: " $ S), , , )
+  0103: return nothing
+  0105: <eos>
+
+function PlayerController.PlayBeepSound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnReadProfileSettingsBegin  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnReadProfileSettingsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnWriteProfileSettingsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RegisterOnlineDelegates  (script 695 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !(((self.OnlineSub != none) && (LP != none))) goto 0x02b4
+  0028: LocalUserNum = LP.ControllerId
+  003c: self.VoiceInterface = self.OnlineSub.VoiceInterface
+  0050: if !(NotEqual_InterfaceInterface(self.OnlineSub.SystemInterface, OnlineSystemInterface(none))) goto 0x00df
+  006d: self.OnlineSub.SystemInterface.AddExternalUIChangeDelegate(delegate.OnExternalUIChanged)
+  0093: self.OnlineSub.SystemInterface.AddControllerChangeDelegate(delegate.OnControllerChanged)
+  00b9: self.OnlineSub.SystemInterface.AddStorageDeviceChangeDelegate(delegate.OnStorageDeviceChange)
+  00df: if !(NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none))) goto 0x0129
+  00fc: self.OnlineSub.GameInterface.AddGameInviteAcceptedDelegate(cast3d(LocalUserNum), delegate.OnGameInviteAccepted)
+  0129: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0173
+  0146: self.OnlineSub.PlayerInterfaceEx.AddDeviceSelectionDoneDelegate(cast3d(LocalUserNum), delegate.NotifyDeviceSelectComplete)
+  0173: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x023d
+  0190: self.OnlineSub.PlayerInterface.AddLoginChangeDelegate(delegate.NotifyLoginChange)
+  01b6: self.OnlineSub.PlayerInterface.AddReadProfileSettingsBeginDelegate(cast3d(LocalUserNum), delegate.OnReadProfileSettingsBegin)
+  01e3: self.OnlineSub.PlayerInterface.AddReadProfileSettingsCompleteDelegate(cast3d(LocalUserNum), delegate.OnReadProfileSettingsComplete)
+  0210: self.OnlineSub.PlayerInterface.AddWriteProfileSettingsCompleteDelegate(cast3d(LocalUserNum), delegate.OnWriteProfileSettingsComplete)
+  023d: if !(NotEqual_InterfaceInterface(self.OnlineSub.ContentInterface, OnlineContentInterface(none))) goto 0x02b4
+  025a: self.OnlineSub.ContentInterface.AddReadContentComplete(cast3d(LocalUserNum), delegate.OnReadContentComplete)
+  0287: self.OnlineSub.ContentInterface.AddFlushContentComplete(cast3d(LocalUserNum), delegate.OnFlushContentComplete)
+  02b4: return nothing
+  02b6: <eos>
+
+function PlayerController.ClearOnlineDelegates  (script 890 bytes)
+  0000: LogInternal(((((("Clearing online delegates for" @ cast56(self)) @ "(") $ "Player:") $ ((self.Player != none) ? cast57(self.Player.Name) : "None")) $ ")"), 'DevOnline', , )
+  006b: LP = LocalPlayer(self.Player)
+  007b: if !(((cast3a(self.Role) < cast3a(3)) || (LP != none))) goto 0x0377
+  0098: if !((self.OnlineSub != none)) goto 0x0377
+  00a3: if !((LP != none)) goto 0x00c5
+  00ae: LocalUserNum = LP.ControllerId
+  00c2: goto 0x00cc
+  00c5: LocalUserNum = 0
+  00cc: if !(NotEqual_InterfaceInterface(self.OnlineSub.SystemInterface, OnlineSystemInterface(none))) goto 0x015b
+  00e9: self.OnlineSub.SystemInterface.ClearExternalUIChangeDelegate(delegate.OnExternalUIChanged)
+  010f: self.OnlineSub.SystemInterface.ClearControllerChangeDelegate(delegate.OnControllerChanged)
+  0135: self.OnlineSub.SystemInterface.ClearStorageDeviceChangeDelegate(delegate.OnStorageDeviceChange)
+  015b: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x01a5
+  0178: self.OnlineSub.PlayerInterfaceEx.ClearDeviceSelectionDoneDelegate(cast3d(LocalUserNum), delegate.NotifyDeviceSelectComplete)
+  01a5: if !((NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)) && (LP != none))) goto 0x01fc
+  01cf: self.OnlineSub.GameInterface.ClearGameInviteAcceptedDelegate(cast3d(LocalUserNum), delegate.OnGameInviteAccepted)
+  01fc: if !((NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)) && (LP != none))) goto 0x02d3
+  0226: self.OnlineSub.PlayerInterface.ClearLoginChangeDelegate(delegate.NotifyLoginChange)
+  024c: self.OnlineSub.PlayerInterface.ClearReadProfileSettingsBeginDelegate(cast3d(LocalUserNum), delegate.OnReadProfileSettingsBegin)
+  0279: self.OnlineSub.PlayerInterface.ClearReadProfileSettingsCompleteDelegate(cast3d(LocalUserNum), delegate.OnReadProfileSettingsComplete)
+  02a6: self.OnlineSub.PlayerInterface.ClearReadProfileSettingsCompleteDelegate(cast3d(LocalUserNum), delegate.OnWriteProfileSettingsComplete)
+  02d3: if !((NotEqual_InterfaceInterface(self.OnlineSub.ContentInterface, OnlineContentInterface(none)) && (LP != none))) goto 0x0357
+  02fd: self.OnlineSub.ContentInterface.ClearReadContentComplete(cast3d(LocalUserNum), delegate.OnReadContentComplete)
+  032a: self.OnlineSub.ContentInterface.ClearFlushContentComplete(cast3d(LocalUserNum), delegate.OnFlushContentComplete)
+  0357: AddAdd_PreInt(LocalUserNum)
+  035e: if !(((LocalUserNum == 4) || (LP != none))) goto 0x00cc
+  0377: return nothing
+  0379: <eos>
+
+function PlayerController.Destroyed  (script 309 bytes)
+  0000: ClientPlayForceFeedbackWaveform(none)
+  000b: ClearOnlineDelegates()
+  0015: if !((self.Pawn != none)) goto 0x00e7
+  0020: DrivenVehicle = Vehicle(self.Pawn)
+  0030: if !((DrivenVehicle != none)) goto 0x00ac
+  003b: Driver = DrivenVehicle.Driver
+  004f: DrivenVehicle.DriverLeave(true)
+  0063: if !((Driver != none)) goto 0x00a9
+  006e: Driver.Health = 0.0
+  0082: Driver.Died(self, obj'DmgType_Suicided', Driver.Location)
+  00a9: goto 0x00e7
+  00ac: self.Pawn.Health = 0.0
+  00c0: self.Pawn.Died(self, obj'DmgType_Suicided', self.Pawn.Location)
+  00e7: if !((self.myHUD != none)) goto 0x00fe
+  00f2: self.myHUD.DestroyActor()
+  00fe: if !((self.PlayerCamera != none)) goto 0x011c
+  0109: self.PlayerCamera.DestroyActor()
+  0115: self.PlayerCamera = none
+  011c: PlayerController.ForceClearUnpauseDelegates()
+  0122: UnregisterPlayerDataStores()
+  012c: Controller.Destroyed()
+  0132: return nothing
+  0134: <eos>
+
+function PlayerController.FixFOV  (script 36 bytes)
+  0000: self.FOVAngle = default.DefaultFOV
+  000b: self.DesiredFOV = default.DefaultFOV
+  0016: self.DefaultFOV = default.DefaultFOV
+  0021: return nothing
+  0023: <eos>
+
+function PlayerController.SetFOV  (script 25 bytes)
+  0000: self.DesiredFOV = NewFOV
+  000b: self.FOVAngle = NewFOV
+  0016: return nothing
+  0018: <eos>
+
+function PlayerController.ResetFOV  (script 25 bytes)
+  0000: self.DesiredFOV = self.DefaultFOV
+  000b: self.FOVAngle = self.DefaultFOV
+  0016: return nothing
+  0018: <eos>
+
+function PlayerController.Fov  (script 145 bytes)
+  0000: if !((self.PlayerCamera != none)) goto 0x0025
+  000b: self.PlayerCamera.SetFOV(F)
+  0023: return nothing
+  0025: if !((((F >= 80.0) || (cast3a(self.WorldInfo.NetMode) == cast3a(0))) || self.PlayerReplicationInfo.bOnlySpectator)) goto 0x008e
+  0063: self.DefaultFOV = obj'Core.Math'.static.FClamp(F, 80.0, 100.0)
+  0083: self.DesiredFOV = self.DefaultFOV
+  008e: return nothing
+  0090: <eos>
+
+function PlayerController.Mutate  (script 14 bytes)
+  0000: PlayerController.ServerMutate(MutateString)
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.ServerMutate  (script 64 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: self.WorldInfo.Game.Mutate(MutateString, self)
+  003d: return nothing
+  003f: <eos>
+
+function PlayerController.AllowTextMessage  (script 324 bytes)
+  0000: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(0)) || self.PlayerReplicationInfo.bAdmin)) goto 0x002f
+  002d: return true
+  002f: if !(((self.WorldInfo.Pauser == none) && ((self.WorldInfo.TimeSeconds - self.LastBroadcastTime) < cast3f(2)))) goto 0x0065
+  0063: return false
+  0065: if !(((self.WorldInfo.TimeSeconds - self.LastBroadcastTime) < cast3f(5))) goto 0x00f0
+  0083: msg = obj'Core.Strings'.static.Left(msg, obj'Core.Math'.static.Clamp((obj'Core.Strings'.static.Len(msg) - 4), 8, 64))
+  00bc: I = 0
+  00c3: if !((I < 4)) goto 0x00f0
+  00cf: if !((I[self.LastBroadcastString] ~= msg)) goto 0x00e6
+  00e4: return false
+  00e6: AddAdd_Int(I)
+  00ed: goto 0x00c3
+  00f0: I = 3
+  00f8: if !((I > 0)) goto 0x0127
+  0103: I[self.LastBroadcastString] = (I - 1)[self.LastBroadcastString]
+  011d: SubtractSubtract_Int(I)
+  0124: goto 0x00f8
+  0127: self.LastBroadcastTime = self.WorldInfo.TimeSeconds
+  013b: return true
+  013d: return return
+  0143: <eos>
+
+function PlayerController.Say  (script 52 bytes)
+  0000: msg = obj'Core.Strings'.static.Left(msg, 128)
+  0018: if !(PlayerController.AllowTextMessage(msg)) goto 0x0031
+  0026: PlayerController.ServerSay(msg)
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.ServerSay  (script 230 bytes)
+  0000: if !((self.PlayerReplicationInfo.bAdmin && (obj'Core.Strings'.static.Left(msg, 1) == "#"))) goto 0x00b8
+  002d: msg = obj'Core.Strings'.static.Right(msg, (obj'Core.Strings'.static.Len(msg) - 1))
+  0056: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x00b5)
+  0076: PC.PlayerController.ClearProgressMessages()
+  0085: PC.PlayerController.SetProgressTime(6.0)
+  0099: PC.SetProgressMessage(2, msg, )
+  00b4: iternext
+  00b5: iterpop
+  00b6: return nothing
+  00b8: self.WorldInfo.Game.Broadcast(self, msg, 'Say')
+  00e3: return nothing
+  00e5: <eos>
+
+function PlayerController.TeamSay  (script 52 bytes)
+  0000: msg = obj'Core.Strings'.static.Left(msg, 128)
+  0018: if !(PlayerController.AllowTextMessage(msg)) goto 0x0031
+  0026: PlayerController.ServerTeamSay(msg)
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.ServerTeamSay  (script 146 bytes)
+  0000: self.LastActiveTime = self.WorldInfo.TimeSeconds
+  0014: if !(!self.WorldInfo.GRI.GameClass.static.default.bTeamGame) goto 0x0047
+  003a: PlayerController.Say(msg)
+  0045: return nothing
+  0047: self.WorldInfo.Game.BroadcastTeam(self, self.WorldInfo.Game.ParseMessageString(self, msg), 'TeamSay')
+  008f: return nothing
+  0091: <eos>
+
+function PlayerController.Camera  (script 14 bytes)
+  0000: PlayerController.ServerCamera(NewMode)
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.ServerCamera  (script 130 bytes)
+  0000: if !((NewMode == '1st')) goto 0x0025
+  0013: NewMode = 'FirstPerson'
+  0022: goto 0x0047
+  0025: if !((NewMode == '3rd')) goto 0x0047
+  0038: NewMode = 'ThirdPerson'
+  0047: SetCameraMode(NewMode)
+  0056: if !((self.PlayerCamera != none)) goto 0x007f
+  0061: LogInternal(("#### " $ cast57(self.PlayerCamera.CameraStyle)), , , )
+  007f: return nothing
+  0081: <eos>
+
+function PlayerController.ClientSetCameraMode  (script 34 bytes)
+  0000: if !((self.PlayerCamera != none)) goto 0x001f
+  000b: self.PlayerCamera.CameraStyle = NewCamMode
+  001f: return nothing
+  0021: <eos>
+
+function PlayerController.SetCameraMode  (script 74 bytes)
+  0000: if !((self.PlayerCamera != none)) goto 0x0047
+  000b: self.PlayerCamera.CameraStyle = NewCamMode
+  001f: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x0047
+  0038: ClientSetCameraMode(NewCamMode)
+  0047: return nothing
+  0049: <eos>
+
+function PlayerController.ResetCameraMode  (script 66 bytes)
+  0000: if !((self.Pawn != none)) goto 0x002c
+  000b: SetCameraMode(self.Pawn.GetDefaultCameraMode(self))
+  0029: goto 0x003f
+  002c: SetCameraMode('FirstPerson')
+  003f: return nothing
+  0041: <eos>
+
+function PlayerController.UsingFirstPersonCamera  (script 64 bytes)
+  0000: return (((self.PlayerCamera == none) || (self.PlayerCamera.CameraStyle == 'FirstPerson')) && (LocalPlayer(self.Player) != none))
+  0039: return return
+  003f: <eos>
+
+function PlayerController.ClientVoiceMessage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ForceDeathUpdate  (script 29 bytes)
+  0000: self.LastUpdateTime = (self.WorldInfo.TimeSeconds - cast3f(10))
+  001a: return nothing
+  001c: <eos>
+
+function PlayerController.DualServerMove  (script 91 bytes)
+  0000: ServerMove(TimeStamp0, InAccel0, vect(1,2,3), PendingFlags, ClientRoll, View0)
+  0030: ServerMove(TimeStamp, InAccel, ClientLoc, NewFlags, ClientRoll, View)
+  0058: return nothing
+  005a: <eos>
+
+function PlayerController.DualServerMoveWithOld  (script 122 bytes)
+  0000: PlayerController.OldServerMove(OldTimeStamp, OldAccelX, OldAccelY, OldAccelZ, OldMoveFlags)
+  001f: ServerMove(TimeStamp0, InAccel0, vect(1,2,3), PendingFlags, ClientRoll, View0)
+  004f: ServerMove(TimeStamp, InAccel, ClientLoc, NewFlags, ClientRoll, View)
+  0077: return nothing
+  0079: <eos>
+
+function PlayerController.OldServerMove  (script 428 bytes)
+  0000: if !((self.AcknowledgedPawn != self.Pawn)) goto 0x0011
+  000f: return nothing
+  0011: if !((self.CurrentTimeStamp < (OldTimeStamp - 0.001))) goto 0x01a9
+  0027: Accel.X = cast3c(OldAccelX)
+  003f: if !((Accel.X > cast3f(127))) goto 0x0086
+  0058: Accel.X = (-1.0 * (Accel.X - cast3f(128)))
+  0086: Accel.Y = cast3c(OldAccelY)
+  009e: if !((Accel.Y > cast3f(127))) goto 0x00e5
+  00b7: Accel.Y = (-1.0 * (Accel.Y - cast3f(128)))
+  00e5: Accel.Z = cast3c(OldAccelZ)
+  00fd: if !((Accel.Z > cast3f(127))) goto 0x0144
+  0116: Accel.Z = (-1.0 * (Accel.Z - cast3f(128)))
+  0144: (Accel *= cast3f(20))
+  014f: OldTimeStamp = obj'Core.Math'.static.FMin(OldTimeStamp, (self.CurrentTimeStamp + self.MaxResponseTime))
+  0171: MoveAutonomous((OldTimeStamp - self.CurrentTimeStamp), OldMoveFlags, Accel, rot(0,0,0))
+  019e: self.CurrentTimeStamp = OldTimeStamp
+  01a9: return nothing
+  01ab: <eos>
+
+function PlayerController.ServerMove  (script 1724 bytes)
+  0000: if !((self.CurrentTimeStamp >= TimeStamp)) goto 0x0011
+  000f: return nothing
+  0011: if !((self.AcknowledgedPawn != self.Pawn)) goto 0x0042
+  0020: InAccel = vect(0,0,0)
+  0033: GivePawn(self.Pawn)
+  0042: ViewPitch = (View & 65535)
+  0054: ViewYaw = (View >> 16)
+  0063: Accel = (InAccel * 0.001)
+  0075: DeltaTime = obj'Core.Math'.static.FMin(self.MaxResponseTime, (TimeStamp - self.CurrentTimeStamp))
+  0097: if !((self.Pawn == none)) goto 0x00b3
+  00a2: self.bWasSpeedHack = false
+  00aa: PlayerController.ResetTimeMargin()
+  00b0: goto 0x01aa
+  00b3: if !(!PlayerController.CheckSpeedHack(DeltaTime)) goto 0x018d
+  00c3: if !(!self.bWasSpeedHack) goto 0x015b
+  00ce: if !(((self.WorldInfo.TimeSeconds - self.LastSpeedHackLog) > cast3f(20))) goto 0x012e
+  00ec: LogInternal(("Possible speed hack by " $ self.PlayerReplicationInfo.PlayerName), , , )
+  011a: self.LastSpeedHackLog = self.WorldInfo.TimeSeconds
+  012e: ClientMessage("Speed Hack Detected!", 'CriticalEvent', )
+  0158: goto 0x0163
+  015b: self.bWasSpeedHack = true
+  0163: DeltaTime = 0.0
+  016e: self.Pawn.Velocity = vect(0,0,0)
+  018a: goto 0x01aa
+  018d: (DeltaTime *= self.Pawn.CustomTimeDilation)
+  01a2: self.bWasSpeedHack = false
+  01aa: self.CurrentTimeStamp = TimeStamp
+  01b5: self.ServerTimeStamp = self.WorldInfo.TimeSeconds
+  01c9: ViewRot.Pitch = ViewPitch
+  01df: ViewRot.Yaw = ViewYaw
+  01f5: ViewRot.Roll = 0
+  0207: if !(((MoveFlags & 256) != 0)) goto 0x022d
+  0219: self.LastActiveTime = self.WorldInfo.TimeSeconds
+  022d: SetRotation(ViewRot)
+  0235: if !((self.AcknowledgedPawn != self.Pawn)) goto 0x0246
+  0244: return nothing
+  0246: if !((self.Pawn != none)) goto 0x03c1
+  0251: Rot.Roll = (256 * cast3a(ClientRoll))
+  0270: Rot.Yaw = ViewYaw
+  0286: if !(((cast3a(self.Pawn.Physics) == cast3a(3)) || (cast3a(self.Pawn.Physics) == cast3a(4)))) goto 0x02c5
+  02ba: maxPitch = 2
+  02c2: goto 0x02cc
+  02c5: maxPitch = 0
+  02cc: if !(((ViewPitch > (maxPitch * self.Pawn.MaxPitchLimit)) && (ViewPitch < (65536 - (maxPitch * self.Pawn.MaxPitchLimit))))) goto 0x037b
+  0313: if !((ViewPitch < 32768)) goto 0x034b
+  0322: Rot.Pitch = (maxPitch * self.Pawn.MaxPitchLimit)
+  0348: goto 0x0378
+  034b: Rot.Pitch = (65536 - (maxPitch * self.Pawn.MaxPitchLimit))
+  0378: goto 0x0391
+  037b: Rot.Pitch = ViewPitch
+  0391: DeltaRot = (self.Rotation - Rot)
+  03a4: self.Pawn.FaceRotation(Rot, DeltaTime)
+  03c1: if !(((self.WorldInfo.Pauser == none) && (DeltaTime > cast3f(0)))) goto 0x0402
+  03e4: MoveAutonomous(DeltaTime, MoveFlags, Accel, DeltaRot)
+  0402: if !((ClientLoc == vect(1,2,3))) goto 0x041e
+  0419: return nothing
+  041b: goto 0x0451
+  041e: if !(((self.WorldInfo.TimeSeconds - self.LastUpdateTime) < (180.0 / cast3f(self.Player.CurrentNetSpeed)))) goto 0x0451
+  044f: return nothing
+  0451: if !((self.Pawn == none)) goto 0x0471
+  045c: LocDiff = (self.Location - ClientLoc)
+  046e: goto 0x04b4
+  0471: if !(self.Pawn.bForceRMVelocity) goto 0x0499
+  0483: LocDiff = vect(0,0,0)
+  0496: goto 0x04b4
+  0499: LocDiff = (self.Pawn.Location - ClientLoc)
+  04b4: clientErr = (LocDiff dot LocDiff)
+  04c6: if !((clientErr > 3.0)) goto 0x0690
+  04d5: self.PendingAdjustment.ClientError = obj'Core.Math'.static.Sqrt(clientErr)
+  04f6: if !((self.Pawn == none)) goto 0x0546
+  0501: self.PendingAdjustment.NewPhysics = self.Physics
+  0517: self.PendingAdjustment.NewLoc = self.Location
+  052d: self.PendingAdjustment.NewVel = self.Velocity
+  0543: goto 0x0650
+  0546: self.PendingAdjustment.NewPhysics = self.Pawn.Physics
+  0565: self.PendingAdjustment.NewVel = self.Pawn.Velocity
+  0584: self.PendingAdjustment.NewBase = self.Pawn.Base
+  05a3: if !(((InterpActor(self.Pawn.Base) != none) || (Vehicle(self.Pawn.Base) != none))) goto 0x0612
+  05d7: self.PendingAdjustment.NewLoc = (self.Pawn.Location - self.Pawn.Base.Location)
+  060f: goto 0x0631
+  0612: self.PendingAdjustment.NewLoc = self.Pawn.Location
+  0631: self.PendingAdjustment.NewFloor = self.Pawn.Floor
+  0650: self.LastUpdateTime = self.WorldInfo.TimeSeconds
+  0664: self.PendingAdjustment.TimeStamp = TimeStamp
+  067a: self.PendingAdjustment.bAckGoodMove = 0
+  068d: goto 0x06b9
+  0690: self.PendingAdjustment.TimeStamp = TimeStamp
+  06a6: self.PendingAdjustment.bAckGoodMove = 1
+  06b9: return nothing
+  06bb: <eos>
+
+function PlayerController.ServerMoveWithOld  (script 74 bytes)
+  0000: PlayerController.OldServerMove(OldTimeStamp, OldAccelX, OldAccelY, OldAccelZ, OldMoveFlags)
+  001f: ServerMove(TimeStamp, InAccel, ClientLoc, MoveFlags, ClientRoll, View)
+  0047: return nothing
+  0049: <eos>
+
+function PlayerController.SendClientAdjustment  (script 1236 bytes)
+  0000: if !((self.AcknowledgedPawn != self.Pawn)) goto 0x0027
+  000f: self.PendingAdjustment.TimeStamp = 0.0
+  0025: return nothing
+  0027: if !((cast3a(self.PendingAdjustment.bAckGoodMove) == 1)) goto 0x0058
+  003f: PlayerController.ClientAckGoodMove(self.PendingAdjustment.TimeStamp)
+  0055: goto 0x0492
+  0058: if !(((self.Pawn == none) || (cast3a(self.Pawn.Physics) != cast3a(8)))) goto 0x033c
+  007e: if !((self.PendingAdjustment.NewVel == vect(0,0,0))) goto 0x0234
+  00a0: if !((((GetStateName() == 'PlayerWalking') && (self.Pawn != none)) && (cast3a(self.Pawn.Physics) == cast3a(1)))) goto 0x017d
+  00d9: VeryShortClientAdjustPosition(self.PendingAdjustment.TimeStamp, self.PendingAdjustment.NewLoc.X, self.PendingAdjustment.NewLoc.Y, self.PendingAdjustment.NewLoc.Z, self.PendingAdjustment.NewBase)
+  0154: self.WorldInfo.Game.NotifyClientAdjust(self, 'VeryShortClientAdjustPosition')
+  017a: goto 0x0231
+  017d: ShortClientAdjustPosition(self.PendingAdjustment.TimeStamp, GetStateName(), self.PendingAdjustment.NewPhysics, self.PendingAdjustment.NewLoc.X, self.PendingAdjustment.NewLoc.Y, self.PendingAdjustment.NewLoc.Z, self.PendingAdjustment.NewBase)
+  020b: self.WorldInfo.Game.NotifyClientAdjust(self, 'ShortClientAdjustPosition')
+  0231: goto 0x0339
+  0234: ClientAdjustPosition(self.PendingAdjustment.TimeStamp, GetStateName(), self.PendingAdjustment.NewPhysics, self.PendingAdjustment.NewLoc.X, self.PendingAdjustment.NewLoc.Y, self.PendingAdjustment.NewLoc.Z, self.PendingAdjustment.NewVel.X, self.PendingAdjustment.NewVel.Y, self.PendingAdjustment.NewVel.Z, self.PendingAdjustment.NewBase)
+  0313: self.WorldInfo.Game.NotifyClientAdjust(self, 'ClientAdjustPosition')
+  0339: goto 0x0492
+  033c: LongClientAdjustPosition(self.PendingAdjustment.TimeStamp, GetStateName(), self.PendingAdjustment.NewPhysics, self.PendingAdjustment.NewLoc.X, self.PendingAdjustment.NewLoc.Y, self.PendingAdjustment.NewLoc.Z, self.PendingAdjustment.NewVel.X, self.PendingAdjustment.NewVel.Y, self.PendingAdjustment.NewVel.Z, self.PendingAdjustment.NewBase, self.PendingAdjustment.NewFloor.X, self.PendingAdjustment.NewFloor.Y, self.PendingAdjustment.NewFloor.Z)
+  046c: self.WorldInfo.Game.NotifyClientAdjust(self, 'LongClientAdjustPosition')
+  0492: self.PendingAdjustment.TimeStamp = 0.0
+  04a8: self.PendingAdjustment.bAckGoodMove = 0
+  04bb: self.PendingAdjustment.ClientError = 0.0
+  04d1: return nothing
+  04d3: <eos>
+
+function PlayerController.ServerDrive  (script 120 bytes)
+  0000: ViewRotation.Pitch = (View & 65535)
+  001d: ViewRotation.Yaw = (View >> 16)
+  0037: ViewRotation.Roll = 0
+  0049: SetRotation(ViewRotation)
+  0051: ProcessDrive(InForward, InStrafe, InBrake, aUp, InJump)
+  0075: return nothing
+  0077: <eos>
+
+function PlayerController.ProcessDrive  (script 25 bytes)
+  0000: ClientGotoState(GetStateName(), 'Begin')
+  0016: return nothing
+  0018: <eos>
+
+function PlayerController.ProcessMove  (script 60 bytes)
+  0000: if !(((self.Pawn != none) && (self.Pawn.Acceleration != newAccel))) goto 0x0039
+  0025: self.Pawn.Acceleration = newAccel
+  0039: return nothing
+  003b: <eos>
+
+function PlayerController.MoveAutonomous  (script 154 bytes)
+  0000: if !(((self.Pawn != none) && self.Pawn.bHardAttach)) goto 0x0021
+  001f: return nothing
+  0021: DoubleClickMove = self.SavedMoveClass.static.SetFlags(CompressedFlags, self)
+  0040: HandleWalking()
+  004a: ProcessMove(DeltaTime, newAccel, DoubleClickMove, DeltaRot)
+  0068: if !((self.Pawn != none)) goto 0x0087
+  0073: self.Pawn.AutonomousPhysics(DeltaTime)
+  0084: goto 0x008f
+  0087: AutonomousPhysics(DeltaTime)
+  008f: self.bDoubleJump = false
+  0097: return nothing
+  0099: <eos>
+
+function PlayerController.VeryShortClientAdjustPosition  (script 143 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001f
+  000b: Floor = self.Pawn.Floor
+  001f: LongClientAdjustPosition(TimeStamp, 'PlayerWalking', 1, NewLocX, NewLocY, NewLocZ, 0.0, 0.0, 0.0, NewBase, Floor.X, Floor.Y, Floor.Z)
+  008c: return nothing
+  008e: <eos>
+
+function PlayerController.ShortClientAdjustPosition  (script 142 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001f
+  000b: Floor = self.Pawn.Floor
+  001f: LongClientAdjustPosition(TimeStamp, NewState, NewPhysics, NewLocX, NewLocY, NewLocZ, 0.0, 0.0, 0.0, NewBase, Floor.X, Floor.Y, Floor.Z)
+  008b: return nothing
+  008d: <eos>
+
+function PlayerController.ClientCapBandwidth  (script 66 bytes)
+  0000: self.ClientCap = Cap
+  000b: if !(((self.Player != none) && (self.Player.CurrentNetSpeed > Cap))) goto 0x003f
+  0030: SetNetSpeed(Cap)
+  003f: return nothing
+  0041: <eos>
+
+function PlayerController.ClientAckGoodMove  (script 81 bytes)
+  0000: PlayerController.UpdatePing(TimeStamp)
+  000b: if !((self.CurrentTimeStamp >= TimeStamp)) goto 0x001c
+  001a: return nothing
+  001c: self.CurrentTimeStamp = TimeStamp
+  0027: PlayerController.ClearAckedMoves()
+  002d: self._ClientAdjustDebug.SetServerLocation(self.Pawn.Location)
+  004e: return nothing
+  0050: <eos>
+
+function PlayerController.ClientAdjustPosition  (script 142 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001f
+  000b: Floor = self.Pawn.Floor
+  001f: LongClientAdjustPosition(TimeStamp, NewState, NewPhysics, NewLocX, NewLocY, NewLocZ, NewVelX, NewVelY, NewVelZ, NewBase, Floor.X, Floor.Y, Floor.Z)
+  008b: return nothing
+  008d: <eos>
+
+function PlayerController.ServerSetNetSpeed  (script 110 bytes)
+  0000: if !(((self.WorldInfo.Game != none) && (cast3a(self.WorldInfo.NetMode) == cast3a(2)))) goto 0x005c
+  002f: NewSpeed = obj'Core.Math'.static.Min(NewSpeed, self.WorldInfo.Game.AdjustedNetSpeed)
+  005c: SetNetSpeed(NewSpeed)
+  006b: return nothing
+  006d: <eos>
+
+function PlayerController.UpdatePing  (script 119 bytes)
+  0000: if !((self.PlayerReplicationInfo != none)) goto 0x0074
+  000b: self.PlayerReplicationInfo.UpdatePing(TimeStamp)
+  0023: if !(((self.WorldInfo.TimeSeconds - self.LastPingUpdate) > cast3f(4))) goto 0x0074
+  0041: self.LastPingUpdate = self.WorldInfo.TimeSeconds
+  0055: PlayerController.ServerUpdatePing(cast44((cast3f(1000) * self.PlayerReplicationInfo.ExactPing)))
+  0074: return nothing
+  0076: <eos>
+
+function PlayerController.LongClientAdjustPosition  (script 2873 bytes)
+  0000: PlayerController.UpdatePing(TimeStamp)
+  000b: if !((self.Pawn != none)) goto 0x00e5
+  0016: if !(self.Pawn.bTearOff) goto 0x0062
+  0028: self.Pawn = none
+  002f: if !((!GamePlayEndedState() && !IsInState('Dead', ))) goto 0x0060
+  0052: GotoState('Dead', , , )
+  0060: return nothing
+  0062: MoveActor = self.Pawn
+  006d: TheViewTarget = GetViewTarget()
+  007d: if !(((TheViewTarget != self.Pawn) && ((TheViewTarget == self) || ((Pawn(TheViewTarget) != none) && (Pawn(TheViewTarget).Health <= cast3f(0)))))) goto 0x00e2
+  00c8: ResetCameraMode()
+  00d2: SetViewTarget(self.Pawn, )
+  00e2: goto 0x01b1
+  00e5: MoveActor = self
+  00ec: if !((GetStateName() != NewState)) goto 0x01b1
+  00f9: LogInternal(((("- state change:" @ cast57(GetStateName())) @ "->") @ cast57(NewState)), 'PlayerMove', , )
+  012d: if !((NewState == 'RoundEnded')) goto 0x014d
+  0140: GotoState(NewState, , , )
+  014a: goto 0x01b1
+  014d: if !(IsInState('Dead', )) goto 0x0194
+  015d: if !(((NewState != 'PlayerWalking') && (NewState != 'PlayerSwimming'))) goto 0x018f
+  0185: GotoState(NewState, , , )
+  018f: return nothing
+  0191: goto 0x01b1
+  0194: if !((NewState == 'Dead')) goto 0x01b1
+  01a7: GotoState(NewState, , , )
+  01b1: if !((self.CurrentTimeStamp >= TimeStamp)) goto 0x01c2
+  01c0: return nothing
+  01c2: self.CurrentTimeStamp = TimeStamp
+  01cd: NewLocation.X = NewLocX
+  01e3: NewLocation.Y = NewLocY
+  01f9: NewLocation.Z = NewLocZ
+  020f: NewVelocity.X = NewVelX
+  0225: NewVelocity.Y = NewVelY
+  023b: NewVelocity.Z = NewVelZ
+  0251: CurrentMove = self.SavedMoves
+  025c: if !((CurrentMove != none)) goto 0x0576
+  0267: AdjustedMove = CurrentMove
+  0272: if !((CurrentMove.TimeStamp <= self.CurrentTimeStamp)) goto 0x056c
+  028a: self.SavedMoves = CurrentMove.NextMove
+  029e: CurrentMove.NextMove = self.FreeMoves
+  02b2: self.FreeMoves = CurrentMove
+  02bd: if !((CurrentMove.TimeStamp == self.CurrentTimeStamp)) goto 0x054b
+  02d5: self._ClientAdjustDebug.SetServerLocation(NewLocation)
+  02ed: self.LastAckedAccel = CurrentMove.Acceleration
+  0301: self.FreeMoves.Clear()
+  0314: if !((((InterpActor(NewBase) != none) || (Vehicle(NewBase) != none)) && (NewBase == CurrentMove.EndBase))) goto 0x047b
+  0350: if !((((GetStateName() == NewState) && IsInState('PlayerWalking', )) && ((cast3a(MoveActor.Physics) == cast3a(1)) || (cast3a(MoveActor.Physics) == cast3a(2))))) goto 0x0478
+  03a5: if !((obj'Core.Math'.static.VSizeSq((CurrentMove.SavedRelativeLocation - NewLocation)) < 3.0)) goto 0x03e3
+  03d7: CurrentMove = none
+  03de: return nothing
+  03e0: goto 0x0478
+  03e3: if !(((((Vehicle(NewBase) != none) && (obj'Core.Math'.static.VSizeSq(self.Velocity) < 9.0)) && (obj'Core.Math'.static.VSizeSq(NewVelocity) < 9.0)) && (obj'Core.Math'.static.VSizeSq((CurrentMove.SavedRelativeLocation - NewLocation)) < 900.0))) goto 0x0478
+  046f: CurrentMove = none
+  0476: return nothing
+  0478: goto 0x0541
+  047b: if !((((((obj'Core.Math'.static.VSizeSq((CurrentMove.SavedLocation - NewLocation)) < 3.0) && (obj'Core.Math'.static.VSizeSq((CurrentMove.SavedVelocity - NewVelocity)) < 9.0)) && (GetStateName() == NewState)) && IsInState('PlayerWalking', )) && ((cast3a(MoveActor.Physics) == cast3a(1)) || (cast3a(MoveActor.Physics) == cast3a(2))))) goto 0x0541
+  0538: CurrentMove = none
+  053f: return nothing
+  0541: CurrentMove = none
+  0548: goto 0x0569
+  054b: self.FreeMoves.Clear()
+  055e: CurrentMove = self.SavedMoves
+  0569: goto 0x0573
+  056c: CurrentMove = none
+  0573: goto 0x025c
+  0576: if !(MoveActor.bHardAttach) goto 0x05f4
+  0588: if !((MoveActor.Base == none)) goto 0x05f2
+  059c: if !((NewBase != none)) goto 0x05c2
+  05a7: MoveActor.SetBase(NewBase, , , )
+  05c2: if !((MoveActor.Base == none)) goto 0x05ed
+  05d6: MoveActor.SetHardAttach(false)
+  05ea: goto 0x05ef
+  05ed: return nothing
+  05ef: goto 0x05f4
+  05f2: return nothing
+  05f4: NewFloor.X = NewFloorX
+  060a: NewFloor.Y = NewFloorY
+  0620: NewFloor.Z = NewFloorZ
+  0636: if !((MoveActor.Base != NewBase)) goto 0x0688
+  064e: LogInternal((("- base mismatch:" @ cast56(MoveActor.Base)) @ cast56(NewBase)), 'PlayerMove', , )
+  0688: if !((MoveActor.Location != NewLocation)) goto 0x06ee
+  06a0: LogInternal(("- location mismatch, delta:" @ cast55(obj'Core.Math'.static.VSize((MoveActor.Location - NewLocation)))), 'PlayerMove', , )
+  06ee: if !((MoveActor.Velocity != NewVelocity)) goto 0x079b
+  0706: LogInternal(((((("- velocity mismatch, delta:" @ cast55(obj'Core.Math'.static.VSize((NewVelocity - MoveActor.Velocity)))) @ "client:") @ cast55(obj'Core.Math'.static.VSize(MoveActor.Velocity))) @ "server:") @ cast55(obj'Core.Math'.static.VSize(NewVelocity))), 'PlayerMove', , )
+  079b: self._ClientAdjustDebug.NotifyAdjustment(NewLocation, GetStateName(), NewState, ((self.Pawn != none) ? self.Pawn.Physics : 0), NewPhysics, AdjustedMove)
+  07e2: AdjustedMove = none
+  07e9: if !(((((self.Pawn != none) && (cast3a(self.Pawn.Physics) != cast3a(2))) && (self.Pawn.Mesh != none)) && (cast3a(self.Pawn.Mesh.RootMotionMode) != cast3a(2)))) goto 0x0884
+  0849: LogInternal("- skipping position update for root motion", 'PlayerMove', , )
+  0882: return nothing
+  0884: CurrentMove = self.SavedMoves
+  088f: if !((CurrentMove != none)) goto 0x08c5
+  089a: if !(CurrentMove.bForceRMVelocity) goto 0x08ae
+  08ac: return nothing
+  08ae: CurrentMove = CurrentMove.NextMove
+  08c2: goto 0x088f
+  08c5: if !(((InterpActor(NewBase) != none) || (Vehicle(NewBase) != none))) goto 0x08fc
+  08e7: (NewLocation += NewBase.Location)
+  08fc: MoveActor.bCanTeleport = false
+  090d: if !(((((((!MoveActor.SetLocation(NewLocation) && (Pawn(MoveActor) != none)) && (Pawn(MoveActor).CylinderComponent.CollisionHeight > Pawn(MoveActor).CrouchHeight)) && !Pawn(MoveActor).bIsCrouched) && (cast3a(NewPhysics) == cast3a(1))) && (cast3a(MoveActor.Physics) != cast3a(10))) && self.Pawn.bCanCrouch)) goto 0x0a8b
+  09c7: MoveActor.SetPhysics(NewPhysics, , )
+  09e1: if !(!MoveActor.SetLocation((NewLocation + (vect(0,0,1) * Pawn(MoveActor)._WorkingMovementCapabilities.MaxStepHeight)))) goto 0x0a52
+  0a26: Pawn(MoveActor).ForceCrouch()
+  0a3e: MoveActor.SetLocation(NewLocation)
+  0a4f: goto 0x0a8b
+  0a52: MoveActor.MoveSmooth((vect(0,0,-1) * Pawn(MoveActor)._WorkingMovementCapabilities.MaxStepHeight))
+  0a8b: MoveActor.bCanTeleport = true
+  0a9c: if !(((cast3a(MoveActor.Physics) != cast3a(10)) && (cast3a(NewPhysics) != cast3a(10)))) goto 0x0ae1
+  0ac7: MoveActor.SetPhysics(NewPhysics, , )
+  0ae1: if !((MoveActor != self)) goto 0x0b0b
+  0aec: MoveActor.SetBase(NewBase, NewFloor, , )
+  0b0b: MoveActor.Velocity = NewVelocity
+  0b1f: UpdateStateFromAdjustment(NewState)
+  0b2e: self.bUpdatePosition = true
+  0b36: return nothing
+  0b38: <eos>
+
+function PlayerController.UpdateStateFromAdjustment  (script 26 bytes)
+  0000: if !((GetStateName() != NewState)) goto 0x0017
+  000d: GotoState(NewState, , , )
+  0017: return nothing
+  0019: <eos>
+
+function PlayerController.ServerUpdatePing  (script 49 bytes)
+  0000: self.PlayerReplicationInfo.Ping = cast3d(obj'Core.Math'.static.Min(cast44((0.25 * cast3f(NewPing))), 250))
+  002e: return nothing
+  0030: <eos>
+
+function PlayerController.ClearAckedMoves  (script 183 bytes)
+  0000: CurrentMove = self.SavedMoves
+  000b: if !((CurrentMove != none)) goto 0x00b4
+  0016: if !((CurrentMove.TimeStamp <= self.CurrentTimeStamp)) goto 0x00ae
+  002e: if !((CurrentMove.TimeStamp == self.CurrentTimeStamp)) goto 0x005a
+  0046: self.LastAckedAccel = CurrentMove.Acceleration
+  005a: self.SavedMoves = CurrentMove.NextMove
+  006e: CurrentMove.NextMove = self.FreeMoves
+  0082: self.FreeMoves = CurrentMove
+  008d: self.FreeMoves.Clear()
+  00a0: CurrentMove = self.SavedMoves
+  00ab: goto 0x00b1
+  00ae: goto 0x00b4
+  00b1: goto 0x000b
+  00b4: return nothing
+  00b6: <eos>
+
+function PlayerController.ClientUpdatePosition  (script 683 bytes)
+  0000: self.bUpdatePosition = false
+  0008: if !(((self.Pawn != none) && (cast3a(self.Pawn.Physics) == cast3a(10)))) goto 0x0030
+  002e: return nothing
+  0030: realbRun = cast3a(self.bRun)
+  003d: realbDuck = cast3a(self.bDuck)
+  004a: bRealJump = self.bPressedJump
+  0057: self.bUpdating = true
+  005f: bRealPreciseDestination = self.bPreciseDestination
+  006c: PlayerController.ClearAckedMoves()
+  0072: CurrentMove = self.SavedMoves
+  007d: if !((CurrentMove != none)) goto 0x024b
+  0088: if !(((self.PendingMove == CurrentMove) && (self.Pawn != none))) goto 0x00bc
+  00a4: self.PendingMove.SetInitialPosition(self.Pawn)
+  00bc: if !((self.Pawn != none)) goto 0x00e6
+  00c7: self.Pawn.bForceRMVelocity = CurrentMove.bForceRMVelocity
+  00e6: MoveAutonomous(CurrentMove.Delta, CurrentMove.CompressedFlags(), CurrentMove.Acceleration, rot(0,0,0))
+  012c: if !((self.Pawn != none)) goto 0x0208
+  0137: self.Pawn.bForceRMVelocity = false
+  0148: CurrentMove.SavedLocation = self.Pawn.Location
+  0165: CurrentMove.SavedVelocity = self.Pawn.Velocity
+  0182: CurrentMove.EndBase = self.Pawn.Base
+  019f: if !(((CurrentMove.EndBase != none) && !CurrentMove.EndBase.bWorldGeometry)) goto 0x0208
+  01d2: CurrentMove.SavedRelativeLocation = (self.Pawn.Location - CurrentMove.EndBase.Location)
+  0208: CurrentMove = CurrentMove.NextMove
+  021c: if !((CurrentMove != none)) goto 0x0248
+  0227: self._ClientAdjustDebug.NotifyClientUpdatePosition(self.Pawn.Location)
+  0248: goto 0x007d
+  024b: self._ClientAdjustDebug.NotifyClientUpdatePositionComplete(self.Pawn.Location)
+  026c: self.bUpdating = false
+  0274: self.bDuck = cast3d(realbDuck)
+  0281: self.bRun = cast3d(realbRun)
+  028e: self.bPressedJump = bRealJump
+  029b: self.bPreciseDestination = bRealPreciseDestination
+  02a8: return nothing
+  02aa: <eos>
+
+function PlayerController.GetFreeMove  (script 327 bytes)
+  0000: if !((self.FreeMoves == none)) goto 0x010b
+  000b: S = self.SavedMoves
+  0016: if !((S != none)) goto 0x00f9
+  0021: AddAdd_Int(I)
+  0028: if !((I > 100)) goto 0x00e2
+  0034: first = self.SavedMoves
+  003f: self.SavedMoves = self.SavedMoves.NextMove
+  0053: first.Clear()
+  0066: first.NextMove = none
+  0076: if !((self.SavedMoves != none)) goto 0x00d5
+  0081: S = self.SavedMoves
+  008c: self.SavedMoves = self.SavedMoves.NextMove
+  00a0: S.Clear()
+  00b3: S.NextMove = self.FreeMoves
+  00c7: self.FreeMoves = S
+  00d2: goto 0x0076
+  00d5: self.PendingMove = none
+  00dc: return first
+  00e2: S = S.NextMove
+  00f6: goto 0x0016
+  00f9: return new(self, nothing, self.SavedMoveClass, nothing, GetRemoteRole)
+  0108: goto 0x0140
+  010b: S = self.FreeMoves
+  0116: self.FreeMoves = self.FreeMoves.NextMove
+  012a: S.NextMove = none
+  013a: return S
+  0140: return return
+  0146: <eos>
+
+function PlayerController.CompressAccel  (script 94 bytes)
+  0000: if !((C >= 0)) goto 0x0026
+  000b: C = obj'Core.Math'.static.Min(C, 127)
+  0023: goto 0x0051
+  0026: C = (obj'Core.Math'.static.Min(cast44(obj'Core.Math'.static.Abs(cast3f(C))), 127) + 128)
+  0051: return C
+  0057: return return
+  005d: <eos>
+
+function PlayerController.ReplicateMove  (script 1345 bytes)
+  0000: if !((self.Player == none)) goto 0x000d
+  000b: return nothing
+  000d: self.MaxResponseTime = (default.MaxResponseTime * self.WorldInfo.TimeDilation)
+  0028: DeltaTime = (((self.Pawn != none) ? self.Pawn.CustomTimeDilation : self.CustomTimeDilation) * obj'Core.Math'.static.FMin(DeltaTime, self.MaxResponseTime))
+  0065: if !((self.SavedMoves != none)) goto 0x011f
+  0070: LastMove = self.SavedMoves
+  007b: AlmostLastMove = LastMove
+  0086: OldMove = none
+  008d: HasMoreMoves = true
+  0095: if !(HasMoreMoves) goto 0x011f
+  009e: if !((((OldMove == none) && (self.Pawn != none)) && LastMove.IsImportantMove(self.LastAckedAccel))) goto 0x00de
+  00d3: OldMove = LastMove
+  00de: if !((LastMove.NextMove != none)) goto 0x0114
+  00f2: AlmostLastMove = LastMove
+  00fd: LastMove = LastMove.NextMove
+  0111: goto 0x011c
+  0114: HasMoreMoves = false
+  011c: goto 0x0095
+  011f: NewMove = GetFreeMove()
+  012f: if !((NewMove == none)) goto 0x013c
+  013a: return nothing
+  013c: NewMove.SetMoveFor(self, DeltaTime, newAccel, DoubleClickMove)
+  015f: ProcessMove(NewMove.Delta, NewMove.Acceleration, NewMove.DoubleClickMove, DeltaRot)
+  0198: if !(((self.PendingMove != none) && self.PendingMove.CanCombineWith(NewMove, self.Pawn, self.MaxResponseTime))) goto 0x0344
+  01ca: self.Pawn.SetLocation(self.PendingMove.GetStartLocation())
+  01e9: self.Pawn.Velocity = self.PendingMove.StartVelocity
+  0206: if !((self.PendingMove.StartBase != self.Pawn.Base)) goto 0x024b
+  0227: self.Pawn.SetBase(self.PendingMove.StartBase, , , )
+  024b: self.Pawn.Floor = self.PendingMove.StartFloor
+  0268: (NewMove.Delta += self.PendingMove.Delta)
+  0286: NewMove.SetInitialPosition(self.Pawn)
+  029e: if !((LastMove == self.PendingMove)) goto 0x033d
+  02ad: if !((self.SavedMoves == self.PendingMove)) goto 0x02e5
+  02bc: self.SavedMoves.NextMove = self.FreeMoves
+  02d0: self.FreeMoves = self.SavedMoves
+  02db: self.SavedMoves = none
+  02e2: goto 0x032a
+  02e5: self.PendingMove.NextMove = self.FreeMoves
+  02f9: self.FreeMoves = self.PendingMove
+  0304: if !((AlmostLastMove != none)) goto 0x032a
+  030f: AlmostLastMove.NextMove = none
+  031f: LastMove = AlmostLastMove
+  032a: self.FreeMoves.Clear()
+  033d: self.PendingMove = none
+  0344: if !((self.Pawn != none)) goto 0x036c
+  034f: self.Pawn.AutonomousPhysics(NewMove.Delta)
+  0369: goto 0x0374
+  036c: AutonomousPhysics(DeltaTime)
+  0374: NewMove.PostUpdate(self)
+  0388: if !((self.SavedMoves == none)) goto 0x03a1
+  0393: self.SavedMoves = NewMove
+  039e: goto 0x03b5
+  03a1: LastMove.NextMove = NewMove
+  03b5: if !((self.PendingMove == none)) goto 0x0496
+  03c0: if !((((self.Player.CurrentNetSpeed > 10000) && (self.WorldInfo.GRI != none)) && (self.WorldInfo.GRI.PRIArray.Length <= 10))) goto 0x041d
+  040f: NetMoveDelta = 0.011
+  041a: goto 0x045a
+  041d: NetMoveDelta = obj'Core.Math'.static.FMax(0.0222, ((2.0 * self.WorldInfo.MoveRepSize) / cast3f(self.Player.CurrentNetSpeed)))
+  045a: if !((((self.WorldInfo.TimeSeconds - self.ClientUpdateTime) * self.WorldInfo.TimeDilation) < NetMoveDelta)) goto 0x0496
+  0489: self.PendingMove = NewMove
+  0494: return nothing
+  0496: self.ClientUpdateTime = self.WorldInfo.TimeSeconds
+  04aa: ClientRoll = cast3d(((self.Rotation.Roll >> 8) & 255))
+  04ca: CallServerMove(NewMove, ((self.Pawn == none) ? self.Location : self.Pawn.Location), ClientRoll, (((self.Rotation.Yaw & 65535) << 16) + (self.Rotation.Pitch & 65535)), OldMove)
+  0537: self.PendingMove = none
+  053e: return nothing
+  0540: <eos>
+
+function PlayerController.CallServerMove  (script 866 bytes)
+  0000: if !((OldMove != none)) goto 0x0095
+  000b: BuildAccel = ((0.05 * OldMove.Acceleration) + vect(0.5,0.5,0.5))
+  0035: OldAccelX = cast3d(PlayerController.CompressAccel(cast44(BuildAccel.X)))
+  0055: OldAccelY = cast3d(PlayerController.CompressAccel(cast44(BuildAccel.Y)))
+  0075: OldAccelZ = cast3d(PlayerController.CompressAccel(cast44(BuildAccel.Z)))
+  0095: if !((self.PendingMove != none)) goto 0x027f
+  00a0: if !((OldMove != none)) goto 0x01ad
+  00ab: DualServerMoveWithOld(self.PendingMove.TimeStamp, (self.PendingMove.Acceleration * cast3f(1000)), self.PendingMove.CompressedFlags(), (((self.PendingMove.Rotation.Yaw & 65535) << 16) + (self.PendingMove.Rotation.Pitch & 65535)), NewMove.TimeStamp, (NewMove.Acceleration * cast3f(1000)), ClientLoc, NewMove.CompressedFlags(), ClientRoll, View, OldMove.TimeStamp, OldAccelX, OldAccelY, OldAccelZ, OldMove.CompressedFlags())
+  01aa: goto 0x027c
+  01ad: DualServerMove(self.PendingMove.TimeStamp, (self.PendingMove.Acceleration * cast3f(1000)), self.PendingMove.CompressedFlags(), (((self.PendingMove.Rotation.Yaw & 65535) << 16) + (self.PendingMove.Rotation.Pitch & 65535)), NewMove.TimeStamp, (NewMove.Acceleration * cast3f(1000)), ClientLoc, NewMove.CompressedFlags(), ClientRoll, View)
+  027c: goto 0x035f
+  027f: if !((OldMove != none)) goto 0x030e
+  028a: ServerMoveWithOld(NewMove.TimeStamp, (NewMove.Acceleration * cast3f(1000)), ClientLoc, NewMove.CompressedFlags(), ClientRoll, View, OldMove.TimeStamp, OldAccelX, OldAccelY, OldAccelZ, OldMove.CompressedFlags())
+  030b: goto 0x035f
+  030e: ServerMove(NewMove.TimeStamp, (NewMove.Acceleration * cast3f(1000)), ClientLoc, NewMove.CompressedFlags(), ClientRoll, View)
+  035f: return nothing
+  0361: <eos>
+
+function PlayerController.HandleWalking  (script 43 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0028
+  000b: self.Pawn.SetWalking((cast3a(self.bRun) != 0))
+  0028: return nothing
+  002a: <eos>
+
+function PlayerController.ServerRestartGame  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Speech  (script 24 bytes)
+  0000: PlayerController.ServerSpeech(Type, Index, Callsign)
+  0015: return nothing
+  0017: <eos>
+
+function PlayerController.ServerSpeech  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RestartLevel  (script 52 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x0031
+  0019: ClientTravel("?restart", 2, , )
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.LocalTravel  (script 47 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x002c
+  0019: ClientTravel(URL, 2, , )
+  002c: return nothing
+  002e: <eos>
+
+function PlayerController.QuickSave  (script 128 bytes)
+  0000: if !((((self.Pawn != none) && (self.Pawn.Health > cast3f(0))) && (cast3a(self.WorldInfo.NetMode) == cast3a(0)))) goto 0x007d
+  003e: ClientMessage(self.QuickSaveString, , )
+  004f: ConsoleCommand("DEFER SAVEGAME QUICKSAVE.SAV", )
+  007d: return nothing
+  007f: <eos>
+
+function PlayerController.QuickLoad  (script 74 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x0047
+  0019: ConsoleCommand("DEFER LOADGAME QUICKSAVE.SAV", )
+  0047: return nothing
+  0049: <eos>
+
+function PlayerController.CanUnpause  (script 29 bytes)
+  0000: return (self.WorldInfo.Pauser == self.PlayerReplicationInfo)
+  0016: return return
+  001c: <eos>
+
+function PlayerController.SetPause  (script 222 bytes)
+  0000: nothing
+  0001: if !((cast3a(self.WorldInfo.NetMode) != cast3a(3))) goto 0x00d0
+  001a: if !(bPause) goto 0x007f
+  0023: self.bFire = 0
+  002b: bResult = self.WorldInfo.Game.SetPause(self, CanUnpauseDelegate)
+  0054: if !(bResult) goto 0x007c
+  005d: if !((self.ForceFeedbackManager != none)) goto 0x007c
+  0068: self.ForceFeedbackManager.PauseWaveform(true)
+  007c: goto 0x00d0
+  007f: self.WorldInfo.Game.ClearPause()
+  009b: if !(((self.ForceFeedbackManager != none) && (self.WorldInfo.Pauser == none))) goto 0x00d0
+  00bc: self.ForceFeedbackManager.PauseWaveform(false)
+  00d0: return bResult
+  00d7: return return
+  00dd: <eos>
+
+function PlayerController.DebugPause  (script 31 bytes)
+  0000: self.WorldInfo.Game.DebugPause()
+  001c: return nothing
+  001e: <eos>
+
+function PlayerController.IsPaused  (script 25 bytes)
+  0000: return (self.WorldInfo.Pauser != none)
+  0012: return return
+  0018: <eos>
+
+function PlayerController.Pause  (script 9 bytes)
+  0000: PlayerController.ServerPause()
+  0006: return nothing
+  0008: <eos>
+
+function PlayerController.ServerPause  (script 45 bytes)
+  0000: if !(!IsPaused()) goto 0x001e
+  000f: SetPause(true, )
+  001b: goto 0x002a
+  001e: SetPause(false, )
+  002a: return nothing
+  002c: <eos>
+
+function PlayerController.ShowMenu  (script 30 bytes)
+  0000: if !(!IsPaused()) goto 0x001b
+  000f: SetPause(true, )
+  001b: return nothing
+  001d: <eos>
+
+function PlayerController.ConditionalPause  (script 41 bytes)
+  0000: if !((bDesiredPauseState != IsPaused())) goto 0x0026
+  0015: SetPause(bDesiredPauseState, )
+  0026: return nothing
+  0028: <eos>
+
+function PlayerController.ServerScriptTrace  (script 107 bytes)
+  0000: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && ((self.PlayerReplicationInfo == none) || !self.PlayerReplicationInfo.bAdmin))) goto 0x003e
+  003c: return nothing
+  003e: obj'Core.Profiling'.static.ScriptTrace(!obj'Core.Profiling'.static.IsScriptTracing(), , )
+  0068: return nothing
+  006a: <eos>
+
+function PlayerController.ThrowWeapon  (script 44 bytes)
+  0000: if !(((self.Pawn == none) || (self.Pawn.Weapon == none))) goto 0x0023
+  0021: return nothing
+  0023: PlayerController.ServerThrowWeapon()
+  0029: return nothing
+  002b: <eos>
+
+function PlayerController.ServerThrowWeapon  (script 44 bytes)
+  0000: if !(self.Pawn.CanThrowWeapon()) goto 0x0029
+  0016: self.Pawn.ThrowActiveWeapon()
+  0029: return nothing
+  002b: <eos>
+
+function PlayerController.PrevWeapon  (script 106 bytes)
+  0000: if !((self.WorldInfo.Pauser != none)) goto 0x0016
+  0014: return nothing
+  0016: if !((self.Pawn.Weapon == none)) goto 0x0037
+  002a: SwitchToBestWeapon()
+  0035: return nothing
+  0037: if !((self.Pawn.InvManager != none)) goto 0x0067
+  004b: self.Pawn.InvManager.PrevWeapon()
+  0067: return nothing
+  0069: <eos>
+
+function PlayerController.NextWeapon  (script 106 bytes)
+  0000: if !((self.WorldInfo.Pauser != none)) goto 0x0016
+  0014: return nothing
+  0016: if !((self.Pawn.Weapon == none)) goto 0x0037
+  002a: SwitchToBestWeapon()
+  0035: return nothing
+  0037: if !((self.Pawn.InvManager != none)) goto 0x0067
+  004b: self.Pawn.InvManager.NextWeapon()
+  0067: return nothing
+  0069: <eos>
+
+function PlayerController.StartFire  (script 90 bytes)
+  0000: nothing
+  0001: if !((self.WorldInfo.Pauser == self.PlayerReplicationInfo)) goto 0x0027
+  0019: SetPause(false, )
+  0025: return nothing
+  0027: if !(((self.Pawn != none) && !self.bCinematicMode)) goto 0x0057
+  003f: self.Pawn.StartFire(FireModeNum)
+  0057: return nothing
+  0059: <eos>
+
+function PlayerController.StopFire  (script 39 bytes)
+  0000: nothing
+  0001: if !((self.Pawn != none)) goto 0x0024
+  000c: self.Pawn.StopFire(FireModeNum)
+  0024: return nothing
+  0026: <eos>
+
+function PlayerController.StartAltFire  (script 16 bytes)
+  0000: nothing
+  0001: StartFire(1)
+  000d: return nothing
+  000f: <eos>
+
+function PlayerController.StopAltFire  (script 16 bytes)
+  0000: nothing
+  0001: StopFire(1)
+  000d: return nothing
+  000f: <eos>
+
+function PlayerController.GetTriggerUseList  (script 507 bytes)
+  0000: if !((self.Pawn != none)) goto 0x01f8
+  000b: GetPlayerViewPoint(cameraLoc, cameraRot)
+  001f: foreach self.Pawn.CollidingActors(obj'Trigger', checkTrigger, interactDistanceToCheck, , ) (end 0x01f7)
+  0046: idx = 0
+  004d: if !((idx < checkTrigger.GeneratedEvents.Length)) goto 0x01f6
+  0066: UseSeq = SeqEvent_Used(idx[checkTrigger.GeneratedEvents])
+  0085: if !(((((UseSeq != none) && (!bUsuableOnly || idx[checkTrigger.GeneratedEvents].CheckActivate(checkTrigger, self.Pawn, true, , ))) && ((obj'Core.Math'.static.Normal((checkTrigger.Location - cameraLoc)) dot cast39(cameraRot)) >= minDot)) && (((UseSeq.bAimToInteract && IsAimingAt(checkTrigger, 0.98)) && (obj'Core.Math'.static.VSize((self.Pawn.Location - checkTrigger.Location)) <= UseSeq.InteractDistance)) || (!UseSeq.bAimToInteract && (obj'Core.Math'.static.VSize((self.Pawn.Location - checkTrigger.Location)) <= UseSeq.InteractDistance))))) goto 0x01ec
+  01c5: out_useList.Length[out_useList] = checkTrigger
+  01d7: idx = checkTrigger.GeneratedEvents.Length
+  01ec: AddAdd_Int(idx)
+  01f3: goto 0x004d
+  01f6: iternext
+  01f7: iterpop
+  01f8: return nothing
+  01fa: <eos>
+
+function PlayerController.Use  (script 39 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x001a
+  0010: PerformedUseAction()
+  001a: ServerUse()
+  0024: return nothing
+  0026: <eos>
+
+function PlayerController.ServerUse  (script 13 bytes)
+  0000: PerformedUseAction()
+  000a: return nothing
+  000c: <eos>
+
+function PlayerController.PerformedUseAction  (script 174 bytes)
+  0000: if !((self.WorldInfo.Pauser == self.PlayerReplicationInfo)) goto 0x0036
+  0018: if !((cast3a(self.Role) == cast3a(3))) goto 0x0034
+  0028: SetPause(false, )
+  0034: return true
+  0036: if !(((self.Pawn == none) || !self.Pawn.bCanUse)) goto 0x0059
+  0057: return true
+  0059: if !((cast3a(self.Role) < cast3a(3))) goto 0x006b
+  0069: return false
+  006b: if !((Vehicle(self.Pawn) != none)) goto 0x0095
+  007b: return Vehicle(self.Pawn).DriverLeave(false)
+  0095: if !(PlayerController.FindVehicleToDrive()) goto 0x00a0
+  009e: return true
+  00a0: return PlayerController.TriggerInteracted()
+  00a7: return return
+  00ad: <eos>
+
+function PlayerController.FindVehicleToDrive  (script 393 bytes)
+  0000: if !(((Vehicle(self.Pawn.Base) != none) && Vehicle(self.Pawn.Base).TryToDrive(self.Pawn))) goto 0x0046
+  0044: return true
+  0046: PawnLoc2D = self.Pawn.Location
+  005a: PawnLoc2D.Z = 0.0
+  0070: ViewDir = cast39(self.Pawn.Rotation)
+  0086: foreach self.Pawn.OverlappingActors(obj'Vehicle', V, self.Pawn.VehicleCheckRadius, , ) (end 0x015b)
+  00b6: VLoc2D = V.Location
+  00ca: VLoc2D.Z = 0.0
+  00e0: NewDot = (obj'Core.Math'.static.Normal((VLoc2D - PawnLoc2D)) dot ViewDir)
+  0104: if !(((Best == none) || (NewDot > BestDot))) goto 0x015a
+  0120: if !(FastTrace(V.Location, self.Pawn.Location, , )) goto 0x015a
+  0144: Best = V
+  014f: BestDot = NewDot
+  015a: iternext
+  015b: iterpop
+  015c: return ((Best != none) && Best.TryToDrive(self.Pawn))
+  0182: return return
+  0188: <eos>
+
+function PlayerController.TriggerInteracted  (script 506 bytes)
+  0000: if !((self.Pawn != none)) goto 0x01f1
+  000b: PlayerController.GetTriggerUseList(self.InteractDistance, 60.0, 0.0, true, useList)
+  0026: if !((useList.Length > 0)) goto 0x01f1
+  0032: GetPlayerViewPoint(cameraLoc, cameraRot)
+  0046: if !((useList.Length > 0)) goto 0x01ad
+  0052: A = (useList.Length - 1)[useList]
+  0067: useList.Length = (useList.Length - 1)
+  0077: Weight = (obj'Core.Math'.static.Normal((A.Location - cameraLoc)) dot cast39(cameraRot))
+  00a6: (Weight += (1.0 - (obj'Core.Math'.static.VSize((A.Location - self.Pawn.Location)) / self.InteractDistance)))
+  00e4: bInserted = false
+  00ec: idx = 0
+  00f3: if !(((idx < sortedList.Length) && !bInserted)) goto 0x0171
+  0110: if !((idx[weightList] < Weight)) goto 0x0167
+  0125: sortedList.Insert(idx,1)
+  0131: weightList.Insert(idx,1)
+  013d: idx[sortedList] = A
+  014e: idx[weightList] = Weight
+  015f: bInserted = true
+  0167: AddAdd_Int(idx)
+  016e: goto 0x00f3
+  0171: if !(!bInserted) goto 0x01aa
+  017c: idx = sortedList.Length
+  0188: idx[sortedList] = A
+  0199: idx[weightList] = Weight
+  01aa: goto 0x0046
+  01ad: idx = 0
+  01b4: if !((idx < sortedList.Length)) goto 0x01f1
+  01c4: if !(idx[sortedList].UsedBy(self.Pawn)) goto 0x01e7
+  01e5: return true
+  01e7: AddAdd_Int(idx)
+  01ee: goto 0x01b4
+  01f1: return false
+  01f3: return return
+  01f9: <eos>
+
+function PlayerController.Suicide  (script 13 bytes)
+  0000: ServerSuicide()
+  000a: return nothing
+  000c: <eos>
+
+function PlayerController.ServerSuicide  (script 33 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001e
+  000b: self.Pawn.Suicide()
+  001e: return nothing
+  0020: <eos>
+
+function PlayerController.SetName  (script 298 bytes)
+  0000: if !((S != "")) goto 0x0127
+  000c: LocPlayer = LocalPlayer(self.Player)
+  001c: if !((((LocPlayer != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none))) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x00ff
+  0065: if !(((cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LocPlayer.ControllerId))) == cast3a(2)) && (self.OnlineSub.GameInterface.GetGameSettings(GetGameSessionName()) != none))) goto 0x00ff
+  00cc: S = self.OnlineSub.PlayerInterface.GetPlayerNickname(cast3d(LocPlayer.ControllerId))
+  00ff: NewName = S
+  010a: PlayerController.ServerChangeName(NewName)
+  0115: UpdateURL("Name", NewName, true)
+  0124: SaveConfig()
+  0127: return nothing
+  0129: <eos>
+
+function PlayerController.ServerChangeName  (script 50 bytes)
+  0000: if !((S != "")) goto 0x002f
+  000c: self.WorldInfo.Game.ChangeName(self, S, true)
+  002f: return nothing
+  0031: <eos>
+
+function PlayerController.SwitchTeam  (script 79 bytes)
+  0000: if !(((self.PlayerReplicationInfo.Team == none) || (self.PlayerReplicationInfo.Team.TeamIndex == 1))) goto 0x0041
+  0033: ServerChangeTeam(0)
+  003e: goto 0x004c
+  0041: ServerChangeTeam(1)
+  004c: return nothing
+  004e: <eos>
+
+function PlayerController.ChangeTeam  (script 168 bytes)
+  0000: nothing
+  0001: if !((TeamName ~= "blue")) goto 0x001b
+  0011: N = 1
+  0018: goto 0x0096
+  001b: if !(((((TeamName ~= "red") || (self.PlayerReplicationInfo == none)) || (self.PlayerReplicationInfo.Team == none)) || (self.PlayerReplicationInfo.Team.TeamIndex > 1))) goto 0x0076
+  006c: N = 0
+  0073: goto 0x0096
+  0076: N = (1 - self.PlayerReplicationInfo.Team.TeamIndex)
+  0096: ServerChangeTeam(N)
+  00a5: return nothing
+  00a7: <eos>
+
+function PlayerController.ServerChangeTeam  (script 141 bytes)
+  0000: OldTeam = self.PlayerReplicationInfo.Team
+  0014: self.WorldInfo.Game.ChangeTeam(self, N, true)
+  0037: if !((self.WorldInfo.Game.bTeamGame && (self.PlayerReplicationInfo.Team != OldTeam))) goto 0x008a
+  006c: if !((self.Pawn != none)) goto 0x008a
+  0077: self.Pawn.PlayerChangedTeam()
+  008a: return nothing
+  008c: <eos>
+
+function PlayerController.SwitchLevel  (script 81 bytes)
+  0000: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(0)) || (cast3a(self.WorldInfo.NetMode) == cast3a(2)))) goto 0x004e
+  0034: self.WorldInfo.ServerTravel(URL, , )
+  004e: return nothing
+  0050: <eos>
+
+function PlayerController.ClearProgressMessages  (script 9 bytes)
+  0000: PlayerController.ClientClearProgressMessages()
+  0006: return nothing
+  0008: <eos>
+
+function PlayerController.ClientClearProgressMessages  (script 46 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x002b
+  0013: I[self.ProgressMessage] = ""
+  0021: AddAdd_Int(I)
+  0028: goto 0x0007
+  002b: return nothing
+  002d: <eos>
+
+function PlayerController.SetProgressMessage  (script 30 bytes)
+  0000: nothing
+  0001: ClientSetProgressMessage(MessageType, Message, Title, )
+  001b: return nothing
+  001d: <eos>
+
+function PlayerController.ClientSetProgressMessage  (script 401 bytes)
+  0000: nothing
+  0001: nothing
+  0002: LogInternal(((("Progress Message:" @ cast52(MessageType)) @ Title) @ Message), , , )
+  0031: if !((cast3a(MessageType) == cast3a(0))) goto 0x004a
+  0041: PlayerController.ClientClearProgressMessages()
+  0047: goto 0x0181
+  004a: if !((cast3a(MessageType) == cast3a(4))) goto 0x00b7
+  005a: if !(!self.bIgnoreNetworkMessages) goto 0x007c
+  0065: NotifyConnectionError(Message, Title)
+  0079: goto 0x00b4
+  007c: LogInternal(((((("Ignoring" @ cast52(MessageType)) $ ":") @ Title) $ ",") @ Message), 'DevOnline', , )
+  00b4: goto 0x0181
+  00b7: if !((cast3a(MessageType) != cast3a(5))) goto 0x010a
+  00c7: if !((Title != "")) goto 0x00f0
+  00d3: 0[self.ProgressMessage] = Title
+  00e0: 1[self.ProgressMessage] = Message
+  00ed: goto 0x0107
+  00f0: 1[self.ProgressMessage] = ""
+  00fa: 0[self.ProgressMessage] = Message
+  0107: goto 0x0181
+  010a: if !((cast3a(MessageType) == cast3a(5))) goto 0x0181
+  011a: if !((!self.bIgnoreNetworkMessages && !self.bIgnoreSocketErrorMessage)) goto 0x0149
+  0132: NotifyConnectionError(Message, Title)
+  0146: goto 0x0181
+  0149: LogInternal(((((("Ignoring" @ cast52(MessageType)) $ ":") @ Title) $ ",") @ Message), 'DevOnline', , )
+  0181: self.bIgnoreNetworkMessages = bIgnoreFutureNetworkMessages
+  018e: return nothing
+  0190: <eos>
+
+function PlayerController.SetProgressTime  (script 14 bytes)
+  0000: PlayerController.ClientSetProgressTime(T)
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.ClientSetProgressTime  (script 30 bytes)
+  0000: self.ProgressTimeOut = (T + self.WorldInfo.TimeSeconds)
+  001b: return nothing
+  001d: <eos>
+
+function PlayerController.Restart  (script 83 bytes)
+  0000: Controller.Restart(bVehicleTransition)
+  000c: self.ServerTimeStamp = 0.0
+  0017: PlayerController.ResetTimeMargin()
+  001d: EnterStartState()
+  0027: ClientRestart(self.Pawn)
+  0036: SetViewTarget(self.Pawn, )
+  0046: ResetCameraMode()
+  0050: return nothing
+  0052: <eos>
+
+function PlayerController.EnterStartState  (script 169 bytes)
+  0000: if !(self.Pawn.PhysicsVolume.bWaterVolume) goto 0x006a
+  001b: if !(self.Pawn.HeadVolume.bWaterVolume) goto 0x0053
+  0036: self.Pawn.BreathTime = self.Pawn.UnderWaterTime
+  0053: NewState = self.Pawn.WaterMovementState
+  0067: goto 0x007e
+  006a: NewState = self.Pawn.LandMovementState
+  007e: if !(IsInState(NewState, )) goto 0x009c
+  008a: BeginState(NewState)
+  0099: goto 0x00a6
+  009c: GotoState(NewState, , , )
+  00a6: return nothing
+  00a8: <eos>
+
+function PlayerController.ClientRestart  (script 197 bytes)
+  0000: PlayerController.ResetPlayerMovementInput()
+  0006: CleanOutSavedMoves()
+  0010: self.Pawn = NewPawn
+  001b: if !(((self.Pawn != none) && self.Pawn.bTearOff)) goto 0x004b
+  003a: UnPossess()
+  0044: self.Pawn = none
+  004b: PlayerController.AcknowledgePossession(self.Pawn)
+  0056: if !((self.Pawn == none)) goto 0x0071
+  0061: GotoState('WaitingForPawn', , , )
+  006f: return nothing
+  0071: self.Pawn.ClientRestart()
+  0084: if !((cast3a(self.Role) < cast3a(3))) goto 0x00b8
+  0094: SetViewTarget(self.Pawn, )
+  00a4: ResetCameraMode()
+  00ae: EnterStartState()
+  00b8: CleanOutSavedMoves()
+  00c2: return nothing
+  00c4: <eos>
+
+function PlayerController.GameHasEnded  (script 56 bytes)
+  0000: nothing
+  0001: nothing
+  0002: SetViewTarget(EndGameFocus, )
+  0012: GotoState('RoundEnded', , , )
+  0020: ClientGameEnded(EndGameFocus, bIsWinner)
+  0035: return nothing
+  0037: <eos>
+
+function PlayerController.ClientGameEnded  (script 33 bytes)
+  0000: SetViewTarget(EndGameFocus, )
+  0010: GotoState('RoundEnded', , , )
+  001e: return nothing
+  0020: <eos>
+
+function PlayerController.PlayerTick  (script 431 bytes)
+  0000: if !(!self.bShortConnectTimeOut) goto 0x004f
+  000b: self.bShortConnectTimeOut = true
+  0013: LogInternal((GetHumanReadableName() @ "using short network timeout"), 'DevNet', , )
+  0049: PlayerController.ServerShortTimeout()
+  004f: if !((self.Pawn != self.AcknowledgedPawn)) goto 0x00aa
+  005e: if !((cast3a(self.Role) < cast3a(3))) goto 0x009f
+  006e: if !(((self.AcknowledgedPawn != none) && (self.AcknowledgedPawn.Controller == self))) goto 0x009f
+  008f: self.AcknowledgedPawn.Controller = none
+  009f: PlayerController.AcknowledgePossession(self.Pawn)
+  00aa: if !((((self.Pawn == none) && !IsInState('Dead', )) && ShouldEnterDeadStateWhenPawnIsLost())) goto 0x013f
+  00d8: LogInternal(((GetHumanReadableName() @ "is entering the Dead state because Pawn is none. Current state:") @ cast57(GetStateName())), , , )
+  0131: GotoState('Dead', , , )
+  013f: self.PlayerInput.PlayerInput(DeltaTime)
+  0157: if !(self.bUpdatePosition) goto 0x0166
+  0160: PlayerController.ClientUpdatePosition()
+  0166: PlayerMove(DeltaTime)
+  0175: PlayerController.AdjustFOV(DeltaTime)
+  0180: if !((self.Pawn != none)) goto 0x01ac
+  018b: self._ClientAdjustDebug.SetPawnLocation(self.Pawn.Location)
+  01ac: return nothing
+  01ae: <eos>
+
+function PlayerController.PlayerMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ShouldEnterDeadStateWhenPawnIsLost  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function PlayerController.AimingHelp  (script 41 bytes)
+  0000: return ((cast3a(self.WorldInfo.NetMode) == cast3a(0)) && self.bAimingHelp)
+  0022: return return
+  0028: <eos>
+
+function PlayerController.CameraLookAtFinished  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.GetAdjustedAimFor  (script 1010 bytes)
+  0000: bInstantHit = ((W == none) || W.bInstantHit)
+  0023: BaseAimRot = ((self.Pawn != none) ? self.Pawn.GetBaseAimRotation() : self.Rotation)
+  004e: FireDir = cast39(BaseAimRot)
+  005b: HitActor = Trace(HitLocation, HitNormal, none, (StartFireLoc + (W.GetTraceRange() * FireDir)), StartFireLoc, true, , , , )
+  009a: if !(((HitActor != none) && HitActor.bProjTarget)) goto 0x0109
+  00b9: BestTarget = HitActor
+  00c4: bNoZAdjust = true
+  00cc: OldAim = HitLocation
+  00d7: bestDist = obj'Core.Math'.static.VSize((BestTarget.Location - self.Pawn.Location))
+  0106: goto 0x01ab
+  0109: bestAim = 0.9
+  0114: if !(PlayerController.AimingHelp(bInstantHit)) goto 0x0138
+  0123: bestAim = PlayerController.AimHelpDot(bInstantHit)
+  0135: goto 0x014c
+  0138: if !(bInstantHit) goto 0x014c
+  0141: bestAim = 1.0
+  014c: BestTarget = PickTarget(obj'Pawn', bestAim, bestDist, FireDir, StartFireLoc, W.GetTraceRange())
+  0181: if !((BestTarget == none)) goto 0x0192
+  018c: return BaseAimRot
+  0192: OldAim = (StartFireLoc + (FireDir * bestDist))
+  01ab: self.ShotTarget = Pawn(BestTarget)
+  01bb: if !(!PlayerController.AimingHelp(bInstantHit)) goto 0x01d2
+  01cc: return BaseAimRot
+  01d2: FireDir = (BestTarget.Location - StartFireLoc)
+  01ed: AimSpot = (StartFireLoc + (bestDist * obj'Core.Math'.static.Normal(FireDir)))
+  0211: AimOffset = (AimSpot - OldAim)
+  0223: if !((self.ShotTarget != none)) goto 0x030d
+  022e: if !(bNoZAdjust) goto 0x025b
+  0237: AimSpot.Z = OldAim.Z
+  0258: goto 0x030a
+  025b: if !((AimOffset.Z < cast3f(0))) goto 0x02c0
+  0273: AimSpot.Z = (self.ShotTarget.Location.Z + (0.4 * self.ShotTarget.CylinderComponent.CollisionHeight))
+  02bd: goto 0x030a
+  02c0: AimSpot.Z = (self.ShotTarget.Location.Z - (0.7 * self.ShotTarget.CylinderComponent.CollisionHeight))
+  030a: goto 0x032e
+  030d: AimSpot.Z = OldAim.Z
+  032e: if !(!bNoZAdjust) goto 0x03dc
+  0339: AimRot = cast50((AimSpot - StartFireLoc))
+  034d: if !((self.FOVAngle < (self.DefaultFOV - cast3f(8)))) goto 0x039c
+  0362: AimRot.Yaw = ((AimRot.Yaw + 200) - obj'Core.Random'.static.Rand(400))
+  0399: goto 0x03d6
+  039c: AimRot.Yaw = ((AimRot.Yaw + 375) - obj'Core.Random'.static.Rand(750))
+  03d6: return AimRot
+  03dc: return cast50((AimSpot - StartFireLoc))
+  03eb: return return
+  03f1: <eos>
+
+function PlayerController.AimHelpDot  (script 55 bytes)
+  0000: if !((self.FOVAngle < (self.DefaultFOV - cast3f(8)))) goto 0x001b
+  0015: return 0.99
+  001b: if !(bInstantHit) goto 0x002a
+  0024: return 0.97
+  002a: return 0.93
+  0030: return return
+  0036: <eos>
+
+function PlayerController.NotifyLanded  (script 14 bytes)
+  0000: return self.bUpdating
+  0007: return return
+  000d: <eos>
+
+function PlayerController.AdjustFOV  (script 189 bytes)
+  0000: if !((self.FOVAngle != self.DesiredFOV)) goto 0x00ba
+  000f: if !((self.FOVAngle > self.DesiredFOV)) goto 0x0058
+  001e: self.FOVAngle = (self.FOVAngle - obj'Core.Math'.static.FMax(7.0, ((0.9 * DeltaTime) * (self.FOVAngle - self.DesiredFOV))))
+  0055: goto 0x008f
+  0058: self.FOVAngle = (self.FOVAngle - obj'Core.Math'.static.FMin(-7.0, ((0.9 * DeltaTime) * (self.FOVAngle - self.DesiredFOV))))
+  008f: if !((obj'Core.Math'.static.Abs((self.FOVAngle - self.DesiredFOV)) <= cast3f(10))) goto 0x00ba
+  00af: self.FOVAngle = self.DesiredFOV
+  00ba: return nothing
+  00bc: <eos>
+
+function PlayerController.GetFOVAngle  (script 45 bytes)
+  0000: return ((self.PlayerCamera != none) ? self.PlayerCamera.GetFOVAngle() : self.FOVAngle)
+  0026: return return
+  002c: <eos>
+
+function PlayerController.IsLocalPlayerController  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.SetViewTarget  (script 12 bytes)
+  0000: NewViewTarget
+  0005: TransitionParams
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.ClientSetViewTarget  (script 41 bytes)
+  0000: nothing
+  0001: if !((A == none)) goto 0x0012
+  000c: PlayerController.ServerVerifyViewTarget()
+  0012: SetViewTarget(A, TransitionParams)
+  0026: return nothing
+  0028: <eos>
+
+function PlayerController.GetViewTarget  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.ServerVerifyViewTarget  (script 48 bytes)
+  0000: TheViewTarget = GetViewTarget()
+  0010: if !((TheViewTarget == self)) goto 0x001d
+  001b: return nothing
+  001d: ClientSetViewTarget(TheViewTarget, )
+  002d: return nothing
+  002f: <eos>
+
+function PlayerController.SpawnPlayerCamera  (script 148 bytes)
+  0000: if !(((self.CameraClass != none) && IsLocalPlayerController())) goto 0x0091
+  001a: self.PlayerCamera = Spawn(self.CameraClass, self, , , , , true, )
+  0036: if !((self.PlayerCamera != none)) goto 0x0058
+  0041: self.PlayerCamera.InitializeFor(self)
+  0055: goto 0x008e
+  0058: LogInternal("Error: Couldn't Spawn Camera Actor for Player!!", , , )
+  008e: goto 0x0091
+  0091: return nothing
+  0093: <eos>
+
+function PlayerController.GetPlayerViewPoint  (script 137 bytes)
+  0000: if !((self.PlayerCamera == none)) goto 0x0020
+  000b: if !((self.CameraClass != none)) goto 0x0020
+  0016: SpawnPlayerCamera()
+  0020: if !((self.PlayerCamera != none)) goto 0x004a
+  002b: self.PlayerCamera.GetCameraViewPoint(out_Location, out_Rotation)
+  0048: return nothing
+  004a: if !((self.Pawn != none)) goto 0x0076
+  0055: out_Location = self.Pawn.Location
+  0069: out_Rotation = self.Rotation
+  0074: return nothing
+  0076: Controller.GetPlayerViewPoint(out_Location, out_Rotation)
+  0086: return nothing
+  0088: <eos>
+
+function PlayerController.GetLookDirection  (script 15 bytes)
+  0000: return cast39(self.Rotation)
+  0008: return return
+  000e: <eos>
+
+function PlayerController.ViewShake  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.UpdateRotation  (script 215 bytes)
+  0000: ViewRotation = self.Rotation
+  000b: self.DesiredRotation = ViewRotation
+  0016: DeltaRot.Yaw = cast44(self.PlayerInput.aTurn)
+  0037: DeltaRot.Pitch = cast44(self.PlayerInput.aLookUp)
+  0058: PlayerController.ProcessViewRotation(DeltaTime, ViewRotation, DeltaRot)
+  006d: SetRotation(ViewRotation)
+  0075: PlayerController.ViewShake(DeltaTime)
+  0080: NewRotation = ViewRotation
+  008b: NewRotation.Roll = self.Rotation.Roll
+  00ac: if !((self.Pawn != none)) goto 0x00d4
+  00b7: self.Pawn.FaceRotation(NewRotation, DeltaTime)
+  00d4: return nothing
+  00d6: <eos>
+
+function PlayerController.ProcessViewRotation  (script 140 bytes)
+  0000: if !((self.PlayerCamera != none)) goto 0x002d
+  000b: self.PlayerCamera.ProcessViewRotation(DeltaTime, out_ViewRotation, DeltaRot)
+  002d: if !((self.Pawn != none)) goto 0x005d
+  0038: self.Pawn.ProcessViewRotation(DeltaTime, out_ViewRotation, DeltaRot)
+  005a: goto 0x0089
+  005d: (out_ViewRotation += DeltaRot)
+  006a: out_ViewRotation = LimitViewRotation(out_ViewRotation, -16384.0, 16383.0)
+  0089: return nothing
+  008b: <eos>
+
+function PlayerController.LimitViewRotation  (script 206 bytes)
+  0000: ViewRotation.Pitch = (ViewRotation.Pitch & 65535)
+  0028: if !(((cast3f(ViewRotation.Pitch) > ViewPitchMax) && (cast3f(ViewRotation.Pitch) < (cast3f(65535) + ViewPitchMin)))) goto 0x00c1
+  006b: if !((ViewRotation.Pitch < 32768)) goto 0x00a0
+  0085: ViewRotation.Pitch = cast44(ViewPitchMax)
+  009d: goto 0x00c1
+  00a0: ViewRotation.Pitch = cast44((cast3f(65535) + ViewPitchMin))
+  00c1: return ViewRotation
+  00c7: return return
+  00cd: <eos>
+
+function PlayerController.ClearDoubleClick  (script 34 bytes)
+  0000: if !((self.PlayerInput != none)) goto 0x001f
+  000b: self.PlayerInput.DoubleClickTimer = 0.0
+  001f: return nothing
+  0021: <eos>
+
+function PlayerController.CheckJumpOrDuck  (script 50 bytes)
+  0000: if !((self.bPressedJump && (self.Pawn != none))) goto 0x002f
+  0016: self.Pawn.DoJump(self.bUpdating)
+  002f: return nothing
+  0031: <eos>
+
+function PlayerController.PlayerWalking.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerWalking.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWalking.NotifyPhysicsVolumeChange  (script 60 bytes)
+  0000: if !((NewVolume.bWaterVolume && self.Pawn.bCollideWorld)) goto 0x0039
+  0026: GotoState(self.Pawn.WaterMovementState, , , )
+  0039: return nothing
+  003b: <eos>
+
+function PlayerController.PlayerWalking.ProcessMove  (script 46 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Pawn.Acceleration = newAccel
+  0021: CheckJumpOrDuck()
+  002b: return nothing
+  002d: <eos>
+
+function PlayerController.PlayerWalking.ShouldEnterDeadStateWhenPawnIsLost  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerController.PlayerWalking.PlayerMove  (script 342 bytes)
+  0000: DesiredNormalizedVelocity = (obj'Core.Math'.static.ClampLength(obj'Core.Math'.static.MakeVector(self.PlayerInput.aForward, self.PlayerInput.aStrafe, 0.0), 1.0) >> self.Pawn.Rotation)
+  0063: DoubleClickMove = self.PlayerInput.CheckForDoubleClickMove((DeltaTime / self.WorldInfo.TimeDilation))
+  0091: OldRotation = self.Rotation
+  009c: UpdateRotation(DeltaTime)
+  00ab: if !((self.bPressedJump && self.Pawn.CannotJumpNow())) goto 0x00df
+  00cc: bSaveJump = true
+  00d4: self.bPressedJump = false
+  00dc: goto 0x00e7
+  00df: bSaveJump = false
+  00e7: if !((cast3a(self.Role) < cast3a(3))) goto 0x0120
+  00f7: ReplicateMove(DeltaTime, DesiredNormalizedVelocity, DoubleClickMove, (OldRotation - self.Rotation))
+  011d: goto 0x0146
+  0120: ProcessMove(DeltaTime, DesiredNormalizedVelocity, DoubleClickMove, (OldRotation - self.Rotation))
+  0146: self.bPressedJump = bSaveJump
+  0153: return nothing
+  0155: <eos>
+
+function PlayerController.PlayerWalking.BeginState  (script 132 bytes)
+  0000: self.DoubleClickDir = 0
+  0008: self.bPressedJump = false
+  0010: self.GroundPitch = 0
+  0017: if !((self.Pawn != none)) goto 0x0081
+  0022: self.Pawn.ShouldCrouch(false)
+  0036: if !(((cast3a(self.Pawn.Physics) != cast3a(2)) && (cast3a(self.Pawn.Physics) != cast3a(10)))) goto 0x0081
+  006a: self.Pawn.SetPhysics(1, , )
+  0081: return nothing
+  0083: <eos>
+
+function PlayerController.PlayerWalking.EndState  (script 54 bytes)
+  0000: self.GroundPitch = 0
+  0007: if !((self.Pawn != none)) goto 0x0033
+  0012: if !((cast3a(self.bDuck) == 0)) goto 0x0033
+  001f: self.Pawn.ShouldCrouch(false)
+  0033: return nothing
+  0035: <eos>
+
+function PlayerController.PlayerClimbing.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerClimbing.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerClimbing.NotifyPhysicsVolumeChange  (script 62 bytes)
+  0000: if !(NewVolume.bWaterVolume) goto 0x0028
+  0012: GotoState(self.Pawn.WaterMovementState, , , )
+  0025: goto 0x003b
+  0028: GotoState(self.Pawn.LandMovementState, , , )
+  003b: return nothing
+  003d: <eos>
+
+function PlayerController.PlayerClimbing.ProcessMove  (script 114 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Pawn.Acceleration = newAccel
+  0021: if !(self.bPressedJump) goto 0x006f
+  002a: self.Pawn.DoJump(self.bUpdating)
+  0043: if !((cast3a(self.Pawn.Physics) == cast3a(2))) goto 0x006f
+  005c: GotoState(self.Pawn.LandMovementState, , , )
+  006f: return nothing
+  0071: <eos>
+
+function PlayerController.PlayerClimbing.PlayerMove  (script 387 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  001f: if !((self.Pawn.OnLadder != none)) goto 0x009a
+  0033: newAccel = (self.PlayerInput.aForward * self.Pawn.OnLadder.ClimbDir)
+  0060: if !(self.Pawn.OnLadder.bAllowLadderStrafing) goto 0x0097
+  007b: (newAccel += (self.PlayerInput.aStrafe * Y))
+  0097: goto 0x00cc
+  009a: newAccel = ((self.PlayerInput.aForward * X) + (self.PlayerInput.aStrafe * Y))
+  00cc: newAccel = (self.Pawn.AccelRate * obj'Core.Math'.static.Normal(newAccel))
+  00f2: ViewRotation = self.Rotation
+  00fd: SetRotation(ViewRotation)
+  0105: OldRotation = self.Rotation
+  0110: UpdateRotation(DeltaTime)
+  011f: if !((cast3a(self.Role) < cast3a(3))) goto 0x0155
+  012f: ReplicateMove(DeltaTime, newAccel, 0, (OldRotation - self.Rotation))
+  0152: goto 0x0178
+  0155: ProcessMove(DeltaTime, newAccel, 0, (OldRotation - self.Rotation))
+  0178: self.bPressedJump = false
+  0180: return nothing
+  0182: <eos>
+
+function PlayerController.PlayerClimbing.BeginState  (script 31 bytes)
+  0000: self.Pawn.ShouldCrouch(false)
+  0014: self.bPressedJump = false
+  001c: return nothing
+  001e: <eos>
+
+function PlayerController.PlayerClimbing.EndState  (script 34 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001f
+  000b: self.Pawn.ShouldCrouch(false)
+  001f: return nothing
+  0021: <eos>
+
+function PlayerController.PlayerDriving.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerDriving.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerDriving.ProcessMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerDriving.ProcessDrive  (script 92 bytes)
+  0000: CurrentVehicle = Vehicle(self.Pawn)
+  0010: if !((CurrentVehicle != none)) goto 0x0059
+  001b: self.bPressedJump = InJump
+  0028: CurrentVehicle.SetInputs(InForward, InStrafe, InBrake, InUp)
+  004f: CheckJumpOrDuck()
+  0059: return nothing
+  005b: <eos>
+
+function PlayerController.PlayerDriving.PlayerMove  (script 232 bytes)
+  0000: UpdateRotation(DeltaTime)
+  000f: ProcessDrive(self.PlayerInput.RawJoyUp, self.PlayerInput.RawJoyRight, 0.0, self.PlayerInput.aUp, self.bPressedJump)
+  004e: if !((cast3a(self.Role) < cast3a(3))) goto 0x00dd
+  005e: ServerDrive(self.PlayerInput.RawJoyUp, self.PlayerInput.RawJoyRight, 0.0, self.PlayerInput.aUp, self.bPressedJump, (((self.Rotation.Yaw & 65535) << 16) + (self.Rotation.Pitch & 65535)), self.Location, cast39(self.Rotation))
+  00dd: self.bPressedJump = false
+  00e5: return nothing
+  00e7: <eos>
+
+function PlayerController.PlayerDriving.ServerUse  (script 39 bytes)
+  0000: CurrentVehicle = Vehicle(self.Pawn)
+  0010: CurrentVehicle.DriverLeave(false)
+  0024: return nothing
+  0026: <eos>
+
+function PlayerController.PlayerDriving.BeginState  (script 13 bytes)
+  0000: CleanOutSavedMoves()
+  000a: return nothing
+  000c: <eos>
+
+function PlayerController.PlayerDriving.EndState  (script 13 bytes)
+  0000: CleanOutSavedMoves()
+  000a: return nothing
+  000c: <eos>
+
+function PlayerController.PlayerSwimming.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerSwimming.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerSwimming.NotifyLanded  (script 86 bytes)
+  0000: if !(self.Pawn.PhysicsVolume.bWaterVolume) goto 0x0035
+  001b: self.Pawn.SetPhysics(3, , )
+  0032: goto 0x0048
+  0035: GotoState(self.Pawn.LandMovementState, , , )
+  0048: return self.bUpdating
+  004f: return return
+  0055: <eos>
+
+function PlayerController.PlayerSwimming.NotifyPhysicsVolumeChange  (script 686 bytes)
+  0000: if !(!self.Pawn.bCollideActors) goto 0x0027
+  0014: GotoState(self.Pawn.LandMovementState, , , )
+  0027: if !((cast3a(self.Pawn.Physics) != cast3a(10))) goto 0x0284
+  0040: if !(!NewVolume.bWaterVolume) goto 0x025e
+  0054: self.Pawn.SetPhysics(2, , )
+  006b: if !((self.Pawn.Velocity.Z > cast3f(0))) goto 0x025b
+  008c: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  00ab: self.Pawn.bUpAndOut = (((X dot self.Pawn.Acceleration) > cast3f(0)) && ((self.Pawn.Acceleration.Z > cast3f(0)) || (self.Rotation.Pitch > 2048)))
+  0114: if !((self.Pawn.bUpAndOut && self.Pawn.CheckWaterJump(WallNormal))) goto 0x0181
+  0143: self.Pawn.Velocity.Z = self.Pawn.OutofWaterZ
+  016b: GotoState(self.Pawn.LandMovementState, , , )
+  017e: goto 0x025b
+  0181: if !(((self.Pawn.Velocity.Z > cast3f(160)) || !self.Pawn.TouchingWaterVolume())) goto 0x01d3
+  01bd: GotoState(self.Pawn.LandMovementState, , , )
+  01d0: goto 0x025b
+  01d3: Checkpoint = self.Pawn.Location
+  01e7: (Checkpoint.Z -= (self.Pawn.CylinderComponent.CollisionHeight + 6.0))
+  0217: if !(!ClearLineOfSight(self.Pawn, Checkpoint, self.Pawn.Location, false, , )) goto 0x0250
+  023a: GotoState(self.Pawn.LandMovementState, , , )
+  024d: goto 0x025b
+  0250: SetTimer(0.7, false, , )
+  025b: goto 0x0281
+  025e: ClearTimer(, )
+  026a: self.Pawn.SetPhysics(3, , )
+  0281: goto 0x02ab
+  0284: if !(!NewVolume.bWaterVolume) goto 0x02ab
+  0298: GotoState(self.Pawn.LandMovementState, , , )
+  02ab: return nothing
+  02ad: <eos>
+
+function PlayerController.PlayerSwimming.ProcessMove  (script 23 bytes)
+  0000: self.Pawn.Acceleration = newAccel
+  0014: return nothing
+  0016: <eos>
+
+function PlayerController.PlayerSwimming.ShouldEnterDeadStateWhenPawnIsLost  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerController.PlayerSwimming.PlayerMove  (script 276 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  001f: newAccel = (((self.PlayerInput.aForward * X) + (self.PlayerInput.aStrafe * Y)) + (self.PlayerInput.aUp * vect(0,0,1)))
+  0070: newAccel = (self.Pawn.AccelRate * obj'Core.Math'.static.Normal(newAccel))
+  0096: OldRotation = self.Rotation
+  00a1: UpdateRotation(DeltaTime)
+  00b0: if !((cast3a(self.Role) < cast3a(3))) goto 0x00e6
+  00c0: ReplicateMove(DeltaTime, newAccel, 0, (OldRotation - self.Rotation))
+  00e3: goto 0x0109
+  00e6: ProcessMove(DeltaTime, newAccel, 0, (OldRotation - self.Rotation))
+  0109: self.bPressedJump = false
+  0111: return nothing
+  0113: <eos>
+
+function PlayerController.PlayerSwimming.Timer  (script 81 bytes)
+  0000: if !((!self.Pawn.PhysicsVolume.bWaterVolume && (cast3a(self.Role) == cast3a(3)))) goto 0x0042
+  002f: GotoState(self.Pawn.LandMovementState, , , )
+  0042: ClearTimer(, )
+  004e: return nothing
+  0050: <eos>
+
+function PlayerController.PlayerSwimming.BeginState  (script 63 bytes)
+  0000: ClearTimer(, )
+  000c: if !((cast3a(self.Pawn.Physics) != cast3a(10))) goto 0x003c
+  0025: self.Pawn.SetPhysics(3, , )
+  003c: return nothing
+  003e: <eos>
+
+function PlayerController.PlayerFlying.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerFlying.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerFlying.PlayerMove  (script 580 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  001f: self.Pawn.Acceleration = (((self.PlayerInput.aForward * X) + (self.PlayerInput.aStrafe * Y)) + (self.PlayerInput.aUp * vect(0,0,1)))
+  0079: self.Pawn.Acceleration = (self.Pawn.AccelRate * obj'Core.Math'.static.Normal(self.Pawn.Acceleration))
+  00b1: if !((self.bCheatFlying && (self.Pawn.Acceleration == vect(0,0,0)))) goto 0x00f8
+  00dc: self.Pawn.Velocity = vect(0,0,0)
+  00f8: if !(self.bCheatFlying) goto 0x0154
+  0101: self.Pawn.Velocity = vect(0,0,0)
+  011d: self.Pawn.Acceleration = ((self.PlayerCamera.Location - self.Pawn.Location) / DeltaTime)
+  0151: goto 0x01c7
+  0154: self.Pawn.Acceleration = ((self.PlayerInput.aForward * X) + (self.PlayerInput.aStrafe * Y))
+  018f: self.Pawn.Acceleration = (self.Pawn.AccelRate * obj'Core.Math'.static.Normal(self.Pawn.Acceleration))
+  01c7: UpdateRotation(DeltaTime)
+  01d6: if !((cast3a(self.Role) < cast3a(3))) goto 0x0215
+  01e6: ReplicateMove(DeltaTime, self.Pawn.Acceleration, 0, rot(0,0,0))
+  0212: goto 0x0241
+  0215: ProcessMove(DeltaTime, self.Pawn.Acceleration, 0, rot(0,0,0))
+  0241: return nothing
+  0243: <eos>
+
+function PlayerController.PlayerFlying.BeginState  (script 26 bytes)
+  0000: self.Pawn.SetPhysics(4, , )
+  0017: return nothing
+  0019: <eos>
+
+function PlayerController.IsSpectating  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function PlayerController.ServerSetSpectatorLocation  (script 17 bytes)
+  0000: ClientGotoState(GetStateName(), )
+  000e: return nothing
+  0010: <eos>
+
+function PlayerController.BaseSpectating.IsSpectating  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerController.BaseSpectating.LimitSpectatorVelocity  (script 230 bytes)
+  0000: if !((self.Location.Z > self.WorldInfo.StallZ)) goto 0x0070
+  0023: self.Velocity.Z = obj'Core.Math'.static.FMin(self.SpectatorCameraSpeed, ((self.WorldInfo.StallZ - self.Location.Z) - 2.0))
+  006b: return true
+  006d: goto 0x00dd
+  0070: if !((self.Location.Z < self.WorldInfo.KillZ)) goto 0x00dd
+  0093: self.Velocity.Z = obj'Core.Math'.static.FMin(self.SpectatorCameraSpeed, ((self.WorldInfo.KillZ - self.Location.Z) + 2.0))
+  00db: return true
+  00dd: return false
+  00df: return return
+  00e5: <eos>
+
+function PlayerController.BaseSpectating.ProcessMove  (script 328 bytes)
+  0000: self.Acceleration = (obj'Core.Math'.static.Normal(newAccel) * self.SpectatorCameraSpeed)
+  001d: VelSize = obj'Core.Math'.static.VSize(self.Velocity)
+  0033: if !((VelSize > cast3f(0))) goto 0x0088
+  0040: self.Velocity = (self.Velocity - ((self.Velocity - (obj'Core.Math'.static.Normal(self.Acceleration) * VelSize)) * obj'Core.Math'.static.FMin((DeltaTime * cast3f(8)), 1.0)))
+  0088: self.Velocity = (self.Velocity + (self.Acceleration * DeltaTime))
+  00a1: if !((obj'Core.Math'.static.VSize(self.Velocity) > self.SpectatorCameraSpeed)) goto 0x00d8
+  00bb: self.Velocity = (obj'Core.Math'.static.Normal(self.Velocity) * self.SpectatorCameraSpeed)
+  00d8: LimitSpectatorVelocity()
+  00de: if !((obj'Core.Math'.static.VSize(self.Velocity) > cast3f(0))) goto 0x0145
+  00f6: MoveSmooth(((cast3f((1 + cast3a(self.bRun))) * self.Velocity) * DeltaTime))
+  0113: if !(LimitSpectatorVelocity()) goto 0x0145
+  011c: MoveSmooth(((self.Velocity.Z * vect(0,0,1)) * DeltaTime))
+  0145: return nothing
+  0147: <eos>
+
+function PlayerController.BaseSpectating.PlayerMove  (script 184 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  001f: self.Acceleration = (((self.PlayerInput.aForward * X) + (self.PlayerInput.aStrafe * Y)) + (self.PlayerInput.aUp * vect(0,0,1)))
+  0070: UpdateRotation(DeltaTime)
+  007f: if !((cast3a(self.Role) < cast3a(3))) goto 0x0092
+  008f: goto 0x00b5
+  0092: ProcessMove(DeltaTime, self.Acceleration, 0, rot(0,0,0))
+  00b5: return nothing
+  00b7: <eos>
+
+function PlayerController.BaseSpectating.ServerSetSpectatorLocation  (script 76 bytes)
+  0000: SetLocation(NewLoc)
+  0008: if !(((self.WorldInfo.TimeSeconds - self.LastSpectatorStateSynchTime) > 2.0)) goto 0x0049
+  0027: ClientGotoState(GetStateName(), )
+  0035: self.LastSpectatorStateSynchTime = self.WorldInfo.TimeSeconds
+  0049: return nothing
+  004b: <eos>
+
+function PlayerController.BaseSpectating.ReplicateMove  (script 48 bytes)
+  0000: ProcessMove(DeltaTime, newAccel, DoubleClickMove, DeltaRot)
+  001e: ServerSetSpectatorLocation(self.Location)
+  002d: return nothing
+  002f: <eos>
+
+function PlayerController.BaseSpectating.BeginState  (script 11 bytes)
+  0000: self.bCollideWorld = true
+  0008: return nothing
+  000a: <eos>
+
+function PlayerController.BaseSpectating.EndState  (script 11 bytes)
+  0000: self.bCollideWorld = false
+  0008: return nothing
+  000a: <eos>
+
+function PlayerController.ServerViewNextPlayer  (script 23 bytes)
+  0000: if !(IsSpectating()) goto 0x0014
+  000d: PlayerController.ViewAPlayer(1)
+  0014: return nothing
+  0016: <eos>
+
+function PlayerController.ServerViewPrevPlayer  (script 27 bytes)
+  0000: if !(IsSpectating()) goto 0x0018
+  000d: PlayerController.ViewAPlayer(-1)
+  0018: return nothing
+  001a: <eos>
+
+function PlayerController.ViewAPlayer  (script 703 bytes)
+  0000: CurrentIndex = -1
+  000b: if !((self.RealViewTarget != none)) goto 0x007e
+  0016: I = 0
+  001d: if !((I < self.WorldInfo.GRI.PRIArray.Length)) goto 0x007e
+  003f: if !((self.RealViewTarget == I[self.WorldInfo.GRI.PRIArray])) goto 0x0074
+  0066: CurrentIndex = I
+  0071: goto 0x007e
+  0074: AddAdd_Int(I)
+  007b: goto 0x001d
+  007e: NewIndex = (CurrentIndex + Dir)
+  0090: if !(((NewIndex >= 0) && (NewIndex < self.WorldInfo.GRI.PRIArray.Length))) goto 0x0173
+  00bf: PRI = NewIndex[self.WorldInfo.GRI.PRIArray]
+  00e2: if !(((((PRI != none) && (Controller(PRI.Owner) != none)) && (Controller(PRI.Owner).Pawn != none)) && self.WorldInfo.Game.CanSpectate(self, PRI))) goto 0x015e
+  0153: bSuccess = true
+  015b: goto 0x0173
+  015e: NewIndex = (NewIndex + Dir)
+  0170: goto 0x0090
+  0173: if !(!bSuccess) goto 0x02a3
+  017e: CurrentIndex = ((NewIndex < 0) ? self.WorldInfo.GRI.PRIArray.Length : -1)
+  01ae: NewIndex = (CurrentIndex + Dir)
+  01c0: if !(((NewIndex >= 0) && (NewIndex < self.WorldInfo.GRI.PRIArray.Length))) goto 0x02a3
+  01ef: PRI = NewIndex[self.WorldInfo.GRI.PRIArray]
+  0212: if !(((((PRI != none) && (Controller(PRI.Owner) != none)) && (Controller(PRI.Owner).Pawn != none)) && self.WorldInfo.Game.CanSpectate(self, PRI))) goto 0x028e
+  0283: bSuccess = true
+  028b: goto 0x02a3
+  028e: NewIndex = (NewIndex + Dir)
+  02a0: goto 0x01c0
+  02a3: if !(bSuccess) goto 0x02bc
+  02ac: SetViewTarget(PRI, )
+  02bc: return nothing
+  02be: <eos>
+
+function PlayerController.ServerViewSelf  (script 75 bytes)
+  0000: if !(IsSpectating()) goto 0x0048
+  000d: ResetCameraMode()
+  0017: SetViewTarget(self, )
+  0023: ClientSetViewTarget(self, )
+  002f: ClientMessage(self.OwnCamera, 'Event', )
+  0048: return nothing
+  004a: <eos>
+
+function PlayerController.Spectating.RestartLevel  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Spectating.ClientRestart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Spectating.Suicide  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Spectating.ThrowWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Spectating.NotifyPhysicsVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Spectating.NotifyHeadVolumeChange  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.Spectating.StartFire  (script 10 bytes)
+  0000: nothing
+  0001: PlayerController.ServerViewNextPlayer()
+  0007: return nothing
+  0009: <eos>
+
+function PlayerController.Spectating.StartAltFire  (script 20 bytes)
+  0000: nothing
+  0001: ResetCameraMode()
+  000b: PlayerController.ServerViewSelf()
+  0011: return nothing
+  0013: <eos>
+
+function PlayerController.Spectating.BeginState  (script 49 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0026
+  000b: SetLocation(self.Pawn.Location)
+  001c: UnPossess()
+  0026: self.bCollideWorld = true
+  002e: return nothing
+  0030: <eos>
+
+function PlayerController.Spectating.EndState  (script 128 bytes)
+  0000: if !(self.PlayerReplicationInfo.bOnlySpectator) goto 0x0064
+  0012: LogInternal(("WARNING - Spectator only player leaving spectating state to go to " $ cast57(NextStateName)), , , )
+  0064: self.PlayerReplicationInfo.bIsSpectator = false
+  0075: self.bCollideWorld = false
+  007d: return nothing
+  007f: <eos>
+
+function PlayerController.PlayerWaiting.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerWaiting.NotifyBump  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.PlayerWaiting.TakeDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function PlayerController.PlayerWaiting.PhysicsVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWaiting.NextWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWaiting.PrevWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWaiting.SwitchToBestWeapon  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.PlayerWaiting.Jump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWaiting.Suicide  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWaiting.ServerSuicide  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.PlayerWaiting.ServerChangeTeam  (script 38 bytes)
+  0000: self.WorldInfo.Game.ChangeTeam(self, N, true)
+  0023: return nothing
+  0025: <eos>
+
+function PlayerController.PlayerWaiting.ServerRestartPlayer  (script 132 bytes)
+  0000: if !((self.WorldInfo.TimeSeconds < self.WaitDelay)) goto 0x001a
+  0018: return nothing
+  001a: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x0035
+  0033: return nothing
+  0035: if !(self.WorldInfo.Game.bWaitingToStartMatch) goto 0x0064
+  0050: self.PlayerReplicationInfo.bReadyToPlay = true
+  0061: goto 0x0081
+  0064: self.WorldInfo.Game.RestartPlayer(self)
+  0081: return nothing
+  0083: <eos>
+
+function PlayerController.PlayerWaiting.StartFire  (script 14 bytes)
+  0000: nothing
+  0001: ServerRestartPlayer()
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.PlayerWaiting.EndState  (script 42 bytes)
+  0000: if !((self.PlayerReplicationInfo != none)) goto 0x001f
+  000b: self.PlayerReplicationInfo.SetWaitingPlayer(false)
+  001f: self.bCollideWorld = false
+  0027: return nothing
+  0029: <eos>
+
+function PlayerController.PlayerWaiting.BeginState  (script 42 bytes)
+  0000: if !((self.PlayerReplicationInfo != none)) goto 0x001f
+  000b: self.PlayerReplicationInfo.SetWaitingPlayer(true)
+  001f: self.bCollideWorld = true
+  0027: return nothing
+  0029: <eos>
+
+function PlayerController.WaitingForPawn.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.WaitingForPawn.KilledBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.WaitingForPawn.StartFire  (script 10 bytes)
+  0000: nothing
+  0001: PlayerController.AskForPawn()
+  0007: return nothing
+  0009: <eos>
+
+function PlayerController.WaitingForPawn.ClientGotoState  (script 43 bytes)
+  0000: nothing
+  0001: if !((NewState == 'RoundEnded')) goto 0x0028
+  0014: global.ClientGotoState(NewState, NewLabel)
+  0028: return nothing
+  002a: <eos>
+
+function PlayerController.WaitingForPawn.LongClientAdjustPosition  (script 32 bytes)
+  0000: if !((NewState == 'RoundEnded')) goto 0x001d
+  0013: GotoState(NewState, , , )
+  001d: return nothing
+  001f: <eos>
+
+function PlayerController.WaitingForPawn.PlayerTick  (script 141 bytes)
+  0000: global.PlayerTick(DeltaTime)
+  000f: if !((self.Pawn != none)) goto 0x0050
+  001a: self.Pawn.Controller = self
+  002a: self.Pawn.BecomeViewTarget(self)
+  003e: ClientRestart(self.Pawn)
+  004d: goto 0x008a
+  0050: if !((!IsTimerActive(, ) || (GetTimerCount(, ) > 1.0))) goto 0x008a
+  0079: SetTimer(0.2, true, , )
+  0084: PlayerController.AskForPawn()
+  008a: return nothing
+  008c: <eos>
+
+function PlayerController.WaitingForPawn.ReplicateMove  (script 33 bytes)
+  0000: ProcessMove(DeltaTime, newAccel, DoubleClickMove, DeltaRot)
+  001e: return nothing
+  0020: <eos>
+
+function PlayerController.WaitingForPawn.Timer  (script 9 bytes)
+  0000: PlayerController.AskForPawn()
+  0006: return nothing
+  0008: <eos>
+
+function PlayerController.WaitingForPawn.BeginState  (script 20 bytes)
+  0000: SetTimer(0.2, true, , )
+  000b: PlayerController.AskForPawn()
+  0011: return nothing
+  0013: <eos>
+
+function PlayerController.WaitingForPawn.EndState  (script 24 bytes)
+  0000: ResetCameraMode()
+  000a: SetTimer(0.0, false, , )
+  0015: return nothing
+  0017: <eos>
+
+function PlayerController.RoundEnded.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.RoundEnded.KilledBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.NotifyBump  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.RoundEnded.HitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.NotifyHeadVolumeChange  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.RoundEnded.NotifyPhysicsVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.Falling  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.TakeDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function PlayerController.RoundEnded.Suicide  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.ServerRestartPlayer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.IsSpectating  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerController.RoundEnded.ThrowWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.Use  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.Possess  (script 55 bytes)
+  0000: nothing
+  0001: global.Possess(aPawn, bVehicleTransition)
+  0016: if !((self.Pawn != none)) goto 0x0034
+  0021: self.Pawn.TurnOff()
+  0034: return nothing
+  0036: <eos>
+
+function PlayerController.RoundEnded.ServerRestartGame  (script 63 bytes)
+  0000: if !(self.WorldInfo.Game.PlayerCanRestartGame(self)) goto 0x003c
+  0020: self.WorldInfo.Game.ResetLevel()
+  003c: return nothing
+  003e: <eos>
+
+function PlayerController.RoundEnded.StartFire  (script 61 bytes)
+  0000: nothing
+  0001: if !((cast3a(self.Role) < cast3a(3))) goto 0x0013
+  0011: return nothing
+  0013: if !((self.bFrozen && !IsTimerActive(, ))) goto 0x003a
+  002f: SetTimer(1.5, false, , )
+  003a: return nothing
+  003c: <eos>
+
+function PlayerController.RoundEnded.PlayerMove  (script 264 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  001f: ViewRotation = self.Rotation
+  002a: DeltaRot.Yaw = cast44(self.PlayerInput.aTurn)
+  004b: DeltaRot.Pitch = cast44(self.PlayerInput.aLookUp)
+  006c: PlayerController.ProcessViewRotation(DeltaTime, ViewRotation, DeltaRot)
+  0081: SetRotation(ViewRotation)
+  0089: PlayerController.ViewShake(DeltaTime)
+  0094: if !((cast3a(self.Role) < cast3a(3))) goto 0x00d2
+  00a4: ReplicateMove(DeltaTime, vect(0,0,0), 0, rot(0,0,0))
+  00cf: goto 0x00fd
+  00d2: ProcessMove(DeltaTime, vect(0,0,0), 0, rot(0,0,0))
+  00fd: self.bPressedJump = false
+  0105: return nothing
+  0107: <eos>
+
+function PlayerController.RoundEnded.ServerMove  (script 90 bytes)
+  0000: global.ServerMove(TimeStamp, InAccel, ClientLoc, NewFlags, ClientRoll, (((self.Rotation.Yaw & 65535) << 16) + (self.Rotation.Pitch & 65535)))
+  0057: return nothing
+  0059: <eos>
+
+function PlayerController.RoundEnded.FindGoodView  (script 52 bytes)
+  0000: GoodRotation = self.Rotation
+  000b: GetViewTarget().FindGoodEndView(self, GoodRotation)
+  0029: SetRotation(GoodRotation)
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.RoundEnded.Timer  (script 11 bytes)
+  0000: self.bFrozen = false
+  0008: return nothing
+  000a: <eos>
+
+function PlayerController.RoundEnded.LongClientAdjustPosition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.RoundEnded.BeginState  (script 85 bytes)
+  0000: self.FOVAngle = self.DesiredFOV
+  000b: self.bFire = 0
+  0013: if !((self.Pawn != none)) goto 0x0039
+  001e: self.Pawn.bSpecialHUD = false
+  002f: StopFiring()
+  0039: self.bFrozen = true
+  0041: FindGoodView()
+  0047: SetTimer(5.0, false, , )
+  0052: return nothing
+  0054: <eos>
+
+function PlayerController.RoundEnded.EndState  (script 77 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001e
+  000b: self.Pawn.TurnOff()
+  001e: foreach DynamicActors(obj'Pawn', P) (end 0x0049)
+  0035: P.TurnOff()
+  0048: iternext
+  0049: iterpop
+  004a: return nothing
+  004c: <eos>
+
+function PlayerController.Dead.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function PlayerController.Dead.KilledBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Dead.NextWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Dead.PrevWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Dead.ThrowWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.Dead.IsDead  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerController.Dead.ServerRestartPlayer  (script 45 bytes)
+  0000: if !(!self.WorldInfo.Game.PlayerCanRestart(self)) goto 0x0024
+  0022: return nothing
+  0024: ServerRestartPlayer()
+  002a: return nothing
+  002c: <eos>
+
+function PlayerController.Dead.StartFire  (script 74 bytes)
+  0000: nothing
+  0001: if !(self.bFrozen) goto 0x003d
+  000a: if !((!IsTimerActive(, ) || (GetTimerCount(, ) > self.MinRespawnDelay))) goto 0x003b
+  0033: self.bFrozen = false
+  003b: return nothing
+  003d: ServerRestartPlayer()
+  0047: return nothing
+  0049: <eos>
+
+function PlayerController.Dead.Use  (script 15 bytes)
+  0000: StartFire(0)
+  000c: return nothing
+  000e: <eos>
+
+function PlayerController.Dead.Jump  (script 15 bytes)
+  0000: StartFire(0)
+  000c: return nothing
+  000e: <eos>
+
+function PlayerController.Dead.ServerMove  (script 39 bytes)
+  0000: global.ServerMove(TimeStamp, Accel, ClientLoc, 0, ClientRoll, View)
+  0024: return nothing
+  0026: <eos>
+
+function PlayerController.Dead.PlayerMove  (script 243 bytes)
+  0000: if !(!self.bFrozen) goto 0x00b4
+  000b: if !(self.bPressedJump) goto 0x0028
+  0014: StartFire(0)
+  0020: self.bPressedJump = false
+  0028: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  0047: ViewRotation = self.Rotation
+  0052: DeltaRot.Yaw = cast44(self.PlayerInput.aTurn)
+  0073: DeltaRot.Pitch = cast44(self.PlayerInput.aLookUp)
+  0094: PlayerController.ProcessViewRotation(DeltaTime, ViewRotation, DeltaRot)
+  00a9: SetRotation(ViewRotation)
+  00b1: goto 0x00e5
+  00b4: if !((!IsTimerActive(, ) || (GetTimerCount(, ) > self.MinRespawnDelay))) goto 0x00e5
+  00dd: self.bFrozen = false
+  00e5: PlayerController.ViewShake(DeltaTime)
+  00f0: return nothing
+  00f2: <eos>
+
+function PlayerController.Dead.FindGoodView  (script 331 bytes)
+  0000: ViewRotation = self.Rotation
+  000b: ViewRotation.Pitch = 56000
+  0021: tries = 0
+  0028: besttry = 0
+  002f: bestDist = 0.0
+  003a: startYaw = ViewRotation.Yaw
+  0050: TheViewTarget = GetViewTarget()
+  0060: if !((TheViewTarget == none)) goto 0x006d
+  006b: return nothing
+  006d: tries = 0
+  0074: if !((tries < 16)) goto 0x011c
+  0080: cameraLoc = TheViewTarget.Location
+  0094: SetRotation(ViewRotation)
+  009c: GetPlayerViewPoint(cameraLoc, cameraRot)
+  00b0: newdist = obj'Core.Math'.static.VSize((cameraLoc - TheViewTarget.Location))
+  00d6: if !((newdist > bestDist)) goto 0x00fb
+  00e5: bestDist = newdist
+  00f0: besttry = tries
+  00fb: (ViewRotation.Yaw += 4096)
+  0112: AddAdd_Int(tries)
+  0119: goto 0x0074
+  011c: ViewRotation.Yaw = (startYaw + (besttry * 4096))
+  0140: SetRotation(ViewRotation)
+  0148: return nothing
+  014a: <eos>
+
+function PlayerController.Dead.Timer  (script 32 bytes)
+  0000: if !(!self.bFrozen) goto 0x000d
+  000b: return nothing
+  000d: self.bFrozen = false
+  0015: self.bPressedJump = false
+  001d: return nothing
+  001f: <eos>
+
+function PlayerController.Dead.BeginState  (script 120 bytes)
+  0000: if !(((self.Pawn != none) && (self.Pawn.Controller == self))) goto 0x0031
+  0021: self.Pawn.Controller = none
+  0031: self.Pawn = none
+  0038: self.FOVAngle = self.DesiredFOV
+  0043: self.Enemy = none
+  004a: self.bFrozen = true
+  0052: self.bPressedJump = false
+  005a: FindGoodView()
+  0060: SetTimer(self.MinRespawnDelay, false, , )
+  006b: CleanOutSavedMoves()
+  0075: return nothing
+  0077: <eos>
+
+function PlayerController.Dead.EndState  (script 133 bytes)
+  0000: CleanOutSavedMoves()
+  000a: self.Velocity = vect(0,0,0)
+  001d: self.Acceleration = vect(0,0,0)
+  0030: if !(((self.PlayerReplicationInfo != none) && !self.PlayerReplicationInfo.bOutOfLives)) goto 0x005b
+  0051: ResetCameraMode()
+  005b: self.bPressedJump = false
+  0063: if !((self.myHUD != none)) goto 0x0082
+  006e: self.myHUD.SetShowScores(false)
+  0082: return nothing
+  0084: <eos>
+
+function PlayerController.CanRestartPlayer  (script 53 bytes)
+  0000: return (((self.PlayerReplicationInfo != none) && !self.PlayerReplicationInfo.bOnlySpectator) && HasClientTravelFinished())
+  002e: return return
+  0034: <eos>
+
+function PlayerController.DrawHUD  (script 73 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0023
+  000b: self.Pawn.DrawHUD(H)
+  0023: if !((self.PlayerInput != none)) goto 0x0046
+  002e: self.PlayerInput.DrawHUD(H)
+  0046: return nothing
+  0048: <eos>
+
+function PlayerController.OnToggleInput  (script 422 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x002d
+  0010: WarnInternal("Not supported on client")
+  002b: return nothing
+  002d: if !(0[inAction.InputLinks].bHasImpulse) goto 0x0097
+  004c: if !(inAction.bToggleMovement) goto 0x0070
+  005e: IgnoreMoveInput(false)
+  0069: PlayerController.ClientIgnoreMoveInput(false)
+  0070: if !(inAction.bToggleTurning) goto 0x0094
+  0082: IgnoreLookInput(false)
+  008d: PlayerController.ClientIgnoreLookInput(false)
+  0094: goto 0x01a3
+  0097: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0101
+  00b6: if !(inAction.bToggleMovement) goto 0x00da
+  00c8: IgnoreMoveInput(true)
+  00d3: PlayerController.ClientIgnoreMoveInput(true)
+  00da: if !(inAction.bToggleTurning) goto 0x00fe
+  00ec: IgnoreLookInput(true)
+  00f7: PlayerController.ClientIgnoreLookInput(true)
+  00fe: goto 0x01a3
+  0101: if !(2[inAction.InputLinks].bHasImpulse) goto 0x01a3
+  0121: if !(inAction.bToggleMovement) goto 0x0162
+  0133: bNewValue = !IsMoveInputIgnored()
+  0146: IgnoreMoveInput(bNewValue)
+  0156: PlayerController.ClientIgnoreMoveInput(bNewValue)
+  0162: if !(inAction.bToggleTurning) goto 0x01a3
+  0174: bNewValue = !IsLookInputIgnored()
+  0187: IgnoreLookInput(bNewValue)
+  0197: PlayerController.ClientIgnoreLookInput(bNewValue)
+  01a3: return nothing
+  01a5: <eos>
+
+function PlayerController.ClientIgnoreMoveInput  (script 19 bytes)
+  0000: IgnoreMoveInput(bIgnore)
+  0010: return nothing
+  0012: <eos>
+
+function PlayerController.ClientIgnoreLookInput  (script 19 bytes)
+  0000: IgnoreLookInput(bIgnore)
+  0010: return nothing
+  0012: <eos>
+
+function PlayerController.DisplayDebug  (script 473 bytes)
+  0000: Controller.DisplayDebug(HUD, out_YL, out_YPos)
+  0015: if !(HUD.ShouldDisplayDebug('Camera')) goto 0x00e8
+  0034: if !((self.PlayerCamera != none)) goto 0x0064
+  003f: self.PlayerCamera.DisplayDebug(HUD, out_YL, out_YPos)
+  0061: goto 0x00e8
+  0064: HUD.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  008c: HUD.Canvas.DrawTextNormal("NO CAMERA", , , )
+  00b6: (out_YPos += out_YL)
+  00c2: HUD.Canvas.SetPos(4.0, out_YPos)
+  00e8: if !(HUD.ShouldDisplayDebug('Input')) goto 0x01d6
+  0107: HUD.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  012f: HUD.Canvas.DrawTextNormal(((((("Input ignoremove " $ cast52(self.bIgnoreMoveInput)) $ " ignore look ") $ cast52(self.bIgnoreLookInput)) $ " aForward ") $ cast55(self.PlayerInput.aForward)), , , )
+  01a4: (out_YPos += out_YL)
+  01b0: HUD.Canvas.SetPos(4.0, out_YPos)
+  01d6: return nothing
+  01d8: <eos>
+
+function PlayerController.ToggleClientAdjustDebug  (script 22 bytes)
+  0000: self._ClientAdjustDebug.ToggleActive()
+  0013: return nothing
+  0015: <eos>
+
+function PlayerController.OnSetCameraTarget  (script 132 bytes)
+  0000: RealCameraTarget = inAction.CameraTarget
+  0014: if !((RealCameraTarget == none)) goto 0x003b
+  001f: RealCameraTarget = ((self.Pawn != none) ? self.Pawn : self)
+  0038: goto 0x0064
+  003b: if !((Controller(RealCameraTarget) != none)) goto 0x0064
+  004b: RealCameraTarget = Controller(RealCameraTarget).Pawn
+  0064: SetViewTarget(RealCameraTarget, inAction.TransitionParams)
+  0081: return nothing
+  0083: <eos>
+
+function PlayerController.OnToggleHUD  (script 173 bytes)
+  0000: if !((self.myHUD != none)) goto 0x00aa
+  000b: if !(0[inAction.InputLinks].bHasImpulse) goto 0x0041
+  002a: self.myHUD.SetVisibility(true)
+  003e: goto 0x00aa
+  0041: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0077
+  0060: self.myHUD.SetVisibility(false)
+  0074: goto 0x00aa
+  0077: if !(2[inAction.InputLinks].bHasImpulse) goto 0x00aa
+  0097: self.myHUD.ToggleHUD()
+  00aa: return nothing
+  00ac: <eos>
+
+function PlayerController.ServerCauseEvent  (script 211 bytes)
+  0000: GameSeq = self.WorldInfo.GetGameSequence()
+  001a: if !(((GameSeq != none) && (EventName != 'None'))) goto 0x00d0
+  003a: GameSeq.FindSeqObjectsByClass(obj'SeqEvent_Console', true, AllConsoleEvents)
+  0058: idx = 0
+  005f: if !((idx < AllConsoleEvents.Length)) goto 0x00d0
+  006f: ConsoleEvt = SeqEvent_Console(idx[AllConsoleEvents])
+  0085: if !(((ConsoleEvt != none) && (EventName == ConsoleEvt.ConsoleEventName))) goto 0x00c6
+  00aa: ConsoleEvt.CheckActivate(self, self.Pawn, , , )
+  00c6: AddAdd_Int(idx)
+  00cd: goto 0x005f
+  00d0: return nothing
+  00d2: <eos>
+
+function PlayerController.CauseEvent  (script 14 bytes)
+  0000: PlayerController.ServerCauseEvent(EventName)
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.CE  (script 14 bytes)
+  0000: PlayerController.ServerCauseEvent(EventName)
+  000b: return nothing
+  000d: <eos>
+
+function PlayerController.ListConsoleEvents  (script 306 bytes)
+  0000: GameSeq = self.WorldInfo.GetGameSequence()
+  001a: if !((GameSeq != none)) goto 0x012f
+  0025: LogInternal("Console events:", , , )
+  003b: ClientMessage("Console events:", , 15.0)
+  005c: GameSeq.FindSeqObjectsByClass(obj'SeqEvent_Console', true, ConsoleEvents)
+  007a: idx = 0
+  0081: if !((idx < ConsoleEvents.Length)) goto 0x012f
+  0091: ConsoleEvt = SeqEvent_Console(idx[ConsoleEvents])
+  00a7: if !(((ConsoleEvt != none) && ConsoleEvt.bEnabled)) goto 0x0125
+  00c6: LogInternal((("-" @ cast57(ConsoleEvt.ConsoleEventName)) @ ConsoleEvt.EventDesc), , , )
+  00f0: ClientMessage((("-" @ cast57(ConsoleEvt.ConsoleEventName)) @ ConsoleEvt.EventDesc), , 15.0)
+  0125: AddAdd_Int(idx)
+  012c: goto 0x0081
+  012f: return nothing
+  0131: <eos>
+
+function PlayerController.ListCE  (script 9 bytes)
+  0000: PlayerController.ListConsoleEvents()
+  0006: return nothing
+  0008: <eos>
+
+function PlayerController.NotifyTakeHit  (script 58 bytes)
+  0000: Controller.NotifyTakeHit(InstigatedBy, HitLocation, Damage, DamageType, Momentum)
+  001f: ClientPlayForceFeedbackWaveform(DamageType.static.default.DamagedFFWaveform)
+  0037: return nothing
+  0039: <eos>
+
+function PlayerController.OnForceFeedback  (script 116 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x003a
+  001f: ClientPlayForceFeedbackWaveform(Action.FFWaveform)
+  0037: goto 0x0071
+  003a: if !(1[Action.InputLinks].bHasImpulse) goto 0x0071
+  0059: ClientStopForceFeedbackWaveform(Action.FFWaveform)
+  0071: return nothing
+  0073: <eos>
+
+function PlayerController.ClientPlayForceFeedbackWaveform  (script 71 bytes)
+  0000: if !((((self.ForceFeedbackManager != none) && (self.PlayerReplicationInfo != none)) && self.PlayerReplicationInfo.bControllerVibrationAllowed)) goto 0x0044
+  002c: self.ForceFeedbackManager.PlayForceFeedbackWaveform(FFWaveform)
+  0044: return nothing
+  0046: <eos>
+
+function PlayerController.ClientStopForceFeedbackWaveform  (script 39 bytes)
+  0000: nothing
+  0001: if !((self.ForceFeedbackManager != none)) goto 0x0024
+  000c: self.ForceFeedbackManager.StopForceFeedbackWaveform(FFWaveform)
+  0024: return nothing
+  0026: <eos>
+
+function PlayerController.CameraShake  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.OnToggleCinematicMode  (script 359 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x002d
+  0010: WarnInternal("Not supported on client")
+  002b: return nothing
+  002d: if !(0[Action.InputLinks].bHasImpulse) goto 0x0057
+  004c: bNewCinematicMode = true
+  0054: goto 0x00b0
+  0057: if !(1[Action.InputLinks].bHasImpulse) goto 0x0081
+  0076: bNewCinematicMode = false
+  007e: goto 0x00b0
+  0081: if !(2[Action.InputLinks].bHasImpulse) goto 0x00b0
+  00a1: bNewCinematicMode = !self.bCinematicMode
+  00b0: if !((Action.bDisableIncidentalDialog && (bNewCinematicMode != self.bCinematicMode))) goto 0x00e5
+  00d5: DisableIncidentalDialog(bNewCinematicMode)
+  00e5: SetCinematicMode(bNewCinematicMode, Action.bHidePlayer, Action.bHideHUD, Action.bDisableMovement, Action.bDisableTurning, Action.bDisableInput)
+  0140: SetCinematicPauseable((bNewCinematicMode && Action.bPauseable))
+  0164: return nothing
+  0166: <eos>
+
+function PlayerController.SetCinematicMode  (script 128 bytes)
+  0000: if !(bInCinematicMode) goto 0x0036
+  0009: if !(((self.Pawn != none) && bHidePlayer)) goto 0x0033
+  001f: self.Pawn.SetHidden(true)
+  0033: goto 0x0055
+  0036: if !((self.Pawn != none)) goto 0x0055
+  0041: self.Pawn.SetHidden(false)
+  0055: SetCinematicModeWithoutHidingPlayer(bInCinematicMode, bAffectsHUD, bAffectsMovement, bAffectsTurning, bAffectsButtons)
+  007d: return nothing
+  007f: <eos>
+
+function PlayerController.SetCinematicModeWithoutHidingPlayer  (script 209 bytes)
+  0000: self.bCinematicMode = bInCinematicMode
+  000d: self.bNonMovieCinematicMode = bInCinematicMode
+  001a: bAdjustMoveInput = (bAffectsMovement && (self.bCinematicMode != self.bCinemaDisableInputMove))
+  003a: bAdjustLookInput = (bAffectsTurning && (self.bCinematicMode != self.bCinemaDisableInputLook))
+  005a: if !(bAdjustMoveInput) goto 0x0080
+  0063: IgnoreMoveInput(self.bCinematicMode)
+  0073: self.bCinemaDisableInputMove = self.bCinematicMode
+  0080: if !(bAdjustLookInput) goto 0x00a6
+  0089: IgnoreLookInput(self.bCinematicMode)
+  0099: self.bCinemaDisableInputLook = self.bCinematicMode
+  00a6: ClientSetCinematicMode(self.bCinematicMode, bAdjustMoveInput, bAdjustLookInput, bAffectsHUD, bAffectsButtons)
+  00ce: return nothing
+  00d0: <eos>
+
+function PlayerController.SetCinematicPauseable  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.DisableIncidentalDialog  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ClientSetCinematicMode  (script 128 bytes)
+  0000: self.bCinematicMode = bInCinematicMode
+  000d: self.bNonMovieCinematicMode = bInCinematicMode
+  001a: if !(((self.myHUD != none) && bAffectsHUD)) goto 0x004b
+  0030: self.myHUD.SetVisibility(!self.bCinematicMode)
+  004b: if !(bAffectsMovement) goto 0x0064
+  0054: IgnoreMoveInput(self.bCinematicMode)
+  0064: if !(bAffectsTurning) goto 0x007d
+  006d: IgnoreLookInput(self.bCinematicMode)
+  007d: return nothing
+  007f: <eos>
+
+function PlayerController.IgnoreMoveInput  (script 49 bytes)
+  0000: self.bIgnoreMoveInput = cast3d(obj'Core.Math'.static.Max((cast3a(self.bIgnoreMoveInput) + (bNewMoveInput ? 1 : -1)), 0))
+  002e: return nothing
+  0030: <eos>
+
+function PlayerController.IsMoveInputIgnored  (script 18 bytes)
+  0000: return (cast3a(self.bIgnoreMoveInput) > 0)
+  000b: return return
+  0011: <eos>
+
+function PlayerController.IgnoreLookInput  (script 49 bytes)
+  0000: self.bIgnoreLookInput = cast3d(obj'Core.Math'.static.Max((cast3a(self.bIgnoreLookInput) + (bNewLookInput ? 1 : -1)), 0))
+  002e: return nothing
+  0030: <eos>
+
+function PlayerController.IsLookInputIgnored  (script 18 bytes)
+  0000: return (cast3a(self.bIgnoreLookInput) > 0)
+  000b: return return
+  0011: <eos>
+
+function PlayerController.ResetPlayerMovementInput  (script 25 bytes)
+  0000: self.bIgnoreMoveInput = default.bIgnoreMoveInput
+  000b: self.bIgnoreLookInput = default.bIgnoreLookInput
+  0016: return nothing
+  0018: <eos>
+
+function PlayerController.OnConsoleCommand  (script 33 bytes)
+  0000: ConsoleCommand(inAction.Command, )
+  001e: return nothing
+  0020: <eos>
+
+function PlayerController.ClientForceGarbageCollection  (script 22 bytes)
+  0000: self.WorldInfo.ForceGarbageCollection()
+  0013: return nothing
+  0015: <eos>
+
+function PlayerController.ClientUpdateLevelStreamingState  (script 7 bytes)
+  0000: StateName
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.ServerUpdateLevelVisibility  (script 12 bytes)
+  0000: PackageName
+  0005: bIsVisible
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.ClientRequestFlushStreaming  (script 12 bytes)
+  0000: request
+  0005: useBackBufferBlendedLoadingMovieForFlushStreaming
+  000a: nothing
+  000b: <eos>
+
+function PlayerController.GetCurrentFlushStreamingRequest  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.SaveClassConfig  (script 170 bytes)
+  0000: LogInternal(("SaveClassConfig:" @ ClassName), , , )
+  001e: saveClass = class<Object>(DynamicLoadObject(ClassName, obj'Core.Class', ))
+  003e: if !((saveClass != none)) goto 0x0082
+  0049: LogInternal(("- Saving config on:" @ cast56(saveClass)), , , )
+  006c: saveClass.static.StaticSaveConfig()
+  007f: goto 0x00a7
+  0082: LogInternal(("- Failed to find class:" @ ClassName), , , )
+  00a7: return nothing
+  00a9: <eos>
+
+function PlayerController.SaveActorConfig  (script 144 bytes)
+  0000: LogInternal(("SaveActorConfig:" @ cast57(actorName)), , , )
+  0020: foreach AllActors(obj'Actor', chkActor) (end 0x008c)
+  0037: if !(((chkActor != none) && (chkActor.Name == actorName))) goto 0x008b
+  005c: LogInternal(("- Saving config on:" @ cast56(chkActor)), , , )
+  007f: chkActor.SaveConfig()
+  008b: iternext
+  008c: iterpop
+  008d: return nothing
+  008f: <eos>
+
+function PlayerController.GetUIController  (script 105 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !(((LP != none) && (LP.get_Outer().GameViewport != none))) goto 0x005c
+  0038: Result = LP.get_Outer().GameViewport.UIController
+  005c: return Result
+  0062: return return
+  0068: <eos>
+
+function PlayerController.IsPlayerMuted  (script 7 bytes)
+  0000: Sender
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.GetSeamlessTravelActorList  (script 95 bytes)
+  0000: self.HearSoundActiveComponents.Length = 0
+  0008: self.HearSoundPoolComponents.Length = 0
+  0010: if !((self.myHUD != none)) goto 0x005c
+  001b: ActorList.Length[ActorList] = self.myHUD
+  002d: if !((self.myHUD.ScoreBoard != none)) goto 0x005c
+  0041: ActorList.Length[ActorList] = self.myHUD.ScoreBoard
+  005c: return nothing
+  005e: <eos>
+
+function PlayerController.ServerDestroy  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>
+
+function PlayerController.SeamlessTravelTo  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.SeamlessTravelFrom  (script 118 bytes)
+  0000: OldPC.PlayerReplicationInfo.Reset()
+  001c: OldPC.PlayerReplicationInfo.SeamlessTravelTo(self.PlayerReplicationInfo)
+  003d: OldPC.bIsPlayer = false
+  004e: OldPC.PlayerReplicationInfo.DestroyActor()
+  0063: OldPC.PlayerReplicationInfo = none
+  0073: return nothing
+  0075: <eos>
+
+function PlayerController.ClientSetOnlineStatus  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.GetPlayerControllerFromNetId  (script 7 bytes)
+  0000: PlayerNetId
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.ClientVoiceHandshakeComplete  (script 11 bytes)
+  0000: self.bHasVoiceHandshakeCompleted = true
+  0008: return nothing
+  000a: <eos>
+
+function PlayerController.ClientMutePlayer  (script 91 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.VoiceInterface, OnlineVoiceInterface(none))) goto 0x0058
+  0014: LocPlayer = LocalPlayer(self.Player)
+  0024: if !((LocPlayer != none)) goto 0x0058
+  002f: self.VoiceInterface.MuteRemoteTalker(cast3d(LocPlayer.ControllerId), PlayerNetId)
+  0058: return nothing
+  005a: <eos>
+
+function PlayerController.ClientUnmutePlayer  (script 91 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.VoiceInterface, OnlineVoiceInterface(none))) goto 0x0058
+  0014: LocPlayer = LocalPlayer(self.Player)
+  0024: if !((LocPlayer != none)) goto 0x0058
+  002f: self.VoiceInterface.UnmuteRemoteTalker(cast3d(LocPlayer.ControllerId), PlayerNetId)
+  0058: return nothing
+  005a: <eos>
+
+function PlayerController.GameplayMutePlayer  (script 126 bytes)
+  0000: if !((self.GameplayVoiceMuteList.Find('Uid',PlayerNetId.Uid) == -1)) goto 0x0038
+  002b: self.GameplayVoiceMuteList.AddItem(PlayerNetId)
+  0038: if !((self.VoicePacketFilter.Find('Uid',PlayerNetId.Uid) == -1)) goto 0x0070
+  0063: self.VoicePacketFilter.AddItem(PlayerNetId)
+  0070: PlayerController.ClientMutePlayer(PlayerNetId)
+  007b: return nothing
+  007d: <eos>
+
+function PlayerController.GameplayUnmutePlayer  (script 284 bytes)
+  0000: RemoveIndex = self.GameplayVoiceMuteList.Find('Uid',PlayerNetId.Uid)
+  0027: if !((RemoveIndex != -1)) goto 0x0042
+  0036: self.GameplayVoiceMuteList.Remove(RemoveIndex,1)
+  0042: Other = GetPlayerControllerFromNetId(PlayerNetId)
+  0057: if !((Other != none)) goto 0x0119
+  0062: if !(((self.VoiceMuteList.Find('Uid',PlayerNetId.Uid) == -1) && (Other.VoiceMuteList.Find('Uid',self.PlayerReplicationInfo.UniqueId.Uid) == -1))) goto 0x0119
+  00cc: RemoveIndex = self.VoicePacketFilter.Find('Uid',PlayerNetId.Uid)
+  00f3: if !((RemoveIndex != -1)) goto 0x010e
+  0102: self.VoicePacketFilter.Remove(RemoveIndex,1)
+  010e: PlayerController.ClientUnmutePlayer(PlayerNetId)
+  0119: return nothing
+  011b: <eos>
+
+function PlayerController.ServerMutePlayer  (script 279 bytes)
+  0000: if !((self.VoiceMuteList.Find('Uid',PlayerNetId.Uid) == -1)) goto 0x0038
+  002b: self.VoiceMuteList.AddItem(PlayerNetId)
+  0038: if !((self.VoicePacketFilter.Find('Uid',PlayerNetId.Uid) == -1)) goto 0x0070
+  0063: self.VoicePacketFilter.AddItem(PlayerNetId)
+  0070: PlayerController.ClientMutePlayer(PlayerNetId)
+  007b: Other = GetPlayerControllerFromNetId(PlayerNetId)
+  0090: if !((Other != none)) goto 0x0114
+  009b: if !((Other.VoicePacketFilter.Find('Uid',self.PlayerReplicationInfo.UniqueId.Uid) == -1)) goto 0x00f7
+  00d8: Other.VoicePacketFilter.AddItem(self.PlayerReplicationInfo.UniqueId)
+  00f7: Other.PlayerController.ClientMutePlayer(self.PlayerReplicationInfo.UniqueId)
+  0114: return nothing
+  0116: <eos>
+
+function PlayerController.ServerUnmutePlayer  (script 530 bytes)
+  0000: RemoveIndex = self.VoiceMuteList.Find('Uid',PlayerNetId.Uid)
+  0027: if !((RemoveIndex != -1)) goto 0x0042
+  0036: self.VoiceMuteList.Remove(RemoveIndex,1)
+  0042: Other = GetPlayerControllerFromNetId(PlayerNetId)
+  0057: if !((Other != none)) goto 0x020f
+  0062: if !(((self.GameplayVoiceMuteList.Find('Uid',PlayerNetId.Uid) == -1) && (Other.VoiceMuteList.Find('Uid',self.PlayerReplicationInfo.UniqueId.Uid) == -1))) goto 0x00d7
+  00cc: PlayerController.ClientUnmutePlayer(PlayerNetId)
+  00d7: if !(((Other.VoiceMuteList.Find('Uid',self.PlayerReplicationInfo.UniqueId.Uid) == -1) && (Other.GameplayVoiceMuteList.Find('Uid',self.PlayerReplicationInfo.UniqueId.Uid) == -1))) goto 0x020f
+  0153: RemoveIndex = self.VoicePacketFilter.Find('Uid',PlayerNetId.Uid)
+  017a: if !((RemoveIndex != -1)) goto 0x0195
+  0189: self.VoicePacketFilter.Remove(RemoveIndex,1)
+  0195: RemoveIndex = Other.VoicePacketFilter.Find('Uid',self.PlayerReplicationInfo.UniqueId.Uid)
+  01ce: if !((RemoveIndex != -1)) goto 0x01f2
+  01dd: Other.VoicePacketFilter.Remove(RemoveIndex,1)
+  01f2: Other.PlayerController.ClientUnmutePlayer(self.PlayerReplicationInfo.UniqueId)
+  020f: return nothing
+  0211: <eos>
+
+function PlayerController.NotifyDirectorControl  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.SetShowSubtitles  (script 7 bytes)
+  0000: bValue
+  0005: nothing
+  0006: <eos>
+
+function PlayerController.IsShowingSubtitles  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.ConnectionErrorQuitGame  (script 133 bytes)
+  0000: self.OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  0022: DisconnectFromSessions(SessionNames, )
+  0032: LogInternal("Issuing ClientTravel command with ?failed argument", , , )
+  006b: ClientTravel("?failed", 0, , )
+  0082: return nothing
+  0084: <eos>
+
+function PlayerController.NotifyConnectionError  (script 95 bytes)
+  0000: nothing
+  0001: if !((cast3a(self.WorldInfo.NetMode) != cast3a(0))) goto 0x0048
+  001a: if !((self.WorldInfo.Game != none)) goto 0x0048
+  002e: self.WorldInfo.Game.bHasNetworkError = true
+  0048: QuitWithError(Message, Title)
+  005c: return nothing
+  005e: <eos>
+
+function PlayerController.QuitWithError  (script 117 bytes)
+  0000: nothing
+  0001: SessionNames.AddItem(GetGameSessionName())
+  0013: GE = GameEngine(obj'Engine'.static.GetEngine())
+  0031: if !((GE != none)) goto 0x0059
+  003c: GE.SetCurrentErrorMessage(Title, Message)
+  0059: ConnectionErrorQuitGame(SessionNames, Message, Title)
+  0072: return nothing
+  0074: <eos>
+
+function PlayerController.GetGameSessionName  (script 17 bytes)
+  0000: return 'Game'
+  000a: return return
+  0010: <eos>
+
+function PlayerController.ClientWasKicked  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ClientTimedOut  (script 111 bytes)
+  0000: ClientSetProgressMessage(4, Localize("Errors", "ConnectionTimeout", "Engine"), Localize("Errors", "ConnectionFailed_Title", "Engine"), true)
+  006c: return nothing
+  006e: <eos>
+
+function PlayerController.ClientRegisterForArbitration  (script 132 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x007a
+  002a: self.OnlineSub.GameInterface.AddArbitrationRegistrationCompleteDelegate(delegate.OnArbitrationRegisterComplete)
+  0050: self.OnlineSub.GameInterface.RegisterForArbitration(GetGameSessionName())
+  0077: goto 0x0081
+  007a: PlayerController.ServerRegisteredForArbitration(true)
+  0081: return nothing
+  0083: <eos>
+
+function PlayerController.OnArbitrationRegisterComplete  (script 53 bytes)
+  0000: self.OnlineSub.GameInterface.ClearArbitrationRegistrationCompleteDelegate(delegate.OnArbitrationRegisterComplete)
+  0026: PlayerController.ServerRegisteredForArbitration(bWasSuccessful)
+  0032: return nothing
+  0034: <eos>
+
+function PlayerController.ServerRegisteredForArbitration  (script 38 bytes)
+  0000: self.WorldInfo.Game.ProcessClientRegistrationCompletion(self, bWasSuccessful)
+  0023: return nothing
+  0025: <eos>
+
+function PlayerController.IsJoiningASession  (script 27 bytes)
+  0000: return self._SessionJoiner.IsInProgress()
+  0014: return return
+  001a: <eos>
+
+function PlayerController.CancelSessionJoining  (script 35 bytes)
+  0000: if !(IsJoiningASession()) goto 0x0020
+  000d: self._SessionJoiner.Cancel()
+  0020: return nothing
+  0022: <eos>
+
+function PlayerController.OnGameInviteAccepted  (script 238 bytes)
+  0000: ControllerId = LocalPlayer(self.Player).ControllerId
+  0019: if !((cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(ControllerId))) != cast3a(2))) goto 0x0054
+  0048: NotifyNotLoggedIntoPrimaryOnlineServiceForJoinInvite()
+  0052: return nothing
+  0054: if !((cast3a(self.OnlineSub.PlayerInterface.GetSecondaryLoginStatus(cast3d(ControllerId))) != cast3a(2))) goto 0x008f
+  0083: NotifyNotLoggedIntoSecondaryOnlineServiceForJoinInvite()
+  008d: return nothing
+  008f: if !((GameInviteSettings == none)) goto 0x00a6
+  009a: NotifyInviteFailed()
+  00a4: return nothing
+  00a6: if !(!InviteHasEnoughSpace(GameInviteSettings)) goto 0x00c6
+  00ba: NotifyNotEnoughSpaceInInvite()
+  00c4: return nothing
+  00c6: if !(!CanAllPlayersPlayOnline()) goto 0x00e1
+  00d5: NotifyNotAllPlayersCanJoinInvite()
+  00df: return nothing
+  00e1: FinalizeOnGameInviteAccepted()
+  00eb: return nothing
+  00ed: <eos>
+
+function PlayerController.FinalizeOnGameInviteAccepted  (script 13 bytes)
+  0000: JoinSessionUsingGameInvite()
+  000a: return nothing
+  000c: <eos>
+
+function PlayerController.JoinSessionUsingGameInvite  (script 94 bytes)
+  0000: ControllerId = LocalPlayer(self.Player).ControllerId
+  0019: GameInviteSearchResult = self.OnlineSub.GameInterface.GetOnlineGameSearchResultForGameInvite(cast3d(ControllerId))
+  0043: self._SessionJoiner.JoinSessionUsingGameInvite(GameInviteSearchResult)
+  005b: return nothing
+  005d: <eos>
+
+function PlayerController.InviteHasEnoughSpace  (script 77 bytes)
+  0000: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x001f)
+  0017: AddAdd_Int(NumLocalPlayers)
+  001e: iternext
+  001f: iterpop
+  0020: return ((InviteSettings.NumOpenPrivateConnections + InviteSettings.NumOpenPublicConnections) >= NumLocalPlayers)
+  0046: return return
+  004c: <eos>
+
+function PlayerController.CanAllPlayersPlayOnline  (script 193 bytes)
+  0000: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x00b7)
+  0017: LocPlayer = LocalPlayer(PC.Player)
+  0030: if !((LocPlayer != none)) goto 0x00b3
+  003b: if !(((cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LocPlayer.ControllerId))) != cast3a(2)) || (cast3a(self.OnlineSub.PlayerInterface.CanPlayOnline(cast3d(LocPlayer.ControllerId))) == cast3a(0)))) goto 0x00b0
+  00ad: iterpop
+  00ae: return false
+  00b0: goto 0x00b6
+  00b3: iterpop
+  00b4: return false
+  00b6: iternext
+  00b7: iterpop
+  00b8: return true
+  00ba: return return
+  00c0: <eos>
+
+function PlayerController.NotifyJoinSessionFailed  (script 29 bytes)
+  0000: LogInternal("Join session failed", , , )
+  001a: return nothing
+  001c: <eos>
+
+function PlayerController.NotifyInviteFailed  (script 40 bytes)
+  0000: LogInternal("Invite handling failed", 'DevOnline', , )
+  0025: return nothing
+  0027: <eos>
+
+function PlayerController.NotifyNotAllPlayersCanJoinInvite  (script 79 bytes)
+  0000: LogInternal("Not all local players have permission to join the game invite", 'DevOnline', , )
+  004c: return nothing
+  004e: <eos>
+
+function PlayerController.NotifyNotEnoughSpaceInInvite  (script 75 bytes)
+  0000: LogInternal("Not enough space for all local players in the game invite", 'DevOnline', , )
+  0048: return nothing
+  004a: <eos>
+
+function PlayerController.NotifyNotLoggedIntoPrimaryOnlineServiceForJoinInvite  (script 75 bytes)
+  0000: LogInternal("Not logged into online service, cannot accept game invite", 'DevOnline', , )
+  0048: return nothing
+  004a: <eos>
+
+function PlayerController.NotifyNotLoggedIntoSecondaryOnlineServiceForJoinInvite  (script 71 bytes)
+  0000: LogInternal("Not logged into LSP server, cannot accept game invite", 'DevOnline', , )
+  0044: return nothing
+  0046: <eos>
+
+function PlayerController.ClientArbitratedMatchEnded  (script 31 bytes)
+  0000: ConsoleCommand("Disconnect", )
+  001c: return nothing
+  001e: <eos>
+
+function PlayerController.ClientWriteOnlinePlayerScores  (script 637 bytes)
+  0000: GRI = self.WorldInfo.GRI
+  0014: if !((((GRI != none) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.StatsInterface, OnlineStatsInterface(none)))) goto 0x027a
+  004b: bIsTeamGame = ((GRI.GameClass != none) ? GRI.GameClass.static.default.bTeamGame : false)
+  0081: Index = 0
+  0088: if !((Index < GRI.PRIArray.Length)) goto 0x0249
+  00a1: if !(((Index[GRI.PRIArray] != none) && (Index[GRI.PRIArray].UniqueId != ZeroUniqueId))) goto 0x023f
+  00e7: ScoreIndex = PlayerScores.Length
+  00f3: PlayerScores.Length = (ScoreIndex + 1)
+  0102: ScoreIndex[PlayerScores].PlayerID = Index[GRI.PRIArray].UniqueId
+  0136: if !((bIsTeamGame && (Index[GRI.PRIArray].Team != none))) goto 0x01e8
+  0164: ScoreIndex[PlayerScores].TeamID = Index[GRI.PRIArray].Team.TeamIndex
+  01a1: ScoreIndex[PlayerScores].Score = cast44(Index[GRI.PRIArray].Team.GetScore())
+  01e5: goto 0x023f
+  01e8: ScoreIndex[PlayerScores].TeamID = Index
+  0204: ScoreIndex[PlayerScores].Score = cast44(Index[GRI.PRIArray].GetScore())
+  023f: AddAdd_Int(Index)
+  0246: goto 0x0088
+  0249: self.OnlineSub.StatsInterface.WriteOnlinePlayerScores(GetGameSessionName(), LeaderboardId, PlayerScores)
+  027a: return nothing
+  027c: <eos>
+
+function PlayerController.ClientWriteLeaderboardStats  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ClientSetHostUniqueId  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ClientStopNetworkedVoice  (script 119 bytes)
+  0000: LocPlayer = LocalPlayer(self.Player)
+  0010: if !((((LocPlayer != none) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.VoiceInterface, OnlineVoiceInterface(none)))) goto 0x0074
+  0047: self.OnlineSub.VoiceInterface.StopNetworkedVoice(cast3d(LocPlayer.ControllerId))
+  0074: return nothing
+  0076: <eos>
+
+function PlayerController.ClientStartNetworkedVoice  (script 119 bytes)
+  0000: LocPlayer = LocalPlayer(self.Player)
+  0010: if !((((LocPlayer != none) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.VoiceInterface, OnlineVoiceInterface(none)))) goto 0x0074
+  0047: self.OnlineSub.VoiceInterface.StartNetworkedVoice(cast3d(LocPlayer.ControllerId))
+  0074: return nothing
+  0076: <eos>
+
+function PlayerController.ServerSendMusicInfo  (script 165 bytes)
+  0000: if !(((((self.WorldInfo.LastMusicAction != none) && (self.WorldInfo.LastMusicAction.CurrPlayingTrack != none)) && (self.WorldInfo.LastMusicAction.CurrPlayingTrack.FadeOutStopTime < 0.0)) && (self.WorldInfo.LastMusicTrack.TheSoundCue != none))) goto 0x00a2
+  0080: PlayerController.ClientCrossFadeMusicTrack_PlayTrack(self.WorldInfo.LastMusicAction, self.WorldInfo.LastMusicTrack)
+  00a2: return nothing
+  00a4: <eos>
+
+function PlayerController.ClientCrossFadeMusicTrack_PlayTrack  (script 67 bytes)
+  0000: if !((MusicAction != none)) goto 0x0026
+  000b: MusicAction.ClientSideCrossFadeTrackImmediately(MusicTrack)
+  0023: goto 0x0040
+  0026: if !((cast3a(self.Role) < cast3a(3))) goto 0x0040
+  0036: ServerSendMusicInfo()
+  0040: return nothing
+  0042: <eos>
+
+function PlayerController.ClientFadeOutMusicTrack  (script 98 bytes)
+  0000: if !(((MusicAction != none) && (MusicAction.CurrPlayingTrack != none))) goto 0x005f
+  0021: MusicAction.CurrPlayingTrack.FadeOut(FadeOutTime, FadeOutVolumeLevel)
+  0047: MusicAction.CurrTrackType = 'None'
+  005f: return nothing
+  0061: <eos>
+
+function PlayerController.ClientAdjustMusicTrackVolume  (script 74 bytes)
+  0000: if !(((MusicAction != none) && (MusicAction.CurrPlayingTrack != none))) goto 0x0047
+  0021: MusicAction.CurrPlayingTrack.AdjustVolume(AdjustVolumeDuration, AdjustVolumeLevel)
+  0047: return nothing
+  0049: <eos>
+
+function PlayerController.OnDestroy  (script 61 bytes)
+  0000: Action.ScriptLog("Cannot use Destroy action on players", )
+  003a: return nothing
+  003c: <eos>
+
+function PlayerController.ConsoleKey  (script 71 bytes)
+  0000: if !((LocalPlayer(self.Player) != none)) goto 0x0044
+  0010: LocalPlayer(self.Player).ViewportClient.ViewportConsole.InputKey(0, Key, 0, , )
+  0044: return nothing
+  0046: <eos>
+
+function PlayerController.SendToConsole  (script 66 bytes)
+  0000: if !((LocalPlayer(self.Player) != none)) goto 0x003f
+  0010: LocalPlayer(self.Player).ViewportClient.ViewportConsole.ConsoleCommand(Command)
+  003f: return nothing
+  0041: <eos>
+
+function PlayerController.DrawDebugTextList  (script 649 bytes)
+  0000: if !((self.DebugTextList.Length > 0)) goto 0x0286
+  000c: GetPlayerViewPoint(cameraLoc, cameraRot)
+  0020: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0043: Canvas.Font = obj'Engine'.static.GetSmallFont()
+  0065: idx = 0
+  006c: if !((idx < self.DebugTextList.Length)) goto 0x0286
+  007c: if !((idx[self.DebugTextList].SrcActor == none)) goto 0x00a9
+  0098: self.DebugTextList.Remove(SubtractSubtract_Int(idx),1)
+  00a6: goto 0x027c
+  00a9: if !((idx[self.DebugTextList].TimeRemaining != -1.0)) goto 0x0137
+  00c9: LogInternal("Drawing Debug text not -1", , , )
+  00e9: (idx[self.DebugTextList].TimeRemaining -= RenderDelta)
+  0106: if !((idx[self.DebugTextList].TimeRemaining <= 0.0)) goto 0x0137
+  0126: self.DebugTextList.Remove(SubtractSubtract_Int(idx),1)
+  0134: goto 0x027c
+  0137: Offset = obj'Core.Math'.static.VLerp(idx[self.DebugTextList].SrcActorOffset, idx[self.DebugTextList].SrcActorDesiredOffset, (1.0 - (idx[self.DebugTextList].TimeRemaining / idx[self.DebugTextList].Duration)))
+  01b1: ScreenLoc = Canvas.Project((idx[self.DebugTextList].SrcActor.Location + (Offset >> cameraRot)))
+  01f8: Canvas.SetPos(ScreenLoc.X, ScreenLoc.Y)
+  022b: Canvas.DrawColor = idx[self.DebugTextList].TextColor
+  0250: Canvas.DrawTextNormal(idx[self.DebugTextList].DebugText, , , )
+  027c: AddAdd_Int(idx)
+  0283: goto 0x006c
+  0286: return nothing
+  0288: <eos>
+
+function PlayerController.AddDebugText  (script 613 bytes)
+  0000: nothing
+  0001: default=-1.0
+  000a: nothing
+  000b: nothing
+  000c: nothing
+  000d: nothing
+  000e: LogInternal(("AddDebugText adding " $ DebugText), , , )
+  0030: if !(((((cast3a(TextColor.R) == 0) && (cast3a(TextColor.G) == 0)) && (cast3a(TextColor.B) == 0)) && (cast3a(TextColor.A) == 0))) goto 0x00ea
+  0096: TextColor.R = cast3d(255)
+  00ab: TextColor.G = cast3d(255)
+  00c0: TextColor.B = cast3d(255)
+  00d5: TextColor.A = cast3d(255)
+  00ea: if !((SrcActor == none)) goto 0x0100
+  00f5: SrcActor = self.Pawn
+  0100: if !((SrcActor != none)) goto 0x0262
+  010b: if !((obj'Core.Strings'.static.Len(DebugText) == 0)) goto 0x012f
+  0121: PlayerController.RemoveDebugText(SrcActor)
+  012c: goto 0x0262
+  012f: if !(!bSkipOverwriteCheck) goto 0x0183
+  013a: idx = self.DebugTextList.Find('SrcActor',SrcActor)
+  0156: if !((idx == -1)) goto 0x0180
+  0165: idx = self.DebugTextList.Length
+  0171: self.DebugTextList.Length = (idx + 1)
+  0180: goto 0x019e
+  0183: idx = self.DebugTextList.Length
+  018f: self.DebugTextList.Length = (idx + 1)
+  019e: idx[self.DebugTextList].SrcActor = SrcActor
+  01ba: idx[self.DebugTextList].SrcActorOffset = Offset
+  01d6: idx[self.DebugTextList].SrcActorDesiredOffset = DesiredOffset
+  01f2: idx[self.DebugTextList].DebugText = DebugText
+  020e: idx[self.DebugTextList].TimeRemaining = Duration
+  022a: idx[self.DebugTextList].Duration = Duration
+  0246: idx[self.DebugTextList].TextColor = TextColor
+  0262: return nothing
+  0264: <eos>
+
+function PlayerController.RemoveDebugText  (script 58 bytes)
+  0000: idx = self.DebugTextList.Find('SrcActor',SrcActor)
+  001c: if !((idx != -1)) goto 0x0037
+  002b: self.DebugTextList.Remove(idx,1)
+  0037: return nothing
+  0039: <eos>
+
+function PlayerController.EnableDebugCamera  (script 297 bytes)
+  0000: P = self.Player
+  000b: if !((((P != none) && (self.Pawn != none)) && IsLocalPlayerController())) goto 0x0126
+  0032: if !((self.DebugCameraControllerRef == none)) goto 0x0059
+  003d: self.DebugCameraControllerRef = Spawn(self.DebugCameraControllerClass, , , , , , , )
+  0059: self.DebugCameraControllerRef.OryginalPlayer = P
+  006d: self.DebugCameraControllerRef.OryginalControllerRef = self
+  007d: GetPlayerViewPoint(eyeLoc, eyeRot)
+  0091: self.DebugCameraControllerRef.SetLocation(eyeLoc)
+  00a2: self.DebugCameraControllerRef.SetRotation(eyeRot)
+  00b3: self.DebugCameraControllerRef.PlayerCamera.SetFOV(GetFOVAngle())
+  00d9: self.DebugCameraControllerRef.PlayerCamera.UpdateCamera(0.0)
+  00fa: P.SwitchController(self.DebugCameraControllerRef)
+  0112: self.DebugCameraControllerRef.OnActivate(self)
+  0126: return nothing
+  0128: <eos>
+
+function PlayerController.ClientRegisterHostStatGuid  (script 130 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.StatsInterface, OnlineStatsInterface(none)))) goto 0x007f
+  002a: self.OnlineSub.StatsInterface.AddRegisterHostStatGuidCompleteDelegate(delegate.OnRegisterHostStatGuidComplete)
+  0050: if !((self.OnlineSub.StatsInterface.RegisterHostStatGuid(StatGuid) == false)) goto 0x007f
+  0078: PlayerController.OnRegisterHostStatGuidComplete(false)
+  007f: return nothing
+  0081: <eos>
+
+function PlayerController.OnRegisterHostStatGuidComplete  (script 96 bytes)
+  0000: self.OnlineSub.StatsInterface.ClearRegisterHostStatGuidCompleteDelegateDelegate(delegate.OnRegisterHostStatGuidComplete)
+  0026: if !(bWasSuccessful) goto 0x005d
+  002f: StatGuid = self.OnlineSub.StatsInterface.GetClientStatGuid()
+  0052: PlayerController.ServerRegisterClientStatGuid(StatGuid)
+  005d: return nothing
+  005f: <eos>
+
+function PlayerController.ServerRegisterClientStatGuid  (script 93 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.StatsInterface, OnlineStatsInterface(none)))) goto 0x005a
+  002a: self.OnlineSub.StatsInterface.RegisterStatGuid(self.PlayerReplicationInfo.UniqueId, StatGuid)
+  005a: return nothing
+  005c: <eos>
+
+function PlayerController.ClientStartOnlineGame  (script 209 bytes)
+  0000: if !((((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none))) && IsPrimaryPlayer())) goto 0x00ce
+  0039: GameSettings = self.OnlineSub.GameInterface.GetGameSettings(GetGameSessionName())
+  0066: if !(((GameSettings != none) && ((cast3a(GameSettings.GameState) == cast3a(1)) || (cast3a(GameSettings.GameState) == cast3a(5))))) goto 0x00ce
+  00a7: self.OnlineSub.GameInterface.StartOnlineGame(GetGameSessionName())
+  00ce: return nothing
+  00d0: <eos>
+
+function PlayerController.ClientEndOnlineGame  (script 182 bytes)
+  0000: if !((((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none))) && IsPrimaryPlayer())) goto 0x00b3
+  0039: GameSettings = self.OnlineSub.GameInterface.GetGameSettings(GetGameSessionName())
+  0066: if !(((GameSettings != none) && (cast3a(GameSettings.GameState) == cast3a(3)))) goto 0x00b3
+  008c: self.OnlineSub.GameInterface.EndOnlineGame(GetGameSessionName())
+  00b3: return nothing
+  00b5: <eos>
+
+function PlayerController.CanViewUserCreatedContent  (script 134 bytes)
+  0000: LocPlayer = LocalPlayer(self.Player)
+  0010: if !((((LocPlayer != none) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x007d
+  0047: return (cast3a(self.OnlineSub.PlayerInterface.CanDownloadUserContent(cast3d(LocPlayer.ControllerId))) == cast3a(2))
+  007d: return true
+  007f: return return
+  0085: <eos>
+
+function PlayerController.BeginMovieMode  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.ClientJoinSession  (script 37 bytes)
+  0000: self._SessionJoiner.JoinSession(SessionName, PlatformSpecificInfo, PostJoinSessionOption)
+  0022: return nothing
+  0024: <eos>
+
+function PlayerController.BuildPartyLobbyURL  (script 51 bytes)
+  0000: return (((GetPartyMapName() $ "?game=") $ GetPartyGameTypeName()) $ "?listen")
+  002c: return return
+  0032: <eos>
+
+function PlayerController.ClientReturnToParty  (script 373 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x005d
+  0019: SessionNames.AddItem(GetGameSessionName())
+  002b: self.OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  004d: DisconnectFromSessions(SessionNames, )
+  005d: if !((self.OnlineSub.GameInterface.GetGameSettings('Party') == none)) goto 0x00f7
+  0089: LogInternal("ERROR: Party host failed to return to party lobby.  Missing party settings.", , , )
+  00db: ConsoleCommand("disconnect", )
+  00f7: if !(IsPartyLeader()) goto 0x0131
+  0104: URL = BuildPartyLobbyURL()
+  0114: self.WorldInfo.ServerTravel(URL, true, true)
+  012e: goto 0x0172
+  0131: if !(self.OnlineSub.GameInterface.GetResolvedConnectString('Party', URL)) goto 0x0172
+  015f: ClientTravel(URL, 0, , )
+  0172: return nothing
+  0174: <eos>
+
+function PlayerController.ClientPartyDisbanded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.DisconnectFromSessions  (script 63 bytes)
+  0000: nothing
+  0001: if !((DisconnectFromSessionsCompleteDelegate != emptydelegate)) goto 0x0024
+  000b: <endparms>
+  000c: self.OnlineDisconnector.AddDisconnectFromSessionsCompleteDelegate(DisconnectFromSessionsCompleteDelegate)
+  0024: self.OnlineDisconnector.DisconnectFromSessions(SessionNames)
+  003c: return nothing
+  003e: <eos>
+
+function PlayerController.IsPrimaryPlayer  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerController.IsPartyLeader  (script 201 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x009c
+  002a: PartySettings = self.OnlineSub.GameInterface.GetGameSettings('Party')
+  0056: if !((PartySettings != none)) goto 0x009c
+  0061: if !((self.PlayerReplicationInfo != none)) goto 0x009c
+  006c: return self.OnlineSub.AreUniqueNetIdsEqual(PartySettings.OwningPlayerId, self.PlayerReplicationInfo.UniqueId)
+  009c: return ((cast3a(self.WorldInfo.NetMode) != cast3a(3)) && IsPrimaryPlayer())
+  00c2: return return
+  00c8: <eos>
+
+function PlayerController.IsPartyClient  (script 167 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x009e
+  002a: PartySettings = self.OnlineSub.GameInterface.GetGameSettings('Party')
+  0056: if !((PartySettings != none)) goto 0x009e
+  0061: if !((self.PlayerReplicationInfo != none)) goto 0x009e
+  006c: return !self.OnlineSub.AreUniqueNetIdsEqual(PartySettings.OwningPlayerId, self.PlayerReplicationInfo.UniqueId)
+  009e: return false
+  00a0: return return
+  00a6: <eos>
+
+function PlayerController.GetNumPartyMembers  (script 140 bytes)
+  0000: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.ReservationInterface, OnlineReservationInterface(none)))) goto 0x007f
+  002a: PartyCollection = self.OnlineSub.ReservationInterface.GetReservations()
+  004d: if !((PartyCollection != none)) goto 0x007f
+  0058: NumMembers = PartyCollection.GetPartySizeForPlayer(self.PlayerReplicationInfo.UniqueId)
+  007f: return NumMembers
+  0085: return return
+  008b: <eos>
+
+function PlayerController.GetPartyMapName  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.GetPartyGameTypeName  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.GetAchievementProgression  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function PlayerController.EndMovieMode  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.GetLocalUserNum  (script 78 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !(((LP == none) || !LP.HasAssignedController())) goto 0x0038
+  0035: return 255
+  0038: return LP.ControllerId
+  0047: return return
+  004d: <eos>
+
+function PlayerController.ResetAudio  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerController.ShouldDelayGameInvites  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function PlayerController.ClientUnlockAchievement  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerController.UnlockAchievement  (script 294 bytes)
+  0000: if !((self.WorldInfo.IsDemoBuild() || self.WorldInfo.IsPreviewBuild())) goto 0x0030
+  002e: return nothing
+  0030: if !((self.OnlineSub != none)) goto 0x00e5
+  003b: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x009d
+  0058: LocPlayer = LocalPlayer(self.Player)
+  0068: self.OnlineSub.PlayerInterfaceEx.UnlockAchievement(cast3d(LocPlayer.ControllerId), AchievementId)
+  009a: goto 0x00e2
+  009d: LogInternal(("Interface is not supported. Can't unlock achievement " $ cast53(AchievementId)), , , )
+  00e2: goto 0x0123
+  00e5: LogInternal(("No online subsystem. Can't unlock achievement " $ cast53(AchievementId)), , , )
+  0123: return nothing
+  0125: <eos>
+
+function PlayerController.UnlockAvatarAsset  (script 296 bytes)
+  0000: if !((self.WorldInfo.IsDemoBuild() || self.WorldInfo.IsPreviewBuild())) goto 0x0030
+  002e: return nothing
+  0030: if !((self.OnlineSub != none)) goto 0x00e6
+  003b: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x009d
+  0058: LocPlayer = LocalPlayer(self.Player)
+  0068: self.OnlineSub.PlayerInterfaceEx.UnlockAvatarAsset(cast3d(LocPlayer.ControllerId), AssetId)
+  009a: goto 0x00e3
+  009d: LogInternal(("Interface is not supported. Can't unlock avatar asset " $ cast53(AssetId)), , , )
+  00e3: goto 0x0125
+  00e6: LogInternal(("No online subsystem. Can't unlock avatar asset " $ cast53(AssetId)), , , )
+  0125: return nothing
+  0127: <eos>
+
+function PlayerController.ClientUnlockAvatarAsset  (script 18 bytes)
+  0000: UnlockAvatarAsset(AssetId)
+  000f: return nothing
+  0011: <eos>
+
+function PlayerController.ClientFlushDebug  (script 36 bytes)
+  0000: self.WorldInfo.GetDebugManager().FlushDebug()
+  0021: return nothing
+  0023: <eos>
+
+function PlayerController.ServerFlushDebug  (script 52 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0030)
+  0020: PC.PlayerController.ClientFlushDebug()
+  002f: iternext
+  0030: iterpop
+  0031: return nothing
+  0033: <eos>
+
+function PlayerController.FlushDebugForAllPlayers  (script 9 bytes)
+  0000: PlayerController.ServerFlushDebug()
+  0006: return nothing
+  0008: <eos>
+
+function PlayerController.CheckForInactiveControllerAcceptedInvite  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

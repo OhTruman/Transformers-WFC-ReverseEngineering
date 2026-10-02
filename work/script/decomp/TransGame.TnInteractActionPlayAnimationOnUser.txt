@@ -1,0 +1,44 @@
+function TnInteractActionPlayAnimationOnUser.TriggerAction  (script 205 bytes)
+  0000: TnLatentInteractAction.TriggerAction(Interact)
+  000b: self._User = Interact.GetCurrentUser()
+  0024: if !((self._User == none)) goto 0x0044
+  002f: if !(self.BlockingAction) goto 0x0042
+  0038: ActionComplete()
+  0042: return nothing
+  0044: Service = TnAnimatorService(self._User.GetService('TnAnimatorService'))
+  006b: if !(EqualEqual_InterfaceInterface(Service, TnAnimatorService(none))) goto 0x0081
+  007f: return nothing
+  0081: if !((self.Animation == 'None')) goto 0x00ba
+  0094: Service.StopAnimation(0.2, )
+  00ae: ActionComplete()
+  00b8: return nothing
+  00ba: TnInteractActionPlayAnimationOnUser.PlayInteractAnimation(self._User, Service)
+  00ca: return nothing
+  00cc: <eos>
+
+function TnInteractActionPlayAnimationOnUser.PlayInteractAnimation  (script 234 bytes)
+  0000: Params.AnimName = self.Animation
+  0016: Params.BlendInTime = self.BlendTime
+  002c: Params.BlendOutTime = self.BlendTime
+  0042: Params.Looping = self.Looping
+  005a: Params.AnimSet = self.AnimationSets.FindAnimationSet(User)
+  0083: Params.MaskType = 0
+  0096: Params.Priority = 1
+  00a9: Params.Override = 2
+  00bc: Service.EnqueueLocalAnimation(Params, delegate.ActionComplete, delegate.ActionFailed)
+  00e7: return nothing
+  00e9: <eos>
+
+function TnInteractActionPlayAnimationOnUser.Cancel  (script 133 bytes)
+  0000: TnInteractAction.Cancel()
+  0006: if !((self.OwningInteract == none)) goto 0x0013
+  0011: return nothing
+  0013: if !((self._User == none)) goto 0x0020
+  001e: return nothing
+  0020: Service = TnAnimatorService(self._User.GetService('TnAnimatorService'))
+  0047: self._User = none
+  004e: if !(EqualEqual_InterfaceInterface(Service, TnAnimatorService(none))) goto 0x0064
+  0062: return nothing
+  0064: Service.StopAnimation(0.2, self.Animation)
+  0082: return nothing
+  0084: <eos>

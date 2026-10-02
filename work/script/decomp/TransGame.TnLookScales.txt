@@ -1,0 +1,77 @@
+function TnLookScales.ResetOverdrive  (script 25 bytes)
+  0000: self.TimeSpentAtFullRight = 0.0
+  000b: self.TimeSpentAtFullUp = 0.0
+  0016: return nothing
+  0018: <eos>
+
+function TnLookScales.InputAtFullStick  (script 558 bytes)
+  0000: InputDirection = obj'Core.Math'.static.MakeVector(RawJoyLookRight, RawJoyLookUp, 0.0)
+  0028: if !(((obj'Core.Math'.static.Abs(InputDirection.X) < 0.0001) && (obj'Core.Math'.static.Abs(InputDirection.Y) < 0.0001))) goto 0x008d
+  0074: ScaleTestRight = 0.0
+  007f: ScaleTestUp = 0.0
+  008a: goto 0x016b
+  008d: InputDirection = obj'Core.Math'.static.Normal(InputDirection)
+  00a3: if !((obj'Core.Math'.static.Abs(InputDirection.X) > obj'Core.Math'.static.Abs(InputDirection.Y))) goto 0x0109
+  00de: PointOnSquare = (InputDirection / obj'Core.Math'.static.Abs(InputDirection.X))
+  0106: goto 0x0131
+  0109: PointOnSquare = (InputDirection / obj'Core.Math'.static.Abs(InputDirection.Y))
+  0131: ScaleRatio = obj'Core.Math'.static.VSize(PointOnSquare)
+  0147: ScaleTestRight = (RawJoyLookRight * ScaleRatio)
+  0159: ScaleTestUp = (RawJoyLookUp * ScaleRatio)
+  016b: RightSignPositive = (InputDirection.X >= cast3f(0))
+  0187: UpSignPositive = (InputDirection.Y >= cast3f(0))
+  01a3: RightAtFull = (((obj'Core.Math'.static.Abs(ScaleTestRight) > StepRight) && (RightSignPositive == self.RightAxisPositive)) ? 1 : 0)
+  01da: UpAtFull = (((obj'Core.Math'.static.Abs(ScaleTestUp) > StepUp) && (UpSignPositive == self.UpAxisPositive)) ? 1 : 0)
+  0211: self.RightAxisPositive = RightSignPositive
+  021e: self.UpAxisPositive = UpSignPositive
+  022b: return nothing
+  022d: <eos>
+
+function TnLookScales.GetScaleWithRamp  (script 210 bytes)
+  0000: OverdriveStartTime = (TimeRampToFull + TimeAtFullBeforeOverdrive)
+  0012: AtOverdriveTime = (OverdriveStartTime + TimeRampToOverdrive)
+  0024: if !((TimeSpentAtFull < TimeRampToFull)) goto 0x005d
+  0033: LookScale = (LookScalePartial + (((LookScaleFull - LookScalePartial) * TimeSpentAtFull) / TimeRampToFull))
+  005a: goto 0x00c5
+  005d: if !((TimeSpentAtFull < OverdriveStartTime)) goto 0x007a
+  006c: LookScale = LookScaleFull
+  0077: goto 0x00c5
+  007a: if !((TimeSpentAtFull < AtOverdriveTime)) goto 0x00ba
+  0089: LookScale = (LookScaleFull + (((LookScaleOverdrive - LookScaleFull) * (TimeSpentAtFull - OverdriveStartTime)) / TimeRampToOverdrive))
+  00b7: goto 0x00c5
+  00ba: LookScale = LookScaleOverdrive
+  00c5: return LookScale
+  00cb: return return
+  00d1: <eos>
+
+function TnLookScales.GetBaseLookRates  (script 75 bytes)
+  0000: LookRightScalePartial = (self.LookRightScale * self.BelowStepMultiplier)
+  0012: LookUpScalePartial = (self.LookUpScale * self.BelowStepMultiplierUp)
+  0024: LookRightScaleOverdrive = (self.LookRightScale * self.OverdriveFactorRight)
+  0036: LookUpScaleOverdrive = (self.LookUpScale * self.OverdriveFactorUp)
+  0048: return nothing
+  004a: <eos>
+
+function TnLookScales.GetRampedLookRates  (script 296 bytes)
+  0000: nothing
+  0001: TnLookScales.GetBaseLookRates(LookRightScalePartial, LookUpScalePartial, LookRightScaleOverdrive, LookUpScaleOverdrive)
+  001b: if !(bResetOverdrive) goto 0x0043
+  0024: TnLookScales.ResetOverdrive()
+  002a: RightScale = LookRightScalePartial
+  0035: UpScale = LookUpScalePartial
+  0040: goto 0x0125
+  0043: TnLookScales.InputAtFullStick(RawJoyLookRight, RawJoyLookUp, self.StepThreshold, self.StepThresholdUp, RightAtFull, UpAtFull)
+  0067: if !((RightAtFull == 0)) goto 0x008b
+  0072: RightScale = LookRightScalePartial
+  007d: self.TimeSpentAtFullRight = 0.0
+  0088: goto 0x00c6
+  008b: (self.TimeSpentAtFullRight += DeltaTime)
+  0097: RightScale = TnLookScales.GetScaleWithRamp(LookRightScalePartial, self.LookRightScale, LookRightScaleOverdrive, self.TimeSpentAtFullRight, self.TimeRampToFullRight, self.TimeAtFullBeforeOverdriveRight, self.TimeRampToOverdriveRight)
+  00c6: if !((UpAtFull == 0)) goto 0x00ea
+  00d1: UpScale = LookUpScalePartial
+  00dc: self.TimeSpentAtFullUp = 0.0
+  00e7: goto 0x0125
+  00ea: (self.TimeSpentAtFullUp += DeltaTime)
+  00f6: UpScale = TnLookScales.GetScaleWithRamp(LookUpScalePartial, self.LookUpScale, LookUpScaleOverdrive, self.TimeSpentAtFullUp, self.TimeRampToFullUp, self.TimeAtFullBeforeOverdriveUp, self.TimeRampToOverdriveUp)
+  0125: return nothing
+  0127: <eos>

@@ -1,0 +1,55 @@
+function TnDefragger.AddDefragMesh  (script 29 bytes)
+  0000: if !((NewMesh == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Meshes.AddItem(NewMesh)
+  001a: return nothing
+  001c: <eos>
+
+function TnDefragger.StartFadeIn  (script 72 bytes)
+  0000: TnDefragger.SetDefragValue(self.Range.Min)
+  0016: self.RampSpeed = ((self.Range.Max - self.Range.Min) / self.DefragTime)
+  0045: return nothing
+  0047: <eos>
+
+function TnDefragger.StartFadeOut  (script 74 bytes)
+  0000: TnDefragger.SetDefragValue(self.Range.Max)
+  0016: self.RampSpeed = (-(self.Range.Max - self.Range.Min) / self.DefragTime)
+  0047: return nothing
+  0049: <eos>
+
+function TnDefragger.StartFadeOutFromCurrent  (script 52 bytes)
+  0000: self.RampSpeed = (-(self.Range.Max - self.Range.Min) / self.DefragTime)
+  0031: return nothing
+  0033: <eos>
+
+function TnDefragger.Update  (script 73 bytes)
+  0000: if !((((self.RampSpeed == cast3f(0)) || IsFullyFadedIn()) || IsFullyFadedOut())) goto 0x002d
+  002b: return nothing
+  002d: TnDefragger.SetDefragValue((self.CurrentValue + (self.RampSpeed * DeltaTime)))
+  0046: return nothing
+  0048: <eos>
+
+function TnDefragger.SetDefragValue  (script 149 bytes)
+  0000: NewDefragValue = obj'Core.Math'.static.FClampRange(NewDefragValue, self.Range)
+  0023: if !((NewDefragValue == self.CurrentValue)) goto 0x0034
+  0032: return nothing
+  0034: foreach self.Meshes(MC,) (end 0x007d)
+  0043: if !(!MC.HiddenGame) goto 0x007c
+  0057: OneMeshWasVisible = true
+  005f: MC.SetScalarParam(self.DefragShaderParamName, NewDefragValue)
+  007c: iternext
+  007d: iterpop
+  007e: if !(OneMeshWasVisible) goto 0x0092
+  0087: self.CurrentValue = NewDefragValue
+  0092: return nothing
+  0094: <eos>
+
+function TnDefragger.IsFullyFadedIn  (script 46 bytes)
+  0000: return ((self.RampSpeed > cast3f(0)) && (self.CurrentValue >= self.Range.Max))
+  0027: return return
+  002d: <eos>
+
+function TnDefragger.IsFullyFadedOut  (script 46 bytes)
+  0000: return ((self.RampSpeed < cast3f(0)) && (self.CurrentValue <= self.Range.Min))
+  0027: return return
+  002d: <eos>

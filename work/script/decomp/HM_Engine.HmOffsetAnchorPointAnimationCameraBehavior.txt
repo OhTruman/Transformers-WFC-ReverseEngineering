@@ -1,0 +1,22 @@
+function HmOffsetAnchorPointAnimationCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.OwningActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOffsetAnchorPointAnimationCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = HmCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmOffsetAnchorPointAnimationCameraBehavior.Activate  (script 61 bytes)
+  0000: self.AnchorActor = self.CameraActor.GetAnimationBaseActor()
+  0019: if !((self.AnchorActor == none)) goto 0x002f
+  0024: self.AnchorActor = self.OwningActor
+  002f: HmOffsetAnchorPointBaseCameraBehavior.Activate(Result)
+  003a: return nothing
+  003c: <eos>
+
+function HmOffsetAnchorPointAnimationCameraBehavior.GetOwningActorRotation  (script 22 bytes)
+  0000: return self.OwningActor.Rotation
+  000f: return return
+  0015: <eos>

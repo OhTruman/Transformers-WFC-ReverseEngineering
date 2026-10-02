@@ -1,0 +1,24 @@
+function TnObjectiveMarkerTypeGrenade.ShouldDisplayMarker  (script 233 bytes)
+  0000: Grenade = TnProjectileGrenadeBase(MarkerData.MarkerBase)
+  001b: if !((Grenade.IsFriendly && !Owner.OnSameTeamAs(MarkerData.MarkerBase))) goto 0x0059
+  0057: return false
+  0059: if !((!Grenade.IsFriendly && Owner.OnSameTeamAs(MarkerData.MarkerBase))) goto 0x0097
+  0095: return false
+  0097: return (obj'Core.Math'.static.VSizeSq((Owner.Location - MarkerData.MarkerBase.Location)) <= (self.DrawCutoffDistance * self.DrawCutoffDistance))
+  00e2: return return
+  00e8: <eos>
+
+function TnObjectiveMarkerTypeGrenade.GetMarkerSetup  (script 44 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: TnObjectiveMarkerTypeGrenade.SetupParameters(Owner, MarkerData)
+  001f: return self.MarkerSetup
+  0025: return return
+  002b: <eos>
+
+function TnObjectiveMarkerTypeGrenade.SetupParameters  (script 107 bytes)
+  0000: Grenade = TnProjectileGrenadeBase(MarkerData.MarkerBase)
+  001b: if !((Grenade == none)) goto 0x0028
+  0026: return nothing
+  0028: self.MarkerSetup.MatInst.SetScalarParameterValue('Neutral', cast3f((Grenade.IsFriendly ? 1 : 0)), )
+  0068: return nothing
+  006a: <eos>

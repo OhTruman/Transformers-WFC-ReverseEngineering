@@ -1,0 +1,59 @@
+function DebugCameraController.PostBeginPlay  (script 60 bytes)
+  0000: PlayerController.PostBeginPlay()
+  0006: if !((self.myHUD != none)) goto 0x001d
+  0011: self.myHUD.DestroyActor()
+  001d: self.myHUD = Spawn(obj'DebugCameraHUD', self, , , , , , )
+  0039: return nothing
+  003b: <eos>
+
+function DebugCameraController.OnActivate  (script 433 bytes)
+  0000: if !((self.DrawFrustum == none)) goto 0x0036
+  0010: self.DrawFrustum = new(PC.PlayerCamera, nothing, obj'DrawFrustumComponent', nothing, GetRemoteRole)
+  0036: self.DrawFrustum.SetHidden(false)
+  004f: PC.SetHidden(false)
+  0063: PC.PlayerCamera.SetHidden(false)
+  0080: self.DrawFrustum.FrustumAngle = PC.PlayerCamera.CameraCache.POV.Fov
+  00c1: self.DrawFrustum.SetAbsolute(true, true, false)
+  00dc: self.DrawFrustum.SetTranslation(PC.PlayerCamera.CameraCache.POV.Location)
+  0121: self.DrawFrustum.SetRotation(PC.PlayerCamera.CameraCache.POV.Rotation)
+  0166: PC.PlayerCamera.AttachComponent(self.DrawFrustum)
+  018c: ConsoleCommand("show camfrustums", )
+  01ae: return nothing
+  01b0: <eos>
+
+function DebugCameraController.OnDeactivate  (script 149 bytes)
+  0000: self.DrawFrustum.SetHidden(true)
+  0019: ConsoleCommand("show camfrustums", )
+  003b: PC.PlayerCamera.DetachComponent(self.DrawFrustum)
+  0061: PC.SetHidden(true)
+  0075: PC.PlayerCamera.SetHidden(true)
+  0092: return nothing
+  0094: <eos>
+
+function DebugCameraController.SetFreezeRendering  (script 51 bytes)
+  0000: ConsoleCommand("FreezeRendering", )
+  0021: self.bIsFrozenRendering = !self.bIsFrozenRendering
+  0030: return nothing
+  0032: <eos>
+
+function DebugCameraController.MoreSpeed  (script 16 bytes)
+  0000: self.bRun = 2
+  000d: return nothing
+  000f: <eos>
+
+function DebugCameraController.NormalSpeed  (script 16 bytes)
+  0000: self.bRun = 0
+  000d: return nothing
+  000f: <eos>
+
+function DebugCameraController.DisableDebugCamera  (script 125 bytes)
+  0000: if !((self.OryginalControllerRef != none)) goto 0x007a
+  000b: if !((self.bIsFrozenRendering == true)) goto 0x0040
+  0017: ConsoleCommand("FreezeRendering", )
+  0038: self.bIsFrozenRendering = false
+  0040: if !((self.OryginalPlayer != none)) goto 0x007a
+  004b: self.DebugCameraController.OnDeactivate(self.OryginalControllerRef)
+  005b: self.OryginalPlayer.SwitchController(self.OryginalControllerRef)
+  0073: self.OryginalControllerRef = none
+  007a: return nothing
+  007c: <eos>

@@ -1,0 +1,25 @@
+function FracturedStaticMeshActor.PostBeginPlay  (script 67 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.Fracturer.Initialize(self, self.FracturedStaticMeshComponent, self.SkinnedComponent)
+  0024: if !(!self.Fracturer.bBreakChunksOnPawnTouch) goto 0x0040
+  0038: self.bStasis = true
+  0040: return nothing
+  0042: <eos>
+
+function FracturedStaticMeshActor.RemoveDecals  (script 7 bytes)
+  0000: IndexToRemoveDecalsFrom
+  0005: nothing
+  0006: <eos>
+
+function FracturedStaticMeshActor.TakeDamage  (script 100 bytes)
+  0000: nothing
+  0001: nothing
+  0002: Actor.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: self.Fracturer.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0061: return nothing
+  0063: <eos>
+
+function FracturedStaticMeshActor.TakeRadiusDamage  (script 63 bytes)
+  0000: self.Fracturer.TakeRadiusDamage(InstigatedBy, BaseDamage, DamageRadius, DamageType, Momentum, HurtOrigin, bFullDamage, DamageCauser)
+  003c: return nothing
+  003e: <eos>

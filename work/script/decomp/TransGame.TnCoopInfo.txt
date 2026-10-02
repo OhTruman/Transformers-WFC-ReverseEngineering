@@ -1,0 +1,77 @@
+function TnCoopInfo.CheckForErrors  (script 1151 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayableCharacters.Length)) goto 0x0113
+  0017: if !(!obj'TnPlayerController'.static.IsValidIconicCharacterName(I[self.PlayableCharacters].AiCharacterDataResolved.CharacterName)) goto 0x0109
+  004e: EmitCheckMessage(0, (("The character name '" $ I[self.PlayableCharacters].AiCharacterDataResolved.CharacterName) $ "' is not valid for human use, make sure it is spelled correctly and case-sensitive (i.e. Bumblebee, not bumblebee)"), , )
+  0109: AddAdd_PreInt(I)
+  0110: goto 0x0007
+  0113: if !((self.PlayableCharacters.Length > 0)) goto 0x041a
+  011f: DSC = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0138: if !((DSC != none)) goto 0x041a
+  0143: MenuItems = TnDataStore_MenuItems(DSC.FindDataStore('TnMenuItems', ))
+  016b: if !((MenuItems != none)) goto 0x041a
+  0176: Providers = MenuItems.GetProviders('Maps')
+  0198: foreach Providers(Provider,) (end 0x0419)
+  01a7: MI = TnDataProvider_MapInfo(Provider)
+  01b7: if !((MI.MapFilename != cast57(GetPackageName()))) goto 0x01da
+  01d6: iternext
+  01d7: goto 0x0419
+  01da: if !((MI.CampaignCharacters.Length != self.PlayableCharacters.Length)) goto 0x02ca
+  01f4: EmitCheckMessage(0, "The number of campaign characters does match the map entry in the DefaultLevels.ini, please verify the CoopInfo characters matches the map entry in the ini file, otherwise there will be problems.", , )
+  02c7: goto 0x0419
+  02ca: I = 0
+  02d1: if !((I < self.PlayableCharacters.Length)) goto 0x0415
+  02e1: if !((I[MI.CampaignCharacters] != I[self.PlayableCharacters].AiCharacterDataResolved.CharacterName)) goto 0x040b
+  0319: EmitCheckMessage(0, (((("The character name '" $ I[self.PlayableCharacters].AiCharacterDataResolved.CharacterName) $ "' does not match the name in the DefaultLevels.ini file '") $ I[MI.CampaignCharacters]) $ "' make sure the character order in the DefaultGame.ini file matches the CoopInfo order"), , )
+  040b: AddAdd_PreInt(I)
+  0412: goto 0x02d1
+  0415: goto 0x0419
+  0418: iternext
+  0419: iterpop
+  041a: if !(((self.PlayableCharacters.Length > 0) && (self.PlayableCharacters.Length != 3))) goto 0x047c
+  0435: EmitCheckMessage(1, "You must have 3 characters specified for a campaign map", , )
+  047c: return nothing
+  047e: <eos>
+
+function TnCoopInfo.GetAiCharacterDefinition  (script 177 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayableCharacters.Length)) goto 0x0056
+  0017: if !((I[self.PlayableCharacters].AiCharacterDataResolved.CharacterName == CharacterName)) goto 0x004c
+  0040: return I[self.PlayableCharacters]
+  004c: AddAdd_PreInt(I)
+  0053: goto 0x0007
+  0056: LogInternal((("Error: Could not find AI character definition for" @ CharacterName) @ "in the CoopInfo"), , , )
+  00a8: return none
+  00aa: return return
+  00b0: <eos>
+
+function TnCoopInfo.GetPlayableCharacters  (script 90 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayableCharacters.Length)) goto 0x004d
+  0017: Characters.Length[Characters] = I[self.PlayableCharacters].AiCharacterDataResolved.CharacterName
+  0043: AddAdd_PreInt(I)
+  004a: goto 0x0007
+  004d: return Characters
+  0053: return return
+  0059: <eos>
+
+function TnCoopInfo.HasPlayableCharacters  (script 17 bytes)
+  0000: return (self.PlayableCharacters.Length > 0)
+  000a: return return
+  0010: <eos>
+
+function TnCoopInfo.OnPlayerTeam  (script 45 bytes)
+  0000: return (cast3a(P.GetTeamNum()) == self.Faction.static.default.TeamIndex)
+  0026: return return
+  002c: <eos>
+
+function TnCoopInfo.IsPlayableCharacter  (script 85 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.PlayableCharacters.Length)) goto 0x004c
+  0017: if !((Index[self.PlayableCharacters].AiCharacterDataResolved.CharacterName == CharacterName)) goto 0x0042
+  0040: return true
+  0042: AddAdd_PreInt(Index)
+  0049: goto 0x0007
+  004c: return false
+  004e: return return
+  0054: <eos>

@@ -1,0 +1,20 @@
+function TnProjectileForwardMangaRocket.set_TargetDistance  (script 14 bytes)
+  0000: self._TargetDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnProjectileForwardMangaRocket.Init  (script 25 bytes)
+  0000: self._TargetDirection = Direction
+  000b: Init(Direction)
+  0016: return nothing
+  0018: <eos>
+
+function TnProjectileForwardMangaRocket.OnSetTarget  (script 37 bytes)
+  0000: self._TargetLocation = (Initiator.Location + (self._TargetDirection * self._TargetDistance))
+  0022: return nothing
+  0024: <eos>
+
+function TnProjectileForwardMangaRocket.GetRocketTargetLocation  (script 13 bytes)
+  0000: return self._TargetLocation
+  0006: return return
+  000c: <eos>

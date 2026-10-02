@@ -1,0 +1,409 @@
+function InventoryManager.PostBeginPlay  (script 25 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.Instigator = Pawn(self.Owner)
+  0016: return nothing
+  0018: <eos>
+
+function InventoryManager.InventoryActors  (script 12 bytes)
+  0000: BaseClass
+  0005: Inv
+  000a: nothing
+  000b: <eos>
+
+function InventoryManager.DumpWeaponStats  (script 142 bytes)
+  0000: LogInternal((("+++" @ cast57(GetFuncName())) @ "+++"), , , )
+  001f: LogInternal(((("Pawn.Weapon:" $ cast56(self.Instigator.Weapon)) @ "PendingWeapon:") $ cast56(self.PendingWeapon)), , , )
+  005f: foreach InventoryActors(obj'Weapon', Weap) (end 0x008a)
+  0076: Weap.DumpWeaponDebugToLog()
+  0089: iternext
+  008a: iterpop
+  008b: return nothing
+  008d: <eos>
+
+function InventoryManager.SetupFor  (script 22 bytes)
+  0000: self.Instigator = P
+  000b: SetOwner(P)
+  0013: return nothing
+  0015: <eos>
+
+function InventoryManager.Destroyed  (script 13 bytes)
+  0000: DiscardInventory()
+  000a: return nothing
+  000c: <eos>
+
+function InventoryManager.HandlePickupQuery  (script 118 bytes)
+  0000: if !(!ItemClass.static.PickupAllowed(self.Instigator, Pickup)) goto 0x0024
+  0022: return false
+  0024: if !((self.InventoryChain == none)) goto 0x0031
+  002f: return true
+  0031: foreach InventoryActors(obj'Inventory', Inv) (end 0x006c)
+  0048: if !(Inv.DenyPickupQuery(ItemClass, Pickup)) goto 0x006b
+  0068: iterpop
+  0069: return false
+  006b: iternext
+  006c: iterpop
+  006d: return true
+  006f: return return
+  0075: <eos>
+
+function InventoryManager.FindInventoryType  (script 75 bytes)
+  0000: nothing
+  0001: foreach InventoryActors(DesiredClass, Inv) (end 0x0041)
+  0018: if !((bAllowSubclass || (Inv.get_Class() == DesiredClass))) goto 0x0040
+  0039: iterpop
+  003a: return Inv
+  0040: iternext
+  0041: iterpop
+  0042: return none
+  0044: return return
+  004a: <eos>
+
+function InventoryManager.CreateInventory  (script 317 bytes)
+  0000: nothing
+  0001: if !((NewInventoryItemClass != none)) goto 0x0130
+  000c: if !(NewInventoryItemClass.static.ShouldOverrideType()) goto 0x003b
+  0022: NewInventoryItemClass = NewInventoryItemClass.static.GetOverrideType()
+  003b: Inv = Spawn(NewInventoryItemClass, , , , , , , )
+  0057: if !((Inv != none)) goto 0x00e7
+  0062: if !(!AddInventory(Inv, bDoNotActivate)) goto 0x00e4
+  007c: WarnInternal(("InventoryManager::CreateInventory - Couldn't Add newly created inventory" @ cast56(Inv)))
+  00d1: Inv.DestroyActor()
+  00dd: Inv = none
+  00e4: goto 0x0130
+  00e7: WarnInternal(("InventoryManager::CreateInventory - Couldn't spawn inventory" @ cast56(NewInventoryItemClass)))
+  0130: return Inv
+  0136: return return
+  013c: <eos>
+
+function InventoryManager.AddInventory  (script 277 bytes)
+  0000: nothing
+  0001: if !(((NewItem != none) && !NewItem.bDeleteMe)) goto 0x010c
+  0022: if !((self.InventoryChain == none)) goto 0x003b
+  002d: self.InventoryChain = NewItem
+  0038: goto 0x0098
+  003b: Item = self.InventoryChain
+  0046: if !((Item != none)) goto 0x0084
+  0051: if !((Item == NewItem)) goto 0x0062
+  0060: return false
+  0062: LastItem = Item
+  006d: Item = Item.Inventory
+  0081: goto 0x0046
+  0084: LastItem.Inventory = NewItem
+  0098: NewItem.SetOwner(self.Instigator)
+  00a9: NewItem.Instigator = self.Instigator
+  00bd: NewItem.InvManager = self
+  00cd: NewItem.GivenTo(self.Instigator, bDoNotActivate)
+  00eb: self.Instigator.TriggerEventClass(obj'SeqEvent_GetInventory', NewItem, , )
+  010a: return true
+  010c: return false
+  010e: return return
+  0114: <eos>
+
+function InventoryManager.ShouldSwitchToBestWeaponOnInventoryRemoval  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function InventoryManager.RemoveFromInventory  (script 479 bytes)
+  0000: if !((ItemToRemove != none)) goto 0x01dc
+  000b: if !((ItemToRemove == self.Instigator.Weapon)) goto 0x0033
+  0023: self.Instigator.Weapon = none
+  0033: if !((self.InventoryChain == ItemToRemove)) goto 0x0061
+  0042: bFound = true
+  004a: self.InventoryChain = ItemToRemove.Inventory
+  005e: goto 0x00ce
+  0061: Item = self.InventoryChain
+  006c: if !((Item != none)) goto 0x00ce
+  0077: if !((Item.Inventory == ItemToRemove)) goto 0x00b7
+  008f: bFound = true
+  0097: Item.Inventory = ItemToRemove.Inventory
+  00b4: goto 0x00ce
+  00b7: Item = Item.Inventory
+  00cb: goto 0x006c
+  00ce: if !(bFound) goto 0x015c
+  00d7: LogInternal(((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "removed") @ cast56(ItemToRemove)), 'Inventory', , )
+  012c: ItemToRemove.ItemRemovedFromInvManager()
+  013f: ItemToRemove.SetOwner(none)
+  014c: ItemToRemove.Inventory = none
+  015c: if !((((((none != self.Owner) && (self.Instigator.Health > cast3f(0))) && (self.Instigator.Weapon == none)) && (self.Instigator.Controller != none)) && ShouldSwitchToBestWeaponOnInventoryRemoval(ItemToRemove))) goto 0x01dc
+  01bf: self.Instigator.Controller.ClientSwitchToBestWeapon(true)
+  01dc: return nothing
+  01de: <eos>
+
+function InventoryManager.CalculateTossVelocity  (script 116 bytes)
+  0000: TossVelocity = cast39(self.Instigator.GetViewRotation())
+  001b: TossVelocity = (((TossVelocity * ((self.Instigator.Velocity dot TossVelocity) + 500.0)) + (250.0 * obj'Core.Random'.static.VRand())) + vect(0,0,250))
+  0067: return TossVelocity
+  006d: return return
+  0073: <eos>
+
+function InventoryManager.DiscardInventory  (script 260 bytes)
+  0000: bBelowKillZ = ((self.Instigator == none) || (self.Instigator.Location.Z < self.WorldInfo.KillZ))
+  003d: foreach InventoryActors(obj'Inventory', Inv) (end 0x00de)
+  0054: if !((Inv.bDropOnDeath && !bBelowKillZ)) goto 0x00ad
+  0073: TossVelocity = CalculateTossVelocity()
+  0083: Inv.DropFrom(self.Instigator.Location, TossVelocity, )
+  00aa: goto 0x00dd
+  00ad: if !(bBelowKillZ) goto 0x00d1
+  00b6: Inv.FellOutOfWorld(obj'KillZDamageType')
+  00ce: goto 0x00dd
+  00d1: Inv.DestroyActor()
+  00dd: iternext
+  00de: iterpop
+  00df: if !((self.Instigator != none)) goto 0x00fa
+  00ea: self.Instigator.Weapon = none
+  00fa: self.PendingWeapon = none
+  0101: return nothing
+  0103: <eos>
+
+function InventoryManager.DestroyInventory  (script 74 bytes)
+  0000: foreach InventoryActors(obj'Inventory', Inv) (end 0x0024)
+  0017: Inv.DestroyActor()
+  0023: iternext
+  0024: iterpop
+  0025: if !((self.Instigator != none)) goto 0x0040
+  0030: self.Instigator.Weapon = none
+  0040: self.PendingWeapon = none
+  0047: return nothing
+  0049: <eos>
+
+function InventoryManager.ModifyDamage  (script 15 bytes)
+  0000: return cast44(Damage)
+  0008: return return
+  000e: <eos>
+
+function InventoryManager.OwnerEvent  (script 70 bytes)
+  0000: foreach InventoryActors(obj'Inventory', Inv) (end 0x0042)
+  0017: if !(Inv.bReceiveOwnerEvents) goto 0x0041
+  0029: Inv.OwnerEvent(EventName)
+  0041: iternext
+  0042: iterpop
+  0043: return nothing
+  0045: <eos>
+
+function InventoryManager.DrawHUD  (script 123 bytes)
+  0000: foreach InventoryActors(obj'Inventory', Inv) (end 0x0042)
+  0017: if !(Inv.bRenderOverlays) goto 0x0041
+  0029: Inv.RenderOverlays(H)
+  0041: iternext
+  0042: iterpop
+  0043: if !((self.Instigator.Weapon != none)) goto 0x0078
+  0057: self.Instigator.Weapon.ActiveRenderOverlays(H)
+  0078: return nothing
+  007a: <eos>
+
+function InventoryManager.StartFire  (script 56 bytes)
+  0000: if !((self.Instigator.Weapon != none)) goto 0x0035
+  0014: self.Instigator.Weapon.StartFire(FireModeNum)
+  0035: return nothing
+  0037: <eos>
+
+function InventoryManager.StopFire  (script 56 bytes)
+  0000: if !((self.Instigator.Weapon != none)) goto 0x0035
+  0014: self.Instigator.Weapon.StopFire(FireModeNum)
+  0035: return nothing
+  0037: <eos>
+
+function InventoryManager.IsActiveWeapon  (script 29 bytes)
+  0000: return (ThisWeapon == self.Instigator.Weapon)
+  0016: return return
+  001c: <eos>
+
+function InventoryManager.GetWeaponRatingFor  (script 154 bytes)
+  0000: if !(!W.HasAnyAmmo()) goto 0x001e
+  0018: return -1.0
+  001e: Rating = 1.0
+  0029: if !(((((self.Instigator != none) && !self.Instigator.IsHumanControlled()) && IsActiveWeapon(W)) && (self.Instigator.Controller.Enemy != none))) goto 0x008d
+  0081: (Rating += 0.21)
+  008d: return Rating
+  0093: return return
+  0099: <eos>
+
+function InventoryManager.GetBestWeapon  (script 184 bytes)
+  0000: nothing
+  0001: foreach InventoryActors(obj'Weapon', W) (end 0x00aa)
+  0018: if !(W.HasAnyAmmo()) goto 0x00a9
+  002e: if !((bForceADifferentWeapon && IsActiveWeapon(W))) goto 0x004f
+  004b: iternext
+  004c: goto 0x00aa
+  004f: Rating = W.GetWeaponRating()
+  0068: if !((((BestWeapon == none) || (Rating > BestRating)) && (Rating >= cast3f(0)))) goto 0x00a9
+  0093: BestWeapon = W
+  009e: BestRating = Rating
+  00a9: iternext
+  00aa: iterpop
+  00ab: return BestWeapon
+  00b1: return return
+  00b7: <eos>
+
+function InventoryManager.SwitchToBestWeapon  (script 212 bytes)
+  0000: nothing
+  0001: if !(((bForceADifferentWeapon || (self.PendingWeapon == none)) || (AIController(self.Instigator.Controller) != none))) goto 0x007c
+  0032: BestWeapon = GetBestWeapon(bForceADifferentWeapon)
+  0048: if !((BestWeapon == none)) goto 0x0055
+  0053: return nothing
+  0055: if !(((BestWeapon != none) && (BestWeapon == self.Instigator.Weapon))) goto 0x007c
+  007a: return nothing
+  007c: if !((self.Instigator.Controller != none)) goto 0x00af
+  0090: self.Instigator.Controller.StopFiring()
+  00ac: goto 0x00c2
+  00af: self.Instigator.StopFiring()
+  00c2: SetCurrentWeapon(BestWeapon)
+  00d1: return nothing
+  00d3: <eos>
+
+function InventoryManager.PrevWeapon  (script 187 bytes)
+  0000: StartWeapon = self.Instigator.Weapon
+  0014: if !((self.PendingWeapon != none)) goto 0x002a
+  001f: StartWeapon = self.PendingWeapon
+  002a: foreach InventoryActors(obj'Weapon', W) (end 0x005f)
+  0041: if !((W == StartWeapon)) goto 0x0053
+  0050: goto 0x005f
+  0053: CandidateWeapon = W
+  005e: iternext
+  005f: iterpop
+  0060: if !((CandidateWeapon == none)) goto 0x008f
+  006b: foreach InventoryActors(obj'Weapon', W) (end 0x008e)
+  0082: CandidateWeapon = W
+  008d: iternext
+  008e: iterpop
+  008f: if !((CandidateWeapon == self.Instigator.Weapon)) goto 0x00a9
+  00a7: return nothing
+  00a9: SetCurrentWeapon(CandidateWeapon)
+  00b8: return nothing
+  00ba: <eos>
+
+function InventoryManager.NextWeapon  (script 220 bytes)
+  0000: StartWeapon = self.Instigator.Weapon
+  0014: if !((self.PendingWeapon != none)) goto 0x002a
+  001f: StartWeapon = self.PendingWeapon
+  002a: foreach InventoryActors(obj'Weapon', W) (end 0x007d)
+  0041: if !((bBreakNext || (StartWeapon == none))) goto 0x0065
+  0057: CandidateWeapon = W
+  0062: goto 0x007d
+  0065: if !((W == StartWeapon)) goto 0x007c
+  0074: bBreakNext = true
+  007c: iternext
+  007d: iterpop
+  007e: if !((CandidateWeapon == none)) goto 0x00b0
+  0089: foreach InventoryActors(obj'Weapon', W) (end 0x00af)
+  00a0: CandidateWeapon = W
+  00ab: goto 0x00af
+  00ae: iternext
+  00af: iterpop
+  00b0: if !((CandidateWeapon == self.Instigator.Weapon)) goto 0x00ca
+  00c8: return nothing
+  00ca: SetCurrentWeapon(CandidateWeapon)
+  00d9: return nothing
+  00db: <eos>
+
+function InventoryManager.SetCurrentWeapon  (script 542 bytes)
+  0000: PrevWeapon = self.Instigator.Weapon
+  0014: LogInternal(((((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "PrevWeapon:") @ cast56(PrevWeapon)) @ "DesiredWeapon:") @ cast56(DesiredWeapon)), 'Inventory', , )
+  0088: if !((((PrevWeapon != none) && (DesiredWeapon == PrevWeapon)) && !PrevWeapon.IsInState('WeaponPuttingDown', ))) goto 0x012b
+  00c1: LogInternal((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "DesiredWeapon == PrevWeapon - abort"), 'Inventory', , )
+  0129: return nothing
+  012b: InventoryManager.SetPendingWeapon(DesiredWeapon)
+  0136: if !((((PrevWeapon != none) && !PrevWeapon.bDeleteMe) && !PrevWeapon.IsInState('Inactive', ))) goto 0x01f2
+  0174: LogInternal((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "OldWeapon != None - try to put down"), 'Inventory', , )
+  01dc: PrevWeapon.TryPutDown()
+  01ef: goto 0x01fc
+  01f2: ChangedWeapon()
+  01fc: if !((cast3a(self.Role) < cast3a(3))) goto 0x021b
+  020c: ServerSetCurrentWeapon(DesiredWeapon)
+  021b: return nothing
+  021d: <eos>
+
+function InventoryManager.SetPendingWeapon  (script 14 bytes)
+  0000: self.PendingWeapon = DesiredWeapon
+  000b: return nothing
+  000d: <eos>
+
+function InventoryManager.ServerSetCurrentWeapon  (script 511 bytes)
+  0000: PrevWeapon = self.Instigator.Weapon
+  0014: LogInternal(((((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "PrevWeapon:") @ cast56(PrevWeapon)) @ "DesiredWeapon:") @ cast56(DesiredWeapon)), 'Inventory', , )
+  0088: InventoryManager.SetPendingWeapon(DesiredWeapon)
+  0093: if !((((PrevWeapon != none) && (DesiredWeapon == PrevWeapon)) && !PrevWeapon.IsInState('WeaponPuttingDown', ))) goto 0x0136
+  00cc: LogInternal((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "DesiredWeapon == PrevWeapon - abort"), 'Inventory', , )
+  0134: return nothing
+  0136: if !((((PrevWeapon != none) && !PrevWeapon.bDeleteMe) && !PrevWeapon.IsInState('Inactive', ))) goto 0x01f2
+  0174: LogInternal((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "OldWeapon != None - try to put down"), 'Inventory', , )
+  01dc: PrevWeapon.TryPutDown()
+  01ef: goto 0x01fc
+  01f2: ChangedWeapon()
+  01fc: return nothing
+  01fe: <eos>
+
+function InventoryManager.CancelWeaponChange  (script 40 bytes)
+  0000: if !((self.PendingWeapon == none)) goto 0x001f
+  000b: self.PendingWeapon = self.Instigator.Weapon
+  001f: return false
+  0021: return return
+  0027: <eos>
+
+function InventoryManager.MakeChangedWeaponNoise  (script 56 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x0035
+  0014: self.Instigator.MakeNoise(0.1, 'ChangedWeapon')
+  0035: return nothing
+  0037: <eos>
+
+function InventoryManager.ChangedWeapon  (script 288 bytes)
+  0000: OldWeapon = self.Instigator.Weapon
+  0014: if !(((self.PendingWeapon == none) && self.bMustHoldWeapon)) goto 0x0053
+  002a: if !((OldWeapon != none)) goto 0x0053
+  0035: OldWeapon.Activate()
+  0048: self.PendingWeapon = OldWeapon
+  0053: self.Instigator.Weapon = self.PendingWeapon
+  0067: OwnerEvent('ChangedWeapon')
+  007a: self.Instigator.PlayWeaponSwitch(OldWeapon, self.PendingWeapon)
+  0097: if !((self.PendingWeapon != none)) goto 0x00da
+  00a2: self.PendingWeapon.Instigator = self.Instigator
+  00b6: MakeChangedWeaponNoise()
+  00c0: self.PendingWeapon.Activate()
+  00d3: self.PendingWeapon = none
+  00da: if !((self.Instigator.Controller != none)) goto 0x011d
+  00ee: self.Instigator.Controller.NotifyChangedWeapon(OldWeapon, self.Instigator.Weapon)
+  011d: return nothing
+  011f: <eos>
+
+function InventoryManager.ClientWeaponSet  (script 1017 bytes)
+  0000: OldWeapon = self.Instigator.Weapon
+  0014: if !((((OldWeapon == none) || OldWeapon.bDeleteMe) || OldWeapon.IsInState('Inactive', ))) goto 0x00e6
+  004e: LogInternal(((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "OldWeapon == None or Inactive - Set new weapon right away") @ cast56(NewWeapon)), 'Inventory', , )
+  00d5: SetCurrentWeapon(NewWeapon)
+  00e4: return nothing
+  00e6: if !((OldWeapon == NewWeapon)) goto 0x0163
+  00f5: LogInternal(((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "OldWeapon == NewWeapon - abort") @ cast56(NewWeapon)), 'Inventory', , )
+  0161: return nothing
+  0163: if !(bOptionalSet) goto 0x025e
+  016c: if !((OldWeapon.DenyClientWeaponSet() || (self.Instigator.IsHumanControlled() && PlayerController(self.Instigator.Controller).bNeverSwitchOnPickup))) goto 0x025e
+  01bc: LogInternal(((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "bOptionalSet && (DenyClientWeaponSet() || bNeverSwitchOnPickup) - abort") @ cast56(NewWeapon)), 'Inventory', , )
+  0251: self.LastAttemptedSwitchToWeapon = NewWeapon
+  025c: return nothing
+  025e: if !((((self.PendingWeapon == none) || !self.PendingWeapon.HasAnyAmmo()) || (self.PendingWeapon.GetWeaponRating() < NewWeapon.GetWeaponRating()))) goto 0x037b
+  02b0: if !((!self.Instigator.Weapon.HasAnyAmmo() || (self.Instigator.Weapon.GetWeaponRating() < NewWeapon.GetWeaponRating()))) goto 0x037b
+  0307: LogInternal(((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "Switch to new weapon:") @ cast56(NewWeapon)), 'Inventory', , )
+  036a: SetCurrentWeapon(NewWeapon)
+  0379: return nothing
+  037b: LogInternal(((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ "Send to inactive state") @ cast56(NewWeapon)), 'Inventory', , )
+  03df: NewWeapon.GotoState('Inactive', , , )
+  03f6: return nothing
+  03f8: <eos>
+
+function InventoryManager.ClientSyncWeapon  (script 405 bytes)
+  0000: if !((NewWeapon == self.Instigator.Weapon)) goto 0x007e
+  0018: LogInternal((((((cast56(self) @ "(Owned by") @ cast56(self.Owner)) @ ") is trying to Sync to the currently active weapon (") $ cast56(NewWeapon)) $ ")"), , , )
+  007c: return nothing
+  007e: OldWeapon = self.Instigator.Weapon
+  0092: self.Instigator.Weapon = NewWeapon
+  00a6: OwnerEvent('ChangedWeapon')
+  00b9: self.Instigator.PlayWeaponSwitch(OldWeapon, NewWeapon)
+  00d6: if !((NewWeapon != none)) goto 0x014f
+  00e1: self.Instigator.Weapon.Instigator = self.Instigator
+  00fe: if !((self.WorldInfo.Game != none)) goto 0x0133
+  0112: self.Instigator.MakeNoise(0.1, 'ChangedWeapon')
+  0133: self.Instigator.Weapon.Activate()
+  014f: if !((self.Instigator.Controller != none)) goto 0x0192
+  0163: self.Instigator.Controller.NotifyChangedWeapon(OldWeapon, self.Instigator.Weapon)
+  0192: return nothing
+  0194: <eos>

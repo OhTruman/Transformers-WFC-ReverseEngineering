@@ -1,0 +1,80 @@
+function TnAnnouncer.get_DialogComponent  (script 13 bytes)
+  0000: return self._DialogComponent
+  0006: return return
+  000c: <eos>
+
+function TnAnnouncer.Initialize  (script 110 bytes)
+  0000: if !((none == Owner)) goto 0x000d
+  000b: return nothing
+  000d: self._Owner = Owner
+  0018: self._DialogComponent = new(self._Owner, nothing, obj'HM_Engine.HmDialogComponent', nothing, DeltaTime)
+  0030: self._DialogComponent.set_DialogCharacter(self.Team0DialogCharacter)
+  0048: self._Owner.AttachComponent(self._DialogComponent)
+  0060: self.SoundEventSet = _SoundEventSet
+  006b: return nothing
+  006d: <eos>
+
+function TnAnnouncer.SetTeam  (script 88 bytes)
+  0000: if !((none == self._DialogComponent)) goto 0x000d
+  000b: return nothing
+  000d: switch (TeamIndex)
+  0014: case 0: (next 0x0033)
+  0018: self._DialogComponent.set_DialogCharacter(self.Team0DialogCharacter)
+  0030: goto 0x0055
+  0033: case 1: (next 0x0052)
+  0037: self._DialogComponent.set_DialogCharacter(self.Team1DialogCharacter)
+  004f: goto 0x0055
+  0052: default:
+  0055: return nothing
+  0057: <eos>
+
+function TnAnnouncer.Play  (script 27 bytes)
+  0000: if !((none == Cue)) goto 0x000d
+  000b: return nothing
+  000d: TnAnnouncer.PlayInternal(Cue)
+  0018: return nothing
+  001a: <eos>
+
+function TnAnnouncer.PlayEvent  (script 50 bytes)
+  0000: if !((none == self.SoundEventSet)) goto 0x000d
+  000b: return nothing
+  000d: Play(self.SoundEventSet.FindSoundCue(Event))
+  002f: return nothing
+  0031: <eos>
+
+function TnAnnouncer.Tick  (script 37 bytes)
+  0000: if !((none == self.QueuedCue)) goto 0x000d
+  000b: return nothing
+  000d: if !(TnAnnouncer.PlayInternal(self.QueuedCue)) goto 0x0022
+  001b: self.QueuedCue = none
+  0022: return nothing
+  0024: <eos>
+
+function TnAnnouncer.PlayInternal  (script 123 bytes)
+  0000: if !(self._DialogComponent.GetIsPlaying()) goto 0x004b
+  0017: if !((Cue == self.CurrentCue)) goto 0x0030
+  0026: self.QueuedCue = none
+  002d: goto 0x0049
+  0030: if !(TnAnnouncer.IsHigherPriority(Cue)) goto 0x0049
+  003e: self.QueuedCue = Cue
+  0049: return false
+  004b: self._DialogComponent.Play(Cue, , , , )
+  0067: self.CurrentCue = Cue
+  0072: return true
+  0074: return return
+  007a: <eos>
+
+function TnAnnouncer.IsHigherPriority  (script 133 bytes)
+  0000: if !((none == self.QueuedCue)) goto 0x000d
+  000b: return true
+  000d: RootNodeQueued = SoundNodeRoot(self.QueuedCue.FirstNode)
+  0026: if !((none == RootNodeQueued)) goto 0x0033
+  0031: return false
+  0033: RootNodeNew = SoundNodeRoot(Cue.FirstNode)
+  004c: if !((none == RootNodeNew)) goto 0x0059
+  0057: return false
+  0059: if !((RootNodeQueued.Priority > RootNodeNew.Priority)) goto 0x007c
+  007a: return false
+  007c: return true
+  007e: return return
+  0084: <eos>

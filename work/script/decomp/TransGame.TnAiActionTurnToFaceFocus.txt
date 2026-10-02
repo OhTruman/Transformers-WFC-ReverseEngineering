@@ -1,0 +1,40 @@
+function TnAiActionTurnToFaceFocus.OnSetUpConditions  (script 86 bytes)
+  0000: Target = IFocusible(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateFacingActor', ExpectedEffects))
+  0028: if !(EqualEqual_InterfaceInterface(Target, IFocusible(none))) goto 0x003e
+  003c: return false
+  003e: return OnSetUpConditions(ExpectedEffects, Conditions)
+  004f: return return
+  0055: <eos>
+
+function TnAiActionTurnToFaceFocus.OnStart  (script 129 bytes)
+  0000: self._Target = IFocusible(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateFacingActor', ExpectedEffects))
+  0028: SetCharacterState(0)
+  0033: self._TransformerController.Focus = self._Target
+  0047: self._TransformerController.StopMovement()
+  005a: if !(TnAiActionTurnToFaceFocus.IsFacingTarget()) goto 0x006e
+  0063: return Succeed()
+  006e: return OnStart(ExpectedEffects)
+  007a: return return
+  0080: <eos>
+
+function TnAiActionTurnToFaceFocus.OnUpdate  (script 44 bytes)
+  0000: if !(TnAiActionTurnToFaceFocus.IsFacingTarget()) goto 0x0014
+  0009: return Succeed()
+  0014: return OnUpdate(ExpectedEffects, DeltaTime)
+  0025: return return
+  002b: <eos>
+
+function TnAiActionTurnToFaceFocus.OnFinish  (script 69 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateFacingActor', true, cast36(self._Target))
+  0042: return nothing
+  0044: <eos>
+
+function TnAiActionTurnToFaceFocus.IsFacingTarget  (script 145 bytes)
+  0000: FlatFacing = obj'Core.Math'.static.Normal((cast39(self._TransformerPawn.Rotation) * vect(1,1,0)))
+  0031: FlatAim = obj'Core.Math'.static.Normal(((self._Target.GetFocalPoint() - self._TransformerPawn.Location) * vect(1,1,0)))
+  0076: return ((FlatFacing dot FlatAim) > 0.866)
+  008a: return return
+  0090: <eos>

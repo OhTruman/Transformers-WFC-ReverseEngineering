@@ -1,0 +1,36 @@
+function TnVehicleFormBlueprint.get_FormType  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnVehicleFormBlueprint.CreateVehicleForm  (script 23 bytes)
+  0000: return DoCreateVehicleForm(OuterPawn)
+  0010: return return
+  0016: <eos>
+
+function TnVehicleFormBlueprint.DoCreateVehicleForm  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnVehicleFormBlueprint.CheckForErrors  (script 220 bytes)
+  0000: if !((self.PhysicsAsset == none)) goto 0x0030
+  000b: EmitCheckMessage(1, "Missing physics asset", , )
+  0030: if !((self.SkeletalMesh == none)) goto 0x0063
+  003b: EmitCheckMessage(1, "Missing skeletal mesh", , )
+  0060: goto 0x00d9
+  0063: foreach self.RequiredSockets(SocketName,) (end 0x00d8)
+  0072: if !((self.SkeletalMesh.FindSocket(SocketName) == none)) goto 0x00d7
+  0090: EmitCheckMessage(0, (((cast56(self.SkeletalMesh) $ " is missing a required socket: '") $ cast57(SocketName)) $ "'"), , )
+  00d7: iternext
+  00d8: iterpop
+  00d9: return nothing
+  00db: <eos>
+
+function TnVehicleFormBlueprint.GetMaxVehiclePathingRadius  (script 13 bytes)
+  0000: return 440.0
+  0006: return return
+  000c: <eos>
+
+function TnVehicleFormBlueprint.GetMaxVehiclePathingHeight  (script 13 bytes)
+  0000: return 400.0
+  0006: return return
+  000c: <eos>

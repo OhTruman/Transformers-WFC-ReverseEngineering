@@ -1,0 +1,24 @@
+function HmLimitedFilteredMapper.Update  (script 102 bytes)
+  0000: TargetValue = HmLimitedFilteredMapper.Eval(InValue)
+  0011: if !((obj'Core.Math'.static.Abs(InValue) > self.FilterUpperLimit)) goto 0x0046
+  002b: self.Filter.Reset(TargetValue)
+  0043: goto 0x0063
+  0046: self.Filter.Update(TargetValue, DeltaTime)
+  0063: return nothing
+  0065: <eos>
+
+function HmLimitedFilteredMapper.Reset  (script 44 bytes)
+  0000: TargetValue = HmLimitedFilteredMapper.Eval(InValue)
+  0011: self.Filter.Reset(TargetValue)
+  0029: return nothing
+  002b: <eos>
+
+function HmLimitedFilteredMapper.GetValue  (script 34 bytes)
+  0000: return (self.Filter.GetValue() * self.CurveScale)
+  001b: return return
+  0021: <eos>
+
+function HmLimitedFilteredMapper.Eval  (script 79 bytes)
+  0000: return (obj'Core.Math'.static.EvalCurveFloat(self.curve, obj'Core.Math'.static.Abs(Value), 0.0) * obj'Core.Math'.static.Sign(Value))
+  0048: return return
+  004e: <eos>

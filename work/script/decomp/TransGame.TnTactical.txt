@@ -1,0 +1,236 @@
+function TnTactical.get_IsHotSpot  (script 14 bytes)
+  0000: return self._bIsHotSpot
+  0007: return return
+  000d: <eos>
+
+function TnTactical.set_IsHotSpot  (script 16 bytes)
+  0000: self._bIsHotSpot = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTactical.get_HotSpotAllFactions  (script 14 bytes)
+  0000: return self._bHotSpotAllFactions
+  0007: return return
+  000d: <eos>
+
+function TnTactical.set_HotSpotAllFactions  (script 16 bytes)
+  0000: self._bHotSpotAllFactions = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTactical.get_WaitingForUpdate  (script 14 bytes)
+  0000: return self._WaitingForUpdate
+  0007: return return
+  000d: <eos>
+
+function TnTactical.set_WaitingForUpdate  (script 16 bytes)
+  0000: self._WaitingForUpdate = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTactical.get_HotSpotFaction  (script 13 bytes)
+  0000: return self._HotSpotFaction
+  0006: return return
+  000c: <eos>
+
+function TnTactical.set_HotSpotFaction  (script 14 bytes)
+  0000: self._HotSpotFaction = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTactical.get_Occlusion  (script 13 bytes)
+  0000: return self._Occlusion
+  0006: return return
+  000c: <eos>
+
+function TnTactical.set_Occlusion  (script 14 bytes)
+  0000: self._Occlusion = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTactical.get_OcclusionDirection  (script 13 bytes)
+  0000: return self._OcclusionDirection
+  0006: return return
+  000c: <eos>
+
+function TnTactical.set_OcclusionDirection  (script 14 bytes)
+  0000: self._OcclusionDirection = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTactical.get_Location  (script 13 bytes)
+  0000: return self._Location
+  0006: return return
+  000c: <eos>
+
+function TnTactical.get_OuterNavPoint  (script 13 bytes)
+  0000: return self._OuterNavPoint
+  0006: return return
+  000c: <eos>
+
+function TnTactical.get_Claimer  (script 13 bytes)
+  0000: return self._Claimer
+  0006: return return
+  000c: <eos>
+
+function TnTactical.get_Stench  (script 13 bytes)
+  0000: return self._Stench
+  0006: return return
+  000c: <eos>
+
+function TnTactical.get_ControllingTeam  (script 13 bytes)
+  0000: return self._ControllingTeam
+  0006: return return
+  000c: <eos>
+
+function TnTactical.Initialize  (script 159 bytes)
+  0000: self._OuterNavPoint = NavigationPoint(get_Outer())
+  000e: self._Location = self._OuterNavPoint.Location
+  0022: self.Bounds.Max = (self._Location + obj'Core.Math'.static.MakeVector(10.0, 10.0, 10.0))
+  005c: self.Bounds.Min = (self._Location - obj'Core.Math'.static.MakeVector(10.0, 10.0, 10.0))
+  0096: TnTactical.ResetDataCaches()
+  009c: return nothing
+  009e: <eos>
+
+function TnTactical.Claim  (script 136 bytes)
+  0000: if !(((self._Claimer != none) && (self._Claimer != Occupier))) goto 0x0073
+  001c: LogInternal((((((("Error:" @ cast56(Occupier)) @ "is trying to claim") @ cast56(self)) @ "but") @ cast56(self._Claimer)) @ "already claimed it"), , , )
+  0073: self._Claimer = Occupier
+  007e: AddAdd_Int(self._Claims)
+  0085: return nothing
+  0087: <eos>
+
+function TnTactical.Release  (script 138 bytes)
+  0000: if !((self._Claimer != Occupier)) goto 0x006e
+  000f: LogInternal((((((("Error:" @ cast56(Occupier)) @ "is trying to release claim on") @ cast56(self)) @ "but") @ cast56(self._Claimer)) @ "is the occupier"), , , )
+  006e: SubtractSubtract_Int(self._Claims)
+  0075: if !((self._Claims == 0)) goto 0x0087
+  0080: self._Claimer = none
+  0087: return nothing
+  0089: <eos>
+
+function TnTactical.GetTeamLosScore  (script 30 bytes)
+  0000: return TeamNum[self._TeamDataCache].LineOfSightScore
+  0017: return return
+  001d: <eos>
+
+function TnTactical.GetTeamOcclusion  (script 30 bytes)
+  0000: return TeamNum[self._TeamDataCache].AverageOcclusion
+  0017: return return
+  001d: <eos>
+
+function TnTactical.IsInTeamLineOfFire  (script 31 bytes)
+  0000: return TeamNum[self._TeamDataCache].InLineOfFire
+  0018: return return
+  001e: <eos>
+
+function TnTactical.AddStench  (script 15 bytes)
+  0000: (self._Stench += Stench)
+  000c: return nothing
+  000e: <eos>
+
+function TnTactical.UpdateDataCache  (script 58 bytes)
+  0000: TnTactical.UpdateVisibliltyAndOcclusion(TargetedPawns)
+  000b: TnTactical.UpdateWorldDataCache(AllPawns)
+  0016: self._LastUpdateTime = obj'Engine.Engine'.static.GetWorldTime()
+  002f: self._WaitingForUpdate = false
+  0037: return nothing
+  0039: <eos>
+
+function TnTactical.UpdateWorldDataCache  (script 466 bytes)
+  0000: I = 0
+  0007: if !((I < AllPawns.Length)) goto 0x0180
+  0017: C = TnAiController(I[AllPawns].Controller)
+  0036: TeamNum = I[AllPawns].GetTeamNum()
+  0055: if !(((cast3a(TeamNum) != 0) && (cast3a(TeamNum) != 1))) goto 0x00e8
+  0071: LogInternal((("Warning: Evaluating" @ cast56(I[AllPawns])) @ " when updating tactical world cache and is not an Autobot or Decepticon"), , , )
+  00e5: goto 0x0176
+  00e8: if !((((C == none) || (C == self._Claimer)) || (C.Enemy == none))) goto 0x011d
+  011a: goto 0x0176
+  011d: ClaimedTactical = C._ClaimedTactical
+  0131: if !((ClaimedTactical == none)) goto 0x013f
+  013c: goto 0x0176
+  013f: if !(TnTactical.IntersectsLineOfFire(ClaimedTactical, C.Enemy)) goto 0x0176
+  015b: cast3a(TeamNum)[self._TeamDataCache].InLineOfFire = true
+  0176: AddAdd_PreInt(I)
+  017d: goto 0x0007
+  0180: self._ControllingTeam = TnTactical.FindControllingTeam(AllPawns)
+  0191: self._Stench = obj'Core.Math'.static.FMax(0.0, (self._Stench - ((obj'Engine.Engine'.static.GetWorldTime() - self._LastUpdateTime) * 0.1)))
+  01cf: return nothing
+  01d1: <eos>
+
+function TnTactical.IntersectsLineOfFire  (script 97 bytes)
+  0000: DistanceToLineOfFire = obj'Core.Math'.static.PointDistToLine(self._Location, (OtherEnemy.Location - OtherTactical._Location), OtherTactical._Location, )
+  004b: return (DistanceToLineOfFire < cast3f(410))
+  005a: return return
+  0060: <eos>
+
+function TnTactical.FindControllingTeam  (script 130 bytes)
+  0000: ClosestDistanceSquared = 3.4028234663852886e+38
+  000b: foreach AllPawns(P,) (end 0x0074)
+  001a: DistanceSquared = obj'Core.Math'.static.VSize((P.Location - self._Location))
+  0040: if !((DistanceSquared < ClosestDistanceSquared)) goto 0x0073
+  004f: ClosestDistanceSquared = DistanceSquared
+  005a: ControllingTeam = P.GetTeamNum()
+  0073: iternext
+  0074: iterpop
+  0075: return ControllingTeam
+  007b: return return
+  0081: <eos>
+
+function TnTactical.UpdateVisibliltyAndOcclusion  (script 496 bytes)
+  0000: I = 0
+  0007: if !((I < self._TeamDataCache.Length)) goto 0x00b6
+  0017: I[self._TeamDataCache].LineOfSightScore = obj'Core.Math'.static.FMax(0.0, (I[self._TeamDataCache].LineOfSightScore - ((obj'Engine.Engine'.static.GetWorldTime() - self._LastUpdateTime) * 0.1)))
+  0077: I[self._TeamDataCache].AverageOcclusion = 0.0
+  0093: I[self._TeamDataCache].InLineOfFire = false
+  00ac: AddAdd_PreInt(I)
+  00b3: goto 0x0007
+  00b6: foreach TargetedPawns(P,) (end 0x0192)
+  00c5: TeamNum = cast3a(P.GetTeamNum())
+  00e0: if !((TeamNum >= 3)) goto 0x00f0
+  00ec: iternext
+  00ed: goto 0x0192
+  00f0: PawnOcclusion = 0.0
+  00fb: WalkLinePassed = TnTactical.CalculateOcclusion(P, PawnOcclusion)
+  0112: if !(((TeamNum[self._TeamDataCache].LineOfSightScore < cast3f(1)) && (WalkLinePassed || TnTactical.CheckLOS(P)))) goto 0x0167
+  014b: TeamNum[self._TeamDataCache].LineOfSightScore = 1.0
+  0167: (TeamNum[self._TeamDataCache].AverageOcclusion += PawnOcclusion)
+  0184: AddAdd_Int(TeamNum[NumPawnsOnTeam])
+  0191: iternext
+  0192: iterpop
+  0193: I = 0
+  019a: if !((I < self._TeamDataCache.Length)) goto 0x01ed
+  01aa: if !((I[NumPawnsOnTeam] == 0)) goto 0x01be
+  01bb: goto 0x01e3
+  01be: (I[self._TeamDataCache].AverageOcclusion /= cast3f(I[NumPawnsOnTeam]))
+  01e3: AddAdd_PreInt(I)
+  01ea: goto 0x019a
+  01ed: return nothing
+  01ef: <eos>
+
+function TnTactical.CalculateOcclusion  (script 172 bytes)
+  0000: Cell = NavigationCell(self._OuterNavPoint.StaticAnchor.Nav)
+  0024: if !((Cell == none)) goto 0x0031
+  002f: return false
+  0031: if !(Cell.WalkLine(self._Location, Target.Location, 1.0, HitLocation)) goto 0x0066
+  0064: return true
+  0066: Occlusion = (1.0 - obj'Core.Math'.static.FMin(1.0, (obj'Core.Math'.static.VSize((HitLocation - self._Location)) / cast3f(1000))))
+  00a3: return false
+  00a5: return return
+  00ab: <eos>
+
+function TnTactical.CheckLOS  (script 284 bytes)
+  0000: TraceEnd = Target.GetPawnViewLocation()
+  0019: TraceStart = ((self._Location + (obj'Core.Math'.static.MakeVector(0.0, 200.0, 0.0) >> cast50((Target.Location - self._Location)))) + obj'Core.Math'.static.MakeVector(0.0, 0.0, 120.0))
+  0086: TraceActor = Actor(get_Outer()).TraceSight(HitLocation, HitNormal, Target, TraceEnd, TraceStart, true, , , )
+  00bf: Interact = TnInteractBase(TraceActor)
+  00cf: return (((TraceActor == Target) || (TraceActor == none)) || ((Interact != none) && (Interact.GetCurrentUser() == Target)))
+  0115: return return
+  011b: <eos>
+
+function TnTactical.ResetDataCaches  (script 20 bytes)
+  0000: self._TeamDataCache.Length = 0
+  0008: self._TeamDataCache.Length = 3
+  0011: return nothing
+  0013: <eos>

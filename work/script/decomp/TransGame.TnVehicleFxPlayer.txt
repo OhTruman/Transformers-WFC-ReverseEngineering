@@ -1,0 +1,38 @@
+function TnVehicleFxPlayer.Initialize  (script 36 bytes)
+  0000: self._Owner = Owner
+  000b: self._EffectManagerComponent = EffectManagerComponent
+  0016: self._VehicleMeshComponent = VehicleMeshComponent
+  0021: return nothing
+  0023: <eos>
+
+function TnVehicleFxPlayer.PlaySingleEffect  (script 76 bytes)
+  0000: if !((Template == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Owner.WorldInfo.GetEmitterPool().SpawnEmitter(Template, Location, Rotation, , , )
+  0049: return nothing
+  004b: <eos>
+
+function TnVehicleFxPlayer.Play  (script 249 bytes)
+  0000: if !(((self._EffectManagerComponent == none) || (self._VehicleMeshComponent == none))) goto 0x001e
+  0018: return ParticleSystems
+  001e: foreach FXArray(FXParams,) (end 0x00eb)
+  002d: PSC = self._EffectManagerComponent.PlayEffect(self._VehicleMeshComponent, FXParams.Socket, FXParams.ParticleSystemTemplate, false, vect(0,0,0), rot(0,0,0), 0)
+  0088: PSC.SetColorParameter('Color', self._Owner.get_EnergonColor())
+  00b7: PSC.SetTickGroup(2)
+  00cc: PSC.bUseSkelMeshPostTransformUpdate = true
+  00dd: ParticleSystems.AddItem(PSC)
+  00ea: iternext
+  00eb: iterpop
+  00ec: return ParticleSystems
+  00f2: return return
+  00f8: <eos>
+
+function TnVehicleFxPlayer.Stop  (script 128 bytes)
+  0000: if !(((self._EffectManagerComponent == none) || (self._VehicleMeshComponent == none))) goto 0x001a
+  0018: return nothing
+  001a: foreach FXArray(FXParams,) (end 0x007c)
+  0029: self._EffectManagerComponent.StopEffect(self._VehicleMeshComponent, FXParams.Socket, FXParams.ParticleSystemTemplate, vect(0,0,0), rot(0,0,0))
+  007b: iternext
+  007c: iterpop
+  007d: return nothing
+  007f: <eos>

@@ -1,0 +1,111 @@
+function TnInteractShieldedPositionBase.SetData  (script 127 bytes)
+  0000: BeginUseSequence.TriggerEventType = obj'TnInteractEventTypeBeginUse'
+  0014: self.InteractActions.AddItem(BeginUseSequence)
+  0021: self.InteractActions.AddItem(BeginUseSequence)
+  002e: self._BaseAnimActions.AddItem(BaseDeployAnimAction)
+  003b: self._BaseAnimActions.AddItem(BaseRaiseAnimAction)
+  0048: self._BaseAnimActions.AddItem(BaseLowerAnimAction)
+  0055: self._UserAnimActions.AddItem(UserDeployAnimAction)
+  0062: self._UserAnimActions.AddItem(UserRaiseAnimAction)
+  006f: self._UserAnimActions.AddItem(UserLowerAnimAction)
+  007c: return nothing
+  007e: <eos>
+
+function TnInteractShieldedPositionBase.ReplicatedEvent  (script 48 bytes)
+  0000: if !((VariableName == 'ReplicatedEvents')) goto 0x0022
+  0013: if !(TnInteractShieldedPositionBase.HasBeginUseEvent()) goto 0x0022
+  001c: TnInteractShieldedPositionBase.SwitchState()
+  0022: TnInteractBase.ReplicatedEvent(VariableName)
+  002d: return nothing
+  002f: <eos>
+
+function TnInteractShieldedPositionBase.Reset  (script 76 bytes)
+  0000: self._ShieldState = 3
+  0008: self._PrevShieldState = 3
+  0010: self.BaseMesh.SetHidden(true)
+  0024: SetCollision(false, false, false)
+  002a: SetBlockRigidBody(false)
+  0035: GotoState('Asleep', , , )
+  0043: Reset()
+  0049: return nothing
+  004b: <eos>
+
+function TnInteractShieldedPositionBase.HasBeginUseEvent  (script 97 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.ReplicatedEvents.Length)) goto 0x0058
+  0021: if !((idx[self.ReplicatedEvents.Events].InteractEvent == obj'TnInteractEventTypeBeginUse')) goto 0x004e
+  004c: return true
+  004e: AddAdd_PreInt(idx)
+  0055: goto 0x0007
+  0058: return false
+  005a: return return
+  0060: <eos>
+
+function TnInteractShieldedPositionBase.Initialize  (script 55 bytes)
+  0000: self._OccupiedController = InOccuiedController
+  000b: self._OccupiedController.AiWorldState.SetIntValue(obj'TnAiWorldStateShieldedPosition', cast3a(self._ShieldState), self)
+  0034: return nothing
+  0036: <eos>
+
+function TnInteractShieldedPositionBase.PostBeginPlay  (script 44 bytes)
+  0000: TnInteractBase.PostBeginPlay()
+  0006: self._BeginUseSequence = TnInteractActionSequence(1[self.InteractActions])
+  0018: SetCollision(false, false, false)
+  001e: SetBlockRigidBody(false)
+  0029: return nothing
+  002b: <eos>
+
+function TnInteractShieldedPositionBase.Interacting.BeginState  (script 20 bytes)
+  0000: TnInteractShieldedPositionBase.ServerSwitchState()
+  0006: BeginState(PreviousStateName)
+  0011: return nothing
+  0013: <eos>
+
+function TnInteractShieldedPositionBase.Interacting.EndState  (script 66 bytes)
+  0000: EndState(NextStateName)
+  000b: if !((self._OccupiedController != none)) goto 0x003f
+  0016: self._OccupiedController.AiWorldState.SetIntValue(obj'TnAiWorldStateShieldedPosition', cast3a(self._ShieldState), self)
+  003f: return nothing
+  0041: <eos>
+
+function TnInteractShieldedPositionBase.ServerSwitchState  (script 27 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: TnInteractShieldedPositionBase.SwitchState()
+  0018: return nothing
+  001a: <eos>
+
+function TnInteractShieldedPositionBase.SwitchState  (script 79 bytes)
+  0000: switch (self._ShieldState)
+  0007: case 3: (next 0x001d)
+  000c: self._ShieldState = 1
+  0014: TnInteractShieldedPositionBase.SetShieldState()
+  001a: goto 0x004c
+  001d: case 1: (next 0x0033)
+  0022: self._ShieldState = 2
+  002a: TnInteractShieldedPositionBase.SetShieldState()
+  0030: goto 0x004c
+  0033: case 2: (next 0x0049)
+  0038: self._ShieldState = 1
+  0040: TnInteractShieldedPositionBase.SetShieldState()
+  0046: goto 0x004c
+  0049: default:
+  004c: return nothing
+  004e: <eos>
+
+function TnInteractShieldedPositionBase.SetShieldState  (script 102 bytes)
+  0000: if !((cast3a(self._PrevShieldState) == cast3a(3))) goto 0x0038
+  0010: SetCollision(true, true, true)
+  0016: SetBlockRigidBody(true)
+  0021: TnInteractShieldedPositionBase.SetPlayAnimActions(0[self._UserAnimActions], 0[self._BaseAnimActions])
+  0035: goto 0x0058
+  0038: TnInteractShieldedPositionBase.SetPlayAnimActions(cast3a(self._ShieldState)[self._UserAnimActions], cast3a(self._ShieldState)[self._BaseAnimActions])
+  0058: self._PrevShieldState = self._ShieldState
+  0063: return nothing
+  0065: <eos>
+
+function TnInteractShieldedPositionBase.SetPlayAnimActions  (script 47 bytes)
+  0000: 1[self._BeginUseSequence.Actions] = User
+  0016: 0[self._BeginUseSequence.Actions] = BaseAction
+  002c: return nothing
+  002e: <eos>

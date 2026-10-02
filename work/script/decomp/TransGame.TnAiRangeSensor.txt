@@ -1,0 +1,26 @@
+function TnAiRangeSensor.OnInitialize  (script 36 bytes)
+  0000: self.RangeDetector.Initialize(self._OwnerController.RangeSet)
+  0021: return nothing
+  0023: <eos>
+
+function TnAiRangeSensor.OnUpdate  (script 419 bytes)
+  0000: AtActorProp = self._OwnerController.AiWorldState.GetState(obj'TnAiWorldStateAtActor')
+  0027: if !((AtActorProp.Subject != none)) goto 0x00ac
+  003d: self.RangeDetector.GetRange(self._OwnerPawn, Actor(AtActorProp.Subject), CenterPointRange, NearestRange)
+  0074: self._OwnerController.AiWorldState.SetIntValue(obj'TnAiWorldStateAtActor', cast3a(NearestRange), AtActorProp.Subject)
+  00ac: TargetProp = self._OwnerController.GetWorldState(obj'TnAiWorldStateTargetIsDead')
+  00ca: if !((TargetProp.Subject != none)) goto 0x01a0
+  00e0: self.RangeDetector.GetRange(self._OwnerPawn, Actor(TargetProp.Subject), CenterPointRange, NearestRange)
+  0117: self._OwnerController.AiWorldState.SetIntValue(obj'TnAiWorldStateTargetIsDead', cast3a(NearestRange), TargetProp.Subject)
+  014f: PawnTarget = Pawn(TargetProp.Subject)
+  016a: if !((PawnTarget != none)) goto 0x01a0
+  0175: self._TacticalDatabase.SetEnemyRange(PawnTarget.Controller, CenterPointRange, NearestRange)
+  01a0: return nothing
+  01a2: <eos>
+
+function TnAiRangeSensor.GetDebugStrings  (script 123 bytes)
+  0000: Range = cast3d(self._OwnerController.AiWorldState.GetIntValue(obj'TnAiWorldStateAtActor'))
+  0029: Strings.Length[Strings] = ("Range:" @ cast52(Range))
+  0047: Strings.Length[Strings] = ("EnemyRange:" @ cast52(self._OwnerController.GetEnemyCenterPointRange()))
+  0078: return nothing
+  007a: <eos>

@@ -1,0 +1,11 @@
+function TnHudDataObserverActiveGrenadeCount.CheckData  (script 131 bytes)
+  0000: if !((PC.Pawn == none)) goto 0x0016
+  0014: return nothing
+  0016: GrenadeLauncher = TnWeaponGrenadeLauncherBase(PC.Pawn.Weapon)
+  0038: if !((GrenadeLauncher == none)) goto 0x0051
+  0043: NewValue = 0.0
+  004e: goto 0x006c
+  0051: NewValue = cast3f(GrenadeLauncher.ActiveGrenadeCount())
+  006c: ProcessNewValue(Movie, NewValue)
+  0080: return nothing
+  0082: <eos>

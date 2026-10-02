@@ -1,0 +1,41 @@
+function TnTeamDrafterPublicSnakeDraft.Compare  (script 160 bytes)
+  0000: if !((IndexB[self.PartyCollection.Parties].Members.Length != IndexA[self.PartyCollection.Parties].Members.Length)) goto 0x0088
+  0045: return (IndexB[self.PartyCollection.Parties].Members.Length - IndexA[self.PartyCollection.Parties].Members.Length)
+  0088: return TnTeamDrafterSnakeDraft.Compare(IndexA, IndexB)
+  0099: return return
+  009f: <eos>
+
+function TnTeamDrafterPublicSnakeDraft.GetSortCount  (script 23 bytes)
+  0000: return self.PartyCollection.Parties.Length
+  0010: return return
+  0016: <eos>
+
+function TnTeamDrafterPublicSnakeDraft.GetLevel  (script 173 bytes)
+  0000: MemberIndex = 0
+  0007: if !((MemberIndex < PartyIndex[self.PartyCollection.Parties].Members.Length)) goto 0x00a0
+  0031: PRI = GetPRIForPlayer(MemberIndex[PartyIndex[self.PartyCollection.Parties].Members].NetId)
+  0071: if !((PRI != none)) goto 0x0096
+  007c: (SumLevel += PRI.GetPlayerLevel())
+  0096: AddAdd_PreInt(MemberIndex)
+  009d: goto 0x0007
+  00a0: return SumLevel
+  00a6: return return
+  00ac: <eos>
+
+function TnTeamDrafterPublicSnakeDraft.GetScore  (script 175 bytes)
+  0000: MemberIndex = 0
+  0007: if !((MemberIndex < PartyIndex[self.PartyCollection.Parties].Members.Length)) goto 0x00a2
+  0031: PRI = GetPRIForPlayer(MemberIndex[PartyIndex[self.PartyCollection.Parties].Members].NetId)
+  0071: if !((PRI != none)) goto 0x0098
+  007c: (SumScore += cast44(PRI.GetScore()))
+  0098: AddAdd_PreInt(MemberIndex)
+  009f: goto 0x0007
+  00a2: return SumScore
+  00a8: return return
+  00ae: <eos>
+
+function TnTeamDrafterPublicSnakeDraft.AssignToTeam  (script 89 bytes)
+  0000: PartyIndex[self.PartyCollection.Parties].TeamIndex = cast3a(TeamIndex)
+  0027: (cast3a(TeamIndex)[self.TeamCounts] += PartyIndex[self.PartyCollection.Parties].Members.Length)
+  0056: return nothing
+  0058: <eos>

@@ -1,0 +1,19 @@
+function TnGameLobbyGameCampaign.HandleSeamlessTravelPlayer  (script 74 bytes)
+  0000: TnGameLobbyGame.HandleSeamlessTravelPlayer(C)
+  000b: PC = TnPlayerController(C)
+  001b: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0034: PRI.ClearCharacter()
+  0047: return nothing
+  0049: <eos>
+
+function TnGameLobbyGameCampaign.HostRequestCheckpoint  (script 59 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0015: if !((LobbyGRI != none)) goto 0x0038
+  0020: LobbyGRI.HostRequestCheckpoint(CheckpointPath)
+  0038: return nothing
+  003a: <eos>
+
+function TnGameLobbyGameCampaign.CanHostRequestGameStart  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

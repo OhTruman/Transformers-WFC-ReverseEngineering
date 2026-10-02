@@ -1,0 +1,66 @@
+function Admin.PostBeginPlay  (script 19 bytes)
+  0000: PlayerController.PostBeginPlay()
+  0006: AddCheats()
+  0010: return nothing
+  0012: <eos>
+
+function Admin.Admin  (script 14 bytes)
+  0000: Admin.ServerAdmin(CommandLine)
+  000b: return nothing
+  000d: <eos>
+
+function Admin.ServerAdmin  (script 54 bytes)
+  0000: Result = ConsoleCommand(CommandLine, )
+  0016: if !((Result != "")) goto 0x0033
+  0022: ClientMessage(Result, , )
+  0033: return nothing
+  0035: <eos>
+
+function Admin.KickBan  (script 14 bytes)
+  0000: Admin.ServerKickBan(S)
+  000b: return nothing
+  000d: <eos>
+
+function Admin.ServerKickBan  (script 36 bytes)
+  0000: self.WorldInfo.Game.KickBan(S)
+  0021: return nothing
+  0023: <eos>
+
+function Admin.Kick  (script 14 bytes)
+  0000: Admin.ServerKick(S)
+  000b: return nothing
+  000d: <eos>
+
+function Admin.ServerKick  (script 36 bytes)
+  0000: self.WorldInfo.Game.Kick(S)
+  0021: return nothing
+  0023: <eos>
+
+function Admin.PlayerList  (script 130 bytes)
+  0000: LogInternal("Player List:", , , )
+  0013: foreach DynamicActors(obj'PlayerReplicationInfo', PRI) (end 0x007e)
+  002a: LogInternal(((((((PRI.GetPlayerAlias() $ "(") $ PRI.PlayerName) $ ")") @ "( ping") @ cast52(PRI.Ping)) $ ")"), , , )
+  007d: iternext
+  007e: iterpop
+  007f: return nothing
+  0081: <eos>
+
+function Admin.RestartMap  (script 9 bytes)
+  0000: Admin.ServerRestartMap()
+  0006: return nothing
+  0008: <eos>
+
+function Admin.ServerRestartMap  (script 27 bytes)
+  0000: ClientTravel("?restart", 2, , )
+  0018: return nothing
+  001a: <eos>
+
+function Admin.Switch  (script 14 bytes)
+  0000: Admin.ServerSwitch(URL)
+  000b: return nothing
+  000d: <eos>
+
+function Admin.ServerSwitch  (script 29 bytes)
+  0000: self.WorldInfo.ServerTravel(URL, , )
+  001a: return nothing
+  001c: <eos>

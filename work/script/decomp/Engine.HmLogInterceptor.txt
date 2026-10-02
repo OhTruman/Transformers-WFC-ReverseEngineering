@@ -1,0 +1,50 @@
+function HmLogInterceptor.Start  (script 50 bytes)
+  0000: assert((self.WorldInfo.LogInterceptor == none))
+  0015: self.WorldInfo.LogInterceptor = self
+  0025: EnableLogInterceptor()
+  002f: return nothing
+  0031: <eos>
+
+function HmLogInterceptor.Stop  (script 29 bytes)
+  0000: DisableLogInterceptor()
+  000a: self.WorldInfo.LogInterceptor = none
+  001a: return nothing
+  001c: <eos>
+
+function HmLogInterceptor.AddNewLogEntry  (script 87 bytes)
+  0000: NewEntry.Type = Type
+  0016: NewEntry.Category = Category
+  002c: NewEntry.msg = msg
+  0042: self.Messages.Length[self.Messages] = NewEntry
+  0054: return nothing
+  0056: <eos>
+
+function HmLogInterceptor.LogNewFatal  (script 25 bytes)
+  0000: AddNewLogEntry(0, Category, msg)
+  0016: return nothing
+  0018: <eos>
+
+function HmLogInterceptor.LogNewError  (script 25 bytes)
+  0000: AddNewLogEntry(1, Category, msg)
+  0016: return nothing
+  0018: <eos>
+
+function HmLogInterceptor.LogNewWarn  (script 25 bytes)
+  0000: AddNewLogEntry(2, Category, msg)
+  0016: return nothing
+  0018: <eos>
+
+function HmLogInterceptor.LogNewInfo  (script 25 bytes)
+  0000: AddNewLogEntry(3, Category, msg)
+  0016: return nothing
+  0018: <eos>
+
+function HmLogInterceptor.LogNewDebug  (script 25 bytes)
+  0000: AddNewLogEntry(4, Category, msg)
+  0016: return nothing
+  0018: <eos>
+
+function HmLogInterceptor.LogNewTrace  (script 25 bytes)
+  0000: AddNewLogEntry(5, Category, msg)
+  0016: return nothing
+  0018: <eos>

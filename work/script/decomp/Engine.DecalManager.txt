@@ -1,0 +1,70 @@
+function DecalManager.AreDynamicDecalsEnabled  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DecalManager.DecalFinished  (script 40 bytes)
+  0000: Decal.ResetToDefaults()
+  0013: self.PoolDecals.Length[self.PoolDecals] = Decal
+  0025: return nothing
+  0027: <eos>
+
+function DecalManager.CanSpawnDecals  (script 14 bytes)
+  0000: return DecalManager.AreDynamicDecalsEnabled()
+  0007: return return
+  000d: <eos>
+
+function DecalManager.SpawnDecal  (script 848 bytes)
+  0000: default=(obj'Core.Random'.static.FRand() * 360.0)
+  0016: nothing
+  0017: default=true
+  001c: nothing
+  001d: nothing
+  001e: default=-1
+  0027: default=-1
+  0030: default=-0.0001
+  0039: if !((DecalMaterial == none)) goto 0x007b
+  0044: LogInternal("Error: Trying to spawn decal with no material:", , , )
+  0079: return none
+  007b: if !(!DecalManager.CanSpawnDecals()) goto 0x0088
+  0086: return none
+  0088: if !((self.PoolDecals.Length > 0)) goto 0x00f5
+  0094: I = (self.PoolDecals.Length - 1)
+  00a3: Result = I[self.PoolDecals]
+  00b4: self.PoolDecals.Remove(I,1)
+  00c0: if !(((Result != none) && !Result.IsPendingKill())) goto 0x00eb
+  00e5: goto 0x00f5
+  00e8: goto 0x00f2
+  00eb: Result = none
+  00f2: goto 0x0088
+  00f5: if !((Result == none)) goto 0x0172
+  0100: if !(((self.MaxActiveDecals > 0) && (self.ActiveDecals.Length >= self.MaxActiveDecals))) goto 0x0153
+  011d: Result = 0[self.ActiveDecals].Decal
+  0135: Result.ResetToDefaults()
+  0148: self.ActiveDecals.Remove(0,1)
+  0150: goto 0x0172
+  0153: Result = new(self, nothing, self.DecalTemplate.get_Class(), self.DecalTemplate, GetRemoteRole)
+  0172: Result.Location = DecalLocation
+  0186: Result.Orientation = DecalOrientation
+  019a: Result.DecalRotation = DecalRotation
+  01ae: Result.Width = Width
+  01c2: Result.Height = Height
+  01d6: Result.Thickness = Thickness
+  01ea: Result.FarPlane = (Result.Thickness * 0.5)
+  020e: Result.NearPlane = -Result.FarPlane
+  022d: Result.bNoClip = bNoClip
+  0243: Result.HitComponent = HitComponent
+  0257: Result.HitBone = HitBone
+  026b: Result.HitNodeIndex = HitNodeIndex
+  027f: Result.HitLevelIndex = HitLevelIndex
+  0293: Result.DecalMaterial = DecalMaterial
+  02a7: Result.bProjectOnTerrain = bProjectOnTerrain
+  02bd: Result.bProjectOnSkeletalMeshes = bProjectOnSkeletalMeshes
+  02d3: Result.DepthBias = DepthBias
+  02e7: Result.FracturedStaticMeshComponentIndex = -1
+  02fb: AttachComponent(Result)
+  030a: DecalInfo.Decal = Result
+  0320: DecalInfo.LifetimeRemaining = Lifetime
+  0336: self.ActiveDecals.AddItem(DecalInfo)
+  0343: return Result
+  0349: return return
+  034f: <eos>

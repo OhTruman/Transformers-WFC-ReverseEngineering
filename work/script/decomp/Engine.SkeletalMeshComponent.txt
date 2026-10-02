@@ -1,0 +1,621 @@
+function SkeletalMeshComponent.GetNumElements  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.GetMaterial  (script 7 bytes)
+  0000: MaterialIndex
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.WakeRigidBody  (script 7 bytes)
+  0000: BoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.RigidBodyIsAwake  (script 7 bytes)
+  0000: BoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetLinearVelocity  (script 7 bytes)
+  0000: NewVel
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetAngularVelocity  (script 7 bytes)
+  0000: NewVel
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetRBPosition  (script 12 bytes)
+  0000: NewPos
+  0005: BoneName
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.SetRBRotation  (script 12 bytes)
+  0000: NewRot
+  0005: BoneName
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.SetBlockRigidBody  (script 7 bytes)
+  0000: bNewBlockRigidBody
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetNotifyRigidBodyCollision  (script 7 bytes)
+  0000: bNewNotifyRigidBodyCollision
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetPhysMaterialOverride  (script 7 bytes)
+  0000: NewPhysMaterial
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.GetRootBodyInstance  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.InitComponentRBPhys  (script 7 bytes)
+  0000: bFixed
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetComponentRBFixed  (script 7 bytes)
+  0000: bFixed
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetRBDominanceGroup  (script 7 bytes)
+  0000: InDomGroup
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.AddRadialImpulse  (script 27 bytes)
+  0000: Origin
+  0005: Radius
+  000a: Strength
+  000f: Falloff
+  0014: bVelChange
+  0019: nothing
+  001a: <eos>
+
+function SkeletalMeshComponent.AddRadialForce  (script 22 bytes)
+  0000: Origin
+  0005: Radius
+  000a: Strength
+  000f: Falloff
+  0014: nothing
+  0015: <eos>
+
+function SkeletalMeshComponent.UpdateTransform  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.AttachComponent  (script 27 bytes)
+  0000: Component
+  0005: BoneName
+  000a: RelativeLocation
+  000f: RelativeRotation
+  0014: RelativeScale
+  0019: nothing
+  001a: <eos>
+
+function SkeletalMeshComponent.DetachComponent  (script 7 bytes)
+  0000: Component
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.AttachComponentToSocket  (script 12 bytes)
+  0000: Component
+  0005: SocketName
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.AttachComponentToSocketWithOffsets  (script 281 bytes)
+  0000: Socket = GetSocketByName(SocketName)
+  0015: if !((Socket == none)) goto 0x00c7
+  0020: if !((self.Owner != none)) goto 0x0047
+  002b: ReadableName = self.Owner.GetHumanReadableName()
+  0044: goto 0x0053
+  0047: ReadableName = "NONE"
+  0053: LogInternal(((((((("Error: Trying to attach component" @ cast56(Component)) @ "to missing socket:") @ cast57(SocketName)) @ "on") @ cast56(self.SkeletalMesh)) @ "owned by") @ ReadableName), , , )
+  00c5: return false
+  00c7: AttachComponent(Component, Socket.BoneName, (Socket.RelativeLocation + RelativeLocation), (Socket.RelativeRotation + RelativeRotation), )
+  0110: return true
+  0112: return return
+  0118: <eos>
+
+function SkeletalMeshComponent.AttachComponentUniquelyToSocket  (script 48 bytes)
+  0000: if !(!SkeletalMeshComponent.IsComponentAttached(Component, )) goto 0x0027
+  0011: AttachComponentToSocket(Component, SocketName)
+  0025: return true
+  0027: return false
+  0029: return return
+  002f: <eos>
+
+function SkeletalMeshComponent.GetSocketWorldLocationAndRotation  (script 17 bytes)
+  0000: InSocketName
+  0005: OutLocation
+  000a: OutRotation
+  000f: nothing
+  0010: <eos>
+
+function SkeletalMeshComponent.GetSocketWorldLocation  (script 38 bytes)
+  0000: GetSocketWorldLocationAndRotation(SocketName, L, R)
+  0019: return L
+  001f: return return
+  0025: <eos>
+
+function SkeletalMeshComponent.GetSocketWorldRotation  (script 38 bytes)
+  0000: GetSocketWorldLocationAndRotation(SocketName, L, R)
+  0019: return R
+  001f: return return
+  0025: <eos>
+
+function SkeletalMeshComponent.GetSocketByName  (script 7 bytes)
+  0000: InSocketName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.FindComponentAttachedToBone  (script 7 bytes)
+  0000: InBoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.IsComponentAttached  (script 12 bytes)
+  0000: Component
+  0005: BoneName
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.AttachedComponents  (script 12 bytes)
+  0000: BaseClass
+  0005: OutComponent
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.SetSkeletalMesh  (script 12 bytes)
+  0000: NewMesh
+  0005: bKeepSpaceBases
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.SetPhysicsAsset  (script 12 bytes)
+  0000: NewPhysicsAsset
+  0005: bForceReInit
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.SetForceRefPose  (script 7 bytes)
+  0000: bNewForceRefPose
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetSectionVisibility  (script 12 bytes)
+  0000: LODLevel
+  0005: InvisibleSections
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.UpdateMeshVisibility  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.FindAnimSequence  (script 7 bytes)
+  0000: AnimSeqName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SaveAnimSets  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.RestoreSavedAnimSets  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.GetAnimRateByDuration  (script 67 bytes)
+  0000: AnimSeq = FindAnimSequence(AnimSeqName)
+  0015: if !((AnimSeq == none)) goto 0x0026
+  0020: return 1.0
+  0026: return (AnimSeq.SequenceLength / Duration)
+  003c: return return
+  0042: <eos>
+
+function SkeletalMeshComponent.GetAnimLength  (script 76 bytes)
+  0000: AnimSeq = FindAnimSequence(AnimSeqName)
+  0015: if !((AnimSeq == none)) goto 0x0026
+  0020: return 0.0
+  0026: return (AnimSeq.SequenceLength / AnimSeq.RateScale)
+  0045: return return
+  004b: <eos>
+
+function SkeletalMeshComponent.FindMorphTarget  (script 7 bytes)
+  0000: MorphTargetName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.FindAnimNode  (script 7 bytes)
+  0000: InNodeName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.AllAnimNodes  (script 12 bytes)
+  0000: BaseClass
+  0005: Node
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.FindSkelControl  (script 7 bytes)
+  0000: InControlName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.FindMorphNode  (script 7 bytes)
+  0000: InNodeName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.DrawAnimDebug  (script 12 bytes)
+  0000: Canvas
+  0005: StartingPoint
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.GetBoneQuaternion  (script 12 bytes)
+  0000: BoneName
+  0005: Space
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.GetBoneLocation  (script 12 bytes)
+  0000: BoneName
+  0005: Space
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.MatchRefBone  (script 7 bytes)
+  0000: BoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.GetBoneMatrix  (script 7 bytes)
+  0000: BoneIndex
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.GetParentBone  (script 7 bytes)
+  0000: BoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.GetBoneNames  (script 7 bytes)
+  0000: BoneNames
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.GetBoneAxis  (script 12 bytes)
+  0000: BoneName
+  0005: Axis
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.TransformToBoneSpace  (script 27 bytes)
+  0000: BoneName
+  0005: InPosition
+  000a: InRotation
+  000f: OutPosition
+  0014: OutRotation
+  0019: nothing
+  001a: <eos>
+
+function SkeletalMeshComponent.TransformFromBoneSpace  (script 27 bytes)
+  0000: BoneName
+  0005: InPosition
+  000a: InRotation
+  000f: OutPosition
+  0014: OutRotation
+  0019: nothing
+  001a: <eos>
+
+function SkeletalMeshComponent.FindClosestBone  (script 17 bytes)
+  0000: TestLocation
+  0005: BoneLocation
+  000a: IgnoreScale
+  000f: nothing
+  0010: <eos>
+
+function SkeletalMeshComponent.FindClosestPhysicalBone  (script 12 bytes)
+  0000: TestLocation
+  0005: BoneLocation
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.SetAnimTreeTemplate  (script 7 bytes)
+  0000: NewTemplate
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetParentAnimComponent  (script 7 bytes)
+  0000: NewParentAnimComp
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetAnimations  (script 7 bytes)
+  0000: InAnimations
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.UpdateParentBoneMap  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.InitSkelControls  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.FindConstraintIndex  (script 7 bytes)
+  0000: ConstraintName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.FindConstraintBoneName  (script 7 bytes)
+  0000: ConstraintIndex
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.FindBodyInstanceNamed  (script 7 bytes)
+  0000: BoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetHasPhysicsAssetInstance  (script 7 bytes)
+  0000: bHasInstance
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.UpdateRBBonesFromSpaceBases  (script 12 bytes)
+  0000: bMoveUnfixedBodies
+  0005: bTeleport
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.ForceSkelUpdate  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.UpdateAnimations  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.GetBonesWithinRadius  (script 22 bytes)
+  0000: Origin
+  0005: Radius
+  000a: TraceFlags
+  000f: out_Bones
+  0014: nothing
+  0015: <eos>
+
+function SkeletalMeshComponent.PlayFaceFXAnim  (script 17 bytes)
+  0000: FaceFXAnimSetRef
+  0005: AnimName
+  000a: GroupName
+  000f: nothing
+  0010: <eos>
+
+function SkeletalMeshComponent.StopFaceFXAnim  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.StopFaceFXAnimByName  (script 12 bytes)
+  0000: AnimName
+  0005: GroupName
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshComponent.IsPlayingFaceFXAnim  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.DeclareFaceFXRegister  (script 7 bytes)
+  0000: RegName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.GetFaceFXRegister  (script 7 bytes)
+  0000: RegName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.SetFaceFXRegister  (script 22 bytes)
+  0000: RegName
+  0005: RegVal
+  000a: RegOp
+  000f: InterpDuration
+  0014: nothing
+  0015: <eos>
+
+function SkeletalMeshComponent.SetFaceFXRegisterEx  (script 32 bytes)
+  0000: RegName
+  0005: RegOp
+  000a: FirstValue
+  000f: FirstInterpDuration
+  0014: NextValue
+  0019: NextInterpDuration
+  001e: nothing
+  001f: <eos>
+
+function SkeletalMeshComponent.GetCurrentFaceFXAnimation  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.GetCurrentFaceFXGroupName  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.GetCurrentFaceFXAnimTime  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshComponent.DisableCollisionWith  (script 7 bytes)
+  0000: PrimComp
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshComponent.PlayAnim  (script 540 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=true
+  0007: AnimNode = AnimNodeSequence(self.Animations)
+  0017: if !(((AnimNode == none) && (AnimTree(self.Animations) != none))) goto 0x005f
+  0034: AnimNode = AnimNodeSequence(0[AnimTree(self.Animations).Children].Anim)
+  005f: if !((AnimNode == none)) goto 0x00b5
+  006a: WarnInternal((("Base animation node is not an AnimNodeSequence (Owner:" @ cast56(self.Owner)) $ ")"))
+  00b2: goto 0x0219
+  00b5: if !(((AnimNode.AnimSeq != none) && (AnimNode.AnimSeq.SequenceName == AnimName))) goto 0x0194
+  00ec: DesiredRate = ((Duration > 0.0) ? (AnimNode.AnimSeq.SequenceLength / Duration) : 1.0)
+  0126: if !((bRestartIfAlreadyPlaying || !AnimNode.bPlaying)) goto 0x0167
+  0145: AnimNode.PlayAnim(bLoop, DesiredRate, )
+  0164: goto 0x0191
+  0167: AnimNode.Rate = DesiredRate
+  017b: AnimNode.bLooping = bLoop
+  0191: goto 0x0219
+  0194: AnimNode.SetAnim(AnimName)
+  01ac: if !((AnimNode.AnimSeq != none)) goto 0x0219
+  01c0: DesiredRate = ((Duration > 0.0) ? (AnimNode.AnimSeq.SequenceLength / Duration) : 1.0)
+  01fa: AnimNode.PlayAnim(bLoop, DesiredRate, )
+  0219: return nothing
+  021b: <eos>
+
+function SkeletalMeshComponent.IsPlayingAnim  (script 181 bytes)
+  0000: AnimNode = AnimNodeSequence(self.Animations)
+  0010: if !(((AnimNode == none) && (AnimTree(self.Animations) != none))) goto 0x0058
+  002d: AnimNode = AnimNodeSequence(0[AnimTree(self.Animations).Children].Anim)
+  0058: if !(((AnimNode != none) && (AnimNode.AnimSeq != none))) goto 0x00ac
+  0079: return ((AnimNode.AnimSeq.SequenceName == AnimName) && AnimNode.bPlaying)
+  00ac: return false
+  00ae: return return
+  00b4: <eos>
+
+function SkeletalMeshComponent.StopAnim  (script 196 bytes)
+  0000: AnimNode = AnimNodeSequence(self.Animations)
+  0010: if !(((AnimNode == none) && (AnimTree(self.Animations) != none))) goto 0x0058
+  002d: AnimNode = AnimNodeSequence(0[AnimTree(self.Animations).Children].Anim)
+  0058: if !((AnimNode == none)) goto 0x00ae
+  0063: WarnInternal((("Base animation node is not an AnimNodeSequence (Owner:" @ cast56(self.Owner)) $ ")"))
+  00ab: goto 0x00c1
+  00ae: AnimNode.StopAnim()
+  00c1: return nothing
+  00c3: <eos>
+
+function SkeletalMeshComponent.HasAnimSet  (script 65 bytes)
+  0000: I = 0
+  0007: if !((I < self.AnimSets.Length)) goto 0x0038
+  0017: if !((I[self.AnimSets] == A)) goto 0x002e
+  002c: return true
+  002e: AddAdd_PreInt(I)
+  0035: goto 0x0007
+  0038: return false
+  003a: return return
+  0040: <eos>
+
+function SkeletalMeshComponent.AppendAnimSet  (script 41 bytes)
+  0000: if !(HasAnimSet(AS)) goto 0x0014
+  0012: return nothing
+  0014: self.AnimSets.Length[self.AnimSets] = AS
+  0026: return nothing
+  0028: <eos>
+
+function SkeletalMeshComponent.PrependAnimSet  (script 44 bytes)
+  0000: if !(HasAnimSet(AS)) goto 0x0014
+  0012: return nothing
+  0014: self.AnimSets.Insert(0,1)
+  001c: 0[self.AnimSets] = AS
+  0029: return nothing
+  002b: <eos>
+
+function SkeletalMeshComponent.GetDefaultMaterialCount  (script 44 bytes)
+  0000: if !((self.SkeletalMesh != none)) goto 0x001e
+  000b: return self.SkeletalMesh.Materials.Length
+  001b: goto 0x0025
+  001e: return MeshComponent.GetDefaultMaterialCount()
+  0025: return return
+  002b: <eos>
+
+function SkeletalMeshComponent.GetRootMotionRotationDelta  (script 43 bytes)
+  0000: return obj'Core.Math'.static.QuatToRotator(self.RootMotionDelta.Rotation)
+  0024: return return
+  002a: <eos>
+
+function SkeletalMeshComponent.GetRootMotionTranslationDelta  (script 24 bytes)
+  0000: return self.RootMotionDelta.Translation
+  0011: return return
+  0017: <eos>
+
+function SkeletalMeshComponent.CheckForErrors  (script 702 bytes)
+  0000: MeshComponent.CheckForErrors()
+  0006: if !(((self.PhysicsAsset != none) && (self.Owner != none))) goto 0x01da
+  001e: if !(((((self.Owner.DrawScale3D.X <= cast3f(0)) || (self.Owner.DrawScale3D.Y <= cast3f(0))) || (self.Owner.DrawScale3D.Z <= cast3f(0))) || (self.Owner.DrawScale <= cast3f(0)))) goto 0x00f2
+  009d: self.Owner.EmitCheckMessage(0, "PhysX does not support skeletal meshes with negative scales.", , )
+  00f2: if !(((obj'Core.Math'.static.Abs((self.Owner.DrawScale3D.X - self.Owner.DrawScale3D.Y)) != cast3f(0)) || (obj'Core.Math'.static.Abs((self.Owner.DrawScale3D.Y - self.Owner.DrawScale3D.Z)) != cast3f(0)))) goto 0x01da
+  0182: self.Owner.EmitCheckMessage(0, "PhysX does not support skeletal meshes with non-uniform scales.", , )
+  01da: MaterialCount = GetDefaultMaterialCount()
+  01ea: I = 0
+  01f1: if !((I < MaterialCount)) goto 0x02bb
+  0200: MI = GetMaterial(I)
+  0215: if !((MI == none)) goto 0x0223
+  0220: goto 0x02b1
+  0223: if !(!MI.GetUsageByFlag(0)) goto 0x02b1
+  023d: EmitCheckMessage(0, (((PathName(self) @ "uses material") @ PathName(MI)) @ "which doesn't have `Used With Skeletal Mesh` checked."), , )
+  02b1: AddAdd_PreInt(I)
+  02b8: goto 0x01f1
+  02bb: return nothing
+  02bd: <eos>
+
+function SkeletalMeshComponent.ChooseAnimName  (script 127 bytes)
+  0000: I = (self.AnimSets.Length - 1)
+  000f: if !((I >= 0)) goto 0x0072
+  001a: if !((I[self.AnimSets] != none)) goto 0x0068
+  002b: ChosenName = I[self.AnimSets].ChooseAnimName(ChooserName)
+  004f: if !((ChosenName != 'None')) goto 0x0068
+  0062: return ChosenName
+  0068: SubtractSubtract_Int(I)
+  006f: goto 0x000f
+  0072: return ChooserName
+  0078: return return
+  007e: <eos>
+
+function SkeletalMeshComponent.ChooserGroupExists  (script 97 bytes)
+  0000: I = (self.AnimSets.Length - 1)
+  000f: if !((I >= 0)) goto 0x0058
+  001a: if !((I[self.AnimSets] != none)) goto 0x004e
+  002b: if !(I[self.AnimSets].ChooserGroupExists(ChooserName)) goto 0x004e
+  004c: return true
+  004e: SubtractSubtract_Int(I)
+  0055: goto 0x000f
+  0058: return false
+  005a: return return
+  0060: <eos>
+
+function SkeletalMeshComponent.CalculateComponentSpaceAABB  (script 50 bytes)
+  0000: if !((self.PhysicsAsset != none)) goto 0x0025
+  000b: AABB = self.PhysicsAsset.CalculateComponentSpaceAABB(self)
+  0025: return AABB
+  002b: return return
+  0031: <eos>
+
+function SkeletalMeshComponent.Attached  (script 45 bytes)
+  0000: ActorComponent.Attached()
+  0006: self.LastRenderTime = obj'Engine'.static.GetWorldTime()
+  001f: self.DeltaTimeSum = 0.0
+  002a: return nothing
+  002c: <eos>
+
+function SkeletalMeshComponent.IsMaterialOverridden  (script 12 bytes)
+  0000: MaterialIndex
+  0005: Mat
+  000a: nothing
+  000b: <eos>

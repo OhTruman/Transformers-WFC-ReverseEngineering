@@ -1,0 +1,12 @@
+function SeqAct_HmSetAiGoalSet.Activated  (script 196 bytes)
+  0000: GoalSetToUse = (self.bUsePackageGoalSet ? self.PackageGoalSet : self.GoalSet)
+  001b: I = 0
+  0022: if !((I < self.Targets.Length)) goto 0x00c1
+  0032: C = HmGoapWorldStateInterface(I[self.Targets])
+  0048: if !((EqualEqual_InterfaceInterface(C, HmGoapWorldStateInterface(none)) || (C.GetGoapPlanRunner() == none))) goto 0x007b
+  0078: goto 0x00b7
+  007b: C.GetGoapPlanRunner().ReplaceGoalSet(HmGoapGoalSet(GoalSetToUse.Clone(self, )))
+  00b7: AddAdd_PreInt(I)
+  00be: goto 0x0022
+  00c1: return nothing
+  00c3: <eos>

@@ -1,0 +1,22 @@
+function TnAbilityLargeExplosive.OnInitialize  (script 38 bytes)
+  0000: TnAbility.OnInitialize()
+  0006: self.GrenadeThrower.Initialize(self.OwnerPawn, self.LargeExplosiveData)
+  0023: return nothing
+  0025: <eos>
+
+function TnAbilityLargeExplosive.LocalTriggerAbility  (script 52 bytes)
+  0000: self.OwnerPawn.SetLargeExplosiveTargetLocation(self.GrenadeThrower.LocalToss())
+  0026: return TnAbility.LocalTriggerAbility()
+  002d: return return
+  0033: <eos>
+
+function TnAbilityLargeExplosive.SetTargetLocation  (script 14 bytes)
+  0000: self.TargetLocation = TargetLocation_
+  000b: return nothing
+  000d: <eos>
+
+function TnAbilityLargeExplosive.ServerTriggerAbility  (script 33 bytes)
+  0000: TnAbility.ServerTriggerAbility()
+  0006: self.GrenadeThrower.ServerToss(self.TargetLocation)
+  001e: return nothing
+  0020: <eos>

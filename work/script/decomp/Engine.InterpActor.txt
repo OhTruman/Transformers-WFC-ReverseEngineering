@@ -1,0 +1,175 @@
+function InterpActor.ReplicatedEvent  (script 73 bytes)
+  0000: if !(((VarName == 'bHidden') && (self.CollisionComponent != none))) goto 0x003b
+  0020: self.CollisionComponent.SetBlockRigidBody(!self.bHidden)
+  003b: DynamicSMActor.ReplicatedEvent(VarName)
+  0046: return nothing
+  0048: <eos>
+
+function InterpActor.CheckForErrors  (script 192 bytes)
+  0000: CheckForErrors()
+  0006: if !(((self.Base != none) && (cast3a(self.Base.Physics) == cast3a(10)))) goto 0x00bd
+  002c: if !(((self.StaticMeshComponent != none) && self.StaticMeshComponent.BlockRigidBody)) goto 0x00bd
+  004b: EmitCheckMessage(1, "InterpActor's StaticMeshComponent has BlockRigidBody, but is based on an actor with PHYS_RigidBody", , )
+  00bd: return nothing
+  00bf: <eos>
+
+function InterpActor.PostBeginPlay  (script 68 bytes)
+  0000: DynamicSMActor.PostBeginPlay()
+  0006: if !(((self.OpeningAmbientSound != none) || (self.ClosingAmbientSound != none))) goto 0x0041
+  001e: self.AmbientSoundComponent = new(self, nothing, obj'AudioComponent', nothing, GetRemoteRole)
+  0032: AttachComponent(self.AmbientSoundComponent)
+  0041: return nothing
+  0043: <eos>
+
+function InterpActor.EncroachingOn  (script 865 bytes)
+  0000: if !((self.bContinueOnEncroachPhysicsObject && (cast3a(Other.Physics) == cast3a(10)))) goto 0x0026
+  0024: return false
+  0026: if !(Other.bDestroyedByInterpActor) goto 0x0046
+  0038: Other.DestroyActor()
+  0044: return false
+  0046: P = Pawn(Other)
+  0056: if !((((Other.Base == self) || (P != none)) || ((obj'Core.Math'.static.Normal(self.Velocity) dot obj'Core.Math'.static.Normal((Other.Location - self.Location))) >= 0.0))) goto 0x0358
+  00b5: if !((P != none)) goto 0x0297
+  00c0: if !((((cast3a(P.Physics) == cast3a(2)) || (cast3a(P.Physics) == cast3a(4))) && (self.Velocity.Z > 0.0))) goto 0x0206
+  0110: Height = (P.GetCollisionHeight() * vect(0,0,1))
+  0138: if !(TraceComponent(HitLocation, HitNormal, self.StaticMeshComponent, (P.Location - Height), (P.Location + (cast3f(2) * Height)), P.GetCollisionExtent(), , )) goto 0x0203
+  0199: MoveLocation = (HitLocation + Height)
+  01ab: if !((P.Location.Z < MoveLocation.Z)) goto 0x01fb
+  01d9: P.SetLocation(MoveLocation)
+  01ea: P.JustMovedByInterpActor = true
+  01fb: bLandingPawn = true
+  0203: goto 0x0294
+  0206: if !(((((P.Base != self) && (P.Controller != none)) && (P.Controller.PendingMover != none)) && (P.Controller.PendingMover == self))) goto 0x0294
+  026e: P.Controller.UnderLift(LiftCenter(self.MyMarker))
+  0294: goto 0x02ec
+  0297: if !((self.bDestroyProjectilesOnEncroach && (Projectile(Other) != none))) goto 0x02ec
+  02b2: Projectile(Other).Explode(Other.Location, -obj'Core.Math'.static.Normal(self.Velocity))
+  02ea: return false
+  02ec: if !(!bLandingPawn) goto 0x0358
+  02f7: I = 0
+  02fe: if !((I < self.GeneratedEvents.Length)) goto 0x0351
+  030e: MoverEvent = SeqEvent_Mover(I[self.GeneratedEvents])
+  0324: if !((MoverEvent != none)) goto 0x0347
+  032f: MoverEvent.NotifyEncroachingOn(Other)
+  0347: AddAdd_Int(I)
+  034e: goto 0x02fe
+  0351: return self.bStopOnEncroach
+  0358: return false
+  035a: return return
+  0360: <eos>
+
+function InterpActor.RanInto  (script 212 bytes)
+  0000: if !((self.bDestroyProjectilesOnEncroach && (Projectile(Other) != none))) goto 0x0056
+  001b: Projectile(Other).Explode(Other.Location, -obj'Core.Math'.static.Normal(self.Velocity))
+  0053: goto 0x00d1
+  0056: if !(Other.bDestroyedByInterpActor) goto 0x0077
+  0068: Other.DestroyActor()
+  0074: goto 0x00d1
+  0077: I = 0
+  007e: if !((I < self.GeneratedEvents.Length)) goto 0x00d1
+  008e: MoverEvent = SeqEvent_Mover(I[self.GeneratedEvents])
+  00a4: if !((MoverEvent != none)) goto 0x00c7
+  00af: MoverEvent.NotifyEncroachingOn(Other)
+  00c7: AddAdd_Int(I)
+  00ce: goto 0x007e
+  00d1: return nothing
+  00d3: <eos>
+
+function InterpActor.Attach  (script 118 bytes)
+  0000: if !(!IsTimerActive('FinishedOpen', )) goto 0x0073
+  0019: I = 0
+  0020: if !((I < self.GeneratedEvents.Length)) goto 0x0073
+  0030: MoverEvent = SeqEvent_Mover(I[self.GeneratedEvents])
+  0046: if !((MoverEvent != none)) goto 0x0069
+  0051: MoverEvent.NotifyAttached(Other)
+  0069: AddAdd_Int(I)
+  0070: goto 0x0020
+  0073: return nothing
+  0075: <eos>
+
+function InterpActor.Detach  (script 93 bytes)
+  0000: I = 0
+  0007: if !((I < self.GeneratedEvents.Length)) goto 0x005a
+  0017: MoverEvent = SeqEvent_Mover(I[self.GeneratedEvents])
+  002d: if !((MoverEvent != none)) goto 0x0050
+  0038: MoverEvent.NotifyDetached(Other)
+  0050: AddAdd_Int(I)
+  0057: goto 0x0007
+  005a: return nothing
+  005c: <eos>
+
+function InterpActor.Restart  (script 36 bytes)
+  0000: foreach BasedActors(obj'Actor', A) (end 0x0020)
+  0010: Attach(A)
+  001f: iternext
+  0020: iterpop
+  0021: return nothing
+  0023: <eos>
+
+function InterpActor.FinishedOpen  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < self.GeneratedEvents.Length)) goto 0x0055
+  0017: MoverEvent = SeqEvent_Mover(I[self.GeneratedEvents])
+  002d: if !((MoverEvent != none)) goto 0x004b
+  0038: MoverEvent.NotifyFinishedOpen()
+  004b: AddAdd_Int(I)
+  0052: goto 0x0007
+  0055: return nothing
+  0057: <eos>
+
+function InterpActor.PlayMovingSound  (script 159 bytes)
+  0000: if !(bClosing) goto 0x0022
+  0009: SoundToPlay = self.CloseSound
+  0014: AmbientToPlay = self.OpeningAmbientSound
+  001f: goto 0x0038
+  0022: SoundToPlay = self.OpenSound
+  002d: AmbientToPlay = self.ClosingAmbientSound
+  0038: if !((SoundToPlay != none)) goto 0x0057
+  0043: PlaySound(SoundToPlay, true, , , , )
+  0057: if !((AmbientToPlay != none)) goto 0x009c
+  0062: self.AmbientSoundComponent.Stop()
+  0075: self.AmbientSoundComponent.SoundCue = AmbientToPlay
+  0089: self.AmbientSoundComponent.Play()
+  009c: return nothing
+  009e: <eos>
+
+function InterpActor.InterpolationStarted  (script 64 bytes)
+  0000: ClearTimer('Restart', )
+  0014: ClearTimer('FinishedOpen', )
+  0028: InterpActor.PlayMovingSound(InterpAction.bReversePlayback)
+  003d: return nothing
+  003f: <eos>
+
+function InterpActor.InterpolationFinished  (script 393 bytes)
+  0000: if !((self.AmbientSoundComponent != none)) goto 0x001e
+  000b: self.AmbientSoundComponent.Stop()
+  001e: StoppedSound = (InterpAction.bReversePlayback ? self.ClosedSound : self.OpenedSound)
+  0042: if !((StoppedSound != none)) goto 0x0061
+  004d: PlaySound(StoppedSound, true, , , , )
+  0061: DoorNav = DoorMarker(self.MyMarker)
+  0071: if !(InterpAction.bReversePlayback) goto 0x00c3
+  0083: if !((self.Attached.Length > 0)) goto 0x00a2
+  008f: SetTimer(self.StayOpenTime, false, 'Restart', )
+  00a2: if !((DoorNav != none)) goto 0x00c0
+  00ad: DoorNav.MoverClosed()
+  00c0: goto 0x00f4
+  00c3: SetTimer(self.StayOpenTime, false, 'FinishedOpen', )
+  00d6: if !((DoorNav != none)) goto 0x00f4
+  00e1: DoorNav.MoverOpened()
+  00f4: if !(self.bMonitorMover) goto 0x0146
+  00fd: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x0145)
+  011d: if !((C.PendingMover == self)) goto 0x0144
+  0131: C.MoverFinished()
+  0144: iternext
+  0145: iterpop
+  0146: if !((InterpAction.bNoResetOnRewind && InterpAction.bRewindOnPlay)) goto 0x0186
+  016c: ForceNetRelevant()
+  0176: self.bUpdateSimulatedPosition = true
+  017e: self.bReplicateMovement = true
+  0186: return nothing
+  0188: <eos>
+
+function InterpActor.InterpolationChanged  (script 24 bytes)
+  0000: InterpActor.PlayMovingSound(InterpAction.bReversePlayback)
+  0015: return nothing
+  0017: <eos>

@@ -1,0 +1,13 @@
+function NavigationCellSolidProxyComponent.CreatePrimitives  (script 330 bytes)
+  0000: Cell = NavigationCell(self.Owner)
+  0010: if !((Cell == none)) goto 0x001d
+  001b: return nothing
+  001d: TriColor = (Cell._IsTacticalCell ? MakeLinearColor(1.0, 0.4, 0.2, 0.2) : MakeLinearColor(0.4, 0.6, 0.2, 0.2))
+  0073: if !((Cell.get_EditUtil()._Vertices.Length == 3)) goto 0x013d
+  0097: Vertex1 = 0[Cell.get_EditUtil()._Vertices]
+  00bb: Vertex2 = 1[Cell.get_EditUtil()._Vertices]
+  00df: Vertex3 = 2[Cell.get_EditUtil()._Vertices]
+  0104: AddSolidTriangle(Vertex1.Location, Vertex2.Location, Vertex3.Location, TriColor)
+  013d: BuildBoundingBox()
+  0147: return nothing
+  0149: <eos>

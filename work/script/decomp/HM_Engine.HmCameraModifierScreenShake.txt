@@ -1,0 +1,102 @@
+function HmCameraModifierScreenShake.AddScreenShake  (script 27 bytes)
+  0000: self.Shakes.Length[self.Shakes] = HmCameraModifierScreenShake.InitializeShake(NewShake)
+  0018: return nothing
+  001a: <eos>
+
+function HmCameraModifierScreenShake.InitializeShake  (script 541 bytes)
+  0000: NewShake.TimeToGo = NewShake.TimeDuration
+  0021: if !(!obj'Core.Math'.static.IsZero(NewShake.RotAmplitude)) goto 0x00f9
+  0042: NewShake.RotSinOffset.X = HmCameraModifierScreenShake.InitializeOffset(NewShake.RotParam.X)
+  007f: NewShake.RotSinOffset.Y = HmCameraModifierScreenShake.InitializeOffset(NewShake.RotParam.Y)
+  00bc: NewShake.RotSinOffset.Z = HmCameraModifierScreenShake.InitializeOffset(NewShake.RotParam.Z)
+  00f9: if !(!obj'Core.Math'.static.IsZero(NewShake.LocAmplitude)) goto 0x01d1
+  011a: NewShake.LocSinOffset.X = HmCameraModifierScreenShake.InitializeOffset(NewShake.LocParam.X)
+  0157: NewShake.LocSinOffset.Y = HmCameraModifierScreenShake.InitializeOffset(NewShake.LocParam.Y)
+  0194: NewShake.LocSinOffset.Z = HmCameraModifierScreenShake.InitializeOffset(NewShake.LocParam.Z)
+  01d1: if !((NewShake.FOVAmplitude != cast3f(0))) goto 0x0210
+  01e9: NewShake.FOVSinOffset = HmCameraModifierScreenShake.InitializeOffset(NewShake.FOVParam)
+  0210: return NewShake
+  0216: return return
+  021c: <eos>
+
+function HmCameraModifierScreenShake.InitializeOffset  (script 64 bytes)
+  0000: switch (Param)
+  0007: case 0: (next 0x0025)
+  000c: return ((obj'Core.Random'.static.FRand() * cast3f(2)) * 3.1415927)
+  0025: case 1: (next 0x0030)
+  002a: return 0.0
+  0030: default:
+  0033: return 0.0
+  0039: return return
+  003f: <eos>
+
+function HmCameraModifierScreenShake.ComposeNewShake  (script 167 bytes)
+  0000: NewShake.TimeDuration = Duration
+  0016: NewShake.RotAmplitude = newRotAmplitude
+  002c: NewShake.RotFrequency = newRotFrequency
+  0042: NewShake.LocAmplitude = newLocAmplitude
+  0058: NewShake.LocFrequency = newLocFrequency
+  006e: NewShake.FOVAmplitude = newFOVAmplitude
+  0084: NewShake.FOVFrequency = newFOVFrequency
+  009a: return NewShake
+  00a0: return return
+  00a6: <eos>
+
+function HmCameraModifierScreenShake.StartNewShake  (script 91 bytes)
+  0000: if !((Duration == -1.0)) goto 0x001a
+  000f: self.Shakes.Length = 0
+  0017: goto 0x0058
+  001a: NewShake = ComposeNewShake(Duration, newRotAmplitude, newRotFrequency, newLocAmplitude, newLocFrequency, newFOVAmplitude, newFOVFrequency)
+  004d: HmCameraModifierScreenShake.AddScreenShake(NewShake)
+  0058: return nothing
+  005a: <eos>
+
+function HmCameraModifierScreenShake.StopAll  (script 11 bytes)
+  0000: self.Shakes.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmCameraModifierScreenShake.DumpShakeInfo  (script 429 bytes)
+  0000: LogInternal(("TimeToGo:" @ cast55(Shake.TimeToGo)), , , )
+  0024: LogInternal(("TimeDuration" @ cast55(Shake.TimeDuration)), , , )
+  004b: LogInternal(("RotAmplitude" @ cast58(Shake.RotAmplitude)), , , )
+  0072: LogInternal(("RotFrequency" @ cast58(Shake.RotFrequency)), , , )
+  0099: LogInternal(("RotSinOffset" @ cast58(Shake.RotSinOffset)), , , )
+  00c0: LogInternal(("LocAmplitude" @ cast58(Shake.LocAmplitude)), , , )
+  00e7: LogInternal(("LocFrequency" @ cast58(Shake.LocFrequency)), , , )
+  010e: LogInternal(("LocSinOffset" @ cast58(Shake.LocSinOffset)), , , )
+  0135: LogInternal(("FOVAmplitude" @ cast55(Shake.FOVAmplitude)), , , )
+  015c: LogInternal(("FOVFrequency" @ cast55(Shake.FOVFrequency)), , , )
+  0183: LogInternal(("FOVSinOffset" @ cast55(Shake.FOVSinOffset)), , , )
+  01aa: return nothing
+  01ac: <eos>
+
+function HmCameraModifierScreenShake.UpdateScreenShake  (script 27 bytes)
+  0000: DeltaTime
+  0005: Shake
+  000a: out_CamLoc
+  000f: out_CamRot
+  0014: out_FOV
+  0019: nothing
+  001a: <eos>
+
+function HmCameraModifierScreenShake.ModifyCamera  (script 315 bytes)
+  0000: ModifyCamera(Camera, DeltaTime, OutPOV)
+  0015: if !((self.Shakes.Length > 0)) goto 0x00f2
+  0021: I = 0
+  0028: if !((I < self.Shakes.Length)) goto 0x00a4
+  0038: tempShake = I[self.Shakes]
+  0049: HmCameraModifierScreenShake.UpdateScreenShake(DeltaTime, tempShake, OutPOV.Location, OutPOV.Rotation, OutPOV.Fov)
+  0089: I[self.Shakes] = tempShake
+  009a: AddAdd_Int(I)
+  00a1: goto 0x0028
+  00a4: I = (self.Shakes.Length - 1)
+  00b3: if !((I >= 0)) goto 0x00f2
+  00be: if !((I[self.Shakes].TimeToGo <= cast3f(0))) goto 0x00e8
+  00dc: self.Shakes.Remove(I,1)
+  00e8: SubtractSubtract_Int(I)
+  00ef: goto 0x00b3
+  00f2: HmCameraModifierScreenShake.UpdateScreenShake(DeltaTime, self.TestShake, OutPOV.Location, OutPOV.Rotation, OutPOV.Fov)
+  0132: return false
+  0134: return return
+  013a: <eos>

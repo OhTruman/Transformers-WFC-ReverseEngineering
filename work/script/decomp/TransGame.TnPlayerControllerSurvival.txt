@@ -1,0 +1,62 @@
+function TnPlayerControllerSurvival.get_WatchForGeneratorInput  (script 14 bytes)
+  0000: return self._WatchForGeneratorInput
+  0007: return return
+  000d: <eos>
+
+function TnPlayerControllerSurvival.set_WatchForGeneratorInput  (script 16 bytes)
+  0000: self._WatchForGeneratorInput = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlayerControllerSurvival.PostBeginPlay  (script 37 bytes)
+  0000: TnPlayerController.PostBeginPlay()
+  0006: self.GeneratorInputHandler.Initialize(delegate.OnGeneratorInputEvent)
+  0022: return nothing
+  0024: <eos>
+
+function TnPlayerControllerSurvival.PlayerTick  (script 38 bytes)
+  0000: TnPlayerController.PlayerTick(DeltaTime)
+  000b: self.GeneratorInputHandler.Update(DeltaTime)
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerControllerSurvival.PressXButton  (script 28 bytes)
+  0000: TnPlayerController.PressXButton()
+  0006: self.GeneratorInputHandler.OnPress()
+  0019: return nothing
+  001b: <eos>
+
+function TnPlayerControllerSurvival.ReleaseXButton  (script 28 bytes)
+  0000: TnPlayerController.ReleaseXButton()
+  0006: self.GeneratorInputHandler.OnRelease()
+  0019: return nothing
+  001b: <eos>
+
+function TnPlayerControllerSurvival.PressKeyboardInteractKey  (script 28 bytes)
+  0000: TnPlayerController.PressKeyboardInteractKey()
+  0006: self.GeneratorInputHandler.OnPress()
+  0019: return nothing
+  001b: <eos>
+
+function TnPlayerControllerSurvival.ReleaseKeyboardInteractKey  (script 28 bytes)
+  0000: TnPlayerController.ReleaseKeyboardInteractKey()
+  0006: self.GeneratorInputHandler.OnRelease()
+  0019: return nothing
+  001b: <eos>
+
+function TnPlayerControllerSurvival.OnGeneratorInputEvent  (script 110 bytes)
+  0000: if !(!self._WatchForGeneratorInput) goto 0x000d
+  000b: return nothing
+  000d: switch (EventType)
+  0014: case 1: (next 0x0042)
+  0019: if !((self.RevivablePawn != none)) goto 0x0026
+  0024: return nothing
+  0026: TnPlayerReplicationInfoSurvival(self.PlayerReplicationInfo).SendGeneratorCommand(true)
+  003f: goto 0x006b
+  0042: case 2: (next 0x0047)
+  0047: case 4: (next 0x0068)
+  004c: TnPlayerReplicationInfoSurvival(self.PlayerReplicationInfo).SendGeneratorCommand(false)
+  0065: goto 0x006b
+  0068: default:
+  006b: return nothing
+  006d: <eos>

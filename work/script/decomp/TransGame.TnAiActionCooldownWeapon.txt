@@ -1,0 +1,31 @@
+function TnAiActionCooldownWeapon.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionCooldownWeaponBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionCooldownWeapon.OnStart  (script 165 bytes)
+  0000: if !((get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateWeaponOverheated') == false)) goto 0x002e
+  0023: return Succeed()
+  002e: SetCharacterState(0)
+  0039: if !((self._Blueprint.ShouldFocusOnEnemy && (self._TransformerController.Enemy != none))) goto 0x0083
+  0061: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  0083: PlayDialog(obj'SoundEvents_Dialog.CooldownWeaponBeginDialog')
+  0092: return OnStart(ExpectedEffects)
+  009e: return return
+  00a4: <eos>
+
+function TnAiActionCooldownWeapon.OnUpdate  (script 70 bytes)
+  0000: if !((get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateWeaponOverheated') == false)) goto 0x002e
+  0023: return Succeed()
+  002e: return OnUpdate(ExpectedEffects, DeltaTime)
+  003f: return return
+  0045: <eos>
+
+function TnAiActionCooldownWeapon.OnFinish  (script 47 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: PlayDialog(obj'SoundEvents_Dialog.CooldownWeaponCompleteDialog')
+  002c: return nothing
+  002e: <eos>

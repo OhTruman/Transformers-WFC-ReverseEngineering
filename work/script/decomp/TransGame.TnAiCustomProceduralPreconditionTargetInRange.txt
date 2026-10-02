@@ -1,0 +1,20 @@
+function TnAiCustomProceduralPreconditionTargetInRange.set_MaxAttackDistance  (script 14 bytes)
+  0000: self._MaxAttackDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiCustomProceduralPreconditionTargetInRange.set_IgnoreZAxisDistance  (script 16 bytes)
+  0000: self._IgnoreZAxisDistance = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnAiCustomProceduralPreconditionTargetInRange.CheckProceduralPrecondition  (script 175 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: TargetDirection = (Target.Location - C.Pawn.Location)
+  0062: if !(self._IgnoreZAxisDistance) goto 0x0081
+  006b: TargetDirection.Z = 0.0
+  0081: return (obj'Core.Math'.static.VSizeSq(TargetDirection) < (self._MaxAttackDistance * self._MaxAttackDistance))
+  00a8: return return
+  00ae: <eos>

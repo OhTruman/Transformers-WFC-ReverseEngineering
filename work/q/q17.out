@@ -1,0 +1,50 @@
+=== refs 0x82f65358
+  ref 82f65358 DATA from 820a85e8 in <nofunc>
+  ref 82f65358 DATA from 820ae9f8 in <nofunc>
+  ref 82f65358 DATA from 820b0ad0 in <nofunc>
+  ref 82f65358 DATA from 820b0ea8 in <nofunc>
+  ref 82f65358 DATA from 820b1288 in <nofunc>
+  ref 82f65358 DATA from 821ffb10 in <nofunc>
+  ref 82f65358 DATA from 822ec440 in <nofunc>
+  ref 82f65358 DATA from 8230d590 in <nofunc>
+=== asm 0x82f65358 40
+  82f65358  mfspr r12,LR
+  82f6535c  bl 0x830eacc8 ->830eacc8
+  82f65360  stfd f31,-0x50(r1) ->Stack[-0x50]
+  82f65364  stwu r1,-0x130(r1) ->Stack[-0x130]
+  82f65368  lfs f11,0x4(r4)
+  82f6536c  lis r11,-0x7dfd
+  82f65370  lfs f10,0x18(r7)
+  82f65374  lis r10,-0x7dfd
+  82f65378  fmuls f9,f10,f11
+  82f6537c  lfs f8,0x8(r4)
+  82f65380  lfs f7,0x1c(r7)
+  82f65384  lis r9,-0x7dce
+  82f65388  lfs f6,0x0(r4)
+  82f6538c  or r31,r3,r3
+  82f65390  lfs f5,0x14(r7)
+  82f65394  or r25,r5,r5
+  82f65398  lfs f13,0x4160(r11) ->82034160
+  82f6539c  or r28,r6,r6
+  82f653a0  lfs f4,0x200(r3)
+  82f653a4  or r30,r7,r7
+  82f653a8  lfs f0,0x3c70(r10) ->82033c70
+  82f653ac  fadds f3,f4,f13
+  82f653b0  lfs f13,-0x6560(r9) ->82319aa0
+  82f653b4  addi r29,r7,0x14
+  82f653b8  lis r27,-0x7c7d
+  82f653bc  li r24,0x1
+  82f653c0  fmadds f2,f7,f8,f9
+  82f653c4  fmuls f12,f6,f3
+  82f653c8  stfs f12,0x90(r1) ->Stack[-0xa0]
+  82f653cc  fmuls f11,f11,f3
+  82f653d0  stfs f11,0x94(r1) ->Stack[-0x9c]
+  82f653d4  fmuls f10,f8,f3
+  82f653d8  stfs f10,0x98(r1) ->Stack[-0x98]
+  82f653dc  fmadds f1,f5,f6,f2
+  82f653e0  fmuls f9,f1,f0
+  82f653e4  fcmpu cr6,f9,f13
+  82f653e8  blt cr6,0x82f65464 ->82f65464
+  82f653ec  lfs f9,0x20c(r3)
+  82f653f0  fmr f13,f7
+  82f653f4  fcmpu cr6,f7,f9

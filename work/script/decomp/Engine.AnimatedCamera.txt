@@ -1,0 +1,47 @@
+function AnimatedCamera.PostBeginPlay  (script 143 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: idx = 0
+  000d: if !((idx < 8)) goto 0x0054
+  0019: idx[self.AnimInstPool] = new(self, nothing, obj'CameraAnimInst', nothing, GetRemoteRole)
+  0033: idx[self.FreeAnims] = idx[self.AnimInstPool]
+  004a: AddAdd_PreInt(idx)
+  0051: goto 0x000d
+  0054: self.AnimCameraActor = Spawn(obj'DynamicCameraActor', self, , , , , true, )
+  0070: self.AccumulatorCameraActor = Spawn(obj'DynamicCameraActor', self, , , , , true, )
+  008c: return nothing
+  008e: <eos>
+
+function AnimatedCamera.Destroyed  (script 27 bytes)
+  0000: self.AnimCameraActor.DestroyActor()
+  000c: self.AccumulatorCameraActor.DestroyActor()
+  0018: return nothing
+  001a: <eos>
+
+function AnimatedCamera.ApplyCameraModifiers  (script 35 bytes)
+  0000: Camera.ApplyCameraModifiers(DeltaTime, OutPOV)
+  0010: AnimatedCamera.ApplyCameraModifiersNative(DeltaTime, OutPOV)
+  0020: return nothing
+  0022: <eos>
+
+function AnimatedCamera.ApplyCameraModifiersNative  (script 12 bytes)
+  0000: DeltaTime
+  0005: OutPOV
+  000a: nothing
+  000b: <eos>
+
+function AnimatedCamera.PlayCameraAnim  (script 37 bytes)
+  0000: Anim
+  0005: Rate
+  000a: Scale
+  000f: BlendInTime
+  0014: BlendOutTime
+  0019: bLoop
+  001e: bRandomStartTime
+  0023: nothing
+  0024: <eos>
+
+function AnimatedCamera.StopCameraAnim  (script 12 bytes)
+  0000: Anim
+  0005: bImmediate
+  000a: nothing
+  000b: <eos>

@@ -1,0 +1,362 @@
+function TnAiActionNavigate.get_PlanRunner  (script 13 bytes)
+  0000: return self._PlanRunner
+  0006: return return
+  000c: <eos>
+
+function TnAiActionNavigate.OnInitialize  (script 158 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionNavigateBlueprint(Blueprint)
+  001b: self._GoalSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapGoalSet', self)
+  003a: self._GoalSet.InitializeFromTemplate(self._Blueprint.GoalSet)
+  005b: self._ActionSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapActionSet', self)
+  007a: self._ActionSet.InitializeFromTemplate(self._Blueprint.ActionSet)
+  009b: return nothing
+  009d: <eos>
+
+function TnAiActionNavigate.OnBind  (script 68 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._PlanRunner.Initialize(self._TransformerController, self._GoalSet, self._ActionSet, none)
+  0029: self._Smoother.Initialize(self._TransformerController)
+  0041: return nothing
+  0043: <eos>
+
+function TnAiActionNavigate.OnUnbind  (script 28 bytes)
+  0000: OnUnbind()
+  0006: self._PlanRunner.Shutdown()
+  0019: return nothing
+  001b: <eos>
+
+function TnAiActionNavigate.OnPlanMade  (script 273 bytes)
+  0000: OnPlanMade(ExpectedEffects)
+  000b: self._TransformerController.GetPendingPathingInfo(TheRoute, ActorReachableSectionType)
+  0028: idx = 0
+  002f: if !((idx < (TheRoute.Length - 1))) goto 0x00ae
+  0042: if !((idx[TheRoute] == none)) goto 0x0056
+  0053: goto 0x00a4
+  0056: Spec = idx[TheRoute].GetReachSpecTo((idx + 1)[TheRoute])
+  0083: if !((Spec == none)) goto 0x0091
+  008e: goto 0x00a4
+  0091: Spec.PlanTraversal()
+  00a4: AddAdd_PreInt(idx)
+  00ab: goto 0x002f
+  00ae: self._TransformerController.ReleaseOccupiedNavigationPoint()
+  00c1: NavPointDestination = NavigationPoint(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActor', ExpectedEffects))
+  00e9: if !((NavPointDestination == none)) goto 0x00f6
+  00f4: return nothing
+  00f6: self._TransformerController.AssignOccupiedNavigationPoint(NavPointDestination)
+  010e: return nothing
+  0110: <eos>
+
+function TnAiActionNavigate.ValidateForFoundPlan  (script 390 bytes)
+  0000: Destination = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActor', ExpectedEffects))
+  0028: if !((Destination == none)) goto 0x0035
+  0033: return false
+  0035: ActorReachableSectionType = self._SectionBuilder.FindActorReachablePathSection(self._TransformerPawn, Destination)
+  0058: if !((cast3a(ActorReachableSectionType) != cast3a(0))) goto 0x0087
+  0068: self._TransformerController.SetPendingPathingInfo(RouteCache, ActorReachableSectionType)
+  0085: return true
+  0087: if !((cast3a(self._TransformerController._DebugMode) == cast3a(3))) goto 0x00d9
+  00a0: obj'Engine.Debug'.static.FlushPersistentLines()
+  00b3: obj'Engine.Debug'.static.FlushPersistentText()
+  00c6: self._TransformerPawn.DebugFindPathOn()
+  00d9: self._TransformerController.FindPathToward(Destination, , , false)
+  00f4: if !((cast3a(self._TransformerController._DebugMode) == cast3a(3))) goto 0x0120
+  010d: self._TransformerPawn.DebugFindPathOff()
+  0120: RouteCache = self._TransformerController.GetRouteCache()
+  0139: if !((RouteCache.Length == 0)) goto 0x015d
+  0145: TnAiActionNavigate.TryTeleportToLastAnchor(Destination)
+  0150: TnAiActionNavigate.PathFailedDebug(Destination)
+  015b: return false
+  015d: self._TransformerController.SetPendingPathingInfo(RouteCache, 0)
+  0177: TnAiActionNavigate.DrawPath()
+  017d: return true
+  017f: return return
+  0185: <eos>
+
+function TnAiActionNavigate.TryTeleportToLastAnchor  (script 462 bytes)
+  0000: if !((self._TransformerPawn.FindAnchorFailedTime != self._TransformerPawn.WorldInfo.TimeSeconds)) goto 0x002c
+  002a: return nothing
+  002c: if !((self._TransformerPawn.LastAnchor == none)) goto 0x0042
+  0040: return nothing
+  0042: if !(!self._TransformerPawn.CanAnchor()) goto 0x005c
+  005a: return nothing
+  005c: foreach self._TransformerPawn.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0177)
+  0085: PP = TnPlayerPawn(PC.Pawn)
+  009e: if !((PP == none)) goto 0x00ad
+  00a9: iternext
+  00aa: goto 0x0177
+  00ad: FOVRadians = ((0.0174533 * PC.GetFOVAngle()) / cast3f(2))
+  00d3: if !(((cast39(PP.GetViewRotation()) dot obj'Core.Math'.static.Normal((self._TransformerPawn.LastAnchor.Location - PP.Location))) > FOVRadians)) goto 0x0129
+  0126: iterpop
+  0127: return nothing
+  0129: if !(((cast39(PP.GetViewRotation()) dot obj'Core.Math'.static.Normal((self._TransformerPawn.Location - PP.Location))) > FOVRadians)) goto 0x0176
+  0173: iterpop
+  0174: return nothing
+  0176: iternext
+  0177: iterpop
+  0178: self._TransformerPawn.Teleport(self._TransformerPawn.LastAnchor.Location, cast50((Destination.Location - self._TransformerPawn.LastAnchor.Location)))
+  01cb: return nothing
+  01cd: <eos>
+
+function TnAiActionNavigate.NavigateSubplanSucceedCallback  (script 196 bytes)
+  0000: CurrentAtActorProp = self._TransformerController.AiWorldState.GetState(obj'TnAiWorldStateAtActor')
+  0027: CurrentAtActorRange = cast3d(CurrentAtActorProp.Value.IntVal)
+  004a: if !((cast3a(CurrentAtActorRange) > cast3a(self.ExpectedAtActorRange))) goto 0x00c1
+  005d: LogInternal((("Error: Ai" @ cast56(self._TransformerPawn)) @ "succeeded navigation subplan but failed navigation range test"), , , )
+  00b7: Fail()
+  00c1: return nothing
+  00c3: <eos>
+
+function TnAiActionNavigate.OnStart  (script 818 bytes)
+  0000: self.ExpectedAtActorDestination = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActor', ExpectedEffects))
+  0028: if !((self.ExpectedAtActorDestination == none)) goto 0x003e
+  0033: return Fail()
+  003e: self.ExpectedAtActorRange = cast3d(obj'HM_Engine.HmGoap'.static.GetIntValue(obj'TnAiWorldStateAtActor', ExpectedEffects))
+  0063: self.ExpectedAtActorLOSCheckRequired = obj'HM_Engine.HmGoap'.static.GetProperty(AtActorLOSProperty, obj'TnAiWorldStateAtActorLOS', ExpectedEffects)
+  008c: self.ExpectedAtActorLOSBoolVal = AtActorLOSProperty.Value.BoolVal
+  00af: self.ExpectedDesiredFormRequired = obj'HM_Engine.HmGoap'.static.GetProperty(DesiredFormProperty, obj'TnAiWorldStateTransformerForm', ExpectedEffects)
+  00d8: if !(self.ExpectedDesiredFormRequired) goto 0x0141
+  00e1: self.ExpectedDesiredForm = cast3d(DesiredFormProperty.Value.IntVal)
+  0104: if !((self._GoalSet.Goals.Length > 1)) goto 0x0141
+  0119: TnGoapGoalNavigatePath(1[self._GoalSet.Goals]).SetDesiredForm(self.ExpectedDesiredForm)
+  0141: self._TransformerController.GetPendingPathingInfo(RouteCache, ActorReachableSectionType)
+  015e: self._Head = TnAiActionNavigate.BuildPathSections(self.ExpectedAtActorDestination, RouteCache, ActorReachableSectionType)
+  0179: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateNavigatePath', false, self._Head)
+  019c: self._TransformerController.AiWorldState.SetSubject(obj'TnAiWorldStateAtActor', self.ExpectedAtActorDestination)
+  01c2: LOSActor = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActorLOS', ExpectedEffects))
+  01ea: if !((LOSActor != none)) goto 0x021b
+  01f5: self._TransformerController.AiWorldState.SetSubject(obj'TnAiWorldStateAtActorLOS', LOSActor)
+  021b: if !((cast3a(ActorReachableSectionType) == cast3a(0))) goto 0x0248
+  022b: self._CheckActorReachableDestination = none
+  0232: self._CheckActorReachableTimer.Clear()
+  0245: goto 0x0276
+  0248: self._CheckActorReachableDestination = self.ExpectedAtActorDestination
+  0253: self._CheckActorReachableTimer.Start(delegate.DoCheckActorReachable, 0.4, 1)
+  0276: self._StartTime = obj'Engine.Engine'.static.GetWorldTime()
+  028f: self._TransformerController.SetCurrentRoute(RouteCache)
+  02a7: self._PlanRunner.Resume()
+  02ba: self._PlanRunner.ClearSolution()
+  02cd: self._PlanRunner.AddFailedObserver(delegate.FailCallback)
+  02e9: self._PlanRunner.AddCompletedObserver(delegate.NavigateSubplanSucceedCallback)
+  0305: obj'TnAiPlanningScheduler'.static.RequestReplan(self._PlanRunner, 1)
+  031f: return OnStart(ExpectedEffects)
+  032b: return return
+  0331: <eos>
+
+function TnAiActionNavigate.HasNavigationSucceeded  (script 213 bytes)
+  0000: if !((!self._TransformerPawn.IsJumping() && (cast3a(CurrentAtActorRange) <= cast3a(self.ExpectedAtActorRange)))) goto 0x00cc
+  002d: if !(self.ExpectedAtActorLOSCheckRequired) goto 0x0098
+  0036: if !((self.ExpectedAtActorLOSBoolVal && get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateAtActorLOS'))) goto 0x0095
+  0061: if !(TnAiActionNavigate.SetupFinalTransformerForm()) goto 0x0095
+  006a: if !(self._TransformerController.IsScriptedMoveExecuting()) goto 0x0093
+  0080: self._TransformerController.ScriptedMoveCompleted()
+  0093: return true
+  0095: goto 0x00cc
+  0098: if !(TnAiActionNavigate.SetupFinalTransformerForm()) goto 0x00cc
+  00a1: if !(self._TransformerController.IsScriptedMoveExecuting()) goto 0x00ca
+  00b7: self._TransformerController.ScriptedMoveCompleted()
+  00ca: return true
+  00cc: return false
+  00ce: return return
+  00d4: <eos>
+
+function TnAiActionNavigate.OnUpdate  (script 483 bytes)
+  0000: if !(!self._PlanRunner.get_HasPlan()) goto 0x00ae
+  0018: if !((self._PlanRunner.get_TimeSinceLastFullPlan() < (obj'Engine.Engine'.static.GetWorldTime() - self._StartTime))) goto 0x009d
+  004a: LogInternal((("Error: " @ self._TransformerPawn.get_FriendlyName()) @ "could not build a navigation plan"), , , )
+  0092: return Fail()
+  009d: return OnUpdate(ExpectedEffects, DeltaTime)
+  00ae: self._PlanRunner.Update(DeltaTime)
+  00c6: if !((self._Head == none)) goto 0x00dc
+  00d1: return Fail()
+  00dc: if !((cast3a(self._TransformerController._DebugMode) == cast3a(3))) goto 0x010e
+  00f5: self._Head.DrawPath(self._TransformerController, )
+  010e: CurrentAtActorProp = self._TransformerController.AiWorldState.GetState(obj'TnAiWorldStateAtActor')
+  0135: if !((CurrentAtActorProp.Subject != Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActor', ExpectedEffects)))) goto 0x0177
+  016c: return Fail()
+  0177: CurrentAtActorRange = cast3d(CurrentAtActorProp.Value.IntVal)
+  019a: if !(TnAiActionNavigate.HasNavigationSucceeded(CurrentAtActorRange)) goto 0x01b3
+  01a8: return Succeed()
+  01b3: self._CheckActorReachableTimer.Tick(DeltaTime)
+  01cb: return OnUpdate(ExpectedEffects, DeltaTime)
+  01dc: return return
+  01e2: <eos>
+
+function TnAiActionNavigate.CanInterruptNow  (script 27 bytes)
+  0000: return self._PlanRunner.get_AllowsPlanningInteruption()
+  0014: return return
+  001a: <eos>
+
+function TnAiActionNavigate.OnFinish  (script 299 bytes)
+  0000: if !((cast3a(CurrentState) == cast3a(4))) goto 0x0039
+  0010: if !(self._TransformerController.IsScriptedMoveExecuting()) goto 0x0039
+  0026: self._TransformerController.ScriptedMoveFailed()
+  0039: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0072
+  0049: if !(self._TransformerController.IsScriptedMoveExecuting()) goto 0x0072
+  005f: self._TransformerController.ScriptedMoveCompleted()
+  0072: TnAiActionNavigate.CleanupOldRoute()
+  0078: self._TransformerController.CancelMove()
+  008b: self._TransformerController.ClearCurrentRoute()
+  009e: self._TransformerController.MoveToTacticalVolumeCompleted()
+  00b1: if !((cast3a(self._TransformerController._DebugMode) == cast3a(3))) goto 0x00dd
+  00ca: obj'Engine.Debug'.static.FlushPersistentLines()
+  00dd: self._PlanRunner.Suspend()
+  00f0: self._CheckActorReachableTimer.Clear()
+  0103: self._Head = none
+  010a: get_CurrentWorldState().SetSubject(obj'TnAiWorldStateNavigatePath', none)
+  0128: return nothing
+  012a: <eos>
+
+function TnAiActionNavigate.CleanupOldRoute  (script 162 bytes)
+  0000: TheRoute = self._TransformerController.GetCurrentRoute()
+  0019: idx = 0
+  0020: if !((idx < (TheRoute.Length - 1))) goto 0x009f
+  0033: if !((idx[TheRoute] == none)) goto 0x0047
+  0044: goto 0x0095
+  0047: Spec = idx[TheRoute].GetReachSpecTo((idx + 1)[TheRoute])
+  0074: if !((Spec == none)) goto 0x0082
+  007f: goto 0x0095
+  0082: Spec.UnplanTraversal()
+  0095: AddAdd_PreInt(idx)
+  009c: goto 0x0020
+  009f: return nothing
+  00a1: <eos>
+
+function TnAiActionNavigate.ApplyOverride  (script 53 bytes)
+  0000: foreach self._ActionSet.Actions(A,) (end 0x0031)
+  0018: A.ApplyOverride(ActionOverride)
+  0030: iternext
+  0031: iterpop
+  0032: return nothing
+  0034: <eos>
+
+function TnAiActionNavigate.DoCheckActorReachable  (script 78 bytes)
+  0000: if !(self._TransformerPawn.get_IsAirborne()) goto 0x0018
+  0016: return nothing
+  0018: if !((self._TransformerController.Pawn.ActorReachable(self._CheckActorReachableDestination, , ) == 0)) goto 0x004b
+  0041: Fail()
+  004b: return nothing
+  004d: <eos>
+
+function TnAiActionNavigate.IsDynamicNavPointNecessary  (script 230 bytes)
+  0000: if !((RouteCache.Length < 2)) goto 0x000f
+  000d: return true
+  000f: Segment0Vector = (PawnLocation - 0[RouteCache].Location)
+  002c: Segment1Vector = (1[RouteCache].Location - 0[RouteCache].Location)
+  0054: Segment1VectorNormalized = obj'Core.Math'.static.Normal(Segment1Vector)
+  006a: ProjectedDistanceOnSegment1 = (Segment0Vector dot Segment1VectorNormalized)
+  007c: if !((ProjectedDistanceOnSegment1 < cast3f(0))) goto 0x008b
+  0089: return true
+  008b: ProjectedPointOnSegment1 = (0[RouteCache].Location + (Segment1VectorNormalized * ProjectedDistanceOnSegment1))
+  00af: PawnDistanceToSegment1 = obj'Core.Math'.static.VSize((ProjectedPointOnSegment1 - PawnLocation))
+  00cc: if !((PawnDistanceToSegment1 > 500.0)) goto 0x00dd
+  00db: return true
+  00dd: return false
+  00df: return return
+  00e5: <eos>
+
+function TnAiActionNavigate.AddDynamicNavPointForCurrentPosition  (script 114 bytes)
+  0000: if !(TnAiActionNavigate.IsDynamicNavPointNecessary(RouteCache, self._TransformerPawn.Location)) goto 0x006f
+  001c: Nav = self._TransformerController.GetDynamicNavPoint()
+  0035: if !((Nav != none)) goto 0x006f
+  0040: Nav.SetLocation(self._TransformerPawn.Location)
+  005a: RouteCache.Insert(0,1)
+  0062: 0[RouteCache] = Nav
+  006f: return nothing
+  0071: <eos>
+
+function TnAiActionNavigate.BuildPathSections  (script 598 bytes)
+  0000: self._Smoother.DebugOn = (cast3a(self._TransformerController._DebugMode) == cast3a(3))
+  0026: if !((self._TransformerPawn._VehicleForm != none)) goto 0x009c
+  003a: MaxRadius = obj'Core.Math'.static.FMax(self._TransformerPawn._RobotForm.get_FormMovementCapabilities().CylinderRadius, self._TransformerPawn._VehicleForm.get_FormMovementCapabilities().CylinderRadius)
+  0099: goto 0x00c9
+  009c: MaxRadius = self._TransformerPawn._RobotForm.get_FormMovementCapabilities().CylinderRadius
+  00c9: (MaxRadius *= self._Blueprint.SmoothingWidthScale)
+  00de: if !((RouteCache.Length > 0)) goto 0x0147
+  00ea: TnAiActionNavigate.AddDynamicNavPointForCurrentPosition(RouteCache)
+  00f5: Head = self._SectionBuilder.BuildSections(self._TransformerPawn, RouteCache)
+  0118: self._Smoother.CalculateSmoothPath(self._TransformerPawn.Location, RouteCache, MaxRadius, )
+  0144: goto 0x0249
+  0147: if !((cast3a(ActorReachableSectionType) != cast3a(0))) goto 0x0214
+  0157: NavPointDestination = NavigationPoint(Destination)
+  0167: if !(((NavPointDestination != none) && NavPointDestination.bStatic)) goto 0x01e9
+  0186: 0[RouteCache] = NavPointDestination
+  0193: TnAiActionNavigate.AddDynamicNavPointForCurrentPosition(RouteCache)
+  019e: Head = self._SectionBuilder.BuildSections(self._TransformerPawn, RouteCache)
+  01c1: ActorReachableSectionType = 0
+  01c9: self._TransformerController.SetPendingPathingInfo(RouteCache, ActorReachableSectionType)
+  01e6: goto 0x0211
+  01e9: Head = self._SectionBuilder.BuildActorReachablePathSection(self._TransformerController, Destination, ActorReachableSectionType)
+  0211: goto 0x0249
+  0214: LogInternal((("Error: Ai" @ cast56(self._TransformerPawn)) @ "No points in route cache"), , , )
+  0249: return Head
+  024f: return return
+  0255: <eos>
+
+function TnAiActionNavigate.SetupFinalTransformerForm  (script 205 bytes)
+  0000: if !(!self.ExpectedDesiredFormRequired) goto 0x000d
+  000b: return true
+  000d: CurrentFormProperty = self._TransformerController.GetWorldState(obj'TnAiWorldStateTransformerForm')
+  002b: CurrentForm = cast3d(CurrentFormProperty.Value.IntVal)
+  004e: if !((cast3a(CurrentForm) == cast3a(self.ExpectedDesiredForm))) goto 0x0063
+  0061: return true
+  0063: get_CurrentWorldState().SetSubject(obj'TnAiWorldStateNavigatePath', none)
+  0081: TnGoapGoalTransform(0[self._GoalSet.Goals])._DesiredForm = self.ExpectedDesiredForm
+  00a5: get_PlanningScheduler().SubmitRequest(self._PlanRunner, 1)
+  00c4: return false
+  00c6: return return
+  00cc: <eos>
+
+function TnAiActionNavigate.GetDescriptionDetail  (script 84 bytes)
+  0000: if !((self._PlanRunner._CurrentSolution != none)) goto 0x0047
+  0014: Result = (((Result $ "(") $ self._PlanRunner._CurrentSolution.GetDescription()) $ ")")
+  0047: return Result
+  004d: return return
+  0053: <eos>
+
+function TnAiActionNavigate.PathFailedDebug  (script 868 bytes)
+  0000: if !((!self._TransformerPawn.CanAnchor() || ((Pawn(Destination) != none) && !Pawn(Destination).CanAnchor()))) goto 0x004b
+  0049: return nothing
+  004b: self._TransformerController.AddErrorIcon(obj'TnAiStateIcons.NoPathError')
+  0063: DM = TnDebugManager(obj'Engine.Engine'.static.GetCurrentWorldInfo().GetDebugManager())
+  008f: D = NavigationPoint(Destination)
+  009f: DestinationPawn = Pawn(Destination)
+  00af: if !((((DestinationPawn != none) && (DestinationPawn.Anchor != none)) && DestinationPawn.ValidAnchor())) goto 0x00ff
+  00e8: D = DestinationPawn.Anchor
+  00fc: goto 0x0138
+  00ff: if !((D == none)) goto 0x0138
+  010a: D = self._TransformerPawn.GetBestAnchor(Destination, Destination.Location, false, )
+  0138: if !(((self._TransformerPawn.Anchor != none) && self._TransformerPawn.ValidAnchor())) goto 0x017b
+  0164: S = self._TransformerPawn.Anchor
+  0178: goto 0x01a9
+  017b: S = self._TransformerPawn.GetBestAnchor(self._TransformerPawn, self._TransformerPawn.Location, true, )
+  01a9: TnGame(obj'Engine.Engine'.static.GetGame()).NotifyPathFailure(S, D)
+  01d9: if !(((cast3a(self._TransformerController._DebugMode) == cast3a(3)) || DM.ShowAIReachability)) goto 0x0310
+  0206: LogInternal((((("Error : - AI Failed To find Path from" @ cast56(S)) @ "to") @ cast56(D)) @ ". Game has been frozen ('t'ed).  Reachablity has been drawn out.  Turn AID off for character and press Alt 't' to resume.  For more info, check the wiki"), 'DevAI', , )
+  02ee: obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled = true
+  030d: goto 0x0361
+  0310: LogInternal((((("Error : - AI Failed To find Path from" @ cast56(S)) @ "to") @ cast56(D)) @ "."), 'DevAI', , )
+  0361: return nothing
+  0363: <eos>
+
+function TnAiActionNavigate.DrawPath  (script 556 bytes)
+  0000: if !((cast3a(self._TransformerController._DebugMode) != cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: TheRoute = self._TransformerController.GetCurrentRoute()
+  0034: PrevPoint = self._TransformerPawn.Location
+  0048: idx = 0
+  004f: if !((idx < (TheRoute.Length - 1))) goto 0x0229
+  0062: if !((idx[TheRoute] == none)) goto 0x0076
+  0073: goto 0x021f
+  0076: obj'Engine.Debug'.static.DrawLine(PrevPoint, idx[TheRoute].GetDestination(self._TransformerController), obj'Core.Colors'.static.Cyan(), true)
+  00c0: obj'Engine.Debug'.static.DrawSphere(idx[TheRoute].GetDestination(self._TransformerController), 25.0, 4, obj'Core.Colors'.static.Cyan(), true)
+  010c: if !(idx[TheRoute].bGated) goto 0x01fb
+  0124: if !(idx[TheRoute].bGateOpen) goto 0x019d
+  013c: obj'Engine.Debug'.static.DrawDisk(idx[TheRoute].GetDestination(self._TransformerController), vect(0,0,1), 40.0, 50.0, 5, obj'Core.Colors'.static.Green(), true)
+  019a: goto 0x01fb
+  019d: obj'Engine.Debug'.static.DrawDisk(idx[TheRoute].GetDestination(self._TransformerController), vect(0,0,1), 40.0, 50.0, 5, obj'Core.Colors'.static.Red(), true)
+  01fb: PrevPoint = idx[TheRoute].GetDestination(self._TransformerController)
+  021f: AddAdd_PreInt(idx)
+  0226: goto 0x004f
+  0229: return nothing
+  022b: <eos>

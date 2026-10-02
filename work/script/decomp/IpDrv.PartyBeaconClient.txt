@@ -1,0 +1,57 @@
+function PartyBeaconClient.OnReservationRequestComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconClient.OnJoinSessionRequestReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconClient.OnHostIsReady  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconClient.OnHostHasCancelled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconClient.RequestReservation  (script 12 bytes)
+  0000: DesiredHost
+  0005: Players
+  000a: nothing
+  000b: <eos>
+
+function PartyBeaconClient.CancelReservation  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PartyBeaconClient.ClearDelegates  (script 78 bytes)
+  0000: self.__OnReservationRequestComplete__Delegate = delegate.None
+  000f: self.__OnJoinSessionRequestReceived__Delegate = delegate.None
+  001e: self.__OnHostIsReady__Delegate = delegate.None
+  002d: self.__OnHostHasCancelled__Delegate = delegate.None
+  003c: self.__OnReturnToSessionResponse__Delegate = delegate.None
+  004b: return nothing
+  004d: <eos>
+
+function PartyBeaconClient.DestroyBeacon  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PartyBeaconClient.OnReturnToSessionResponse  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconClient.RequestReturnToSession  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PartyBeaconClient.GetConnectionChannel  (script 27 bytes)
+  0000: return self.Connection.GetConnectionChannel()
+  0014: return return
+  001a: <eos>
+
+function PartyBeaconClient.NotifyPlayerConnected  (script 103 bytes)
+  0000: LogInternal("Player has connected to game, will stop listening for party beacon heartbeats", 'DevOnline', , )
+  005c: self.HasEstablishedGameConnection = true
+  0064: return nothing
+  0066: <eos>

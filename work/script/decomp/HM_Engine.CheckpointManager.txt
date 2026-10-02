@@ -1,0 +1,203 @@
+function CheckpointManager.GetInstance  (script 177 bytes)
+  0000: CM = CheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  002c: if !((CM == none)) goto 0x00a4
+  0037: WarnInternal("No checkpoint manager available. Make sure a valid checkpoint manager class is defined in the .ini files!")
+  00a4: return CM
+  00aa: return return
+  00b0: <eos>
+
+function CheckpointManager.GetActiveCheckpoint  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function CheckpointManager.SetActiveCheckpoint  (script 195 bytes)
+  0000: if !(!self.bIsRestartingFromCheckpoint) goto 0x00c0
+  000b: LogInternal(((("Setting active checkpoint to actor: " $ cast56(NewCheckpoint)) $ " tag: ") $ cast57(NewCheckpoint.Tag)), , , )
+  005b: self.ActiveCheckpointPathName = PathName(NewCheckpoint)
+  0070: CheckpointManager.GenerateCheckpointData(NewCheckpoint)
+  007b: Game = HmGameInfo(NewCheckpoint.WorldInfo.Game)
+  009d: if !((Game != none)) goto 0x00c0
+  00a8: Game.NotifyCheckpointSet(NewCheckpoint)
+  00c0: return nothing
+  00c2: <eos>
+
+function CheckpointManager.ClearActiveCheckpoint  (script 44 bytes)
+  0000: LogInternal("Clearing active checkpoint", , , )
+  0021: self.ActiveCheckpointPathName = ""
+  0029: return nothing
+  002b: <eos>
+
+function CheckpointManager.RestartFromActiveCheckpoint  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function CheckpointManager.LoadAndRestartFromCheckpoint  (script 58 bytes)
+  0000: Filename = GetFilenameForCheckpoint(CheckpointIndex)
+  0015: CheckpointManager.GetOrCreateCheckpointDataWriter().LoadData(Filename, delegate.LoadCompleteCallback)
+  0037: return nothing
+  0039: <eos>
+
+function CheckpointManager.LoadCompleteCallback  (script 30 bytes)
+  0000: if !((cast3a(Status) == cast3a(0))) goto 0x001b
+  0010: CheckpointManager.RestartFromCheckpoint(LoadedCheckpointData)
+  001b: return nothing
+  001d: <eos>
+
+function CheckpointManager.BuildLoadAndRestartURL  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function CheckpointManager.GetOrCreateCheckpointDataWriter  (script 44 bytes)
+  0000: if !((self.CheckpointDataWriter == none)) goto 0x001f
+  000b: self.CheckpointDataWriter = new(self, nothing, obj'HmQueuedDataReaderWriter', nothing, AttachTreeCallback)
+  001f: return self.CheckpointDataWriter
+  0025: return return
+  002b: <eos>
+
+function CheckpointManager.SaveActiveCheckpoint  (script 277 bytes)
+  0000: if !((GetActiveCheckpoint() == none)) goto 0x0063
+  0010: WarnInternal("Trying to save active checkpoint, but no active checkpoint is currently set!")
+  0060: goto 0x0112
+  0063: if !(obj'Engine.WorldInfo'.static.IsConsoleBuild(2)) goto 0x00b1
+  007b: Description.GameName = self.PS3GameName
+  0091: Description.Detail = GetDetailForCheckpoint(CheckpointIndex)
+  00b1: Description.Subtitle = GetSubtitleForCheckpoint(CheckpointIndex)
+  00d1: CheckpointManager.GetOrCreateCheckpointDataWriter().SaveData(GetFilenameForCheckpoint(CheckpointIndex), self.CheckpointData, Description, WriteDataCompleteCallback, GetIconNameForIndex(CheckpointIndex))
+  0112: return nothing
+  0114: <eos>
+
+function CheckpointManager.GenerateCheckpointData  (script 7 bytes)
+  0000: ActiveCheckpoint
+  0005: nothing
+  0006: <eos>
+
+function CheckpointManager.IsRestartingFromCheckpoint  (script 14 bytes)
+  0000: return self.bIsRestartingFromCheckpoint
+  0007: return return
+  000d: <eos>
+
+function CheckpointManager.GetActiveCheckpointPathName  (script 13 bytes)
+  0000: return self.ActiveCheckpointPathName
+  0006: return return
+  000c: <eos>
+
+function CheckpointManager.OnStartingFromCheckpoint  (script 156 bytes)
+  0000: LogInternal(((("Setting start checkpoint to actor: " $ PathName(StartCheckpoint)) $ " tag: ") $ cast57(StartCheckpoint.Tag)), , , )
+  0057: self.ActiveCheckpointPathName = PathName(StartCheckpoint)
+  006c: CheckpointManager.GenerateCheckpointData(StartCheckpoint)
+  0077: StartCheckpoint.ProcessActions()
+  008a: NotifyCheckpointGameStart(StartCheckpoint)
+  0099: return nothing
+  009b: <eos>
+
+function CheckpointManager.OnPieSessionStartingFromCheckpoint  (script 28 bytes)
+  0000: OnStartingFromCheckpoint(StartCheckpoint)
+  000f: RestartFromActiveCheckpoint()
+  0019: return nothing
+  001b: <eos>
+
+function CheckpointManager.OnPieSessionEnding  (script 13 bytes)
+  0000: ClearActiveCheckpoint()
+  000a: return nothing
+  000c: <eos>
+
+function CheckpointManager.GetFilenameForCheckpoint  (script 19 bytes)
+  0000: return CheckpointIndex[self.CheckpointFilenames]
+  000c: return return
+  0012: <eos>
+
+function CheckpointManager.GetIconNameForIndex  (script 19 bytes)
+  0000: return CheckpointIndex[self.CheckpointIconNames]
+  000c: return return
+  0012: <eos>
+
+function CheckpointManager.GetSubtitleForCheckpoint  (script 30 bytes)
+  0000: return CheckpointIndex[self.CheckpointFileDescriptions].CheckpointSubtitle
+  0017: return return
+  001d: <eos>
+
+function CheckpointManager.GetDetailForCheckpoint  (script 30 bytes)
+  0000: return CheckpointIndex[self.CheckpointFileDescriptions].CheckpointDetail
+  0017: return return
+  001d: <eos>
+
+function CheckpointManager.CheckCheckpointFileExistence  (script 35 bytes)
+  0000: if !((cast3a(self.FileStatusCheckState) != cast3a(0))) goto 0x001a
+  0010: self.FileStatusCheckState = 2
+  0018: return nothing
+  001a: CheckpointManager.BeginCheckpointFileExistenceCheck()
+  0020: return nothing
+  0022: <eos>
+
+function CheckpointManager.BeginCheckpointFileExistenceCheck  (script 84 bytes)
+  0000: self.FileStatusCheckState = 1
+  0008: self.CheckpointFileStatuses.Length = self.CheckpointFileDescriptions.Length
+  0015: I = 0
+  001c: if !((I < self.CheckpointFileStatuses.Length)) goto 0x0044
+  002c: I[self.CheckpointFileStatuses] = 0
+  003a: AddAdd_PreInt(I)
+  0041: goto 0x001c
+  0044: CheckpointManager.ExistenceCheckComplete(0, AnArray)
+  0051: return nothing
+  0053: <eos>
+
+function CheckpointManager.ExistenceCheckComplete  (script 253 bytes)
+  0000: I = 0
+  0007: if !((I < self.CheckpointFileStatuses.Length)) goto 0x00da
+  0017: if !((cast3a(I[self.CheckpointFileStatuses]) == cast3a(1))) goto 0x007e
+  002d: switch (Status)
+  0034: case 0: (next 0x004a)
+  0039: I[self.CheckpointFileStatuses] = 2
+  0047: goto 0x007e
+  004a: case 3: (next 0x004f)
+  004f: case 1: (next 0x0065)
+  0054: I[self.CheckpointFileStatuses] = 3
+  0062: goto 0x007e
+  0065: case 2: (next 0x007b)
+  006a: I[self.CheckpointFileStatuses] = 4
+  0078: goto 0x007e
+  007b: default:
+  007e: if !((cast3a(I[self.CheckpointFileStatuses]) == cast3a(0))) goto 0x00d0
+  0094: I[self.CheckpointFileStatuses] = 1
+  00a2: CheckpointManager.GetOrCreateCheckpointDataWriter().LoadData(GetFilenameForCheckpoint(I), delegate.ExistenceCheckComplete)
+  00ce: return nothing
+  00d0: AddAdd_PreInt(I)
+  00d7: goto 0x0007
+  00da: if !((cast3a(self.FileStatusCheckState) == cast3a(2))) goto 0x00f2
+  00ea: CheckpointManager.BeginCheckpointFileExistenceCheck()
+  00f0: return nothing
+  00f2: self.FileStatusCheckState = 0
+  00fa: return nothing
+  00fc: <eos>
+
+function CheckpointManager.GetCheckpointFileStatus  (script 212 bytes)
+  0000: if !(((self.CheckpointFileStatuses.Length == 0) || (cast3a(0[self.CheckpointFileStatuses]) == cast3a(0)))) goto 0x002a
+  0020: CheckCheckpointFileExistence()
+  002a: if !(((CheckpointIndex >= self.CheckpointFileStatuses.Length) || (CheckpointIndex < 0))) goto 0x00c1
+  0047: LogInternal(((("ERROR: Attempting to GetCheckpointFileStatus on out of range index, requested:" @ cast53(CheckpointIndex)) $ ", MaxIndex:") @ cast53(self.CheckpointFileStatuses.Length)), , , )
+  00be: return 0
+  00c1: return CheckpointIndex[self.CheckpointFileStatuses]
+  00cd: return return
+  00d3: <eos>
+
+function CheckpointManager.PreSaveGenerateCheckpointData  (script 44 bytes)
+  0000: SaveData = CheckpointManager.CreateSaveData()
+  000c: SaveData.PopulateSaveData()
+  001f: return SaveData
+  0025: return return
+  002b: <eos>
+
+function CheckpointManager.PostLoadHandleCheckpointData  (script 22 bytes)
+  0000: SaveData.DisseminateSaveData()
+  0013: return nothing
+  0015: <eos>
+
+function CheckpointManager.CreateSaveData  (script 22 bytes)
+  0000: return new(nothing, nothing, self.SaveDataClass, nothing, AttachTreeCallback)
+  000f: return return
+  0015: <eos>
+
+function CheckpointManager.RestartFromCheckpoint  (script 7 bytes)
+  0000: NewCheckpointData
+  0005: nothing
+  0006: <eos>

@@ -1,0 +1,32 @@
+function TnDeathModifierSetMaterial.OnStart  (script 131 bytes)
+  0000: TnDeathModifierSetMaterial.StartMesh(self._Owner.Mesh)
+  0014: if !(((self._Owner._RobotForm != none) && (self._Owner._RobotForm._Arm.get_Mesh() != none))) goto 0x0080
+  0055: TnDeathModifierSetMaterial.StartMesh(self._Owner._RobotForm._Arm.get_Mesh())
+  0080: return nothing
+  0082: <eos>
+
+function TnDeathModifierSetMaterial.StartMesh  (script 114 bytes)
+  0000: if !((self._Owner.get_EnergyDeathMaterial() == none)) goto 0x001b
+  0019: return nothing
+  001b: Mesh.SetMaterialForAllElements(self._Owner.get_EnergyDeathMaterial())
+  0041: self._Owner._CharacterApplier.ApplyColorsToMesh(Mesh)
+  0062: self.Meshes.AddItem(Mesh)
+  006f: return nothing
+  0071: <eos>
+
+function TnDeathModifierSetMaterial.OnTick  (script 28 bytes)
+  0000: TnDeathModifierSetMaterial.UpdateTransition((self.CurrentScalarValue - (DeltaTime / self.TransitionTime)))
+  0019: return nothing
+  001b: <eos>
+
+function TnDeathModifierSetMaterial.UpdateTransition  (script 113 bytes)
+  0000: ScalarValue = obj'Core.Math'.static.FClamp(ScalarValue, 0.0, 1.0)
+  0020: if !((ScalarValue == self.CurrentScalarValue)) goto 0x0031
+  002f: return nothing
+  0031: self.CurrentScalarValue = ScalarValue
+  003c: foreach self.Meshes(Mesh,) (end 0x006d)
+  004b: Mesh.SetScalarParam('Defrag', ScalarValue)
+  006c: iternext
+  006d: iterpop
+  006e: return nothing
+  0070: <eos>

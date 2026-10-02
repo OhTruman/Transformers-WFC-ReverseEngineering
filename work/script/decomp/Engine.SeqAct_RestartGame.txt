@@ -1,0 +1,17 @@
+function SeqAct_RestartGame.Activated  (script 222 bytes)
+  0000: SequenceOp.Activated()
+  0006: I = 0
+  000d: if !((I < self.Targets.Length)) goto 0x00db
+  001d: PC = PlayerController(I[self.Targets])
+  0033: if !((PC == none)) goto 0x0041
+  003e: goto 0x00d1
+  0041: if !(!PC.WorldInfo.IsServer()) goto 0x0064
+  0062: return nothing
+  0064: if !(!PC.IsLocalPlayerController()) goto 0x007f
+  007c: goto 0x00d1
+  007f: if !(PC.WorldInfo.Game.PlayerCanRestartGame(PC)) goto 0x00d1
+  00ac: PC.WorldInfo.Game.RestartGame()
+  00d1: AddAdd_PreInt(I)
+  00d8: goto 0x000d
+  00db: return nothing
+  00dd: <eos>

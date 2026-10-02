@@ -1,0 +1,160 @@
+function HmDebrisDestructionEffect.SetSpawnParameters  (script 25 bytes)
+  0000: self.SpawnVolumeScale = SpawnVolumeScale_
+  000b: self.NumChunks = NumChunks_
+  0016: return nothing
+  0018: <eos>
+
+function HmDebrisDestructionEffect.SetVelocityParameters  (script 36 bytes)
+  0000: self.LinearSpeed = LinearSpeed_
+  000b: self.AngularSpeed = AngularSpeed_
+  0016: self.VelocityConeHalfAngle = VelocityConeHalfAngle_
+  0021: return nothing
+  0023: <eos>
+
+function HmDebrisDestructionEffect.SetMeshTemplate  (script 14 bytes)
+  0000: self.MeshTemplate = MeshTemplate_
+  000b: return nothing
+  000d: <eos>
+
+function HmDebrisDestructionEffect.SetParticles  (script 14 bytes)
+  0000: self.Particles = Particles_
+  000b: return nothing
+  000d: <eos>
+
+function HmDebrisDestructionEffect.SetLifespans  (script 25 bytes)
+  0000: self.ChunkLifespan = ChunkLifespan_
+  000b: self.CollisionLifeSpan = CollisionLifespan_
+  0016: return nothing
+  0018: <eos>
+
+function HmDebrisDestructionEffect.BeginEffect  (script 164 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: self.RigidBodySpawner.DrawScale3D = (AttachingActor.DrawScale * AttachingActor.DrawScale3D)
+  003d: EffectToWorldTransform = GetEffectToWorldTransform()
+  004d: ActualNumChunks = GetNumberOfChunks()
+  005d: I = 0
+  0064: if !((I < ActualNumChunks)) goto 0x00a1
+  0073: DebrisChunk = SpawnNewDebrisChunk(EffectToWorldTransform)
+  0088: SendActorSpawnEvent(DebrisChunk)
+  0097: AddAdd_PreInt(I)
+  009e: goto 0x0064
+  00a1: return nothing
+  00a3: <eos>
+
+function HmDebrisDestructionEffect.GetNumberOfChunks  (script 13 bytes)
+  0000: return self.NumChunks
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.SpawnNewDebrisChunk  (script 441 bytes)
+  0000: SpawnPosition = obj'Core.Math'.static.TransformPoint((obj'Core.Random'.static.RandomUnitVector() * self.SpawnVolumeScale), EffectToWorldTransform)
+  0039: SpawnOrientation = EffectToWorldTransform.Orientation
+  004f: DebrisChunk = HmDestructibleSpawnedChunk(self.RigidBodySpawner.SpawnRigidBodyActor(GetMeshTemplate(), SpawnPosition, SpawnOrientation))
+  0081: DebrisChunk.SetLifeSpan(self.ChunkLifespan)
+  0099: DebrisChunk.SetCollisionLifeSpan(self.CollisionLifeSpan)
+  00b1: DebrisChunk.InitializeCollision()
+  00c4: if !((self.Particles != none)) goto 0x00da
+  00cf: HmDebrisDestructionEffect.AttachParticlesToDebris(DebrisChunk)
+  00da: ChoosenLinearSpeed = obj'Core.Random'.static.RandomInRange(self.LinearSpeed)
+  00f8: LinearVelocityDirection = obj'Core.Random'.static.RandomVectorInCone(cast39(EffectToWorldTransform.Orientation), self.VelocityConeHalfAngle)
+  0128: DebrisChunk.SetLinearVelocity((ChoosenLinearSpeed * LinearVelocityDirection))
+  0147: ChoosenAngularSpeed = obj'Core.Random'.static.RandomInRange(self.AngularSpeed)
+  0165: AngularVelocityDirection = obj'Core.Random'.static.RandomUnitVector()
+  017e: DebrisChunk.SetAngularVelocity((ChoosenAngularSpeed * AngularVelocityDirection))
+  019d: OnDebrisSpawned(DebrisChunk)
+  01ac: return DebrisChunk
+  01b2: return return
+  01b8: <eos>
+
+function HmDebrisDestructionEffect.AttachParticlesToDebris  (script 118 bytes)
+  0000: ActiveEmitter = self.ParticleEffectsManager.PlayEffect(DebrisChunk, self.Particles, DebrisChunk.Location, DebrisChunk.Rotation)
+  003f: if !((ActiveEmitter == none)) goto 0x004c
+  004a: return nothing
+  004c: DebrisChunk.AttachEmitter(ActiveEmitter)
+  0064: SendActorSpawnEvent(ActiveEmitter)
+  0073: return nothing
+  0075: <eos>
+
+function HmDebrisDestructionEffect.OnDebrisSpawned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDebrisDestructionEffect.EndEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDebrisDestructionEffect.DrawDebugDisplay  (script 274 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: if !((AttachingActor == none)) goto 0x001d
+  001b: return nothing
+  001d: EffectToWorldTransform = GetEffectToWorldTransform()
+  002d: obj'Engine.Debug'.static.DrawOrientedBox(EffectToWorldTransform.Position, EffectToWorldTransform.Orientation, (self.SpawnVolumeScale * 0.5), MakeColor(204, 179, 51, ), )
+  007e: ConeScale = cast3f(obj'Core.Math'.static.Max(cast44(obj'Core.Math'.static.VSize(self.SpawnVolumeScale)), 100))
+  00a5: obj'Engine.Debug'.static.DrawCone(EffectToWorldTransform.Position, cast39(EffectToWorldTransform.Orientation), (ConeScale * cast3f(2)), (self.VelocityConeHalfAngle * cast3f(2)), (self.VelocityConeHalfAngle * cast3f(2)), 10, MakeColor(204, 102, 51, ), )
+  010f: return nothing
+  0111: <eos>
+
+function HmDebrisDestructionEffect.GetSpawnVolumeScale  (script 13 bytes)
+  0000: return self.SpawnVolumeScale
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetMinLinearSpeed  (script 24 bytes)
+  0000: return self.LinearSpeed.Min
+  0011: return return
+  0017: <eos>
+
+function HmDebrisDestructionEffect.GetMaxLinearSpeed  (script 24 bytes)
+  0000: return self.LinearSpeed.Max
+  0011: return return
+  0017: <eos>
+
+function HmDebrisDestructionEffect.GetMinAngularSpeed  (script 24 bytes)
+  0000: return self.AngularSpeed.Min
+  0011: return return
+  0017: <eos>
+
+function HmDebrisDestructionEffect.GetMaxAngularSpeed  (script 24 bytes)
+  0000: return self.AngularSpeed.Max
+  0011: return return
+  0017: <eos>
+
+function HmDebrisDestructionEffect.GetVelocityConeHalfAngle  (script 13 bytes)
+  0000: return self.VelocityConeHalfAngle
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetNumChunks  (script 13 bytes)
+  0000: return self.NumChunks
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetMeshTemplate  (script 13 bytes)
+  0000: return self.MeshTemplate
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetParticles  (script 13 bytes)
+  0000: return self.Particles
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetChunkLifespan  (script 13 bytes)
+  0000: return self.ChunkLifespan
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetCollisionLifeSpan  (script 13 bytes)
+  0000: return self.CollisionLifeSpan
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetRigidBodySpawner  (script 13 bytes)
+  0000: return self.RigidBodySpawner
+  0006: return return
+  000c: <eos>
+
+function HmDebrisDestructionEffect.GetParticleEffectsManager  (script 13 bytes)
+  0000: return self.ParticleEffectsManager
+  0006: return return
+  000c: <eos>

@@ -1,0 +1,252 @@
+function HmOrbitActorCameraBehavior.GetRecenteredRotation  (script 152 bytes)
+  0000: RecenteredRotation = rot(0,0,0)
+  0013: if !((self.ActorToOrbit != none)) goto 0x008b
+  001e: RecenteredRotation.Yaw = obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(self.ActorToOrbit.Rotation.Yaw) + (cast3f(180) * 182.0444489))))
+  006c: RecenteredRotation.Pitch = cast44((self.RecenterPitch * 182.0444489))
+  008b: return RecenteredRotation
+  0091: return return
+  0097: <eos>
+
+function HmOrbitActorCameraBehavior.Reset  (script 125 bytes)
+  0000: self.OrbitRotation = GetRecenteredRotation()
+  0010: self.TargetOrbitRotation = self.OrbitRotation
+  001b: Result.Location = CalcOrbitLocation()
+  0037: Result.Teleport = true
+  004a: self.RecenterSmoother.Reset()
+  005d: self.OrbitSmoother.Reset()
+  0070: return Result
+  0076: return return
+  007c: <eos>
+
+function HmOrbitActorCameraBehavior.Recenter  (script 103 bytes)
+  0000: TargetRotation = GetRecenteredRotation()
+  0010: self.OrbitRotation = self.RecenterSmoother.Smooth(self.OrbitRotation, TargetRotation, self.RecenterTime, DeltaTime)
+  003d: self.TargetOrbitRotation = self.OrbitRotation
+  0048: (self.RecenterTimer -= DeltaTime)
+  0054: return CalcOrbitLocation()
+  0060: return return
+  0066: <eos>
+
+function HmOrbitActorCameraBehavior.IsRecenterComplete  (script 244 bytes)
+  0000: if !(((CI.LeftStickInputX > 0.0) || (CI.LeftStickInputX > 0.0))) goto 0x0043
+  0036: return (self.RecenterTimer <= 0.0)
+  0043: TargetRotation = GetRecenteredRotation()
+  0053: Difference = obj'Core.Math'.static.Normalize((TargetRotation - self.OrbitRotation))
+  0079: return (((obj'Core.Math'.static.Abs(cast3f(Difference.Pitch)) < cast3f(10)) && (obj'Core.Math'.static.Abs(cast3f(Difference.Yaw)) < cast3f(10))) && (obj'Core.Math'.static.Abs(cast3f(Difference.Roll)) < cast3f(10)))
+  00ed: return return
+  00f3: <eos>
+
+function HmOrbitActorCameraBehavior.Activate  (script 144 bytes)
+  0000: if !(self.PreserveRotationOnActivation) goto 0x0034
+  0009: self.OrbitRotation = cast50((vect(-1,0,0) >> Result.Rotation))
+  0031: goto 0x005c
+  0034: self.OrbitRotation = cast50((Result.Location - self.AnchorPoint.Location))
+  005c: self.TargetOrbitRotation = self.OrbitRotation
+  0067: self.RecenterSmoother.Reset()
+  007a: self.OrbitSmoother.Reset()
+  008d: return nothing
+  008f: <eos>
+
+function HmOrbitActorCameraBehavior.SetOrbitDistance  (script 14 bytes)
+  0000: self.OrbitDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.CalcOrbitLocation  (script 68 bytes)
+  0000: default=self.OrbitRotation
+  0009: LocationOffset.X = self.OrbitDistance
+  001f: return (self.AnchorPoint.Location + (LocationOffset >> Rotation))
+  003d: return return
+  0043: <eos>
+
+function HmOrbitActorCameraBehavior.IncrementOrbitWithInput  (script 360 bytes)
+  0000: HmOrbitActorCameraBehavior.UpdateFastYawTime(DeltaTime)
+  000b: currentYawSpeed = HmOrbitActorCameraBehavior.CalculateYawSpeed(CI)
+  001c: self.TargetOrbitRotation.Yaw = obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(self.TargetOrbitRotation.Yaw) + (((182.0444489 * CI.RightStickInputX) * DeltaTime) * currentYawSpeed))))
+  007b: self.TargetOrbitRotation.Pitch = obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(self.TargetOrbitRotation.Pitch) - (((182.0444489 * CI.RightStickInputY) * DeltaTime) * self.PitchSpeed))))
+  00da: self.TargetOrbitRotation.Pitch = obj'Core.Math'.static.Clamp(self.TargetOrbitRotation.Pitch, cast44((self.PitchRange.Min * 182.0444489)), cast44((self.PitchRange.Max * 182.0444489)))
+  0138: self.OrbitRotation = self.OrbitSmoother.Smooth(self.OrbitRotation, self.TargetOrbitRotation, self.OrbitSmoothTime, DeltaTime)
+  0165: return nothing
+  0167: <eos>
+
+function HmOrbitActorCameraBehavior.UpdateFastYawTime  (script 15 bytes)
+  0000: (self.TimeAtMaxYawSpeed += DeltaTime)
+  000c: return nothing
+  000e: <eos>
+
+function HmOrbitActorCameraBehavior.CalculateYawSpeed  (script 183 bytes)
+  0000: if !((obj'Core.Math'.static.Abs(CI.RightStickInputX) < self.FastYawStickThreshold)) goto 0x0030
+  0025: self.TimeAtMaxYawSpeed = 0.0
+  0030: if !(((self.FastYawSpeed == cast3f(0)) || (self.TimeAtMaxYawSpeed <= self.FastYawDelay))) goto 0x0054
+  004e: return self.YawSpeed
+  0054: if !((self.FastYawBlendTime == cast3f(0))) goto 0x0067
+  0061: return self.FastYawSpeed
+  0067: K = obj'Core.Math'.static.FClamp(((self.TimeAtMaxYawSpeed - self.FastYawDelay) / self.FastYawBlendTime), 0.0, 1.0)
+  0095: return obj'Core.Math'.static.Lerp(self.YawSpeed, self.FastYawSpeed, K)
+  00b0: return return
+  00b6: <eos>
+
+function HmOrbitActorCameraBehavior.ShouldSlide  (script 113 bytes)
+  0000: if !((self.ActorToOrbit == none)) goto 0x000d
+  000b: return false
+  000d: return (((CI.RightStickInputX != cast3f(0)) || (CI.RightStickInputY != cast3f(0))) || (obj'Core.Math'.static.VSizeSq(self.ActorToOrbit.Velocity) < 0.01))
+  006a: return return
+  0070: <eos>
+
+function HmOrbitActorCameraBehavior.ResetOrbitRotation  (script 43 bytes)
+  0000: self.OrbitRotation = cast50((CameraLocation - self.AnchorPoint.Location))
+  001d: self.TargetOrbitRotation = self.OrbitRotation
+  0028: return nothing
+  002a: <eos>
+
+function HmOrbitActorCameraBehavior.Update  (script 359 bytes)
+  0000: if !(Result.Teleport) goto 0x0030
+  0014: HmOrbitActorCameraBehavior.ResetOrbitRotation(Result.Location)
+  002a: return Result
+  0030: if !(CI.ResetCamera) goto 0x0075
+  0044: Result.Recentering = true
+  0057: self.RecenterSmoother.Reset()
+  006a: self.RecenterTimer = self.RecenterTime
+  0075: if !(Result.Recentering) goto 0x00c2
+  0089: TargetLocation = Recenter(DeltaTime)
+  009e: if !(HmOrbitActorCameraBehavior.IsRecenterComplete(CI)) goto 0x00bf
+  00ac: Result.Recentering = false
+  00bf: goto 0x0144
+  00c2: if !(Result.AutoMovedHint) goto 0x00ef
+  00d6: HmOrbitActorCameraBehavior.ResetOrbitRotation(Result.Location)
+  00ec: goto 0x011d
+  00ef: if !(((self.FollowRate != cast3f(0)) && !ShouldSlide(CI))) goto 0x011d
+  0112: HmOrbitActorCameraBehavior.AdjustYawWithFollowRate(Result)
+  011d: HmOrbitActorCameraBehavior.IncrementOrbitWithInput(DeltaTime, CI)
+  012d: HmOrbitActorCameraBehavior.ApplyYawLimits()
+  0133: TargetLocation = CalcOrbitLocation()
+  0144: Result.Location = TargetLocation
+  015a: return Result
+  0160: return return
+  0166: <eos>
+
+function HmOrbitActorCameraBehavior.AdjustYawWithFollowRate  (script 180 bytes)
+  0000: followYaw = cast3f(cast50((Result.Location - self.AnchorPoint.Location)).Yaw)
+  0035: yawDiff = cast3f(obj'Core.Math'.static.NormalizeRotAxis(cast44((followYaw - cast3f(self.TargetOrbitRotation.Yaw)))))
+  006b: self.TargetOrbitRotation.Yaw = obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(self.TargetOrbitRotation.Yaw) + (yawDiff * self.FollowRate))))
+  00b1: return nothing
+  00b3: <eos>
+
+function HmOrbitActorCameraBehavior.ApplyYawLimits  (script 234 bytes)
+  0000: if !(!self.UseYawLimits) goto 0x000d
+  000b: return nothing
+  000d: behindActorYaw = (cast3f(self.ActorToOrbit.Rotation.Yaw) + (cast3f(180) * 182.0444489))
+  003b: localYaw = cast3f(obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(self.TargetOrbitRotation.Yaw) - behindActorYaw))))
+  0071: localYaw = obj'Core.Math'.static.FClamp(localYaw, (self.YawLimits.Min * 182.0444489), (self.YawLimits.Max * 182.0444489))
+  00b5: self.TargetOrbitRotation.Yaw = obj'Core.Math'.static.NormalizeRotAxis(cast44((behindActorYaw + localYaw)))
+  00e7: return nothing
+  00e9: <eos>
+
+function HmOrbitActorCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.ActorToOrbit = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetCameraActor  (script 14 bytes)
+  0000: self.CameraActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetYawSpeed  (script 14 bytes)
+  0000: self.YawSpeed = Y
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetPitchSpeed  (script 14 bytes)
+  0000: self.PitchSpeed = P
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetPitchMin  (script 25 bytes)
+  0000: self.PitchRange.Min = P
+  0016: return nothing
+  0018: <eos>
+
+function HmOrbitActorCameraBehavior.SetPitchMax  (script 25 bytes)
+  0000: self.PitchRange.Max = P
+  0016: return nothing
+  0018: <eos>
+
+function HmOrbitActorCameraBehavior.GetOrbitRotation  (script 13 bytes)
+  0000: return self.OrbitRotation
+  0006: return return
+  000c: <eos>
+
+function HmOrbitActorCameraBehavior.GetTargetOrbitRotation  (script 13 bytes)
+  0000: return self.TargetOrbitRotation
+  0006: return return
+  000c: <eos>
+
+function HmOrbitActorCameraBehavior.SetFollowRate  (script 14 bytes)
+  0000: self.FollowRate = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.GetFollowRate  (script 13 bytes)
+  0000: return self.FollowRate
+  0006: return return
+  000c: <eos>
+
+function HmOrbitActorCameraBehavior.SetRecenterTime  (script 14 bytes)
+  0000: self.RecenterTime = R
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetYawLimits  (script 78 bytes)
+  0000: default=0.0
+  0009: default=0.0
+  0012: self.UseYawLimits = Enable
+  001f: self.YawLimits.Min = minYaw
+  0035: self.YawLimits.Max = maxYaw
+  004b: return nothing
+  004d: <eos>
+
+function HmOrbitActorCameraBehavior.GetYawLimits  (script 13 bytes)
+  0000: return self.YawLimits
+  0006: return return
+  000c: <eos>
+
+function HmOrbitActorCameraBehavior.IsYawLimitsEnabled  (script 14 bytes)
+  0000: return self.UseYawLimits
+  0007: return return
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetFastYawSpeed  (script 14 bytes)
+  0000: self.FastYawSpeed = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetFastYawDelay  (script 14 bytes)
+  0000: self.FastYawDelay = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetFastYawBlendTime  (script 14 bytes)
+  0000: self.FastYawBlendTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetFastYawStickThreshold  (script 14 bytes)
+  0000: self.FastYawStickThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetRecenterPitch  (script 14 bytes)
+  0000: self.RecenterPitch = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitActorCameraBehavior.SetOrbitSmoothTime  (script 14 bytes)
+  0000: self.OrbitSmoothTime = Value
+  000b: return nothing
+  000d: <eos>

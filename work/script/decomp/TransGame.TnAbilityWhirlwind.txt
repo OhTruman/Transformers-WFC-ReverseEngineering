@@ -1,0 +1,22 @@
+function TnAbilityWhirlwind.LocalTriggerAbility  (script 180 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return false
+  000d: MeleeService = TnMeleeService(self.OwnerPawn.GetService('TnMeleeService'))
+  0034: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x004a
+  0048: return false
+  004a: MeleeService.StartMeleeAttack(3, none, delegate.None)
+  006a: if !(MeleeService.IsMeleeing(3)) goto 0x0085
+  0083: return true
+  0085: LogInternal("Error:  Whirlwind attack failed", , , )
+  00ab: return false
+  00ad: return return
+  00b3: <eos>
+
+function TnAbilityWhirlwind.CanStartCooldown  (script 104 bytes)
+  0000: if !((self.OwnerPawn != none)) goto 0x0032
+  000b: MeleeService = TnMeleeService(self.OwnerPawn.GetService('TnMeleeService'))
+  0032: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0048
+  0046: return true
+  0048: return !MeleeService.IsMeleeing(3)
+  0061: return return
+  0067: <eos>

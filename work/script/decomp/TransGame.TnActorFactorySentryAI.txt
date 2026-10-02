@@ -1,0 +1,33 @@
+function TnActorFactorySentryAI.GetActorBlueprint  (script 13 bytes)
+  0000: return self.Sentry
+  0006: return return
+  000c: <eos>
+
+function TnActorFactorySentryAI.PostCreateActor  (script 292 bytes)
+  0000: P = TnSentryPawn(NewActor)
+  0010: if !((P == none)) goto 0x001d
+  001b: return nothing
+  001d: P.SetAITeam(self.FactionTeam)
+  0035: P._IsValidMeleeTarget = self.IsValidMeleeTarget
+  004b: C = TnAiSentryController(Pawn(NewActor).Controller)
+  0069: if !((C == none)) goto 0x0076
+  0074: return nothing
+  0076: if !(self.AlertToPlayer) goto 0x0121
+  007f: foreach C.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0120)
+  00a8: if !(C.WorldInfo.GRI.OnSameTeam(PC, P)) goto 0x00fe
+  00da: C.SeeTeammate(PC.Pawn)
+  00fb: goto 0x011f
+  00fe: C.SeeEnemy(PC.Pawn)
+  011f: iternext
+  0120: iterpop
+  0121: return nothing
+  0123: <eos>
+
+function TnActorFactorySentryAI.CheckForErrors  (script 193 bytes)
+  0000: self.InventoryList.Length = 0
+  0008: if !((self.Sentry == none)) goto 0x0043
+  0013: get_Outer().EmitCheckMessage(0, "Missing Sentry definition", , )
+  0043: if !(((self.FactionTeam.static.default.TeamIndex != 0) && (self.FactionTeam.static.default.TeamIndex != 1))) goto 0x00be
+  006d: get_Outer().EmitCheckMessage(0, (cast56(self) @ "Faction is not Autobot or Decepticon, please pick one"), , )
+  00be: return nothing
+  00c0: <eos>

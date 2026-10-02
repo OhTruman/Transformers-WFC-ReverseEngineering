@@ -1,0 +1,34 @@
+function HmDebrisDestructionEffectFactory.GetEffectDescription  (script 38 bytes)
+  0000: return ((self.MeshTemplate == none) ? "" : PathName(self.MeshTemplate))
+  001f: return return
+  0025: <eos>
+
+function HmDebrisDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmDebrisDestructionEffectFactory.CalculatePrimitiveCount  (script 48 bytes)
+  0000: if !((self.MeshTemplate == none)) goto 0x000d
+  000b: return 0
+  000d: return (self.MeshTemplate.GetNumElements(0) * self.NumChunks)
+  0029: return return
+  002f: <eos>
+
+function HmDebrisDestructionEffectFactory.DoCreateInstance  (script 191 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmDebrisDestructionEffect', nothing, AttachTreeCallback)
+  0018: Effect.SetMeshTemplate(self.MeshTemplate)
+  0030: Effect.SetLifespans(self.ChunkLifespan, self.CollisionLifeSpan)
+  004d: Effect.SetParticles(self.Particles)
+  0065: Effect.SetSpawnParameters(self.SpawnVolumeScale, self.NumChunks)
+  0082: Effect.SetVelocityParameters(self.LinearSpeed, self.AngularSpeed, ((self.VelocityConeAngle * 0.5) * 0.0174533))
+  00b2: return Effect
+  00b8: return return
+  00be: <eos>
+
+function HmDebrisDestructionEffectFactory.AddCookingOptions  (script 68 bytes)
+  0000: Option.Mesh = self.MeshTemplate
+  0016: Option.Scale = vect(1,1,1)
+  0034: Options.AddItem(Option)
+  0041: return nothing
+  0043: <eos>

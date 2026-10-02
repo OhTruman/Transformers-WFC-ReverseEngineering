@@ -1,0 +1,39 @@
+function TnRobotDeathPicker.FindActiveTypes  (script 349 bytes)
+  0000: BuffService = TnBuffService(Owner.GetService('TnBuffService'))
+  0027: if !((NotEqual_InterfaceInterface(BuffService, TnBuffService(none)) && (BuffService.HasBuff(obj'TnBuffExplodeOnDeath') || BuffService.HasBuff(obj'TnBuffExplodeOnDeathKamikaze')))) goto 0x0084
+  0077: Types.AddItem(obj'TnDeathTypeMartyrdom')
+  0084: if !((Owner.get_LastTakeHitInfo().BoneName == self.HeadShotBoneName)) goto 0x00b9
+  00ac: Types.AddItem(obj'TnDeathTypeHeadShot')
+  00b9: if !(Owner._RobotForm.get_IsHovering()) goto 0x00e5
+  00d8: Types.AddItem(obj'TnDeathTypeHovering')
+  00e5: if !(Owner.get_IsAirborne()) goto 0x0108
+  00fb: Types.AddItem(obj'TnDeathTypeAirborne')
+  0108: DirectionDeathType = TnRobotDeathPicker.GetDirectionDeathType(Owner)
+  0119: if !((DirectionDeathType != none)) goto 0x0131
+  0124: Types.AddItem(DirectionDeathType)
+  0131: DamageDeathType = TnRobotDeathPicker.GetDamageDeathType(Owner)
+  0142: if !((DamageDeathType != none)) goto 0x015a
+  014d: Types.AddItem(DamageDeathType)
+  015a: return nothing
+  015c: <eos>
+
+function TnRobotDeathPicker.GetDirectionDeathType  (script 188 bytes)
+  0000: LocalSpaceDirection = cast50((Owner.TearOffMomentum << Owner.Rotation))
+  0027: LocalSpaceAngle = LocalSpaceDirection.Yaw
+  003d: if !(((self.ForwardLeftAngle <= LocalSpaceAngle) && (LocalSpaceAngle <= self.ForwardRightAngle))) goto 0x0063
+  005d: return obj'TnDeathTypeForwardMomentum'
+  0063: if !(((self.BackwardLeftAngle <= LocalSpaceAngle) && (LocalSpaceAngle <= self.ForwardLeftAngle))) goto 0x0089
+  0083: return obj'TnDeathTypeLeftMomentum'
+  0089: if !(((self.ForwardRightAngle <= LocalSpaceAngle) && (LocalSpaceAngle <= self.BackwardRightAngle))) goto 0x00af
+  00a9: return obj'TnDeathTypeRightMomentum'
+  00af: return obj'TnDeathTypeBackwardMomentum'
+  00b5: return return
+  00bb: <eos>
+
+function TnRobotDeathPicker.GetDamageDeathType  (script 76 bytes)
+  0000: dt = class<TnDamageType>(Owner.get_LastTakeHitInfo().DamageType)
+  0029: if !((dt == none)) goto 0x0036
+  0034: return none
+  0036: return dt.static.default.DamageDeathType
+  0045: return return
+  004b: <eos>

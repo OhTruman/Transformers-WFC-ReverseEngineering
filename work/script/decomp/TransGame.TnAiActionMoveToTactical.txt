@@ -1,0 +1,63 @@
+function TnAiActionMoveToTactical.set_TacticalUtil  (script 14 bytes)
+  0000: self._TacticalUtil = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionMoveToTactical.OnBind  (script 33 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._TacticalUtil.Initialize(self._TransformerController)
+  001e: return nothing
+  0020: <eos>
+
+function TnAiActionMoveToTactical.OnUnbind  (script 41 bytes)
+  0000: OnUnbind()
+  0006: if !((self._TransformerController == none)) goto 0x0013
+  0011: return nothing
+  0013: self._TacticalUtil.Shutdown()
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionMoveToTactical.OnPlanStart  (script 33 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._TacticalUtil.RefreshTacticalInterface()
+  001e: return nothing
+  0020: <eos>
+
+function TnAiActionMoveToTactical.OnSetUpConditions  (script 177 bytes)
+  0000: if !((self._TacticalUtil.GetBestTacticalScore() <= 0.0)) goto 0x001f
+  001d: return false
+  001f: Enemy = obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects)
+  0042: if !((Enemy == none)) goto 0x004f
+  004d: return false
+  004f: Tactical = cast36(self._TacticalUtil.GetBestTacticalPathNode())
+  006a: if !((Tactical == none)) goto 0x0077
+  0075: return false
+  0077: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Tactical)
+  0099: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00aa: return return
+  00b0: <eos>
+
+function TnAiActionMoveToTactical.OnIsValidForFutureExecution  (script 72 bytes)
+  0000: if !((self._TransformerPawn.get_IsInRobotForm() && self._TacticalUtil.ShouldDiscardTacticalPathNode())) goto 0x0030
+  002e: return false
+  0030: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0041: return return
+  0047: <eos>
+
+function TnAiActionMoveToTactical.OnStart  (script 38 bytes)
+  0000: self._TransformerController.StopMovement()
+  0013: return OnStart(ExpectedEffects)
+  001f: return return
+  0025: <eos>
+
+function TnAiActionMoveToTactical.OnUpdate  (script 57 bytes)
+  0000: if !(self._TacticalUtil.ShouldDiscardTacticalPathNode()) goto 0x0021
+  0016: return Fail()
+  0021: return OnUpdate(ExpectedEffects, DeltaTime)
+  0032: return return
+  0038: <eos>
+
+function TnAiActionMoveToTactical.DoCalculateAdditionalCost  (script 68 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((cast3a(Context) == cast3a(1)) ? self._TacticalUtil.GetRunningCost() : 0.0))
+  003d: return return
+  0043: <eos>

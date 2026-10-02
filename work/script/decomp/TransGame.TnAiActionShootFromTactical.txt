@@ -1,0 +1,82 @@
+function TnAiActionShootFromTactical.get_ChosenTacticalLocation  (script 13 bytes)
+  0000: return self._ChosenTacticalLocation
+  0006: return return
+  000c: <eos>
+
+function TnAiActionShootFromTactical.__Constructor__TnAiActionShootFromTactical_0  (script 14 bytes)
+  0000: self._Cost = InCost
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionShootFromTactical.OnBind  (script 49 bytes)
+  0000: TnAiActionShootAtTarget.OnBind()
+  0006: self._TacticalSensor = self._TransformerController.FindTacticalSensor(get_WeaponClass(), obj'TnAiActionShootFromTactical')
+  002e: return nothing
+  0030: <eos>
+
+function TnAiActionShootFromTactical.OnSetUpConditions  (script 303 bytes)
+  0000: if !((self._TacticalSensor == none)) goto 0x00a3
+  000b: LogInternal((((("Error: Couldn't find tactical sensor for " @ self._TransformerPawn.get_FriendlyName()) @ " with ") @ cast56(get_WeaponClass())) @ ".  Please check the dynamic sensor for this character"), , , )
+  00a1: return false
+  00a3: if !((self._TransformerController._ShootAtActor == obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))) goto 0x00d5
+  00d3: return false
+  00d5: TacticalLocation = cast36(TnAiActionShootFromTactical.GetDesiredTacticalPathNode(0.2))
+  00e8: if !((TacticalLocation == none)) goto 0x00f5
+  00f3: return false
+  00f5: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', TacticalLocation)
+  0117: return TnAiActionShootAtTarget.OnSetUpConditions(ExpectedEffects, Conditions)
+  0128: return return
+  012e: <eos>
+
+function TnAiActionShootFromTactical.DoCalculateAdditionalCost  (script 138 bytes)
+  0000: (AddedCost += (((self._TransformerController._PreferredWeaponClass != none) && (self._TransformerController._PreferredWeaponClass != get_WeaponClass())) ? 2.0 : 0.0))
+  0046: if !(((cast3a(Context) == cast3a(1)) && NotEqual_InterfaceInterface(TnAiActionShootFromTactical.GetDesiredTacticalPathNode(0.5), self._ChosenTacticalLocation))) goto 0x007d
+  0071: (AddedCost += 50.0)
+  007d: return AddedCost
+  0083: return return
+  0089: <eos>
+
+function TnAiActionShootFromTactical.OnPlanStart  (script 31 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._ChosenTacticalLocation = TnAiActionShootFromTactical.GetDesiredTacticalPathNode(0.2)
+  001c: return nothing
+  001e: <eos>
+
+function TnAiActionShootFromTactical.OnIsValidForFutureExecution  (script 51 bytes)
+  0000: if !(NotEqual_InterfaceInterface(TnAiActionShootFromTactical.GetDesiredTacticalPathNode(0.5), self._ChosenTacticalLocation)) goto 0x001b
+  0019: return false
+  001b: return TnAiActionShootAtTarget.OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  002c: return return
+  0032: <eos>
+
+function TnAiActionShootFromTactical.OnUpdate  (script 90 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self._ChosenTacticalLocation, TnTacticalInterface(none))) goto 0x0042
+  0014: self._ChosenTacticalLocation.GetTactical().AddStench((0.2 * DeltaTime))
+  0042: return TnAiActionShootAtTarget.OnUpdate(ExpectedEffects, DeltaTime)
+  0053: return return
+  0059: <eos>
+
+function TnAiActionShootFromTactical.OnFinish  (script 21 bytes)
+  0000: TnAiActionShootAtTarget.OnFinish(CurrentState)
+  000b: self._ChosenTacticalLocation = none
+  0012: return nothing
+  0014: <eos>
+
+function TnAiActionShootFromTactical.GetDescriptionDetail  (script 61 bytes)
+  0000: return ((obj'HM_Engine.HmGoap'.static.GetIntValue(obj'TnAiWorldStateTransformerForm', self._Preconditions) == 0) ? "Robot" : "Vehicle")
+  0036: return return
+  003c: <eos>
+
+function TnAiActionShootFromTactical.GetDesiredTacticalPathNode  (script 300 bytes)
+  0000: AssignedPathNode = TnTacticalInterface(self._TransformerController._OccupiedNavigationPoint)
+  0019: if !(EqualEqual_InterfaceInterface(AssignedPathNode, TnTacticalInterface(none))) goto 0x0044
+  002d: return self._TacticalSensor.GetBestTacticalPathNode()
+  0041: goto 0x0075
+  0044: if !(!self._TacticalSensor.CanUseTactical(AssignedPathNode)) goto 0x0075
+  0061: return self._TacticalSensor.GetBestTacticalPathNode()
+  0075: CurrentScore = self._TacticalSensor.ScoreTacticalPathNode(AssignedPathNode)
+  0093: BestScore = self._TacticalSensor.GetBestTacticalScore()
+  00ac: NormalizedImprovement = ((BestScore - CurrentScore) / obj'Core.Math'.static.FMax(0.1, obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(BestScore), obj'Core.Math'.static.Abs(CurrentScore))))
+  00fb: return ((NormalizedImprovement > Threshold) ? self._TacticalSensor.GetBestTacticalPathNode() : AssignedPathNode)
+  0125: return return
+  012b: <eos>

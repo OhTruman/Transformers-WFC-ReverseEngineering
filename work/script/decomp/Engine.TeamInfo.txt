@@ -1,0 +1,74 @@
+function TeamInfo.PostBeginPlay  (script 63 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: if !((self.WorldInfo.GRI != none)) goto 0x003c
+  001a: self.WorldInfo.GRI.SetTeam(self.TeamIndex, self)
+  003c: return nothing
+  003e: <eos>
+
+function TeamInfo.ReplicatedEvent  (script 90 bytes)
+  0000: if !((VarName == 'TeamIndex')) goto 0x004c
+  0013: if !((self.WorldInfo.GRI != none)) goto 0x0049
+  0027: self.WorldInfo.GRI.SetTeam(self.TeamIndex, self)
+  0049: goto 0x0057
+  004c: ReplicatedObject.ReplicatedEvent(VarName)
+  0057: return nothing
+  0059: <eos>
+
+function TeamInfo.GetSize  (script 13 bytes)
+  0000: return self.Size
+  0006: return return
+  000c: <eos>
+
+function TeamInfo.AddToTeam  (script 144 bytes)
+  0000: if !((Other == none)) goto 0x0030
+  000b: LogInternal("ERROR: Added none to team!!!", , , )
+  002e: return false
+  0030: AddAdd_Int(self.Size)
+  0037: Other.PlayerReplicationInfo.Team = self
+  0050: Other.PlayerReplicationInfo.TeamID = self.TeamIndex
+  006d: Other.PlayerReplicationInfo.bForceNetUpdate = true
+  0087: return true
+  0089: return return
+  008f: <eos>
+
+function TeamInfo.RemoveFromTeam  (script 87 bytes)
+  0000: SubtractSubtract_Int(self.Size)
+  0007: Other.PlayerReplicationInfo.Team = none
+  0020: Other.PlayerReplicationInfo.TeamID = 255
+  003a: Other.PlayerReplicationInfo.bForceNetUpdate = true
+  0054: return nothing
+  0056: <eos>
+
+function TeamInfo.GetHumanReadableName  (script 13 bytes)
+  0000: return self.TeamName
+  0006: return return
+  000c: <eos>
+
+function TeamInfo.GetHUDColor  (script 13 bytes)
+  0000: return self.TeamColor
+  0006: return return
+  000c: <eos>
+
+function TeamInfo.GetTextColor  (script 13 bytes)
+  0000: return self.TeamColor
+  0006: return return
+  000c: <eos>
+
+function TeamInfo.GetTeamNum  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TeamInfo.AddScore  (script 15 bytes)
+  0000: (self.Score += Amount)
+  000c: return nothing
+  000e: <eos>
+
+function TeamInfo.ClearScore  (script 14 bytes)
+  0000: self.Score = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function TeamInfo.GetScore  (script 13 bytes)
+  0000: return self.Score
+  0006: return return
+  000c: <eos>

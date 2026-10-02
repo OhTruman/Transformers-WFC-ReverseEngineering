@@ -1,0 +1,10 @@
+function SeqAct_StopMusic.Activated  (script 113 bytes)
+  0000: if !(self.UseFadeTimeOverride) goto 0x0017
+  0009: FadeTime = self.FadeTimeOverride
+  0014: goto 0x0022
+  0017: FadeTime = -1.0
+  0022: MusicPlayer = HmWorldInfo(GetWorldInfo())._MusicPlayer
+  0040: MusicPlayer.StopMusic(FadeTime, )
+  0059: 0[self.OutputLinks].bHasImpulse = true
+  006e: return nothing
+  0070: <eos>

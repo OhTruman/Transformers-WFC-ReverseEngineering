@@ -1,0 +1,33 @@
+=== decomp 0x8275c240
+
+void Function_8275C240(undefined8 param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,
+                      undefined8 param_5)
+
+{
+  bool bVar1;
+  int iVar2;
+  int iVar3;
+  bool bVar4;
+  undefined8 extraout_f1;
+  undefined8 uVar5;
+  
+  iVar2 = FUN_830eacd4();
+  iVar3 = *(int *)(iVar2 + 0x3f4);
+  if ((((iVar3 == 0) || (*(char *)(iVar3 + 0x310) != '\x01')) ||
+      (*(char *)(iVar3 + 0x311) == '\x02')) ||
+     (bVar4 = true, (*(uint *)(iVar2 + 0x1ec) & 0x8000) != 0)) {
+    bVar4 = false;
+  }
+  if (((iVar3 == 0) || (*(char *)(iVar3 + 0x310) != '\x03')) ||
+     ((*(char *)(iVar3 + 0x311) == '\x02' ||
+      (bVar1 = true, (*(uint *)(iVar2 + 0x1ec) & 0x8000) != 0)))) {
+    bVar1 = false;
+  }
+  uVar5 = extraout_f1;
+  if (((bVar4) || (bVar1)) || (iVar3 = Function_827993D8(extraout_f1,param_2,iVar2), iVar3 == 0)) {
+    Function_82F701C0(uVar5,param_2,param_3,iVar2,param_5);
+  }
+  return;
+}
+
+

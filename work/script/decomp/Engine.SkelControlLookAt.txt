@@ -1,0 +1,25 @@
+function SkelControlLookAt.SetTargetLocation  (script 47 bytes)
+  0000: self.DesiredTargetLocation = NewTargetLocation
+  000b: if !(((self.ControlStrength * self.LookAtAlpha) < 1e-05)) goto 0x002c
+  0021: self.TargetLocation = NewTargetLocation
+  002c: return nothing
+  002e: <eos>
+
+function SkelControlLookAt.InterpolateTargetLocation  (script 48 bytes)
+  0000: self.TargetLocation = obj'Core.Math'.static.VInterpTo(self.TargetLocation, self.DesiredTargetLocation, DeltaTime, self.TargetLocationInterpSpeed)
+  002d: return nothing
+  002f: <eos>
+
+function SkelControlLookAt.SetLookAtAlpha  (script 12 bytes)
+  0000: DesiredAlpha
+  0005: DesiredBlendTime
+  000a: nothing
+  000b: <eos>
+
+function SkelControlLookAt.CanLookAtPoint  (script 22 bytes)
+  0000: PointLoc
+  0005: bDrawDebugInfo
+  000a: bDebugUsePersistentLines
+  000f: bDebugFlushLinesFirst
+  0014: nothing
+  0015: <eos>

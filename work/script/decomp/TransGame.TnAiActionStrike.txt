@@ -1,0 +1,64 @@
+function TnAiActionStrike.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionStrikeBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionStrike.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._MeleeService = TnMeleeService(GetService('TnMeleeService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionStrike.OnSetUpConditions  (script 128 bytes)
+  0000: if !((self._PlanningUtil.PopulatePreconditions(self, ExpectedEffects, Conditions) == false)) goto 0x0026
+  0024: return false
+  0026: if !((self._PlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.CheckAttackDestinationDistance, self._Blueprint.AttackDestinationDistanceThreshold) == false)) goto 0x0068
+  0066: return false
+  0068: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0079: return return
+  007f: <eos>
+
+function TnAiActionStrike.DoCalculateAdditionalCost  (script 68 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((cast3a(self._TransformerController.GetEnemyNearestRange()) > cast3a(1)) ? 5.0 : 0.0))
+  003d: return return
+  0043: <eos>
+
+function TnAiActionStrike.OnIsValidForFutureExecution  (script 90 bytes)
+  0000: if !((self._PlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.CheckAttackDestinationDistance, self._Blueprint.AttackDestinationDistanceThreshold) == false)) goto 0x0042
+  0040: return false
+  0042: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0053: return return
+  0059: <eos>
+
+function TnAiActionStrike.OnPlanStart  (script 38 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._PlanningUtil.PlanStart(ExpectedEffects)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiActionStrike.OnStart  (script 217 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((cast3a(self._TransformerController.GetEnemyNearestRange()) > cast3a(1))) goto 0x0051
+  0046: return Fail()
+  0051: self._TransformerController.Focus = IFocusible(self._Target)
+  006a: if !((TnMeleeWeapon(self._TransformerPawn.Weapon) != none)) goto 0x00a6
+  0083: self._MeleeService.StartMeleeAttack(1, none, delegate.FailCallback)
+  00a3: goto 0x00c6
+  00a6: self._MeleeService.StartMeleeAttack(0, none, delegate.FailCallback)
+  00c6: return OnStart(ExpectedEffects)
+  00d2: return return
+  00d8: <eos>
+
+function TnAiActionStrike.OnUpdate  (script 65 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Succeed()
+  0029: return OnUpdate(ExpectedEffects, DeltaTime)
+  003a: return return
+  0040: <eos>
+
+function TnAiActionStrike.OnFinish  (script 34 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._MeleeService.AbortMeleeAttack()
+  001f: return nothing
+  0021: <eos>

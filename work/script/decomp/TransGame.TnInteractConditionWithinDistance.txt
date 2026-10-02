@@ -1,0 +1,9 @@
+function TnInteractConditionWithinDistance.CanInteractWith  (script 173 bytes)
+  0000: InteracterLoc = Interacter.Location
+  0014: InteractLoc = Interact.GetDesiredInteracterLocation(Interacter)
+  0032: Diff = (InteracterLoc - InteractLoc)
+  0044: if !((obj'Core.Math'.static.VSizeSq2D(Diff) > (self.Distance * self.Distance))) goto 0x006f
+  006d: return false
+  006f: return (obj'Core.Math'.static.Abs(Diff.Z) < (Interacter.GetCollisionHeight() + cast3f(20)))
+  00a6: return return
+  00ac: <eos>

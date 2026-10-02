@@ -1,0 +1,91 @@
+function Sequence.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Sequence.FindSeqObjectsByClass  (script 17 bytes)
+  0000: DesiredClass
+  0005: bRecursive
+  000a: OutputObjects
+  000f: nothing
+  0010: <eos>
+
+function Sequence.FindNamedVariables  (script 22 bytes)
+  0000: VarName
+  0005: bRecursive
+  000a: FindUses
+  000f: OutputObjects
+  0014: nothing
+  0015: <eos>
+
+function Sequence.TriggerEventClass  (script 122 bytes)
+  0000: FindSeqObjectsByClass(InClass, true, EventList)
+  0015: idx = 0
+  001c: if !((idx < EventList.Length)) goto 0x0077
+  002c: SeqEvent = SequenceEvent(idx[EventList])
+  0042: if !((SeqEvent != none)) goto 0x006d
+  004d: SeqEvent.CheckActivate(InOriginator, InInstigator, , , )
+  006d: AddAdd_Int(idx)
+  0074: goto 0x001c
+  0077: return nothing
+  0079: <eos>
+
+function Sequence.Reset  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < self.SequenceObjects.Length)) goto 0x0055
+  0017: Op = SequenceOp(I[self.SequenceObjects])
+  002d: if !((Op != none)) goto 0x004b
+  0038: Op.Reset()
+  004b: AddAdd_Int(I)
+  0052: goto 0x0007
+  0055: return nothing
+  0057: <eos>
+
+function Sequence.SetEnabled  (script 7 bytes)
+  0000: bInEnabled
+  0005: nothing
+  0006: <eos>
+
+function Sequence.AddSequenceObject  (script 12 bytes)
+  0000: NewObj
+  0005: bRecurse
+  000a: nothing
+  000b: <eos>
+
+function Sequence.RemoveObject  (script 7 bytes)
+  0000: ObjectToRemove
+  0005: nothing
+  0006: <eos>
+
+function Sequence.RemoveObjects  (script 7 bytes)
+  0000: ObjectsToRemove
+  0005: nothing
+  0006: <eos>
+
+function Sequence.QueueSequenceOp  (script 12 bytes)
+  0000: NewSequenceOp
+  0005: bPushTop
+  000a: nothing
+  000b: <eos>
+
+function Sequence.ExecuteActiveOps  (script 12 bytes)
+  0000: DeltaTime
+  0005: MaxSteps
+  000a: nothing
+  000b: <eos>
+
+function Sequence.ExecuteOps  (script 17 bytes)
+  0000: Op
+  0005: DeltaTime
+  000a: MaxSteps
+  000f: nothing
+  0010: <eos>
+
+function Sequence.UpdateOp  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
+
+function Sequence.UpdatePreGameplayOp  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>

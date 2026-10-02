@@ -1,0 +1,89 @@
+function TnTargetTracker.set_IkController  (script 14 bytes)
+  0000: self._IkController = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTargetTracker.set_Target  (script 14 bytes)
+  0000: self._Target = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTargetTracker.set_TargetLocation  (script 14 bytes)
+  0000: self._TargetLocation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTargetTracker.set_LockTargetLocation  (script 16 bytes)
+  0000: self._LockTargetLocation = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTargetTracker.ReplicatedArrayEvent  (script 49 bytes)
+  0000: if !((VarName == '_ControlStates')) goto 0x001e
+  0013: TnTargetTracker.UpdateControlState(Index)
+  001e: ReplicatedArrayEvent(VarName, Index)
+  002e: return nothing
+  0030: <eos>
+
+function TnTargetTracker.Initialize  (script 14 bytes)
+  0000: self._Mesh = Mesh
+  000b: return nothing
+  000d: <eos>
+
+function TnTargetTracker.RegisterIkControl  (script 57 bytes)
+  0000: cast3a(BodyPart)[self._ControlStates].Handle = self._IkController.AddIKControl(self._Mesh, ControlName)
+  0036: return nothing
+  0038: <eos>
+
+function TnTargetTracker.EnableTracking  (script 43 bytes)
+  0000: cast3a(BodyPart)[self._ControlStates].Enabled = true
+  001b: TnTargetTracker.UpdateControlState(cast3a(BodyPart))
+  0028: return nothing
+  002a: <eos>
+
+function TnTargetTracker.DisableTracking  (script 43 bytes)
+  0000: cast3a(BodyPart)[self._ControlStates].Enabled = false
+  001b: TnTargetTracker.UpdateControlState(cast3a(BodyPart))
+  0028: return nothing
+  002a: <eos>
+
+function TnTargetTracker.DisableAllTracking  (script 49 bytes)
+  0000: I = 0
+  0007: if !((I < 3)) goto 0x002e
+  0013: DisableTracking(cast3d(I))
+  0024: AddAdd_PreInt(I)
+  002b: goto 0x0007
+  002e: return nothing
+  0030: <eos>
+
+function TnTargetTracker.SetIkControlLookAtTarget  (script 66 bytes)
+  0000: set_TargetLocation(Target)
+  000f: self._IkController.SetIKTargetInstantly(cast3a(BodyPart)[self._ControlStates].Handle, Target)
+  003f: return nothing
+  0041: <eos>
+
+function TnTargetTracker.Update  (script 178 bytes)
+  0000: self._IkController.Tick(DeltaTime)
+  0018: if !((self._Target == none)) goto 0x0025
+  0023: return nothing
+  0025: if !(!self._LockTargetLocation) goto 0x0044
+  0030: self._TargetLocation = self._Target.Location
+  0044: I = 0
+  004b: if !((I < 3)) goto 0x00af
+  0057: if !((I[self._ControlStates].Enabled == false)) goto 0x0077
+  0074: goto 0x00a5
+  0077: self._IkController.SetIKTarget(I[self._ControlStates].Handle, self._TargetLocation)
+  00a5: AddAdd_PreInt(I)
+  00ac: goto 0x004b
+  00af: return nothing
+  00b1: <eos>
+
+function TnTargetTracker.UpdateControlState  (script 159 bytes)
+  0000: if !((Index[self._ControlStates].Handle.Index == -1)) goto 0x002d
+  002b: return nothing
+  002d: if !(Index[self._ControlStates].Enabled) goto 0x0073
+  0047: self._IkController.ActivateIKControl(Index[self._ControlStates].Handle)
+  0070: goto 0x009c
+  0073: self._IkController.DeactivateIKControl(Index[self._ControlStates].Handle)
+  009c: return nothing
+  009e: <eos>

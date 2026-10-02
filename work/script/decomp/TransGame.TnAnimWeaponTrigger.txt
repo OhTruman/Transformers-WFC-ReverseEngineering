@@ -1,0 +1,32 @@
+function TnAnimWeaponTrigger.OnInit  (script 29 bytes)
+  0000: self.SequenceNode = AnimNodeSequence(FindAnimNode(self.SequenceNodeName))
+  001a: return nothing
+  001c: <eos>
+
+function TnAnimWeaponTrigger.ChildGetDesiredSelection  (script 118 bytes)
+  0000: NewSelection = ChildGetDesiredSelection(DeltaTime)
+  0011: if !((NewSelection != 0)) goto 0x0069
+  001c: P = TnPawn(self.SkelComponent.Owner)
+  0035: CurrentChooser = GetCurrentChooser()
+  0045: if !(!CurrentChooser.HasAnimation(P)) goto 0x0069
+  0062: NewSelection = 0
+  0069: return NewSelection
+  006f: return return
+  0075: <eos>
+
+function TnAnimWeaponTrigger.GetCurrentChooser  (script 13 bytes)
+  0000: return self.Chooser
+  0006: return return
+  000c: <eos>
+
+function TnAnimWeaponTrigger.OnDesiredSelectionChange  (script 152 bytes)
+  0000: if !((NewDesiredSelection == 0)) goto 0x000d
+  000b: return nothing
+  000d: CurrentChooser = GetCurrentChooser()
+  001d: P = TnPawn(self.SkelComponent.Owner)
+  0036: SequenceName = CurrentChooser.ChooseSequence(P)
+  0054: self.SequenceNode.SetAnim(SequenceName)
+  006c: self.SequenceNode.PlayAnim(false, 1.0, 0.0)
+  008a: OnDesiredSelectionChange(NewDesiredSelection)
+  0095: return nothing
+  0097: <eos>

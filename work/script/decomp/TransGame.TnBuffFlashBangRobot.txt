@@ -1,0 +1,19 @@
+function TnBuffFlashBangRobot.Apply  (script 66 bytes)
+  0000: TnBuffIncreaseGroundSpeed.Apply(Level, BuffOwner, Applier)
+  0015: if !((cast3a(BuffOwner.Role) == cast3a(3))) goto 0x003f
+  002e: PlayDialogNotify(3, BuffOwner)
+  003f: return nothing
+  0041: <eos>
+
+function TnBuffFlashBangRobot.PlayDialogNotify  (script 151 bytes)
+  0000: if !((P == none)) goto 0x000d
+  000b: return nothing
+  000d: SP = TnServiceProvider(P.Controller)
+  0026: if !(EqualEqual_InterfaceInterface(SP, TnServiceProvider(none))) goto 0x003c
+  003a: return nothing
+  003c: DNI = TnDialogNotificationService(SP.GetService('TnDialogNotificationService'))
+  0064: if !(EqualEqual_InterfaceInterface(DNI, TnDialogNotificationService(none))) goto 0x007a
+  0078: return nothing
+  007a: DNI.DialogNotify(NotifyType, none)
+  0094: return nothing
+  0096: <eos>

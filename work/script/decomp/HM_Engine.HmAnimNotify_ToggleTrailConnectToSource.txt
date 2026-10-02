@@ -1,0 +1,11 @@
+function HmAnimNotify_ToggleTrailConnectToSource.Notify  (script 260 bytes)
+  0000: if !(((AnimSeqInstigator.SkelComponent == none) || (AnimSeqInstigator.SkelComponent.Owner == none))) goto 0x0035
+  0033: return nothing
+  0035: ParticleEffectManagerComponent = AnimSeqInstigator.SkelComponent.Owner.FindOrCreateComponent(obj'HmParticleEffectManagerComponent')
+  0065: PSC = ParticleEffectManagerComponent.GetEffect(self.SocketName, self.ParticleSystemTemplate)
+  0088: if !((PSC != none)) goto 0x00ae
+  0093: PSC.ToggleTrailConnectToSource(self.EmitterName)
+  00ab: goto 0x0101
+  00ae: WarnInternal(((("Could not find ParticleEffectComponent " @ cast57(self.ParticleSystemTemplate.Name)) @ "on socket") @ cast57(self.SocketName)))
+  0101: return nothing
+  0103: <eos>

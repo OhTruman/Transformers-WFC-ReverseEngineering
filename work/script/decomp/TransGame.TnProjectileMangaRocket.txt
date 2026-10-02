@@ -1,0 +1,66 @@
+function TnProjectileMangaRocket.SetTarget  (script 29 bytes)
+  0000: self._Target = Target
+  000b: OnSetTarget(Initiator)
+  001a: return nothing
+  001c: <eos>
+
+function TnProjectileMangaRocket.OnSetTarget  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileMangaRocket.GetRocketTargetLocation  (script 22 bytes)
+  0000: return self._Target.Location
+  000f: return return
+  0015: <eos>
+
+function TnProjectileMangaRocket.UpdateData  (script 126 bytes)
+  0000: self.MangaRocketData = TnProjectileDataMangaRocket(self.Data)
+  0010: self._TargetOffset = ((obj'Core.Math'.static.Sqrt(obj'Core.Random'.static.RandomFloat()) * self.MangaRocketData.HomingAccuracy) * obj'Core.Math'.static.Normal((obj'Core.Random'.static.RandomUnitVector() * vect(1,1,0))))
+  0075: TnProjectileMangaRocket.ResetDrunkenWeave()
+  007b: return nothing
+  007d: <eos>
+
+function TnProjectileMangaRocket.ResetDrunkenWeave  (script 69 bytes)
+  0000: self._DrunkenWeaveTime = -obj'Core.Random'.static.RandomInRange(self.MangaRocketData.DrunkenWeaveBeginTime)
+  0029: self._DrunkenWeaveSign = obj'Core.Random'.static.RandomSign()
+  0042: return nothing
+  0044: <eos>
+
+function TnProjectileMangaRocket.Tick  (script 48 bytes)
+  0000: (self._TimeAlive += DeltaTime)
+  000c: TnProjectileMangaRocket.UpdateHoming(DeltaTime)
+  0017: TnProjectileMangaRocket.UpdateDrunkenWeave(DeltaTime)
+  0022: Tick(DeltaTime)
+  002d: return nothing
+  002f: <eos>
+
+function TnProjectileMangaRocket.UpdateHoming  (script 187 bytes)
+  0000: if !((self._Target == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self._TimeAlive < self.MangaRocketData.HomingDisabledDuration)) goto 0x0027
+  0025: return nothing
+  0027: if !((self._TimeAlive >= self.MangaRocketData.SecondsUntilHomingDisabled)) goto 0x0041
+  003f: return nothing
+  0041: Blend = obj'Core.Math'.static.FMin(1.0, ((self._TimeAlive - self.MangaRocketData.HomingDisabledDuration) / self.MangaRocketData.TransitionToHomingDuration))
+  007c: self.Acceleration = (((obj'Core.Math'.static.Normal((TnProjectileMangaRocket.CalculateTargetLocation() - self.Location)) * self.MangaRocketData.HomingAcceleration) * Blend) * Blend)
+  00b8: return nothing
+  00ba: <eos>
+
+function TnProjectileMangaRocket.UpdateDrunkenWeave  (script 183 bytes)
+  0000: (self._DrunkenWeaveTime += DeltaTime)
+  000c: if !((self._DrunkenWeaveTime > self.MangaRocketData.DrunkenWeaveDuration)) goto 0x002a
+  0024: TnProjectileMangaRocket.ResetDrunkenWeave()
+  002a: if !((self._DrunkenWeaveTime > 0.0)) goto 0x00b4
+  0039: SinValue = (((self._DrunkenWeaveTime / self.MangaRocketData.DrunkenWeaveDuration) * cast3f(2)) * 3.1415927)
+  0061: (self.Velocity += (((obj'Core.Math'.static.MakeVector(0.0, obj'Core.Math'.static.Sin(SinValue), 0.0) >> self.Rotation) * self._DrunkenWeaveSign) * self.MangaRocketData.DrunkenWeaveStrength))
+  00b4: return nothing
+  00b6: <eos>
+
+function TnProjectileMangaRocket.CalculateTargetLocation  (script 127 bytes)
+  0000: TargetLocation = (GetRocketTargetLocation() + self._TargetOffset)
+  0017: if !(self.MangaRocketData.CanLeadTarget) goto 0x0072
+  0029: TimeOnTarget = (obj'Core.Math'.static.VSize((TargetLocation - self.Location)) / self.MangaRocketData.MaxSpeed)
+  0056: (TargetLocation += (self._Target.Velocity * TimeOnTarget))
+  0072: return TargetLocation
+  0078: return return
+  007e: <eos>

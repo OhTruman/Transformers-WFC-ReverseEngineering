@@ -1,0 +1,33 @@
+function TnBuffCloak.Apply  (script 238 bytes)
+  0000: OwnerTeam = TnTeamInfo(BuffOwner.GetTeam())
+  001e: if !((TnFactionTeamAutobots(OwnerTeam) != none)) goto 0x0047
+  002e: self.ApplySound = self.AutobotApplySound
+  0039: self.UnapplySound = self.AutobotUnapplySound
+  0044: goto 0x00c3
+  0047: if !((TnFactionTeamDecepticons(OwnerTeam) != none)) goto 0x0070
+  0057: self.ApplySound = self.DecepticonApplySound
+  0062: self.UnapplySound = self.DecepticonUnapplySound
+  006d: goto 0x00c3
+  0070: if !((cast3a(BuffOwner._CurrentCharacter.Faction) == cast3a(0))) goto 0x00ad
+  0094: self.ApplySound = self.AutobotApplySound
+  009f: self.UnapplySound = self.AutobotUnapplySound
+  00aa: goto 0x00c3
+  00ad: self.ApplySound = self.DecepticonApplySound
+  00b8: self.UnapplySound = self.DecepticonUnapplySound
+  00c3: TnBuff.Apply(Level, BuffOwner, Applier)
+  00d8: self.OwnerPawn.StartCloaking()
+  00eb: return nothing
+  00ed: <eos>
+
+function TnBuffCloak.Unapply  (script 28 bytes)
+  0000: TnBuff.Unapply()
+  0006: self.OwnerPawn.StopCloaking()
+  0019: return nothing
+  001b: <eos>
+
+function TnBuffCloak.CanPlayEffects  (script 43 bytes)
+  0000: if !(self.OwnerPawn.HasSkill(obj'TnSkillDisableCloakEffects')) goto 0x001d
+  001b: return false
+  001d: return TnBuff.CanPlayEffects()
+  0024: return return
+  002a: <eos>

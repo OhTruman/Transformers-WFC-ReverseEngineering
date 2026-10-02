@@ -1,0 +1,15 @@
+function TnParticleSystemParameterTeamIndex.Apply  (script 218 bytes)
+  0000: TeamIndex = Owner.GetTeamNum()
+  0019: if !((cast3a(TeamIndex) == 255)) goto 0x0072
+  0027: OwnerPawn = TnPawn(Owner)
+  0037: if !((OwnerPawn != none)) goto 0x0072
+  0042: TeamIndex = cast3d(((cast3a(OwnerPawn._CurrentCharacter.Faction) == cast3a(0)) ? 0 : 1))
+  0072: if !((self.OldTeamIndex != cast3a(TeamIndex))) goto 0x00d7
+  0083: if !((cast3a(TeamIndex) == 0)) goto 0x00a8
+  0090: PSC.SwitchModuleChannel(1)
+  00a5: goto 0x00ca
+  00a8: if !((cast3a(TeamIndex) == 1)) goto 0x00ca
+  00b5: PSC.SwitchModuleChannel(2)
+  00ca: self.OldTeamIndex = cast3a(TeamIndex)
+  00d7: return nothing
+  00d9: <eos>

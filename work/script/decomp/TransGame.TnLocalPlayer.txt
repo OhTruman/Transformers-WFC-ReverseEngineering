@@ -1,0 +1,132 @@
+function TnLocalPlayer.get_CustomCharacterData  (script 13 bytes)
+  0000: return self._CustomCharacterData
+  0006: return return
+  000c: <eos>
+
+function TnLocalPlayer.get_PlayerFileHandler  (script 13 bytes)
+  0000: return self._PlayerFileHandler
+  0006: return return
+  000c: <eos>
+
+function TnLocalPlayer.get_XpManager  (script 13 bytes)
+  0000: return self._XpManager
+  0006: return return
+  000c: <eos>
+
+function TnLocalPlayer.get_CharactersLoaded  (script 14 bytes)
+  0000: return self._CharactersLoaded
+  0007: return return
+  000d: <eos>
+
+function TnLocalPlayer.OnNewControllerId  (script 15 bytes)
+  0000: OnNewControllerId()
+  0006: TnLocalPlayer.InitializeCharacters()
+  000c: return nothing
+  000e: <eos>
+
+function TnLocalPlayer.OnStorageDeviceChange  (script 15 bytes)
+  0000: OnStorageDeviceChange()
+  0006: TnLocalPlayer.InitializeCharacters()
+  000c: return nothing
+  000e: <eos>
+
+function TnLocalPlayer.OnLoginStatusChange  (script 9 bytes)
+  0000: TnLocalPlayer.InitializeCharacters()
+  0006: return nothing
+  0008: <eos>
+
+function TnLocalPlayer.InitializeCharacters  (script 62 bytes)
+  0000: self._CustomCharacterData.ResetAll()
+  0013: self._PlayerFileHandler.Initialize(self)
+  0027: ReadCustomizationFile(delegate.CustomCharacterReadComplete, false)
+  003b: return nothing
+  003d: <eos>
+
+function TnLocalPlayer.ReadCustomizationFile  (script 55 bytes)
+  0000: nothing
+  0001: self._PlayerFileHandler.ReadInFile(0, CustomCharacterReadComplete, RestoreFromOnline)
+  0021: self._CustomCharacterData.ClearDirtyFlag()
+  0034: return nothing
+  0036: <eos>
+
+function TnLocalPlayer.WriteCustomizationFile  (script 69 bytes)
+  0000: if !(!self._CustomCharacterData.IsDirty()) goto 0x001a
+  0018: return nothing
+  001a: self._PlayerFileHandler.WriteOutFile(0)
+  002f: self._CustomCharacterData.ClearDirtyFlag()
+  0042: return nothing
+  0044: <eos>
+
+function TnLocalPlayer.ResetCharacter  (script 37 bytes)
+  0000: self._CustomCharacterData.ResetCharacter(CharacterName)
+  0018: WriteCustomizationFile()
+  0022: return nothing
+  0024: <eos>
+
+function TnLocalPlayer.ResetCharacters  (script 32 bytes)
+  0000: self._CustomCharacterData.ResetCharacters()
+  0013: WriteCustomizationFile()
+  001d: return nothing
+  001f: <eos>
+
+function TnLocalPlayer.ResetCustomizationData  (script 43 bytes)
+  0000: self._CustomCharacterData.ResetAll()
+  0013: self._PlayerFileHandler.WriteOutFile(0)
+  0028: return nothing
+  002a: <eos>
+
+function TnLocalPlayer.UnlockChassis  (script 37 bytes)
+  0000: self._CustomCharacterData.UnlockChassis(ChassisName)
+  0018: WriteCustomizationFile()
+  0022: return nothing
+  0024: <eos>
+
+function TnLocalPlayer.CustomCharacterReadComplete  (script 357 bytes)
+  0000: PC = TnPlayerController(self.Actor)
+  0010: if !((cast3a(LoadState) == cast3a(2))) goto 0x0124
+  0020: MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.RestoreCorruptCustomTransformers", false)
+  00a6: MessageBox.SetAButton("$UIText.ButtonHints.Ok", delegate.AttemptRestoreCustomizationData, , )
+  00dc: MessageBox.SetBButton("$UIText.ButtonHints.Cancel", , , )
+  010e: MessageBox.Show()
+  0121: goto 0x0162
+  0124: self._CharactersLoaded = true
+  012c: if !((PC.UIController != none)) goto 0x0162
+  0140: PC.UIController.InvokeOnCurrentUI(self.CharacterLoadCompleteFunctionName, )
+  0162: return nothing
+  0164: <eos>
+
+function TnLocalPlayer.AttemptRestoreCustomizationData  (script 23 bytes)
+  0000: ReadCustomizationFile(delegate.AttemptRestoreCustomCharacterComplete, true)
+  0014: return nothing
+  0016: <eos>
+
+function TnLocalPlayer.AttemptRestoreCustomCharacterComplete  (script 444 bytes)
+  0000: PC = TnPlayerController(self.Actor)
+  0010: if !((cast3a(LoadState) != cast3a(0))) goto 0x018f
+  0020: if !((cast3a(LoadState) == cast3a(1))) goto 0x0082
+  0030: Message = "$UIText.MessagePrompts.ResetCorruptCustomTransformersServiceUnavailable"
+  007f: goto 0x00bf
+  0082: Message = "$UIText.MessagePrompts.ResetCorruptCustomTransformers"
+  00bf: MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericErrorTitle", Message, false)
+  0111: MessageBox.SetAButton("$UIText.ButtonHints.Ok", delegate.ResetCorruptCustomizationData, , )
+  0147: MessageBox.SetBButton("$UIText.ButtonHints.Cancel", , , )
+  0179: MessageBox.Show()
+  018c: goto 0x01b9
+  018f: self._CharactersLoaded = true
+  0197: PC.UIController.InvokeOnCurrentUI(self.CharacterLoadCompleteFunctionName, )
+  01b9: return nothing
+  01bb: <eos>
+
+function TnLocalPlayer.ResetCorruptCustomizationData  (script 71 bytes)
+  0000: PC = TnPlayerController(self.Actor)
+  0010: ResetCustomizationData()
+  001a: self._CharactersLoaded = true
+  0022: PC.UIController.InvokeOnCurrentUI(self.CharacterLoadCompleteFunctionName, )
+  0044: return nothing
+  0046: <eos>
+
+function TnLocalPlayer.HasAssignedController  (script 52 bytes)
+  0000: VC = TnGameViewportClient(self.ViewportClient)
+  0010: return ((VC != none) && VC._HasAssignedControllerId)
+  002d: return return
+  0033: <eos>

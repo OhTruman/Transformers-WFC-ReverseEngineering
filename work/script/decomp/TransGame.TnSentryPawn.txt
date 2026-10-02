@@ -1,0 +1,799 @@
+function TnSentryPawn.SentryKilledObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.SentryDamagedObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.get_Enemy  (script 13 bytes)
+  0000: return self._Enemy
+  0006: return return
+  000c: <eos>
+
+function TnSentryPawn.set_Enemy  (script 20 bytes)
+  0000: self._Enemy = Value
+  000b: TnSentryPawn.EnemyUpdated()
+  0011: return nothing
+  0013: <eos>
+
+function TnSentryPawn.get_MaxAttackRange  (script 13 bytes)
+  0000: return self._MaxAttackRange
+  0006: return return
+  000c: <eos>
+
+function TnSentryPawn.set_MaxAttackRange  (script 14 bytes)
+  0000: self._MaxAttackRange = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryPawn.get_AimedAtTargetThreshold  (script 13 bytes)
+  0000: return self._AimedAtTargetThreshold
+  0006: return return
+  000c: <eos>
+
+function TnSentryPawn.set_AimedAtTargetThreshold  (script 14 bytes)
+  0000: self._AimedAtTargetThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryPawn.get_IsRevivable  (script 36 bytes)
+  0000: return ((self._Blueprint != none) && self._Blueprint.IsRevivable)
+  001d: return return
+  0023: <eos>
+
+function TnSentryPawn.get_IsValidMeleeTarget  (script 14 bytes)
+  0000: return self._IsValidMeleeTarget
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.set_IsValidMeleeTarget  (script 16 bytes)
+  0000: self._IsValidMeleeTarget = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSentryPawn.get_CanFireAtHiddenEnemies  (script 23 bytes)
+  0000: return self._Blueprint.CanFireAtHiddenEnemies
+  0010: return return
+  0016: <eos>
+
+function TnSentryPawn.get_CanFireAtSentries  (script 14 bytes)
+  0000: return self._CanFireAtSentries
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.set_CanFireAtSentries  (script 16 bytes)
+  0000: self._CanFireAtSentries = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSentryPawn.get_Invulnerable  (script 14 bytes)
+  0000: return self._Invulnerable
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.set_Invulnerable  (script 16 bytes)
+  0000: self._Invulnerable = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSentryPawn.get_TargetableByAi  (script 14 bytes)
+  0000: return self._TargetableByAi
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.set_TargetableByAi  (script 16 bytes)
+  0000: self._TargetableByAi = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSentryPawn.get_DisableShooting  (script 14 bytes)
+  0000: return self._DisableShooting
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.set_DisableShooting  (script 16 bytes)
+  0000: self._DisableShooting = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSentryPawn.get_ShouldRegisterEnemyClaim  (script 14 bytes)
+  0000: return self._ShouldRegisterEnemyClaim
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.set_ShouldRegisterEnemyClaim  (script 16 bytes)
+  0000: self._ShouldRegisterEnemyClaim = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSentryPawn.set_ActionTargetClaimer  (script 14 bytes)
+  0000: self._ActionTargetClaimer = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryPawn.GetService  (script 32 bytes)
+  0000: return self._Services.GetService(Type)
+  0019: return return
+  001f: <eos>
+
+function TnSentryPawn.ReplicatedEvent  (script 305 bytes)
+  0000: switch (VarName)
+  0007: case 'EquippedWeaponClass': (next 0x0021)
+  0013: TnSentryPawn.ClientUpdateWeapon(self.EquippedWeaponClass)
+  001e: goto 0x012e
+  0021: case 'AttachedPawn': (next 0x002d)
+  002d: case 'AttachSocketName': (next 0x0050)
+  0039: AttachToPawn(self.AttachedPawn, self.AttachSocketName)
+  004d: goto 0x012e
+  0050: case 'LastHit': (next 0x00dd)
+  005c: TraceInfo.Item = self.LastHit.Item
+  007d: self.DestructibleComponent.NotifyHit(cast3f(self.LastHit.Damage), none, self.LastHit.Location, self.LastHit.Momentum, self.LastHit.DamageType, TraceInfo, none, false)
+  00da: goto 0x012e
+  00dd: case '_Enemy': (next 0x00f2)
+  00e9: TnSentryPawn.EnemyUpdated()
+  00ef: goto 0x012e
+  00f2: case 'ActivateAnimDirty': (next 0x0107)
+  00fe: TnSentryPawn.PlayLocalActivateAnim()
+  0104: goto 0x012e
+  0107: case 'DeactivateAnimDirty': (next 0x0120)
+  0113: PlayLocalDeactivateAnim()
+  011d: goto 0x012e
+  0120: default:
+  0123: ReplicatedEvent(VarName)
+  012e: return nothing
+  0130: <eos>
+
+function TnSentryPawn.ReplicatedArrayEvent  (script 271 bytes)
+  0000: if !((ArrayName == 'ReplicatedPieceStates')) goto 0x00b5
+  0013: if !((self._Blueprint == none)) goto 0x008d
+  001e: LogInternal((((("ERROR: Sentry replicated piece [" $ cast53(Index)) $ "] state [") $ cast52(Index[self.ReplicatedPieceStates])) $ "] before receiving blueprint"), , , )
+  008a: goto 0x00b2
+  008d: self.DestructibleComponent.SetPieceState(Index, cast3a(Index[self.ReplicatedPieceStates]))
+  00b2: goto 0x010c
+  00b5: if !((ArrayName == 'ReplicatedPieceHealth')) goto 0x00fc
+  00c8: if !(TnSentryPawn.IsReplicatedPieceHealthValid(Index)) goto 0x00f9
+  00d6: self.DestructibleComponent.SetPieceHealthFromByteValue(Index, Index[self.ReplicatedPieceHealth])
+  00f9: goto 0x010c
+  00fc: ReplicatedArrayEvent(ArrayName, Index)
+  010c: return nothing
+  010e: <eos>
+
+function TnSentryPawn.IsReplicatedPieceHealthValid  (script 293 bytes)
+  0000: ErrorMessage = (((("ERROR: Sentry replicated piece [" $ cast53(Index)) $ "] health [") $ cast52(Index[self.ReplicatedPieceHealth])) $ "]")
+  0053: if !((self._Blueprint == none)) goto 0x0088
+  005e: LogInternal((ErrorMessage @ "before receiving blueprint"), , , )
+  0086: return false
+  0088: if !(((Index < 0) || (Index >= self.DestructibleComponent.GetPieces().Length))) goto 0x00db
+  00b3: LogInternal((ErrorMessage @ "but client had no pieces"), , , )
+  00d9: return false
+  00db: if !((Index[self.DestructibleComponent.GetPieces()] == none)) goto 0x011c
+  00fa: LogInternal((ErrorMessage @ "but piece was none"), , , )
+  011a: return false
+  011c: return true
+  011e: return return
+  0124: <eos>
+
+function TnSentryPawn.PostBeginPlay  (script 123 bytes)
+  0000: PostBeginPlay()
+  0006: self._Services.Add('TnHealthDisplayService', self._HealthDisplay)
+  0027: self._Services.Add('TnActionTargetClaimService', self._ActionTargetClaimer)
+  0048: Blueprint = TnSentry(self._ActorBlueprint)
+  0058: if !((Blueprint != none)) goto 0x0078
+  0063: self._Blueprint = Blueprint
+  006e: ApplySentry()
+  0078: return nothing
+  007a: <eos>
+
+function TnSentryPawn.Destroyed  (script 74 bytes)
+  0000: if !((self.WorldInfo.GRI != none)) goto 0x003b
+  0014: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, obj'TnObjectiveMarkerTypeOmegaSentry')
+  003b: TnSentryPawn.DestroyClientSideInventory()
+  0041: Destroyed()
+  0047: return nothing
+  0049: <eos>
+
+function TnSentryPawn.OnStateEnter  (script 22 bytes)
+  0000: PieceHandle[self.ReplicatedPieceStates] = cast3d(StateHandle)
+  0013: return nothing
+  0015: <eos>
+
+function TnSentryPawn.OnStateExit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.OnDamage  (script 49 bytes)
+  0000: PieceHandle[self.ReplicatedPieceHealth] = cast43((cast3f(255) * obj'Core.Math'.static.FClamp(NormalizedHealth, 0.0, 1.0)))
+  002e: return nothing
+  0030: <eos>
+
+function TnSentryPawn.OnActorSpawn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.GetMaster  (script 87 bytes)
+  0000: SentryC = TnAiSentryController(self.Controller)
+  0010: if !(((SentryC != none) && (SentryC._KillOwner != none))) goto 0x004e
+  0031: return TnPawn(SentryC._KillOwner.Pawn)
+  004e: return none
+  0050: return return
+  0056: <eos>
+
+function TnSentryPawn.IsSameTeam  (script 54 bytes)
+  0000: if !((Other == none)) goto 0x000d
+  000b: return false
+  000d: if !((GetMaster() == Other)) goto 0x0023
+  0021: return true
+  0023: return IsSameTeam(Other)
+  002f: return return
+  0035: <eos>
+
+function TnSentryPawn.TakeDamage  (script 181 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(!CanReceiveDamageFrom(InstigatedBy)) goto 0x0018
+  0016: return nothing
+  0018: if !((DamageType == obj'Engine.DmgType_Crushed')) goto 0x0029
+  0027: return nothing
+  0029: OnDamageFromType(DamageType)
+  0038: Damage = ModifyDamage(Damage, DamageType)
+  0052: self.DestructibleComponent.NotifyHit(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser, true)
+  0089: TnSentryPawn.FinalizeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  00b2: return nothing
+  00b4: <eos>
+
+function TnSentryPawn.TakeRadiusDamage  (script 265 bytes)
+  0000: if !(!CanReceiveDamageFrom(InstigatedBy)) goto 0x0016
+  0014: return nothing
+  0016: OnDamageFromType(DamageType)
+  0025: GetComponentsBoundingBox(ActorBox)
+  0034: MomentumVec = (((ActorBox.Max + ActorBox.Min) / cast3f(2)) - HitLocation)
+  0069: MomentumVec = (Momentum * obj'Core.Math'.static.Normal(MomentumVec))
+  0086: Damage = ModifyDamage(Damage, DamageType)
+  00a0: self.DestructibleComponent.NotifyRadiusHit(InstigatedBy, Damage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser, true)
+  00dd: TnSentryPawn.FinalizeDamage(Damage, InstigatedBy, HitLocation, MomentumVec, DamageType, HitInfo, DamageCauser)
+  0106: return nothing
+  0108: <eos>
+
+function TnSentryPawn.CanReceiveDamageFrom  (script 103 bytes)
+  0000: if !((((InstigatedBy != none) && (self.WorldInfo.Game != none)) && self.WorldInfo.GRI.OnSameTeam(self, InstigatedBy.Pawn))) goto 0x0053
+  0051: return false
+  0053: return !InGodMode()
+  0060: return return
+  0066: <eos>
+
+function TnSentryPawn.ModifyDamage  (script 43 bytes)
+  0000: return self.DamageTakenModifier.ModifyFloat(Damage, GetMaster(), )
+  0024: return return
+  002a: <eos>
+
+function TnSentryPawn.OnDamageFromType  (script 28 bytes)
+  0000: if !((dt == obj'TnDamageTypeFlashBang')) goto 0x0019
+  000f: TakeFlashBangDamage()
+  0019: return nothing
+  001b: <eos>
+
+function TnSentryPawn.TakeFlashBangDamage  (script 24 bytes)
+  0000: if !(!self._Invulnerable) goto 0x0015
+  000b: Kill()
+  0015: return nothing
+  0017: <eos>
+
+function TnSentryPawn.FinalizeDamage  (script 244 bytes)
+  0000: nothing
+  0001: nothing
+  0002: self.LastHit.Damage = cast44(Damage)
+  001a: self.LastHit.Location = HitLocation
+  0030: self.LastHit.DamageType = DamageType
+  0046: self.LastHit.Momentum = Momentum
+  005c: self.LastHit.HitComponent = HitInfo.HitComponent
+  007d: self.LastHit.Item = HitInfo.Item
+  009e: if !((InstigatedBy != none)) goto 0x00c6
+  00a9: NotifySentryDamagedObservers(Damage, InstigatedBy.Pawn)
+  00c6: if !((GetHealth() <= cast3f(0))) goto 0x00f1
+  00d8: HandleDeath(InstigatedBy, DamageType, HitLocation)
+  00f1: return nothing
+  00f3: <eos>
+
+function TnSentryPawn.CanFire  (script 138 bytes)
+  0000: if !((self._DisableShooting || (!self._Blueprint.AreAnimationsLooping && self.Mesh.IsPlayingAnim(self._Blueprint.ActivateSequenceName)))) goto 0x0047
+  0045: return false
+  0047: SentryC = TnAiSentryController(self.Controller)
+  0057: if !(((SentryC != none) && SentryC.get_IsDormant())) goto 0x007c
+  007a: return false
+  007c: return TnSentryPawn.IsAimedAtTarget()
+  0083: return return
+  0089: <eos>
+
+function TnSentryPawn.Heal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.Kill  (script 73 bytes)
+  0000: if !((self.DestructibleComponent != none)) goto 0x002d
+  000b: self.DestructibleComponent.NotifyTrigger(GetHealthMax(), obj'HM_Engine.HmGenericDamageDestructionTrigger')
+  002d: HandleDeath(none, none, vect(0,0,0))
+  0046: return nothing
+  0048: <eos>
+
+function TnSentryPawn.AddSentryKilledObserver  (script 46 bytes)
+  0000: if !((self.SentryKilledObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.SentryKilledObservers.Length[self.SentryKilledObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnSentryPawn.RemoveSentryKilledObserver  (script 49 bytes)
+  0000: Index = self.SentryKilledObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.SentryKilledObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnSentryPawn.ClearSentryKilledObservers  (script 11 bytes)
+  0000: self.SentryKilledObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnSentryPawn.NotifySentryKilledObservers  (script 73 bytes)
+  0000: I = 0
+  0007: if !((I < self.SentryKilledObservers.Length)) goto 0x0046
+  0017: N = I[self.SentryKilledObservers]
+  0028: SentryKilledObserver(X)
+  003c: AddAdd_PreInt(I)
+  0043: goto 0x0007
+  0046: return nothing
+  0048: <eos>
+
+function TnSentryPawn.AddSentryDamagedObserver  (script 46 bytes)
+  0000: if !((self.SentryDamagedObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.SentryDamagedObservers.Length[self.SentryDamagedObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnSentryPawn.RemoveSentryDamagedObserver  (script 49 bytes)
+  0000: Index = self.SentryDamagedObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.SentryDamagedObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnSentryPawn.ClearSentryDamagedObservers  (script 11 bytes)
+  0000: self.SentryDamagedObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnSentryPawn.NotifySentryDamagedObservers  (script 78 bytes)
+  0000: I = 0
+  0007: if !((I < self.SentryDamagedObservers.Length)) goto 0x004b
+  0017: N = I[self.SentryDamagedObservers]
+  0028: SentryDamagedObserver(X, Y)
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return nothing
+  004d: <eos>
+
+function TnSentryPawn.IsWaitingForRevival  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnSentryPawn.WaitingForRevival.TakeDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function TnSentryPawn.WaitingForRevival.TakeRadiusDamage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.WaitingForRevival.StartFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.WaitingForRevival.Kill  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.WaitingForRevival.BeginState  (script 34 bytes)
+  0000: StopFire(0)
+  000c: BeginState(PreviousStateName)
+  0017: self._TargetableByAi = false
+  001f: return nothing
+  0021: <eos>
+
+function TnSentryPawn.WaitingForRevival.EndState  (script 22 bytes)
+  0000: EndState(NextStateName)
+  000b: self._TargetableByAi = true
+  0013: return nothing
+  0015: <eos>
+
+function TnSentryPawn.WaitingForRevival.Heal  (script 51 bytes)
+  0000: self.DestructibleComponent.NotifyTrigger(GetHealthMax(), obj'TnHealDestructionTrigger')
+  0022: GotoState('None', , , )
+  0030: return nothing
+  0032: <eos>
+
+function TnSentryPawn.WaitingForRevival.CanFire  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnSentryPawn.WaitingForRevival.IsWaitingForRevival  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnSentryPawn.Dying.StartFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.Dying.Kill  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.Dying.TakeDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function TnSentryPawn.Dying.BeginState  (script 14 bytes)
+  0000: self.LifeSpan = self.LifeSpanAfterDeath
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryPawn.HandleDeath  (script 137 bytes)
+  0000: NotifySentryKilledObservers(self)
+  000b: if !(get_IsRevivable()) goto 0x0029
+  0018: GotoState('WaitingForRevival', , , )
+  0026: goto 0x0042
+  0029: Died(Killer, DamageType, HitLocation)
+  0042: if !((Killer == none)) goto 0x004f
+  004d: return nothing
+  004f: KillerPRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0068: if !((KillerPRI != none)) goto 0x0086
+  0073: KillerPRI.AddSentryKill()
+  0086: return nothing
+  0088: <eos>
+
+function TnSentryPawn.GetHealth  (script 45 bytes)
+  0000: return ((self._DestructiblePiece == none) ? 0.0 : self._DestructiblePiece.GetHealth())
+  0026: return return
+  002c: <eos>
+
+function TnSentryPawn.GetHealthMax  (script 45 bytes)
+  0000: return ((self._DestructiblePiece == none) ? 0.0 : self._DestructiblePiece.GetInitialHealth())
+  0026: return return
+  002c: <eos>
+
+function TnSentryPawn.EnemyUpdated  (script 131 bytes)
+  0000: if !(((IsDead() || (self.YawSkelControl == none)) || (self.PitchSkelControl == none))) goto 0x0029
+  0027: return nothing
+  0029: if !(((self._Enemy != none) && (self.LastEnemy == none))) goto 0x004b
+  0041: EnemyAcquired()
+  004b: if !(((self._Enemy == none) && (self.LastEnemy != none))) goto 0x0069
+  0063: TnSentryPawn.EnemyLost()
+  0069: TnSentryPawn.UpdateSentryRotation()
+  006f: TnSentryPawn.UpdateEnemyClaim()
+  0075: self.LastEnemy = self._Enemy
+  0080: return nothing
+  0082: <eos>
+
+function TnSentryPawn.UpdateEnemyClaim  (script 216 bytes)
+  0000: if !(!self._ShouldRegisterEnemyClaim) goto 0x000d
+  000b: return nothing
+  000d: NewServiceProvider = TnServiceProvider(self._Enemy)
+  001d: OldServiceProvider = TnServiceProvider(self.LastEnemy)
+  002d: if !(NotEqual_InterfaceInterface(NewServiceProvider, TnServiceProvider(none))) goto 0x0081
+  0041: NewEnemyClaimService = TnActionTargetClaimService(NewServiceProvider.GetService('TnActionTargetClaimService'))
+  0069: self._ActionTargetClaimer.AssignActionSentryTarget(NewEnemyClaimService)
+  0081: if !(NotEqual_InterfaceInterface(OldServiceProvider, TnServiceProvider(none))) goto 0x00d5
+  0095: OldEnemyClaimService = TnActionTargetClaimService(OldServiceProvider.GetService('TnActionTargetClaimService'))
+  00bd: self._ActionTargetClaimer.ReleaseActionSentryTarget(OldEnemyClaimService)
+  00d5: return nothing
+  00d7: <eos>
+
+function TnSentryPawn.EnemyAcquired  (script 35 bytes)
+  0000: if !(self._Blueprint.PlayAnimOnEnemyAcquisition) goto 0x0018
+  0012: TnSentryPawn.PlayLocalActivateAnim()
+  0018: TnSentryPawn.SetTargetType(3)
+  0020: return nothing
+  0022: <eos>
+
+function TnSentryPawn.PlayReplicatedActivateAnim  (script 171 bytes)
+  0000: if !((((self._Blueprint == none) || (self._Blueprint.ActivateSequenceName == 'None')) || (self.Mesh == none))) goto 0x0038
+  0036: return nothing
+  0038: self.ActivateAnimDirty = !self.ActivateAnimDirty
+  0047: self.Mesh.PlayAnim(self._Blueprint.ActivateSequenceName, , self._Blueprint.AreAnimationsLooping, )
+  0079: SentryC = TnAiSentryController(self.Controller)
+  0089: if !((SentryC != none)) goto 0x00a8
+  0094: SentryC.SetDormant(false)
+  00a8: return nothing
+  00aa: <eos>
+
+function TnSentryPawn.PlayLocalActivateAnim  (script 109 bytes)
+  0000: if !((((self._Blueprint == none) || (self._Blueprint.ActivateSequenceName == 'None')) || (self.Mesh == none))) goto 0x0038
+  0036: return nothing
+  0038: self.Mesh.PlayAnim(self._Blueprint.ActivateSequenceName, , self._Blueprint.AreAnimationsLooping, )
+  006a: return nothing
+  006c: <eos>
+
+function TnSentryPawn.EnemyLost  (script 39 bytes)
+  0000: if !(self._Blueprint.PlayAnimOnEnemyAcquisition) goto 0x001c
+  0012: PlayLocalDeactivateAnim()
+  001c: TnSentryPawn.SetTargetType(0)
+  0024: return nothing
+  0026: <eos>
+
+function TnSentryPawn.PlayReplicatedDeactivateAnim  (script 124 bytes)
+  0000: if !((((self._Blueprint == none) || (self._Blueprint.DeactivateSequenceName == 'None')) || (self.Mesh == none))) goto 0x0038
+  0036: return nothing
+  0038: self.DeactivateAnimDirty = !self.DeactivateAnimDirty
+  0047: self.Mesh.PlayAnim(self._Blueprint.DeactivateSequenceName, , self._Blueprint.AreAnimationsLooping, )
+  0079: return nothing
+  007b: <eos>
+
+function TnSentryPawn.PlayLocalDeactivateAnim  (script 109 bytes)
+  0000: if !((((self._Blueprint == none) || (self._Blueprint.DeactivateSequenceName == 'None')) || (self.Mesh == none))) goto 0x0038
+  0036: return nothing
+  0038: self.Mesh.PlayAnim(self._Blueprint.DeactivateSequenceName, , self._Blueprint.AreAnimationsLooping, )
+  006a: return nothing
+  006c: <eos>
+
+function TnSentryPawn.SetTargetType  (script 57 bytes)
+  0000: TC = FindComponent(obj'TnTargetableComponent')
+  0015: if !((TC == none)) goto 0x0022
+  0020: return nothing
+  0022: TC.TargetType = Type
+  0036: return nothing
+  0038: <eos>
+
+function TnSentryPawn.IsAimedAtTarget  (script 147 bytes)
+  0000: if !(((self.YawSkelControl == none) || (self.PitchSkelControl == none))) goto 0x001a
+  0018: return false
+  001a: if !(((self.YawSkelControl.BlendTimeToGo > cast3f(0)) || (self.YawSkelControl.IsBoneRotationWithinAngleToDesiredBoneRotation(self._AimedAtTargetThreshold) == false))) goto 0x0052
+  0050: return false
+  0052: if !(((self.PitchSkelControl.BlendTimeToGo > cast3f(0)) || (self.PitchSkelControl.IsBoneRotationWithinAngleToDesiredBoneRotation(self._AimedAtTargetThreshold) == false))) goto 0x008a
+  0088: return false
+  008a: return true
+  008c: return return
+  0092: <eos>
+
+function TnSentryPawn.GetBaseAimRotation  (script 28 bytes)
+  0000: return cast50((self.TargetLocation - GetWeaponStartTraceLocation()))
+  0015: return return
+  001b: <eos>
+
+function TnSentryPawn.GetWeaponStartTraceLocation  (script 47 bytes)
+  0000: nothing
+  0001: return TnWeapon(self.Weapon).GetWeaponMesh().GetMuzzleLocation()
+  0028: return return
+  002e: <eos>
+
+function TnSentryPawn.GetWeaponSockets  (script 26 bytes)
+  0000: Sockets.AddItem(self.WeaponSocketName)
+  000d: return Sockets
+  0013: return return
+  0019: <eos>
+
+function TnSentryPawn.GetWeaponAttachmentLocation  (script 32 bytes)
+  0000: return self.Mesh.GetSocketWorldLocation(self.WeaponSocketName)
+  0019: return return
+  001f: <eos>
+
+function TnSentryPawn.SetEquippedWeaponClass  (script 149 bytes)
+  0000: if !((TnMeleeWeapon(NextWeapon) != none)) goto 0x005e
+  0010: LogInternal(("Error: A sentry has received a melee weapon" @ cast56(NextWeapon)), , , )
+  004b: obj'Core.Profiling'.static.PrintScriptBacktrace()
+  005e: if !(((cast3a(self.Role) == cast3a(3)) && (NextWeapon != none))) goto 0x0092
+  007b: self.EquippedWeaponClass = class<HmWeapon>(NextWeapon.get_Class())
+  0092: return nothing
+  0094: <eos>
+
+function TnSentryPawn.NotifyWeaponChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryPawn.CanSwitchWeapons  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnSentryPawn.GetWeaponSpreadModifier  (script 60 bytes)
+  0000: CurrentWeapon = TnWeapon(self.Weapon)
+  0010: if !((CurrentWeapon == none)) goto 0x0021
+  001b: return 0.0
+  0021: return CurrentWeapon.GetCurrentSpreadModifier()
+  0035: return return
+  003b: <eos>
+
+function TnSentryPawn.ClientUpdateWeapon  (script 313 bytes)
+  0000: Weap = ClientGetWeaponByClass(WeaponClass)
+  0015: if !((Weap != none)) goto 0x0136
+  0020: if !((((cast3a(self.Role) < cast3a(2)) && (self.Weapon != none)) && (self.Weapon.get_Class() != WeaponClass))) goto 0x010a
+  0055: WeaponReference = HmWeapon(self.Weapon)
+  0065: WeaponReference.StopFireEffects(0)
+  007a: if !((WeaponReference.GetWeaponMesh() != none)) goto 0x00b5
+  0093: WeaponReference.GetWeaponMesh().Initialize(none)
+  00b5: WeaponReference.SetBase(none, , , )
+  00cc: WeaponReference.DetachWeapon()
+  00df: self.InvManager.RemoveFromInventory(WeaponReference)
+  00f7: WeaponReference.DestroyActor()
+  0103: self.Weapon = none
+  010a: Weap.SetHidden(true)
+  011e: self.InvManager.SetCurrentWeapon(Weap)
+  0136: return nothing
+  0138: <eos>
+
+function TnSentryPawn.ClientSetupInventoryManager  (script 90 bytes)
+  0000: if !((self.InvManager == none)) goto 0x0057
+  000b: self.InvManager = Spawn(self.InventoryManagerClass, self, , , , , , )
+  0027: if !((self.InvManager != none)) goto 0x0057
+  0032: self.InvManager.RemoteRole = 0
+  0043: self.InvManager.SetupFor(self)
+  0057: return nothing
+  0059: <eos>
+
+function TnSentryPawn.ClientGetWeaponByClass  (script 141 bytes)
+  0000: if !((self.InvManager == none)) goto 0x0011
+  000b: TnSentryPawn.ClientSetupInventoryManager()
+  0011: Weap = HmWeapon(self.InvManager.FindInventoryType(WeaponClass, ))
+  0035: if !((Weap == none)) goto 0x0080
+  0040: Weap = HmWeapon(self.InvManager.CreateInventory(WeaponClass, true))
+  0064: if !((Weap != none)) goto 0x0080
+  006f: Weap.RemoteRole = 0
+  0080: return Weap
+  0086: return return
+  008c: <eos>
+
+function TnSentryPawn.DestroyClientSideInventory  (script 137 bytes)
+  0000: if !(((self.InvManager == none) || (cast3a(self.WorldInfo.NetMode) != cast3a(3)))) goto 0x0028
+  0026: return nothing
+  0028: foreach self.InvManager.InventoryActors(obj'Engine.Inventory', Inv) (end 0x006e)
+  0048: if !((cast3a(Inv.Role) == cast3a(3))) goto 0x006d
+  0061: Inv.DestroyActor()
+  006d: iternext
+  006e: iterpop
+  006f: self.Weapon = none
+  0076: self.InvManager.PendingWeapon = none
+  0086: return nothing
+  0088: <eos>
+
+function TnSentryPawn.SetAITeam  (script 47 bytes)
+  0000: self.Team = TnGame(self.WorldInfo.Game).GetTeamByClass(Faction)
+  002c: return nothing
+  002e: <eos>
+
+function TnSentryPawn.GetTeam  (script 13 bytes)
+  0000: return self.Team
+  0006: return return
+  000c: <eos>
+
+function TnSentryPawn.ApplySentry  (script 758 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(self.Role) == cast3a(3))) goto 0x0076
+  001d: CreateInventory(self._Blueprint.WeaponClass, )
+  0036: self.EquippedWeaponClass = self._Blueprint.WeaponClass
+  004a: if !((self._Blueprint.ObjectiveMarkerClass != none)) goto 0x0076
+  005e: AddObjectiveMarker(self._Blueprint.ObjectiveMarkerClass)
+  0076: self._MaxAttackRange = self._Blueprint.MaxAttackRange
+  008a: self.SightRadius = self._Blueprint.SightRadius
+  009e: self.PeripheralVision = obj'Core.Math'.static.Cos((self._Blueprint.PeripheralVisionDegrees * 0.0174533))
+  00c4: self._AimedAtTargetThreshold = self._Blueprint.AimedAtTargetThreshold
+  00d8: if !((self._Blueprint.Destructible != none)) goto 0x0165
+  00ec: self.DestructibleComponent.Initialize(self._Blueprint.Destructible)
+  010d: self.DestructibleComponent.Reset()
+  0120: self._DestructiblePiece = self.DestructibleComponent.FindPiece(self._Blueprint.TurretPieceName)
+  0147: self.Mesh = SkeletalMeshComponent(self._DestructiblePiece.GetActiveMeshComponent())
+  0165: self.WeaponSocketName = self._Blueprint.WeaponSocketName
+  0179: self.YawSkelControl = HmSkelControl_TurretConstrained(self.Mesh.FindSkelControl(self._Blueprint.YawSkelControlName))
+  01a5: self.YawSkelControl.LagDegreesPerSecond = self._Blueprint.LagDegreesPerSecond
+  01c2: self.YawSkelControl.DesiredBoneRotation.Yaw = self.Rotation.Yaw
+  01ec: self.YawSkelControl.SetSkelControlActive(true)
+  0200: self.PitchSkelControl = HmSkelControl_TurretConstrained(self.Mesh.FindSkelControl(self._Blueprint.PitchSkelControlName))
+  022c: self.PitchSkelControl.LagDegreesPerSecond = self._Blueprint.LagDegreesPerSecond
+  0249: self.PitchSkelControl.DesiredBoneRotation.Pitch = self.Rotation.Pitch
+  0273: self.PitchSkelControl.SetSkelControlActive(true)
+  0287: self._HealthDisplay.Initialize(self, self._DestructiblePiece)
+  02a0: self.LifeSpanAfterDeath = self._Blueprint.LifeSpanAfterDeath
+  02b4: TnSentryPawn.EnemyUpdated()
+  02ba: if !(!self._Blueprint.PlayAnimOnEnemyAcquisition) goto 0x02f3
+  02ce: if !(self._Blueprint.PlayActivateOnSpawn) goto 0x02e9
+  02e0: TnSentryPawn.PlayLocalActivateAnim()
+  02e6: goto 0x02f3
+  02e9: PlayLocalDeactivateAnim()
+  02f3: return nothing
+  02f5: <eos>
+
+function TnSentryPawn.AttachToPawn  (script 177 bytes)
+  0000: if !(((P == none) || self.bSentryAttached)) goto 0x0018
+  0016: return nothing
+  0018: if !((cast3a(self.Role) == cast3a(3))) goto 0x003e
+  0028: self.AttachedPawn = P
+  0033: self.AttachSocketName = SocketName
+  003e: SetBase(none, , , )
+  004c: SetHardAttach(true)
+  0057: SetPhysics(0, , )
+  0065: self.bCollideWorld = false
+  006d: self.bReplicateMovement = false
+  0075: SetBase(P, , P.Mesh, SocketName)
+  0098: SetPhysics(0, , )
+  00a6: self.bSentryAttached = true
+  00ae: return nothing
+  00b0: <eos>
+
+function TnSentryPawn.SetMovementPhysics  (script 27 bytes)
+  0000: if !((cast3a(self.Physics) == cast3a(0))) goto 0x0012
+  0010: return nothing
+  0012: SetMovementPhysics()
+  0018: return nothing
+  001a: <eos>
+
+function TnSentryPawn.PlayDying  (script 17 bytes)
+  0000: GotoState('Dying', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnSentryPawn.Tick  (script 122 bytes)
+  0000: if !(IsDead()) goto 0x000f
+  000d: return nothing
+  000f: GRI = TnGameReplicationInfoGameBase(self.WorldInfo.GRI)
+  0028: if !(((!self.HasAddedObjectiveMarker && (GRI != none)) && (self.ObjectiveMarkerClass != none))) goto 0x0071
+  004d: GRI.AddObjectiveMarker("", self, self.ObjectiveMarkerClass, true)
+  0069: self.HasAddedObjectiveMarker = true
+  0071: TnSentryPawn.UpdateSentryRotation()
+  0077: return nothing
+  0079: <eos>
+
+function TnSentryPawn.UpdateSentryRotation  (script 168 bytes)
+  0000: if !((((self._Enemy == none) || (self.YawSkelControl == none)) || (self.PitchSkelControl == none))) goto 0x0027
+  0025: return nothing
+  0027: self.TargetLocation = TnSentryPawn.FindTargetLocation(self._Enemy)
+  0038: SentryToTargetRotation = cast50((self.TargetLocation - GetReferenceLocation()))
+  0051: self.YawSkelControl.DesiredBoneRotation.Yaw = SentryToTargetRotation.Yaw
+  007b: self.PitchSkelControl.DesiredBoneRotation.Pitch = SentryToTargetRotation.Pitch
+  00a5: return nothing
+  00a7: <eos>
+
+function TnSentryPawn.GetReferenceLocation  (script 14 bytes)
+  0000: return TnSentryPawn.GetWeaponAttachmentLocation()
+  0007: return return
+  000d: <eos>
+
+function TnSentryPawn.FindTargetLocation  (script 129 bytes)
+  0000: TransformerPawn = TnPawn(TargetActor)
+  0010: if !((TransformerPawn != none)) goto 0x0042
+  001b: TargetableService = TnTargetableService(TransformerPawn.GetService('TnTargetableService'))
+  0042: if !(NotEqual_InterfaceInterface(TargetableService, TnTargetableService(none))) goto 0x006b
+  0056: return TargetableService.get_TargetableLocation()
+  006b: return self._Enemy.Location
+  007a: return return
+  0080: <eos>
+
+function TnSentryPawn.MapHitComponentToIndex  (script 32 bytes)
+  0000: return self.DestructibleComponent.MapHitComponentToIndex(HitComponent)
+  0019: return return
+  001f: <eos>
+
+function TnSentryPawn.MapIndexToHitComponent  (script 32 bytes)
+  0000: return self.DestructibleComponent.MapIndexToHitComponent(Index)
+  0019: return return
+  001f: <eos>
+
+function TnSentryPawn.CanHighlight  (script 16 bytes)
+  0000: return !self._Invulnerable
+  0009: return return
+  000f: <eos>
+
+function TnSentryPawn.AddObjectiveMarker  (script 14 bytes)
+  0000: self.ObjectiveMarkerClass = InObjectiveMarkerClass
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryPawn.GetObjectiveMarkerType  (script 13 bytes)
+  0000: return self.ObjectiveMarkerClass
+  0006: return return
+  000c: <eos>

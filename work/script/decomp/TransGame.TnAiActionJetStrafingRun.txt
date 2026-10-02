@@ -1,0 +1,158 @@
+function TnAiActionJetStrafingRun.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(self._Blueprint.WeaponClass, true)
+  002d: self._PlaneForm = TnPlaneForm(self._TransformerPawn._VehicleForm)
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionJetStrafingRun.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionJetStrafingRunBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionJetStrafingRun.OnSetUpConditions  (script 234 bytes)
+  0000: TargetActor = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((TargetActor == none)) goto 0x0035
+  0033: return false
+  0035: Distance = obj'Core.Math'.static.VSizeSq((TargetActor.Location - self._TransformerPawn.Location))
+  006c: if !((Distance < (self._Blueprint.MinValidDistance * self._Blueprint.MinValidDistance))) goto 0x0096
+  0094: return false
+  0096: if !((Distance > (self._Blueprint.MaxValidDistance * self._Blueprint.MaxValidDistance))) goto 0x00c0
+  00be: return false
+  00c0: if !(!TnAiActionJetStrafingRun.CanPerformStrafingRun(TargetActor)) goto 0x00d2
+  00d0: return false
+  00d2: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00e3: return return
+  00e9: <eos>
+
+function TnAiActionJetStrafingRun.OnStart  (script 270 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: self._TransformerController.MoveTowardActor(self._Target, self._Target, delegate.OnMoveFailed, delegate.OnMoveFailed)
+  006d: self._TransformerController.Focus = IFocusible(self._Target)
+  0086: self._IsPeelingOff = false
+  008e: self.ValidPeelOffInfos.Remove(0,self.ValidPeelOffInfos.Length)
+  009b: SetCharacterState((4 | 0))
+  00aa: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  00cc: get_WeaponShooter().Activate(self._Blueprint.WeaponClass, delegate.FailCallback)
+  00fb: return OnStart(ExpectedEffects)
+  0107: return return
+  010d: <eos>
+
+function TnAiActionJetStrafingRun.OnUpdate  (script 220 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0028
+  001d: return Succeed()
+  0028: if !((!self._IsPeelingOff && get_WeaponAimer().get_OwnerIsAiming())) goto 0x0068
+  0050: get_WeaponShooter().StartFire()
+  0068: if !((self._IsPeelingOff && !TnAiActionJetStrafingRun.InFrontOfActor(self._Target, 0.866))) goto 0x00a0
+  0088: get_WeaponShooter().StopFire()
+  00a0: if !((!self._IsPeelingOff && TnAiActionJetStrafingRun.IsCloseEnoughToPeelOff())) goto 0x00c4
+  00b6: self._IsPeelingOff = true
+  00be: TnAiActionJetStrafingRun.BeginPeelOff()
+  00c4: return OnUpdate(ExpectedEffects, DeltaTime)
+  00d5: return return
+  00db: <eos>
+
+function TnAiActionJetStrafingRun.OnMoveFailed  (script 89 bytes)
+  0000: if !((self._IsPeelingOff || !TnAiActionJetStrafingRun.CanPerformStrafingRun(self._Target))) goto 0x0027
+  001b: Fail()
+  0025: return nothing
+  0027: self._TransformerController.MoveTowardActor(self._Target, self._Target, delegate.OnMoveFailed, delegate.OnMoveFailed)
+  0056: return nothing
+  0058: <eos>
+
+function TnAiActionJetStrafingRun.OnFinish  (script 157 bytes)
+  0000: OnFinish(CurrentState)
+  000b: get_WeaponAimer().Reset()
+  0023: get_WeaponShooter().Deactivate()
+  003b: self._PlaneForm.set_YawInput(0.0)
+  0053: self._PlaneForm.set_PitchInput(0.0)
+  006b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x009a
+  007b: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  009a: return nothing
+  009c: <eos>
+
+function TnAiActionJetStrafingRun.CanPerformStrafingRun  (script 116 bytes)
+  0000: if !((self._TransformerPawn.Weapon == none)) goto 0x0016
+  0014: return false
+  0016: if !(!TnAiActionJetStrafingRun.IsValidTarget(TargetActor)) goto 0x0028
+  0026: return false
+  0028: if !(!self._TransformerPawn.get_IsInVehicleForm()) goto 0x0042
+  0040: return false
+  0042: if !(!TnAiActionJetStrafingRun.InFrontOfActor(TargetActor, 0.0)) goto 0x0059
+  0057: return false
+  0059: if !(!TnAiActionJetStrafingRun.IsFacingTarget(TargetActor)) goto 0x006b
+  0069: return false
+  006b: return true
+  006d: return return
+  0073: <eos>
+
+function TnAiActionJetStrafingRun.BeginPeelOff  (script 406 bytes)
+  0000: TnAiActionJetStrafingRun.EvaluatePeelOff(obj'Core.Math'.static.MakeVector(8000.0, 8000.0, 0.0), 1.0, 0.0)
+  0032: TnAiActionJetStrafingRun.EvaluatePeelOff(obj'Core.Math'.static.MakeVector(8000.0, cast3f(-8000), 0.0), -1.0, 0.0)
+  0068: TnAiActionJetStrafingRun.EvaluatePeelOff(obj'Core.Math'.static.MakeVector(8000.0, 0.0, 2000.0), 0.0, -1.0)
+  009a: TnAiActionJetStrafingRun.EvaluatePeelOff(obj'Core.Math'.static.MakeVector(8000.0, 0.0, cast3f(-2000)), 0.0, 1.0)
+  00d0: if !((self.ValidPeelOffInfos.Length == 0)) goto 0x00e8
+  00dc: Fail()
+  00e6: return nothing
+  00e8: RandomInt = obj'Core.Random'.static.RandomInt(self.ValidPeelOffInfos.Length)
+  0107: PeelOff = RandomInt[self.ValidPeelOffInfos]
+  0118: self._TransformerController.MoveToPosition(PeelOff.Destination, delegate.FailCallback, delegate.FailCallback)
+  014d: self._PlaneForm.set_YawInput(PeelOff.YawInput)
+  0170: self._PlaneForm.set_PitchInput(PeelOff.PitchInput)
+  0193: return nothing
+  0195: <eos>
+
+function TnAiActionJetStrafingRun.EvaluatePeelOff  (script 349 bytes)
+  0000: Bounds = self._TransformerPawn.GetSkeletonBounds()
+  0019: HitActor = self._TransformerPawn.Trace(HitLocation, HitNormal, none, (self._TransformerPawn.Location + (Offset >> self._TransformerPawn.Rotation)), self._TransformerPawn.Location, , Bounds.BoxExtent, , , )
+  007e: if !((HitActor != none)) goto 0x00ea
+  0089: if !((obj'Core.Math'.static.VSizeSq((HitLocation - self._TransformerPawn.Location)) < cast3f((2500 * 2500)))) goto 0x00c6
+  00c4: return nothing
+  00c6: PeelOff.Destination = TnAiActionJetStrafingRun.GetValidPeelOffPosition(HitLocation, Bounds)
+  00e7: goto 0x0121
+  00ea: PeelOff.Destination = (self._TransformerPawn.Location + (Offset >> self._TransformerPawn.Rotation))
+  0121: PeelOff.YawInput = YawInput
+  0137: PeelOff.PitchInput = PitchInput
+  014d: self.ValidPeelOffInfos.AddItem(PeelOff)
+  015a: return nothing
+  015c: <eos>
+
+function TnAiActionJetStrafingRun.GetValidPeelOffPosition  (script 76 bytes)
+  0000: HitToPawn = obj'Core.Math'.static.Normal((self._TransformerPawn.Location - HitLocation))
+  0026: return (HitLocation + (HitToPawn * Bounds.SphereRadius))
+  0045: return return
+  004b: <eos>
+
+function TnAiActionJetStrafingRun.IsCloseEnoughToPeelOff  (script 73 bytes)
+  0000: return (obj'Core.Math'.static.VSizeSq((self._TransformerPawn.Location - self._Target.Location)) < cast3f((4500 * 4500)))
+  0042: return return
+  0048: <eos>
+
+function TnAiActionJetStrafingRun.InFrontOfActor  (script 85 bytes)
+  0000: TargetToPawn = obj'Core.Math'.static.Normal((self._TransformerPawn.Location - TargetActor.Location))
+  002f: return ((TargetToPawn dot cast39(TargetActor.Rotation)) >= Tolerance)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionJetStrafingRun.IsFacingTarget  (script 85 bytes)
+  0000: PawnToTarget = obj'Core.Math'.static.Normal((TargetActor.Location - self._TransformerPawn.Location))
+  002f: return ((PawnToTarget dot cast39(self._TransformerPawn.Rotation)) >= 0.866)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionJetStrafingRun.IsValidTarget  (script 132 bytes)
+  0000: TargetPawn = TnPawn(TargetActor)
+  0010: if !((TargetPawn == none)) goto 0x001d
+  001b: return false
+  001d: if !(!TargetPawn.get_IsInVehicleForm()) goto 0x0037
+  0035: return false
+  0037: if !((cast3a(TargetPawn.get_VehicleType()) != cast3a(2))) goto 0x0057
+  0055: return false
+  0057: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x007b
+  0079: return false
+  007b: return true
+  007d: return return
+  0083: <eos>

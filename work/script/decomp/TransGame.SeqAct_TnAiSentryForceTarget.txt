@@ -1,0 +1,37 @@
+function SeqAct_TnAiSentryForceTarget.GetControllerFromObject  (script 197 bytes)
+  0000: C = TnAiSentryController(Target)
+  0010: if !((C == none)) goto 0x004f
+  001b: P = TnSentryPawn(Target)
+  002b: if !((P != none)) goto 0x004f
+  0036: C = TnAiSentryController(P.Controller)
+  004f: if !((C == none)) goto 0x0094
+  005a: LogInternal(((("Error:" @ cast56(self)) @ "non sentry in sentries list") @ cast56(Target)), , , )
+  0094: return (((C != none) && (C.Pawn != none)) ? C : none)
+  00be: return return
+  00c4: <eos>
+
+function SeqAct_TnAiSentryForceTarget.ForceTarget  (script 94 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x005b
+  0017: C = SeqAct_TnAiSentryForceTarget.GetControllerFromObject(I[self.Targets])
+  002e: if !((C != none)) goto 0x0051
+  0039: C.ForceTarget(ForcedTarget)
+  0051: AddAdd_Int(I)
+  0058: goto 0x0007
+  005b: return nothing
+  005d: <eos>
+
+function SeqAct_TnAiSentryForceTarget.Activated  (script 162 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: if !(0[self.InputLinks].bHasImpulse) goto 0x0082
+  002a: if !((self.ForcedTargets.Length != 1)) goto 0x0073
+  0036: LogInternal(("Error: must specify exactly 1 Forced Target in" @ cast56(self)), , , )
+  0070: goto 0x0080
+  0073: SeqAct_TnAiSentryForceTarget.ForceTarget(0[self.ForcedTargets])
+  0080: return nothing
+  0082: if !(1[self.InputLinks].bHasImpulse) goto 0x009f
+  0098: SeqAct_TnAiSentryForceTarget.ForceTarget(none)
+  009f: return nothing
+  00a1: <eos>

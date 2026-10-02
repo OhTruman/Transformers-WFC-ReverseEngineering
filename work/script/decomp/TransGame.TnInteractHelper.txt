@@ -1,0 +1,72 @@
+function TnInteractHelper.UpdateHotSpot  (script 468 bytes)
+  0000: if !(!Interact.bAIEnabled) goto 0x004f
+  0014: if !((Interact.HotSpotPathNode != none)) goto 0x004d
+  0028: Interact.HotSpotPathNode.DestroyActor()
+  003d: Interact.HotSpotPathNode = none
+  004d: return nothing
+  004f: if !(((DynamicSMActor(Interact.Base) != none) || (SkeletalMeshActor(Interact.Base) != none))) goto 0x0091
+  0083: HotSpotClass = obj'TnInteractMoverPathNode'
+  008e: goto 0x00a5
+  0091: HotSpotClass = Interact.HotSpotClass
+  00a5: if !(((Interact.HotSpotPathNode != none) && (Interact.HotSpotPathNode.get_Class() != HotSpotClass))) goto 0x00ff
+  00da: Interact.HotSpotPathNode.DestroyActor()
+  00ef: Interact.HotSpotPathNode = none
+  00ff: if !((Interact.HotSpotPathNode == none)) goto 0x0145
+  0113: Interact.HotSpotPathNode = Interact.Spawn(HotSpotClass, Interact, , , , , , )
+  0145: if !((Interact.HotSpotPathNode != none)) goto 0x01d1
+  0159: Interact.HotSpotPathNode.SetLocation(Interact.GetDesiredHotSpotLocation())
+  0181: if !((HotSpotClass == obj'TnInteractMoverPathNode')) goto 0x01d1
+  0190: Interact.HotSpotPathNode.SetBase(Interact, , , )
+  01b4: Interact.HotSpotPathNode.SetHardAttach(true)
+  01d1: return nothing
+  01d3: <eos>
+
+function TnInteractHelper.TurretCanShootTarget  (script 194 bytes)
+  0000: if !(((InTurret == none) || (InTarget == none))) goto 0x001a
+  0018: return false
+  001a: if !(!InTurret.IsActorInAngleRange(InTarget)) goto 0x0039
+  0037: return false
+  0039: if !(InTurret.LOSNotRequiredForAI) goto 0x004d
+  004b: return true
+  004d: HitActor = InTurret.TraceSight(HitLocation, HitNormal, InTarget, InTarget.GetTargetLocation(, ), InTurret.GetMountedWeaponLocation(), true, , , )
+  00a1: return ((HitActor == none) || (HitActor == InTarget))
+  00bb: return return
+  00c1: <eos>
+
+function TnInteractHelper.FindBestTurret  (script 565 bytes)
+  0000: if !((inWeaponClass == none)) goto 0x000d
+  000b: return none
+  000d: PawnTarget = Pawn(Target)
+  001d: if !(((Target == none) || ((PawnTarget != none) && (PawnTarget.IsDying() || PawnTarget.IsDead())))) goto 0x0067
+  0065: return none
+  0067: TnGame(obj'Engine.Engine'.static.GetGame()).GetLoadedTurrets(Turrets)
+  0092: foreach Turrets(NextTurret,) (end 0x0227)
+  00a1: if !((obj'Core.Math'.static.VSizeSq((NextTurret.Location - InController.Pawn.Location)) > (MaximumTurretDistance * MaximumTurretDistance))) goto 0x00f0
+  00ec: iternext
+  00ed: goto 0x0227
+  00f0: if !(!obj'TnInteractHelper'.static.IsTurretUsableByAI(NextTurret, InController)) goto 0x0116
+  0112: iternext
+  0113: goto 0x0227
+  0116: if !((NextTurret.HotSpotPathNode.IsOccupiedExcludeController(InController) || NextTurret.PawnsTouchingExcluding(TnPawn(InController.Pawn)))) goto 0x0169
+  0165: iternext
+  0166: goto 0x0227
+  0169: if !((NextTurret.WeaponClass != inWeaponClass)) goto 0x0185
+  0181: iternext
+  0182: goto 0x0227
+  0185: if !(!obj'TnInteractHelper'.static.TurretCanShootTarget(NextTurret, Target)) goto 0x01ab
+  01a7: iternext
+  01a8: goto 0x0227
+  01ab: DistSq = obj'Core.Math'.static.VSizeSq((NextTurret.HotSpotPathNode.Location - InController.Pawn.Location))
+  01f4: if !(((NearestTurret == none) || (DistSq < NearestDistSq))) goto 0x0226
+  0210: NearestTurret = NextTurret
+  021b: NearestDistSq = DistSq
+  0226: iternext
+  0227: iterpop
+  0228: return NearestTurret
+  022e: return return
+  0234: <eos>
+
+function TnInteractHelper.IsTurretUsableByAI  (script 119 bytes)
+  0000: return ((Turret.get_AIEnabled() && !Turret.get_IsWeaponRemoved()) && (!Turret.get_IsTurretInUse() || (Turret.GetCurrentUser() == InController.Pawn)))
+  0070: return return
+  0076: <eos>

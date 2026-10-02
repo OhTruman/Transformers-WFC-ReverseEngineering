@@ -1,0 +1,40 @@
+function ForceFeedbackManager.PlayForceFeedbackWaveform  (script 254 bytes)
+  0000: if !((Waveform == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(((((Waveform != none) && (self.FFWaveform != none)) && (Waveform.Samples.Length > 0)) && (0[Waveform.Samples].Duration < 0[self.FFWaveform.Samples].Duration))) goto 0x007b
+  0079: return nothing
+  007b: if !(!self.IsEnabled) goto 0x0088
+  0086: return nothing
+  0088: self.CurrentSample = 0
+  008f: self.ElapsedTime = 0.0
+  009a: self.bIsPaused = false
+  00a2: if !((((Waveform != none) && (Waveform.Samples.Length > 0)) && ((self.bAllowsForceFeedback == true) || Waveform.bForcePlay))) goto 0x00f4
+  00e6: self.FFWaveform = Waveform
+  00f1: goto 0x00fb
+  00f4: self.FFWaveform = none
+  00fb: return nothing
+  00fd: <eos>
+
+function ForceFeedbackManager.StopForceFeedbackWaveform  (script 39 bytes)
+  0000: nothing
+  0001: if !(((Waveform == none) || (Waveform == self.FFWaveform))) goto 0x0024
+  001d: self.FFWaveform = none
+  0024: return nothing
+  0026: <eos>
+
+function ForceFeedbackManager.PauseWaveform  (script 17 bytes)
+  0000: nothing
+  0001: self.bIsPaused = bPause
+  000e: return nothing
+  0010: <eos>
+
+function ForceFeedbackManager.Enable  (script 11 bytes)
+  0000: self.IsEnabled = true
+  0008: return nothing
+  000a: <eos>
+
+function ForceFeedbackManager.Disable  (script 22 bytes)
+  0000: self.IsEnabled = false
+  0008: StopForceFeedbackWaveform()
+  0013: return nothing
+  0015: <eos>

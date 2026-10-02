@@ -1,0 +1,200 @@
+function TnWorldInfo.get_ObjectiveBank  (script 13 bytes)
+  0000: return self._ObjectiveBank
+  0006: return return
+  000c: <eos>
+
+function TnWorldInfo.get_SoundEventSetInfo  (script 13 bytes)
+  0000: return self._SoundEventSetInfo
+  0006: return return
+  000c: <eos>
+
+function TnWorldInfo.get_DeltaTime  (script 13 bytes)
+  0000: return self.DeltaSeconds
+  0006: return return
+  000c: <eos>
+
+function TnWorldInfo.get_Announcer  (script 13 bytes)
+  0000: return self._Announcer
+  0006: return return
+  000c: <eos>
+
+function TnWorldInfo.ReplicatedEvent  (script 67 bytes)
+  0000: ReplicatedEvent(VarName)
+  000b: if !((VarName == 'Pauser')) goto 0x0040
+  001e: if !((none == self.Pauser)) goto 0x0036
+  0029: OnResumed()
+  0033: goto 0x0040
+  0036: OnPaused()
+  0040: return nothing
+  0042: <eos>
+
+function TnWorldInfo.OnPaused  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnWorldInfo.OnResumed  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnWorldInfo.PreSaveWorld  (script 73 bytes)
+  0000: if !(!bAutosaving) goto 0x0015
+  000b: InitializeHotSpotVolumes()
+  0015: if !((self.CoopInfo == none)) goto 0x0034
+  0020: self.CoopInfo = new(self, nothing, obj'TnCoopInfo', nothing, DeltaTime)
+  0034: PreSaveWorld(bAutosaving, bPIESaving)
+  0046: return nothing
+  0048: <eos>
+
+function TnWorldInfo.PostBeginPlay  (script 434 bytes)
+  0000: PostBeginPlay()
+  0006: if !((self.Game != none)) goto 0x0116
+  0011: GIClass = self.Game.get_Class()
+  0023: if !(((!class<TnGame>(GIClass).static.IsCampaignGame() && !ClassIsChildOf(GIClass, obj'TnStressTestGame')) && (self.GameTypesSupportedOnThisMap.Find(GIClass) == -1))) goto 0x0116
+  006d: LogInternal((("Error: Map does not support this game type (" $ cast56(self.Game.get_Class())) $ ") please add this game type to the TnWorldInfo.GameTypesSupportedOnThisMap or play a different map"), , , )
+  0116: self._Announcer.Initialize(self, self.AnnouncerSoundEventSet)
+  012f: if !((none != self.AnnouncerSoundEventSet)) goto 0x01af
+  013a: PC = GetLocalPlayerController()
+  014a: if !((none != PC)) goto 0x0183
+  0155: TeamNum = cast3a(PC.GetTeamNum())
+  0170: if !((TeamNum == 255)) goto 0x0183
+  017c: TeamNum = 0
+  0183: self._Announcer.SetTeam(TeamNum)
+  019b: self._MusicPlayer._SoloTrackIndex = TeamNum
+  01af: return nothing
+  01b1: <eos>
+
+function TnWorldInfo.InitializeHotSpotVolumes  (script 73 bytes)
+  0000: foreach AllActors(obj'TnHotSpotVolume', V) (end 0x0045)
+  0017: if !(V.IsDefaultObject()) goto 0x0031
+  002d: iternext
+  002e: goto 0x0045
+  0031: V.Initialize()
+  0044: iternext
+  0045: iterpop
+  0046: return nothing
+  0048: <eos>
+
+function TnWorldInfo.CheckForErrors  (script 99 bytes)
+  0000: CheckForErrors()
+  0006: if !(self.CheckPointPathingErrorCheck) goto 0x0015
+  000f: TnWorldInfo.RunReachablityToAllCheckPoints()
+  0015: foreach self.GameTypesSupportedOnThisMap(GI,) (end 0x005f)
+  0024: GI.static.StaticCheckForErrors(self)
+  0038: if !(ClassIsChildOf(GI, obj'TnCampaignGameBase')) goto 0x005e
+  0048: self.CoopInfo.CheckForErrors()
+  005b: goto 0x005f
+  005e: iternext
+  005f: iterpop
+  0060: return nothing
+  0062: <eos>
+
+function TnWorldInfo.CompareCheckpointOrder  (script 108 bytes)
+  0000: if !((IndexA[self.Checkpoints].DisplayOrder == IndexB[self.Checkpoints].DisplayOrder)) goto 0x002f
+  002d: return 0
+  002f: return ((IndexA[self.Checkpoints].DisplayOrder < IndexB[self.Checkpoints].DisplayOrder) ? -1 : 1)
+  0065: return return
+  006b: <eos>
+
+function TnWorldInfo.GetSortedCheckPoints  (script 273 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetEngine().GetCurrentWorldInfo()
+  0027: self.Checkpoints.Length = 0
+  002f: foreach WI.AllActors(obj'Engine.Checkpoint', CP) (end 0x0077)
+  004f: if !(CP.IsDefaultObject()) goto 0x0069
+  0065: iternext
+  0066: goto 0x0077
+  0069: self.Checkpoints.AddItem(CP)
+  0076: iternext
+  0077: iterpop
+  0078: if !((self.Checkpoints.Length == 0)) goto 0x008a
+  0084: return SortedCheckpoints
+  008a: Sorter = new(nothing, nothing, obj'Engine.HmArraySorter', nothing, DeltaTime)
+  009e: Sorter.__Compare__Delegate = delegate.CompareCheckpointOrder
+  00b6: Sorter.SortArray(self.Checkpoints.Length)
+  00cf: foreach Sorter.SortedIndices(CheckpointIndex,) (end 0x00fb)
+  00e7: SortedCheckpoints.AddItem(CheckpointIndex[self.Checkpoints])
+  00fa: iternext
+  00fb: iterpop
+  00fc: self.Checkpoints.Length = 0
+  0104: return SortedCheckpoints
+  010a: return return
+  0110: <eos>
+
+function TnWorldInfo.RunReachablityToAllCheckPoints  (script 917 bytes)
+  0000: SortedCheckpoints = GetSortedCheckPoints()
+  0010: if !((SortedCheckpoints.Length == 0)) goto 0x001e
+  001c: return nothing
+  001e: MyScout = Spawn(obj'Engine.Scout', self, , , , , , )
+  003a: MyScout.bCanWalkOffLedges = false
+  004b: MyScout.JumpZ = 5000000.0
+  005f: MyScout.GroundSpeed = 10000000.0
+  0073: MyScout.AIMaxFallSpeedFactor = 1.0
+  0087: MyScout.PathBuilderSearchRadius = 350.0
+  009b: MC.MaxStepHeight = 50.0
+  00b1: MC.MaxJumpHeight = 100.0
+  00c7: MC.MaxFallHeight = 3400.0
+  00dd: MC.MaxFallSpeed = 100000.0
+  00f3: MC.bJumpCapable = true
+  0106: MC.bCanJump = true
+  0119: MC.bCanWalk = true
+  012c: MC.bCanSwim = true
+  013f: MC.bCanFly = true
+  0152: MyScout._WorkingMovementCapabilities = MC
+  0166: MC.CylinderHeight = obj'TnTransformer'.static.GetMaxRobotPathingHeight()
+  018a: MC.CylinderRadius = obj'TnTransformer'.static.GetMaxRobotPathingRadius()
+  01ae: MyScout._PrimaryMovementCapabilities = MC
+  01c2: MC.CylinderHeight = obj'TnVehicleFormBlueprint'.static.GetMaxVehiclePathingHeight()
+  01e6: MC.CylinderRadius = obj'TnVehicleFormBlueprint'.static.GetMaxVehiclePathingRadius()
+  020a: MC.bCanFly = true
+  021d: MyScout._SecondaryMovementCapabilities = MC
+  0231: idx = 0
+  0238: if !((idx < (SortedCheckpoints.Length - 1))) goto 0x0335
+  024b: Start = idx[SortedCheckpoints]
+  025c: Destination = (idx + 1)[SortedCheckpoints]
+  0270: MyScout.SetLocation(Start.Location)
+  028a: if !(!obj'Engine.Pathing'.static.Reachable(Start, Destination, MyScout, , , )) goto 0x032b
+  02b4: Start.EmitCheckMessage(0, (((("Cannot path from" @ cast57(Start.Tag)) @ "to") @ cast57(Destination.Tag)) @ ".  Please fix pathfinding"), , )
+  0324: AddAdd_Int(NumberOfFails)
+  032b: AddAdd_PreInt(idx)
+  0332: goto 0x0238
+  0335: if !((NumberOfFails > 0)) goto 0x0392
+  0340: EmitCheckMessage(0, (((cast53(NumberOfFails) @ "out of") @ cast53((SortedCheckpoints.Length - 1))) @ "checkpoint pathing attempts failed"), , )
+  0392: return nothing
+  0394: <eos>
+
+function TnWorldInfo.GetLocalPlayerController  (script 41 bytes)
+  0000: foreach LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x001f)
+  0017: iterpop
+  0018: return PC
+  001e: iternext
+  001f: iterpop
+  0020: return none
+  0022: return return
+  0028: <eos>
+
+function TnWorldInfo.GetPlayableIconicCharacterNames  (script 75 bytes)
+  0000: PlayableCharacters = self.CoopInfo.GetPlayableCharacters()
+  0019: if !((PlayableCharacters.Length == 0)) goto 0x003e
+  0025: PlayableCharacters = obj'TnPlayerController'.static.GetAllIconicCharacterNames()
+  003e: return PlayableCharacters
+  0044: return return
+  004a: <eos>
+
+function TnWorldInfo.AddTargetableComponent  (script 27 bytes)
+  0000: self._TargetableManager.AddTargetableComponent(TC)
+  0018: return nothing
+  001a: <eos>
+
+function TnWorldInfo.RemoveTargetableComponent  (script 27 bytes)
+  0000: self._TargetableManager.RemoveTargetableComponent(TC)
+  0018: return nothing
+  001a: <eos>
+
+function TnWorldInfo.GetTargetableComponents  (script 27 bytes)
+  0000: return self._TargetableManager.GetTargetableComponents()
+  0014: return return
+  001a: <eos>
+
+function TnWorldInfo.GetCurrentCheckpointIndex  (script 31 bytes)
+  0000: return self.CoopInfo.Faction.static.default.TeamIndex
+  0018: return return
+  001e: <eos>

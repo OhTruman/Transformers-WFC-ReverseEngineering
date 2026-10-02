@@ -1,0 +1,128 @@
+function HmGoapWorldStateCollection.AutoPopulate  (script 106 bytes)
+  0000: self.Properties.Length = 0
+  0008: self.Properties.Length = WorldStateTypes.Length
+  0015: I = 0
+  001c: if !((I < WorldStateTypes.Length)) goto 0x005d
+  002c: I[self.Properties].Type = class<HmGoapWorldState>(I[WorldStateTypes])
+  0053: AddAdd_PreInt(I)
+  005a: goto 0x001c
+  005d: CreateHashedTable()
+  0067: return nothing
+  0069: <eos>
+
+function HmGoapWorldStateCollection.CreateHashedTable  (script 124 bytes)
+  0000: foreach self.Properties(Prop,) (end 0x005a)
+  000f: if !((Prop.Type == none)) goto 0x0029
+  0025: iternext
+  0026: goto 0x005a
+  0029: Prop.Type.static.default.HashIndex[HashedSet.Properties] = Prop
+  0059: iternext
+  005a: iterpop
+  005b: self.Properties = HashedSet.Properties
+  0071: self._HashCreated = true
+  0079: return nothing
+  007b: <eos>
+
+function HmGoapWorldStateCollection.Add  (script 16 bytes)
+  0000: self.Properties.AddItem(WorldStateProperty)
+  000d: return nothing
+  000f: <eos>
+
+function HmGoapWorldStateCollection.GetSubject  (script 122 bytes)
+  0000: if !((((Type == none) || (Type.static.default.HashIndex >= self.Properties.Length)) || (Type.static.default.HashIndex[self.Properties].Type != Type))) goto 0x0053
+  0051: return none
+  0053: return Type.static.default.HashIndex[self.Properties].Subject
+  0073: return return
+  0079: <eos>
+
+function HmGoapWorldStateCollection.SetSubject  (script 152 bytes)
+  0000: if !((Type == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(!self._HashCreated) goto 0x0022
+  0018: CreateHashedTable()
+  0022: self.Properties.Length = obj'Core.Math'.static.Max((Type.static.default.HashIndex + 1), self.Properties.Length)
+  004b: Type.static.default.HashIndex[self.Properties].Type = Type
+  0070: Type.static.default.HashIndex[self.Properties].Subject = Subject
+  0095: return nothing
+  0097: <eos>
+
+function HmGoapWorldStateCollection.GetState  (script 115 bytes)
+  0000: if !((((Type == none) || (Type.static.default.HashIndex >= self.Properties.Length)) || (Type.static.default.HashIndex[self.Properties].Type != Type))) goto 0x0057
+  0051: return EmptyProperty
+  0057: return Type.static.default.HashIndex[self.Properties]
+  006c: return return
+  0072: <eos>
+
+function HmGoapWorldStateCollection.ConditionMet  (script 182 bytes)
+  0000: if !((Condition.Type == none)) goto 0x0018
+  0016: return false
+  0018: if !((Condition.Type.static.default.HashIndex[self.Properties].Value == Condition.Value)) goto 0x00ad
+  005a: if !(Condition.DisregardSubject) goto 0x0070
+  006e: return true
+  0070: return (Condition.Type.static.default.HashIndex[self.Properties].Subject == Condition.Subject)
+  00ad: return false
+  00af: return return
+  00b5: <eos>
+
+function HmGoapWorldStateCollection.SetIntValue  (script 207 bytes)
+  0000: nothing
+  0001: if !((Type == none)) goto 0x000e
+  000c: return false
+  000e: if !(!self._HashCreated) goto 0x0023
+  0019: CreateHashedTable()
+  0023: self.Properties.Length = obj'Core.Math'.static.Max((Type.static.default.HashIndex + 1), self.Properties.Length)
+  004c: Type.static.default.HashIndex[self.Properties].Type = Type
+  0071: Type.static.default.HashIndex[self.Properties].Value.IntVal = Value
+  00a1: Type.static.default.HashIndex[self.Properties].Subject = Subject
+  00c6: return true
+  00c8: return return
+  00ce: <eos>
+
+function HmGoapWorldStateCollection.GetIntValue  (script 133 bytes)
+  0000: if !((((Type == none) || (Type.static.default.HashIndex >= self.Properties.Length)) || (Type.static.default.HashIndex[self.Properties].Type != Type))) goto 0x0053
+  0051: return 0
+  0053: return Type.static.default.HashIndex[self.Properties].Value.IntVal
+  007e: return return
+  0084: <eos>
+
+function HmGoapWorldStateCollection.SetBoolValue  (script 209 bytes)
+  0000: nothing
+  0001: if !((Type == none)) goto 0x000e
+  000c: return false
+  000e: if !(!self._HashCreated) goto 0x0023
+  0019: CreateHashedTable()
+  0023: self.Properties.Length = obj'Core.Math'.static.Max((Type.static.default.HashIndex + 1), self.Properties.Length)
+  004c: Type.static.default.HashIndex[self.Properties].Type = Type
+  0071: Type.static.default.HashIndex[self.Properties].Value.BoolVal = Value
+  00a3: Type.static.default.HashIndex[self.Properties].Subject = Subject
+  00c8: return true
+  00ca: return return
+  00d0: <eos>
+
+function HmGoapWorldStateCollection.GetBoolValue  (script 134 bytes)
+  0000: if !((((Type == none) || (Type.static.default.HashIndex >= self.Properties.Length)) || (Type.static.default.HashIndex[self.Properties].Type != Type))) goto 0x0053
+  0051: return false
+  0053: return Type.static.default.HashIndex[self.Properties].Value.BoolVal
+  007f: return return
+  0085: <eos>
+
+function HmGoapWorldStateCollection.SetClassValue  (script 207 bytes)
+  0000: nothing
+  0001: if !((Type == none)) goto 0x000e
+  000c: return false
+  000e: if !(!self._HashCreated) goto 0x0023
+  0019: CreateHashedTable()
+  0023: self.Properties.Length = obj'Core.Math'.static.Max((Type.static.default.HashIndex + 1), self.Properties.Length)
+  004c: Type.static.default.HashIndex[self.Properties].Type = Type
+  0071: Type.static.default.HashIndex[self.Properties].Value.ClassVal = Value
+  00a1: Type.static.default.HashIndex[self.Properties].Subject = Subject
+  00c6: return true
+  00c8: return return
+  00ce: <eos>
+
+function HmGoapWorldStateCollection.GetClassValue  (script 133 bytes)
+  0000: if !((((Type == none) || (Type.static.default.HashIndex >= self.Properties.Length)) || (Type.static.default.HashIndex[self.Properties].Type != Type))) goto 0x0053
+  0051: return none
+  0053: return Type.static.default.HashIndex[self.Properties].Value.ClassVal
+  007e: return return
+  0084: <eos>

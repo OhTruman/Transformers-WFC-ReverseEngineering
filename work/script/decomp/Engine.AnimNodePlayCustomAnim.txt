@@ -1,0 +1,57 @@
+function AnimNodePlayCustomAnim.PlayCustomAnim  (script 32 bytes)
+  0000: AnimName
+  0005: Rate
+  000a: BlendInTime
+  000f: BlendOutTime
+  0014: bLooping
+  0019: bOverride
+  001e: nothing
+  001f: <eos>
+
+function AnimNodePlayCustomAnim.PlayCustomAnimByDuration  (script 32 bytes)
+  0000: AnimName
+  0005: Duration
+  000a: BlendInTime
+  000f: BlendOutTime
+  0014: bLooping
+  0019: bOverride
+  001e: nothing
+  001f: <eos>
+
+function AnimNodePlayCustomAnim.StopCustomAnim  (script 7 bytes)
+  0000: BlendOutTime
+  0005: nothing
+  0006: <eos>
+
+function AnimNodePlayCustomAnim.SetCustomAnim  (script 67 bytes)
+  0000: SeqNode = AnimNodeSequence(1[self.Children].Anim)
+  001d: if !((SeqNode != none)) goto 0x0040
+  0028: SeqNode.SetAnim(AnimName)
+  0040: return nothing
+  0042: <eos>
+
+function AnimNodePlayCustomAnim.SetActorAnimEndNotification  (script 65 bytes)
+  0000: SeqNode = AnimNodeSequence(1[self.Children].Anim)
+  001d: if !((SeqNode != none)) goto 0x003e
+  0028: SeqNode.bCauseActorAnimEnd = bNewStatus
+  003e: return nothing
+  0040: <eos>
+
+function AnimNodePlayCustomAnim.GetCustomAnimNodeSeq  (script 31 bytes)
+  0000: return AnimNodeSequence(1[self.Children].Anim)
+  0018: return return
+  001e: <eos>
+
+function AnimNodePlayCustomAnim.SetRootBoneAxisOption  (script 178 bytes)
+  0000: default=0
+  0006: default=0
+  000c: default=0
+  0012: AnimSeq = GetCustomAnimNodeSeq()
+  0022: if !((AnimSeq != none)) goto 0x0073
+  002d: 0[AnimSeq.RootBoneOption] = AxisX
+  0043: 1[AnimSeq.RootBoneOption] = AxisY
+  0059: 2[AnimSeq.RootBoneOption] = AxisZ
+  0070: goto 0x00af
+  0073: WarnInternal(((cast57(GetFuncName()) @ "Custom AnimNodeSequence not found for") @ cast56(self)))
+  00af: return nothing
+  00b1: <eos>

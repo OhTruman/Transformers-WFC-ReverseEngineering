@@ -1,0 +1,554 @@
+function HUD.get_IsHudVisible  (script 14 bytes)
+  0000: return self.bHudVisible
+  0007: return return
+  000d: <eos>
+
+function HUD.Draw3DLine  (script 17 bytes)
+  0000: Start
+  0005: End
+  000a: LineColor
+  000f: nothing
+  0010: <eos>
+
+function HUD.Draw2DLine  (script 27 bytes)
+  0000: X1
+  0005: Y1
+  000a: X2
+  000f: Y2
+  0014: LineColor
+  0019: nothing
+  001a: <eos>
+
+function HUD.PostBeginPlay  (script 25 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.PlayerOwner = PlayerController(self.Owner)
+  0016: return nothing
+  0018: <eos>
+
+function HUD.SpawnScoreBoard  (script 73 bytes)
+  0000: if !((ScoringType != none)) goto 0x002b
+  000b: self.ScoreBoard = Spawn(ScoringType, self.PlayerOwner, , , , , , )
+  002b: if !((self.ScoreBoard != none)) goto 0x0046
+  0036: self.ScoreBoard.HudOwner = self
+  0046: return nothing
+  0048: <eos>
+
+function HUD.Destroyed  (script 39 bytes)
+  0000: if !((self.ScoreBoard != none)) goto 0x001e
+  000b: self.ScoreBoard.DestroyActor()
+  0017: self.ScoreBoard = none
+  001e: Actor.Destroyed()
+  0024: return nothing
+  0026: <eos>
+
+function HUD.ToggleHUD  (script 21 bytes)
+  0000: SetVisibility(!self.bHudVisible)
+  0012: return nothing
+  0014: <eos>
+
+function HUD.ShowHUD  (script 13 bytes)
+  0000: ToggleHUD()
+  000a: return nothing
+  000c: <eos>
+
+function HUD.SetVisibility  (script 32 bytes)
+  0000: self.bHudVisible = bVisible
+  000d: OnSetVisibility(bVisible)
+  001d: return nothing
+  001f: <eos>
+
+function HUD.OnSetVisibility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HUD.ShowScores  (script 21 bytes)
+  0000: SetShowScores(!self.bShowScores)
+  0012: return nothing
+  0014: <eos>
+
+function HUD.SetShowScores  (script 52 bytes)
+  0000: self.bShowScores = bNewValue
+  000d: if !((self.ScoreBoard != none)) goto 0x0031
+  0018: self.ScoreBoard.ChangeState(self.bShowScores)
+  0031: return nothing
+  0033: <eos>
+
+function HUD.ShowDebug  (script 168 bytes)
+  0000: nothing
+  0001: if !((DebugType == 'None')) goto 0x0026
+  0014: self.bShowDebugInfo = !self.bShowDebugInfo
+  0023: goto 0x00a5
+  0026: self.bShowDebugInfo = true
+  002e: I = 0
+  0035: if !(((I < self.DebugDisplay.Length) && !bFound)) goto 0x0085
+  0052: if !((I[self.DebugDisplay] == DebugType)) goto 0x007b
+  0067: self.DebugDisplay.Remove(I,1)
+  0073: bFound = true
+  007b: AddAdd_Int(I)
+  0082: goto 0x0035
+  0085: if !(!bFound) goto 0x00a2
+  0090: self.DebugDisplay.Length[self.DebugDisplay] = DebugType
+  00a2: SaveConfig()
+  00a5: return nothing
+  00a7: <eos>
+
+function HUD.ShouldShowDebug  (script 14 bytes)
+  0000: return self.bShowDebugInfo
+  0007: return return
+  000d: <eos>
+
+function HUD.ShouldDisplayDebug  (script 65 bytes)
+  0000: I = 0
+  0007: if !((I < self.DebugDisplay.Length)) goto 0x0038
+  0017: if !((I[self.DebugDisplay] == DebugType)) goto 0x002e
+  002c: return true
+  002e: AddAdd_Int(I)
+  0035: goto 0x0007
+  0038: return false
+  003a: return return
+  0040: <eos>
+
+function HUD.FXPlay  (script 398 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x018b
+  0019: ClosestPawn = none
+  0020: ClosestPawnDistance = 10000000.0
+  002b: foreach DynamicActors(obj'Pawn', P) (end 0x00db)
+  0042: if !((ClassIsChildOf(P.get_Class(), aClass) && (P != PlayerController(self.Owner).Pawn))) goto 0x00da
+  0078: ThisDistance = obj'Core.Math'.static.VSize((P.Location - PlayerController(self.Owner).Pawn.Location))
+  00b5: if !((ThisDistance < ClosestPawnDistance)) goto 0x00da
+  00c4: ClosestPawn = P
+  00cf: ClosestPawnDistance = ThisDistance
+  00da: iternext
+  00db: iterpop
+  00dc: if !((ClosestPawn.Mesh != none)) goto 0x018b
+  00f0: dotPos = obj'Core.Strings'.static.InStr(FXAnimPath, ".", )
+  010a: if !((dotPos != -1)) goto 0x018b
+  0119: FxAnimGroup = obj'Core.Strings'.static.Left(FXAnimPath, dotPos)
+  0134: FxAnimName = obj'Core.Strings'.static.Right(FXAnimPath, ((obj'Core.Strings'.static.Len(FXAnimPath) - dotPos) - 1))
+  0164: ClosestPawn.Mesh.PlayFaceFXAnim(none, FxAnimName, FxAnimGroup)
+  018b: return nothing
+  018d: <eos>
+
+function HUD.FXStop  (script 271 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x010c
+  0019: ClosestPawn = none
+  0020: ClosestPawnDistance = 10000000.0
+  002b: foreach DynamicActors(obj'Pawn', P) (end 0x00db)
+  0042: if !((ClassIsChildOf(P.get_Class(), aClass) && (P != PlayerController(self.Owner).Pawn))) goto 0x00da
+  0078: ThisDistance = obj'Core.Math'.static.VSize((P.Location - PlayerController(self.Owner).Pawn.Location))
+  00b5: if !((ThisDistance < ClosestPawnDistance)) goto 0x00da
+  00c4: ClosestPawn = P
+  00cf: ClosestPawnDistance = ThisDistance
+  00da: iternext
+  00db: iterpop
+  00dc: if !((ClosestPawn.Mesh != none)) goto 0x010c
+  00f0: ClosestPawn.Mesh.StopFaceFXAnim()
+  010c: return nothing
+  010e: <eos>
+
+function HUD.DrawRoute  (script 929 bytes)
+  0000: C = Target.Controller
+  0014: if !((C == none)) goto 0x0021
+  001f: return nothing
+  0021: if !((C.CurrentPath != none)) goto 0x005e
+  0035: Start = C.CurrentPath.Start.Location
+  005b: goto 0x0072
+  005e: Start = Target.Location
+  0072: RealStart = Start
+  007d: if !((C.RouteCache.Length > 0)) goto 0x00a8
+  0092: FirstRouteCache = 0[C.RouteCache]
+  00a8: if !(((C == self.PlayerOwner) || ((C.MoveTarget == FirstRouteCache) && (C.MoveTarget != none)))) goto 0x02af
+  00e7: if !(((C == self.PlayerOwner) && (C.Destination != vect(0,0,0)))) goto 0x01a3
+  0118: if !(C.PointReachable(C.Destination)) goto 0x0180
+  0135: Draw3DLine(C.Pawn.Location, C.Destination, MakeColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255)))
+  017e: return nothing
+  0180: C.FindPathTo(C.Destination, , )
+  01a3: if !((C.RouteCache.Length > 0)) goto 0x02ac
+  01b8: I = 0
+  01bf: if !((I < C.RouteCache.Length)) goto 0x026c
+  01d8: if !((I[C.RouteCache] == none)) goto 0x01f5
+  01f2: goto 0x026c
+  01f5: bPath = true
+  01fd: Draw3DLine(Start, I[C.RouteCache].Location, MakeColor(0, cast3d(255), 0, cast3d(255)))
+  023f: Start = I[C.RouteCache].Location
+  0262: AddAdd_Int(I)
+  0269: goto 0x01bf
+  026c: if !(bPath) goto 0x02ac
+  0275: Draw3DLine(RealStart, C.Destination, MakeColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255)))
+  02ac: goto 0x0306
+  02af: if !((Target.Velocity != vect(0,0,0))) goto 0x0306
+  02cf: Draw3DLine(RealStart, C.Destination, MakeColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255)))
+  0306: if !((C == self.PlayerOwner)) goto 0x0317
+  0315: return nothing
+  0317: if !(NotEqual_InterfaceInterface(C.Focus, IFocusible(none))) goto 0x039e
+  0334: Draw3DLine((Target.Location + (Target.BaseEyeHeight * vect(0,0,1))), C.Focus.GetFocalPoint(), MakeColor(cast3d(255), 0, 0, cast3d(255)))
+  039e: return nothing
+  03a0: <eos>
+
+function HUD.PreCalcValues  (script 119 bytes)
+  0000: self.SizeX = cast3f(self.Canvas.SizeX)
+  0016: self.SizeY = cast3f(self.Canvas.SizeY)
+  002c: self.CenterX = (self.SizeX * 0.5)
+  003e: self.CenterY = (self.SizeY * 0.5)
+  0050: self.RatioX = (self.SizeX / 1024.0)
+  0062: self.RatioY = (self.SizeY / 768.0)
+  0074: return nothing
+  0076: <eos>
+
+function HUD.DisplayNumPawnsDebug  (script 179 bytes)
+  0000: foreach DynamicActors(obj'Pawn', P) (end 0x001f)
+  0017: AddAdd_PreInt(Count)
+  001e: iternext
+  001f: iterpop
+  0020: self.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  003f: (out_YPos += out_YL)
+  004b: self.Canvas.SetPos(4.0, out_YPos)
+  0068: self.Canvas.DrawTextNormal(("Num pawns:" @ cast53(Count)), false, , )
+  0093: self.Canvas.SetPos(4.0, out_YPos)
+  00b0: return nothing
+  00b2: <eos>
+
+function HUD.PostRender  (script 640 bytes)
+  0000: self.RenderDelta = (self.WorldInfo.TimeSeconds - self.LastHUDRenderTime)
+  001b: if !(((self.SizeX != cast3f(self.Canvas.SizeX)) || (self.SizeY != cast3f(self.Canvas.SizeY)))) goto 0x0057
+  0051: HUD.PreCalcValues()
+  0057: if !((self.PlayerOwner != none)) goto 0x0130
+  0062: if !((self.PlayerOwner.ViewTarget != none)) goto 0x00cb
+  0076: if !((Pawn(self.PlayerOwner.ViewTarget) != none)) goto 0x00b4
+  008f: self.ViewedInfo = Pawn(self.PlayerOwner.ViewTarget).PlayerReplicationInfo
+  00b1: goto 0x00c8
+  00b4: self.ViewedInfo = self.PlayerOwner.PlayerReplicationInfo
+  00c8: goto 0x0113
+  00cb: if !((self.PlayerOwner.Pawn != none)) goto 0x00ff
+  00df: self.ViewedInfo = self.PlayerOwner.Pawn.PlayerReplicationInfo
+  00fc: goto 0x0113
+  00ff: self.ViewedInfo = self.PlayerOwner.PlayerReplicationInfo
+  0113: self.PlayerOwner.DrawDebugTextList(self.Canvas, self.RenderDelta)
+  0130: if !(self.bShowDebugInfo) goto 0x01ea
+  0139: self.Canvas.Font = obj'Engine'.static.GetTinyFont()
+  015b: self.Canvas.DrawColor = self.ConsoleColor
+  016f: self.Canvas.StrLen("X", XL, YL)
+  018f: YPos = 0.0
+  019a: self.PlayerOwner.ViewTarget.DisplayDebug(self, YL, YPos)
+  01c1: if !(ShouldDisplayDebug('NumPawns')) goto 0x01e7
+  01d7: HUD.DisplayNumPawnsDebug(YL, YPos)
+  01e7: goto 0x0256
+  01ea: if !(self.bShowScores) goto 0x0240
+  01f3: if !((self.ScoreBoard != none)) goto 0x023d
+  01fe: self.ScoreBoard.Canvas = self.Canvas
+  0212: self.ScoreBoard.DrawHUD()
+  0225: if !(self.ScoreBoard.bDisplayMessages) goto 0x023d
+  0237: HUD.DisplayConsoleMessages()
+  023d: goto 0x0256
+  0240: DrawHUD()
+  024a: HUD.DisplayConsoleMessages()
+  0250: HUD.DisplayLocalMessages()
+  0256: if !(self.bShowBadConnectionAlert) goto 0x0269
+  025f: DisplayBadConnectionAlert()
+  0269: self.LastHUDRenderTime = self.WorldInfo.TimeSeconds
+  027d: return nothing
+  027f: <eos>
+
+function HUD.PostRenderDebug  (script 13 bytes)
+  0000: DrawDebugHUD()
+  000a: return nothing
+  000c: <eos>
+
+function HUD.DrawDebugHUD  (script 41 bytes)
+  0000: self.WorldInfo.GetDebugManager().DrawDebug(self.Canvas)
+  0026: return nothing
+  0028: <eos>
+
+function HUD.DrawHUD  (script 23 bytes)
+  0000: self.PlayerOwner.DrawHUD(self)
+  0014: return nothing
+  0016: <eos>
+
+function HUD.DisplayBadConnectionAlert  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HUD.ClearMessage  (script 39 bytes)
+  0000: M.Message = none
+  0012: M.StringFont = none
+  0024: return nothing
+  0026: <eos>
+
+function HUD.Message  (script 136 bytes)
+  0000: nothing
+  0001: if !(self.bMessageBeep) goto 0x001d
+  000a: self.PlayerOwner.PlayBeepSound()
+  001d: if !(((MsgType == 'Say') || (MsgType == 'TeamSay'))) goto 0x006b
+  0045: msg = ((PRI.GetPlayerAlias() $ ": ") $ msg)
+  006b: HUD.AddConsoleMessage(msg, obj'LocalMessage', PRI, Lifetime)
+  0085: return nothing
+  0087: <eos>
+
+function HUD.DisplayConsoleMessages  (script 658 bytes)
+  0000: if !((self.ConsoleMessages.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: idx = 0
+  0015: if !((idx < self.ConsoleMessages.Length)) goto 0x0085
+  0025: if !(((idx[self.ConsoleMessages].Text == "") || (idx[self.ConsoleMessages].MessageLife < self.WorldInfo.TimeSeconds))) goto 0x007b
+  006d: self.ConsoleMessages.Remove(SubtractSubtract_Int(idx),1)
+  007b: AddAdd_Int(idx)
+  0082: goto 0x0015
+  0085: XPos = cast44((((self.ConsoleMessagePosX * self.HudCanvasScale) * cast3f(self.Canvas.SizeX)) + (((1.0 - self.HudCanvasScale) / 2.0) * cast3f(self.Canvas.SizeX))))
+  00d2: YPos = cast44((((self.ConsoleMessagePosY * self.HudCanvasScale) * cast3f(self.Canvas.SizeY)) + (((1.0 - self.HudCanvasScale) / 2.0) * cast3f(self.Canvas.SizeY))))
+  011f: self.Canvas.Font = obj'Engine'.static.GetSmallFont()
+  0141: self.Canvas.DrawColor = self.ConsoleColor
+  0155: self.Canvas.TextSize("A", XL, YL)
+  0175: (YPos -= cast44((YL * cast3f(self.ConsoleMessages.Length))))
+  018d: (YPos -= cast44(YL))
+  019b: idx = 0
+  01a2: if !((idx < self.ConsoleMessages.Length)) goto 0x028f
+  01b2: if !((idx[self.ConsoleMessages].Text == "")) goto 0x01d2
+  01cf: goto 0x0285
+  01d2: self.Canvas.StrLen(idx[self.ConsoleMessages].Text, XL, YL)
+  0205: self.Canvas.SetPos(cast3f(XPos), cast3f(YPos))
+  0226: self.Canvas.DrawColor = idx[self.ConsoleMessages].TextColor
+  024b: self.Canvas.DrawTextNormal(idx[self.ConsoleMessages].Text, false, , )
+  0277: (YPos += cast44(YL))
+  0285: AddAdd_Int(idx)
+  028c: goto 0x01a2
+  028f: return nothing
+  0291: <eos>
+
+function HUD.AddConsoleMessage  (script 540 bytes)
+  0000: nothing
+  0001: MsgIdx = -1
+  000c: if !((self.bMessageBeep && InMessageClass.static.default.bBeep)) goto 0x003c
+  0029: self.PlayerOwner.PlayBeepSound()
+  003c: if !((self.ConsoleMessages.Length < self.ConsoleMessageCount)) goto 0x005b
+  004c: MsgIdx = self.ConsoleMessages.Length
+  0058: goto 0x00b5
+  005b: idx = 0
+  0062: if !(((idx < self.ConsoleMessages.Length) && (MsgIdx == -1))) goto 0x00b5
+  0083: if !((idx[self.ConsoleMessages].Text == "")) goto 0x00ab
+  00a0: MsgIdx = idx
+  00ab: AddAdd_Int(idx)
+  00b2: goto 0x0062
+  00b5: if !(((MsgIdx == self.ConsoleMessageCount) || (MsgIdx == -1))) goto 0x0120
+  00d5: idx = 0
+  00dc: if !((idx < (self.ConsoleMessageCount - 1))) goto 0x0112
+  00ee: idx[self.ConsoleMessages] = (idx + 1)[self.ConsoleMessages]
+  0108: AddAdd_Int(idx)
+  010f: goto 0x00dc
+  0112: MsgIdx = (self.ConsoleMessageCount - 1)
+  0120: if !((MsgIdx >= self.ConsoleMessages.Length)) goto 0x013f
+  0130: self.ConsoleMessages.Length = (MsgIdx + 1)
+  013f: MsgIdx[self.ConsoleMessages].Text = M
+  015b: if !((Lifetime != 0.0)) goto 0x0199
+  016a: MsgIdx[self.ConsoleMessages].MessageLife = (self.WorldInfo.TimeSeconds + Lifetime)
+  0196: goto 0x01ce
+  0199: MsgIdx[self.ConsoleMessages].MessageLife = (self.WorldInfo.TimeSeconds + InMessageClass.static.default.Lifetime)
+  01ce: MsgIdx[self.ConsoleMessages].TextColor = InMessageClass.static.GetConsoleColor(PRI)
+  01fd: MsgIdx[self.ConsoleMessages].PRI = PRI
+  0219: return nothing
+  021b: <eos>
+
+function HUD.LocalizedMessage  (script 739 bytes)
+  0000: nothing
+  0001: if !(((InMessageClass == none) || (CriticalString == ""))) goto 0x001c
+  001a: return nothing
+  001c: if !((self.bMessageBeep && InMessageClass.static.default.bBeep)) goto 0x004c
+  0039: self.PlayerOwner.PlayBeepSound()
+  004c: if !(!InMessageClass.static.default.bIsSpecial) goto 0x0078
+  0060: HUD.AddConsoleMessage(CriticalString, InMessageClass, RelatedPRI_1, )
+  0076: return nothing
+  0078: LocalMessagesArrayCount = 8
+  0080: I = LocalMessagesArrayCount
+  008b: if !(InMessageClass.static.default.bIsUnique) goto 0x0156
+  009d: I = 0
+  00a4: if !((I < LocalMessagesArrayCount)) goto 0x0153
+  00b3: if !((I[self.LocalMessages].Message == InMessageClass)) goto 0x0149
+  00d3: if !((InMessageClass.static.default.bCountInstances && (I[self.LocalMessages].StringMessage ~= CriticalString))) goto 0x0146
+  0107: MessageCount = ((I[self.LocalMessages].Count == 0) ? 2 : (I[self.LocalMessages].Count + 1))
+  0146: goto 0x0153
+  0149: AddAdd_Int(I)
+  0150: goto 0x00a4
+  0153: goto 0x01f9
+  0156: if !(InMessageClass.static.default.bIsPartiallyUnique) goto 0x01f9
+  0168: I = 0
+  016f: if !((I < LocalMessagesArrayCount)) goto 0x01f9
+  017e: if !(((I[self.LocalMessages].Message == InMessageClass) && InMessageClass.static.PartiallyDuplicates(Switch, I[self.LocalMessages].Switch, OptionalObject, I[self.LocalMessages].OptionalObject))) goto 0x01ef
+  01ec: goto 0x01f9
+  01ef: AddAdd_Int(I)
+  01f6: goto 0x016f
+  01f9: if !((I == LocalMessagesArrayCount)) goto 0x0247
+  0208: I = 0
+  020f: if !((I < LocalMessagesArrayCount)) goto 0x0247
+  021e: if !((I[self.LocalMessages].Message == none)) goto 0x023d
+  023a: goto 0x0247
+  023d: AddAdd_Int(I)
+  0244: goto 0x020f
+  0247: if !((I == LocalMessagesArrayCount)) goto 0x0293
+  0256: I = 0
+  025d: if !((I < (LocalMessagesArrayCount - 1))) goto 0x0293
+  026f: I[self.LocalMessages] = (I + 1)[self.LocalMessages]
+  0289: AddAdd_Int(I)
+  0290: goto 0x025d
+  0293: HUD.ClearMessage(I[self.LocalMessages])
+  02a4: AddLocalizedMessage(I, InMessageClass, CriticalString, Switch, Position, Lifetime, FontSize, DrawColor, MessageCount, OptionalObject)
+  02e0: return nothing
+  02e2: <eos>
+
+function HUD.AddLocalizedMessage  (script 301 bytes)
+  0000: nothing
+  0001: nothing
+  0002: Index[self.LocalMessages].Message = InMessageClass
+  001e: Index[self.LocalMessages].Switch = Switch
+  003a: Index[self.LocalMessages].EndOfLife = (Lifetime + self.WorldInfo.TimeSeconds)
+  0066: Index[self.LocalMessages].StringMessage = CriticalString
+  0082: Index[self.LocalMessages].Lifetime = Lifetime
+  009e: Index[self.LocalMessages].PosY = Position
+  00ba: Index[self.LocalMessages].DrawColor = DrawColor
+  00d6: Index[self.LocalMessages].FontSize = FontSize
+  00f2: Index[self.LocalMessages].Count = MessageCount
+  010e: Index[self.LocalMessages].OptionalObject = OptionalObject
+  012a: return nothing
+  012c: <eos>
+
+function HUD.GetScreenCoords  (script 161 bytes)
+  0000: ScreenX = (0.5 * self.Canvas.ClipX)
+  001b: ScreenY = (((PosY * self.HudCanvasScale) * self.Canvas.ClipY) + (((1.0 - self.HudCanvasScale) * 0.5) * self.Canvas.ClipY))
+  0062: (ScreenX -= (InMessage.DX * 0.5))
+  0080: (ScreenY -= (InMessage.DY * 0.5))
+  009e: return nothing
+  00a0: <eos>
+
+function HUD.DrawMessage  (script 371 bytes)
+  0000: FadeValue = obj'Core.Math'.static.FMin(1.0, (I[self.LocalMessages].EndOfLife - self.WorldInfo.TimeSeconds))
+  003c: self.Canvas.DrawColor = I[self.LocalMessages].DrawColor
+  0061: self.Canvas.DrawColor.A = cast43((FadeValue * cast3c(self.Canvas.DrawColor.A)))
+  009f: self.Canvas.Font = I[self.LocalMessages].StringFont
+  00c4: HUD.GetScreenCoords(PosY, ScreenX, ScreenY, I[self.LocalMessages])
+  00e4: DX = (I[self.LocalMessages].DX / self.Canvas.ClipX)
+  0110: DY = (I[self.LocalMessages].DY / self.Canvas.ClipY)
+  013c: HUD.DrawMessageText(I[self.LocalMessages], ScreenX, ScreenY)
+  0157: I[self.LocalMessages].Drawn = true
+  0170: return nothing
+  0172: <eos>
+
+function HUD.DrawMessageText  (script 70 bytes)
+  0000: self.Canvas.SetPos(ScreenX, ScreenY)
+  001d: self.Canvas.DrawTextClipped(LocalMessage.StringMessage, false, , )
+  0043: return nothing
+  0045: <eos>
+
+function HUD.DisplayLocalMessages  (script 1058 bytes)
+  0000: if !((0[self.LocalMessages].Message == none)) goto 0x001a
+  0018: return nothing
+  001a: self.Canvas.Reset(true)
+  002e: LocalMessagesArrayCount = 8
+  0036: I = 0
+  003d: if !((I < LocalMessagesArrayCount)) goto 0x02cb
+  004c: if !((I[self.LocalMessages].Message == none)) goto 0x006b
+  0068: goto 0x02cb
+  006b: I[self.LocalMessages].Drawn = false
+  0084: if !((I[self.LocalMessages].StringFont == none)) goto 0x022a
+  00a0: FontSize = (I[self.LocalMessages].FontSize + self.MessageFontOffset)
+  00c3: I[self.LocalMessages].StringFont = GetFontSizeIndex(FontSize)
+  00e9: self.Canvas.Font = I[self.LocalMessages].StringFont
+  010e: self.Canvas.TextSize(I[self.LocalMessages].StringMessage, DX, DY)
+  0141: I[self.LocalMessages].DX = DX
+  015d: I[self.LocalMessages].DY = DY
+  0179: if !((I[self.LocalMessages].StringFont == none)) goto 0x022a
+  0195: WarnInternal((("LayoutMessage(" $ cast56(I[self.LocalMessages].Message)) $ ") failed!"))
+  01ce: J = I
+  01d9: if !((J < (LocalMessagesArrayCount - 1))) goto 0x020f
+  01eb: J[self.LocalMessages] = (J + 1)[self.LocalMessages]
+  0205: AddAdd_Int(J)
+  020c: goto 0x01d9
+  020f: HUD.ClearMessage(J[self.LocalMessages])
+  0220: SubtractSubtract_Int(I)
+  0227: goto 0x02c1
+  022a: FadeValue = (I[self.LocalMessages].EndOfLife - self.WorldInfo.TimeSeconds)
+  0256: if !((FadeValue <= 0.0)) goto 0x02c1
+  0265: J = I
+  0270: if !((J < (LocalMessagesArrayCount - 1))) goto 0x02a6
+  0282: J[self.LocalMessages] = (J + 1)[self.LocalMessages]
+  029c: AddAdd_Int(J)
+  02a3: goto 0x0270
+  02a6: HUD.ClearMessage(J[self.LocalMessages])
+  02b7: SubtractSubtract_Int(I)
+  02be: goto 0x02c1
+  02c1: AddAdd_Int(I)
+  02c8: goto 0x003d
+  02cb: I = 0
+  02d2: if !((I < LocalMessagesArrayCount)) goto 0x041f
+  02e1: if !((I[self.LocalMessages].Message == none)) goto 0x0300
+  02fd: goto 0x041f
+  0300: if !(I[self.LocalMessages].Drawn) goto 0x031d
+  031a: goto 0x0415
+  031d: PosY = I[self.LocalMessages].PosY
+  0339: AreaMessageCount = 0
+  0340: J = I
+  034b: if !((J < LocalMessagesArrayCount)) goto 0x03e1
+  035a: if !((J[self.LocalMessages].Drawn || (I[self.LocalMessages].PosY != J[self.LocalMessages].PosY))) goto 0x03aa
+  03a7: goto 0x03d7
+  03aa: HUD.DrawMessage(J, PosY, DX, DY)
+  03c4: (PosY += DY)
+  03d0: AddAdd_Int(AreaMessageCount)
+  03d7: AddAdd_Int(J)
+  03de: goto 0x034b
+  03e1: if !((AreaMessageCount > self.MaxHUDAreaMessageCount)) goto 0x0415
+  03f0: I[self.LocalMessages].EndOfLife = self.WorldInfo.TimeSeconds
+  0415: AddAdd_Int(I)
+  041c: goto 0x02d2
+  041f: return nothing
+  0421: <eos>
+
+function HUD.GetFontSizeIndex  (script 165 bytes)
+  0000: if !((FontSize == 0)) goto 0x0022
+  000b: return obj'Engine'.static.GetTinyFont()
+  001f: goto 0x009e
+  0022: if !((FontSize == 1)) goto 0x0044
+  002d: return obj'Engine'.static.GetSmallFont()
+  0041: goto 0x009e
+  0044: if !((FontSize == 2)) goto 0x0067
+  0050: return obj'Engine'.static.GetMediumFont()
+  0064: goto 0x009e
+  0067: if !((FontSize == 3)) goto 0x008a
+  0073: return obj'Engine'.static.GetLargeFont()
+  0087: goto 0x009e
+  008a: return obj'Engine'.static.GetLargeFont()
+  009e: return return
+  00a4: <eos>
+
+function HUD.GetRYGColorRamp  (script 382 bytes)
+  0000: GYRColor.A = cast3d(255)
+  0015: if !((Pct < 0.34)) goto 0x008d
+  0024: GYRColor.R = cast43((cast3c(128) + (cast3f(127) * obj'Core.Math'.static.FClamp((3.0 * Pct), 0.0, 1.0))))
+  0064: GYRColor.G = 0
+  0077: GYRColor.B = 0
+  008a: goto 0x0171
+  008d: if !((Pct < 0.67)) goto 0x0108
+  009c: GYRColor.R = cast3d(255)
+  00b1: GYRColor.G = cast43((cast3f(255) * obj'Core.Math'.static.FClamp((3.0 * (Pct - 0.33)), 0.0, 1.0)))
+  00f2: GYRColor.B = 0
+  0105: goto 0x0171
+  0108: GYRColor.R = cast43((cast3f(255) * obj'Core.Math'.static.FClamp((3.0 * (1.0 - Pct)), 0.0, 1.0)))
+  0149: GYRColor.G = cast3d(255)
+  015e: GYRColor.B = 0
+  0171: return GYRColor
+  0177: return return
+  017d: <eos>
+
+function HUD.PlayerOwnerDied  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HUD.OnLostFocusPause  (script 86 bytes)
+  0000: if !((self.LostFocusPaused == Enable)) goto 0x0013
+  0011: return nothing
+  0013: if !((cast3a(self.WorldInfo.NetMode) != cast3a(3))) goto 0x0053
+  002c: self.LostFocusPaused = Enable
+  0039: self.PlayerOwner.SetPause(Enable, )
+  0053: return nothing
+  0055: <eos>
+
+function HUD.GetCurrentViewTargetPRI  (script 13 bytes)
+  0000: return self.ViewedInfo
+  0006: return return
+  000c: <eos>

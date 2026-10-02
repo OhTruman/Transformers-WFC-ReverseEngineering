@@ -1,0 +1,40 @@
+function TnAiActionWaitAtGate.OnSetUpConditions  (script 241 bytes)
+  0000: Section = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: if !((Section == none)) goto 0x0035
+  0033: return false
+  0035: if !((cast3a(Section.GetSectionType()) != cast3a(4))) goto 0x0055
+  0053: return false
+  0055: NextSection = Section.GetNext()
+  006e: if !((NextSection == none)) goto 0x00b0
+  0079: obj'HM_Engine.HmGoap'.static.SetProperty(Conditions, obj'HM_Engine.HmGoap'.static.CreateBoolProperty(obj'TnAiWorldStateNavigatePath', false, none, true, false))
+  00ad: goto 0x00e8
+  00b0: obj'HM_Engine.HmGoap'.static.SetProperty(Conditions, obj'HM_Engine.HmGoap'.static.CreateBoolProperty(obj'TnAiWorldStateNavigatePath', true, NextSection, false, false))
+  00e8: return true
+  00ea: return return
+  00f0: <eos>
+
+function TnAiActionWaitAtGate.OnStart  (script 147 bytes)
+  0000: self._PathSection = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: self._SectionPoints = self._PathSection.GetPointsStartToFinish()
+  0041: if !(((self._SectionPoints.Length < 2) || (NavigationPoint(1[self._SectionPoints]) == none))) goto 0x006d
+  0062: return Fail()
+  006d: self._TransformerController.StopMovement()
+  0080: return OnStart(ExpectedEffects)
+  008c: return return
+  0092: <eos>
+
+function TnAiActionWaitAtGate.OnUpdate  (script 104 bytes)
+  0000: if !(((self._SectionPoints.Length < 2) || (NavigationPoint(1[self._SectionPoints]) == none))) goto 0x002c
+  0021: return Fail()
+  002c: if !(NavigationPoint(1[self._SectionPoints]).bGateOpen) goto 0x0050
+  0045: return Succeed()
+  0050: return OnUpdate(ExpectedEffects, DeltaTime)
+  0061: return return
+  0067: <eos>
+
+function TnAiActionWaitAtGate.OnFinish  (script 69 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0042
+  001b: self._TransformerController.AiWorldState.SetBoolValue(obj'TnAiWorldStateNavigatePath', true, self._PathSection)
+  0042: return nothing
+  0044: <eos>

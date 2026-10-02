@@ -1,0 +1,351 @@
+function TnMountableTurretBase.get_IsTurretInUse  (script 14 bytes)
+  0000: return self.TurretInUse
+  0007: return return
+  000d: <eos>
+
+function TnMountableTurretBase.get_IsWeaponRemoved  (script 14 bytes)
+  0000: return self.TurretWeaponRemoved
+  0007: return return
+  000d: <eos>
+
+function TnMountableTurretBase.get_IsAbleToFire  (script 14 bytes)
+  0000: return self.AbleToFire
+  0007: return return
+  000d: <eos>
+
+function TnMountableTurretBase.set_IsAbleToFire  (script 16 bytes)
+  0000: self.AbleToFire = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnMountableTurretBase.set_ShouldAttachToTurretDuringAdjust  (script 16 bytes)
+  0000: self.AttachToTurretDuringAdjust = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnMountableTurretBase.set_LockedInTurret  (script 16 bytes)
+  0000: self._LockedInTurret = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnMountableTurretBase.PostBeginPlay  (script 146 bytes)
+  0000: TnInteractBase.PostBeginPlay()
+  0006: self.TurretSkelControl = HmSkelControl_TurretConstrained(self.BaseMesh.FindSkelControl(self.TurretSkelControlName))
+  0029: self.TurretSkelControl.SetSkelControlActive(true)
+  003d: self.TurretSkelControl.LagDegreesPerSecond = 0.0
+  0051: self.DesiredAimRotation = obj'Core.Math'.static.MakeRotator(0, 0, 0)
+  006d: self.TurretSkelControl.DesiredBoneRotation = self.DesiredAimRotation
+  0081: self.TurretWeaponRemoved = false
+  0089: TnMountableTurretBase.RegisterTurretWithGame()
+  008f: return nothing
+  0091: <eos>
+
+function TnMountableTurretBase.Destroyed  (script 39 bytes)
+  0000: TnInteractBase.Destroyed()
+  0006: if !(self.WorldInfo.IsInEditor()) goto 0x001e
+  001c: return nothing
+  001e: TnMountableTurretBase.UnregisterTurretWithGame()
+  0024: return nothing
+  0026: <eos>
+
+function TnMountableTurretBase.OnStreamedOut  (script 15 bytes)
+  0000: TnInteractBase.OnStreamedOut()
+  0006: TnMountableTurretBase.UnregisterTurretWithGame()
+  000c: return nothing
+  000e: <eos>
+
+function TnMountableTurretBase.Reset  (script 15 bytes)
+  0000: Reset()
+  0006: TnMountableTurretBase.UnregisterTurretWithGame()
+  000c: return nothing
+  000e: <eos>
+
+function TnMountableTurretBase.RegisterTurretWithGame  (script 57 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x0036
+  0014: TnGame(self.WorldInfo.Game).AddTurret(self)
+  0036: return nothing
+  0038: <eos>
+
+function TnMountableTurretBase.UnregisterTurretWithGame  (script 57 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x0036
+  0014: TnGame(self.WorldInfo.Game).RemoveTurret(self)
+  0036: return nothing
+  0038: <eos>
+
+function TnMountableTurretBase.GetWSYawRange  (script 148 bytes)
+  0000: if !(TnMountableTurretBase.HasUnconstrainedYawRotation()) goto 0x000f
+  0009: return WSRange
+  000f: WSRange.Min = (cast3f(self.Rotation.Yaw) + (182.0444489 * self.YawRange.Min))
+  004b: WSRange.Max = (cast3f(self.Rotation.Yaw) + (182.0444489 * self.YawRange.Max))
+  0087: return WSRange
+  008d: return return
+  0093: <eos>
+
+function TnMountableTurretBase.GetWSPitchRange  (script 133 bytes)
+  0000: WSRange.Min = (cast3f(self.Rotation.Pitch) + (182.0444489 * self.PitchRange.Min))
+  003c: WSRange.Max = (cast3f(self.Rotation.Pitch) + (182.0444489 * self.PitchRange.Max))
+  0078: return WSRange
+  007e: return return
+  0084: <eos>
+
+function TnMountableTurretBase.BeginTurretControl  (script 100 bytes)
+  0000: TnMountableTurretBase.AttachToTurret(P)
+  000b: self.TurretInUse = true
+  0013: if !((P != none)) goto 0x0056
+  001e: TnWorldInfo(P.WorldInfo)._DialogEventManager.Play(P, self.TurretEnteredDialog, , , , )
+  0056: SetUserGodMode(false)
+  0061: return nothing
+  0063: <eos>
+
+function TnMountableTurretBase.AttachToTurret  (script 153 bytes)
+  0000: if !((P == none)) goto 0x000d
+  000b: return nothing
+  000d: P.bCollideWorld = false
+  001e: P.SetBase(none, , , )
+  0035: P.SetPhysics(0, , )
+  004c: P.SetHardAttach(true)
+  0060: P.SetBase(self, , self.BaseMesh, self.UserAttachSocket)
+  007f: P.SetPhysics(0, , )
+  0096: return nothing
+  0098: <eos>
+
+function TnMountableTurretBase.AttachMountedWeapon  (script 428 bytes)
+  0000: User = GetCurrentUser()
+  0010: if !((cast3a(User.Role) == cast3a(2))) goto 0x002b
+  0029: return nothing
+  002b: IM = TnInventoryManager(User.InvManager)
+  0044: if !((IM == none)) goto 0x00f5
+  004f: LogInternal(((((((("ERROR: User (" $ cast56(User)) $ ":") $ User.get_FriendlyName()) $ ") does not have an inventory manager. Role:") @ cast52(User.Role)) $ ", EquippedWeaponClass:") @ cast56(User.EquippedWeaponClass)), , , )
+  00f3: return nothing
+  00f5: if !((cast3a(User.Role) == cast3a(3))) goto 0x0121
+  010e: IM.StoreRobotWeapon()
+  0121: self.MountedWeapon = IM.FindOrCreateInventory(self.WeaponClass, )
+  0140: self.MountedWeapon.SetMountedTurret(self)
+  0154: if !((cast3a(User.Role) == cast3a(1))) goto 0x0196
+  016d: IM.SetCurrentWeapon(self.MountedWeapon)
+  0185: self.MountedWeapon.RemoteRole = 0
+  0196: self.MountedWeapon.EquipInstantly()
+  01a9: return nothing
+  01ab: <eos>
+
+function TnMountableTurretBase.GetMountedWeaponLocation  (script 52 bytes)
+  0000: if !((self.BaseMesh != none)) goto 0x0027
+  000b: return self.BaseMesh.GetSocketWorldLocation(self.WeaponAttachSocket)
+  0024: goto 0x002d
+  0027: return self.Location
+  002d: return return
+  0033: <eos>
+
+function TnMountableTurretBase.EndTurretControl  (script 427 bytes)
+  0000: self.TurretInUse = false
+  0008: User = GetCurrentUser()
+  0018: if !((User == none)) goto 0x0025
+  0023: return nothing
+  0025: SetUserGodMode(true)
+  0030: User.bCollideWorld = true
+  0041: User.SetBase(none, , , )
+  0058: User.SetHardAttach(false)
+  006c: if !(User.get_IsInRobotForm()) goto 0x0099
+  0082: User.SetPhysics(2, , )
+  0099: SafeLocation = User.Location
+  00ad: User.FindSpot(User.Mesh.GetBounds().BoxExtent, SafeLocation)
+  00ec: User.SetLocation(SafeLocation)
+  00fd: IM = TnInventoryManager(User.InvManager)
+  0116: if !((IM == none)) goto 0x0123
+  0121: return nothing
+  0123: User.StopFiring()
+  0136: if !(!RemovingTurret) goto 0x01a8
+  0141: if !((cast3a(User.Role) == cast3a(3))) goto 0x0188
+  015a: IM.RemoveFromInventory(self.MountedWeapon)
+  0172: IM.RestoreRobotWeapon()
+  0185: goto 0x01a8
+  0188: if !((cast3a(User.Role) == cast3a(1))) goto 0x01a8
+  01a1: self.MountedWeapon = none
+  01a8: return nothing
+  01aa: <eos>
+
+function TnMountableTurretBase.RemoveWeapon  (script 248 bytes)
+  0000: self.TurretInUse = false
+  0008: User = GetCurrentUser()
+  0018: if !((User == none)) goto 0x0025
+  0023: return nothing
+  0025: IM = TnInventoryManager(User.InvManager)
+  003e: User.StopFiring()
+  0051: if !((cast3a(User.Role) == cast3a(3))) goto 0x00ae
+  006a: IM.UnEquipWeaponInstantly()
+  007d: IM.CreateInventory(self.RemovedWeaponClass, )
+  0096: IM.RemoveFromInventory(self.MountedWeapon)
+  00ae: self.MountedWeapon = none
+  00b5: self.TurretWeaponRemoved = true
+  00bd: TnWorldInfo(User.WorldInfo)._DialogEventManager.Play(User, self.TurretMountedWeaponRemovedDialog, , , , )
+  00f5: return nothing
+  00f7: <eos>
+
+function TnMountableTurretBase.PlayerRequestingTurret  (script 16 bytes)
+  0000: return (self.UserRequestingTurret != none)
+  0009: return return
+  000f: <eos>
+
+function TnMountableTurretBase.InteractCommand  (script 206 bytes)
+  0000: if !((self.TurretInUse && (P == GetCurrentUser()))) goto 0x007d
+  001f: if !(((cast3a(CommandID) == cast3a(1)) && !self._LockedInTurret)) goto 0x004e
+  003c: ProcessInteractEvent(obj'TnInteractEventTypeEndUse')
+  004b: goto 0x007a
+  004e: if !(((cast3a(CommandID) == cast3a(2)) && !self._LockedInTurret)) goto 0x007a
+  006b: ProcessInteractEvent(obj'TnInteractEventTypeRemoveTurret')
+  007a: goto 0x00cb
+  007d: if !((self.TurretInUse && (TnAiPawn(GetCurrentUser()) != none))) goto 0x00bb
+  009d: if !((cast3a(CommandID) == cast3a(3))) goto 0x00b8
+  00ad: self.UserRequestingTurret = P
+  00b8: goto 0x00cb
+  00bb: TnInteractBase.InteractCommand(P, CommandID)
+  00cb: return nothing
+  00cd: <eos>
+
+function TnMountableTurretBase.SetAimRotation  (script 14 bytes)
+  0000: self.PlayerAimRotation = ClientPlayerAimRotation
+  000b: return nothing
+  000d: <eos>
+
+function TnMountableTurretBase.Tick  (script 486 bytes)
+  0000: TnInteractBase.Tick(DeltaTime)
+  000b: P = GetCurrentUser()
+  001b: if !(((cast3a(self.Role) == cast3a(3)) || ((P != none) && P.IsLocallyControlled()))) goto 0x01cf
+  0050: if !((self.ForceRotationSpeed != cast3f(0))) goto 0x00c7
+  005d: RotDiff = (self.ForceDesiredRotation - self.DesiredAimRotation)
+  0070: if !((obj'Core.Math'.static.RSize(RotDiff) < self.CloseEnoughToForceDesiredRotation)) goto 0x00af
+  0092: self.ForceRotationSpeed = 0.0
+  009d: ForceRotationComplete()
+  00ac: goto 0x00c4
+  00af: (self.DesiredAimRotation += (RotDiff * self.ForceRotationSpeed))
+  00c4: goto 0x01cf
+  00c7: if !((self.TurretInUse && (P != none))) goto 0x01cf
+  00dd: if !(P.IsLocallyControlled()) goto 0x0157
+  00f3: NewDesiredRotation = P.GetBaseAimRotation()
+  010c: if !((cast3a(P.Controller.Role) == cast3a(2))) goto 0x0154
+  012e: TnPlayerController(P.Controller).ServerUpdateTurretRotation(NewDesiredRotation)
+  0154: goto 0x0162
+  0157: NewDesiredRotation = self.PlayerAimRotation
+  0162: (NewDesiredRotation -= self.Rotation)
+  016f: NewDesiredRotation = GetConstrainedRotation(NewDesiredRotation)
+  0184: if !((TnAiPawn(P) != none)) goto 0x01c4
+  0194: self.DesiredAimRotation = obj'Core.Math'.static.RInterpTo(self.DesiredAimRotation, NewDesiredRotation, DeltaTime, self.AimInterpTimeAI)
+  01c1: goto 0x01cf
+  01c4: self.DesiredAimRotation = NewDesiredRotation
+  01cf: self.TurretSkelControl.DesiredBoneRotation = self.DesiredAimRotation
+  01e3: return nothing
+  01e5: <eos>
+
+function TnMountableTurretBase.GetConstrainedRotation  (script 327 bytes)
+  0000: OutRot = InRot
+  000b: if !(!TnMountableTurretBase.HasUnconstrainedYawRotation()) goto 0x0074
+  0016: OutRot.Yaw = cast44((obj'Core.Math'.static.RClampToRange((cast3f(obj'Core.Math'.static.NormalizeRotAxis(InRot.Yaw)) * 0.0054932), self.YawRange) * 182.0444489))
+  0074: OutRot.Pitch = cast44((obj'Core.Math'.static.RClampToRange((cast3f(obj'Core.Math'.static.NormalizeRotAxis(InRot.Pitch)) * 0.0054932), self.PitchRange) * 182.0444489))
+  00d2: OutRot.Yaw = obj'Core.Math'.static.NormalizeRotAxis(OutRot.Yaw)
+  0106: OutRot.Pitch = obj'Core.Math'.static.NormalizeRotAxis(OutRot.Pitch)
+  013a: return OutRot
+  0140: return return
+  0146: <eos>
+
+function TnMountableTurretBase.IsActorInAngleRange  (script 206 bytes)
+  0000: Rot = (cast50((inActor.Location - GetMountedWeaponLocation())) - self.Rotation)
+  002a: if !((!TnMountableTurretBase.HasUnconstrainedYawRotation() && !obj'Core.Math'.static.RInsideRange((cast3f(obj'Core.Math'.static.NormalizeRotAxis(Rot.Yaw)) * 0.0054932), self.YawRange))) goto 0x0082
+  0080: return false
+  0082: return obj'Core.Math'.static.RInsideRange((cast3f(obj'Core.Math'.static.NormalizeRotAxis(Rot.Pitch)) * 0.0054932), self.PitchRange)
+  00c7: return return
+  00cd: <eos>
+
+function TnMountableTurretBase.AdjustingUser.BeginState  (script 63 bytes)
+  0000: P = GetCurrentUser()
+  0010: if !(((P != none) && self.AttachToTurretDuringAdjust)) goto 0x0031
+  0026: TnMountableTurretBase.AttachToTurret(P)
+  0031: BeginState(PreviousStateName)
+  003c: return nothing
+  003e: <eos>
+
+function TnMountableTurretBase.Interacting.Update  (script 139 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: TnInteractBase.Update(DeltaTime)
+  001d: PopulateTouchingArray(TouchingPawns)
+  002c: AiUser = TnAiPawn(GetCurrentUser())
+  0041: if !((AiUser == none)) goto 0x004e
+  004c: return nothing
+  004e: foreach TouchingPawns(P,) (end 0x0087)
+  005d: if !((P == AiUser)) goto 0x0070
+  006c: iternext
+  006d: goto 0x0087
+  0070: P.SetInteractState(self, 4)
+  0086: iternext
+  0087: iterpop
+  0088: return nothing
+  008a: <eos>
+
+function TnMountableTurretBase.Interacting.UnTouch  (script 105 bytes)
+  0000: UnTouch(Other)
+  000b: if !((Other == self.UserRequestingTurret)) goto 0x0021
+  001a: self.UserRequestingTurret = none
+  0021: if !((Other != GetCurrentUser())) goto 0x0066
+  0035: AsTnPawn = TnPawn(Other)
+  0045: if !((AsTnPawn != none)) goto 0x0066
+  0050: AsTnPawn.SetInteractState(self, 0)
+  0066: return nothing
+  0068: <eos>
+
+function TnMountableTurretBase.TouchingUser.UnTouch  (script 36 bytes)
+  0000: UnTouch(Other)
+  000b: if !((Other == self.UserRequestingTurret)) goto 0x0021
+  001a: self.UserRequestingTurret = none
+  0021: return nothing
+  0023: <eos>
+
+function TnMountableTurretBase.Asleep.UnTouch  (script 36 bytes)
+  0000: UnTouch(Other)
+  000b: if !((Other == self.UserRequestingTurret)) goto 0x0021
+  001a: self.UserRequestingTurret = none
+  0021: return nothing
+  0023: <eos>
+
+function TnMountableTurretBase.Disabled.BeginState  (script 25 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: self.TimeToWeaponRespawn = self.RespawnWeaponDelay
+  0016: return nothing
+  0018: <eos>
+
+function TnMountableTurretBase.Disabled.Update  (script 75 bytes)
+  0000: if !(((self.RespawnWeaponDelay <= cast3f(0)) || (cast3a(self.Role) != cast3a(3)))) goto 0x0021
+  001f: return nothing
+  0021: (self.TimeToWeaponRespawn -= DeltaTime)
+  002d: if !((self.TimeToWeaponRespawn <= cast3f(0))) goto 0x0048
+  003a: GotoState('Asleep', , , )
+  0048: return nothing
+  004a: <eos>
+
+function TnMountableTurretBase.ForceRotationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnMountableTurretBase.ForceRotation  (script 46 bytes)
+  0000: self.ForceDesiredRotation = GetConstrainedRotation(TSRotation)
+  0015: self.ForceRotationSpeed = Speed
+  0020: self.__ForceRotationComplete__Delegate = CallOnComplete
+  002b: return nothing
+  002d: <eos>
+
+function TnMountableTurretBase.HasUnconstrainedYawRotation  (script 55 bytes)
+  0000: return ((self.YawRange.Min == cast3f(0)) && (self.YawRange.Max == cast3f(0)))
+  0030: return return
+  0036: <eos>
+
+function TnMountableTurretBase.TakeDamage  (script 175 bytes)
+  0000: nothing
+  0001: nothing
+  0002: TakeDamage(DamageAmount, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: CurUser = GetCurrentUser()
+  003b: if !((CurUser == none)) goto 0x0048
+  0046: return nothing
+  0048: if !(((EventInstigator != none) && (EventInstigator.Pawn == CurUser))) goto 0x006f
+  006d: return nothing
+  006f: CurUser.TakeDamage((DamageAmount * self.TransferDamageToUserRatio), EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  00ac: return nothing
+  00ae: <eos>

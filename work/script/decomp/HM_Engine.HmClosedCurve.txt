@@ -1,0 +1,34 @@
+function HmClosedCurve.Build  (script 751 bytes)
+  0000: if !((Outputs.Length < 1)) goto 0x000e
+  000c: return false
+  000e: self.curve.Points.Length = (Outputs.Length + 1)
+  0029: EndIndex = Outputs.Length
+  0035: InputIncrement = (1.0 / cast3f(Outputs.Length))
+  004a: CurrentIndex = 0
+  0051: if !((CurrentIndex < EndIndex)) goto 0x00c7
+  0060: CurrentIndex[self.curve.Points].InVal = (InputIncrement * cast3f(CurrentIndex))
+  0090: CurrentIndex[self.curve.Points].OutVal = CurrentIndex[Outputs]
+  00bd: AddAdd_PreInt(CurrentIndex)
+  00c4: goto 0x0051
+  00c7: EndIndex[self.curve.Points].InVal = 1.0
+  00ee: EndIndex[self.curve.Points].OutVal = 0[self.curve.Points].OutVal
+  012d: CurrentIndex = 1
+  0134: if !((CurrentIndex < EndIndex)) goto 0x0206
+  0143: PreviousIndex = (CurrentIndex - 1)
+  0151: NextIndex = (CurrentIndex + 1)
+  015f: Tangent = ((NextIndex[self.curve.Points].OutVal - PreviousIndex[self.curve.Points].OutVal) / 2.0)
+  01b0: tempPointFloat = CurrentIndex[self.curve.Points]
+  01cc: SetCurvePointTangents(tempPointFloat, Tangent)
+  01e0: CurrentIndex[self.curve.Points] = tempPointFloat
+  01fc: AddAdd_PreInt(CurrentIndex)
+  0203: goto 0x0134
+  0206: Tangent = ((1[self.curve.Points].OutVal - (EndIndex - 1)[self.curve.Points].OutVal) / 2.0)
+  0256: tempPointFloat = 0[self.curve.Points]
+  026e: SetCurvePointTangents(tempPointFloat, Tangent)
+  0282: 0[self.curve.Points] = tempPointFloat
+  029a: tempPointFloat = EndIndex[self.curve.Points]
+  02b6: SetCurvePointTangents(tempPointFloat, Tangent)
+  02ca: EndIndex[self.curve.Points] = tempPointFloat
+  02e6: return true
+  02e8: return return
+  02ee: <eos>

@@ -1,0 +1,67 @@
+function TnVehicleGiantTankAiControlStrategy.set_RotateToMatchDestinationDistance  (script 14 bytes)
+  0000: self._RotateToMatchDestinationDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleGiantTankAiControlStrategy.OnInitialize  (script 126 bytes)
+  0000: self.TankForm = TnTankForm(self._TransformerPawn._VehicleForm)
+  0019: self.Blueprint = self.TankForm.get_TankFormBlueprint()
+  0032: if !((self.Blueprint == none)) goto 0x007b
+  003d: LogInternal("Error - TankForm must have TankForm.TankFormBlueprint", , , )
+  0079: return nothing
+  007b: return nothing
+  007d: <eos>
+
+function TnVehicleGiantTankAiControlStrategy.OnUpdate  (script 91 bytes)
+  0000: if !((cast3a(self._TransformerPawn.Role) == cast3a(1))) goto 0x001b
+  0019: return nothing
+  001b: TnVehicleGiantTankAiControlStrategy.RotateToMatchDestination()
+  0021: self.TankForm.UpdateAi(DeltaTime, self._DesiredLocation, self._DesiredRotation, (cast3a(self._IsAvoiding) == cast3a(0)))
+  0050: self._IsAvoiding = 0
+  0058: return nothing
+  005a: <eos>
+
+function TnVehicleGiantTankAiControlStrategy.RotateToMatchDestination  (script 282 bytes)
+  0000: AtActorProp = self._BoundController.GetWorldState(obj'TnAiWorldStateAtActor')
+  001e: if !((AtActorProp.Subject != none)) goto 0x004f
+  0034: Destination = Actor(AtActorProp.Subject)
+  004f: if !((Destination == none)) goto 0x005c
+  005a: return nothing
+  005c: DestinationDirection = (self._TransformerPawn.Mesh.GetRBPosition() - Destination.Location)
+  008e: DestinationDirection.Z = 0.0
+  00a4: DestinationDistance = obj'Core.Math'.static.VSize(DestinationDirection)
+  00ba: if !((DestinationDistance < self._RotateToMatchDestinationDistance)) goto 0x0117
+  00c9: self._DesiredRotation = obj'Core.Math'.static.RLerp(Destination.Rotation, self.LastMoveToRotation, obj'Core.Math'.static.FClamp((DestinationDistance / self._RotateToMatchDestinationDistance), 0.0, 1.0), )
+  0117: return nothing
+  0119: <eos>
+
+function TnVehicleGiantTankAiControlStrategy.IsStuckInMoveToward  (script 136 bytes)
+  0000: if !((self.TankForm.get_LinearSpeed() <= 5.0)) goto 0x0075
+  001d: IncrementStuckTime()
+  0027: if !(IsStuckTimedOut()) goto 0x0072
+  0034: return !obj'TnObstacleAvoidance'.static.IsPathClearToLocationOnNavMesh(self._TransformerPawn, self.TankForm.get_FormMovementCapabilities().CylinderRadius, self._DesiredLocation)
+  0072: goto 0x007f
+  0075: ClearStuckTime()
+  007f: return false
+  0081: return return
+  0087: <eos>
+
+function TnVehicleGiantTankAiControlStrategy.OnPostMoveToward  (script 226 bytes)
+  0000: Dest = DestTemp
+  000b: if !(!self._TransformerPawn._IsAvoidanceDisabledInVehicleForm) goto 0x00cd
+  001f: self._IsAvoiding = self._TransformerPawn._ObstacleAvoidanceManager.ShouldAvoid(Dest, GoalActor, 1500.0, 20.0, true, SafeLocation)
+  005b: if !((cast3a(self._IsAvoiding) == cast3a(1))) goto 0x00cd
+  006b: self._DesiredLocation = SafeLocation
+  0076: self._DesiredRotation = CalculateRotation(SafeLocation)
+  008b: if !(((self._BoundController != none) && (cast3a(self._BoundController._DebugMode) == cast3a(3)))) goto 0x00cd
+  00b1: self._TransformerPawn._ObstacleAvoidanceManager.DisplayDebug()
+  00cd: self._DesiredRotation.Pitch = 0
+  00df: return nothing
+  00e1: <eos>
+
+function TnVehicleGiantTankAiControlStrategy.GetTargetOffset  (script 120 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x0011
+  000b: return 0.0
+  0011: return obj'Core.Math'.static.Lerp(self.Blueprint.PathingMinTargetOffset, self.Blueprint.PathingMaxTargetOffset, obj'Core.Math'.static.FClamp((self.TankForm.get_Speed() / self.Blueprint.PathingMaxSpeed), 0.0, 1.0))
+  0071: return return
+  0077: <eos>

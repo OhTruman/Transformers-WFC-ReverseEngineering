@@ -1,0 +1,30 @@
+function SeqCond_SwitchObject.VerifyDefaultCaseValue  (script 169 bytes)
+  0000: SeqCond_SwitchBase.VerifyDefaultCaseValue()
+  0006: self.SupportedValues.Length = self.OutputLinks.Length
+  0013: I = 0
+  001a: if !((I < (self.SupportedValues.Length - 1))) goto 0x0050
+  002d: I[self.SupportedValues].bDefaultValue = false
+  0046: AddAdd_Int(I)
+  004d: goto 0x001a
+  0050: (self.SupportedValues.Length - 1)[self.SupportedValues].ObjectValue = none
+  006c: (self.SupportedValues.Length - 1)[self.SupportedValues].bFallThru = false
+  0089: (self.SupportedValues.Length - 1)[self.SupportedValues].bDefaultValue = true
+  00a6: return nothing
+  00a8: <eos>
+
+function SeqCond_SwitchObject.IsFallThruEnabled  (script 62 bytes)
+  0000: return (((ValueIndex >= 0) && (ValueIndex < self.SupportedValues.Length)) && ValueIndex[self.SupportedValues].bFallThru)
+  0037: return return
+  003d: <eos>
+
+function SeqCond_SwitchObject.InsertValueEntry  (script 44 bytes)
+  0000: InsertIndex = obj'Core.Math'.static.Clamp(InsertIndex, 0, self.SupportedValues.Length)
+  001d: self.SupportedValues.Insert(InsertIndex,1)
+  0029: return nothing
+  002b: <eos>
+
+function SeqCond_SwitchObject.RemoveValueEntry  (script 44 bytes)
+  0000: if !(((RemoveIndex >= 0) && (RemoveIndex < self.SupportedValues.Length))) goto 0x0029
+  001d: self.SupportedValues.Remove(RemoveIndex,1)
+  0029: return nothing
+  002b: <eos>

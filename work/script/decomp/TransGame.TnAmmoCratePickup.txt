@@ -1,0 +1,43 @@
+function TnAmmoCratePickup.GivenTo  (script 143 bytes)
+  0000: nothing
+  0001: if !((ThisPawn == none)) goto 0x000e
+  000c: return nothing
+  000e: IM = TnInventoryManager(ThisPawn.InvManager)
+  0027: if !((IM == none)) goto 0x0034
+  0032: return nothing
+  0034: foreach IM.InventoryActors(obj'TnWeapon', W) (end 0x0088)
+  0054: if !((self.ValidWeaponTypes.Find(W.WeaponType) != -1)) goto 0x0087
+  0074: W.FillReserveAmmo()
+  0087: iternext
+  0088: iterpop
+  0089: DestroyActor()
+  008c: return nothing
+  008e: <eos>
+
+function TnAmmoCratePickup.TryDroppedPickupFirstSpawn  (script 38 bytes)
+  0000: return Spawn(SpawnedPickupClass, , , StartLocation, StartRotation, , true, )
+  001f: return return
+  0025: <eos>
+
+function TnAmmoCratePickup.AnnouncePickup  (script 75 bytes)
+  0000: AnnouncePickup(Other)
+  000b: TnWorldInfo(Other.WorldInfo)._DialogEventManager.Play(TnPawn(Other), self.PickupObtainedDialog, , , , )
+  0048: return nothing
+  004a: <eos>
+
+function TnAmmoCratePickup.PickupAllowed  (script 167 bytes)
+  0000: if !((Pickuper == none)) goto 0x000d
+  000b: return false
+  000d: IM = TnInventoryManager(Pickuper.InvManager)
+  0026: if !((IM == none)) goto 0x0033
+  0031: return false
+  0033: ValidWeaponTypesForStupidTranslated = default.ValidWeaponTypes
+  003e: foreach IM.InventoryActors(obj'TnWeapon', W) (end 0x009d)
+  005e: if !(((ValidWeaponTypesForStupidTranslated.Find(W.WeaponType) != -1) && !W.AmmoMaxed(0))) goto 0x009c
+  0099: iterpop
+  009a: return true
+  009c: iternext
+  009d: iterpop
+  009e: return false
+  00a0: return return
+  00a6: <eos>

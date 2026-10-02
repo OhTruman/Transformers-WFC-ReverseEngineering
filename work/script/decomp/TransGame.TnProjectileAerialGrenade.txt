@@ -1,0 +1,17 @@
+function TnProjectileAerialGrenade.Init  (script 151 bytes)
+  0000: TnProjectileGrenadeBase.Init(Direction)
+  000b: if !((self.AerialData == none)) goto 0x0018
+  0016: return nothing
+  0018: ForwardSpeedScale = obj'Core.Random'.static.RandomInRange(self.AerialData.ForwardVelocityScale)
+  003f: SideSpeedScale = obj'Core.Random'.static.RandomInRange(self.AerialData.SideVelocityScale)
+  0066: (self.Velocity.X *= ForwardSpeedScale)
+  007d: (self.Velocity.Y *= SideSpeedScale)
+  0094: return nothing
+  0096: <eos>
+
+function TnProjectileAerialGrenade.UpdateData  (script 44 bytes)
+  0000: TnProjectileGrenadeBase.UpdateData()
+  0006: self.AerialData = TnProjectileDataAerialGrenadeLauncher(self.Data)
+  0016: self.RotationRate = rot(0,0,0)
+  0029: return nothing
+  002b: <eos>

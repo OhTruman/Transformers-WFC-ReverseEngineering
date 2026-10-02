@@ -1,0 +1,19 @@
+function TnDataProvider_Chassis.LocalizeUniqueIconicId  (script 108 bytes)
+  0000: Chassises = obj'TnDataStore_MenuItems'.static.GetChassisProviders()
+  0019: foreach Chassises(Provider,) (end 0x0061)
+  0028: Chassis = TnDataProvider_Chassis(Provider)
+  0038: if !((Chassis.UniqueIconicId == Id)) goto 0x0060
+  0050: iterpop
+  0051: return Chassis.FriendlyIconicName
+  0060: iternext
+  0061: iterpop
+  0062: return ""
+  0065: return return
+  006b: <eos>
+
+function TnDataProvider_Chassis.CheckForErrors  (script 178 bytes)
+  0000: TnDataProvider_CharacterOption.CheckForErrors()
+  0006: if !((((((self.DefaultSpecialty != "Scientist") && (self.DefaultSpecialty != "Scout")) && (self.DefaultSpecialty != "Leader")) && (self.DefaultSpecialty != "Soldier")) && (self.DefaultSpecialty != ""))) goto 0x00af
+  0065: LogInternal(((("Error: Chassis" @ cast57(self.Name)) @ "has unrecognized DefaultSpecialty") @ self.DefaultSpecialty), , , )
+  00af: return nothing
+  00b1: <eos>

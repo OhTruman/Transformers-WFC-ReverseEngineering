@@ -1,0 +1,204 @@
+function TnBuff.GetFloatModifier  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnBuff.Tick  (script 45 bytes)
+  0000: (self.CurrentBuffTime -= DeltaTime)
+  000c: TickBuff(DeltaTime)
+  001b: return GetBuffState()
+  0026: return return
+  002c: <eos>
+
+function TnBuff.TickBuff  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnBuff.GetBuffState  (script 50 bytes)
+  0000: if !(((GetBuffTime() != cast3f(-1)) && (self.CurrentBuffTime <= cast3f(0)))) goto 0x0028
+  0025: return 1
+  0028: return 0
+  002b: return return
+  0031: <eos>
+
+function TnBuff.ClientTickBuff  (script 98 bytes)
+  0000: if !((self.ApplyFx != none)) goto 0x005f
+  000b: ShouldBeVisible = ShouldFxBeVisible()
+  001c: if !((self.LoopingFxPlaying && !ShouldBeVisible)) goto 0x003f
+  0032: StopLoopingEffects()
+  003c: goto 0x005f
+  003f: if !((!self.LoopingFxPlaying && ShouldBeVisible)) goto 0x005f
+  0055: StartLoopingEffects()
+  005f: return nothing
+  0061: <eos>
+
+function TnBuff.IsLocallyControlledPlayer  (script 41 bytes)
+  0000: return ((self.OwnerController == none) ? false : self.OwnerController.IsLocalPlayerController())
+  0022: return return
+  0028: <eos>
+
+function TnBuff.Apply  (script 345 bytes)
+  0000: self.OwnerPawn = BuffOwner
+  000b: self.OwnerController = BuffOwner.Controller
+  001f: self.Instigator = Applier
+  002a: self.BuffLevel = Level
+  0035: self.CurrentBuffTime = GetBuffTime()
+  0045: if !((((self.ApplySound != none) && (self.ApplyAudioComponent == none)) && TnBuff.CanPlaySounds())) goto 0x008b
+  0068: self.ApplyAudioComponent = self.OwnerPawn.CreateAudioComponent(self.ApplySound, true, true, , , )
+  008b: if !(((self.ApplyFx != none) || (self.UnapplyFx != none))) goto 0x00c1
+  00a3: self.EffectManager = BuffOwner.FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  00c1: if !(((self.ApplyFx != none) && ShouldFxBeVisible())) goto 0x00fc
+  00db: if !(self.IsApplyFxLooping) goto 0x00f1
+  00e4: StartLoopingEffects()
+  00ee: goto 0x00fc
+  00f1: TnBuff.PlayEffectOnCurrentMesh(self.ApplyFx)
+  00fc: if !(self.ApplyDebuffMaterial) goto 0x0156
+  0105: self.CharacterMaterialService = TnCharacterMaterialService(BuffOwner.GetService('TnCharacterMaterialService'))
+  012c: if !(NotEqual_InterfaceInterface(self.CharacterMaterialService, TnCharacterMaterialService(none))) goto 0x0156
+  0140: self.CharacterMaterialService.Start(1)
+  0156: return nothing
+  0158: <eos>
+
+function TnBuff.ShouldFxBeVisible  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnBuff.GetLevel  (script 13 bytes)
+  0000: return self.BuffLevel
+  0006: return return
+  000c: <eos>
+
+function TnBuff.ReApply  (script 43 bytes)
+  0000: if !((Level >= self.BuffLevel)) goto 0x0028
+  000f: Apply(Level, self.OwnerPawn, Applier)
+  0028: return nothing
+  002a: <eos>
+
+function TnBuff.Unapply  (script 79 bytes)
+  0000: TnBuff.StopEffectsAndSounds()
+  0006: if !((self.UnapplyFx != none)) goto 0x001c
+  0011: TnBuff.PlayEffectOnCurrentMesh(self.UnapplyFx)
+  001c: if !(TnBuff.CanPlaySounds()) goto 0x0042
+  0025: self.OwnerPawn.PlaySound(self.UnapplySound, true, , , , )
+  0042: OnUnapplyOrOwnerDied()
+  004c: return nothing
+  004e: <eos>
+
+function TnBuff.OwnerDied  (script 19 bytes)
+  0000: TnBuff.StopEffectsAndSounds()
+  0006: OnUnapplyOrOwnerDied()
+  0010: return nothing
+  0012: <eos>
+
+function TnBuff.StopEffectsAndSounds  (script 61 bytes)
+  0000: if !((self.ApplyAudioComponent != none)) goto 0x0025
+  000b: self.ApplyAudioComponent.Stop()
+  001e: self.ApplyAudioComponent = none
+  0025: if !((self.ApplyFx != none)) goto 0x003a
+  0030: StopLoopingEffects()
+  003a: return nothing
+  003c: <eos>
+
+function TnBuff.OnUnapplyOrOwnerDied  (script 56 bytes)
+  0000: if !((self.ApplyDebuffMaterial && NotEqual_InterfaceInterface(self.CharacterMaterialService, TnCharacterMaterialService(none)))) goto 0x0035
+  001f: self.CharacterMaterialService.Stop(1)
+  0035: return nothing
+  0037: <eos>
+
+function TnBuff.ShouldBuffEffect  (script 63 bytes)
+  0000: foreach self.Conditions(Condition,) (end 0x0035)
+  000f: if !(!Condition.ShouldEffect(P, OptionalInfo)) goto 0x0034
+  0031: iterpop
+  0032: return false
+  0034: iternext
+  0035: iterpop
+  0036: return true
+  0038: return return
+  003e: <eos>
+
+function TnBuff.GetBuffTime  (script 143 bytes)
+  0000: DataIndex = obj'TnGame'.static.GetCurrentSkillDataIndex()
+  0019: if !((DataIndex < self.BuffTime.Length)) goto 0x003d
+  0029: BaseBuffTime = DataIndex[self.BuffTime]
+  003a: goto 0x0064
+  003d: if !((self.BuffTime.Length >= 1)) goto 0x0059
+  0049: BaseBuffTime = 0[self.BuffTime]
+  0056: goto 0x0064
+  0059: BaseBuffTime = 0.0
+  0064: return self.InstigatorBuffTimeModifier.ModifyFloat(BaseBuffTime, TnPawn(self.Instigator), )
+  0088: return return
+  008e: <eos>
+
+function TnBuff.ResetBuffTime  (script 19 bytes)
+  0000: self.CurrentBuffTime = GetBuffTime()
+  0010: return nothing
+  0012: <eos>
+
+function TnBuff.GetBuffReplicationType  (script 13 bytes)
+  0000: return default.BuffReplicationType
+  0006: return return
+  000c: <eos>
+
+function TnBuff.CanPlaySounds  (script 27 bytes)
+  0000: return (!self.OnlyPlaySoundOnLocalPlayer || TnBuff.IsLocallyControlledPlayer())
+  0014: return return
+  001a: <eos>
+
+function TnBuff.PlayEffectOnCurrentMesh  (script 121 bytes)
+  0000: if !(self.OwnerPawn.get_IsInRobotForm()) goto 0x003c
+  0016: TnBuff.PlayEffect(Template, self.OwnerPawn.get_RobotMeshComponent(), self.FxSocket)
+  0039: goto 0x0076
+  003c: if !(self.OwnerPawn.get_IsInVehicleForm()) goto 0x0076
+  0052: TnBuff.PlayEffect(Template, self.OwnerPawn.get_VehicleMeshComponent(), TnBuff.GetVehicleFxSocket())
+  0076: return nothing
+  0078: <eos>
+
+function TnBuff.PlayEffect  (script 127 bytes)
+  0000: if !(!CanPlayEffects()) goto 0x0011
+  000f: return none
+  0011: PSC = self.EffectManager.PlayEffect(Mesh, Socket, Template, , , , )
+  003d: if !(((self.FxParameters != none) && (PSC != none))) goto 0x0072
+  0055: self.FxParameters.Apply(PSC, self.OwnerPawn)
+  0072: return PSC
+  0078: return return
+  007e: <eos>
+
+function TnBuff.CanPlayEffects  (script 16 bytes)
+  0000: return (self.EffectManager != none)
+  0009: return return
+  000f: <eos>
+
+function TnBuff.StartLoopingEffects  (script 155 bytes)
+  0000: if !((self.EffectManager == none)) goto 0x000d
+  000b: return nothing
+  000d: self.LoopingFxPlaying = true
+  0015: PSC = TnBuff.PlayEffect(self.ApplyFx, self.OwnerPawn.get_RobotMeshComponent(), self.FxSocket)
+  003e: if !((PSC != none)) goto 0x0056
+  0049: self.LoopingEffects.AddItem(PSC)
+  0056: PSC = TnBuff.PlayEffect(self.ApplyFx, self.OwnerPawn.get_VehicleMeshComponent(), TnBuff.GetVehicleFxSocket())
+  0080: if !((PSC != none)) goto 0x0098
+  008b: self.LoopingEffects.AddItem(PSC)
+  0098: return nothing
+  009a: <eos>
+
+function TnBuff.StopLoopingEffects  (script 133 bytes)
+  0000: if !((self.EffectManager == none)) goto 0x000d
+  000b: return nothing
+  000d: self.LoopingFxPlaying = false
+  0015: self.EffectManager.StopEffect(self.OwnerPawn.get_RobotMeshComponent(), self.FxSocket, self.ApplyFx, , )
+  0047: self.EffectManager.StopEffect(self.OwnerPawn.get_VehicleMeshComponent(), TnBuff.GetVehicleFxSocket(), self.ApplyFx, , )
+  007a: self.LoopingEffects.Length = 0
+  0082: return nothing
+  0084: <eos>
+
+function TnBuff.GetVehicleFxSocket  (script 38 bytes)
+  0000: if !((self.VehicleFxSocket != 'None')) goto 0x0019
+  0013: return self.VehicleFxSocket
+  0019: return self.FxSocket
+  001f: return return
+  0025: <eos>
+
+function TnBuff.GetInstigator  (script 13 bytes)
+  0000: return self.Instigator
+  0006: return return
+  000c: <eos>

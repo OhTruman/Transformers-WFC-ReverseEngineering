@@ -1,0 +1,55 @@
+function HmSkeletalMeshActorMat.PostBeginPlay  (script 16 bytes)
+  0000: HmSkeletalMeshActor.PostBeginPlay()
+  0006: self.PlayingCount = 0
+  000d: return nothing
+  000f: <eos>
+
+function HmSkeletalMeshActorMat.BeginAnimControl  (script 69 bytes)
+  0000: AddAdd_Int(self.PlayingCount)
+  0007: if !((self.PlayingCount > 1)) goto 0x0025
+  0012: self.MatineeAnimator.FinishAnimControl()
+  0025: self.MatineeAnimator.BeginAnimControl(InAnimSets, self.SkeletalMeshComponent)
+  0042: return nothing
+  0044: <eos>
+
+function HmSkeletalMeshActorMat.SetAnimPosition  (script 54 bytes)
+  0000: self.MatineeAnimator.SetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bFireNotifies, bLooping)
+  0033: return nothing
+  0035: <eos>
+
+function HmSkeletalMeshActorMat.SetAnimWeights  (script 27 bytes)
+  0000: self.MatineeAnimator.SetAnimWeights(SlotInfos)
+  0018: return nothing
+  001a: <eos>
+
+function HmSkeletalMeshActorMat.FinishAnimControl  (script 40 bytes)
+  0000: SubtractSubtract_Int(self.PlayingCount)
+  0007: if !((self.PlayingCount == 0)) goto 0x0025
+  0012: self.MatineeAnimator.FinishAnimControl()
+  0025: return nothing
+  0027: <eos>
+
+function HmSkeletalMeshActorMat.GetAnimControlSlotDesc  (script 27 bytes)
+  0000: self.MatineeAnimator.GetAnimControlSlotDesc(OutSlotDescs)
+  0018: return nothing
+  001a: <eos>
+
+function HmSkeletalMeshActorMat.PreviewBeginAnimControl  (script 32 bytes)
+  0000: self.MatineeAnimator.PreviewBeginAnimControl(InAnimSets, self.SkeletalMeshComponent)
+  001d: return nothing
+  001f: <eos>
+
+function HmSkeletalMeshActorMat.PreviewSetAnimPosition  (script 48 bytes)
+  0000: self.MatineeAnimator.PreviewSetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bLooping)
+  002d: return nothing
+  002f: <eos>
+
+function HmSkeletalMeshActorMat.PreviewSetAnimWeights  (script 27 bytes)
+  0000: self.MatineeAnimator.PreviewSetAnimWeights(SlotInfos)
+  0018: return nothing
+  001a: <eos>
+
+function HmSkeletalMeshActorMat.PreviewFinishAnimControl  (script 22 bytes)
+  0000: self.MatineeAnimator.PreviewFinishAnimControl()
+  0013: return nothing
+  0015: <eos>

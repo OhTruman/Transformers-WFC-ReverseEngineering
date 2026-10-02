@@ -1,0 +1,27 @@
+function TnKillStreakRefillAmmo.ServerTriggerAbility  (script 157 bytes)
+  0000: TnAbility.ServerTriggerAbility()
+  0006: obj'TnTeamHandler'.static.GetTeamMembers(self.OwnerPawn, TeamMembers, )
+  0024: foreach TeamMembers(TeamMember,) (end 0x003f)
+  0033: TnKillStreakRefillAmmo.RefillAmmo(TeamMember)
+  003e: iternext
+  003f: iterpop
+  0040: BS = TnBuffService(self.OwnerPawn.GetService('TnBuffService'))
+  0067: if !(NotEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x009a
+  007b: BS.AddBuff(obj'TnBuffLockAmmoClip', 0, self.OwnerPawn)
+  009a: return nothing
+  009c: <eos>
+
+function TnKillStreakRefillAmmo.RefillAmmo  (script 122 bytes)
+  0000: IM = TnInventoryManager(P.InvManager)
+  0019: if !((IM == none)) goto 0x0026
+  0024: return nothing
+  0026: foreach self.WeaponTypes(WT,) (end 0x0076)
+  0035: W = IM.GetWeaponByType(WT)
+  0053: if !((W == none)) goto 0x0062
+  005e: iternext
+  005f: goto 0x0076
+  0062: W.FillReserveAmmo()
+  0075: iternext
+  0076: iterpop
+  0077: return nothing
+  0079: <eos>

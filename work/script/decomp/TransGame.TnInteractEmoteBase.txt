@@ -1,0 +1,219 @@
+function TnInteractEmoteBase.get_RegisterRadius  (script 13 bytes)
+  0000: return self._RegisterRadius
+  0006: return return
+  000c: <eos>
+
+function TnInteractEmoteBase.set_RegisterRadius  (script 14 bytes)
+  0000: self._RegisterRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnInteractEmoteBase.get_AutoEmote  (script 14 bytes)
+  0000: return self._AutoEmote
+  0007: return return
+  000d: <eos>
+
+function TnInteractEmoteBase.set_AutoEmote  (script 15 bytes)
+  0000: TnInteractEmoteBase.SetAuto(Value)
+  000c: return nothing
+  000e: <eos>
+
+function TnInteractEmoteBase.set_EmoteBlueprint  (script 14 bytes)
+  0000: self._EmoteBlueprint = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnInteractEmoteBase.set_AnimSetMap  (script 14 bytes)
+  0000: self.AnimMap = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnInteractEmoteBase.set_ActionRandomAnimPicker  (script 14 bytes)
+  0000: self._ActionRandomAnimPicker = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnInteractEmoteBase.get_OutAnimLength  (script 40 bytes)
+  0000: return ((self.OutAnim == none) ? 0.0 : self.OutAnim.Length)
+  0021: return return
+  0027: <eos>
+
+function TnInteractEmoteBase.SetAnims  (script 36 bytes)
+  0000: self.InAnim = In
+  000b: self.LoopAnim = Loop
+  0016: self.OutAnim = TheOutAnimationAction
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractEmoteBase.CheckForErrors  (script 322 bytes)
+  0000: if !((self._EmoteBlueprint == none)) goto 0x006f
+  000b: EmitCheckMessage(0, (cast56(self) @ "does not have an Emote Blueprint!..Select emote and press f4 to set blueprint"), , )
+  006d: return nothing
+  006f: if !((self._AutoEmote && !self.bAIEnabled)) goto 0x00d3
+  0085: EmitCheckMessage(0, (cast56(self) @ "is being used as an Auto emote, but is not enabled for AI"), , )
+  00d3: if !((self._AutoEmote && !self.LoopAnim.Looping)) goto 0x0139
+  00f2: EmitCheckMessage(0, (cast56(self) @ "is being used as an Auto emote, but is not Looping"), , )
+  0139: TnInteractBase.CheckForErrors()
+  013f: return nothing
+  0141: <eos>
+
+function TnInteractEmoteBase.PostBeginPlay  (script 388 bytes)
+  0000: if !(self.bInitialized) goto 0x000b
+  0009: return nothing
+  000b: TnInteractBase.PostBeginPlay()
+  0011: TnInteractEmoteBase.SetupAnimMap()
+  0017: Emotes = self._EmoteBlueprint.EmoteList
+  002b: if !(self._AiOnly) goto 0x004a
+  0034: self.UseConditions.AddItem(new(nothing, nothing, obj'TnInteractConditionAIOnly', nothing, DeltaTime))
+  004a: if !((self._ActionRandomAnimPicker != none)) goto 0x0092
+  0055: self._ActionRandomAnimPicker.InitializeAction(Emotes, self.InAnim, self.LoopAnim, self.OutAnim)
+  007c: self.BeginUseSequence.Actions.AddItem(self._ActionRandomAnimPicker)
+  0092: self.InAnim.AnimationSets = self.AnimMap
+  00a6: self.LoopAnim.AnimationSets = self.AnimMap
+  00ba: self.OutAnim.AnimationSets = self.AnimMap
+  00ce: self.BeginUseSequence.Actions.AddItem(self.InAnim)
+  00e4: self.BeginUseSequence.Actions.AddItem(self.LoopAnim)
+  00fa: self.EndUseSequence.Actions.AddItem(self.UnholsterWeapon)
+  0110: self.EndUseSequence.Actions.AddItem(self.OutAnim)
+  0126: self.ForceEndUseSequence.Actions.AddItem(self.UnholsterWeapon)
+  013c: self.ForceEndUseSequence.Actions.AddItem(self.CancelAnimOnUser)
+  0152: self.InteractActions.AddItem(self.BeginUseSequence)
+  015f: self.InteractActions.AddItem(self.EndUseSequence)
+  016c: self.InteractActions.AddItem(self.ForceEndUseSequence)
+  0179: self.bInitialized = true
+  0181: return nothing
+  0183: <eos>
+
+function TnInteractEmoteBase.OnPostEditChange  (script 170 bytes)
+  0000: if !((PropertyName == 'PreviewMesh')) goto 0x002c
+  0013: self.SkelMeshComponent.SetSkeletalMesh(self.PreviewMesh, false)
+  002c: if !((PropertyName == '_EmoteBlueprint')) goto 0x0065
+  003f: TnInteractEmoteBase.SetupAnimMap()
+  0045: self._ProxyMesh = self._EmoteBlueprint.ProxyMesh
+  0059: ForceUpdateComponents(, )
+  0065: if !((PropertyName == '_Looping')) goto 0x0088
+  0078: SetLooping(self._Looping)
+  0088: if !((PropertyName == '_AutoEmote')) goto 0x00a7
+  009b: TnInteractEmoteBase.SetAuto(self._AutoEmote)
+  00a7: return nothing
+  00a9: <eos>
+
+function TnInteractEmoteBase.DisplayPreviewSkelMesh  (script 28 bytes)
+  0000: self.SkelMeshComponent.SetSkeletalMesh(self.PreviewMesh, false)
+  0019: return nothing
+  001b: <eos>
+
+function TnInteractEmoteBase.SetupAnimMap  (script 181 bytes)
+  0000: if !(((self._EmoteBlueprint == none) || (self.AnimMap == none))) goto 0x001a
+  0018: return nothing
+  001a: self.AnimMap.SetAnimSet(obj'TnInteractSkeletonLightSmall', self._EmoteBlueprint.LightSmallAnimSet)
+  0040: self.AnimMap.SetAnimSet(obj'TnInteractSkeletonLightMedium', self._EmoteBlueprint.LightMediumAnimSet)
+  0066: self.AnimMap.SetAnimSet(obj'TnInteractSkeletonHeavyMedium', self._EmoteBlueprint.HeavyMediumAnimSet)
+  008c: self.AnimMap.SetAnimSet(obj'TnInteractSkeletonVehicle', self._EmoteBlueprint.VehicleAnimSet)
+  00b2: return nothing
+  00b4: <eos>
+
+function TnInteractEmoteBase.SetLooping  (script 51 bytes)
+  0000: if !((self.LoopAnim == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Looping = Enable
+  001a: self.LoopAnim.Looping = self._Looping
+  0030: return nothing
+  0032: <eos>
+
+function TnInteractEmoteBase.SetAuto  (script 52 bytes)
+  0000: self._AutoEmote = InAutoEmote
+  000d: SetLooping(self._AutoEmote)
+  001d: if !(self._AutoEmote) goto 0x0031
+  0026: SetAiEnable(true)
+  0031: return nothing
+  0033: <eos>
+
+function TnInteractEmoteBase.SetAiOnly  (script 16 bytes)
+  0000: self._AiOnly = Enable
+  000d: return nothing
+  000f: <eos>
+
+function TnInteractEmoteBase.PreviewNextEmote  (script 65 bytes)
+  0000: if !((self._EmoteBlueprint.EmoteList.Length == 0)) goto 0x0017
+  0015: return nothing
+  0017: AddAdd_PreInt(self.EmoteIndex)
+  001e: if !((self.EmoteIndex >= self._EmoteBlueprint.EmoteList.Length)) goto 0x003e
+  0037: self.EmoteIndex = 0
+  003e: return nothing
+  0040: <eos>
+
+function TnInteractEmoteBase.PreviewPrevEmote  (script 68 bytes)
+  0000: if !((self._EmoteBlueprint.EmoteList.Length == 0)) goto 0x0017
+  0015: return nothing
+  0017: SubtractSubtract_Int(self.EmoteIndex)
+  001e: if !((self.EmoteIndex < 0)) goto 0x0041
+  0029: self.EmoteIndex = (self._EmoteBlueprint.EmoteList.Length - 1)
+  0041: return nothing
+  0043: <eos>
+
+function TnInteractEmoteBase.PlayPreview  (script 457 bytes)
+  0000: self.PreviewAnimIdx = 0
+  0007: self.PreviewAnims.Length = 0
+  000f: if !((self.PreviewMesh != none)) goto 0x0033
+  001a: self.SkelMeshComponent.SetSkeletalMesh(self.PreviewMesh, false)
+  0033: TnInteractEmoteBase.SetupAnimMap()
+  0039: TheSet = self.AnimMap.FindAnimationSetForSkeletonType(self.SkeletonType)
+  0057: self.SkelMeshComponent.AppendAnimSet(TheSet)
+  006f: if !((self._EmoteBlueprint.EmoteList.Length > 0)) goto 0x0140
+  0084: SubSet = self.EmoteIndex[self._EmoteBlueprint.EmoteList]
+  009e: if !((SubSet.InAnimation != 'None')) goto 0x00d4
+  00bc: self.PreviewAnims.AddItem(SubSet.InAnimation)
+  00d4: if !((SubSet.LoopAnimation != 'None')) goto 0x010a
+  00f2: self.PreviewAnims.AddItem(SubSet.LoopAnimation)
+  010a: if !((SubSet.OutAnimation != 'None')) goto 0x0140
+  0128: self.PreviewAnims.AddItem(SubSet.OutAnimation)
+  0140: SeqNode = AnimNodeSequence(self.SkelMeshComponent.Animations)
+  0159: if !((SeqNode != none)) goto 0x01c6
+  0164: if !((SeqNode.AnimSeqName != self.PreviewAnimIdx[self.PreviewAnims])) goto 0x01a0
+  0182: SeqNode.SetAnim(self.PreviewAnimIdx[self.PreviewAnims])
+  01a0: self.SkelMeshComponent.UpdateAnimations()
+  01b3: self.SkelMeshComponent.ForceSkelUpdate()
+  01c6: return nothing
+  01c8: <eos>
+
+function TnInteractEmoteBase.StopPreview  (script 96 bytes)
+  0000: SeqNode = AnimNodeSequence(self.SkelMeshComponent.Animations)
+  0019: if !((SeqNode != none)) goto 0x005d
+  0024: SeqNode.StopAnim()
+  0037: self.SkelMeshComponent.UpdateAnimations()
+  004a: self.SkelMeshComponent.ForceSkelUpdate()
+  005d: return nothing
+  005f: <eos>
+
+function TnInteractEmoteBase.UpdatePreview  (script 255 bytes)
+  0000: SeqNode = AnimNodeSequence(self.SkelMeshComponent.Animations)
+  0019: (DeltaTime *= cast3f(1))
+  0023: if !((SeqNode != none)) goto 0x00fc
+  002e: PlaybackLength = SeqNode.GetAnimPlaybackLength()
+  0047: NormalizedPos = SeqNode.GetNormalizedPosition()
+  0061: CurrentPosition = ((PlaybackLength * NormalizedPos) + DeltaTime)
+  007a: if !((CurrentPosition > PlaybackLength)) goto 0x00d0
+  0089: AddAdd_Int(self.PreviewAnimIdx)
+  0090: if !((self.PreviewAnimIdx >= self.PreviewAnims.Length)) goto 0x00a7
+  00a0: self.PreviewAnimIdx = 0
+  00a7: SeqNode.SetAnim(self.PreviewAnimIdx[self.PreviewAnims])
+  00c5: CurrentPosition = 0.0
+  00d0: SeqNode.SetPosition(CurrentPosition, false)
+  00e9: self.SkelMeshComponent.ForceSkelUpdate()
+  00fc: return nothing
+  00fe: <eos>
+
+function TnInteractEmoteBase.InteractCommand  (script 88 bytes)
+  0000: if !((IsInUse() && (P == GetCurrentUser()))) goto 0x0045
+  0023: if !((cast3a(CommandID) == cast3a(1))) goto 0x0042
+  0033: ProcessInteractEvent(obj'TnInteractEventTypeEndUse')
+  0042: goto 0x0055
+  0045: TnInteractBase.InteractCommand(P, CommandID)
+  0055: return nothing
+  0057: <eos>
+
+function TnInteractEmoteBase.ShouldRegister  (script 48 bytes)
+  0000: return (self._AutoEmote && Cell.DiscOverlapsCell(self.Location, self._RegisterRadius))
+  0029: return return
+  002f: <eos>

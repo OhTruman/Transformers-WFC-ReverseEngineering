@@ -1,0 +1,11 @@
+function SeqVar_Player.GetObjectValue  (script 129 bytes)
+  0000: PC = PlayerController(self.ObjValue)
+  0010: if !((PC == none)) goto 0x0050
+  001b: foreach GetWorldInfo().AllControllers(obj'PlayerController', PC) (end 0x004f)
+  0040: self.ObjValue = PC
+  004b: goto 0x004f
+  004e: iternext
+  004f: iterpop
+  0050: return ((PC.Pawn != none) ? PC.Pawn : PC)
+  007a: return return
+  0080: <eos>

@@ -1,0 +1,103 @@
+function GameEngine.CreateNamedNetDriver  (script 7 bytes)
+  0000: NetDriverName
+  0005: nothing
+  0006: <eos>
+
+function GameEngine.DestroyNamedNetDriver  (script 7 bytes)
+  0000: NetDriverName
+  0005: nothing
+  0006: <eos>
+
+function GameEngine.EnqueueHandleSeamlessTravelPlayerRequest  (script 21 bytes)
+  0000: self.HandleSeamlessTravelPlayerRequests.Length[self.HandleSeamlessTravelPlayerRequests] = PC
+  0012: return nothing
+  0014: <eos>
+
+function GameEngine.ClearHandleSeamlessTravelPlayerRequests  (script 11 bytes)
+  0000: self.HandleSeamlessTravelPlayerRequests.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function GameEngine.NeedsHandleSeamlessTravelPlayer  (script 28 bytes)
+  0000: return (-1 != self.HandleSeamlessTravelPlayerRequests.Find(PC))
+  0015: return return
+  001b: <eos>
+
+function GameEngine.GetOnlineSubsystem  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GameEngine.GetSystemTime  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GameEngine.IsInInteractiveState  (script 14 bytes)
+  0000: return self.bIsInInteractiveState
+  0007: return return
+  000d: <eos>
+
+function GameEngine.EnableInteractiveState  (script 31 bytes)
+  0000: self.bIsInInteractiveState = true
+  0008: (self.ModifiedPlayerInputTime += (GameEngine.GetSystemTime() - self.DisableInteractiveStateTime))
+  001c: return nothing
+  001e: <eos>
+
+function GameEngine.DisableInteractiveState  (script 23 bytes)
+  0000: self.bIsInInteractiveState = false
+  0008: self.DisableInteractiveStateTime = GameEngine.GetSystemTime()
+  0014: return nothing
+  0016: <eos>
+
+function GameEngine.SetPlayerInputTime  (script 25 bytes)
+  0000: self.PlayerInputTime = InputTime
+  000b: self.ModifiedPlayerInputTime = InputTime
+  0016: return nothing
+  0018: <eos>
+
+function GameEngine.GetPlayerInputTime  (script 13 bytes)
+  0000: return self.PlayerInputTime
+  0006: return return
+  000c: <eos>
+
+function GameEngine.GetModifiedPlayerInputTime  (script 13 bytes)
+  0000: return self.ModifiedPlayerInputTime
+  0006: return return
+  000c: <eos>
+
+function GameEngine.UpdateMapPrestreaming  (script 7 bytes)
+  0000: MapName
+  0005: nothing
+  0006: <eos>
+
+function GameEngine.CancelMapPrestreaming  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GameEngine.SetCurrentErrorMessage  (script 80 bytes)
+  0000: LogInternal(((("New error message: " $ Title) $ " : ") $ Message), 'DevOnline', , )
+  0037: self.CurrentErrorTitle = Title
+  0042: self.CurrentErrorMessage = Message
+  004d: return nothing
+  004f: <eos>
+
+function GameEngine.GetCurrentErrorMessage  (script 59 bytes)
+  0000: if !(((self.CurrentErrorTitle == "") && (self.CurrentErrorMessage == ""))) goto 0x001c
+  001a: return false
+  001c: Title = self.CurrentErrorTitle
+  0027: Message = self.CurrentErrorMessage
+  0032: return true
+  0034: return return
+  003a: <eos>
+
+function GameEngine.ClearCurrentErrorMessage  (script 19 bytes)
+  0000: self.CurrentErrorTitle = ""
+  0008: self.CurrentErrorMessage = ""
+  0010: return nothing
+  0012: <eos>
+
+function GameEngine.SetProgress  (script 17 bytes)
+  0000: MessageType
+  0005: Title
+  000a: Message
+  000f: nothing
+  0010: <eos>

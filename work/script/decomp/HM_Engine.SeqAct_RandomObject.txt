@@ -1,0 +1,23 @@
+function SeqAct_RandomObject.Activated  (script 352 bytes)
+  0000: if !((0[self.VariableLinks].LinkedVariables.Length == 0)) goto 0x001b
+  0019: return nothing
+  001b: I = 0
+  0022: if !((I < 1[self.VariableLinks].LinkedVariables.Length)) goto 0x015d
+  003f: RandIndex = RandomIndex(0[self.VariableLinks].LinkedVariables.Length)
+  0067: SourceObject = SeqVar_Object(RandIndex[0[self.VariableLinks].LinkedVariables])
+  008a: DestObject = SeqVar_Object(I[1[self.VariableLinks].LinkedVariables])
+  00ad: ObjectList = SeqVar_ObjectList(SourceObject)
+  00bd: if !(((ObjectList != none) && (ObjectList.ObjList.Length > 0))) goto 0x012d
+  00df: RandIndex = RandomIndex(ObjectList.ObjList.Length)
+  0103: DestObject.SetObjectValue(RandIndex[ObjectList.ObjList])
+  012a: goto 0x0153
+  012d: DestObject.SetObjectValue(SourceObject.GetObjectValue())
+  0153: AddAdd_Int(I)
+  015a: goto 0x0022
+  015d: return nothing
+  015f: <eos>
+
+function SeqAct_RandomObject.RandomIndex  (script 24 bytes)
+  0000: return obj'Core.Random'.static.Rand(Max)
+  0011: return return
+  0017: <eos>

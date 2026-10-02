@@ -1,0 +1,61 @@
+function TnFactionTeam.NotifyNearbyMembersOfEnemy  (script 305 bytes)
+  0000: if !(self.IsNotifying) goto 0x000b
+  0009: return nothing
+  000b: self.IsNotifying = true
+  0013: foreach self.WorldInfo.AllControllers(obj'TnAiController', C) (end 0x0125)
+  0033: if !((C == Sighter)) goto 0x0046
+  0042: iternext
+  0043: goto 0x0125
+  0046: if !((C.Pawn == none)) goto 0x005e
+  005a: iternext
+  005b: goto 0x0125
+  005e: Team = C.Pawn.GetTeam()
+  0080: if !((Team != self)) goto 0x008f
+  008b: iternext
+  008c: goto 0x0125
+  008f: Friend = C.Pawn
+  00a3: if !((Friend == none)) goto 0x00b2
+  00ae: iternext
+  00af: goto 0x0125
+  00b2: DistSqToFriend = obj'Core.Math'.static.VSizeSq((Sighter.Pawn.Location - Friend.Location))
+  00f2: if !((DistSqToFriend > (self.DistanceToAlertFriends * self.DistanceToAlertFriends))) goto 0x010c
+  0108: iternext
+  0109: goto 0x0125
+  010c: C.SeeEnemy(Enemy)
+  0124: iternext
+  0125: iterpop
+  0126: self.IsNotifying = false
+  012e: return nothing
+  0130: <eos>
+
+function TnFactionTeam.FindFriend  (script 20 bytes)
+  0000: return TnFactionTeam.FindMember(C, true)
+  000d: return return
+  0013: <eos>
+
+function TnFactionTeam.FindEnemy  (script 20 bytes)
+  0000: return TnFactionTeam.FindMember(C, false)
+  000d: return return
+  0013: <eos>
+
+function TnFactionTeam.FindMember  (script 180 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Engine.Controller', CIter) (end 0x00aa)
+  0020: if !((CIter == C)) goto 0x0033
+  002f: iternext
+  0030: goto 0x00aa
+  0033: if !((CIter.Pawn == none)) goto 0x004b
+  0047: iternext
+  0048: goto 0x00aa
+  004b: if !(Friend) goto 0x0080
+  0054: if !((CIter.Pawn.GetTeam() == self)) goto 0x007d
+  0076: iterpop
+  0077: return CIter
+  007d: goto 0x00a9
+  0080: if !((CIter.Pawn.GetTeam() != self)) goto 0x00a9
+  00a2: iterpop
+  00a3: return CIter
+  00a9: iternext
+  00aa: iterpop
+  00ab: return none
+  00ad: return return
+  00b3: <eos>

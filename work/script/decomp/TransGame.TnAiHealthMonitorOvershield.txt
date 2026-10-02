@@ -1,0 +1,41 @@
+function TnAiHealthMonitorOvershield.OnInitialize  (script 95 bytes)
+  0000: TnAiHealthMonitor.OnInitialize()
+  0006: BuffService = TnBuffService(self._OwningPawn.GetService('TnBuffService'))
+  002d: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0043
+  0041: return nothing
+  0043: BuffService.SetImmuneToBuff(obj'TnBuffFlashBang')
+  005c: return nothing
+  005e: <eos>
+
+function TnAiHealthMonitorOvershield.OnUpdate  (script 148 bytes)
+  0000: if !(((self._OwningController == none) || (self._OwningPawn == none))) goto 0x001a
+  0018: return nothing
+  001a: if !((self._OwningController.AiWorldState.GetIntValue(obj'TnAiWorldStateReaction') == 5)) goto 0x004d
+  0042: OvershieldOn = false
+  004a: goto 0x0078
+  004d: OvershieldOn = (self._OwningController.AiWorldState.GetIntValue(obj'TnAiWorldStateHealthStatus') == 0)
+  0078: self._OwningPawn.SetOvershield(OvershieldOn)
+  0091: return nothing
+  0093: <eos>
+
+function TnAiHealthMonitorOvershield.AdjustDamage  (script 75 bytes)
+  0000: if !(TnAiHealthMonitorOvershield.ShouldTakeNormalDamage(DamageType)) goto 0x001f
+  000e: return TnAiHealthMonitor.AdjustDamage(Damage, DamageType)
+  001f: return ((self._OwningPawn.HealthMax * (cast3f(1) - get_WoundedThresholdPercentage())) + cast3f(1))
+  0044: return return
+  004a: <eos>
+
+function TnAiHealthMonitorOvershield.ShouldTakeNormalDamage  (script 113 bytes)
+  0000: if !((self._OwningPawn.GetNormalizedHealth() < get_WoundedThresholdPercentage())) goto 0x0024
+  0022: return true
+  0024: if !((DamageType == obj'TnDamageTypeFlashBang')) goto 0x0035
+  0033: return false
+  0035: if !((DamageType == obj'TnDamageTypeMelee')) goto 0x0046
+  0044: return false
+  0046: if !((DamageType == obj'TnDamageTypeFlakGrenade')) goto 0x0057
+  0055: return false
+  0057: if !((DamageType == obj'TnDamageTypeKamikazeMine')) goto 0x0068
+  0066: return false
+  0068: return true
+  006a: return return
+  0070: <eos>

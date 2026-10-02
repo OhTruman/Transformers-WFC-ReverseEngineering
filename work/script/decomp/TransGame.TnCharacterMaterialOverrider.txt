@@ -1,0 +1,113 @@
+function TnCharacterMaterialOverrider.Initialize  (script 34 bytes)
+  0000: self.OwnerPawn = OwnerPawn_
+  000b: self.CharacterApplier = self.OwnerPawn._CharacterApplier
+  001f: return nothing
+  0021: <eos>
+
+function TnCharacterMaterialOverrider.AddMesh  (script 110 bytes)
+  0000: nothing
+  0001: if !((Mesh == none)) goto 0x000e
+  000c: return nothing
+  000e: if !((self.Overrides.Find('Mesh',Mesh) != -1)) goto 0x0030
+  002e: return nothing
+  0030: MeshMaterialOverride = TnCharacterMaterialOverrider.CreateMeshMaterialOverride(Mesh, Materials)
+  0046: if !(self.bIsActive) goto 0x005e
+  004f: StartOverride(MeshMaterialOverride)
+  005e: self.Overrides.AddItem(MeshMaterialOverride)
+  006b: return nothing
+  006d: <eos>
+
+function TnCharacterMaterialOverrider.CreateMeshMaterialOverride  (script 168 bytes)
+  0000: MeshMaterialOverride.Mesh = Mesh
+  0016: DefaultMaterial = GetDefaultMaterial()
+  0026: Index = 0
+  002d: if !((Index < Mesh.GetDefaultMaterialCount())) goto 0x009b
+  004a: if !((Index < Materials.Length)) goto 0x006e
+  005a: Material = Index[Materials]
+  006b: goto 0x0079
+  006e: Material = DefaultMaterial
+  0079: MeshMaterialOverride.Materials.AddItem(Material)
+  0091: AddAdd_PreInt(Index)
+  0098: goto 0x002d
+  009b: return MeshMaterialOverride
+  00a1: return return
+  00a7: <eos>
+
+function TnCharacterMaterialOverrider.GetDefaultMaterial  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function TnCharacterMaterialOverrider.RemoveMesh  (script 90 bytes)
+  0000: Index = self.Overrides.Find('Mesh',Mesh)
+  001c: if !((Index == -1)) goto 0x002d
+  002b: return nothing
+  002d: if !(self.bIsActive) goto 0x004b
+  0036: StopOverride(Index[self.Overrides])
+  004b: self.Overrides.Remove(Index,1)
+  0057: return nothing
+  0059: <eos>
+
+function TnCharacterMaterialOverrider.GetMaterials  (script 82 bytes)
+  0000: Index = self.Overrides.Find('Mesh',Mesh)
+  001c: if !((Index == -1)) goto 0x002d
+  002b: return false
+  002d: Materials = Index[self.Overrides].Materials
+  0049: return true
+  004b: return return
+  0051: <eos>
+
+function TnCharacterMaterialOverrider.IsActive  (script 14 bytes)
+  0000: return self.bIsActive
+  0007: return return
+  000d: <eos>
+
+function TnCharacterMaterialOverrider.Start  (script 54 bytes)
+  0000: if !(self.bIsActive) goto 0x000b
+  0009: return nothing
+  000b: self.bIsActive = true
+  0013: foreach self.Overrides(Mesh,) (end 0x0032)
+  0022: StartOverride(Mesh)
+  0031: iternext
+  0032: iterpop
+  0033: return nothing
+  0035: <eos>
+
+function TnCharacterMaterialOverrider.StartOverride  (script 139 bytes)
+  0000: Index = 0
+  0007: if !((Index < MeshMaterialOverride.Mesh.GetDefaultMaterialCount())) goto 0x0088
+  002f: MaterialOverride = Index[MeshMaterialOverride.Materials]
+  004b: if !((MaterialOverride != none)) goto 0x007e
+  0056: MeshMaterialOverride.Mesh.SetMaterial(Index, MaterialOverride)
+  007e: AddAdd_PreInt(Index)
+  0085: goto 0x0007
+  0088: return nothing
+  008a: <eos>
+
+function TnCharacterMaterialOverrider.Stop  (script 56 bytes)
+  0000: if !(!self.bIsActive) goto 0x000d
+  000b: return nothing
+  000d: self.bIsActive = false
+  0015: foreach self.Overrides(Mesh,) (end 0x0034)
+  0024: StopOverride(Mesh)
+  0033: iternext
+  0034: iterpop
+  0035: return nothing
+  0037: <eos>
+
+function TnCharacterMaterialOverrider.StopOverride  (script 68 bytes)
+  0000: MeshMaterialOverride.Mesh.ClearMaterials()
+  001e: self.CharacterApplier.ApplyColorsToMesh(MeshMaterialOverride.Mesh)
+  0041: return nothing
+  0043: <eos>
+
+function TnCharacterMaterialOverrider.Tick  (script 31 bytes)
+  0000: if !(!self.bIsActive) goto 0x000d
+  000b: return nothing
+  000d: OnTick(DeltaTime)
+  001c: return nothing
+  001e: <eos>
+
+function TnCharacterMaterialOverrider.OnTick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

@@ -1,0 +1,304 @@
+function TnAbilityManager.ReplicatedEvent  (script 86 bytes)
+  0000: switch (VarName)
+  0007: case 'ReplicatedTriggerAbility': (next 0x0030)
+  0013: ClientOnTriggerAbility(self.ReplicatedTriggerAbility.AbilityClass)
+  002d: goto 0x0053
+  0030: case 'Resource': (next 0x0045)
+  003c: TnAbilityManager.UpdateResourceUI()
+  0042: goto 0x0053
+  0045: default:
+  0048: ReplicatedEvent(VarName)
+  0053: return nothing
+  0055: <eos>
+
+function TnAbilityManager.Initialize  (script 14 bytes)
+  0000: self.OwnerPawn = OwnerHomesnake
+  000b: return nothing
+  000d: <eos>
+
+function TnAbilityManager.SetHud  (script 59 bytes)
+  0000: self.OwnerHud = NewHud
+  000b: if !((TnAbilityManager.GetResourceRequired() > cast3f(0))) goto 0x0022
+  0019: TnAbilityManager.UpdateResourceUI()
+  001f: goto 0x0029
+  0022: TnAbilityManager.FinishAbilityCooldown(0)
+  0029: TnAbilityManager.FinishAbilityCooldown(1)
+  0030: TnAbilityManager.FinishAbilityCooldown(2)
+  0038: return nothing
+  003a: <eos>
+
+function TnAbilityManager.CreateAbility  (script 22 bytes)
+  0000: return new(nothing, nothing, AbilityClass, nothing, DeltaTime)
+  000f: return return
+  0015: <eos>
+
+function TnAbilityManager.AddAbility  (script 161 bytes)
+  0000: AbilityNumber = TnAbilityManager.FindAbility(AbilityClass)
+  0011: if !((AbilityNumber != -1)) goto 0x0026
+  0020: return AbilityNumber
+  0026: if !((AbilityClass != none)) goto 0x0063
+  0031: AddedAbility = CreateAbility(AbilityClass)
+  004b: AddedAbility.Initialize(self.OwnerPawn)
+  0063: self.Abilities.AddItem(AddedAbility)
+  0070: self.Cooldowns.AddItem(0.0)
+  007d: self.SpamPreventionCooldowns.AddItem(0.0)
+  008a: TnAbilityManager.UpdateResourceUI()
+  0090: return (self.Abilities.Length - 1)
+  009a: return return
+  00a0: <eos>
+
+function TnAbilityManager.FindAbility  (script 99 bytes)
+  0000: I = 0
+  0007: if !((I < self.Abilities.Length)) goto 0x0056
+  0017: if !(((I[self.Abilities] != none) && (I[self.Abilities].get_Class() == AbilityClass))) goto 0x004c
+  0046: return I
+  004c: AddAdd_PreInt(I)
+  0053: goto 0x0007
+  0056: return -1
+  005c: return return
+  0062: <eos>
+
+function TnAbilityManager.IsValidAbility  (script 59 bytes)
+  0000: if !((AbilityNumber >= self.Abilities.Length)) goto 0x0012
+  0010: return false
+  0012: if !((AbilityNumber < 0)) goto 0x001f
+  001d: return false
+  001f: if !((AbilityNumber[self.Abilities] == none)) goto 0x0032
+  0030: return false
+  0032: return true
+  0034: return return
+  003a: <eos>
+
+function TnAbilityManager.IsResourceRequired  (script 47 bytes)
+  0000: ResourceRequired = TnAbilityManager.GetResourceRequired()
+  000c: return ((ResourceRequired > cast3f(0)) && (self.Resource < ResourceRequired))
+  0028: return return
+  002e: <eos>
+
+function TnAbilityManager.AddResource  (script 25 bytes)
+  0000: SetResource((self.Resource + Amount))
+  0016: return nothing
+  0018: <eos>
+
+function TnAbilityManager.SetResource  (script 68 bytes)
+  0000: ResourceRequired = TnAbilityManager.GetResourceRequired()
+  000c: if !((ResourceRequired <= cast3f(0))) goto 0x001b
+  0019: return nothing
+  001b: self.Resource = obj'Core.Math'.static.FClamp(Amount, 0.0, ResourceRequired)
+  003b: TnAbilityManager.UpdateResourceUI()
+  0041: return nothing
+  0043: <eos>
+
+function TnAbilityManager.GetResource  (script 13 bytes)
+  0000: return self.Resource
+  0006: return return
+  000c: <eos>
+
+function TnAbilityManager.GetNormalizedResource  (script 51 bytes)
+  0000: ResourceRequired = TnAbilityManager.GetResourceRequired()
+  000c: if !((ResourceRequired <= cast3f(0))) goto 0x001f
+  0019: return 0.0
+  001f: return (self.Resource / ResourceRequired)
+  002c: return return
+  0032: <eos>
+
+function TnAbilityManager.GetResourceRequired  (script 62 bytes)
+  0000: if !(((self.Abilities.Length < 1) || (0[self.Abilities] == none))) goto 0x0021
+  001b: return 0.0
+  0021: return 0[self.Abilities].GetResourceRequired()
+  0037: return return
+  003d: <eos>
+
+function TnAbilityManager.AbilityIsAvailable  (script 87 bytes)
+  0000: if !(!TnAbilityManager.IsValidAbility(AbilityNumber)) goto 0x0012
+  0010: return false
+  0012: if !((self.Resource < AbilityNumber[self.Abilities].GetResourceRequired())) goto 0x0037
+  0035: return false
+  0037: if !((AbilityNumber[self.Cooldowns] > 0.0)) goto 0x004e
+  004c: return false
+  004e: return true
+  0050: return return
+  0056: <eos>
+
+function TnAbilityManager.ServerTriggerAbility  (script 289 bytes)
+  0000: if !((self.OwnerPawn.IsDead() || self.OwnerPawn.IsDying())) goto 0x0030
+  002e: return nothing
+  0030: AbilityNumber[self.Abilities].ServerTriggerAbility()
+  0049: AbilityClass = AbilityNumber[self.Abilities].get_Class()
+  0061: ClientOnTriggerAbility(AbilityClass)
+  0070: self.ReplicatedTriggerAbility.AbilityClass = AbilityClass
+  0086: self.ReplicatedTriggerAbility.Bologna = !self.ReplicatedTriggerAbility.Bologna
+  00ab: if !((AbilityNumber[self.Abilities].GetResourceRequired() > cast3f(0))) goto 0x00db
+  00cc: SetResource(0.0)
+  00db: PRI = TnPlayerReplicationInfo(self.OwnerPawn.PlayerReplicationInfo)
+  00f4: if !((PRI != none)) goto 0x011e
+  00ff: PRI.IncrementGameStat(1.0, 5890, 0)
+  011e: return nothing
+  0120: <eos>
+
+function TnAbilityManager.ServerForceEndAbility  (script 42 bytes)
+  0000: if !(TnAbilityManager.IsValidAbility(AbilityNumber)) goto 0x0027
+  000e: AbilityNumber[self.Abilities].ForceEndAbility()
+  0027: return nothing
+  0029: <eos>
+
+function TnAbilityManager.TriggerAbility  (script 271 bytes)
+  0000: if !(((AbilityNumber < self.SpamPreventionCooldowns.Length) && (AbilityNumber[self.SpamPreventionCooldowns] > cast3f(0)))) goto 0x0027
+  0025: return false
+  0027: if !(!AbilityIsAvailable(AbilityNumber)) goto 0x006d
+  003b: if !((TnAbilityManager.IsValidAbility(AbilityNumber) && (AbilityNumber[self.Cooldowns] == 3.4028234663852886e+38))) goto 0x006b
+  0060: TnAbilityManager.ServerForceEndAbility(AbilityNumber)
+  006b: return false
+  006d: Ability = AbilityNumber[self.Abilities]
+  007e: if !(!Ability.LocalTriggerAbility()) goto 0x0098
+  0096: return false
+  0098: AbilityNumber[self.SpamPreventionCooldowns] = self.SpamPreventionTime
+  00a9: if !((Ability.GetResourceRequired() > cast3f(0))) goto 0x00d6
+  00c4: SetResource(0.0)
+  00d3: goto 0x00f7
+  00d6: AbilityNumber[self.Cooldowns] = 3.4028234663852886e+38
+  00e7: TnAbilityManager.StartAbilityCooldown(AbilityNumber, 3.4028234663852886e+38)
+  00f7: ServerTriggerAbility(AbilityNumber)
+  0106: return true
+  0108: return return
+  010e: <eos>
+
+function TnAbilityManager.SetCooldownMultiplier  (script 111 bytes)
+  0000: self.CooldownMultiplier = NewMultiplier
+  000b: I = 0
+  0012: if !((I < self.Cooldowns.Length)) goto 0x006c
+  0022: if !(((I[self.Cooldowns] > cast3f(0)) && (I[self.Cooldowns] != 3.4028234663852886e+38))) goto 0x0062
+  004c: TnAbilityManager.StartAbilityCooldown(I, I[self.Cooldowns])
+  0062: AddAdd_PreInt(I)
+  0069: goto 0x0012
+  006c: return nothing
+  006e: <eos>
+
+function TnAbilityManager.ClientReceiveServerCanStartCooldown  (script 42 bytes)
+  0000: if !(TnAbilityManager.IsValidAbility(AbilityNumber)) goto 0x0027
+  000e: AbilityNumber[self.Abilities].ReceiveServerCanStartCooldown()
+  0027: return nothing
+  0029: <eos>
+
+function TnAbilityManager.Tick  (script 375 bytes)
+  0000: I = 0
+  0007: if !((I < self.Abilities.Length)) goto 0x0174
+  0017: if !((cast3a(self.Owner.Role) == cast3a(3))) goto 0x0057
+  0030: if !(I[self.Abilities].UpdateServerCanStartCooldown()) goto 0x0057
+  004c: TnAbilityManager.ClientReceiveServerCanStartCooldown(I)
+  0057: if !((I[self.Cooldowns] == 3.4028234663852886e+38)) goto 0x00c8
+  006c: if !(I[self.Abilities].CanStartCooldown()) goto 0x00c8
+  0088: CooldownTime = I[self.Abilities].GetCooldownTime()
+  00a7: I[self.Cooldowns] = CooldownTime
+  00b8: TnAbilityManager.StartAbilityCooldown(I, CooldownTime)
+  00c8: if !(((I[self.Cooldowns] > cast3f(0)) && (I[self.Cooldowns] != 3.4028234663852886e+38))) goto 0x0145
+  00f2: I[self.Cooldowns] = obj'Core.Math'.static.FMax(0.0, (I[self.Cooldowns] - (DeltaTime * self.CooldownMultiplier)))
+  0127: if !((I[self.Cooldowns] == cast3f(0))) goto 0x0145
+  013a: TnAbilityManager.FinishAbilityCooldown(I)
+  0145: if !((I[self.SpamPreventionCooldowns] > cast3f(0))) goto 0x016a
+  0158: (I[self.SpamPreventionCooldowns] -= DeltaTime)
+  016a: AddAdd_PreInt(I)
+  0171: goto 0x0007
+  0174: return nothing
+  0176: <eos>
+
+function TnAbilityManager.PlayTriggerAnim  (script 157 bytes)
+  0000: if !((AbilityClass.static.default.OnTriggerAnimParams.AnimName == 'None')) goto 0x0029
+  0027: return nothing
+  0029: AnimService = TnAnimatorService(self.OwnerPawn.GetService('TnAnimatorService'))
+  0050: if !(EqualEqual_InterfaceInterface(AnimService, TnAnimatorService(none))) goto 0x0066
+  0064: return nothing
+  0066: AnimService.EnqueueLocalAnimation(AbilityClass.static.default.OnTriggerAnimParams, delegate.None, delegate.None)
+  009a: return nothing
+  009c: <eos>
+
+function TnAbilityManager.ClientOnTriggerAbility  (script 154 bytes)
+  0000: if !((AbilityClass.static.default.OnTriggerEffect != none)) goto 0x008c
+  0014: PEM = self.OwnerPawn.FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  0032: PEM.PlayEffect(self.OwnerPawn.Mesh, AbilityClass.static.default.OnTriggerEffectSocket, AbilityClass.static.default.OnTriggerEffect, false, vect(0,0,0), rot(0,0,0), 0)
+  008c: TnAbilityManager.PlayTriggerAnim(AbilityClass)
+  0097: return nothing
+  0099: <eos>
+
+function TnAbilityManager.StartAbilityCooldown  (script 198 bytes)
+  0000: if !((self.OwnerHud == none)) goto 0x000d
+  000b: return nothing
+  000d: AdjustedCooldownTime = CooldownTime
+  0018: if !((AbilityNumber[self.Cooldowns] != 3.4028234663852886e+38)) goto 0x0063
+  002d: NormalizedCooldownStart = (1.0 - (AbilityNumber[self.Cooldowns] / AbilityNumber[self.Abilities].GetCooldownTime()))
+  0060: goto 0x006e
+  0063: NormalizedCooldownStart = 0.0
+  006e: if !((self.CooldownMultiplier == cast3f(0))) goto 0x0086
+  007b: AdjustedCooldownTime = 3.4028234663852886e+38
+  0086: if !((AdjustedCooldownTime != 3.4028234663852886e+38)) goto 0x00a1
+  0095: (AdjustedCooldownTime /= self.CooldownMultiplier)
+  00a1: self.OwnerHud.SetAbilityResource(AbilityNumber, AdjustedCooldownTime, NormalizedCooldownStart)
+  00c3: return nothing
+  00c5: <eos>
+
+function TnAbilityManager.UpdateResourceUI  (script 115 bytes)
+  0000: if !((self.OwnerHud == none)) goto 0x000d
+  000b: return nothing
+  000d: ResourceRequired = TnAbilityManager.GetResourceRequired()
+  0019: if !((ResourceRequired <= cast3f(0))) goto 0x0028
+  0026: return nothing
+  0028: self.OwnerHud.SetAbilityResource(0, 0.0, (self.Resource / ResourceRequired))
+  004d: if !((self.Resource == ResourceRequired)) goto 0x0070
+  005c: self.OwnerHud.SetAbilityResourceReady(0)
+  0070: return nothing
+  0072: <eos>
+
+function TnAbilityManager.FinishAbilityCooldown  (script 40 bytes)
+  0000: if !((self.OwnerHud == none)) goto 0x000d
+  000b: return nothing
+  000d: self.OwnerHud.SetAbilityResourceReady(AbilityNumber)
+  0025: return nothing
+  0027: <eos>
+
+function TnAbilityManager.GetAbilityType  (script 44 bytes)
+  0000: if !(!TnAbilityManager.IsValidAbility(AbilityNumber)) goto 0x0012
+  0010: return none
+  0012: return AbilityNumber[self.Abilities].get_Class()
+  0025: return return
+  002b: <eos>
+
+function TnAbilityManager.GetAbility  (script 49 bytes)
+  0000: AbilityNum = TnAbilityManager.FindAbility(AbilityClass)
+  0011: if !((AbilityNum >= 0)) goto 0x0028
+  001c: return AbilityNum[self.Abilities]
+  0028: return none
+  002a: return return
+  0030: <eos>
+
+function TnAbilityManager.GetKillstreak  (script 149 bytes)
+  0000: I = 0
+  0007: if !((I < self.Killstreaks.Length)) goto 0x0049
+  0017: if !((KillstreakClass == I[self.Killstreaks].get_Class())) goto 0x003f
+  0033: return I[self.Killstreaks]
+  003f: AddAdd_PreInt(I)
+  0046: goto 0x0007
+  0049: NewStreak = CreateAbility(KillstreakClass)
+  0063: NewStreak.Initialize(self.OwnerPawn)
+  007b: self.Killstreaks.AddItem(NewStreak)
+  0088: return NewStreak
+  008e: return return
+  0094: <eos>
+
+function TnAbilityManager.TriggerKillstreak  (script 74 bytes)
+  0000: if !((KillstreakClass == none)) goto 0x000d
+  000b: return nothing
+  000d: Killstreak = TnAbilityManager.GetKillstreak(KillstreakClass)
+  001e: if !(!Killstreak.LocalTriggerAbility()) goto 0x0038
+  0036: return nothing
+  0038: ServerTriggerKillstreak(KillstreakClass)
+  0047: return nothing
+  0049: <eos>
+
+function TnAbilityManager.ServerTriggerKillstreak  (script 113 bytes)
+  0000: Killstreak = TnAbilityManager.GetKillstreak(KillstreakClass)
+  0011: Killstreak.ServerTriggerAbility()
+  0024: ClientOnTriggerAbility(KillstreakClass)
+  0033: self.ReplicatedTriggerAbility.AbilityClass = KillstreakClass
+  0049: self.ReplicatedTriggerAbility.Bologna = !self.ReplicatedTriggerAbility.Bologna
+  006e: return nothing
+  0070: <eos>

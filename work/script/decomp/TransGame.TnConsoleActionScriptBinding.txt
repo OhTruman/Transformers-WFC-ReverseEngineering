@@ -1,0 +1,86 @@
+function TnConsoleActionScriptBinding.GetPlayerInterface  (script 60 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0033
+  0024: return OnlineSub.PlayerInterface
+  0033: return none
+  0035: return return
+  003b: <eos>
+
+function TnConsoleActionScriptBinding.StartKeyboard  (script 169 bytes)
+  0000: default=false
+  0005: default=false
+  000a: default=""
+  0010: default=256
+  0019: PlayerInt = TnConsoleActionScriptBinding.GetPlayerInterface()
+  0025: if !(NotEqual_InterfaceInterface(PlayerInt, OnlinePlayerInterface(none))) goto 0x00a6
+  0039: PlayerInt.AddKeyboardInputDoneDelegate(delegate.KeyboardDoneCallback)
+  0056: if !(!PlayerInt.ShowKeyboardUI(cast3d(GetPlayerNum()), Title, Description, IsPassword, ShouldValidate, DefaultText, MaxResultLength)) goto 0x00a6
+  009b: KeyboardDoneCallback(false)
+  00a6: return nothing
+  00a8: <eos>
+
+function TnConsoleActionScriptBinding.KeyboardDoneCallback  (script 554 bytes)
+  0000: PlayerInt = TnConsoleActionScriptBinding.GetPlayerInterface()
+  000c: if !(NotEqual_InterfaceInterface(PlayerInt, OnlinePlayerInterface(none))) goto 0x0227
+  0020: PlayerInt.ClearKeyboardInputDoneDelegate(delegate.KeyboardDoneCallback)
+  003d: args.Insert(0,2)
+  0046: 0[args].Type = 3
+  005b: if !((bWasSuccessful == true)) goto 0x0098
+  0067: 0[args].S = PlayerInt.GetKeyboardInputResults(bWasCancelled, bContainsUnsupportedCharacters)
+  0098: if !((cast3a(bContainsUnsupportedCharacters) == 1)) goto 0x01d6
+  00a5: MessageBox = GetPlayerController().UIController.ShowPopupUI("$UIText.MessagePrompts.CreateAccountTitle", "", )
+  00fa: MessageBox.bShowDefaultButtons = true
+  010b: MessageBox.SetText("$UIText.MessagePrompts.UnsupportedCharactersTitle", "$UIText.MessagePrompts.UnsupportedCharactersMessage", true)
+  0187: MessageBox.SetAButton("$UIText.ButtonHints.Accept2", delegate.None, "", true)
+  01c3: MessageBox.Show()
+  01d6: 1[args].Type = 4
+  01eb: 1[args].B = bWasSuccessful
+  0205: self.OwnerMovie.Invoke(self.KeyboardDoneScaleformCallback, args)
+  0227: return nothing
+  0229: <eos>
+
+function TnConsoleActionScriptBinding.SaveProfileSettings  (script 28 bytes)
+  0000: GetPlayerController().SaveProfileSettings()
+  0019: return nothing
+  001b: <eos>
+
+function TnConsoleActionScriptBinding.CheckCanSaveProfileSettings  (script 419 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: PC = GetPlayerController()
+  002e: if !(!WI.IsConsoleBuild(1)) goto 0x004a
+  0048: return nothing
+  004a: PlayerInt = TnConsoleActionScriptBinding.GetPlayerInterface()
+  0056: if !(((PC != none) && (cast3a(PlayerInt.GetLoginStatus(cast3d(GetPlayerNum()))) == cast3a(0)))) goto 0x01a0
+  008e: MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.NotLoggedInSettings", )
+  0109: MessageBox.SetAButton("$UIText.MessagePrompts.LogInButton", delegate.ShowLogin, , )
+  014b: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  018d: MessageBox.Show()
+  01a0: return nothing
+  01a2: <eos>
+
+function TnConsoleActionScriptBinding.ShowLogin  (script 47 bytes)
+  0000: PC = GetPlayerController()
+  0010: PC.UIController.ShowLoginUI()
+  002c: return nothing
+  002e: <eos>
+
+function TnConsoleActionScriptBinding.StartInstall  (script 95 bytes)
+  0000: self.InstallMonitor = new(nothing, nothing, obj'TnInstallerMonitor', nothing, DeltaTime)
+  0014: self.InstallMonitor.SetInstallingPlayer(GetPlayerController())
+  0031: self.InstallMonitor.__CleanupInstallMonitor__Delegate = delegate.RemoveInstallerMonitor
+  0049: self.InstallMonitor.Install()
+  005c: return nothing
+  005e: <eos>
+
+function TnConsoleActionScriptBinding.RemoveInstallerMonitor  (script 30 bytes)
+  0000: self.InstallMonitor.SetInstallingPlayer(none)
+  0014: self.InstallMonitor = none
+  001b: return nothing
+  001d: <eos>
+
+function TnConsoleActionScriptBinding.GetKeyDescription  (script 85 bytes)
+  0000: PC = GetPlayerController()
+  0010: In = TnPlayerInput(PC.PlayerInput)
+  0029: return In.GetKeyDescription(cast60(Key), Form, PC)
+  004e: return return
+  0054: <eos>

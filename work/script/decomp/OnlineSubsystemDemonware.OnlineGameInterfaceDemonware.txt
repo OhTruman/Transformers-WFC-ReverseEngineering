@@ -1,0 +1,249 @@
+function OnlineGameInterfaceDemonware.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceDemonware.CreateOnlineGame  (script 17 bytes)
+  0000: HostingPlayerNum
+  0005: SessionName
+  000a: NewGameSettings
+  000f: nothing
+  0010: <eos>
+
+function OnlineGameInterfaceDemonware.AddCreateOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddCreateOnlineGameCompleteDelegate(CreateOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearCreateOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearCreateOnlineGameCompleteDelegate(CreateOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.OnAdvertiseSessionComplete  (script 12 bytes)
+  0000: SessionName
+  0005: WasSuccessful
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.AddAdvertiseDelegate  (script 22 bytes)
+  0000: AddCreateOnlineGameCompleteDelegate(delegate.OnAdvertiseSessionComplete)
+  0013: return nothing
+  0015: <eos>
+
+function OnlineGameInterfaceDemonware.DestroyOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineGameInterfaceDemonware.AddDestroyOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddDestroyOnlineGameCompleteDelegate(DestroyOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearDestroyOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearDestroyOnlineGameCompleteDelegate(DestroyOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.StartOnlineGame  (script 57 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: return OnlineSubDw.SessionAdvertiser.StartOnlineGame(SessionName)
+  0032: return return
+  0038: <eos>
+
+function OnlineGameInterfaceDemonware.AddStartOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddStartOnlineGameCompleteDelegate(StartOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearStartOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearStartOnlineGameCompleteDelegate(StartOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.EndOnlineGame  (script 100 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.StatsInterface.FlushOnlineStats(obj'Engine.PlayerReplicationInfo'.static.default.SessionName)
+  003b: return OnlineSubDw.SessionAdvertiser.EndOnlineGame(SessionName)
+  005d: return return
+  0063: <eos>
+
+function OnlineGameInterfaceDemonware.AddEndOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddEndOnlineGameCompleteDelegate(EndOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearEndOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearEndOnlineGameCompleteDelegate(EndOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.FindOnlineGames  (script 12 bytes)
+  0000: SearchingPlayerNum
+  0005: SearchSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.CancelFindOnlineGames  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineGameInterfaceDemonware.JoinOnlineGame  (script 17 bytes)
+  0000: PlayerNum
+  0005: SessionName
+  000a: DesiredGame
+  000f: nothing
+  0010: <eos>
+
+function OnlineGameInterfaceDemonware.UpdateOnlineGame  (script 81 bytes)
+  0000: default=false
+  0005: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0015: if !(bShouldRefreshOnlineData) goto 0x0048
+  001e: return OnlineSubDw.SessionAdvertiser.UpdateOnlineGame(SessionName, UpdatedGameSettings)
+  0045: goto 0x004a
+  0048: return true
+  004a: return return
+  0050: <eos>
+
+function OnlineGameInterfaceDemonware.AddUpdateOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddUpdateOnlineGameCompleteDelegate(UpdateOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearUpdateOnlineGameCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearUpdateOnlineGameCompleteDelegate(UpdateOnlineGameCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.QueryNonAdvertisedData  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceDemonware.RegisterPlayer  (script 17 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: bWasInvited
+  000f: nothing
+  0010: <eos>
+
+function OnlineGameInterfaceDemonware.AddRegisterPlayerCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddRegisterPlayerCompleteDelegate(RegisterPlayerCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearRegisterPlayerCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearRegisterPlayerCompleteDelegate(RegisterPlayerCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.UnregisterPlayer  (script 12 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.AddUnregisterPlayerCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.AddUnregisterPlayerCompleteDelegate(UnregisterPlayerCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.ClearUnregisterPlayerCompleteDelegate  (script 52 bytes)
+  0000: OnlineSubDw = OnlineSubsystemDemonware(self.OwningSubsystem)
+  0010: OnlineSubDw.SessionAdvertiser.ClearUnregisterPlayerCompleteDelegate(UnregisterPlayerCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function OnlineGameInterfaceDemonware.AddGameInviteAcceptedDelegate  (script 39 bytes)
+  0000: if !((self.GameInviteAcceptedDelegates.Find(GameInviteAcceptedDelegate) == -1)) goto 0x0024
+  0017: self.GameInviteAcceptedDelegates.AddItem(GameInviteAcceptedDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineGameInterfaceDemonware.ClearGameInviteAcceptedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.GameInviteAcceptedDelegates.Find(GameInviteAcceptedDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.GameInviteAcceptedDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceDemonware.AcceptGameInvite  (script 12 bytes)
+  0000: LocalUserNum
+  0005: SessionName
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.ClearGameInvite  (script 12 bytes)
+  0000: LocalUserNum
+  0005: SenderId
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.GetOnlineGameSearchResultForGameInvite  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineGameInterfaceDemonware.GetResolvedConnectString  (script 12 bytes)
+  0000: SessionName
+  0005: ConnectInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.RegisterForArbitration  (script 47 bytes)
+  0000: foreach self.ArbitrationRegistrationCompleteDelegates(Observer,) (end 0x0025)
+  000f: OnArbitrationRegistrationComplete(SessionName, true)
+  0024: iternext
+  0025: iterpop
+  0026: return true
+  0028: return return
+  002e: <eos>
+
+function OnlineGameInterfaceDemonware.AddArbitrationRegistrationCompleteDelegate  (script 44 bytes)
+  0000: if !((self.ArbitrationRegistrationCompleteDelegates.Find(ArbitrationRegistrationCompleteDelegate) == -1)) goto 0x0029
+  0017: self.ArbitrationRegistrationCompleteDelegates.Length[self.ArbitrationRegistrationCompleteDelegates] = ArbitrationRegistrationCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceDemonware.ClearArbitrationRegistrationCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ArbitrationRegistrationCompleteDelegates.Find(ArbitrationRegistrationCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ArbitrationRegistrationCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceDemonware.GetArbitratedPlayers  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceDemonware.ReadPlatformSpecificSessionInfo  (script 12 bytes)
+  0000: DesiredGame
+  0005: PlatformSpecificInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.ReadPlatformSpecificSessionInfoBySessionName  (script 12 bytes)
+  0000: SessionName
+  0005: PlatformSpecificInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceDemonware.BindPlatformSpecificSessionToSearch  (script 17 bytes)
+  0000: SearchingPlayerNum
+  0005: SearchSettings
+  000a: PlatformSpecificInfo
+  000f: nothing
+  0010: <eos>

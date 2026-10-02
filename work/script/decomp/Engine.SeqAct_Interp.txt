@@ -1,0 +1,29 @@
+function SeqAct_Interp.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Interp.SetPosition  (script 12 bytes)
+  0000: NewPosition
+  0005: bJump
+  000a: nothing
+  000b: <eos>
+
+function SeqAct_Interp.Stop  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Interp.AddPlayerToDirectorTracks  (script 7 bytes)
+  0000: PC
+  0005: nothing
+  0006: <eos>
+
+function SeqAct_Interp.Cancel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Interp.Reset  (script 46 bytes)
+  0000: SeqAct_Interp.SetPosition(0.0, false)
+  000c: if !(self.bActive) goto 0x002b
+  0015: 2[self.InputLinks].bHasImpulse = true
+  002b: return nothing
+  002d: <eos>

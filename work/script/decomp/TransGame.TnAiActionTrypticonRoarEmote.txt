@@ -1,0 +1,47 @@
+function TnAiActionTrypticonRoarEmote.get_AnimatorService  (script 13 bytes)
+  0000: return self._AnimatorService
+  0006: return return
+  000c: <eos>
+
+function TnAiActionTrypticonRoarEmote.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTrypticonRoarEmoteBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTrypticonRoarEmote.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionTrypticonRoarEmote.OnStart  (script 120 bytes)
+  0000: self.CurrentTime = 0.0
+  000b: self.StartedFinalRoar = false
+  0013: SetCharacterState(1)
+  001e: self._TransformerController.StopMovement()
+  0031: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.RoarParams, delegate.OnIntroRoarComplete, delegate.OnIntroRoarComplete)
+  0065: return OnStart(ExpectedEffects)
+  0071: return return
+  0077: <eos>
+
+function TnAiActionTrypticonRoarEmote.OnUpdate  (script 133 bytes)
+  0000: (self.CurrentTime += DeltaTime)
+  000c: if !((!self.StartedFinalRoar && (self.CurrentTime >= self._Blueprint.TimeBeforeFinalRoar))) goto 0x006d
+  0031: self.StartedFinalRoar = true
+  0039: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.RoarParams, delegate.SucceedCallback, delegate.FailCallback)
+  006d: return OnUpdate(ExpectedEffects, DeltaTime)
+  007e: return return
+  0084: <eos>
+
+function TnAiActionTrypticonRoarEmote.OnFinish  (script 62 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateEmote', false, )
+  003b: return nothing
+  003d: <eos>
+
+function TnAiActionTrypticonRoarEmote.OnIntroRoarComplete  (script 55 bytes)
+  0000: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.TauntParams, delegate.None, delegate.None)
+  0034: return nothing
+  0036: <eos>

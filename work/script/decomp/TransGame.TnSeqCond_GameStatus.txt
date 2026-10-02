@@ -1,0 +1,17 @@
+function TnSeqCond_GameStatus.Activated  (script 274 bytes)
+  0000: GRI = TnGameReplicationInfo(GetWorldInfo().GRI)
+  001e: if !((GRI == none)) goto 0x002b
+  0029: return nothing
+  002b: CurrentStatus = GRI.GetGameStatus()
+  0044: if !((cast3a(CurrentStatus) < cast3a(self.GameStatus))) goto 0x006c
+  0057: 0[self.OutputLinks].bHasImpulse = true
+  006c: if !((cast3a(CurrentStatus) <= cast3a(self.GameStatus))) goto 0x0094
+  007f: 1[self.OutputLinks].bHasImpulse = true
+  0094: if !((cast3a(CurrentStatus) == cast3a(self.GameStatus))) goto 0x00bd
+  00a7: 2[self.OutputLinks].bHasImpulse = true
+  00bd: if !((cast3a(CurrentStatus) >= cast3a(self.GameStatus))) goto 0x00e6
+  00d0: 3[self.OutputLinks].bHasImpulse = true
+  00e6: if !((cast3a(CurrentStatus) > cast3a(self.GameStatus))) goto 0x010f
+  00f9: 4[self.OutputLinks].bHasImpulse = true
+  010f: return nothing
+  0111: <eos>

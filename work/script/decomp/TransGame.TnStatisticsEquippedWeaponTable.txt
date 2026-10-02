@@ -1,0 +1,43 @@
+function TnStatisticsEquippedWeaponTable.TakeWeaponSample  (script 194 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: foreach Game.WorldInfo.AllControllers(obj'Engine.PlayerController', PC) (end 0x00be)
+  0036: if !((PC.Pawn == none)) goto 0x004e
+  004a: iternext
+  004b: goto 0x00be
+  004e: P = PC.Pawn
+  0062: if !((P.Weapon == none)) goto 0x007a
+  0076: iternext
+  0077: goto 0x00be
+  007a: PlayerName = P.GetHumanReadableName()
+  0093: TnStatisticsEquippedWeaponTable.UpdateWeaponForPlayer(Game, PlayerName, P.Weapon.get_Class(), TimeInterval)
+  00bd: iternext
+  00be: iterpop
+  00bf: return nothing
+  00c1: <eos>
+
+function TnStatisticsEquippedWeaponTable.UpdateWeaponForPlayer  (script 59 bytes)
+  0000: I = TnStatisticsEquippedWeaponTable.FindOrCreateWeaponSample(Game, PlayerName, WeaponType)
+  001b: (I[self.Samples].EquipTime += TimeInterval)
+  0038: return nothing
+  003a: <eos>
+
+function TnStatisticsEquippedWeaponTable.FindOrCreateWeaponSample  (script 266 bytes)
+  0000: I = 0
+  0007: if !((I < self.Samples.Length)) goto 0x009c
+  0017: if !((I[self.Samples].PlayerName != PlayerName)) goto 0x003a
+  0037: goto 0x0092
+  003a: if !((I[self.Samples].WeaponType != WeaponType)) goto 0x005d
+  005a: goto 0x0092
+  005d: if !((I[self.Samples].Session_Id != Game.StatisticsSessionId)) goto 0x008c
+  0089: goto 0x0092
+  008c: return I
+  0092: AddAdd_PreInt(I)
+  0099: goto 0x0007
+  009c: NewSample.Session_Id = Game.StatisticsSessionId
+  00bb: NewSample.WeaponType = WeaponType
+  00d1: NewSample.PlayerName = PlayerName
+  00e7: self.Samples.Length[self.Samples] = NewSample
+  00f9: return (self.Samples.Length - 1)
+  0103: return return
+  0109: <eos>

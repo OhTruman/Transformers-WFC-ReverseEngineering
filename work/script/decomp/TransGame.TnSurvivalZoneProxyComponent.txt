@@ -1,0 +1,28 @@
+function TnSurvivalZoneProxyComponent.CreatePrimitives  (script 702 bytes)
+  0000: SelectedZone = TnSurvivalZoneVolume(self.Owner)
+  0010: if !((SelectedZone == none)) goto 0x001d
+  001b: return nothing
+  001d: NP = SelectedZone.CentralObjectiveSpawnPoint
+  0031: if !((NP != none)) goto 0x005e
+  003c: AddWireSphere(NP.Location, 300.0, self.NegativeColor)
+  005e: foreach SelectedZone.ZoneChanges(ZoneChange,) (end 0x02ba)
+  0076: SelectedZone.GetComponentsBoundingBox(SelectedBox)
+  008e: ZoneChange.ZoneToChange.GetComponentsBoundingBox(OtherBox)
+  00b1: foreach ZoneChange.ScoreChanges(entry,) (end 0x02b8)
+  00cb: if !((cast3a(entry.SpawnType) == cast3a(3))) goto 0x00f4
+  00e6: AColor = self.AirColor
+  00f1: goto 0x011e
+  00f4: AColor = ((entry.ScoreChange > cast3f(0)) ? self.PositiveColor : self.NegativeColor)
+  011e: LineEnd = (OtherBox.Min + ((OtherBox.Max - OtherBox.Min) / 2.0))
+  015f: AddDashedLine((SelectedBox.Min + ((SelectedBox.Max - SelectedBox.Min) / 2.0)), LineEnd, cast3a(entry.SpawnType)[self.DashSize], AColor)
+  01c6: Radii = (((OtherBox.Max - OtherBox.Min) / 2.0) + vect(200,200,200))
+  0204: Radii.X = obj'Core.Math'.static.Abs(Radii.X)
+  0230: Radii.Y = obj'Core.Math'.static.Abs(Radii.Y)
+  025c: Radii.Z = obj'Core.Math'.static.Abs(Radii.Z)
+  0288: AddWireBox(LineEnd, obj'Core.Math'.static.MakeRotator(0, 0, 0), Radii, AColor)
+  02b7: iternext
+  02b8: iterpop
+  02b9: iternext
+  02ba: iterpop
+  02bb: return nothing
+  02bd: <eos>

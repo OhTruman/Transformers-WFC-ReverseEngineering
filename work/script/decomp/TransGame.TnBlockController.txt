@@ -1,0 +1,193 @@
+function TnBlockController.ShieldDestroyedObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnBlockController.ReplicatedEvent  (script 106 bytes)
+  0000: switch (VarName)
+  0007: case 'ShieldHealth': (next 0x0035)
+  0013: TnBlockController.UpdateShieldParams()
+  0019: if !((self.ShieldHealth <= 0.0)) goto 0x0032
+  0028: OnShieldDestroyed()
+  0032: goto 0x0067
+  0035: case 'Blocking': (next 0x0064)
+  0041: if !(self.Blocking) goto 0x0057
+  004a: OnStartBlock()
+  0054: goto 0x0061
+  0057: OnStopBlock()
+  0061: goto 0x0067
+  0064: default:
+  0067: return nothing
+  0069: <eos>
+
+function TnBlockController.get_IsInitialized  (script 16 bytes)
+  0000: return (self.BCD != none)
+  0009: return return
+  000f: <eos>
+
+function TnBlockController.Initialize  (script 36 bytes)
+  0000: self.OwnerPawn = Owner_
+  000b: self.BCD = BCData
+  0016: TnBlockController.SetupData(SkelMeshComponent)
+  0021: return nothing
+  0023: <eos>
+
+function TnBlockController.SetupData  (script 258 bytes)
+  0000: if !((self.BCD == none)) goto 0x000d
+  000b: return nothing
+  000d: self.ShieldHealth = self.BCD.ShieldHealthMax
+  0021: if !((self.ShieldMesh != none)) goto 0x003f
+  002c: self.ShieldMesh.Detach()
+  003f: if !((self.BCD.ShieldMeshTemplate != none)) goto 0x00ff
+  0053: self.ShieldMesh = new(nothing, nothing, self.BCD.ShieldMeshTemplate.get_Class(), self.BCD.ShieldMeshTemplate, DeltaTime)
+  0084: self.ShieldMesh.Attach(self.OwnerPawn, SkelMeshComponent, self.BCD.ShieldSocketName)
+  00af: self.ShieldMesh.SetHidden(true)
+  00c3: if !((self.ShieldMesh.GetAnimatedMeshComponent() != none)) goto 0x00ff
+  00dc: self.ShieldMesh.GetAnimatedMeshComponent().SetActorCollision(false, false)
+  00ff: return nothing
+  0101: <eos>
+
+function TnBlockController.CanBlock  (script 18 bytes)
+  0000: return (self.ShieldHealth > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnBlockController.GetNormalizedShieldHealth  (script 29 bytes)
+  0000: return (self.ShieldHealth / self.BCD.ShieldHealthMax)
+  0016: return return
+  001c: <eos>
+
+function TnBlockController.UpdateShieldParams  (script 93 bytes)
+  0000: if !(((self.ShieldMesh == none) || (self.ShieldMesh.GetAnimatedMeshComponent() == none))) goto 0x0028
+  0026: return nothing
+  0028: self.ShieldMesh.GetAnimatedMeshComponent().SetScalarParam(self.ShieldHealthParam, (self._PulseTimeRemaining / 0.3))
+  005a: return nothing
+  005c: <eos>
+
+function TnBlockController.Update  (script 218 bytes)
+  0000: if !((self.BCD == none)) goto 0x000d
+  000b: return nothing
+  000d: UpdateChildren(DeltaTime)
+  001c: self.ShieldRegenDelay = obj'Core.Math'.static.FMax((self.ShieldRegenDelay - DeltaTime), 0.0)
+  003e: if !(((self.ShieldRegenDelay == 0.0) && (self.ShieldHealth < self.BCD.ShieldHealthMax))) goto 0x00a2
+  0067: self.ShieldHealth = obj'Core.Math'.static.FMin((self.ShieldHealth + (self.BCD.ShieldRegenRate * DeltaTime)), self.BCD.ShieldHealthMax)
+  00a2: if !((self._PulseTimeRemaining > cast3f(0))) goto 0x00d7
+  00af: self._PulseTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._PulseTimeRemaining - DeltaTime))
+  00d1: TnBlockController.UpdateShieldParams()
+  00d7: return nothing
+  00d9: <eos>
+
+function TnBlockController.UpdateChildren  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnBlockController.AdjustDamage  (script 388 bytes)
+  0000: OutDamage = inDamage
+  000b: if !(((self.ShieldMesh == none) || (HitInfo.HitComponent != self.ShieldMesh.GetAnimatedMeshComponent()))) goto 0x0046
+  0040: return OutDamage
+  0046: (OutDamage *= self.BCD.BlockDamageMultiplier)
+  005b: if !(EqualEqual_InterfaceInterface(TnBlockInterface(self.OwnerPawn), TnBlockInterface(none))) goto 0x00cb
+  0074: LogInternal((("Error:" @ cast56(self.OwnerPawn)) @ "does not support block interface but has a blockcontroller"), , , )
+  00c8: goto 0x00ee
+  00cb: TnBlockInterface(self.OwnerPawn).OnBlockDamage(inDamage, OutDamage)
+  00ee: ShieldDamage = inDamage
+  00f9: if !((DamageType != none)) goto 0x0119
+  0104: (ShieldDamage *= DamageType.static.default.ShieldKnockoutMultiplier)
+  0119: self.ShieldHealth = obj'Core.Math'.static.FMax((self.ShieldHealth - ShieldDamage), 0.0)
+  013b: self.ShieldRegenDelay = self.BCD.ShieldRegenDelay
+  014f: if !((self.ShieldHealth <= cast3f(0))) goto 0x0166
+  015c: OnShieldDestroyed()
+  0166: self._PulseTimeRemaining = 0.3
+  0171: TnBlockController.UpdateShieldParams()
+  0177: return OutDamage
+  017d: return return
+  0183: <eos>
+
+function TnBlockController.DestroyShield  (script 30 bytes)
+  0000: self.ShieldHealth = 0.0
+  000b: TnBlockController.UpdateShieldParams()
+  0011: OnShieldDestroyed()
+  001b: return nothing
+  001d: <eos>
+
+function TnBlockController.OnShieldDestroyed  (script 20 bytes)
+  0000: TnBlockController.NotifyShieldDestroyedObservers()
+  0006: SetBlocking(false)
+  0011: return nothing
+  0013: <eos>
+
+function TnBlockController.IsBlocking  (script 14 bytes)
+  0000: return self.Blocking
+  0007: return return
+  000d: <eos>
+
+function TnBlockController.OnStartBlock  (script 9 bytes)
+  0000: TnBlockController.StartShield()
+  0006: return nothing
+  0008: <eos>
+
+function TnBlockController.OnStopBlock  (script 9 bytes)
+  0000: TnBlockController.StopShield()
+  0006: return nothing
+  0008: <eos>
+
+function TnBlockController.SetBlocking  (script 90 bytes)
+  0000: if !((WantsToBlock && CanBlock())) goto 0x0039
+  0018: if !((self.Blocking == false)) goto 0x0036
+  0024: self.Blocking = true
+  002c: OnStartBlock()
+  0036: goto 0x0057
+  0039: if !((self.Blocking == true)) goto 0x0057
+  0045: self.Blocking = false
+  004d: OnStopBlock()
+  0057: return nothing
+  0059: <eos>
+
+function TnBlockController.StartShield  (script 106 bytes)
+  0000: if !((self.ShieldMesh.GetAnimatedMeshComponent() != none)) goto 0x003c
+  0019: self.ShieldMesh.GetAnimatedMeshComponent().SetActorCollision(true, false)
+  003c: self.ShieldMesh.PlayEvent(6, )
+  0052: self.ShieldMesh.StartMuzzleFlash(9)
+  0067: return nothing
+  0069: <eos>
+
+function TnBlockController.StopShield  (script 106 bytes)
+  0000: if !((self.ShieldMesh.GetAnimatedMeshComponent() != none)) goto 0x003c
+  0019: self.ShieldMesh.GetAnimatedMeshComponent().SetActorCollision(false, false)
+  003c: self.ShieldMesh.PlayEvent(7, )
+  0052: self.ShieldMesh.StartMuzzleFlash(12)
+  0067: return nothing
+  0069: <eos>
+
+function TnBlockController.GetShieldMeshComponent  (script 41 bytes)
+  0000: return ((self.ShieldMesh != none) ? self.ShieldMesh.GetAnimatedMeshComponent() : none)
+  0022: return return
+  0028: <eos>
+
+function TnBlockController.AddShieldDestroyedObserver  (script 46 bytes)
+  0000: if !((self.ShieldDestroyedObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.ShieldDestroyedObservers.Length[self.ShieldDestroyedObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnBlockController.RemoveShieldDestroyedObserver  (script 49 bytes)
+  0000: Index = self.ShieldDestroyedObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.ShieldDestroyedObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnBlockController.ClearShieldDestroyedObservers  (script 11 bytes)
+  0000: self.ShieldDestroyedObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnBlockController.NotifyShieldDestroyedObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.ShieldDestroyedObservers.Length)) goto 0x0041
+  0017: N = I[self.ShieldDestroyedObservers]
+  0028: ShieldDestroyedObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>

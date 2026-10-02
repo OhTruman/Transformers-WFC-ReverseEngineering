@@ -1,0 +1,160 @@
+function PartyBeaconHost.InitHostBeacon  (script 32 bytes)
+  0000: InNumTeams
+  0005: InNumPlayersPerTeam
+  000a: InNumReservations
+  000f: InSessionName
+  0014: HostPartyPlayers
+  0019: InAccumulateMembersToOneParty
+  001e: nothing
+  001f: <eos>
+
+function PartyBeaconHost.CancelReservationForPlayer  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function PartyBeaconHost.ValidatePendingReservations  (script 69 bytes)
+  0000: if !(PartyBeaconHost.ShouldForceRejectReservation(PendingReservations)) goto 0x003c
+  000e: LogInternal("Rejecting reservation request", 'DevAutomatedTesting', , )
+  003a: return false
+  003c: return true
+  003e: return return
+  0044: <eos>
+
+function PartyBeaconHost.ShouldForceRejectReservation  (script 43 bytes)
+  0000: return (self.ForceDenyAllReservationRequests && (PendingReservations.GetNumMembers() > 1))
+  0022: return false
+  0024: return return
+  002a: <eos>
+
+function PartyBeaconHost.ReadPlatformSpecificSessionInformation  (script 72 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: return OnlineSub.GameInterface.ReadPlatformSpecificSessionInfoBySessionName(self.OnlineSessionName, self.OnlineSessionPlatformSpecificInfo)
+  0041: return return
+  0047: <eos>
+
+function PartyBeaconHost.RefreshReservationTeams  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconHost.OnHostBeaconStarted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconHost.OnClientReservationAccepted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconHost.ClientReservationAccepted  (script 23 bytes)
+  0000: OnClientReservationAccepted(ThePlayer)
+  0014: return nothing
+  0016: <eos>
+
+function PartyBeaconHost.OnClientReturnToSessionAccepted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconHost.OnClientCancellationReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconHost.OnReservationsFull  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PartyBeaconHost.DestroyBeacon  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PartyBeaconHost.TellClientsToJoinSession  (script 22 bytes)
+  0000: SessionName
+  0005: SearchClass
+  000a: PlatformSpecificInfo
+  000f: PostJoinSessionOption
+  0014: nothing
+  0015: <eos>
+
+function PartyBeaconHost.TellClientsHostIsReady  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PartyBeaconHost.TellClientsHostHasCancelled  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PartyBeaconHost.UnregisterPlayer  (script 140 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((OnlineSub != none) && NotEqual_InterfaceInterface(OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x0083
+  0043: OnlineSub.GameInterface.UnregisterPlayer(self.OnlineSessionName, PlayerID)
+  006a: return self.Reservations.RemovePlayerFromParty(PlayerID)
+  0083: return false
+  0085: return return
+  008b: <eos>
+
+function PartyBeaconHost.AppendReservationSkillsToSearch  (script 7 bytes)
+  0000: Search
+  0005: nothing
+  0006: <eos>
+
+function PartyBeaconHost.GetReservations  (script 13 bytes)
+  0000: return self.Reservations
+  0006: return return
+  000c: <eos>
+
+function PartyBeaconHost.IsClientAllowedToRejoinSession  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function PartyBeaconHost.ClearDelegates  (script 78 bytes)
+  0000: self.__OnHostBeaconStarted__Delegate = delegate.None
+  000f: self.__OnClientReservationAccepted__Delegate = delegate.None
+  001e: self.__OnReservationsFull__Delegate = delegate.None
+  002d: self.__OnClientCancellationReceived__Delegate = delegate.None
+  003c: self.__OnClientReturnToSessionAccepted__Delegate = delegate.None
+  004b: return nothing
+  004d: <eos>
+
+function PartyBeaconHost.NotifyPlayerConnected  (script 190 bytes)
+  0000: I = 0
+  0007: if !((I < self.Clients.Length)) goto 0x00bb
+  0017: if !((I[self.Clients].PlayerID == PlayerID)) goto 0x00b1
+  003a: LogInternal((("Player" @ PartyBeaconHost.UniqueNetIdToString(PlayerID)) @ "has connected to the game, no longer sending hearbeats"), 'DevOnline', , )
+  0096: I[self.Clients].HasEstablishedGameConnection = true
+  00af: return nothing
+  00b1: AddAdd_PreInt(I)
+  00b8: goto 0x0007
+  00bb: return nothing
+  00bd: <eos>
+
+function PartyBeaconHost.DumpReservations  (script 532 bytes)
+  0000: LogInternal(("  OnlineSessionName: " $ cast57(self.OnlineSessionName)), 'DevOnline', , )
+  002d: LogInternal(("  Number of teams: " $ cast53(self.NumTeams)), 'DevOnline', , )
+  0058: LogInternal(("  Number players per team: " $ cast53(self.NumPlayersPerTeam)), 'DevOnline', , )
+  008b: LogInternal(("  Number reservations total: " $ cast53(self.NumReservations)), 'DevOnline', , )
+  00c0: LogInternal(("  Number of reservations available: " $ cast53((self.NumReservations - self.NumConsumedReservations))), 'DevOnline', , )
+  0103: PartyIndex = 0
+  010a: if !((PartyIndex < self.Reservations.Parties.Length)) goto 0x0211
+  0123: LogInternal(("  Party Team Index: " $ cast53(PartyIndex[self.Reservations.Parties].TeamIndex)), 'DevOnline', , )
+  0169: MemberIndex = 0
+  0170: if !((MemberIndex < PartyIndex[self.Reservations.Parties].Members.Length)) goto 0x0207
+  019a: PlayerRes = MemberIndex[PartyIndex[self.Reservations.Parties].Members]
+  01c5: LogInternal(("         Member: " $ PartyBeaconHost.UniqueNetIdToString(PlayerRes.NetId)), 'DevOnline', , )
+  01fd: AddAdd_Int(MemberIndex)
+  0204: goto 0x0170
+  0207: AddAdd_Int(PartyIndex)
+  020e: goto 0x010a
+  0211: return nothing
+  0213: <eos>
+
+function PartyBeaconHost.UniqueNetIdToString  (script 151 bytes)
+  0000: PRI = obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI.FindPlayerByUniqueNetId(NetId)
+  0035: PlayerName = ((PRI != none) ? PRI.PlayerName : "NO PRI PRESENT")
+  0066: return (((obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(NetId) @ "(") $ PlayerName) $ ")")
+  0090: return return
+  0096: <eos>
+
+function PartyBeaconHost.ForceDenyAllRequests  (script 11 bytes)
+  0000: self.ForceDenyAllReservationRequests = true
+  0008: return nothing
+  000a: <eos>

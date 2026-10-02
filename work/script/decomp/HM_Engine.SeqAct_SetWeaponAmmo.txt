@@ -1,0 +1,76 @@
+function SeqAct_SetWeaponAmmo.Activated  (script 318 bytes)
+  0000: I = 0
+  0007: if !((I < self.TargetPlayers.Length)) goto 0x013b
+  0017: C = Controller(I[self.TargetPlayers])
+  002d: if !((C == none)) goto 0x00af
+  0038: P = Pawn(I[self.TargetPlayers])
+  004e: if !((P == none)) goto 0x00ac
+  0059: LogInternal((("WARN:" @ cast56(self)) @ "called with object that is not a pawn or controller"), 'SeqAct_SetWeaponAmmo', , )
+  00a9: goto 0x0131
+  00ac: goto 0x010f
+  00af: P = C.Pawn
+  00c3: if !((P == none)) goto 0x010f
+  00ce: LogInternal((("WARN:" @ cast56(self)) @ "called on controller with no pawn"), 'SeqAct_SetWeaponAmmo', , )
+  010c: goto 0x0131
+  010f: if !(self.bForAllWeapons) goto 0x0126
+  0118: SeqAct_SetWeaponAmmo.AddToAllWeapons(P)
+  0123: goto 0x0131
+  0126: SeqAct_SetWeaponAmmo.AddToSingleWeapon(P)
+  0131: AddAdd_PreInt(I)
+  0138: goto 0x0007
+  013b: return nothing
+  013d: <eos>
+
+function SeqAct_SetWeaponAmmo.AddToSingleWeapon  (script 69 bytes)
+  0000: W = GetWeapon(P)
+  0015: if !((W != none)) goto 0x0042
+  0020: if !(self.bAddAmmo) goto 0x0037
+  0029: SeqAct_SetWeaponAmmo.AddAmmo(W)
+  0034: goto 0x0042
+  0037: SeqAct_SetWeaponAmmo.SetAmmo(W)
+  0042: return nothing
+  0044: <eos>
+
+function SeqAct_SetWeaponAmmo.AddToAllWeapons  (script 115 bytes)
+  0000: if !(((P == none) || (P.InvManager == none))) goto 0x0023
+  0021: return nothing
+  0023: foreach P.InvManager.InventoryActors(obj'HmWeapon', W) (end 0x006f)
+  004c: if !(self.bAddAmmo) goto 0x0063
+  0055: SeqAct_SetWeaponAmmo.AddAmmo(W)
+  0060: goto 0x006e
+  0063: SeqAct_SetWeaponAmmo.SetAmmo(W)
+  006e: iternext
+  006f: iterpop
+  0070: return nothing
+  0072: <eos>
+
+function SeqAct_SetWeaponAmmo.GetWeapon  (script 226 bytes)
+  0000: W = HmWeapon(P.Weapon)
+  0019: if !(((W != none) && (((W.get_Class() == self.WeaponToFill) || W.CanTransferAmmoFrom(self.WeaponToFill)) || (self.WeaponToFill == none)))) goto 0x006f
+  0066: return W
+  006c: goto 0x00d9
+  006f: if !(self.bIfWeaponholstered) goto 0x00d9
+  0078: if !(((P == none) || (P.InvManager == none))) goto 0x009b
+  0099: return none
+  009b: W = HmWeapon(P.InvManager.FindInventoryType(self.WeaponToFill, false))
+  00c8: if !((W != none)) goto 0x00d9
+  00d3: return W
+  00d9: return none
+  00db: return return
+  00e1: <eos>
+
+function SeqAct_SetWeaponAmmo.AddAmmo  (script 115 bytes)
+  0000: if !((self.CurrentAmmoInClip >= 0)) goto 0x004d
+  000b: W.AmmoClipCount = obj'Core.Math'.static.Min((W.AmmoClipCount + self.CurrentAmmoInClip), W.GetMaxAmmoClipCount())
+  004d: if !((self.ReserveAmmo >= 0)) goto 0x0070
+  0058: W.AddAmmo(self.ReserveAmmo)
+  0070: return nothing
+  0072: <eos>
+
+function SeqAct_SetWeaponAmmo.SetAmmo  (script 65 bytes)
+  0000: if !((self.ReserveAmmo >= 0)) goto 0x001f
+  000b: W.ReserveAmmoCount = self.ReserveAmmo
+  001f: if !((self.CurrentAmmoInClip >= 0)) goto 0x003e
+  002a: W.AmmoClipCount = self.CurrentAmmoInClip
+  003e: return nothing
+  0040: <eos>

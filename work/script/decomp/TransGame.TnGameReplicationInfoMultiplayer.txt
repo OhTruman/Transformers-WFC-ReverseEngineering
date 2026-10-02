@@ -1,0 +1,58 @@
+function TnGameReplicationInfoMultiplayer.get_AttackingTeam  (script 13 bytes)
+  0000: return self.AttackingTeamIndex
+  0006: return return
+  000c: <eos>
+
+function TnGameReplicationInfoMultiplayer.set_AttackingTeam  (script 41 bytes)
+  0000: self.AttackingTeamIndex = Value
+  000b: RefreshGameDataStore('AttackingTeamIndex')
+  001e: self.bForceNetUpdate = true
+  0026: return nothing
+  0028: <eos>
+
+function TnGameReplicationInfoMultiplayer.ReplicatedEvent  (script 43 bytes)
+  0000: if !((VarName == 'CurrentObjectiveCountdown')) goto 0x001d
+  0013: OnObjectiveCountdownChange()
+  001d: TnGameReplicationInfo.ReplicatedEvent(VarName)
+  0028: return nothing
+  002a: <eos>
+
+function TnGameReplicationInfoMultiplayer.ResetObjectiveCountdown  (script 116 bytes)
+  0000: if !(Activate) goto 0x0030
+  0009: self.__GetCurrentObjectiveCountdown__Delegate = CountdownDelegate
+  0014: TnGameReplicationInfoMultiplayer.CheckObjectiveCountdown()
+  001a: SetTimer(1.0, true, 'CheckObjectiveCountdown', )
+  002d: goto 0x0071
+  0030: self.CurrentObjectiveCountdown = -1
+  003b: self.__GetCurrentObjectiveCountdown__Delegate = delegate.None
+  004a: ClearTimer('CheckObjectiveCountdown', )
+  005e: RefreshGameDataStore('CurrentObjectiveCountdown')
+  0071: return nothing
+  0073: <eos>
+
+function TnGameReplicationInfoMultiplayer.CheckObjectiveCountdown  (script 53 bytes)
+  0000: self.CurrentObjectiveCountdown = GetCurrentObjectiveCountdown()
+  0015: RefreshGameDataStore('CurrentObjectiveCountdown')
+  0028: OnObjectiveCountdownChange()
+  0032: return nothing
+  0034: <eos>
+
+function TnGameReplicationInfoMultiplayer.OnObjectiveCountdownChange  (script 55 bytes)
+  0000: if !(((self.CurrentObjectiveCountdown <= self.LowObjectiveCountdownTickThreshold) && (self.CurrentObjectiveCountdown != -1))) goto 0x0034
+  0020: PlaySound(self.LowObjectiveCountdownTickSound, true, , , , )
+  0034: return nothing
+  0036: <eos>
+
+function TnGameReplicationInfoMultiplayer.GetCurrentObjectiveCountdown  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGameReplicationInfoMultiplayer.CanGainXp  (script 20 bytes)
+  0000: return !get_IsPrivateGame()
+  000d: return return
+  0013: <eos>
+
+function TnGameReplicationInfoMultiplayer.ShowXpEvents  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

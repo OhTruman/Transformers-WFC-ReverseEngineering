@@ -1,0 +1,121 @@
+function OnlineStatsRead.OnReadComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineStatsRead.GetIntStatValueForPlayer  (script 17 bytes)
+  0000: PlayerID
+  0005: StatColumnNo
+  000a: StatValue
+  000f: nothing
+  0010: <eos>
+
+function OnlineStatsRead.SetIntStatValueForPlayer  (script 17 bytes)
+  0000: PlayerID
+  0005: StatColumnNo
+  000a: StatValue
+  000f: nothing
+  0010: <eos>
+
+function OnlineStatsRead.GetFloatStatValueForPlayer  (script 17 bytes)
+  0000: PlayerID
+  0005: StatColumnNo
+  000a: StatValue
+  000f: nothing
+  0010: <eos>
+
+function OnlineStatsRead.SetFloatStatValueForPlayer  (script 17 bytes)
+  0000: PlayerID
+  0005: StatColumnNo
+  000a: StatValue
+  000f: nothing
+  0010: <eos>
+
+function OnlineStatsRead.AddPlayer  (script 12 bytes)
+  0000: PlayerName
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineStatsRead.GetRankForPlayer  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineStatsRead.GetWriteTemplate  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineStatsRead.ReadLocalStats  (script 391 bytes)
+  0000: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  0019: GRI = WI.GRI
+  002d: self.Rows.Length = 0
+  0035: RowIndex = 0
+  003c: if !((RowIndex < GRI.PRIArray.Length)) goto 0x017e
+  0055: PRI = RowIndex[GRI.PRIArray]
+  006f: if !((PRI == none)) goto 0x007d
+  007a: goto 0x0174
+  007d: if !(PRI.bBot) goto 0x0092
+  008f: goto 0x0174
+  0092: NewRow.NickName = PRI.GetHumanReadableName()
+  00b6: NewRow.PlayerID = PRI.UniqueId
+  00d5: if !((PRI.Team != none)) goto 0x0111
+  00e9: NewRow.TeamName = PRI.Team.TeamName
+  0111: StatsWrite = new(nothing, nothing, self.WriteClass, nothing, GetRemoteRole)
+  0125: PopulateStatsWrite(StatsWrite, PRI)
+  0139: NewRow.Columns = CopyStatsFromProperties(StatsWrite.Properties, RowIndex)
+  0167: self.Rows.AddItem(NewRow)
+  0174: AddAdd_PreInt(RowIndex)
+  017b: goto 0x003c
+  017e: OnlineStatsRead.AssignRanks()
+  0184: return nothing
+  0186: <eos>
+
+function OnlineStatsRead.PopulateStatsWrite  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineStatsRead.CopyStatsFromProperties  (script 428 bytes)
+  0000: PropertyIndex = 0
+  0007: Columns.Length = self.ColumnIds.Length
+  0014: ColumnIndex = 0
+  001b: if !((ColumnIndex < self.ColumnIds.Length)) goto 0x019f
+  002b: ColumnIndex[Columns].ColumnNo = ColumnIndex[self.ColumnIds]
+  004d: if !((ColumnIndex[self.ColumnIds] == self.RankColumnId)) goto 0x00c9
+  0062: RatingSourceIndex = Properties.Find('PropertyId',self.WriteClass.static.default.RatingSourceId)
+  0087: if !((RatingSourceIndex != -1)) goto 0x00c3
+  0096: ColumnIndex[Columns].StatValue = RatingSourceIndex[Properties].Data
+  00c3: goto 0x0195
+  00c6: goto 0x0195
+  00c9: if !((PropertyIndex >= Properties.Length)) goto 0x0161
+  00d9: LogInternal("ERROR: The columns of the stats read class don't match the properties array of the stats write class.  Tell the nearest adult.", , , )
+  015e: goto 0x019f
+  0161: ColumnIndex[Columns].StatValue = PropertyIndex[Properties].Data
+  018e: AddAdd_PreInt(PropertyIndex)
+  0195: AddAdd_PreInt(ColumnIndex)
+  019c: goto 0x001b
+  019f: return Columns
+  01a5: return return
+  01ab: <eos>
+
+function OnlineStatsRead.CompareRatings  (script 189 bytes)
+  0000: RankColumnIndex = self.ColumnIds.Find(self.RankColumnId)
+  0013: RankAData = RankColumnIndex[RankAIndex[self.Rows].Columns].StatValue
+  0040: RankA = obj'Settings'.static.GetSettingsDataInt(RankAData)
+  005e: RankBData = RankColumnIndex[RankBIndex[self.Rows].Columns].StatValue
+  008b: RankB = obj'Settings'.static.GetSettingsDataInt(RankBData)
+  00a9: return (RankB - RankA)
+  00b6: return return
+  00bc: <eos>
+
+function OnlineStatsRead.AssignRanks  (script 177 bytes)
+  0000: Sorter = new(nothing, nothing, obj'HmArraySorter', nothing, GetRemoteRole)
+  0014: Sorter.__Compare__Delegate = delegate.CompareRatings
+  002c: Sorter.SortArray(self.Rows.Length)
+  0045: I = 0
+  004c: if !((I < self.Rows.Length)) goto 0x00ae
+  005c: obj'Settings'.static.SetSettingsDataInt(RankData, I[Sorter.SortedIndices])
+  0088: I[self.Rows].Rank = RankData
+  00a4: AddAdd_PreInt(I)
+  00ab: goto 0x004c
+  00ae: return nothing
+  00b0: <eos>

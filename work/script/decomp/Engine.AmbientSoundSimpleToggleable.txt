@@ -1,0 +1,43 @@
+function AmbientSoundSimpleToggleable.PostBeginPlay  (script 31 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.bCurrentlyPlaying = self.AudioComponent.bAutoPlay
+  001c: return nothing
+  001e: <eos>
+
+function AmbientSoundSimpleToggleable.ReplicatedEvent  (script 60 bytes)
+  0000: if !((VarName == 'bCurrentlyPlaying')) goto 0x002e
+  0013: if !(self.bCurrentlyPlaying) goto 0x0025
+  001c: AmbientSoundSimpleToggleable.StartPlaying()
+  0022: goto 0x002b
+  0025: AmbientSoundSimpleToggleable.StopPlaying()
+  002b: goto 0x0039
+  002e: ReplicatedObject.ReplicatedEvent(VarName)
+  0039: return nothing
+  003b: <eos>
+
+function AmbientSoundSimpleToggleable.StartPlaying  (script 71 bytes)
+  0000: if !(self.bFadeOnToggle) goto 0x0029
+  0009: self.AudioComponent.FadeIn(self.FadeInDuration, self.FadeInVolumeLevel)
+  0026: goto 0x003c
+  0029: self.AudioComponent.Play()
+  003c: self.bCurrentlyPlaying = true
+  0044: return nothing
+  0046: <eos>
+
+function AmbientSoundSimpleToggleable.StopPlaying  (script 71 bytes)
+  0000: if !(self.bFadeOnToggle) goto 0x0029
+  0009: self.AudioComponent.FadeOut(self.FadeOutDuration, self.FadeOutVolumeLevel)
+  0026: goto 0x003c
+  0029: self.AudioComponent.Stop()
+  003c: self.bCurrentlyPlaying = false
+  0044: return nothing
+  0046: <eos>
+
+function AmbientSoundSimpleToggleable.OnToggle  (script 115 bytes)
+  0000: if !((0[Action.InputLinks].bHasImpulse || (2[Action.InputLinks].bHasImpulse && !self.AudioComponent.bWasPlaying))) goto 0x0060
+  0057: AmbientSoundSimpleToggleable.StartPlaying()
+  005d: goto 0x0066
+  0060: AmbientSoundSimpleToggleable.StopPlaying()
+  0066: ForceNetRelevant()
+  0070: return nothing
+  0072: <eos>

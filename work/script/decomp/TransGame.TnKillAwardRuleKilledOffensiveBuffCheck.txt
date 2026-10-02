@@ -1,0 +1,26 @@
+function TnKillAwardRuleKilledOffensiveBuffCheck.CheckRule  (script 570 bytes)
+  0000: KilledPawn = TnPawn(Killed.Pawn)
+  0019: BS = TnBuffService(KilledPawn.GetService('TnBuffService'))
+  0040: if !(EqualEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x0056
+  0054: return nothing
+  0056: I = 0
+  005d: if !((I < self.BuffChecks.Length)) goto 0x0237
+  006d: Buff = BS.GetBuff(I[self.BuffChecks].BuffClass)
+  009d: if !((Buff == none)) goto 0x00ab
+  00a8: goto 0x022d
+  00ab: InstigatorPawn = TnPawn(Buff.GetInstigator())
+  00c9: if !((TnPlayerPawn(InstigatorPawn) == none)) goto 0x00dc
+  00d9: goto 0x022d
+  00dc: if !((InstigatorPawn == TnPawn(Killer.Pawn))) goto 0x01b5
+  00f9: if !((I[self.BuffChecks].XpEvent != none)) goto 0x013e
+  0115: Killer.NotifyXpEvent(I[self.BuffChecks].XpEvent)
+  013e: if !(((I[self.BuffChecks].StatId != -1) && (Killer.PlayerReplicationInfo != none))) goto 0x01b2
+  0174: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, I[self.BuffChecks].StatId, 0)
+  01b2: goto 0x022d
+  01b5: if !((InstigatorPawn != KilledPawn)) goto 0x022d
+  01c4: if !(((I[self.BuffChecks].AssistXpEvent != none) && (InstigatorPawn.Controller != none))) goto 0x022d
+  01f6: TnPlayerController(InstigatorPawn.Controller).NotifyXpEvent(I[self.BuffChecks].AssistXpEvent)
+  022d: AddAdd_PreInt(I)
+  0234: goto 0x005d
+  0237: return nothing
+  0239: <eos>

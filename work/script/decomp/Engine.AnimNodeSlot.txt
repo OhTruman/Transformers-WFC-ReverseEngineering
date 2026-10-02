@@ -1,0 +1,122 @@
+function AnimNodeSlot.CompleteNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AnimNodeSlot.FailedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AnimNodeSlot.AnimationComplete  (script 59 bytes)
+  0000: OldCompleteNotify = self.__CompleteNotify__Delegate
+  000b: self.__CompleteNotify__Delegate = delegate.None
+  001a: self.__FailedNotify__Delegate = delegate.None
+  0029: CompleteNotify()
+  0038: return nothing
+  003a: <eos>
+
+function AnimNodeSlot.AnimationFailed  (script 59 bytes)
+  0000: OldFailedNotify = self.__FailedNotify__Delegate
+  000b: self.__CompleteNotify__Delegate = delegate.None
+  001a: self.__FailedNotify__Delegate = delegate.None
+  0029: FailedNotify()
+  0038: return nothing
+  003a: <eos>
+
+function AnimNodeSlot.PlayCustomAnim  (script 32 bytes)
+  0000: AnimName
+  0005: Rate
+  000a: BlendInTime
+  000f: BlendOutTime
+  0014: bLooping
+  0019: bRestartAnimIfAlreadyPlaying
+  001e: nothing
+  001f: <eos>
+
+function AnimNodeSlot.PlayCustomAnimWithCallbacks  (script 78 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: nothing
+  0006: self.__CompleteNotify__Delegate = AnimationComplete
+  0011: self.__FailedNotify__Delegate = AnimationFailed
+  001c: return PlayCustomAnim(AnimName, Rate, BlendInTime, BlendOutTime, bLooping, bRestartAnimIfAlreadyPlaying)
+  0047: return return
+  004d: <eos>
+
+function AnimNodeSlot.UpdateNodeRootMotion  (script 211 bytes)
+  0000: NodeTranslation = ((cast3a(self.SkelComponent.RootMotionMode) == cast3a(2)) ? 1 : 2)
+  0025: 0[Node.RootBoneOption] = NodeTranslation
+  003b: 1[Node.RootBoneOption] = NodeTranslation
+  0051: 2[Node.RootBoneOption] = NodeTranslation
+  0068: NodeRotation = ((cast3a(self.SkelComponent.RootMotionRotationMode) == cast3a(0)) ? 0 : 2)
+  008d: 0[Node.RootRotationOption] = NodeRotation
+  00a3: 1[Node.RootRotationOption] = NodeRotation
+  00b9: 2[Node.RootRotationOption] = NodeRotation
+  00d0: return nothing
+  00d2: <eos>
+
+function AnimNodeSlot.PlayCustomAnimByDuration  (script 32 bytes)
+  0000: AnimName
+  0005: Duration
+  000a: BlendInTime
+  000f: BlendOutTime
+  0014: bLooping
+  0019: bOverride
+  001e: nothing
+  001f: <eos>
+
+function AnimNodeSlot.GetPlayedAnimation  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSlot.IsPlayingAnimation  (script 14 bytes)
+  0000: return self.bIsPlayingCustomAnim
+  0007: return return
+  000d: <eos>
+
+function AnimNodeSlot.IsPlayingAnimationOrBlendingOut  (script 29 bytes)
+  0000: return (self.bIsPlayingCustomAnim || (self.BlendTimeToGo > cast3f(0)))
+  0016: return return
+  001c: <eos>
+
+function AnimNodeSlot.StopCustomAnim  (script 7 bytes)
+  0000: BlendOutTime
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSlot.SetCustomAnim  (script 7 bytes)
+  0000: AnimName
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSlot.SetActorAnimEndNotification  (script 7 bytes)
+  0000: bNewStatus
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSlot.GetCustomAnimNodeSeq  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSlot.SetRootBoneAxisOption  (script 17 bytes)
+  0000: AxisX
+  0005: AxisY
+  000a: AxisZ
+  000f: nothing
+  0010: <eos>
+
+function AnimNodeSlot.SetRootRotationOption  (script 97 bytes)
+  0000: SeqNode = GetCustomAnimNodeSeq()
+  0010: if !((SeqNode != none)) goto 0x005e
+  001b: 0[SeqNode.RootRotationOption] = AxisX
+  0031: 1[SeqNode.RootRotationOption] = AxisY
+  0047: 2[SeqNode.RootRotationOption] = AxisZ
+  005e: return nothing
+  0060: <eos>
+
+function AnimNodeSlot.AddToSynchGroup  (script 7 bytes)
+  0000: GroupName
+  0005: nothing
+  0006: <eos>

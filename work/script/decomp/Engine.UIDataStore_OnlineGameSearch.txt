@@ -1,0 +1,177 @@
+function UIDataStore_OnlineGameSearch.Init  (script 108 bytes)
+  0000: self.OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((self.OnlineSub != none)) goto 0x0069
+  0024: self.GameInterface = self.OnlineSub.GameInterface
+  0038: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x0069
+  004c: self.GameInterface.AddFindOnlineGamesCompleteDelegate(delegate.OnSearchComplete)
+  0069: return nothing
+  006b: <eos>
+
+function UIDataStore_OnlineGameSearch.InvalidateCurrentSearchResults  (script 122 bytes)
+  0000: ActiveSearch = GetActiveGameSearch()
+  0010: if !((ActiveSearch != none)) goto 0x006c
+  001b: if !(self.GameInterface.FreeSearchResults(ActiveSearch)) goto 0x006c
+  0037: UIDataStore_OnlineGameSearch.BuildSearchResults()
+  003d: RefreshSubscribers(self.SearchResultsName, true, self.SelectedIndex[self.GameSearchCfgList].DesiredSettingsProvider, )
+  0064: bResult = true
+  006c: return bResult
+  0073: return return
+  0079: <eos>
+
+function UIDataStore_OnlineGameSearch.SubmitGameSearch  (script 329 bytes)
+  0000: default=true
+  0005: if !((self.OnlineSub != none)) goto 0x010a
+  0010: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x00b8
+  0024: if !((bInvalidateExistingSearchResults || (self.ActiveSearchIndex == self.SelectedIndex))) goto 0x0044
+  003e: UIDataStore_OnlineGameSearch.InvalidateCurrentSearchResults()
+  0044: if !(((self.ActiveSearchIndex == -1) || !self.ActiveSearchIndex[self.GameSearchCfgList].Search.bIsSearchInProgress)) goto 0x0085
+  007a: self.ActiveSearchIndex = self.SelectedIndex
+  0085: return self.GameInterface.FindOnlineGames(ControllerIndex, self.ActiveSearchIndex[self.GameSearchCfgList].Search)
+  00b5: goto 0x0107
+  00b8: WarnInternal("OnlineSubsystem does not support the game interface. Can't search for games")
+  0107: goto 0x0140
+  010a: WarnInternal("No OnlineSubsystem present. Can't search for games")
+  0140: return false
+  0142: return return
+  0148: <eos>
+
+function UIDataStore_OnlineGameSearch.OnSearchComplete  (script 118 bytes)
+  0000: if !((bWasSuccessful == true)) goto 0x004b
+  000c: UIDataStore_OnlineGameSearch.BuildSearchResults()
+  0012: NotifyPropertyChanged(self.SearchResultsName)
+  0021: RefreshSubscribers(self.SearchResultsName, false, self.ActiveSearchIndex[self.GameSearchCfgList].DesiredSettingsProvider, )
+  0048: goto 0x0073
+  004b: LogInternal("Failed to search for online games", , , )
+  0073: return nothing
+  0075: <eos>
+
+function UIDataStore_OnlineGameSearch.GetSearchResultFromIndex  (script 109 bytes)
+  0000: if !(((ListIndex >= 0) && (ListIndex < self.SelectedIndex[self.GameSearchCfgList].Search.Results.Length))) goto 0x0064
+  0037: Result = ListIndex[self.SelectedIndex[self.GameSearchCfgList].Search.Results]
+  0062: return true
+  0064: return false
+  0066: return return
+  006c: <eos>
+
+function UIDataStore_OnlineGameSearch.ShowHostGamercard  (script 456 bytes)
+  0000: if !(((ListIndex >= 0) && (ListIndex < self.SelectedIndex[self.GameSearchCfgList].Search.Results.Length))) goto 0x016b
+  0037: if !((self.OnlineSub != none)) goto 0x0134
+  0042: PlayerExt = self.OnlineSub.PlayerInterfaceEx
+  0056: if !(NotEqual_InterfaceInterface(PlayerExt, OnlinePlayerInterfaceEx(none))) goto 0x00d9
+  006a: Game = ListIndex[self.SelectedIndex[self.GameSearchCfgList].Search.Results].GameSettings
+  00a0: return PlayerExt.ShowGamerCardUI(ControllerIndex, Game.OwningPlayerId, Game.OwningPlayerName)
+  00d6: goto 0x0131
+  00d9: WarnInternal("OnlineSubsystem does not support the extended player interface. Can't show gamercard")
+  0131: goto 0x0168
+  0134: WarnInternal("No OnlineSubsystem present. Can't show gamercard")
+  0168: goto 0x01bf
+  016b: WarnInternal((("Invalid index (" $ cast53(ListIndex)) $ ") specified for online game to show the gamercard of"))
+  01bf: return false
+  01c1: return return
+  01c7: <eos>
+
+function UIDataStore_OnlineGameSearch.BuildSearchResults  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIDataStore_OnlineGameSearch.GetCurrentGameSearch  (script 61 bytes)
+  0000: if !(((self.SelectedIndex >= 0) && (self.SelectedIndex < self.GameSearchCfgList.Length))) goto 0x0034
+  001d: return self.SelectedIndex[self.GameSearchCfgList].Search
+  0034: return none
+  0036: return return
+  003c: <eos>
+
+function UIDataStore_OnlineGameSearch.GetActiveGameSearch  (script 61 bytes)
+  0000: if !(((self.ActiveSearchIndex >= 0) && (self.ActiveSearchIndex < self.GameSearchCfgList.Length))) goto 0x0034
+  001d: return self.ActiveSearchIndex[self.GameSearchCfgList].Search
+  0034: return none
+  0036: return return
+  003c: <eos>
+
+function UIDataStore_OnlineGameSearch.GetActiveGameSearchName  (script 69 bytes)
+  0000: if !(((self.ActiveSearchIndex >= 0) && (self.ActiveSearchIndex < self.GameSearchCfgList.Length))) goto 0x0034
+  001d: return self.ActiveSearchIndex[self.GameSearchCfgList].SearchName
+  0034: return 'None'
+  003e: return return
+  0044: <eos>
+
+function UIDataStore_OnlineGameSearch.FindSearchConfigurationIndex  (script 84 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.GameSearchCfgList.Length)) goto 0x0047
+  0017: if !((Index[self.GameSearchCfgList].SearchName == SearchTag)) goto 0x003d
+  0037: return Index
+  003d: AddAdd_Int(Index)
+  0044: goto 0x0007
+  0047: return -1
+  004d: return return
+  0053: <eos>
+
+function UIDataStore_OnlineGameSearch.SetCurrentByIndex  (script 200 bytes)
+  0000: default=true
+  0005: if !(((NewIndex >= 0) && (NewIndex < self.GameSearchCfgList.Length))) goto 0x006f
+  0022: self.SelectedIndex = NewIndex
+  002d: if !((!bInvalidateExistingSearchResults || !UIDataStore_OnlineGameSearch.InvalidateCurrentSearchResults())) goto 0x006c
+  0045: RefreshSubscribers(self.SearchResultsName, true, self.SelectedIndex[self.GameSearchCfgList].DesiredSettingsProvider, )
+  006c: goto 0x00bf
+  006f: LogInternal(((("Invalid index (" $ cast53(NewIndex)) $ ") specified to SetCurrentByIndex() on ") $ cast56(self)), , , )
+  00bd: return false
+  00bf: return true
+  00c1: return return
+  00c7: <eos>
+
+function UIDataStore_OnlineGameSearch.SetCurrentByName  (script 201 bytes)
+  0000: default=true
+  0005: Index = UIDataStore_OnlineGameSearch.FindSearchConfigurationIndex(SearchName)
+  0016: if !((Index != -1)) goto 0x0072
+  0025: self.SelectedIndex = Index
+  0030: if !((!bInvalidateExistingSearchResults || !UIDataStore_OnlineGameSearch.InvalidateCurrentSearchResults())) goto 0x006f
+  0048: RefreshSubscribers(self.SearchResultsName, true, self.SelectedIndex[self.GameSearchCfgList].DesiredSettingsProvider, )
+  006f: goto 0x00c0
+  0072: LogInternal(((("Invalid name (" $ cast57(SearchName)) $ ") specified to SetCurrentByName() on ") $ cast56(self)), , , )
+  00be: return false
+  00c0: return true
+  00c2: return return
+  00c8: <eos>
+
+function UIDataStore_OnlineGameSearch.MoveToNext  (script 105 bytes)
+  0000: default=true
+  0005: self.SelectedIndex = obj'Core.Math'.static.Min((self.SelectedIndex + 1), (self.GameSearchCfgList.Length - 1))
+  0027: if !((!bInvalidateExistingSearchResults || !UIDataStore_OnlineGameSearch.InvalidateCurrentSearchResults())) goto 0x0066
+  003f: RefreshSubscribers(self.SearchResultsName, true, self.SelectedIndex[self.GameSearchCfgList].DesiredSettingsProvider, )
+  0066: return nothing
+  0068: <eos>
+
+function UIDataStore_OnlineGameSearch.MoveToPrevious  (script 97 bytes)
+  0000: default=true
+  0005: self.SelectedIndex = obj'Core.Math'.static.Max((self.SelectedIndex - 1), 0)
+  001f: if !((!bInvalidateExistingSearchResults || !UIDataStore_OnlineGameSearch.InvalidateCurrentSearchResults())) goto 0x005e
+  0037: RefreshSubscribers(self.SearchResultsName, true, self.SelectedIndex[self.GameSearchCfgList].DesiredSettingsProvider, )
+  005e: return nothing
+  0060: <eos>
+
+function UIDataStore_OnlineGameSearch.ClearAllSearchResults  (script 268 bytes)
+  0000: OriginalActiveIndex = self.ActiveSearchIndex
+  000b: GameTypeIndex = 0
+  0012: if !((GameTypeIndex < self.GameSearchCfgList.Length)) goto 0x00fe
+  0022: self.ActiveSearchIndex = GameTypeIndex
+  002d: if !(self.GameInterface.FreeSearchResults(GameTypeIndex[self.GameSearchCfgList].Search)) goto 0x0063
+  005a: UIDataStore_OnlineGameSearch.BuildSearchResults()
+  0060: goto 0x00f4
+  0063: WarnInternal((((((cast57(self.Name) $ ".ClearAllSearchResults: Failed to free search results for") @ cast57(GameTypeIndex[self.GameSearchCfgList].SearchName)) @ "(") $ cast53(GameTypeIndex)) $ ") - search is still in progress"))
+  00f4: AddAdd_Int(GameTypeIndex)
+  00fb: goto 0x0012
+  00fe: self.ActiveSearchIndex = OriginalActiveIndex
+  0109: return nothing
+  010b: <eos>
+
+function UIDataStore_OnlineGameSearch.HasOutstandingQueries  (script 123 bytes)
+  0000: I = 0
+  0007: if !((I < self.GameSearchCfgList.Length)) goto 0x006d
+  0017: if !(((I[self.GameSearchCfgList].Search != none) && I[self.GameSearchCfgList].Search.bIsSearchInProgress)) goto 0x0063
+  0058: bResult = true
+  0060: goto 0x006d
+  0063: AddAdd_Int(I)
+  006a: goto 0x0007
+  006d: return bResult
+  0074: return return
+  007a: <eos>

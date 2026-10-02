@@ -1,0 +1,346 @@
+function HmBodyImpactComponent.LogBodyImpact  (script 7 bytes)
+  0000: ImpactSpeed
+  0005: nothing
+  0006: <eos>
+
+function HmBodyImpactComponent.LogBodyImpactSoundPlayed  (script 12 bytes)
+  0000: ImpactSpeed
+  0005: BodyImpactIndex
+  000a: nothing
+  000b: <eos>
+
+function HmBodyImpactComponent.LogBodyImpactPlaySoundFailed  (script 12 bytes)
+  0000: ImpactSpeed
+  0005: BodyImpactIndex
+  000a: nothing
+  000b: <eos>
+
+function HmBodyImpactComponent.LogBodyImpactContactNotNearBone  (script 12 bytes)
+  0000: ImpactSpeed
+  0005: BodyImpactIndex
+  000a: nothing
+  000b: <eos>
+
+function HmBodyImpactComponent.LogBodyImpactRetriggerTimerNotElapsed  (script 12 bytes)
+  0000: ImpactSpeed
+  0005: BodyImpactIndex
+  000a: nothing
+  000b: <eos>
+
+function HmBodyImpactComponent.LogBodyImpactNoWeight  (script 12 bytes)
+  0000: ImpactSpeed
+  0005: BodyImpactIndex
+  000a: nothing
+  000b: <eos>
+
+function HmBodyImpactComponent.GetIsActivated  (script 14 bytes)
+  0000: return self.IsActivated
+  0007: return return
+  000d: <eos>
+
+function HmBodyImpactComponent.SetIsActivated  (script 16 bytes)
+  0000: self.IsActivated = IsActivatedNew
+  000d: return nothing
+  000f: <eos>
+
+function HmBodyImpactComponent.SetBodyImpactProperties  (script 14 bytes)
+  0000: self._BodyImpactProperties = BodyImpactProperties
+  000b: return nothing
+  000d: <eos>
+
+function HmBodyImpactComponent.GetMinimumBodyImpactSpeedThreshold  (script 127 bytes)
+  0000: ConditionalInit()
+  000a: MinimumContactSpeedThreshold = 5000.0
+  0015: BodyImpactIndex = 0
+  001c: if !((BodyImpactIndex < self._BodyImpactProperties.Length)) goto 0x0072
+  002c: if !((BodyImpactIndex[self._BodyImpactProperties].CollisionSpeedThresholdLight < MinimumContactSpeedThreshold)) goto 0x0068
+  004c: MinimumContactSpeedThreshold = BodyImpactIndex[self._BodyImpactProperties].CollisionSpeedThresholdLight
+  0068: AddAdd_PreInt(BodyImpactIndex)
+  006f: goto 0x001c
+  0072: return MinimumContactSpeedThreshold
+  0078: return return
+  007e: <eos>
+
+function HmBodyImpactComponent.Tick  (script 175 bytes)
+  0000: ConditionalInit()
+  000a: if !((false == self.IsInitialized)) goto 0x0018
+  0016: return nothing
+  0018: if !((0 == self.BodyImpactTrackers.Length)) goto 0x0026
+  0024: return nothing
+  0026: if !(NotEqual_InterfaceInterface(self.OwnerSkeletonInterface, HmSkeletonInterface(none))) goto 0x00ac
+  003a: if !(((false == GetIsActivated()) || (false == self.OwnerSkeletonInterface.GetRigidBodyIsAwake()))) goto 0x0068
+  0066: return nothing
+  0068: BodyImpactIndex = 0
+  006f: if !((BodyImpactIndex < self.BodyImpactTrackers.Length)) goto 0x00ac
+  007f: UpdateTrackerBoneLocation(BodyImpactIndex)
+  008e: UpdateTrackerRetriggerTimer(BodyImpactIndex, DeltaTime)
+  00a2: AddAdd_PreInt(BodyImpactIndex)
+  00a9: goto 0x006f
+  00ac: return nothing
+  00ae: <eos>
+
+function HmBodyImpactComponent.HandleRigidBodyCollision  (script 429 bytes)
+  0000: if !((false == self.IsInitialized)) goto 0x000e
+  000c: return nothing
+  000e: if !((ContactInfos.Length <= 0)) goto 0x001c
+  001a: return nothing
+  001c: if !((0 == self.BodyImpactTrackers.Length)) goto 0x002a
+  0028: return nothing
+  002a: if !(NotEqual_InterfaceInterface(self.OwnerSkeletonInterface, HmSkeletonInterface(none))) goto 0x01aa
+  003e: if !(((false == GetIsActivated()) || (false == self.OwnerSkeletonInterface.GetRigidBodyIsAwake()))) goto 0x006c
+  006a: return nothing
+  006c: HmBodyImpactComponent.LogBodyImpact(ContactSpeed)
+  0077: BodyImpactIndex = 0
+  007e: if !((BodyImpactIndex < self.BodyImpactTrackers.Length)) goto 0x01aa
+  008e: ImpactWeight = HmBodyImpactComponent.GetBodyImpactWeight(BodyImpactIndex, ContactSpeed)
+  00a4: if !((cast3a(ImpactWeight) != cast3a(0))) goto 0x0190
+  00b4: if !((true == HmBodyImpactComponent.GetIsTrackerRetriggerTimerElapsed(BodyImpactIndex, ImpactWeight))) goto 0x017d
+  00ca: if !((true == HmBodyImpactComponent.GetIsContactNearBone(BodyImpactIndex, 0[ContactInfos].ContactPosition))) goto 0x016a
+  00ed: ContactIndexOther = ((0 == ContactIndex) ? 1 : 0)
+  0102: if !((true == HmBodyImpactComponent.PlaySoundFromImpact(BodyImpactIndex, ContactIndexOther[0[ContactInfos].PhysMaterial], ImpactWeight))) goto 0x0157
+  0130: ResetTrackerRetriggerTimer(BodyImpactIndex, ImpactWeight)
+  0144: HmBodyImpactComponent.LogBodyImpactSoundPlayed(ContactSpeed, BodyImpactIndex)
+  0154: goto 0x0167
+  0157: HmBodyImpactComponent.LogBodyImpactPlaySoundFailed(ContactSpeed, BodyImpactIndex)
+  0167: goto 0x017a
+  016a: HmBodyImpactComponent.LogBodyImpactContactNotNearBone(ContactSpeed, BodyImpactIndex)
+  017a: goto 0x018d
+  017d: HmBodyImpactComponent.LogBodyImpactRetriggerTimerNotElapsed(ContactSpeed, BodyImpactIndex)
+  018d: goto 0x01a0
+  0190: HmBodyImpactComponent.LogBodyImpactNoWeight(ContactSpeed, BodyImpactIndex)
+  01a0: AddAdd_PreInt(BodyImpactIndex)
+  01a7: goto 0x007e
+  01aa: return nothing
+  01ac: <eos>
+
+function HmBodyImpactComponent.PlaySoundFromGroundImpact  (script 180 bytes)
+  0000: ConditionalInit()
+  000a: if !((false == self.IsInitialized)) goto 0x0018
+  0016: return false
+  0018: if !(EqualEqual_InterfaceInterface(HmFootstepInterface(none), self.OwnerFootstepInterface)) goto 0x002e
+  002c: return false
+  002e: if !(EqualEqual_InterfaceInterface(HmSoundEventInterface(none), self.OwnerSoundEventInterface)) goto 0x0044
+  0042: return false
+  0044: if !((false == self.OwnerFootstepInterface.FindPhysicalMaterial(PhysMaterial, HitLocation, HitNormal))) goto 0x006f
+  006d: return false
+  006f: Sound = GetImpactSound(BodyPart, ImpactWeight, PhysMaterial)
+  008e: self.OwnerSoundEventInterface.PlaySoundEvent(Sound, , , true, )
+  00ab: return true
+  00ad: return return
+  00b3: <eos>
+
+function HmBodyImpactComponent.ConditionalInit  (script 416 bytes)
+  0000: if !((true == self.IsInitialized)) goto 0x000e
+  000c: return nothing
+  000e: if !(NotEqual_InterfaceInterface(HmSoundEventInterface(none), self.OwnerSoundEventInterface)) goto 0x002f
+  0022: self.BodyImpactTrackers.Length = self._BodyImpactProperties.Length
+  002f: Index = 0
+  0036: if !((Index < self._BodyImpactProperties.Length)) goto 0x0195
+  0046: if !(((Index[self._BodyImpactProperties].CollisionSpeedThresholdLight > Index[self._BodyImpactProperties].CollisionSpeedThresholdMedium) || (Index[self._BodyImpactProperties].CollisionSpeedThresholdMedium > Index[self._BodyImpactProperties].CollisionSpeedThresholdHeavy))) goto 0x0107
+  00aa: LogInternal(("HmBodyImpactComponent: Bad CollisionSpeedThreshold(s) for " $ cast57(Index[self._BodyImpactProperties].BoneName)), , , )
+  0105: return nothing
+  0107: if !((Index[self._BodyImpactProperties].RetriggerTimeMin > Index[self._BodyImpactProperties].RetriggerTimeMax)) goto 0x018b
+  0138: LogInternal(("HmBodyImpactComponent: Bad RetriggerTime(s) for " $ cast57(Index[self._BodyImpactProperties].BoneName)), , , )
+  0189: return nothing
+  018b: AddAdd_PreInt(Index)
+  0192: goto 0x0036
+  0195: self.IsInitialized = true
+  019d: return nothing
+  019f: <eos>
+
+function HmBodyImpactComponent.GetIsTrackerRetriggerTimerElapsed  (script 84 bytes)
+  0000: if !(((BodyImpactIndex[self.BodyImpactTrackers].RetriggerTimer <= 0.0) || (cast3a(ImpactWeight) > cast3a(BodyImpactIndex[self.BodyImpactTrackers].ImpactWeightLast)))) goto 0x004b
+  0046: return true
+  0048: goto 0x004d
+  004b: return false
+  004d: return return
+  0053: <eos>
+
+function HmBodyImpactComponent.ResetTrackerRetriggerTimer  (script 120 bytes)
+  0000: BodyImpactIndex[self.BodyImpactTrackers].RetriggerTimer = obj'Core.Math'.static.Lerp(BodyImpactIndex[self._BodyImpactProperties].RetriggerTimeMin, BodyImpactIndex[self._BodyImpactProperties].RetriggerTimeMax, obj'Core.Random'.static.FRand())
+  0059: BodyImpactIndex[self.BodyImpactTrackers].ImpactWeightLast = ImpactWeight
+  0075: return nothing
+  0077: <eos>
+
+function HmBodyImpactComponent.UpdateTrackerRetriggerTimer  (script 32 bytes)
+  0000: (BodyImpactIndex[self.BodyImpactTrackers].RetriggerTimer -= DeltaTime)
+  001d: return nothing
+  001f: <eos>
+
+function HmBodyImpactComponent.UpdateTrackerBoneLocation  (script 68 bytes)
+  0000: BodyImpactIndex[self.BodyImpactTrackers].BoneLocation = self.OwnerSkeletonInterface.GetBoneLocation(BodyImpactIndex[self._BodyImpactProperties].BoneName)
+  0041: return nothing
+  0043: <eos>
+
+function HmBodyImpactComponent.GetIsContactNearBone  (script 129 bytes)
+  0000: Radius = BodyImpactIndex[self._BodyImpactProperties].CollisionRadius
+  001c: RadiusSquared = (Radius * Radius)
+  002e: DistanceBetweenSquared = obj'Core.Math'.static.VSizeSq((BodyImpactIndex[self.BodyImpactTrackers].BoneLocation - ContactPosition))
+  0064: if !((DistanceBetweenSquared < RadiusSquared)) goto 0x0078
+  0073: return true
+  0075: goto 0x007a
+  0078: return false
+  007a: return return
+  0080: <eos>
+
+function HmBodyImpactComponent.GetBodyImpactWeight  (script 150 bytes)
+  0000: if !((ContactSpeed >= BodyImpactIndex[self._BodyImpactProperties].CollisionSpeedThresholdHeavy)) goto 0x002b
+  0020: ImpactWeight = 3
+  0028: goto 0x0089
+  002b: if !((ContactSpeed >= BodyImpactIndex[self._BodyImpactProperties].CollisionSpeedThresholdMedium)) goto 0x0056
+  004b: ImpactWeight = 2
+  0053: goto 0x0089
+  0056: if !((ContactSpeed >= BodyImpactIndex[self._BodyImpactProperties].CollisionSpeedThresholdLight)) goto 0x0081
+  0076: ImpactWeight = 1
+  007e: goto 0x0089
+  0081: ImpactWeight = 0
+  0089: return ImpactWeight
+  008f: return return
+  0095: <eos>
+
+function HmBodyImpactComponent.GetImpactSound  (script 1383 bytes)
+  0000: if !((none != PhysMaterial)) goto 0x046d
+  000b: MaterialProperty = HmPhysicalMaterialProperty(PhysMaterial.PhysicalMaterialProperty)
+  0024: if !((none != MaterialProperty)) goto 0x044a
+  002f: switch (ImpactWeight)
+  0036: case 3: (next 0x0190)
+  003b: switch (BodyPart)
+  0042: case 0: (next 0x0083)
+  0047: if !((none != MaterialProperty.BodyImpactSounds.BodyHeavy)) goto 0x0080
+  0066: return MaterialProperty.BodyImpactSounds.BodyHeavy
+  0080: goto 0x018d
+  0083: case 1: (next 0x00c4)
+  0088: if !((none != MaterialProperty.BodyImpactSounds.HeadHeavy)) goto 0x00c1
+  00a7: return MaterialProperty.BodyImpactSounds.HeadHeavy
+  00c1: goto 0x018d
+  00c4: case 2: (next 0x0105)
+  00c9: if !((none != MaterialProperty.BodyImpactSounds.LimbHeavy)) goto 0x0102
+  00e8: return MaterialProperty.BodyImpactSounds.LimbHeavy
+  0102: goto 0x018d
+  0105: case 3: (next 0x0146)
+  010a: if !((none != MaterialProperty.BodyImpactSounds.RobotHeavy)) goto 0x0143
+  0129: return MaterialProperty.BodyImpactSounds.RobotHeavy
+  0143: goto 0x018d
+  0146: case 4: (next 0x0187)
+  014b: if !((none != MaterialProperty.BodyImpactSounds.VehicleHeavy)) goto 0x0184
+  016a: return MaterialProperty.BodyImpactSounds.VehicleHeavy
+  0184: goto 0x018d
+  0187: default:
+  018a: goto 0x018d
+  018d: goto 0x044a
+  0190: case 2: (next 0x02ea)
+  0195: switch (BodyPart)
+  019c: case 0: (next 0x01dd)
+  01a1: if !((none != MaterialProperty.BodyImpactSounds.BodyMedium)) goto 0x01da
+  01c0: return MaterialProperty.BodyImpactSounds.BodyMedium
+  01da: goto 0x02e7
+  01dd: case 1: (next 0x021e)
+  01e2: if !((none != MaterialProperty.BodyImpactSounds.HeadMedium)) goto 0x021b
+  0201: return MaterialProperty.BodyImpactSounds.HeadMedium
+  021b: goto 0x02e7
+  021e: case 2: (next 0x025f)
+  0223: if !((none != MaterialProperty.BodyImpactSounds.LimbMedium)) goto 0x025c
+  0242: return MaterialProperty.BodyImpactSounds.LimbMedium
+  025c: goto 0x02e7
+  025f: case 3: (next 0x02a0)
+  0264: if !((none != MaterialProperty.BodyImpactSounds.RobotMedium)) goto 0x029d
+  0283: return MaterialProperty.BodyImpactSounds.RobotMedium
+  029d: goto 0x02e7
+  02a0: case 4: (next 0x02e1)
+  02a5: if !((none != MaterialProperty.BodyImpactSounds.VehicleMedium)) goto 0x02de
+  02c4: return MaterialProperty.BodyImpactSounds.VehicleMedium
+  02de: goto 0x02e7
+  02e1: default:
+  02e4: goto 0x02e7
+  02e7: goto 0x044a
+  02ea: case 1: (next 0x0444)
+  02ef: switch (BodyPart)
+  02f6: case 0: (next 0x0337)
+  02fb: if !((none != MaterialProperty.BodyImpactSounds.BodyLight)) goto 0x0334
+  031a: return MaterialProperty.BodyImpactSounds.BodyLight
+  0334: goto 0x0441
+  0337: case 1: (next 0x0378)
+  033c: if !((none != MaterialProperty.BodyImpactSounds.HeadLight)) goto 0x0375
+  035b: return MaterialProperty.BodyImpactSounds.HeadLight
+  0375: goto 0x0441
+  0378: case 2: (next 0x03b9)
+  037d: if !((none != MaterialProperty.BodyImpactSounds.LimbLight)) goto 0x03b6
+  039c: return MaterialProperty.BodyImpactSounds.LimbLight
+  03b6: goto 0x0441
+  03b9: case 3: (next 0x03fa)
+  03be: if !((none != MaterialProperty.BodyImpactSounds.RobotLight)) goto 0x03f7
+  03dd: return MaterialProperty.BodyImpactSounds.RobotLight
+  03f7: goto 0x0441
+  03fa: case 4: (next 0x043b)
+  03ff: if !((none != MaterialProperty.BodyImpactSounds.VehicleLight)) goto 0x0438
+  041e: return MaterialProperty.BodyImpactSounds.VehicleLight
+  0438: goto 0x0441
+  043b: default:
+  043e: goto 0x0441
+  0441: goto 0x044a
+  0444: default:
+  0447: goto 0x044a
+  044a: return GetImpactSound(BodyPart, ImpactWeight, PhysMaterial.Parent)
+  046d: switch (ImpactWeight)
+  0474: case 3: (next 0x04c0)
+  0479: switch (BodyPart)
+  0480: case 0: (next 0x048b)
+  0485: return self.DefaultBodyHeavy
+  048b: case 1: (next 0x0496)
+  0490: return self.DefaultHeadHeavy
+  0496: case 2: (next 0x04a1)
+  049b: return self.DefaultLimbHeavy
+  04a1: case 3: (next 0x04ac)
+  04a6: return self.DefaultRobotHeavy
+  04ac: case 4: (next 0x04b7)
+  04b1: return self.DefaultVehicleHeavy
+  04b7: default:
+  04ba: goto 0x04bd
+  04bd: goto 0x055e
+  04c0: case 2: (next 0x050c)
+  04c5: switch (BodyPart)
+  04cc: case 0: (next 0x04d7)
+  04d1: return self.DefaultBodyMedium
+  04d7: case 1: (next 0x04e2)
+  04dc: return self.DefaultHeadMedium
+  04e2: case 2: (next 0x04ed)
+  04e7: return self.DefaultLimbMedium
+  04ed: case 3: (next 0x04f8)
+  04f2: return self.DefaultRobotMedium
+  04f8: case 4: (next 0x0503)
+  04fd: return self.DefaultVehicleMedium
+  0503: default:
+  0506: goto 0x0509
+  0509: goto 0x055e
+  050c: case 1: (next 0x0558)
+  0511: switch (BodyPart)
+  0518: case 0: (next 0x0523)
+  051d: return self.DefaultBodyLight
+  0523: case 1: (next 0x052e)
+  0528: return self.DefaultHeadLight
+  052e: case 2: (next 0x0539)
+  0533: return self.DefaultLimbLight
+  0539: case 3: (next 0x0544)
+  053e: return self.DefaultRobotLight
+  0544: case 4: (next 0x054f)
+  0549: return self.DefaultVehicleLight
+  054f: default:
+  0552: goto 0x0555
+  0555: goto 0x055e
+  0558: default:
+  055b: goto 0x055e
+  055e: return none
+  0560: return return
+  0566: <eos>
+
+function HmBodyImpactComponent.PlaySoundFromImpact  (script 124 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(HmSoundEventInterface(none), self.OwnerSoundEventInterface)) goto 0x0016
+  0014: return false
+  0016: Sound = GetImpactSound(BodyImpactIndex[self._BodyImpactProperties].BodyPart, ImpactWeight, ImpactMaterial)
+  0046: if !((none == Sound)) goto 0x0056
+  0051: return false
+  0053: goto 0x0073
+  0056: self.OwnerSoundEventInterface.PlaySoundEvent(Sound, , , true, )
+  0073: return true
+  0075: return return
+  007b: <eos>

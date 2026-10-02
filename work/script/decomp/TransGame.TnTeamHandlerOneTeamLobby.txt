@@ -1,0 +1,8 @@
+function TnTeamHandlerOneTeamLobby.PickTeam  (script 103 bytes)
+  0000: GRI = self.Game.GetGRI()
+  0019: if !((GRI == none)) goto 0x002c
+  0024: return cast3d(-1)
+  002c: CurrentMapFaction = obj'TnDataStore_MenuItems'.static.GetMapFaction(GRI.GetMapID())
+  0058: return cast3d(CurrentMapFaction)
+  0060: return return
+  0066: <eos>

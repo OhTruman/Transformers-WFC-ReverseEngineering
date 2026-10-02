@@ -1,0 +1,26 @@
+function TnKillStreakEndedMessage.ClientReceive  (script 130 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !(((P == none) || (P.myHUD == none))) goto 0x0027
+  0025: return nothing
+  0027: CS = GetColoredString(Switch, P.PlayerReplicationInfo, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0059: TnHUD(P.myHUD).ColoredLocalizedMessage(CS)
+  007f: return nothing
+  0081: <eos>
+
+function TnKillStreakEndedMessage.GetUnparsedMessage  (script 13 bytes)
+  0000: return default.KillStreakEnded
+  0006: return return
+  000c: <eos>
+
+function TnKillStreakEndedMessage.GetColoredString  (script 44 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: return TnDeathMessage.GetColoredString(MessageSwitch, LocalPlayerPRI, RelatedPRI_1, RelatedPRI_2, obj'TnDamageType')
+  0025: return return
+  002b: <eos>

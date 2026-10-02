@@ -1,0 +1,14 @@
+function TnHudDataObserverWeaponReserveAmmo.CheckData  (script 234 bytes)
+  0000: if !(((PC.Pawn != none) && (PC.Pawn.Weapon != none))) goto 0x0055
+  0033: W = TnWeapon(PC.Pawn.Weapon)
+  0055: if !((W != none)) goto 0x00e7
+  0060: if !(W.ShouldHideAmmoHud()) goto 0x0084
+  0076: ReserveValue = -2.0
+  0081: goto 0x00be
+  0084: if !(W.HasUnlimitedReserveAmmo()) goto 0x00a8
+  009a: ReserveValue = -1.0
+  00a5: goto 0x00be
+  00a8: ReserveValue = cast3f(W.ReserveAmmoCount)
+  00be: ProcessNewValue(Movie, ReserveValue, cast3f(W.GetMaxAmmoCount()))
+  00e7: return nothing
+  00e9: <eos>

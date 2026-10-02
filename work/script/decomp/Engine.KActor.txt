@@ -1,0 +1,154 @@
+function KActor.CheckForErrors  (script 264 bytes)
+  0000: CheckForErrors()
+  0006: if !(((self.StaticMeshComponent != none) && (self.StaticMeshComponent.StaticMesh != none))) goto 0x0105
+  0027: if !(!self.StaticMeshComponent.StaticMesh.HasBodySetup()) goto 0x009e
+  0048: EmitCheckMessage(1, "KActor has a StaticMeshComponent whose StaticMesh's BodySetup is NULL", 0, )
+  009e: if !((!self.StaticMeshComponent.BlockRigidBody && !KActor.ActorHasJoint())) goto 0x0105
+  00bf: EmitCheckMessage(1, "KActor has BlockRigidBody set to false and no joints.", 0, )
+  0105: return nothing
+  0107: <eos>
+
+function KActor.ActorHasJoint  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function KActor.GetKActorPhysMaterial  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function KActor.ResolveRBState  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function KActor.PostBeginPlay  (script 154 bytes)
+  0000: DynamicSMActor.PostBeginPlay()
+  0006: if !(self.bWakeOnLevelStart) goto 0x0023
+  000f: self.StaticMeshComponent.WakeRigidBody()
+  0023: self.DrawScaleX = self.DrawScale3D.X
+  0039: self.DrawScaleY = self.DrawScale3D.Y
+  004f: self.DrawScaleZ = self.DrawScale3D.Z
+  0065: if !(self.StaticMeshComponent.bNotifyRigidBodyCollision) goto 0x0081
+  0077: SetPhysicalCollisionProperties()
+  0081: self.InitialLocation = self.Location
+  008c: self.InitialRotation = self.Rotation
+  0097: return nothing
+  0099: <eos>
+
+function KActor.FellOutOfWorld  (script 24 bytes)
+  0000: Shutdown()
+  000a: Actor.FellOutOfWorld(dmgType)
+  0015: return nothing
+  0017: <eos>
+
+function KActor.SetPhysicalCollisionProperties  (script 356 bytes)
+  0000: PhysMat = GetKActorPhysMaterial()
+  0010: if !((PhysMat.ImpactEffect != none)) goto 0x0086
+  0024: if !((none == self.ImpactEffectComponent)) goto 0x0054
+  002f: self.ImpactEffectComponent = new(get_Outer(), nothing, obj'ParticleSystemComponent', nothing, GetRemoteRole)
+  0045: AttachComponent(self.ImpactEffectComponent)
+  0054: self.ImpactEffectComponent.bAutoActivate = false
+  0065: self.ImpactEffectComponent.SetTemplate(PhysMat.ImpactEffect)
+  0086: if !((PhysMat.SlideEffect != none)) goto 0x00fc
+  009a: if !((none == self.SlideEffectComponent)) goto 0x00ca
+  00a5: self.SlideEffectComponent = new(get_Outer(), nothing, obj'ParticleSystemComponent', nothing, GetRemoteRole)
+  00bb: AttachComponent(self.SlideEffectComponent)
+  00ca: self.SlideEffectComponent.bAutoActivate = false
+  00db: self.SlideEffectComponent.SetTemplate(PhysMat.SlideEffect)
+  00fc: if !((PhysMat.SlideSound != none)) goto 0x0161
+  0110: if !((none == self.SlideSoundComponent)) goto 0x0140
+  011b: self.SlideSoundComponent = new(get_Outer(), nothing, obj'AudioComponent', nothing, GetRemoteRole)
+  0131: AttachComponent(self.SlideSoundComponent)
+  0140: self.SlideSoundComponent.SetSoundCue(PhysMat.SlideSound)
+  0161: return nothing
+  0163: <eos>
+
+function KActor.ReplicatedEvent  (script 210 bytes)
+  0000: if !((VarName == 'bWakeOnLevelStart')) goto 0x0033
+  0013: if !(self.bWakeOnLevelStart) goto 0x0030
+  001c: self.StaticMeshComponent.WakeRigidBody()
+  0030: goto 0x00cf
+  0033: if !((((VarName == 'DrawScaleX') || (VarName == 'DrawScaleY')) || (VarName == 'DrawScaleZ'))) goto 0x00c4
+  0070: NewDrawScale3D.X = self.DrawScaleX
+  0086: NewDrawScale3D.Y = self.DrawScaleY
+  009c: NewDrawScale3D.Z = self.DrawScaleZ
+  00b2: SetDrawScale3D(NewDrawScale3D)
+  00c1: goto 0x00cf
+  00c4: DynamicSMActor.ReplicatedEvent(VarName)
+  00cf: return nothing
+  00d1: <eos>
+
+function KActor.ApplyImpulse  (script 155 bytes)
+  0000: nothing
+  0001: ImpulseDir = obj'Core.Math'.static.Normal(ImpulseDir)
+  0017: ApplyImpulse = (ImpulseDir * ImpulseMag)
+  0029: if !((HitInfo.HitComponent != none)) goto 0x007a
+  003f: HitInfo.HitComponent.AddLinearImpulse(ApplyImpulse, HitLocation, HitInfo.BoneName)
+  0077: goto 0x0098
+  007a: self.CollisionComponent.AddLinearImpulse(ApplyImpulse, HitLocation, )
+  0098: return nothing
+  009a: <eos>
+
+function KActor.TakeDamage  (script 310 bytes)
+  0000: nothing
+  0001: nothing
+  0002: Actor.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: if !(((self.bDamageAppliesImpulse && (DamageType != none)) && (DamageType.static.default.KDamageImpulse > cast3f(0)))) goto 0x0133
+  0059: if !((obj'Core.Math'.static.VSize(Momentum) < 0.001)) goto 0x009e
+  0073: LogInternal("Zero momentum to KActor.TakeDamage", , , )
+  009c: return nothing
+  009e: ApplyImpulse = (obj'Core.Math'.static.Normal(Momentum) * DamageType.static.default.KDamageImpulse)
+  00c4: if !((HitInfo.HitComponent != none)) goto 0x0115
+  00da: HitInfo.HitComponent.AddLinearImpulse(ApplyImpulse, HitLocation, HitInfo.BoneName)
+  0112: goto 0x0133
+  0115: self.CollisionComponent.AddLinearImpulse(ApplyImpulse, HitLocation, )
+  0133: return nothing
+  0135: <eos>
+
+function KActor.TakeRadiusDamage  (script 215 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.GeneratedEvents.Length)) goto 0x0065
+  0017: DmgEvt = SeqEvent_TakeDamage(idx[self.GeneratedEvents])
+  002d: if !((DmgEvt != none)) goto 0x005b
+  0038: DmgEvt.HandleDamage(self, InstigatedBy, DamageType, BaseDamage)
+  005b: AddAdd_Int(idx)
+  0062: goto 0x0007
+  0065: if !(((self.bDamageAppliesImpulse && (DamageType.static.default.RadialDamageImpulse > cast3f(0))) && (cast3a(self.Role) == cast3a(3)))) goto 0x00d4
+  0098: self.CollisionComponent.AddRadialImpulse(HurtOrigin, DamageRadius, DamageType.static.default.RadialDamageImpulse, 1, DamageType.static.default.bRadialDamageVelChange)
+  00d4: return nothing
+  00d6: <eos>
+
+function KActor.OnToggle  (script 54 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0033
+  001f: self.StaticMeshComponent.WakeRigidBody()
+  0033: return nothing
+  0035: <eos>
+
+function KActor.OnTeleport  (script 199 bytes)
+  0000: inAction.GetObjectVars(objVars, "Destination")
+  0025: idx = 0
+  002c: if !(((idx < objVars.Length) && (destActor == none))) goto 0x0069
+  0049: destActor = Actor(idx[objVars])
+  005f: AddAdd_Int(idx)
+  0066: goto 0x002c
+  0069: if !((destActor != none)) goto 0x00c4
+  0074: self.StaticMeshComponent.SetRBPosition(destActor.Location, )
+  0096: self.StaticMeshComponent.SetRBRotation(destActor.Rotation, )
+  00b8: PlayTeleportEffect(false, true)
+  00c4: return nothing
+  00c6: <eos>
+
+function KActor.Reset  (script 207 bytes)
+  0000: if !((cast3a(self.Physics) == cast3a(10))) goto 0x0050
+  0010: self.StaticMeshComponent.SetLinearVelocity(vect(0,0,0))
+  0030: self.StaticMeshComponent.SetAngularVelocity(vect(0,0,0))
+  0050: self.StaticMeshComponent.SetRBPosition(self.InitialLocation, )
+  0069: self.StaticMeshComponent.SetRBRotation(self.InitialRotation, )
+  0082: if !(!self.bWakeOnLevelStart) goto 0x00a4
+  008d: self.StaticMeshComponent.PutRigidBodyToSleep()
+  00a1: goto 0x00b8
+  00a4: self.StaticMeshComponent.WakeRigidBody()
+  00b8: KActor.ResolveRBState()
+  00be: self.bForceNetUpdate = true
+  00c6: Actor.Reset()
+  00cc: return nothing
+  00ce: <eos>

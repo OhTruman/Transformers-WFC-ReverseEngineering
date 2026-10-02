@@ -1,0 +1,86 @@
+function TnAiActionMelee.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionMeleeBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionMelee.OnBind  (script 104 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._MeleeService = TnMeleeService(GetService('TnMeleeService', 0))
+  0026: if !((self._Blueprint.MeleeWeapon != none)) goto 0x0065
+  003a: self._TransformerPawn.InvManager.CreateInventory(self._Blueprint.MeleeWeapon, true)
+  0065: return nothing
+  0067: <eos>
+
+function TnAiActionMelee.OnSetUpConditions  (script 234 bytes)
+  0000: Enemy = obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects)
+  0023: if !((self._PlanningUtil.PopulatePreconditions(self, ExpectedEffects, Conditions) == false)) goto 0x0049
+  0047: return false
+  0049: if !((self._PlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.CheckAttackDestinationDistance, self._Blueprint.AttackDestinationDistanceThreshold) == false)) goto 0x008b
+  0089: return false
+  008b: if !((self._TransformerController.IsDangerous(TnPawn(Enemy)) == false)) goto 0x00b0
+  00ae: return false
+  00b0: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateFacingActor', Enemy)
+  00d2: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00e3: return return
+  00e9: <eos>
+
+function TnAiActionMelee.DoCalculateAdditionalCost  (script 68 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((cast3a(self._TransformerController.GetEnemyNearestRange()) > cast3a(2)) ? 15.0 : 0.0))
+  003d: return return
+  0043: <eos>
+
+function TnAiActionMelee.OnIsValidForFutureExecution  (script 162 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._PlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.CheckAttackDestinationDistance, self._Blueprint.AttackDestinationDistanceThreshold) == false)) goto 0x006a
+  0068: return false
+  006a: if !((self._TransformerController.IsDangerous(Target) == false)) goto 0x008a
+  0088: return false
+  008a: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  009b: return return
+  00a1: <eos>
+
+function TnAiActionMelee.OnPlanStart  (script 38 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._PlanningUtil.PlanStart(ExpectedEffects)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiActionMelee.OnStart  (script 210 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((cast3a(self._TransformerController.GetEnemyNearestRange()) > cast3a(2))) goto 0x0051
+  0046: return Fail()
+  0051: SetCharacterState(1)
+  005c: self._TransformerController.Focus = IFocusible(self._Target)
+  0075: PlayDialog(self.MeleeWeaponSwingVerbalDialog)
+  0084: PlayDialog(self.MeleeWeaponSwingDialog)
+  0093: self._MeleeService.StartMeleeAttack(self._Blueprint.MeleeType, none, delegate.OnMeleeComplete)
+  00bf: return OnStart(ExpectedEffects)
+  00cb: return return
+  00d1: <eos>
+
+function TnAiActionMelee.OnUpdate  (script 65 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Succeed()
+  0029: return OnUpdate(ExpectedEffects, DeltaTime)
+  003a: return return
+  0040: <eos>
+
+function TnAiActionMelee.OnMeleeComplete  (script 56 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x002b
+  001e: Succeed()
+  0028: goto 0x0035
+  002b: Fail()
+  0035: return nothing
+  0037: <eos>
+
+function TnAiActionMelee.OnFinish  (script 121 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._MeleeService.AbortMeleeAttack()
+  001f: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateFacingActor', false, )
+  003e: if !(self._MeleeService.get_LastMeleeWasSuccessful()) goto 0x0067
+  0055: PlayDialog(self.MeleeWeaponSwingConnectedDialog)
+  0064: goto 0x0076
+  0067: PlayDialog(self.MeleeWeaponSwingMissedDialog)
+  0076: return nothing
+  0078: <eos>

@@ -1,0 +1,31 @@
+function TnAiActionLeaveTurret.OnStart  (script 144 bytes)
+  0000: self._Turret = TnMountableTurretBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTurret'))
+  0028: if !(((self._Turret == none) || (self._Turret.GetCurrentUser() != self._TransformerPawn))) goto 0x005d
+  0052: return Succeed()
+  005d: TnAiActionLeaveTurret.AimTurretStraightAhead()
+  0063: self._Turret.InteractCommand(self._TransformerPawn, 1)
+  007d: return OnStart(ExpectedEffects)
+  0089: return return
+  008f: <eos>
+
+function TnAiActionLeaveTurret.OnUpdate  (script 72 bytes)
+  0000: if !(((self._Turret == none) || !self._Turret.get_IsTurretInUse())) goto 0x0030
+  0025: return Succeed()
+  0030: return OnUpdate(ExpectedEffects, DeltaTime)
+  0041: return return
+  0047: <eos>
+
+function TnAiActionLeaveTurret.OnHalt  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiActionLeaveTurret.OnFinish  (script 53 bytes)
+  0000: get_WeaponAimer().Reset()
+  0018: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateTurret', 0, none)
+  0032: return nothing
+  0034: <eos>
+
+function TnAiActionLeaveTurret.AimTurretStraightAhead  (script 78 bytes)
+  0000: get_WeaponAimer().AimAtLocation((self._TransformerPawn.GetPawnViewLocation() + (vect(1000,0,0) >> self._Turret.Rotation)))
+  004b: return nothing
+  004d: <eos>

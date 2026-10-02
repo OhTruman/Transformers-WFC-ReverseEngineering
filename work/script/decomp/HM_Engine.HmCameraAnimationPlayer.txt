@@ -1,0 +1,116 @@
+function HmCameraAnimationPlayer.CameraAnimationCompleteObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmCameraAnimationPlayer.AddCameraAnimationCompleteObserver  (script 46 bytes)
+  0000: if !((self.CameraAnimationCompleteObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.CameraAnimationCompleteObservers.Length[self.CameraAnimationCompleteObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function HmCameraAnimationPlayer.RemoveCameraAnimationCompleteObserver  (script 49 bytes)
+  0000: Index = self.CameraAnimationCompleteObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.CameraAnimationCompleteObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function HmCameraAnimationPlayer.ClearCameraAnimationCompleteObservers  (script 11 bytes)
+  0000: self.CameraAnimationCompleteObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmCameraAnimationPlayer.NotifyCameraAnimationCompleteObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.CameraAnimationCompleteObservers.Length)) goto 0x0041
+  0017: N = I[self.CameraAnimationCompleteObservers]
+  0028: CameraAnimationCompleteObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>
+
+function HmCameraAnimationPlayer.set_Paused  (script 16 bytes)
+  0000: self._Paused = Value
+  000d: return nothing
+  000f: <eos>
+
+function HmCameraAnimationPlayer.PlayCameraAnimation  (script 38 bytes)
+  0000: self.CameraAnimation = CamAnim
+  000b: self.CurrentTime = 0.0
+  0016: self.PreviousKeyframeIndex = 1
+  001d: HmCameraAnimationPlayer.CalculateAnimParams()
+  0023: return nothing
+  0025: <eos>
+
+function HmCameraAnimationPlayer.AdvanceAnimation  (script 71 bytes)
+  0000: if !(!self._Paused) goto 0x003e
+  000b: (self.CurrentTime += DeltaTime)
+  0017: if !(IsFinished()) goto 0x003e
+  0024: self.CurrentTime = self.CameraAnimation.AnimLength
+  0038: HmCameraAnimationPlayer.NotifyCameraAnimationCompleteObservers()
+  003e: HmCameraAnimationPlayer.CalculateAnimParams()
+  0044: return nothing
+  0046: <eos>
+
+function HmCameraAnimationPlayer.GetMoveTrack  (script 131 bytes)
+  0000: if !((self.CameraAnimation == none)) goto 0x000d
+  000b: return none
+  000d: I = 0
+  0014: if !((I < self.CameraAnimation.CameraInterpGroup.InterpTracks.Length)) goto 0x0076
+  0036: MoveTrack = InterpTrackMove(I[self.CameraAnimation.CameraInterpGroup.InterpTracks])
+  005e: if !((MoveTrack != none)) goto 0x006c
+  0069: goto 0x0076
+  006c: AddAdd_PreInt(I)
+  0073: goto 0x0014
+  0076: return MoveTrack
+  007c: return return
+  0082: <eos>
+
+function HmCameraAnimationPlayer.CalculateAnimParams  (script 107 bytes)
+  0000: MoveTrack = HmCameraAnimationPlayer.GetMoveTrack()
+  000c: if !((MoveTrack == none)) goto 0x0019
+  0017: return nothing
+  0019: self.CurrentAnimFrame.Position = EvaluateCurve(MoveTrack.PosTrack, self.CurrentTime)
+  004c: self.CurrentAnimFrame.Rotation = HmCameraAnimationPlayer.EvaluateRotationQuat(MoveTrack)
+  0068: return nothing
+  006a: <eos>
+
+function HmCameraAnimationPlayer.EvaluateCurve  (script 50 bytes)
+  0000: return obj'Core.Math'.static.EvalCurveVector(curve, Time, vect(0,0,0))
+  002b: return return
+  0031: <eos>
+
+function HmCameraAnimationPlayer.EvaluateRotationQuat  (script 726 bytes)
+  0000: if !((self.CurrentTime < 0[MoveTrack.EulerTrack.Points].InVal)) goto 0x006a
+  0030: return obj'Core.Math'.static.EulerToRotator(0[MoveTrack.EulerTrack.Points].OutVal)
+  006a: if !((self.CurrentTime >= (MoveTrack.EulerTrack.Points.Length - 1)[MoveTrack.EulerTrack.Points].InVal)) goto 0x010c
+  00b6: return obj'Core.Math'.static.EulerToRotator((MoveTrack.EulerTrack.Points.Length - 1)[MoveTrack.EulerTrack.Points].OutVal)
+  010c: I = self.PreviousKeyframeIndex
+  0117: if !((I < MoveTrack.EulerTrack.Points.Length)) goto 0x02c1
+  013b: if !((self.CurrentTime < I[MoveTrack.EulerTrack.Points].InVal)) goto 0x02b7
+  016f: PreviousPoint = (I - 1)[MoveTrack.EulerTrack.Points]
+  0197: NextPoint = I[MoveTrack.EulerTrack.Points]
+  01bc: PreviousRotation = obj'Core.Math'.static.EulerToRotator(PreviousPoint.OutVal)
+  01e5: NextRotation = obj'Core.Math'.static.EulerToRotator(NextPoint.OutVal)
+  020e: KeyframeAlpha = ((self.CurrentTime - PreviousPoint.InVal) / (NextPoint.InVal - PreviousPoint.InVal))
+  024f: self.PreviousKeyframeIndex = I
+  025a: return obj'Core.Math'.static.QuatToRotator(obj'Core.Math'.static.QuatSlerp(obj'Core.Math'.static.QuatFromRotator(PreviousRotation), obj'Core.Math'.static.QuatFromRotator(NextRotation), KeyframeAlpha, ))
+  02b7: AddAdd_PreInt(I)
+  02be: goto 0x0117
+  02c1: return rot(0,0,0)
+  02cf: return return
+  02d5: <eos>
+
+function HmCameraAnimationPlayer.GetCurrentAnimFrame  (script 13 bytes)
+  0000: return self.CurrentAnimFrame
+  0006: return return
+  000c: <eos>
+
+function HmCameraAnimationPlayer.IsFinished  (script 55 bytes)
+  0000: if !((self.CameraAnimation == none)) goto 0x000d
+  000b: return true
+  000d: return (!self._Paused && (self.CurrentTime >= self.CameraAnimation.AnimLength))
+  0030: return return
+  0036: <eos>

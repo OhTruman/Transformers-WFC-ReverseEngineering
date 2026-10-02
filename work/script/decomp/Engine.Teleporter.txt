@@ -1,0 +1,108 @@
+function Teleporter.CanTeleport  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Teleporter.PostBeginPlay  (script 27 bytes)
+  0000: if !((self.URL ~= "")) goto 0x0012
+  000c: SetCollision(false, false, )
+  0012: Actor.PostBeginPlay()
+  0018: return nothing
+  001a: <eos>
+
+function Teleporter.Accept  (script 1068 bytes)
+  0000: if !((Incoming == none)) goto 0x000d
+  000b: return false
+  000d: NewRot = Incoming.Rotation
+  0021: if !(self.bChangesYaw) goto 0x00b7
+  002a: oldRot = Incoming.Rotation
+  003e: NewRot.Yaw = self.Rotation.Yaw
+  005f: if !((Source != none)) goto 0x00b7
+  006a: (NewRot.Yaw += ((32768 + Incoming.Rotation.Yaw) - Source.Rotation.Yaw))
+  00b7: P = Pawn(Incoming)
+  00c7: if !((P != none)) goto 0x027a
+  00d2: if !((cast3a(self.Role) == cast3a(3))) goto 0x012f
+  00e2: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x012e)
+  0102: if !((C.Enemy == Incoming)) goto 0x012d
+  011a: C.EnemyJustTeleported()
+  012d: iternext
+  012e: iterpop
+  012f: if !(!P.SetLocation(self.Location)) goto 0x0171
+  0145: LogInternal(((cast56(self) $ " Teleport failed for ") $ cast56(Incoming)), , , )
+  016f: return false
+  0171: if !(((cast3a(self.Role) == cast3a(3)) || ((self.WorldInfo.TimeSeconds - self.LastFired) > 0.5))) goto 0x0209
+  01a2: NewRot.Roll = 0
+  01b4: P.SetRotation(NewRot)
+  01c5: P.SetViewRotation(NewRot)
+  01dd: P.ClientSetRotation(NewRot)
+  01f5: self.LastFired = self.WorldInfo.TimeSeconds
+  0209: if !((P.Controller != none)) goto 0x0262
+  021d: P.Controller.MoveTimer = -1.0
+  023a: P.SetAnchor(self)
+  024e: P.SetMoveTarget(self)
+  0262: Incoming.PlayTeleportEffect(false, true)
+  0277: goto 0x02ac
+  027a: if !(!Incoming.SetLocation(self.Location)) goto 0x0292
+  0290: return false
+  0292: if !(self.bChangesYaw) goto 0x02ac
+  029b: Incoming.SetRotation(NewRot)
+  02ac: if !(self.bChangesVelocity) goto 0x02cc
+  02b5: Incoming.Velocity = self.TargetVelocity
+  02c9: goto 0x03e7
+  02cc: if !(self.bChangesYaw) goto 0x036c
+  02d5: if !((cast3a(Incoming.Physics) == cast3a(1))) goto 0x0300
+  02ee: oldRot.Pitch = 0
+  0300: oldDir = cast39(oldRot)
+  030d: mag = (Incoming.Velocity dot oldDir)
+  0328: Incoming.Velocity = ((Incoming.Velocity - (mag * oldDir)) + (mag * cast39(Incoming.Rotation)))
+  036c: if !(self.bReversesX) goto 0x0395
+  0375: (Incoming.Velocity.X *= -1.0)
+  0395: if !(self.bReversesY) goto 0x03be
+  039e: (Incoming.Velocity.Y *= -1.0)
+  03be: if !(self.bReversesZ) goto 0x03e7
+  03c7: (Incoming.Velocity.Z *= -1.0)
+  03e7: if !((P != none)) goto 0x040f
+  03f2: P.Teleport(self.Location, NewRot)
+  040f: Incoming.PostTeleport(self)
+  0423: return true
+  0425: return return
+  042b: <eos>
+
+function Teleporter.Touch  (script 110 bytes)
+  0000: if !((!self.bEnabled || (Other == none))) goto 0x001a
+  0018: return nothing
+  001a: if !((CanTeleport(Other) && !Other.PreTeleport(self))) goto 0x006b
+  0047: self.PendingTouch = Other.PendingTouch
+  005b: Other.PendingTouch = self
+  006b: return nothing
+  006d: <eos>
+
+function Teleporter.PostTouch  (script 390 bytes)
+  0000: if !(((obj'Core.Strings'.static.InStr(self.URL, "/", ) >= 0) || (obj'Core.Strings'.static.InStr(self.URL, "#", ) >= 0))) goto 0x00b1
+  0036: if !((((cast3a(self.Role) == cast3a(3)) && (Pawn(Other) != none)) && Pawn(Other).IsHumanControlled())) goto 0x00ae
+  0075: self.WorldInfo.Game.SendPlayer(PlayerController(Pawn(Other).Controller), self.URL)
+  00ae: goto 0x0183
+  00b1: foreach AllActors(obj'Teleporter', D) (end 0x0117)
+  00c8: if !(((cast57(D.Tag) ~= self.URL) && (D != self))) goto 0x0116
+  00ef: I[Dest] = D
+  0100: AddAdd_Int(I)
+  0107: if !((I > 16)) goto 0x0116
+  0113: goto 0x0117
+  0116: iternext
+  0117: iterpop
+  0118: I = obj'Core.Random'.static.Rand(I)
+  012e: if !((I[Dest] != none)) goto 0x0183
+  013f: if !((Pawn(Other) != none)) goto 0x0164
+  014f: Other.PlayTeleportEffect(true, true)
+  0164: I[Dest].Accept(Other, self)
+  0183: return nothing
+  0185: <eos>
+
+function Teleporter.SpecialHandling  (script 171 bytes)
+  0000: if !((((self.bEnabled && (Other.Controller.RouteCache.Length > 1)) && (Teleporter(1[Other.Controller.RouteCache]) != none)) && (cast57(1[Other.Controller.RouteCache].Tag) ~= self.URL))) goto 0x00a2
+  007f: if !(IsOverlapping(Other)) goto 0x00a0
+  0091: PostTouch(Other)
+  00a0: return self
+  00a2: return none
+  00a4: return return
+  00aa: <eos>

@@ -1,0 +1,339 @@
+function SVehicle.SetWheelCollision  (script 12 bytes)
+  0000: WheelNum
+  0005: bCollision
+  000a: nothing
+  000b: <eos>
+
+function SVehicle.AddForce  (script 7 bytes)
+  0000: Force
+  0005: nothing
+  0006: <eos>
+
+function SVehicle.AddImpulse  (script 7 bytes)
+  0000: Impulse
+  0005: nothing
+  0006: <eos>
+
+function SVehicle.AddTorque  (script 7 bytes)
+  0000: Torque
+  0005: nothing
+  0006: <eos>
+
+function SVehicle.PostBeginPlay  (script 78 bytes)
+  0000: Vehicle.PostBeginPlay()
+  0006: if !(((self.CollisionSound != none) && (self.CollisionIntervalSecs <= 0.0))) goto 0x004b
+  0022: self.CollisionIntervalSecs = (self.CollisionSound.GetCueDuration() / self.WorldInfo.TimeDilation)
+  004b: return nothing
+  004d: <eos>
+
+function SVehicle.PostInitAnimTree  (script 132 bytes)
+  0000: Actor.PostInitAnimTree(SkelComp)
+  000b: if !((SkelComp == self.Mesh)) goto 0x0081
+  001a: WheelIndex = 0
+  0021: if !((WheelIndex < self.Wheels.Length)) goto 0x0081
+  0031: Wheel = WheelIndex[self.Wheels]
+  0042: Wheel.WheelControl = SkelControlWheel(self.Mesh.FindSkelControl(Wheel.SkelControlName))
+  0077: AddAdd_Int(WheelIndex)
+  007e: goto 0x0021
+  0081: return nothing
+  0083: <eos>
+
+function SVehicle.Destroyed  (script 39 bytes)
+  0000: Vehicle.Destroyed()
+  0006: if !(self.WorldInfo.IsInEditor()) goto 0x001e
+  001c: return nothing
+  001e: SVehicle.StopVehicleSounds()
+  0024: return nothing
+  0026: <eos>
+
+function SVehicle.TurnOff  (script 15 bytes)
+  0000: Pawn.TurnOff()
+  0006: SVehicle.StopVehicleSounds()
+  000c: return nothing
+  000e: <eos>
+
+function SVehicle.StopVehicleSounds  (script 63 bytes)
+  0000: if !((self.EngineSound != none)) goto 0x001e
+  000b: self.EngineSound.Stop()
+  001e: if !((self.SquealSound != none)) goto 0x003c
+  0029: self.SquealSound.Stop()
+  003c: return nothing
+  003e: <eos>
+
+function SVehicle.TakeRadiusDamage  (script 303 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: HitLocation = self.Location
+  001d: Dir = (self.Location - HurtOrigin)
+  002f: CheckHitInfo(HitInfo, self.Mesh, Dir, HitLocation)
+  004d: NewDir = (HitLocation - HurtOrigin)
+  005f: Dist = obj'Core.Math'.static.VSize(NewDir)
+  0075: if !(bFullDamage) goto 0x008c
+  007e: DamageScale = 1.0
+  0089: goto 0x00c9
+  008c: if !((Dist > DamageRadius)) goto 0x00a0
+  009b: return nothing
+  009d: goto 0x00c9
+  00a0: DamageScale = obj'Core.Math'.static.FMax(0.0, (1.0 - (Dist / DamageRadius)))
+  00c9: self.RadialImpulseScaling = DamageScale
+  00d4: TakeDamage((DamageScale * BaseDamage), InstigatedBy, HitLocation, ((DamageScale * Momentum) * obj'Core.Math'.static.Normal(Dir)), DamageType, HitInfo, DamageCauser)
+  0121: self.RadialImpulseScaling = 1.0
+  012c: return nothing
+  012e: <eos>
+
+function SVehicle.InitVehicleRagdoll  (script 17 bytes)
+  0000: RagdollMesh
+  0005: RagdollPhysAsset
+  000a: ActorMove
+  000f: nothing
+  0010: <eos>
+
+function SVehicle.AddVelocity  (script 279 bytes)
+  0000: nothing
+  0001: if !(!obj'Core.Math'.static.IsZero(NewVelocity)) goto 0x0109
+  0017: NewVelocity = ((((self.RadialImpulseScaling * self.MomentumMult) * DamageType.static.default.VehicleMomentumScaling) * DamageType.static.default.KDamageImpulse) * obj'Core.Math'.static.Normal(NewVelocity))
+  005b: if !((!self.bIgnoreForces && !obj'Core.Math'.static.IsZero(NewVelocity))) goto 0x0109
+  007e: if !((self.Location.Z > self.WorldInfo.StallZ)) goto 0x00d2
+  00a1: NewVelocity.Z = obj'Core.Math'.static.FMin(NewVelocity.Z, 0.0)
+  00d2: if !(InGodMode()) goto 0x00eb
+  00df: (NewVelocity *= 0.25)
+  00eb: self.Mesh.AddLinearImpulse(NewVelocity, HitLocation, )
+  0109: self.RadialImpulseScaling = 1.0
+  0114: return nothing
+  0116: <eos>
+
+function SVehicle.Died  (script 69 bytes)
+  0000: if !(Vehicle.Died(Killer, DamageType, HitLocation)) goto 0x003c
+  0018: self.bDriving = false
+  0020: AddVelocity(self.TearOffMomentum, HitLocation, DamageType, )
+  003a: return true
+  003c: return false
+  003e: return return
+  0044: <eos>
+
+function SVehicle.CalcCamera  (script 153 bytes)
+  0000: GetActorEyesViewPoint(out_CamLoc, out_CamRot)
+  0014: (out_CamLoc += self.BaseOffset)
+  0020: Pos = (out_CamLoc - (cast39(out_CamRot) * self.CamDist))
+  003b: if !((Trace(HitLocation, HitNormal, none, Pos, out_CamLoc, false, vect(0,0,0), , , ) != none)) goto 0x0085
+  006a: out_CamLoc = (HitLocation + (HitNormal * cast3f(2)))
+  0082: goto 0x0090
+  0085: out_CamLoc = Pos
+  0090: return true
+  0092: return return
+  0098: <eos>
+
+function SVehicle.GetDefaultCameraMode  (script 17 bytes)
+  0000: return 'Default'
+  000a: return return
+  0010: <eos>
+
+function SVehicle.ClearInverted  (script 11 bytes)
+  0000: self.bIsInverted = false
+  0008: return nothing
+  000a: <eos>
+
+function SVehicle.TryToDrive  (script 108 bytes)
+  0000: if !(((self.bIsInverted && !self.bVehicleOnGround) && (obj'Core.Math'.static.VSize(self.Velocity) <= 0.1))) goto 0x0059
+  0032: if !(self.bCanFlip) goto 0x0057
+  003b: self.bIsUprighting = true
+  0043: self.UprightStartTime = self.WorldInfo.TimeSeconds
+  0057: return false
+  0059: return Vehicle.TryToDrive(P)
+  0065: return return
+  006b: <eos>
+
+function SVehicle.HasWheelsOnGround  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SVehicle.StartEngineSound  (script 73 bytes)
+  0000: if !((self.EngineSound != none)) goto 0x001e
+  000b: self.EngineSound.Play()
+  001e: ClearTimer('StartEngineSound', )
+  0032: ClearTimer('StopEngineSound', )
+  0046: return nothing
+  0048: <eos>
+
+function SVehicle.StartEngineSoundTimed  (script 66 bytes)
+  0000: if !((self.EngineStartOffsetSecs > 0.0)) goto 0x0039
+  000f: ClearTimer('StopEngineSound', )
+  0023: SetTimer(self.EngineStartOffsetSecs, false, 'StartEngineSound', )
+  0036: goto 0x003f
+  0039: SVehicle.StartEngineSound()
+  003f: return nothing
+  0041: <eos>
+
+function SVehicle.StopEngineSound  (script 73 bytes)
+  0000: if !((self.EngineSound != none)) goto 0x001e
+  000b: self.EngineSound.Stop()
+  001e: ClearTimer('StartEngineSound', )
+  0032: ClearTimer('StopEngineSound', )
+  0046: return nothing
+  0048: <eos>
+
+function SVehicle.StopEngineSoundTimed  (script 66 bytes)
+  0000: if !((self.EngineStopOffsetSecs > 0.0)) goto 0x0039
+  000f: ClearTimer('StartEngineSound', )
+  0023: SetTimer(self.EngineStopOffsetSecs, false, 'StopEngineSound', )
+  0036: goto 0x003f
+  0039: SVehicle.StopEngineSound()
+  003f: return nothing
+  0041: <eos>
+
+function SVehicle.VehiclePlayEnterSound  (script 9 bytes)
+  0000: SVehicle.StartEngineSoundTimed()
+  0006: return nothing
+  0008: <eos>
+
+function SVehicle.VehiclePlayExitSound  (script 9 bytes)
+  0000: SVehicle.StopEngineSoundTimed()
+  0006: return nothing
+  0008: <eos>
+
+function SVehicle.DrivingStatusChanged  (script 48 bytes)
+  0000: self.bUpdateWheelShapes = true
+  0008: if !(self.bDriving) goto 0x001a
+  0011: SVehicle.VehiclePlayEnterSound()
+  0017: goto 0x002d
+  001a: if !((self.Health > cast3f(0))) goto 0x002d
+  0027: SVehicle.VehiclePlayExitSound()
+  002d: return nothing
+  002f: <eos>
+
+function SVehicle.RigidBodyCollision  (script 85 bytes)
+  0000: if !(((self.WorldInfo.TimeSeconds - self.LastCollisionSoundTime) > self.CollisionIntervalSecs)) goto 0x0052
+  001f: if !((self.CollisionSound != none)) goto 0x003e
+  002a: PlaySound(self.CollisionSound, true, , , , )
+  003e: self.LastCollisionSoundTime = self.WorldInfo.TimeSeconds
+  0052: return nothing
+  0054: <eos>
+
+function SVehicle.SuspensionHeavyShift  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SVehicle.PostTeleport  (script 28 bytes)
+  0000: self.Mesh.SetRBPosition(self.Location, )
+  0019: return nothing
+  001b: <eos>
+
+function SVehicle.DisplayDebug  (script 280 bytes)
+  0000: Vehicle.DisplayDebug(HUD, out_YL, out_YPos)
+  0015: SVehicle.GetSVehicleDebug(DebugInfo)
+  0020: HUD.Canvas.SetDrawColor(cast3d(255), cast3d(255), 0, cast3d(255))
+  004a: I = 0
+  0051: if !((I < DebugInfo.Length)) goto 0x00cd
+  0061: HUD.Canvas.DrawTextNormal(("  " @ I[DebugInfo]), , , )
+  0091: (out_YPos += out_YL)
+  009d: HUD.Canvas.SetPos(4.0, out_YPos)
+  00c3: AddAdd_Int(I)
+  00ca: goto 0x0051
+  00cd: (out_YPos += (out_YL * cast3f(3)))
+  00df: HUD.Canvas.SetPos(4.0, out_YPos)
+  0105: SVehicle.DisplayWheelsDebug(HUD, out_YL)
+  0115: return nothing
+  0117: <eos>
+
+function SVehicle.DisplayWheelsDebug  (script 3415 bytes)
+  0000: if !((self.SimObj == none)) goto 0x000d
+  000b: return nothing
+  000d: GraphScale = 100.0
+  0018: SaveColor = HUD.Canvas.DrawColor
+  0035: I = 0
+  003c: if !((I < self.Wheels.Length)) goto 0x0d37
+  004c: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  006b: WorldLoc = (self.Location + (I[self.Wheels].WheelPosition >> self.Rotation))
+  0094: ScreenLoc = HUD.Canvas.Project(WorldLoc)
+  00bb: if !(((((ScreenLoc.X >= cast3f(0)) && (ScreenLoc.X < HUD.Canvas.ClipX)) && (ScreenLoc.Y >= cast3f(0))) && (ScreenLoc.Y < HUD.Canvas.ClipY))) goto 0x0d2d
+  0149: HUD.Canvas.DrawColor = MakeColor(cast3d(255), cast3d(255), 0, cast3d(255))
+  0179: HUD.Canvas.SetPos(ScreenLoc.X, ScreenLoc.Y)
+  01b5: HUD.Canvas.DrawTextNormal(("Force " $ cast55(I[self.Wheels].ContactForce)), , , )
+  01f4: HUD.Canvas.SetPos(ScreenLoc.X, (ScreenLoc.Y - (cast3f(1) * YL)))
+  023c: HUD.Canvas.DrawTextNormal(("SR " $ cast55(I[self.Wheels].LongSlipRatio)), , , )
+  0278: HUD.Canvas.SetPos(ScreenLoc.X, (ScreenLoc.Y - (cast3f(2) * YL)))
+  02c1: HUD.Canvas.DrawTextNormal((((("SA " $ cast55((I[self.Wheels].LatSlipAngle * 57.2957802))) $ " (") $ cast55(I[self.Wheels].LatSlipAngle)) $ ")"), , , )
+  0327: HUD.Canvas.SetPos(ScreenLoc.X, (ScreenLoc.Y - (cast3f(3) * YL)))
+  0370: HUD.Canvas.DrawTextNormal(("Torque " $ cast55(I[self.Wheels].MotorTorque)), , , )
+  03b0: HUD.Canvas.SetPos(ScreenLoc.X, (ScreenLoc.Y - (cast3f(4) * YL)))
+  03f9: HUD.Canvas.DrawTextNormal(("SpinVel " $ cast55(I[self.Wheels].SpinVel)), , , )
+  043a: HUD.Canvas.DrawColor = HUD.RedColor
+  0460: EndPoint = ((WorldLoc + ((I[self.Wheels].LongImpulse * cast3f(100)) * I[self.Wheels].LongDirection)) - (I[self.Wheels].WheelRadius * Z))
+  04ba: ScreenEndPoint = HUD.Canvas.Project(EndPoint)
+  04e1: obj'Debug'.static.DrawLine((WorldLoc - (I[self.Wheels].WheelRadius * Z)), EndPoint, MakeColor(cast3d(255), 0, 0, ), )
+  052f: HUD.Canvas.SetPos(ScreenEndPoint.X, ScreenEndPoint.Y)
+  056b: HUD.Canvas.DrawTextNormal(cast55(I[self.Wheels].LongImpulse), , , )
+  05a0: HUD.Canvas.DrawColor = HUD.GreenColor
+  05c6: EndPoint = ((WorldLoc + ((I[self.Wheels].LatImpulse * cast3f(100)) * I[self.Wheels].LatDirection)) - (I[self.Wheels].WheelRadius * Z))
+  0620: ScreenEndPoint = HUD.Canvas.Project(EndPoint)
+  0647: obj'Debug'.static.DrawLine((WorldLoc - (I[self.Wheels].WheelRadius * Z)), EndPoint, MakeColor(0, cast3d(255), 0, ), )
+  0695: HUD.Canvas.SetPos(ScreenEndPoint.X, ScreenEndPoint.Y)
+  06d1: HUD.Canvas.DrawTextNormal(cast55(I[self.Wheels].LatImpulse), , , )
+  0706: HUD.Canvas.SetPos(ScreenLoc.X, (ScreenLoc.Y + YL))
+  0749: HUD.Canvas.DrawTextNormal(cast55(I[self.Wheels].LatImpulse), , , )
+  077e: HUD.Canvas.DrawColor = MakeColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  07b0: HUD.Draw2DLine(cast44(ScreenLoc.X), cast44(ScreenLoc.Y), cast44((ScreenLoc.X + GraphScale)), cast44(ScreenLoc.Y), MakeColor(0, 0, cast3d(255), cast3d(255)))
+  0828: HUD.Canvas.SetPos((ScreenLoc.X + GraphScale), ScreenLoc.Y)
+  086b: HUD.Canvas.DrawTextNormal(cast55((3.1415927 * 0.5)), , , )
+  0898: HUD.Draw2DLine(cast44(ScreenLoc.X), cast44(ScreenLoc.Y), cast44(ScreenLoc.X), cast44((ScreenLoc.Y - GraphScale)), MakeColor(0, 0, cast3d(255), cast3d(255)))
+  0910: HUD.Canvas.SetPos(ScreenLoc.X, (ScreenLoc.Y - GraphScale))
+  0953: HUD.Canvas.DrawTextNormal(cast55(self.SimObj.WheelLatExtremumValue), , , )
+  0982: LastForceValue = 0.0
+  098d: J = 0
+  0994: if !((cast3f(J) <= GraphScale)) goto 0x0a98
+  09a5: ForceValue = SVehicle.HermiteEval((cast3f(J) * ((3.1415927 * 0.5) / GraphScale)))
+  09cd: ForceValue = ((ForceValue / self.SimObj.WheelLatExtremumValue) * GraphScale)
+  09ef: HUD.Draw2DLine(cast44((ScreenLoc.X + cast3f((J - 1)))), cast44((ScreenLoc.Y - LastForceValue)), cast44((ScreenLoc.X + cast3f(J))), cast44((ScreenLoc.Y - ForceValue)), MakeColor(0, cast3d(255), 0, cast3d(255)))
+  0a83: LastForceValue = ForceValue
+  0a8e: AddAdd_Int(J)
+  0a95: goto 0x0994
+  0a98: ForceValue = SVehicle.HermiteEval(obj'Core.Math'.static.Abs(I[self.Wheels].LatSlipAngle))
+  0ac3: ForceValueLoc.X = (ScreenLoc.X + ((obj'Core.Math'.static.Abs(I[self.Wheels].LatSlipAngle) / (3.1415927 * 0.5)) * GraphScale))
+  0b1a: ForceValueLoc.Y = (ScreenLoc.Y - ((ForceValue / self.SimObj.WheelLatExtremumValue) * GraphScale))
+  0b59: HUD.Draw2DLine(cast44((ForceValueLoc.X - cast3f(5))), cast44(ForceValueLoc.Y), cast44((ForceValueLoc.X + cast3f(5))), cast44(ForceValueLoc.Y), MakeColor(cast3d(255), 0, 0, cast3d(255)))
+  0bd6: HUD.Draw2DLine(cast44(ForceValueLoc.X), cast44((ForceValueLoc.Y - cast3f(5))), cast44(ForceValueLoc.X), cast44((ForceValueLoc.Y + cast3f(5))), MakeColor(cast3d(255), 0, 0, cast3d(255)))
+  0c53: HUD.Canvas.SetPos(ScreenLoc.X, ForceValueLoc.Y)
+  0c8f: HUD.Canvas.DrawTextNormal(cast55(ForceValue), , , )
+  0cb5: HUD.Canvas.SetPos(ForceValueLoc.X, (ScreenLoc.Y + YL))
+  0cf8: HUD.Canvas.DrawTextNormal(cast55(I[self.Wheels].LatSlipAngle), , , )
+  0d2d: AddAdd_Int(I)
+  0d34: goto 0x003c
+  0d37: HUD.Canvas.DrawColor = SaveColor
+  0d54: return nothing
+  0d56: <eos>
+
+function SVehicle.HermiteEval  (script 426 bytes)
+  0000: LatExtremumSlip = self.SimObj.WheelLatExtremumSlip
+  0014: LatExtremumValue = self.SimObj.WheelLatExtremumValue
+  0028: LatAsymptoteSlip = self.SimObj.WheelLatAsymptoteSlip
+  003c: LatAsymptoteValue = self.SimObj.WheelLatAsymptoteValue
+  0050: if !((Slip < LatExtremumSlip)) goto 0x00e6
+  005f: (Slip /= LatExtremumSlip)
+  006b: SlipSquared = (Slip * Slip)
+  007d: SlipCubed = (SlipSquared * Slip)
+  008f: C3 = ((-2.0 * SlipCubed) + (3.0 * SlipSquared))
+  00af: C1 = ((SlipCubed - (2.0 * SlipSquared)) + Slip)
+  00cf: return ((C1 + C3) * LatExtremumValue)
+  00e3: goto 0x01a3
+  00e6: if !((Slip > LatAsymptoteSlip)) goto 0x00fe
+  00f5: return LatAsymptoteValue
+  00fb: goto 0x01a3
+  00fe: (Slip /= (LatAsymptoteSlip - LatExtremumSlip))
+  0111: (Slip -= LatExtremumSlip)
+  011d: SlipSquared = (Slip * Slip)
+  012f: SlipCubed = (SlipSquared * Slip)
+  0141: C3 = ((-2.0 * SlipCubed) + (3.0 * SlipSquared))
+  0161: C0 = (((2.0 * SlipCubed) - (3.0 * SlipSquared)) + 1.0)
+  0188: return ((C0 * LatExtremumValue) + (C3 * LatAsymptoteValue))
+  01a3: return return
+  01a9: <eos>
+
+function SVehicle.GetSVehicleDebug  (script 252 bytes)
+  0000: DebugInfo.Length[DebugInfo] = "----Vehicle----: "
+  0020: DebugInfo.Length[DebugInfo] = (((("Speed: " $ cast55(obj'Core.Math'.static.VSize(self.Velocity))) $ " Unreal -- ") $ cast55((obj'Core.Math'.static.VSize(self.Velocity) * 0.0223694))) $ " MPH")
+  007c: if !((self.Wheels.Length > 0)) goto 0x00b8
+  0088: DebugInfo.Length[DebugInfo] = ("MotorTorque: " $ cast55(0[self.Wheels].MotorTorque))
+  00b8: DebugInfo.Length[DebugInfo] = ("Throttle: " $ cast55(self.OutputGas))
+  00da: DebugInfo.Length[DebugInfo] = ("Brake: " $ cast55(self.OutputBrake))
+  00f9: return nothing
+  00fb: <eos>

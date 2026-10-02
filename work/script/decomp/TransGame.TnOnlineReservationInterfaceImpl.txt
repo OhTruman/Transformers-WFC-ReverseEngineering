@@ -1,0 +1,41 @@
+function TnOnlineReservationInterfaceImpl.CreatePlaceholderPRIForPlayer  (script 154 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: TheGame = TnGame(WI.Game)
+  0032: if !((TheGame == none)) goto 0x003f
+  003d: return nothing
+  003f: PartyCollection = GetReservations()
+  004f: TeamIndex = cast3a(PartyCollection.GetTeamIndexForPlayer(ThePlayer.NetId))
+  007a: TheGame.CreatePlaceholderPRIForPlayer(ThePlayer, TeamIndex)
+  0097: return nothing
+  0099: <eos>
+
+function TnOnlineReservationInterfaceImpl.DestroyPlaceholderPRIForPlayer  (script 108 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x0069
+  002d: ThePlayer.NetId = PlayerID
+  0043: TnGame(WI.Game).DestroyPlaceholderPRIForPlayer(ThePlayer)
+  0069: return nothing
+  006b: <eos>
+
+function TnOnlineReservationInterfaceImpl.OnClientReservationAcceptedInternal  (script 25 bytes)
+  0000: OnClientReservationAcceptedInternal(ThePlayer)
+  000b: TnOnlineReservationInterfaceImpl.CreatePlaceholderPRIForPlayer(ThePlayer)
+  0016: return nothing
+  0018: <eos>
+
+function TnOnlineReservationInterfaceImpl.OnClientReservationCancelledInternal  (script 25 bytes)
+  0000: OnClientReservationCancelledInternal(PlayerID)
+  000b: TnOnlineReservationInterfaceImpl.DestroyPlaceholderPRIForPlayer(PlayerID)
+  0016: return nothing
+  0018: <eos>
+
+function TnOnlineReservationInterfaceImpl.OnClientReturnToSessionAcceptedInternal  (script 25 bytes)
+  0000: OnClientReturnToSessionAcceptedInternal(ThePlayer)
+  000b: TnOnlineReservationInterfaceImpl.CreatePlaceholderPRIForPlayer(ThePlayer)
+  0016: return nothing
+  0018: <eos>
+
+function TnOnlineReservationInterfaceImpl.GetLocalSkill  (script 51 bytes)
+  0000: return TnPlayerController(GetLocalPlayerController()).get_XpManager().PackLevels()
+  002c: return return
+  0032: <eos>

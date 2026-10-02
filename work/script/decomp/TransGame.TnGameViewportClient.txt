@@ -1,0 +1,114 @@
+function TnGameViewportClient.get_HasAssignedControllerId  (script 14 bytes)
+  0000: return self._HasAssignedControllerId
+  0007: return return
+  000d: <eos>
+
+function TnGameViewportClient.MapInputKeyForController  (script 244 bytes)
+  0000: Profile = TnProfileSettings(PC.ProfileSettings)
+  0019: if !((Profile == none)) goto 0x002a
+  0024: return InName
+  002a: if !(Profile.GetSwitchRightThumbstickAndB()) goto 0x007a
+  0040: if !((InName == 'XboxTypeS_B')) goto 0x005d
+  0053: return 'XboxTypeS_RightThumbstick'
+  005d: if !((InName == 'XboxTypeS_RightThumbstick')) goto 0x007a
+  0070: return 'XboxTypeS_B'
+  007a: if !(Profile.GetUseAlternateControlScheme()) goto 0x00e7
+  0090: if !((InName == 'XboxTypeS_Y')) goto 0x00ad
+  00a3: return 'XboxTypeS_LeftThumbstick'
+  00ad: if !((InName == 'XboxTypeS_LeftThumbstick')) goto 0x00ca
+  00c0: return 'NoKey'
+  00ca: if !((InName == 'XboxTypeS_DPad_Up')) goto 0x00e7
+  00dd: return 'XboxTypeS_Y'
+  00e7: return InName
+  00ed: return return
+  00f3: <eos>
+
+function TnGameViewportClient.MapInputKey  (script 233 bytes)
+  0000: if !((!self._HasAssignedControllerId && TnGameViewportClient.IsControllerSelectionAllowed(InName))) goto 0x002a
+  001b: AssignControllerToLocalPlayer(ControllerId)
+  002a: LP = FindPlayerByControllerId(ControllerId)
+  003f: if !((LP == none)) goto 0x0050
+  004a: return InName
+  0050: PC = TnPlayerController(LP.Actor)
+  0069: if !(((PC == none) || (PC.UIController == none))) goto 0x0090
+  008a: return InName
+  0090: if !(((PC.UIController == none) || !PC.UIController.IsInGame())) goto 0x00cd
+  00c7: return InName
+  00cd: return MapInputKeyForController(PC, InName)
+  00e2: return return
+  00e8: <eos>
+
+function TnGameViewportClient.IsControllerSelectionAllowed  (script 185 bytes)
+  0000: if !(!obj'Engine.WorldInfo'.static.IsConsoleBuild()) goto 0x001b
+  0019: return true
+  001b: if !(!self._IsControllerSelectionAllowed) goto 0x0028
+  0026: return false
+  0028: if !((InputKeyName != 'XboxTypeS_Start')) goto 0x003d
+  003b: return false
+  003d: PC = TnWorldInfo(obj'Engine.GameEngine'.static.GetCurrentWorldInfo()).GetLocalPlayerController()
+  0069: if !((((PC == none) || (PC.UIController == none)) || (PC.UIController.get_CurrentMessageBoxInterface() != none))) goto 0x00b0
+  00ae: return false
+  00b0: return true
+  00b2: return return
+  00b8: <eos>
+
+function TnGameViewportClient.AllowControllerSelection  (script 11 bytes)
+  0000: self._IsControllerSelectionAllowed = true
+  0008: return nothing
+  000a: <eos>
+
+function TnGameViewportClient.DisallowControllerSelection  (script 11 bytes)
+  0000: self._IsControllerSelectionAllowed = false
+  0008: return nothing
+  000a: <eos>
+
+function TnGameViewportClient.ForceControllerSelection  (script 11 bytes)
+  0000: self._HasAssignedControllerId = false
+  0008: return nothing
+  000a: <eos>
+
+function TnGameViewportClient.AssignControllerToLocalPlayer  (script 115 bytes)
+  0000: if !((get_Outer().GamePlayers.Length == 0)) goto 0x0015
+  0013: return nothing
+  0015: 0[get_Outer().GamePlayers].SetControllerId(ControllerId)
+  0036: LogInternal((("Assigning controler" $ cast53(ControllerId)) $ "to viewport"), , , )
+  0068: self._HasAssignedControllerId = true
+  0070: return nothing
+  0072: <eos>
+
+function TnGameViewportClient.Init  (script 64 bytes)
+  0000: self.__HandleInputKey__Delegate = delegate.OnHandleInputKey
+  000f: self.__HandleInputAxis__Delegate = delegate.OnHandleInputAxis
+  001e: self.__HandleInputChar__Delegate = delegate.OnHandleInputChar
+  002d: return Init(OutError)
+  0039: return return
+  003f: <eos>
+
+function TnGameViewportClient.OnHandleInputKey  (script 22 bytes)
+  0000: nothing
+  0001: return !TnGameViewportClient.IsValidController(ControllerId)
+  000f: return return
+  0015: <eos>
+
+function TnGameViewportClient.OnHandleInputAxis  (script 22 bytes)
+  0000: nothing
+  0001: return !TnGameViewportClient.IsValidController(ControllerId)
+  000f: return return
+  0015: <eos>
+
+function TnGameViewportClient.OnHandleInputChar  (script 21 bytes)
+  0000: return !TnGameViewportClient.IsValidController(ControllerId)
+  000e: return return
+  0014: <eos>
+
+function TnGameViewportClient.IsValidController  (script 126 bytes)
+  0000: LP = FindPlayerByControllerId(ControllerId)
+  0015: if !(((LP != none) && (LP.ViewportClient == self))) goto 0x0075
+  0036: PC = TnPlayerController(LP.Actor)
+  004f: if !(((PC != none) && PC._IsExternalUIOpen)) goto 0x0070
+  006e: return false
+  0070: return true
+  0072: goto 0x0077
+  0075: return false
+  0077: return return
+  007d: <eos>

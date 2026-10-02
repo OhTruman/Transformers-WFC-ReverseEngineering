@@ -1,0 +1,37 @@
+function TnBuffExplodeOnDeath.SaveNumberOfGrenades  (script 15 bytes)
+  0000: self.NumberOfGrenades = TnBuffExplodeOnDeath.GetNumberOfGrenades()
+  000c: return nothing
+  000e: <eos>
+
+function TnBuffExplodeOnDeath.GetNumberOfGrenades  (script 179 bytes)
+  0000: IM = TnInventoryManager(self.OwnerPawn.InvManager)
+  0019: if !((IM == none)) goto 0x0075
+  0024: LogInternal((("ERROR:" @ cast56(self.OwnerPawn)) @ "does not have an inventory manager. Martyrdom failed."), , , )
+  0073: return 0
+  0075: Grenades = IM.GetWeaponByType(4)
+  0090: if !((Grenades == none)) goto 0x009d
+  009b: return 0
+  009d: return Grenades.ReserveAmmoCount
+  00ac: return return
+  00b2: <eos>
+
+function TnBuffExplodeOnDeath.Explode  (script 431 bytes)
+  0000: if !(((cast3a(self.OwnerPawn.Role) < cast3a(3)) || (self.OwnerController == none))) goto 0x0028
+  0026: return nothing
+  0028: YawOffset = (360.0 * obj'Core.Random'.static.RandomFloat())
+  0049: PitchOffset = (obj'Core.Random'.static.RandomInRange(self.RandomPitchHalfAngle) + cast3f(90))
+  006d: I = 0
+  0074: if !((I < self.NumberOfGrenades)) goto 0x01ac
+  0083: Proj = self.OwnerPawn.Spawn(obj'TnProjectileKamikazeMineMartyrdom', , , (self.OwnerPawn.Location + self.SpawnOffset), , , , )
+  00bc: if !((Proj == none)) goto 0x00ca
+  00c7: goto 0x01a2
+  00ca: Direction = cast39(obj'Core.Math'.static.MakeRotatorDeg(PitchOffset, YawOffset, 0.0))
+  00f4: (YawOffset += cast3f((360 / self.NumberOfGrenades)))
+  0109: if !(((self.OwnerController.PlayerReplicationInfo != none) && (self.OwnerController.PlayerReplicationInfo.Team != none))) goto 0x0172
+  013c: Proj.SetTeam(class<TnTeamInfo>(self.OwnerController.PlayerReplicationInfo.Team.get_Class()))
+  0172: Proj.Init(Direction)
+  018a: Proj.SetInstigatorController(self.OwnerController)
+  01a2: AddAdd_PreInt(I)
+  01a9: goto 0x0074
+  01ac: return nothing
+  01ae: <eos>

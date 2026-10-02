@@ -1,0 +1,18 @@
+function TnBlockControllerData.CheckForErrors  (script 695 bytes)
+  0000: if !((self.ShieldMeshTemplate == none)) goto 0x0041
+  000b: EmitCheckMessage(0, "BlockController has no shield mesh set", , )
+  0041: if !(((self.ShieldMeshTemplate != none) && (self.ShieldMeshTemplate.WeaponPhysicsAsset == none))) goto 0x00d8
+  0062: EmitCheckMessage(0, (("Shield physics for" @ cast56(self.ShieldMeshTemplate)) @ "is not set, you will not be able to block any damage with his shield"), , )
+  00d5: goto 0x02b4
+  00d8: if !((self.ShieldMeshTemplate.GetAnimatedMeshComponent().BlockActors != true)) goto 0x0134
+  00fb: EmitCheckMessage(0, "Shield collision BlockActors must be true", , )
+  0134: if !((self.ShieldMeshTemplate.GetAnimatedMeshComponent().BlockNonZeroExtent != true)) goto 0x0197
+  0157: EmitCheckMessage(0, "Shield collision BlockNonZeroExtent must be true", , )
+  0197: if !((self.ShieldMeshTemplate.GetAnimatedMeshComponent().BlockRigidBody != true)) goto 0x01f6
+  01ba: EmitCheckMessage(0, "Shield collision BlockRigidBody must be true", , )
+  01f6: if !((self.ShieldMeshTemplate.GetAnimatedMeshComponent().BlockZeroExtent != true)) goto 0x0256
+  0219: EmitCheckMessage(0, "Shield collision BlockZeroExtent must be true", , )
+  0256: if !((self.ShieldMeshTemplate.GetAnimatedMeshComponent().CollideActors != true)) goto 0x02b4
+  0279: EmitCheckMessage(0, "Shield collision CollideActors must be true", , )
+  02b4: return nothing
+  02b6: <eos>

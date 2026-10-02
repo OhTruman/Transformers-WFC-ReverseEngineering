@@ -1,0 +1,19 @@
+function TnDamageType.GetDialogDamageCategory  (script 13 bytes)
+  0000: return default.DialogDamageCategory
+  0006: return return
+  000c: <eos>
+
+function TnDamageType.ShouldGib  (script 126 bytes)
+  0000: if !((Instigator == none)) goto 0x000d
+  000b: return false
+  000d: if !((Instigator.Pawn == none)) goto 0x0023
+  0021: return false
+  0023: if !((Pawn == Instigator.Pawn)) goto 0x003d
+  003b: return false
+  003d: return (obj'Core.Math'.static.VSize((Instigator.Pawn.Location - Pawn.Location)) <= default.GibDistance)
+  0077: return return
+  007d: <eos>
+
+function TnDamageType.OnClientPlayHit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

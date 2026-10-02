@@ -1,0 +1,10 @@
+function TnHudDataObserverNormalizedOverShield.CheckData  (script 108 bytes)
+  0000: TransformerPawn = TnPlayerPawn(PC.Pawn)
+  0019: if !((TransformerPawn == none)) goto 0x0026
+  0024: return nothing
+  0026: SegmentedHealth = TransformerPawn._SegmentedHealth
+  003a: if !((SegmentedHealth == none)) goto 0x0047
+  0045: return nothing
+  0047: ProcessNewValue(Movie, SegmentedHealth.get_NormalizedOverShieldHealth())
+  0069: return nothing
+  006b: <eos>

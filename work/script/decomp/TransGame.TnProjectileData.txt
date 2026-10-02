@@ -1,0 +1,7 @@
+function TnProjectileData.CheckForErrors  (script 277 bytes)
+  0000: TnDT = class<TnDamageType>(self.DamageType)
+  0010: if !((TnDT != none)) goto 0x0112
+  001b: if !(((cast3a(TnDT.static.default.DeathType) == cast3a(1)) && (self.MomentumTransfer == 0.0))) goto 0x0112
+  0045: EmitCheckMessage(0, "Projectile has damage type with death type of ragdoll but momentum transfer is set to 0, this means the ragdoll will drop to the ground with no force applied, you probably want this to be 1", , )
+  0112: return nothing
+  0114: <eos>

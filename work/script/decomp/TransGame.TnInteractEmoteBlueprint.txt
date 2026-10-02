@@ -1,0 +1,32 @@
+function TnInteractEmoteBlueprint.CheckForErrors  (script 249 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.VehicleAnimSet == none)) goto 0x00cc
+  0011: if !((((self.LightSmallAnimSet == none) && (self.LightMediumAnimSet == none)) && (self.HeavyMediumAnimSet == none))) goto 0x006d
+  0036: EmitCheckMessage(0, "At least one anim set must be specified", , )
+  006d: foreach self.EmoteList(CurrentSet,) (end 0x00c8)
+  007c: TnInteractEmoteBlueprint.CheckForEmoteAnimationsInAnimSet(CurrentSet, self.LightSmallAnimSet, 'Light')
+  0095: TnInteractEmoteBlueprint.CheckForEmoteAnimationsInAnimSet(CurrentSet, self.LightMediumAnimSet, 'medium')
+  00ae: TnInteractEmoteBlueprint.CheckForEmoteAnimationsInAnimSet(CurrentSet, self.HeavyMediumAnimSet, 'heavy')
+  00c7: iternext
+  00c8: iterpop
+  00c9: goto 0x00f6
+  00cc: foreach self.EmoteList(CurrentSet,) (end 0x00f5)
+  00db: TnInteractEmoteBlueprint.CheckForEmoteAnimationsInAnimSet(CurrentSet, self.VehicleAnimSet, 'Vehicle')
+  00f4: iternext
+  00f5: iterpop
+  00f6: return nothing
+  00f8: <eos>
+
+function TnInteractEmoteBlueprint.CheckForEmoteAnimationsInAnimSet  (script 852 bytes)
+  0000: if !((Anims == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((((Emotes.InAnimation == 'None') && (Emotes.LoopAnimation == 'None')) && (Emotes.OutAnimation == 'None'))) goto 0x00e1
+  006b: EmitCheckMessage(0, (cast57(DebugName) @ "anim set has no in, looping or out animation. Either delete the blueprint or add an animation"), , )
+  00e1: if !((((Emotes.InAnimation != 'None') && (Anims.FindAnimSequence(Emotes.InAnimation) == none)) && !Anims.ChooserGroupExists(Emotes.InAnimation))) goto 0x01af
+  0154: EmitCheckMessage(0, ((((("In animation" @ cast57(Emotes.InAnimation)) @ "is not in") @ cast57(DebugName)) @ "anim set") @ cast56(Anims)), , )
+  01af: if !((((Emotes.LoopAnimation != 'None') && (Anims.FindAnimSequence(Emotes.LoopAnimation) == none)) && !Anims.ChooserGroupExists(Emotes.LoopAnimation))) goto 0x0282
+  0222: EmitCheckMessage(0, ((((("Looping animation" @ cast57(Emotes.LoopAnimation)) @ "is not in") @ cast57(DebugName)) @ "anim set") @ cast56(Anims)), , )
+  0282: if !((((Emotes.OutAnimation != 'None') && (Anims.FindAnimSequence(Emotes.OutAnimation) == none)) && !Anims.ChooserGroupExists(Emotes.OutAnimation))) goto 0x0351
+  02f5: EmitCheckMessage(0, ((((("Out animation" @ cast57(Emotes.OutAnimation)) @ "is not in") @ cast57(DebugName)) @ "anim set") @ cast56(Anims)), , )
+  0351: return nothing
+  0353: <eos>

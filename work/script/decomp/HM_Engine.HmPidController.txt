@@ -1,0 +1,49 @@
+function HmPidController.Reset  (script 65 bytes)
+  0000: 0[self.DerivativeHistory] = 0.0
+  000d: 1[self.DerivativeHistory] = 0.0
+  001a: 2[self.DerivativeHistory] = 0.0
+  0028: self.PreviousError = 0.0
+  0033: self.Output = 0.0
+  003e: return nothing
+  0040: <eos>
+
+function HmPidController.Update  (script 257 bytes)
+  0000: ScaledKp = (self.Kp * self.EaseOut)
+  0012: if !((dt == cast3f(0))) goto 0x0025
+  001f: return self.Output
+  0025: MaxDeltaError = (((1.0 / self.EaseIn) - cast3f(1)) * dt)
+  0043: ClampedError = (self.PreviousError + obj'Core.Math'.static.FClamp((Error - self.PreviousError), -MaxDeltaError, MaxDeltaError))
+  0073: Derivative = obj'Core.Math'.static.FClamp(((Error - self.PreviousError) / dt), -10.0, 10.0)
+  00a1: HmPidController.UpdateDerivativeHistory(Derivative)
+  00ac: self.PreviousError = ClampedError
+  00b7: self.Output = obj'Core.Math'.static.FClamp((self.Output + (ScaledKp * (ClampedError + (self.Kd * HmPidController.GetAverageDerivative())))), -1.0, 1.0)
+  00f4: return self.Output
+  00fa: return return
+  0100: <eos>
+
+function HmPidController.UpdateDerivativeHistory  (script 47 bytes)
+  0000: 2[self.DerivativeHistory] = 1[self.DerivativeHistory]
+  0010: 1[self.DerivativeHistory] = 0[self.DerivativeHistory]
+  001f: 0[self.DerivativeHistory] = NewDerivative
+  002c: return nothing
+  002e: <eos>
+
+function HmPidController.GetAverageDerivative  (script 55 bytes)
+  0000: return (((0[self.DerivativeHistory] * 0.25) + (1[self.DerivativeHistory] * 0.5)) + (2[self.DerivativeHistory] * 0.25))
+  0030: return return
+  0036: <eos>
+
+function HmPidController.GetOutput  (script 13 bytes)
+  0000: return self.Output
+  0006: return return
+  000c: <eos>
+
+function HmPidController.SetEaseIn  (script 35 bytes)
+  0000: self.EaseIn = obj'Core.Math'.static.FClamp(EaseInValue, 0.01, 0.95)
+  0020: return nothing
+  0022: <eos>
+
+function HmPidController.SetEaseOut  (script 42 bytes)
+  0000: self.EaseOut = (1.0 - obj'Core.Math'.static.FClamp(EaseOutValue, 0.0, 1.0))
+  0027: return nothing
+  0029: <eos>

@@ -1,0 +1,60 @@
+function UIDataStore.OnDataStoreValueUpdated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function UIDataStore.Registered  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function UIDataStore.Unregistered  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function UIDataStore.SubscriberAttached  (script 114 bytes)
+  0000: if !(NotEqual_InterfaceInterface(Subscriber, UIDataStoreSubscriber(none))) goto 0x006f
+  0014: SubscriberNotifyIndex = self.RefreshSubscriberNotifies.Find(Subscriber.delegate.NotifyDataStoreValueUpdated)
+  0035: if !((SubscriberNotifyIndex == -1)) goto 0x006f
+  0044: SubscriberNotifyIndex = self.RefreshSubscriberNotifies.Length
+  0050: SubscriberNotifyIndex[self.RefreshSubscriberNotifies] = Subscriber.delegate.NotifyDataStoreValueUpdated
+  006f: return nothing
+  0071: <eos>
+
+function UIDataStore.SubscriberDetached  (script 83 bytes)
+  0000: if !(NotEqual_InterfaceInterface(Subscriber, UIDataStoreSubscriber(none))) goto 0x0050
+  0014: SubscriberNotifyIndex = self.RefreshSubscriberNotifies.Find(Subscriber.delegate.NotifyDataStoreValueUpdated)
+  0035: if !((SubscriberNotifyIndex != -1)) goto 0x0050
+  0044: self.RefreshSubscriberNotifies.Remove(SubscriberNotifyIndex,1)
+  0050: return nothing
+  0052: <eos>
+
+function UIDataStore.NotifyGameSessionEnded  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function UIDataStore.RefreshSubscribers  (script 175 bytes)
+  0000: nothing
+  0001: default=true
+  0006: nothing
+  0007: default=-1
+  0010: SubscriberArrayCopy.Length = self.RefreshSubscriberNotifies.Length
+  001d: idx = 0
+  0024: if !((idx < SubscriberArrayCopy.Length)) goto 0x0055
+  0034: idx[SubscriberArrayCopy] = idx[self.RefreshSubscriberNotifies]
+  004b: AddAdd_Int(idx)
+  0052: goto 0x0024
+  0055: idx = 0
+  005c: if !((idx < SubscriberArrayCopy.Length)) goto 0x00ac
+  006c: Subscriber = idx[SubscriberArrayCopy]
+  007d: OnDataStoreValueUpdated(self, bInvalidateValues, PropertyTag, SourceProvider, ArrayIndex)
+  00a2: AddAdd_Int(idx)
+  00a9: goto 0x005c
+  00ac: return nothing
+  00ae: <eos>
+
+function UIDataStore.OnCommit  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIDataStore.ScriptInitializeDataStore  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

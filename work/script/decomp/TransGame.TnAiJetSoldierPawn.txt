@@ -1,0 +1,124 @@
+function TnAiJetSoldierPawn.set_JetBoosterAttachSocketNames  (script 14 bytes)
+  0000: self._JetBoosterAttachSocketNames = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiJetSoldierPawn.set_FallingScalar  (script 14 bytes)
+  0000: self._FallingScalar = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiJetSoldierPawn.set_JumpBlastParamCollection  (script 14 bytes)
+  0000: self._JumpBlastParamCollection = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiJetSoldierPawn.set_JumpBlastSocket  (script 14 bytes)
+  0000: self._JumpBlastSocket = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiJetSoldierPawn.set_JumpBlastFX  (script 14 bytes)
+  0000: self._JumpBlastFx = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiJetSoldierPawn.set_DestructibleBlueprint  (script 14 bytes)
+  0000: self._DestructibleBlueprint = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiJetSoldierPawn.ApplyTransformer  (script 60 bytes)
+  0000: TnPawn.ApplyTransformer()
+  0006: self._AcrobaticsService = TnAcrobaticsService(GetRobotService('TnAcrobaticsService'))
+  0024: self.EffectManager = FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  0039: return nothing
+  003b: <eos>
+
+function TnAiJetSoldierPawn.InRobotForm.BeginState  (script 62 bytes)
+  0000: I = 0
+  0007: if !((I < self._JetBoosterDestructibleActors.Length)) goto 0x003b
+  0017: I[self._JetBoosterDestructibleActors].SetHidden(false)
+  0031: AddAdd_PreInt(I)
+  0038: goto 0x0007
+  003b: return nothing
+  003d: <eos>
+
+function TnAiJetSoldierPawn.InRobotForm.EndState  (script 83 bytes)
+  0000: if !((NextStateName == 'Hovering')) goto 0x0015
+  0013: return nothing
+  0015: I = 0
+  001c: if !((I < self._JetBoosterDestructibleActors.Length)) goto 0x0050
+  002c: I[self._JetBoosterDestructibleActors].SetHidden(true)
+  0046: AddAdd_PreInt(I)
+  004d: goto 0x001c
+  0050: return nothing
+  0052: <eos>
+
+function TnAiJetSoldierPawn.InRobotForm.Tick  (script 168 bytes)
+  0000: TnAiPawn.Tick(DeltaTime)
+  000b: if !((self._JetBoosterDestructibleActors.Length == 0)) goto 0x001d
+  0017: TnAiJetSoldierPawn.CreateJetBoosters()
+  001d: if !(EqualEqual_InterfaceInterface(self._AcrobaticsService, TnAcrobaticsService(none))) goto 0x0033
+  0031: return nothing
+  0033: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(2))) goto 0x00a5
+  0052: JumpBlastSystem = self.EffectManager.PlayEffect(self.Mesh, self._JumpBlastSocket, self._JumpBlastFx, , , , )
+  007e: self._JumpBlastParamCollection.Apply(JumpBlastSystem, self)
+  0097: GotoState('Hovering', , , )
+  00a5: return nothing
+  00a7: <eos>
+
+function TnAiJetSoldierPawn.Hovering.BeginState  (script 66 bytes)
+  0000: I = 0
+  0007: if !((I < self._JetBoosterDestructibleActors.Length)) goto 0x003f
+  0017: I[self._JetBoosterDestructibleActors].ApplyDestructionTrigger(obj'TnCustomDestructionTriggerA')
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return nothing
+  0041: <eos>
+
+function TnAiJetSoldierPawn.Hovering.TriggerDestructibles  (script 66 bytes)
+  0000: I = 0
+  0007: if !((I < self._JetBoosterDestructibleActors.Length)) goto 0x003f
+  0017: I[self._JetBoosterDestructibleActors].ApplyDestructionTrigger(obj'TnCustomDestructionTriggerB')
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return nothing
+  0041: <eos>
+
+function TnAiJetSoldierPawn.Hovering.Tick  (script 120 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(EqualEqual_InterfaceInterface(self._AcrobaticsService, TnAcrobaticsService(none))) goto 0x0021
+  001f: return nothing
+  0021: if !(((cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(3)) && (cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(2)))) goto 0x0075
+  0061: TriggerDestructibles()
+  0067: GotoState('InRobotForm', , , )
+  0075: return nothing
+  0077: <eos>
+
+function TnAiJetSoldierPawn.CreateJetBoosters  (script 66 bytes)
+  0000: if !((self._DestructibleBlueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self._JetBoosterAttachSocketNames.Length)) goto 0x003f
+  0024: TnAiJetSoldierPawn.AttachJetBooster(I[self._JetBoosterAttachSocketNames])
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0014
+  003f: return nothing
+  0041: <eos>
+
+function TnAiJetSoldierPawn.AttachJetBooster  (script 166 bytes)
+  0000: JetBoosterDestructible = obj'Engine.Allocation'.static.SpawnActor(obj'TnSpawnableDestructibleActor', self, self, get_RobotMeshComponent().GetSocketWorldLocation(AttachSocket), , true)
+  003f: JetBoosterDestructible.SetDestructibleBlueprint(self._DestructibleBlueprint)
+  0057: JetBoosterDestructible.AttachToPawn(self, AttachSocket, 0)
+  0071: JetBoosterDestructible._ShouldBeHighlighted = true
+  0082: JetBoosterDestructible.SetHidden(false)
+  0096: self._JetBoosterDestructibleActors.AddItem(JetBoosterDestructible)
+  00a3: return nothing
+  00a5: <eos>
+
+function TnAiJetSoldierPawn.GetGravityZ  (script 85 bytes)
+  0000: Scalar = ((get_IsInRobotForm() && (cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(4))) ? self._FallingScalar : 1.0)
+  0040: return (Scalar * TnPawnNative.GetGravityZ())
+  004e: return return
+  0054: <eos>

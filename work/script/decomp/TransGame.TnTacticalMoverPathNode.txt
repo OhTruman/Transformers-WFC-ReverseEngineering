@@ -1,0 +1,16 @@
+function TnTacticalMoverPathNode.PostBeginPlay  (script 77 bytes)
+  0000: TnTacticalPathNode.PostBeginPlay()
+  0006: self.TacticalOctree = TnGame(obj'Engine.Engine'.static.GetGame())._TacticalOctree
+  002d: self.LastLocation = self.Location
+  0038: self.UpdateDistanceSq = (self.UpdateDistance * self.UpdateDistance)
+  004a: return nothing
+  004c: <eos>
+
+function TnTacticalMoverPathNode.Tick  (script 141 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(((self.TacticalOctree != none) && (obj'Core.Math'.static.VSizeSq((self.LastLocation - self.Location)) > self.UpdateDistanceSq))) goto 0x008a
+  0041: self.TacticalOctree.Remove(self.Tactical._TacticalOctreeId)
+  0062: self.TacticalOctree.Add(HmOctreeInterface(self.Tactical))
+  007f: self.LastLocation = self.Location
+  008a: return nothing
+  008c: <eos>

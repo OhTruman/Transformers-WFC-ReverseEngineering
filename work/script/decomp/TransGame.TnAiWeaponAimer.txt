@@ -1,0 +1,108 @@
+function TnAiWeaponAimer.get_TargetLocation  (script 100 bytes)
+  0000: switch (self._AimingMode)
+  0007: case 0: (next 0x0013)
+  000c: return TnAiWeaponAimer.GetTargetActorTargetableLocation()
+  0013: case 1: (next 0x001e)
+  0018: return self._TargetLocation
+  001e: case 2: (next 0x005a)
+  0023: return (self._Owner.Location + ((vect(1000,0,0) >> self._TargetDirection) >> self._Owner.Rotation))
+  005a: default:
+  005d: return return
+  0063: <eos>
+
+function TnAiWeaponAimer.get_OwnerIsAiming  (script 14 bytes)
+  0000: return TnAiWeaponAimer.IsAiming()
+  0007: return return
+  000d: <eos>
+
+function TnAiWeaponAimer.get_CheckAimFromWeaponRotation  (script 14 bytes)
+  0000: return self._CheckAimFromWeaponRotation
+  0007: return return
+  000d: <eos>
+
+function TnAiWeaponAimer.set_CheckAimFromWeaponRotation  (script 16 bytes)
+  0000: self._CheckAimFromWeaponRotation = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnAiWeaponAimer.GetTargetActorTargetableLocation  (script 322 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self._TargetActorTargetableService, TnTargetableService(none))) goto 0x0029
+  0014: return self._TargetActorTargetableService.get_TargetableLocation()
+  0029: if !(((self._TargetTransformerPawn != none) && TnAiWeaponAimer.IsTargetDangerous(IFocusible(self._TargetTransformerPawn)))) goto 0x00db
+  0049: if !(((cast3a(self._TargetTransformerPawn.get_FormType()) == cast3a(0)) && NotEqual_InterfaceInterface(self._TargetActorTargetableServiceRobotForm, TnTargetableService(none)))) goto 0x0092
+  007d: return self._TargetActorTargetableServiceRobotForm.get_TargetableLocation()
+  0092: if !(((cast3a(self._TargetTransformerPawn.get_FormType()) == cast3a(1)) && NotEqual_InterfaceInterface(self._TargetActorTargetableServiceVehicleForm, TnTargetableService(none)))) goto 0x00db
+  00c6: return self._TargetActorTargetableServiceVehicleForm.get_TargetableLocation()
+  00db: if !((NotEqual_InterfaceInterface(self._TargetFocusible, IFocusible(none)) && TnAiWeaponAimer.IsTargetDangerous(self._TargetFocusible))) goto 0x0114
+  00ff: return self._TargetFocusible.GetFocalPoint()
+  0114: return ((cast39(self._Owner.Rotation) * cast3f(200)) + self._Owner.Location)
+  013b: return return
+  0141: <eos>
+
+function TnAiWeaponAimer.IsTargetDangerous  (script 67 bytes)
+  0000: if !((self._OwnerController == none)) goto 0x000d
+  000b: return false
+  000d: if !((Actor(cast36(Target)) == none)) goto 0x0021
+  001f: return true
+  0021: return self._OwnerController.IsDangerous(cast36(Target))
+  003c: return return
+  0042: <eos>
+
+function TnAiWeaponAimer.IsAiming  (script 173 bytes)
+  0000: if !((self._CheckAimFromWeaponRotation && (self._Owner.Weapon != none))) goto 0x005c
+  001f: Location = self._Owner.Weapon.Location
+  003c: Rotation = self._Owner.Weapon.Rotation
+  0059: goto 0x0084
+  005c: Location = self._Owner.Location
+  0070: Rotation = self._Owner.Rotation
+  0084: return ((cast39(Rotation) dot cast39(CalculateAdjustedAimFor(Location))) > 0.866)
+  00a6: return return
+  00ac: <eos>
+
+function TnAiWeaponAimer.Initialize  (script 50 bytes)
+  0000: self._Owner = Owner
+  000b: if !((self._Owner != none)) goto 0x002f
+  0016: self._OwnerController = TnAiController(self._Owner.Controller)
+  002f: return nothing
+  0031: <eos>
+
+function TnAiWeaponAimer.Reset  (script 30 bytes)
+  0000: self._AimingMode = 2
+  0008: self._TargetDirection = rot(0,0,0)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiWeaponAimer.AimAtTarget  (script 264 bytes)
+  0000: self._AimingMode = 0
+  0008: self._TargetFocusible = Target
+  0013: self._TargetTransformerPawn = TnPawn(cast36(Target))
+  0025: if !((self._TargetTransformerPawn != none)) goto 0x00a7
+  0030: self._TargetActorTargetableServiceRobotForm = TnTargetableService(self._TargetTransformerPawn.GetRobotService('TnTargetableService'))
+  0057: self._TargetActorTargetableServiceVehicleForm = TnTargetableService(self._TargetTransformerPawn.GetVehicleService('TnTargetableService'))
+  007e: self._TargetActorTargetableService = TnTargetableService(self._TargetTransformerPawn.GetSharedService('TnTargetableService'))
+  00a5: return nothing
+  00a7: ServiceProvider = TnServiceProvider(cast36(Target))
+  00b9: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x00cf
+  00cd: return nothing
+  00cf: self._TargetActorTargetableServiceRobotForm = none
+  00d6: self._TargetActorTargetableServiceVehicleForm = none
+  00dd: self._TargetActorTargetableService = TnTargetableService(ServiceProvider.GetService('TnTargetableService'))
+  0105: return nothing
+  0107: <eos>
+
+function TnAiWeaponAimer.AimAtLocation  (script 22 bytes)
+  0000: self._AimingMode = 1
+  0008: self._TargetLocation = Location
+  0013: return nothing
+  0015: <eos>
+
+function TnAiWeaponAimer.AimInDirection  (script 22 bytes)
+  0000: self._AimingMode = 2
+  0008: self._TargetDirection = DirectionInOwnerSpace
+  0013: return nothing
+  0015: <eos>
+
+function TnAiWeaponAimer.CalculateAdjustedAimFor  (script 67 bytes)
+  0000: return ((cast3a(self._AimingMode) == cast3a(2)) ? (self._TargetDirection + self._Owner.Rotation) : cast50((get_TargetLocation() - Location)))
+  003c: return return
+  0042: <eos>

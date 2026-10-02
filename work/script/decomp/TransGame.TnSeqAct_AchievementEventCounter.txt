@@ -1,0 +1,15 @@
+function TnSeqAct_AchievementEventCounter.Activated  (script 135 bytes)
+  0000: foreach self.Targets(O,) (end 0x0083)
+  000f: P = TnPlayerPawn(O)
+  001f: if !((P != none)) goto 0x0046
+  002a: PC = TnPlayerController(P.Controller)
+  0043: goto 0x0056
+  0046: PC = TnPlayerController(O)
+  0056: if !((PC == none)) goto 0x0065
+  0061: iternext
+  0062: goto 0x0083
+  0065: PC.ClientSetBitOnAchievement(self.Achievement, self.CounterNumber)
+  0082: iternext
+  0083: iterpop
+  0084: return nothing
+  0086: <eos>

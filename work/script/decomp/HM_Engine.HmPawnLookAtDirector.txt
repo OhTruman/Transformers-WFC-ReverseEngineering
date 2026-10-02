@@ -1,0 +1,130 @@
+function HmPawnLookAtDirector.Initialize  (script 288 bytes)
+  0000: if !(((Mesh == none) || (Controller == none))) goto 0x001a
+  0018: return false
+  001a: self.IKController = Controller
+  0025: self.SkelMesh = Mesh
+  0030: self.ReferenceBoneName = refBoneName
+  003b: self.HeadIKHandle = Controller.AddIKControl(Mesh, 'HeadLookAt')
+  0062: self.NeckIKHandle = Controller.AddIKControl(Mesh, 'NeckLookAt')
+  0089: if !((self.HeadIKHandle.Index < 0)) goto 0x00a1
+  009f: return false
+  00a1: if !((self.NeckIKHandle.Index < 0)) goto 0x00b9
+  00b7: return false
+  00b9: if !((Mesh.GetBoneAxis(self.ReferenceBoneName, 1) == vect(0,0,0))) goto 0x00e7
+  00e5: return false
+  00e7: self.IKController.DeactivateIKControl(self.HeadIKHandle)
+  00ff: self.IKController.DeactivateIKControl(self.NeckIKHandle)
+  0117: return true
+  0119: return return
+  011f: <eos>
+
+function HmPawnLookAtDirector.ActivateIK  (script 56 bytes)
+  0000: self.IKController.ActivateIKControl(Handle)
+  0018: self.IKController.SetIKBlendWeight(Handle, 1.0)
+  0035: return nothing
+  0037: <eos>
+
+function HmPawnLookAtDirector.DeactivateIK  (script 27 bytes)
+  0000: self.IKController.DeactivateIKControl(Handle)
+  0018: return nothing
+  001a: <eos>
+
+function HmPawnLookAtDirector.EnableTargetTracking  (script 44 bytes)
+  0000: if !(self.TargetTrackingEnabled) goto 0x000b
+  0009: return nothing
+  000b: HmPawnLookAtDirector.ActivateIK(self.HeadIKHandle)
+  0016: HmPawnLookAtDirector.ActivateIK(self.NeckIKHandle)
+  0021: self.TargetTrackingEnabled = true
+  0029: return nothing
+  002b: <eos>
+
+function HmPawnLookAtDirector.EnableTargetTrackingHeadOnly  (script 33 bytes)
+  0000: if !(self.TargetTrackingEnabled) goto 0x000b
+  0009: return nothing
+  000b: HmPawnLookAtDirector.ActivateIK(self.HeadIKHandle)
+  0016: self.TargetTrackingEnabled = true
+  001e: return nothing
+  0020: <eos>
+
+function HmPawnLookAtDirector.DisableTargetTracking  (script 46 bytes)
+  0000: if !(!self.TargetTrackingEnabled) goto 0x000d
+  000b: return nothing
+  000d: HmPawnLookAtDirector.DeactivateIK(self.HeadIKHandle)
+  0018: HmPawnLookAtDirector.DeactivateIK(self.NeckIKHandle)
+  0023: self.TargetTrackingEnabled = false
+  002b: return nothing
+  002d: <eos>
+
+function HmPawnLookAtDirector.Activate  (script 17 bytes)
+  0000: HmPawnLookAtDirector.EnableTargetTracking()
+  0006: self.Active = true
+  000e: return nothing
+  0010: <eos>
+
+function HmPawnLookAtDirector.ActivateHeadOnly  (script 17 bytes)
+  0000: HmPawnLookAtDirector.EnableTargetTrackingHeadOnly()
+  0006: self.Active = true
+  000e: return nothing
+  0010: <eos>
+
+function HmPawnLookAtDirector.Deactivate  (script 17 bytes)
+  0000: HmPawnLookAtDirector.DisableTargetTracking()
+  0006: self.Active = false
+  000e: return nothing
+  0010: <eos>
+
+function HmPawnLookAtDirector.WorldSpaceToReferenceBoneSpace  (script 65 bytes)
+  0000: self.SkelMesh.TransformToBoneSpace(self.ReferenceBoneName, pointWS, rot(0,0,0), pointRBS, unused)
+  0034: return pointRBS
+  003a: return return
+  0040: <eos>
+
+function HmPawnLookAtDirector.GetTargetLocation  (script 13 bytes)
+  0000: return self.TargetLocationWS
+  0006: return return
+  000c: <eos>
+
+function HmPawnLookAtDirector.SetTargetLocation  (script 14 bytes)
+  0000: self.TargetLocationWS = targetLocationWorldSpace
+  000b: return nothing
+  000d: <eos>
+
+function HmPawnLookAtDirector.UpdateIKTargetLocations  (script 174 bytes)
+  0000: if !(!self.Active) goto 0x000d
+  000b: return nothing
+  000d: if !(self.UseReferenceBoneSpace) goto 0x002a
+  0016: TargetLocation = HmPawnLookAtDirector.WorldSpaceToReferenceBoneSpace(self.TargetLocationWS)
+  0027: goto 0x0035
+  002a: TargetLocation = self.TargetLocationWS
+  0035: self.IKController.SetIKTarget(self.HeadIKHandle, TargetLocation)
+  0052: self.IKController.SetIKTarget(self.NeckIKHandle, TargetLocation)
+  006f: if !(self.ShowDebugDisplay) goto 0x00ab
+  0078: obj'Engine.Debug'.static.DrawSphere(self.TargetLocationWS, 50.0, 8, MakeColor(0, cast3d(255), 0, ), false)
+  00ab: return nothing
+  00ad: <eos>
+
+function HmPawnLookAtDirector.SetLerpRate  (script 61 bytes)
+  0000: self.IKController.SetLerpRate(self.HeadIKHandle, LerpRate)
+  001d: self.IKController.SetLerpRate(self.NeckIKHandle, LerpRate)
+  003a: return nothing
+  003c: <eos>
+
+function HmPawnLookAtDirector.IsActive  (script 14 bytes)
+  0000: return self.Active
+  0007: return return
+  000d: <eos>
+
+function HmPawnLookAtDirector.GetReferenceBoneName  (script 13 bytes)
+  0000: return self.ReferenceBoneName
+  0006: return return
+  000c: <eos>
+
+function HmPawnLookAtDirector.GetHeadIKHandle  (script 13 bytes)
+  0000: return self.HeadIKHandle
+  0006: return return
+  000c: <eos>
+
+function HmPawnLookAtDirector.GetNeckIKHandle  (script 13 bytes)
+  0000: return self.NeckIKHandle
+  0006: return return
+  000c: <eos>

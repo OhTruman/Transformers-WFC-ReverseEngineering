@@ -1,0 +1,40 @@
+function TnAiActionReactToBackpackDamage.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionReactToBackpackDamageBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionReactToBackpackDamage.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionReactToBackpackDamage.OnSetUpConditions  (script 91 bytes)
+  0000: DeathImminent = cast3d(get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDeathImminent'))
+  0025: if !((cast3a(DeathImminent) != cast3a(self._Blueprint.DeathImminentLevel))) goto 0x0043
+  0041: return false
+  0043: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0054: return return
+  005a: <eos>
+
+function TnAiActionReactToBackpackDamage.OnStart  (script 101 bytes)
+  0000: self._TransformerController.StopMovement()
+  0013: SetCharacterState(1)
+  001e: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.ReactionAnimationParams, delegate.SucceedCallback, delegate.FailCallback)
+  0052: return OnStart(ExpectedEffects)
+  005e: return return
+  0064: <eos>
+
+function TnAiActionReactToBackpackDamage.OnUpdate  (script 24 bytes)
+  0000: return OnUpdate(ExpectedEffects, DeltaTime)
+  0011: return return
+  0017: <eos>
+
+function TnAiActionReactToBackpackDamage.OnFinish  (script 102 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !(((cast3a(CurrentState) == cast3a(3)) && (cast3a(cast3d(get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDeathImminent'))) == cast3a(1)))) goto 0x0063
+  0047: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateDeathImminent', 0, )
+  0061: return nothing
+  0063: return nothing
+  0065: <eos>

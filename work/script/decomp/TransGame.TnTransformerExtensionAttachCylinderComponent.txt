@@ -1,0 +1,10 @@
+function TnTransformerExtensionAttachCylinderComponent.ApplyTransformerExtension  (script 183 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.CylinderInfos.Length)) goto 0x0083
+  0017: P.get_RobotMeshComponent().AttachComponentToSocket(CylinderComponent(idx[self.CylinderInfos].CylinderComp.Clone(, )), idx[self.CylinderInfos].SocketName)
+  0079: AddAdd_PreInt(idx)
+  0080: goto 0x0007
+  0083: if !(self.OverrideDefaultCylinderComp) goto 0x00b4
+  008c: P.CylinderComponent.SetActorCollision(self.DefaultCylinderCollideActors, self.DefaultCylinderBlockActors)
+  00b4: return nothing
+  00b6: <eos>

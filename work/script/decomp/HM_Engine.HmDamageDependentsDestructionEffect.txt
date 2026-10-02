@@ -1,0 +1,27 @@
+function HmDamageDependentsDestructionEffect.BeginEffect  (script 104 bytes)
+  0000: DestructibleComponent = GetAttachingActor().FindComponent(obj'HmDestructibleComponent')
+  0023: if !((DestructibleComponent == none)) goto 0x0030
+  002e: return nothing
+  0030: DestructibleComponent.DamageDependentPieces(GetOwner().GetHandle(), self.DamageAmount, self.DestructionTrigger)
+  0065: return nothing
+  0067: <eos>
+
+function HmDamageDependentsDestructionEffect.SetDestructionTrigger  (script 14 bytes)
+  0000: self.DestructionTrigger = DestructionTrigger_
+  000b: return nothing
+  000d: <eos>
+
+function HmDamageDependentsDestructionEffect.SetDamageAmount  (script 14 bytes)
+  0000: self.DamageAmount = DamageAmount_
+  000b: return nothing
+  000d: <eos>
+
+function HmDamageDependentsDestructionEffect.GetDestructionTrigger  (script 13 bytes)
+  0000: return self.DestructionTrigger
+  0006: return return
+  000c: <eos>
+
+function HmDamageDependentsDestructionEffect.GetDamageAmount  (script 15 bytes)
+  0000: return cast44(self.DamageAmount)
+  0008: return return
+  000e: <eos>

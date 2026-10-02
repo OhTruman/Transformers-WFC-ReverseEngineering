@@ -1,0 +1,51 @@
+function TnBombMessage.ClientReceive  (script 51 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !((RelatedPRI_1 == none)) goto 0x0011
+  000f: return nothing
+  0011: ClientReceive(P, MessageSwitch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0030: return nothing
+  0032: <eos>
+
+function TnBombMessage.GetColoredString  (script 522 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: if !((RelatedPRI_1 != none)) goto 0x008e
+  0010: StringReplacements.Insert(0,1)
+  0018: 0[StringReplacements].SourceString = "`k"
+  002f: 0[StringReplacements].DestString = RelatedPRI_1.Team.GetHumanReadableName()
+  005e: 0[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(LocalPlayerPRI, RelatedPRI_1)
+  008e: switch (MessageSwitch)
+  0095: case 1: (next 0x00d4)
+  0099: UnparsedMsg = default.PickupMessage
+  00a4: Dialog = ((cast3a(RelatedPRI_1.GetTeamNum()) == 0) ? default.AutobotPickupDialogSound : default.DecepticonPickupDialogSound)
+  00d1: goto 0x0171
+  00d4: case 2: (next 0x00f2)
+  00d9: UnparsedMsg = default.DroppedMessage
+  00e4: Dialog = default.DropDialogSound
+  00ef: goto 0x0171
+  00f2: case 3: (next 0x0132)
+  00f7: UnparsedMsg = default.ScoredMessage
+  0102: Dialog = ((cast3a(RelatedPRI_1.GetTeamNum()) == 0) ? default.AutobotDetonatedDialogSound : default.DecepticonDetonatedDialogSound)
+  012f: goto 0x0171
+  0132: case 4: (next 0x0150)
+  0137: UnparsedMsg = default.DefusedMessage
+  0142: Dialog = default.DefusedDialogSound
+  014d: goto 0x0171
+  0150: case 5: (next 0x016e)
+  0155: UnparsedMsg = default.PlantedMessage
+  0160: Dialog = default.PlantedDialogSound
+  016b: goto 0x0171
+  016e: default:
+  0171: WI = TnWorldInfo(LocalPlayerPRI.WorldInfo)
+  018a: if !(((WI != none) && (WI._Announcer != none))) goto 0x01cc
+  01ab: WI._Announcer.PlayEvent(Dialog)
+  01cc: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  01fd: return CS
+  0203: return return
+  0209: <eos>

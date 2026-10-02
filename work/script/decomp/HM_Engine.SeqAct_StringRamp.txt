@@ -1,0 +1,57 @@
+function SeqAct_StringRamp.Update  (script 141 bytes)
+  0000: if !(0[self.InputLinks].bHasImpulse) goto 0x0030
+  0016: Start()
+  0020: return (self.RampedText != self.FullText)
+  002d: goto 0x0084
+  0030: if !(1[self.InputLinks].bHasImpulse) goto 0x0055
+  0046: Stopped()
+  0050: return false
+  0052: goto 0x0084
+  0055: if !(self.bIsPlaying) goto 0x0084
+  005e: UpdateOperationTime(DeltaTime)
+  006d: UpdateRampedText()
+  0077: return (self.RampedText != self.FullText)
+  0084: return false
+  0086: return return
+  008c: <eos>
+
+function SeqAct_StringRamp.Start  (script 32 bytes)
+  0000: self.bIsPlaying = true
+  0008: self.OperationTime = 0.0
+  0013: UpdateRampedText()
+  001d: return nothing
+  001f: <eos>
+
+function SeqAct_StringRamp.Stopped  (script 52 bytes)
+  0000: self.bIsPlaying = false
+  0008: self.OperationTime = 0.0
+  0013: self.RampedText = ""
+  001b: 2[self.OutputLinks].bHasImpulse = true
+  0031: return nothing
+  0033: <eos>
+
+function SeqAct_StringRamp.UpdateOperationTime  (script 52 bytes)
+  0000: if !((self.TransitionTime < cast3f(0))) goto 0x0025
+  000d: self.TransitionTime = 0.0
+  0018: Stopped()
+  0022: goto 0x0031
+  0025: (self.OperationTime += DeltaTime)
+  0031: return nothing
+  0033: <eos>
+
+function SeqAct_StringRamp.UpdateRampedText  (script 191 bytes)
+  0000: if !((self.TransitionTime == cast3f(0))) goto 0x0023
+  000d: self.RampedText = self.FullText
+  0018: TextChanged = true
+  0020: goto 0x0070
+  0023: if !((self.OperationTime > self.TransitionTime)) goto 0x0070
+  0032: (self.OperationTime -= self.TransitionTime)
+  003e: self.RampedText = obj'Core.Strings'.static.Mid(self.FullText, 0, (obj'Core.Strings'.static.Len(self.RampedText) + 1))
+  0068: TextChanged = true
+  0070: if !(TextChanged) goto 0x00bc
+  0079: PopulateLinkedVariableValues()
+  0083: 0[self.OutputLinks].bHasImpulse = true
+  0098: if !((self.RampedText == self.FullText)) goto 0x00bc
+  00a7: 1[self.OutputLinks].bHasImpulse = true
+  00bc: return nothing
+  00be: <eos>

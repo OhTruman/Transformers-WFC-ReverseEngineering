@@ -1,0 +1,65 @@
+function TnDeathPlayer.set_Factory  (script 14 bytes)
+  0000: self._Factory = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDeathPlayer.Initialize  (script 36 bytes)
+  0000: self._Owner = Owner
+  000b: self._Blueprint = Blueprint
+  0016: self._MotionController = MotionController
+  0021: return nothing
+  0023: <eos>
+
+function TnDeathPlayer.Activate  (script 404 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: TnDeathPlayer.PickDeath()
+  0013: self._MotionController.Activate(self._ActiveDeath.Animation)
+  0037: foreach self._ActiveDeath.Modifiers(Modifier,) (end 0x006a)
+  0051: Modifier.Start(self._Owner)
+  0069: iternext
+  006a: iterpop
+  006b: if !(((TnPlayerPawn(self._Owner) == none) && ((self._ActiveDeath.TotalTimeForAI.Min != cast3f(0)) || (self._ActiveDeath.TotalTimeForAI.Max != cast3f(0))))) goto 0x0117
+  00c5: TimeUntilGibs = obj'Core.Random'.static.RandRangeFloat(self._ActiveDeath.TotalTimeForAI.Min, self._ActiveDeath.TotalTimeForAI.Max)
+  0114: goto 0x0166
+  0117: TimeUntilGibs = obj'Core.Random'.static.RandRangeFloat(self._ActiveDeath.TotalTime.Min, self._ActiveDeath.TotalTime.Max)
+  0166: self._GibTimer.Start(self._Owner.delegate.Gib, TimeUntilGibs, )
+  0191: return nothing
+  0193: <eos>
+
+function TnDeathPlayer.Tick  (script 117 bytes)
+  0000: if !(!self._Active) goto 0x000d
+  000b: return nothing
+  000d: foreach self._ActiveDeath.Modifiers(Modifier,) (end 0x0040)
+  0027: Modifier.Tick(DeltaTime)
+  003f: iternext
+  0040: iterpop
+  0041: self._GibTimer.Tick(DeltaTime)
+  0059: self._MotionController.Tick(DeltaTime)
+  0072: return nothing
+  0074: <eos>
+
+function TnDeathPlayer.Deactivate  (script 406 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(!self._Active) goto 0x001e
+  0018: TnDeathPlayer.PickDeath()
+  001e: Location = self._Owner.Mesh.GetSocketWorldLocation('PositionSocket')
+  0049: if !((self._ActiveDeath.GibsBlueprint != none)) goto 0x0101
+  005f: Destructible = self._Owner.FindOrCreateComponent(obj'HM_Engine.HmDestructibleComponent')
+  007d: Destructible.Initialize(self._ActiveDeath.GibsBlueprint)
+  00a0: RelativeLocation = ((Location - self._Owner.Location) << self._Owner.Rotation)
+  00cc: Destructible.SetRelativeLocation(RelativeLocation)
+  00e4: Destructible.NotifyTrigger(3.4028234663852886e+38, obj'HM_Engine.HmNotificationDestructionTrigger')
+  0101: if !((self._ActiveDeath.SkeletalGibs != none)) goto 0x013f
+  0117: self._ActiveDeath.SkeletalGibs.Spawn(self._Owner, Location)
+  013f: if !((self._ActiveDeath.DecalApplicator != none)) goto 0x0193
+  0155: self._ActiveDeath.DecalApplicator.Apply(self._Owner, self._Owner.Location, vect(0,0,0))
+  0193: return nothing
+  0195: <eos>
+
+function TnDeathPlayer.PickDeath  (script 46 bytes)
+  0000: self._Active = true
+  0008: self._ActiveDeath = self._Factory.Create(self._Owner, self._Blueprint)
+  002b: return nothing
+  002d: <eos>

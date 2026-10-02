@@ -1,0 +1,12 @@
+function TnLookAtTargetCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.Camera = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnLookAtTargetCameraBehavior.Update  (script 114 bytes)
+  0000: if !((self.Camera.GetLookAtActor() != none)) goto 0x0065
+  0019: TargetLocation = self.Camera.GetLookAtActor().Location
+  003b: Result.Rotation = cast50((TargetLocation - Result.Location))
+  0065: return Result
+  006b: return return
+  0071: <eos>

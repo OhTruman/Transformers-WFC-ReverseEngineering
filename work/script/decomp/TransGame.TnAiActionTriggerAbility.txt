@@ -1,0 +1,26 @@
+function TnAiActionTriggerAbility.set_AbilityClass  (script 14 bytes)
+  0000: self._AbilityClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionTriggerAbility.OnBind  (script 79 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AbilityIndex = get_AbilityManager().AddAbility(self._AbilityClass)
+  0029: self._Ability = get_AbilityManager().GetAbility(self._AbilityClass)
+  004c: return nothing
+  004e: <eos>
+
+function TnAiActionTriggerAbility.OnSetUpConditions  (script 104 bytes)
+  0000: get_AbilityManager().AddResource(self._Ability.GetResourceRequired())
+  002b: if !((get_AbilityManager().AbilityIsAvailable(self._AbilityIndex) == false)) goto 0x0050
+  004e: return false
+  0050: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0061: return return
+  0067: <eos>
+
+function TnAiActionTriggerAbility.OnStart  (script 61 bytes)
+  0000: if !(get_AbilityManager().TriggerAbility(self._AbilityIndex)) goto 0x002b
+  0020: return Succeed()
+  002b: return Fail()
+  0036: return return
+  003c: <eos>

@@ -1,0 +1,133 @@
+function TnChallengeManager.Initialize  (script 87 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return nothing
+  0026: self.StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0041: self.ChallengeMap.Initialize()
+  0054: return nothing
+  0056: <eos>
+
+function TnChallengeManager.SetValue  (script 192 bytes)
+  0000: Index = self.CurrentStatData.Find('Key',StatId)
+  001c: if !((Index == -1)) goto 0x0052
+  002b: self.CurrentStatData.Insert(0,1)
+  0033: Index = 0
+  003a: 0[self.CurrentStatData].Key = StatId
+  0052: Index[self.CurrentStatData].Value = cast3f(Value)
+  0070: switch (UpdateType)
+  0077: case 0: (next 0x0092)
+  007c: CurrentValue = cast44(TnChallengeManager.GetValueTotalByStatId(StatId))
+  008f: goto 0x00ad
+  0092: case 1: (next 0x0097)
+  0097: case 2: (next 0x00aa)
+  009c: CurrentValue = Value
+  00a7: goto 0x00ad
+  00aa: default:
+  00ad: TnChallengeManager.CheckChallenges(StatId, CurrentValue)
+  00bd: return nothing
+  00bf: <eos>
+
+function TnChallengeManager.GetValue  (script 180 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders('Challenges')
+  0058: foreach Providers(Provider,) (end 0x00a6)
+  0067: Challenge = TnDataProvider_Challenge(Provider)
+  0077: if !((Challenge.ChallengeId == ChallengeId)) goto 0x00a5
+  008f: iterpop
+  0090: return TnChallengeManager.GetValueTotalByStatId(Challenge.StatPropertyId)
+  00a5: iternext
+  00a6: iterpop
+  00a7: return -1.0
+  00ad: return return
+  00b3: <eos>
+
+function TnChallengeManager.GetValueFromKeyArchive  (script 112 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self.StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0016
+  0014: return 0
+  0016: Prop.PropertyId = PropertyId
+  002c: self.StatsInterface.GetKeyArchiveValue(Prop)
+  0045: return obj'Engine.Settings'.static.GetSettingsDataInt(Prop.Data)
+  0069: return return
+  006f: <eos>
+
+function TnChallengeManager.GetValueTotalByStatId  (script 117 bytes)
+  0000: SavedValue = TnChallengeManager.GetValueFromKeyArchive(StatId)
+  0011: CurrentDataIndex = self.CurrentStatData.Find('Key',StatId)
+  002d: CurrentValue = ((CurrentDataIndex == -1) ? 0.0 : CurrentDataIndex[self.CurrentStatData].Value)
+  005f: return (cast3f(SavedValue) + CurrentValue)
+  006e: return return
+  0074: <eos>
+
+function TnChallengeManager.GetChallengeLevel  (script 19 bytes)
+  0000: return TnChallengeManager.GetValueFromKeyArchive(ChallengeId)
+  000c: return return
+  0012: <eos>
+
+function TnChallengeManager.CheckChallenges  (script 270 bytes)
+  0000: PossibleChallenges = self.ChallengeMap.GetChallengesFromStatId(Key)
+  001e: PRI = TnPlayerReplicationInfo(TnChallengeManager.GetLocalPlayer().PlayerReplicationInfo)
+  0038: if !((PRI != none)) goto 0x005d
+  0043: Primed = PRI.get_PrimeMode()
+  005d: foreach PossibleChallenges(Challenge,) (end 0x010a)
+  006c: if !((!Primed && Challenge.PrimeChallenge)) goto 0x008f
+  008b: iternext
+  008c: goto 0x010a
+  008f: CurrentLevel = GetChallengeLevel(Challenge.ChallengeId)
+  00ad: GoalIndex = CurrentLevel
+  00b8: if !((GoalIndex < Challenge.GoalValues.Length)) goto 0x0109
+  00d1: if !((Value >= GoalIndex[Challenge.GoalValues])) goto 0x00ff
+  00ef: TnChallengeManager.UnlockChallenge(Challenge, GoalIndex)
+  00ff: AddAdd_PreInt(GoalIndex)
+  0106: goto 0x00b8
+  0109: iternext
+  010a: iterpop
+  010b: return nothing
+  010d: <eos>
+
+function TnChallengeManager.UnlockChallenge  (script 639 bytes)
+  0000: Prop.PropertyId = Challenge.ChallengeId
+  001f: obj'Engine.Settings'.static.SetSettingsDataInt(Prop.Data, (CompletionLevel + 1))
+  004a: self.StatsInterface.SetKeyArchiveValue(Prop, true)
+  0064: if !((CompletionLevel >= (Challenge.GoalValues.Length - 1))) goto 0x0098
+  0080: self.ChallengeMap.RemoveChallenge(Challenge)
+  0098: self.UnlockChallengeMovie.Start()
+  00ac: if !(((Challenge.ChallengeName == "") || (Challenge.Description == ""))) goto 0x0175
+  00d8: LogInternal(((((("ERROR: PLEASE REPORT THIS TO ROBERT: Challenge:" @ cast56(Challenge)) $ ", with empty name or description.  Name:") @ Challenge.ChallengeName) $ ", Description:") @ Challenge.Description), , , )
+  0175: obj'TnScaleformHelpers'.static.AddStringArgument(args, Challenge.ChallengeName)
+  019b: obj'TnScaleformHelpers'.static.AddStringArgument(args, Challenge.Description)
+  01c1: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(CompletionLevel))
+  01e0: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(CompletionLevel[Challenge.GoalValues]))
+  020e: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3f(CompletionLevel[Challenge.XpRewardValues]))
+  023c: self.UnlockChallengeMovie.Invoke(self.MovieFunctionName, args)
+  025e: TnChallengeManager.GetLocalPlayer().OnChallengeUnlocked(Challenge, CompletionLevel)
+  027c: return nothing
+  027e: <eos>
+
+function TnChallengeManager.GetPercentCompleteChallenges  (script 27 bytes)
+  0000: return self.ChallengeMap.GetPercentCompleteChallenges()
+  0014: return return
+  001a: <eos>
+
+function TnChallengeManager.DebugUnlockChallenge  (script 19 bytes)
+  0000: TnChallengeManager.UnlockChallenge(Challenge, CompletionLevel)
+  0010: return nothing
+  0012: <eos>
+
+function TnChallengeManager.GetLocalPlayer  (script 57 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: return WI.GetLocalPlayerController()
+  0032: return return
+  0038: <eos>
+
+function TnChallengeManager.ClearPrimeModeStats  (script 195 bytes)
+  0000: foreach self.PrimeModeStatsToClear(StatId,) (end 0x00bf)
+  000f: Prop.PropertyId = StatId
+  0025: obj'Engine.Settings'.static.SetSettingsDataInt(Prop.Data, 0)
+  0049: self.StatsInterface.SetKeyArchiveValue(Prop, )
+  0063: Prop.PropertyId = (StatId + 4096)
+  0080: obj'Engine.Settings'.static.SetSettingsDataInt(Prop.Data, 0)
+  00a4: self.StatsInterface.SetKeyArchiveValue(Prop, )
+  00be: iternext
+  00bf: iterpop
+  00c0: return nothing
+  00c2: <eos>

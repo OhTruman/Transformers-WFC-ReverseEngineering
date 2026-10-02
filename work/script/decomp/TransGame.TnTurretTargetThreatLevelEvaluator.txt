@@ -1,0 +1,10 @@
+function TnTurretTargetThreatLevelEvaluator.OnCalculateThreatLevel  (script 124 bytes)
+  0000: Turret = TnMountableTurretBase(TnAiController(self._Owner.Controller).AiWorldState.GetSubject(obj'TnAiWorldStateTurret'))
+  003a: if !((Turret != none)) goto 0x006f
+  0045: if !(Turret.IsActorInAngleRange(Threat)) goto 0x0069
+  0060: return 1.0
+  0066: goto 0x006f
+  0069: return -1.0
+  006f: return 0.0
+  0075: return return
+  007b: <eos>

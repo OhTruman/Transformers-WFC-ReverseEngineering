@@ -1,0 +1,26 @@
+function TnAiActionShockwave.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionShockwaveBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionShockwave.OnSetUpConditions  (script 174 bytes)
+  0000: if !(!TnAiActionTriggerAbility.OnSetUpConditions(ExpectedEffects, Conditions)) goto 0x0017
+  0015: return false
+  0017: foreach self._TransformerPawn.get_PawnDistancesManager().PawnsInDistance(obj'TnPawn', CurrentPawn, self._TransformerPawn, self._Blueprint.ShockwaveDistance) (end 0x00a4)
+  0058: if !((self._TransformerPawn == CurrentPawn)) goto 0x006b
+  0067: iternext
+  0068: goto 0x00a4
+  006b: if !(CurrentPawn.IsSameTeam(self._TransformerPawn)) goto 0x008a
+  0086: iternext
+  0087: goto 0x00a4
+  008a: if !(CurrentPawn._IsDowned) goto 0x00a0
+  009c: iternext
+  009d: goto 0x00a4
+  00a0: iterpop
+  00a1: return true
+  00a3: iternext
+  00a4: iterpop
+  00a5: return false
+  00a7: return return
+  00ad: <eos>

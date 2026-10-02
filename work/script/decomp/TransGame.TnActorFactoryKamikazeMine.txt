@@ -1,0 +1,7 @@
+function TnActorFactoryKamikazeMine.PostCreateActor  (script 99 bytes)
+  0000: K = TnProjectileKamikazeMine(NewActor)
+  0010: if !(((K != none) && (self.Team != none))) goto 0x0060
+  0028: K.SetTeam(self.Team)
+  0040: K.Init(vect(0,0,0))
+  0060: return nothing
+  0062: <eos>

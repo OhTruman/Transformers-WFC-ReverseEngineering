@@ -1,0 +1,481 @@
+function Vehicle.NotifyTeamChanged  (script 46 bytes)
+  0000: if !(((self.PlayerReplicationInfo != none) && (self.Driver != none))) goto 0x002b
+  0018: self.Driver.NotifyTeamChanged()
+  002b: return nothing
+  002d: <eos>
+
+function Vehicle.DisplayDebug  (script 487 bytes)
+  0000: Pawn.DisplayDebug(HUD, out_YL, out_YPos)
+  0015: HUD.Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0041: HUD.Canvas.DrawTextNormal(((((("Steering " $ cast55(self.Steering)) $ " throttle ") $ cast55(self.Throttle)) $ " rise ") $ cast55(self.Rise)), , , )
+  009e: (out_YPos += out_YL)
+  00aa: HUD.Canvas.SetPos(4.0, out_YPos)
+  00d0: HUD.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  00f8: (out_YPos += out_YL)
+  0104: HUD.Canvas.SetPos(4.0, out_YPos)
+  012a: if !((self.Driver == none)) goto 0x0149
+  0135: DriverText = "NO DRIVER"
+  0146: goto 0x018e
+  0149: DriverText = ((("Driver Mesh " $ cast56(self.Driver.Mesh)) $ " hidden ") $ cast54(self.Driver.bHidden))
+  018e: HUD.Canvas.DrawTextNormal(DriverText, , , )
+  01b2: (out_YPos += out_YL)
+  01be: HUD.Canvas.SetPos(4.0, out_YPos)
+  01e4: return nothing
+  01e6: <eos>
+
+function Vehicle.Suicide  (script 52 bytes)
+  0000: if !((self.Driver != none)) goto 0x0026
+  000b: self.Driver.KilledBy(self.Driver)
+  0023: goto 0x0031
+  0026: KilledBy(self)
+  0031: return nothing
+  0033: <eos>
+
+function Vehicle.GetTargetLocation  (script 12 bytes)
+  0000: RequestedBy
+  0005: bRequestAlternateLoc
+  000a: nothing
+  000b: <eos>
+
+function Vehicle.TakeRadiusDamage  (script 126 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: Actor.TakeRadiusDamage(InstigatedBy, BaseDamage, DamageRadius, DamageType, Momentum, HurtOrigin, bFullDamage, DamageCauser)
+  0041: if !((self.Health > cast3f(0))) goto 0x007b
+  004e: DriverRadiusDamage(BaseDamage, DamageRadius, InstigatedBy, DamageType, Momentum, HurtOrigin, DamageCauser)
+  007b: return nothing
+  007d: <eos>
+
+function Vehicle.DriverRadiusDamage  (script 137 bytes)
+  0000: if !((((((EventInstigator != none) && (self.Driver != none)) && self.bAttachDriver) && !self.Driver.bCollideActors) && !self.Driver.bBlockActors)) goto 0x0086
+  004f: self.Driver.TakeRadiusDamage(EventInstigator, DamageAmount, DamageRadius, DamageType, Momentum, HitLocation, false, DamageCauser)
+  0086: return nothing
+  0088: <eos>
+
+function Vehicle.PlayerChangedTeam  (script 47 bytes)
+  0000: if !((self.Driver != none)) goto 0x0026
+  000b: self.Driver.KilledBy(self.Driver)
+  0023: goto 0x002c
+  0026: Pawn.PlayerChangedTeam()
+  002c: return nothing
+  002e: <eos>
+
+function Vehicle.SetBaseEyeheight  (script 25 bytes)
+  0000: self.BaseEyeHeight = default.BaseEyeHeight
+  000b: self.EyeHeight = self.BaseEyeHeight
+  0016: return nothing
+  0018: <eos>
+
+function Vehicle.PostBeginPlay  (script 30 bytes)
+  0000: Pawn.PostBeginPlay()
+  0006: if !(!self.bDeleteMe) goto 0x001b
+  0011: AddDefaultInventory()
+  001b: return nothing
+  001d: <eos>
+
+function Vehicle.Destroyed  (script 52 bytes)
+  0000: if !((!self.WorldInfo.IsInEditor() && (self.Driver != none))) goto 0x002b
+  0025: Vehicle.Destroyed_HandleDriver()
+  002b: Pawn.Destroyed()
+  0031: return nothing
+  0033: <eos>
+
+function Vehicle.Destroyed_HandleDriver  (script 128 bytes)
+  0000: self.Driver.LastRenderTime = self.LastRenderTime
+  0014: if !((cast3a(self.Role) == cast3a(3))) goto 0x0055
+  0024: OldDriver = self.Driver
+  002f: self.Driver = none
+  0036: OldDriver.DrivenVehicle = none
+  0046: OldDriver.DestroyActor()
+  0052: goto 0x007d
+  0055: if !((self.Driver.DrivenVehicle == self)) goto 0x007d
+  0069: self.Driver.StopDriving(self)
+  007d: return nothing
+  007f: <eos>
+
+function Vehicle.CanEnterVehicle  (script 159 bytes)
+  0000: return ((((((AnySeatAvailable() && (!self.bAttachDriver || !P.bIsCrouched)) && (P.DrivenVehicle == none)) && (P.Controller != none)) && P.Controller.bIsPlayer) && (Vehicle(P) == none)) && (self.Health > cast3f(0)))
+  0098: return return
+  009e: <eos>
+
+function Vehicle.AnySeatAvailable  (script 16 bytes)
+  0000: return (self.Driver == none)
+  0009: return return
+  000f: <eos>
+
+function Vehicle.TryToDrive  (script 45 bytes)
+  0000: if !(!CanEnterVehicle(P)) goto 0x0016
+  0014: return false
+  0016: return DriverEnter(P)
+  0026: return return
+  002c: <eos>
+
+function Vehicle.DriverEnter  (script 202 bytes)
+  0000: C = P.Controller
+  0014: self.Driver = P
+  001f: self.Driver.StartDriving(self)
+  0033: if !((self.Driver.Health <= cast3f(0))) goto 0x0052
+  0049: self.Driver = none
+  0050: return false
+  0052: SetDriving(true)
+  005d: if !((C == none)) goto 0x006a
+  0068: return false
+  006a: C.UnPossess()
+  007d: self.Driver.SetOwner(self)
+  008a: C.Possess(self, true)
+  009f: self.WorldInfo.Game.DriverEnteredVehicle(self, P)
+  00c1: return true
+  00c3: return return
+  00c9: <eos>
+
+function Vehicle.PossessedBy  (script 93 bytes)
+  0000: Pawn.PossessedBy(C, bVehicleTransition)
+  0011: Vehicle.EntryAnnouncement(C)
+  001c: self.NetPriority = 3.0
+  0027: self.NetUpdateFrequency = 100.0
+  0032: self.ThrottleTime = self.WorldInfo.TimeSeconds
+  0046: self.OnlySteeringStartTime = self.WorldInfo.TimeSeconds
+  005a: return nothing
+  005c: <eos>
+
+function Vehicle.EntryAnnouncement  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.AttachDriver  (script 274 bytes)
+  0000: if !(!self.bAttachDriver) goto 0x000d
+  000b: return nothing
+  000d: P.SetCollision(false, false, )
+  001c: P.bCollideWorld = false
+  002d: P.SetBase(none, , , )
+  0044: P.SetHardAttach(true)
+  0058: P.SetPhysics(0, , )
+  006f: if !(((P.Mesh != none) && (self.Mesh != none))) goto 0x00b1
+  0090: P.Mesh.SetShadowParent(self.Mesh)
+  00b1: if !(!self.bDriverIsVisible) goto 0x00e1
+  00bc: P.SetHidden(true)
+  00d0: P.SetLocation(self.Location)
+  00e1: P.SetBase(self, , , )
+  00f8: P.SetPhysics(0, , )
+  010f: return nothing
+  0111: <eos>
+
+function Vehicle.DetachDriver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.ContinueOnFoot  (script 40 bytes)
+  0000: if !((AIController(self.Controller) != none)) goto 0x001f
+  0010: return DriverLeave(false)
+  001c: goto 0x0021
+  001f: return false
+  0021: return return
+  0027: <eos>
+
+function Vehicle.DriverExitForCheckpoint  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Vehicle.GetExitRotation  (script 55 bytes)
+  0000: ExitRotation.Yaw = self.Controller.Rotation.Yaw
+  002a: return ExitRotation
+  0030: return return
+  0036: <eos>
+
+function Vehicle.DriverLeave  (script 679 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0047
+  0010: WarnInternal("DriverLeave() called on client")
+  0032: obj'Core.Profiling'.static.PrintScriptBacktrace()
+  0045: return false
+  0047: if !((!bForceLeave && !self.WorldInfo.Game.CanLeaveVehicle(self, self.Driver))) goto 0x007d
+  007b: return false
+  007d: if !((self.Controller == none)) goto 0x008a
+  0088: return false
+  008a: if !((self.Driver != none)) goto 0x0135
+  0095: self.Driver.SetHardAttach(false)
+  00a9: self.Driver.bCollideWorld = true
+  00ba: self.Driver.SetCollision(true, true, )
+  00c9: if !(!PlaceExitingDriver()) goto 0x0135
+  00d9: if !(!bForceLeave) goto 0x011d
+  00e4: self.Driver.SetHardAttach(true)
+  00f8: self.Driver.bCollideWorld = false
+  0109: self.Driver.SetCollision(false, false, )
+  0118: return false
+  011a: goto 0x0135
+  011d: self.Driver.SetLocation(GetTargetLocation(, ))
+  0135: ExitRotation = GetExitRotation()
+  0145: SetDriving(false)
+  0150: C = self.Controller
+  015b: if !((C.RouteGoal == self)) goto 0x017f
+  016f: C.RouteGoal = none
+  017f: if !((C.MoveTarget == self)) goto 0x01a3
+  0193: C.MoveTarget = none
+  01a3: self.Controller.UnPossess()
+  01b6: if !(((self.Driver != none) && (self.Driver.Health > cast3f(0)))) goto 0x025c
+  01d9: self.Driver.SetRotation(ExitRotation)
+  01ea: self.Driver.SetOwner(C)
+  01fb: C.Possess(self.Driver, true)
+  0214: PC = PlayerController(C)
+  0224: if !((PC != none)) goto 0x0248
+  022f: PC.ClientSetViewTarget(self.Driver, )
+  0248: self.Driver.StopDriving(self)
+  025c: if !((C == self.Controller)) goto 0x0272
+  026b: self.Controller = none
+  0272: self.WorldInfo.Game.DriverLeftVehicle(self, self.Driver)
+  0294: DriverLeft()
+  029e: return true
+  02a0: return return
+  02a6: <eos>
+
+function Vehicle.SetInputs  (script 47 bytes)
+  0000: self.Throttle = InForward
+  000b: self.Steering = InStrafe
+  0016: self.Brake = InBrake
+  0021: self.Rise = InUp
+  002c: return nothing
+  002e: <eos>
+
+function Vehicle.DriverLeft  (script 21 bytes)
+  0000: self.Driver = none
+  0007: SetDriving(false)
+  0012: return nothing
+  0014: <eos>
+
+function Vehicle.PlaceExitingDriver  (script 443 bytes)
+  0000: nothing
+  0001: if !((ExitingDriver == none)) goto 0x0017
+  000c: ExitingDriver = self.Driver
+  0017: if !((ExitingDriver == none)) goto 0x0024
+  0022: return false
+  0024: Extent = (ExitingDriver.GetCollisionRadius() * vect(1,1,0))
+  004c: Extent.Z = ExitingDriver.GetCollisionHeight()
+  0070: ZOffset = (Extent.Z * vect(0,0,1))
+  0095: if !((self.ExitPositions.Length > 0)) goto 0x01a6
+  00a1: I = 0
+  00a8: if !((I < self.ExitPositions.Length)) goto 0x01a3
+  00b8: if !((0[self.ExitPositions].Z != cast3f(0))) goto 0x00fc
+  00d2: ZOffset = (vect(0,0,1) * 0[self.ExitPositions].Z)
+  00f9: goto 0x0128
+  00fc: ZOffset = (ExitingDriver.CylinderComponent.default.CollisionHeight * vect(0,0,2))
+  0128: tryPlace = ((self.Location + ((I[self.ExitPositions] - ZOffset) >> self.Rotation)) + ZOffset)
+  0156: if !(!ClearLineOfSight(ExitingDriver, tryPlace, (self.Location + ZOffset), false, Extent, )) goto 0x017e
+  017b: goto 0x0199
+  017e: if !(!ExitingDriver.SetLocation(tryPlace)) goto 0x0197
+  0194: goto 0x0199
+  0197: return true
+  0199: AddAdd_Int(I)
+  01a0: goto 0x00a8
+  01a3: goto 0x01b2
+  01a6: return Vehicle.FindAutoExit(ExitingDriver)
+  01b2: return false
+  01b4: return return
+  01ba: <eos>
+
+function Vehicle.FindAutoExit  (script 330 bytes)
+  0000: FacingDir = cast39(self.Rotation)
+  000d: CrossProduct = obj'Core.Math'.static.Normal((FacingDir cross vect(0,0,1)))
+  0032: if !((self.ExitRadius == cast3f(0))) goto 0x005f
+  003f: self.ExitRadius = (GetCollisionRadius() + ExitingDriver.VehicleCheckRadius)
+  005f: PlaceDist = (self.ExitRadius + ExitingDriver.GetCollisionRadius())
+  007f: return (((Vehicle.TryExitPos(ExitingDriver, ((GetTargetLocation(, ) + self.ExitOffset) + (PlaceDist * CrossProduct)), false) || Vehicle.TryExitPos(ExitingDriver, ((GetTargetLocation(, ) + self.ExitOffset) - (PlaceDist * CrossProduct)), false)) || Vehicle.TryExitPos(ExitingDriver, ((GetTargetLocation(, ) + self.ExitOffset) - (PlaceDist * FacingDir)), false)) || Vehicle.TryExitPos(ExitingDriver, ((GetTargetLocation(, ) + self.ExitOffset) + (PlaceDist * FacingDir)), false))
+  0143: return return
+  0149: <eos>
+
+function Vehicle.TryExitPos  (script 367 bytes)
+  0000: Slice = (ExitingDriver.GetCollisionRadius() * vect(1,1,0))
+  0028: Slice.Z = 2.0
+  003e: StartLocation = GetTargetLocation(, )
+  0050: if !(!ClearLineOfSight(ExitingDriver, ExitPos, StartLocation, false, Slice, )) goto 0x0070
+  006e: return false
+  0070: HitActor = Trace(HitLocation, HitNormal, ExitingDriver, (ExitPos - (ExitingDriver.GetCollisionHeight() * vect(0,0,5))), ExitPos, true, Slice, , , )
+  00bf: if !((HitActor == none)) goto 0x00e0
+  00ca: if !(bMustFindGround) goto 0x00d5
+  00d3: return false
+  00d5: HitLocation = ExitPos
+  00e0: NewActorPos = (HitLocation + ((ExitingDriver.GetCollisionHeight() + ExitingDriver._WorkingMovementCapabilities.MaxStepHeight) * vect(0,0,1)))
+  012a: if !(PointCheckComponent(self.Mesh, NewActorPos, ExitingDriver.GetCollisionExtent())) goto 0x0156
+  0154: return false
+  0156: return ExitingDriver.SetLocation(NewActorPos)
+  0168: return return
+  016e: <eos>
+
+function Vehicle.UnPossessed  (script 39 bytes)
+  0000: self.NetPriority = default.NetPriority
+  000b: self.bForceNetUpdate = true
+  0013: self.NetUpdateFrequency = 8.0
+  001e: Pawn.UnPossessed()
+  0024: return nothing
+  0026: <eos>
+
+function Vehicle.SetKillInstigator  (script 13 bytes)
+  0000: return InstigatedBy
+  0006: return return
+  000c: <eos>
+
+function Vehicle.TakeDamage  (script 116 bytes)
+  0000: nothing
+  0001: nothing
+  0002: self.bForceNetUpdate = true
+  000a: if !((DamageType != none)) goto 0x004c
+  0015: (Damage *= DamageType.static.VehicleDamageScalingFor(self))
+  0030: (Momentum *= (DamageType.static.default.VehicleMomentumScaling * self.MomentumMult))
+  004c: Pawn.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, )
+  0071: return nothing
+  0073: <eos>
+
+function Vehicle.AdjustDriverDamage  (script 62 bytes)
+  0000: if !(InGodMode()) goto 0x001b
+  000d: Damage = 0.0
+  0018: goto 0x003b
+  001b: if !(!DamageType.static.default.bIgnoreDriverDamageMult) goto 0x003b
+  002f: (Damage *= self.DriverDamageMult)
+  003b: return nothing
+  003d: <eos>
+
+function Vehicle.ThrowActiveWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.Died  (script 49 bytes)
+  0000: if !(Pawn.Died(Killer, DamageType, HitLocation)) goto 0x0028
+  0018: SetDriving(false)
+  0023: return true
+  0025: goto 0x002a
+  0028: return false
+  002a: return return
+  0030: <eos>
+
+function Vehicle.DriverDied  (script 408 bytes)
+  0000: if !((self.Driver == none)) goto 0x000d
+  000b: return nothing
+  000d: self.WorldInfo.Game.DiscardInventory(self.Driver, )
+  002f: C = self.Controller
+  003a: self.Driver.StopDriving(self)
+  004e: self.Driver.Controller = C
+  0062: self.Driver.DrivenVehicle = self
+  0072: if !((self.Controller == none)) goto 0x007f
+  007d: return nothing
+  007f: if !((PlayerController(self.Controller) != none)) goto 0x00dc
+  008f: self.Controller.SetLocation(self.Location)
+  00a0: PlayerController(self.Controller).SetViewTarget(self.Driver, )
+  00be: PlayerController(self.Controller).ClientSetViewTarget(self.Driver, )
+  00dc: self.Controller.UnPossess()
+  00ef: if !((self.Controller == C)) goto 0x0105
+  00fe: self.Controller = none
+  0105: C.Pawn = self.Driver
+  0119: RealPRI = self.Driver.PlayerReplicationInfo
+  012d: if !((RealPRI == none)) goto 0x0155
+  0138: self.Driver.PlayerReplicationInfo = C.PlayerReplicationInfo
+  0155: self.WorldInfo.Game.DriverLeftVehicle(self, self.Driver)
+  0177: self.Driver.PlayerReplicationInfo = RealPRI
+  018b: DriverLeft()
+  0195: return nothing
+  0197: <eos>
+
+function Vehicle.PlayDying  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.GetDefaultCameraMode  (script 99 bytes)
+  0000: if !((((RequestedBy != none) && (RequestedBy.PlayerCamera != none)) && (RequestedBy.PlayerCamera.CameraStyle == 'Fixed'))) goto 0x0052
+  0048: return 'Fixed'
+  0052: return 'ThirdPerson'
+  005c: return return
+  0062: <eos>
+
+function Vehicle.FaceRotation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.EncroachedBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.GetCollisionDamageInstigator  (script 56 bytes)
+  0000: if !((self.Controller != none)) goto 0x0014
+  000b: return self.Controller
+  0011: goto 0x0031
+  0014: return ((self.Instigator != none) ? self.Instigator.Controller : none)
+  0031: return return
+  0037: <eos>
+
+function Vehicle.EncroachingOn  (script 706 bytes)
+  0000: P = Pawn(Other)
+  0010: if !((P == none)) goto 0x001d
+  001b: return false
+  001d: bSlowEncroach = (obj'Core.Math'.static.VSize(self.Velocity) < self.MinCrushSpeed)
+  003b: if !(bSlowEncroach) goto 0x00ec
+  0044: CheckExtent.X = (P.CylinderComponent.CollisionRadius - self.ForceCrushPenetration)
+  0073: CheckExtent.Y = CheckExtent.X
+  0094: CheckExtent.Z = (P.CylinderComponent.CollisionHeight - self.ForceCrushPenetration)
+  00c3: bDeepEncroach = PointCheckComponent(self.CollisionComponent, P.Location, CheckExtent)
+  00ec: if !(((((((Other == self.Instigator) && !bDeepEncroach) || (Vehicle(Other) != none)) || (cast3a(Other.Role) != cast3a(3))) || (!Other.bCollideActors && !Other.bBlockActors)) || (bSlowEncroach && !bDeepEncroach))) goto 0x020d
+  0179: if !(((P.Velocity dot (self.Location - P.Location)) > cast3f(0))) goto 0x020b
+  01a6: PushVelocity = (obj'Core.Math'.static.Normal((P.Location - self.Location)) * cast3f(200))
+  01d2: PushVelocity.Z = 100.0
+  01e8: P.AddVelocity(PushVelocity, self.Location, self.CrushedDamageType, )
+  020b: return false
+  020d: if !((P.Base == self)) goto 0x026d
+  0221: RanInto(P)
+  0230: if !((P.Base != none)) goto 0x0257
+  0244: P.JumpOffPawn()
+  0257: if !((P.Base == none)) goto 0x026d
+  026b: return false
+  026d: Other.TakeDamage(10000.0, GetCollisionDamageInstigator(), Other.Location, (self.Velocity * P.Mass), self.CrushedDamageType, , )
+  02b9: return false
+  02bb: return return
+  02c1: <eos>
+
+function Vehicle.CrushedBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.GetEntryLocation  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function Vehicle.SetDriving  (script 43 bytes)
+  0000: if !((self.bDriving != B)) goto 0x0028
+  0011: self.bDriving = B
+  001e: DrivingStatusChanged()
+  0028: return nothing
+  002a: <eos>
+
+function Vehicle.HandleDeadVehicleDriver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.DrivingStatusChanged  (script 47 bytes)
+  0000: if !(!self.bDriving) goto 0x002c
+  000b: self.Throttle = 0.0
+  0016: self.Steering = 0.0
+  0021: self.Rise = 0.0
+  002c: return nothing
+  002e: <eos>
+
+function Vehicle.ReplicatedEvent  (script 111 bytes)
+  0000: if !((VarName == 'bDriving')) goto 0x0020
+  0013: DrivingStatusChanged()
+  001d: goto 0x006c
+  0020: if !((VarName == 'Driver')) goto 0x0061
+  0033: if !(((self.PlayerReplicationInfo != none) && (self.Driver != none))) goto 0x005e
+  004b: self.Driver.NotifyTeamChanged()
+  005e: goto 0x006c
+  0061: Pawn.ReplicatedEvent(VarName)
+  006c: return nothing
+  006e: <eos>
+
+function Vehicle.NotifyDriverTakeHit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Vehicle.SetAttachDriver  (script 16 bytes)
+  0000: self.bAttachDriver = AttachDriver
+  000d: return nothing
+  000f: <eos>
+
+function Vehicle.GetAttachDriver  (script 14 bytes)
+  0000: return self.bAttachDriver
+  0007: return return
+  000d: <eos>

@@ -1,0 +1,89 @@
+function TnAiActionMeleeSlamWithShieldUp.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionMeleeSlamWithShieldUpBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._MeleeService = TnMeleeService(GetService('TnMeleeService', 0))
+  0026: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnSetUpConditions  (script 242 bytes)
+  0000: if !((self._TransformerController.Enemy == none)) goto 0x0016
+  0014: return false
+  0016: if !((get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy') == false)) goto 0x003b
+  0039: return false
+  003b: if !((TnAiActionMeleeSlamWithShieldUp.CanDashMelee() == false)) goto 0x0049
+  0047: return false
+  0049: if !((self._TransformerController.ActorReachable(self._TransformerController.Enemy) == false)) goto 0x0072
+  0070: return false
+  0072: if !((self._PlanningUtil.PopulatePreconditions(self, ExpectedEffects, Conditions) == false)) goto 0x0098
+  0096: return false
+  0098: if !((self._PlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.CheckAttackDestinationDistance, self._Blueprint.AttackDestinationDistanceThreshold) == false)) goto 0x00da
+  00d8: return false
+  00da: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00eb: return return
+  00f1: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnIsValidForFutureExecution  (script 90 bytes)
+  0000: if !((self._PlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.CheckAttackDestinationDistance, self._Blueprint.AttackDestinationDistanceThreshold) == false)) goto 0x0042
+  0040: return false
+  0042: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0053: return return
+  0059: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnPlanStart  (script 38 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._PlanningUtil.PlanStart(ExpectedEffects)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnStart  (script 117 bytes)
+  0000: SetCharacterState(1)
+  000b: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0033: PlayDialog(obj'SoundEvents_Dialog.Chase_Dash')
+  0042: self._MeleeService.StartMeleeAttack(5, none, delegate.OnMeleeComplete)
+  0062: return OnStart(ExpectedEffects)
+  006e: return return
+  0074: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnUpdate  (script 84 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Succeed()
+  0029: self._TransformerController.StopMovement()
+  003c: return OnUpdate(ExpectedEffects, DeltaTime)
+  004d: return return
+  0053: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnFinish  (script 82 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._MeleeService.AbortMeleeAttack()
+  001f: self._AnimatorService.StopAnimation(, )
+  0035: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateTaunted', false, )
+  004f: return nothing
+  0051: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.CanDashMelee  (script 274 bytes)
+  0000: VectorToEnemy = (self._TransformerController.Enemy.Location - self._TransformerPawn.Location)
+  002d: DistanceToEnemySq = obj'Core.Math'.static.VSizeSq(VectorToEnemy)
+  004b: if !((DistanceToEnemySq > (self._Blueprint.SlamThresholdOuterDistance * self._Blueprint.SlamThresholdOuterDistance))) goto 0x0075
+  0073: return false
+  0075: if !((DistanceToEnemySq < (self._Blueprint.SlamThresholdInnerDistance * self._Blueprint.SlamThresholdInnerDistance))) goto 0x009f
+  009d: return false
+  009f: NormalizedVectorToEnemy = obj'Core.Math'.static.Normal(VectorToEnemy)
+  00b5: NormalizedVectorToEnemy.Z = 0.0
+  00cb: FacingDirection = cast39(self._TransformerPawn.Rotation)
+  00e1: FacingDirection.Z = 0.0
+  00f7: return ((FacingDirection dot NormalizedVectorToEnemy) >= 0.9848)
+  010b: return return
+  0111: <eos>
+
+function TnAiActionMeleeSlamWithShieldUp.OnMeleeComplete  (script 135 bytes)
+  0000: Params.AnimName = (self._MeleeService.get_LastMeleeWasSuccessful() ? self._Blueprint.MeleeHitAnimName : self._Blueprint.MeleeMissAnimName)
+  0046: Params.RootMotionMode = 2
+  0059: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.FailCallback, delegate.FailCallback)
+  0084: return nothing
+  0086: <eos>

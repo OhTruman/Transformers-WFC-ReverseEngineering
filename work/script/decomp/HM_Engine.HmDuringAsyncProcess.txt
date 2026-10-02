@@ -1,0 +1,29 @@
+function HmDuringAsyncProcess.AddBodyImpactComponent  (script 27 bytes)
+  0000: if !((BodyImpactComponent != none)) goto 0x0018
+  000b: self.BodyImpactComponentList.AddItem(BodyImpactComponent)
+  0018: return nothing
+  001a: <eos>
+
+function HmDuringAsyncProcess.RemoveBodyImpactComponent  (script 16 bytes)
+  0000: self.BodyImpactComponentList.RemoveItem(BodyImpactComponent)
+  000d: return nothing
+  000f: <eos>
+
+function HmDuringAsyncProcess.Tick  (script 201 bytes)
+  0000: foreach self.BodyImpactComponentList(BodyImpactComponent,) (end 0x0054)
+  000f: if !(((BodyImpactComponent == none) || (BodyImpactComponent.Owner == none))) goto 0x003b
+  0030: bPurgeBodyImpactList = true
+  0038: goto 0x0053
+  003b: BodyImpactComponent.Tick(DeltaTime)
+  0053: iternext
+  0054: iterpop
+  0055: if !(bPurgeBodyImpactList) goto 0x00c6
+  005e: Len = self.BodyImpactComponentList.Length
+  006a: I = (Len - 1)
+  0078: if !((I >= 0)) goto 0x00c6
+  0083: if !(((I[self.BodyImpactComponentList] == none) || (I[self.BodyImpactComponentList].Owner == none))) goto 0x00bc
+  00b0: self.BodyImpactComponentList.Remove(I,1)
+  00bc: SubtractSubtract_PreInt(I)
+  00c3: goto 0x0078
+  00c6: return nothing
+  00c8: <eos>

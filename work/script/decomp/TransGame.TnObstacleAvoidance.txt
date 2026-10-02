@@ -1,0 +1,110 @@
+function TnObstacleAvoidance.GetRadius  (script 73 bytes)
+  0000: if !(P.get_IsInVehicleForm()) goto 0x002e
+  0016: return P._VehicleForm._EncompassCylinderRadius
+  002e: return P.GetCollisionRadius()
+  0042: return return
+  0048: <eos>
+
+function TnObstacleAvoidance.GetBoxExtent  (script 91 bytes)
+  0000: return obj'Core.Math'.static.MakeVector(P.GetCollisionRadius(), P.GetCollisionRadius(), (P.GetCollisionHeight() / 2.0))
+  0054: return return
+  005a: <eos>
+
+function TnObstacleAvoidance.GetCollisionTime  (script 82 bytes)
+  0000: RelativeSpeed = obj'Core.Math'.static.VSize(RelativeVelocity)
+  0016: if !((RelativeSpeed > 0.0)) goto 0x0045
+  0025: return ((-RelativeLocation dot RelativeVelocity) / (RelativeSpeed * RelativeSpeed))
+  0042: goto 0x004b
+  0045: return 0.0
+  004b: return return
+  0051: <eos>
+
+function TnObstacleAvoidance.GetSeparationDistance  (script 38 bytes)
+  0000: return obj'Core.Math'.static.VSize((RelativeLocation + (RelativeVelocity * CollisionTime)))
+  001f: return return
+  0025: <eos>
+
+function TnObstacleAvoidance.GetPredictedCollisionDistance  (script 31 bytes)
+  0000: return obj'Core.Math'.static.VSize((Velocity * CollisionTime))
+  0018: return return
+  001e: <eos>
+
+function TnObstacleAvoidance.ShouldAvoidCandidate  (script 351 bytes)
+  0000: AvoidanceCandidate.P = AvoidPawn
+  0016: AvoidanceCandidate.Radius = AvoidPawnRadius
+  002c: MinimumSeparationDistance = ((AiPawnRadius + AvoidPawnRadius) + DesiredSeparationDistance)
+  0045: RelativeLocation = (AvoidanceCandidate.P.Location - AiPawn.Location)
+  0074: RelativeVelocity = (AvoidanceCandidate.P.Velocity - DesiredVelocity)
+  009a: AvoidanceCandidate.CollisionTime = TnObstacleAvoidance.GetCollisionTime(RelativeLocation, RelativeVelocity)
+  00bb: if !((AvoidanceCandidate.CollisionTime < 0.0)) goto 0x00d7
+  00d5: return false
+  00d7: SeparationDistance = TnObstacleAvoidance.GetSeparationDistance(RelativeLocation, RelativeVelocity, AvoidanceCandidate.CollisionTime)
+  00fd: if !((SeparationDistance > MinimumSeparationDistance)) goto 0x010e
+  010c: return false
+  010e: AvoidanceCandidate.CollisionDistance = TnObstacleAvoidance.GetPredictedCollisionDistance(DesiredVelocity, AvoidanceCandidate.CollisionTime)
+  013a: if !((AvoidanceCandidate.CollisionDistance > AvoidanceDistance)) goto 0x0156
+  0154: return false
+  0156: return true
+  0158: return return
+  015e: <eos>
+
+function TnObstacleAvoidance.FindBestPawnToAvoid  (script 315 bytes)
+  0000: MoveTargetPawn = TnPawn(GoalActor)
+  0010: BestAvoidanceCandidate.P = none
+  0022: BestAvoidanceCandidate.CollisionTime = 10000.0
+  0038: foreach AiPawn.get_PawnDistancesManager().PawnsInDistance(obj'TnPawn', AvoidPawn, AiPawn, SearchRadius) (end 0x012d)
+  0070: if !((AvoidPawn == AiPawn)) goto 0x0083
+  007f: iternext
+  0080: goto 0x012d
+  0083: if !(((MoveTargetPawn != none) && (MoveTargetPawn == AvoidPawn))) goto 0x00a3
+  009f: iternext
+  00a0: goto 0x012d
+  00a3: AvoidPawnRadius = GetRadius(AvoidPawn)
+  00b8: if !(!obj'TnObstacleAvoidance'.static.ShouldAvoidCandidate(AiPawn, AvoidPawn, AiPawnRadius, AvoidPawnRadius, AvoidanceDistance, DesiredSeparationDistance, DesiredVelocity, AvoidanceCandidate)) goto 0x00fc
+  00f8: iternext
+  00f9: goto 0x012d
+  00fc: if !((AvoidanceCandidate.CollisionTime < BestAvoidanceCandidate.CollisionTime)) goto 0x012c
+  0121: BestAvoidanceCandidate = AvoidanceCandidate
+  012c: iternext
+  012d: iterpop
+  012e: return BestAvoidanceCandidate
+  0134: return return
+  013a: <eos>
+
+function TnObstacleAvoidance.GetLinkedNavigationCell  (script 99 bytes)
+  0000: ReachSpecArray = NavPoint.GetReachSpecArray()
+  0019: foreach ReachSpecArray(Spec,) (end 0x0059)
+  0028: NavCell = NavigationCell(Spec.GetEndNavigationPoint())
+  0046: if !((NavCell != none)) goto 0x0058
+  0051: iterpop
+  0052: return NavCell
+  0058: iternext
+  0059: iterpop
+  005a: return none
+  005c: return return
+  0062: <eos>
+
+function TnObstacleAvoidance.IsPathClearToLocationOnNavMesh  (script 149 bytes)
+  0000: if !((AiPawn.Anchor == none)) goto 0x0016
+  0014: return false
+  0016: NavCell = NavigationCell(AiPawn.Anchor)
+  002f: if !((NavCell == none)) goto 0x0061
+  003a: NavCell = TnObstacleAvoidance.GetLinkedNavigationCell(AiPawn.Anchor)
+  0054: if !((NavCell == none)) goto 0x0061
+  005f: return false
+  0061: return NavCell.WalkLine(AiPawn.Location, FutureLocation, AiPawnRadius, )
+  008e: return return
+  0094: <eos>
+
+function TnObstacleAvoidance.IsPathClearToLocation  (script 51 bytes)
+  0000: return AiPawn.FastTrace(FutureLocation, , obj'TnObstacleAvoidance'.static.GetBoxExtent(AiPawn), )
+  002c: return return
+  0032: <eos>
+
+function TnObstacleAvoidance.IsPositionInFrontWithinAngle  (script 130 bytes)
+  0000: ForwardVector = cast39(P.Rotation)
+  0016: LocationToPositionVector = (Position - P.Location)
+  0031: AngleToPosition = (obj'Core.Math'.static.Acos(obj'Core.Math'.static.NormalizeDot2D(ForwardVector, LocationToPositionVector)) * 57.2957802)
+  006e: return (AngleToPosition < MaxAngle)
+  007b: return return
+  0081: <eos>

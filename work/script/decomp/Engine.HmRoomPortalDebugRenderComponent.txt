@@ -1,0 +1,21 @@
+function HmRoomPortalDebugRenderComponent.CreatePrimitives  (script 676 bytes)
+  0000: Portal = HmRoomPortal(self.Owner)
+  0010: if !((Portal == none)) goto 0x001d
+  001b: return nothing
+  001d: bIsPortalValid = Portal.IsValid()
+  0037: bPortalConnectsTwoRooms = Portal.IsConnectedToTwoRoomVolumes()
+  0051: bHighlight = ((obj'EditorUtils'.static.IsObjectSelected(Portal) || ((Portal.GetRoomVolume1() != none) && obj'EditorUtils'.static.IsObjectSelected(Portal.GetRoomVolume1()))) || ((Portal.GetRoomVolume2() != none) && obj'EditorUtils'.static.IsObjectSelected(Portal.GetRoomVolume2())))
+  00fc: if !(bIsPortalValid) goto 0x01ae
+  0105: if !(bPortalConnectsTwoRooms) goto 0x015e
+  010e: PortalColor = (bHighlight ? MakeLinearColor(0.0, 1.0, 0.0, 0.2) : MakeLinearColor(0.0, 0.5, 0.0, 0.2))
+  015b: goto 0x01ab
+  015e: PortalColor = (bHighlight ? MakeLinearColor(1.0, 1.0, 0.0, 0.2) : MakeLinearColor(0.5, 0.5, 0.0, 0.2))
+  01ab: goto 0x01fb
+  01ae: PortalColor = (bHighlight ? MakeLinearColor(1.0, 0.0, 0.0, 0.2) : MakeLinearColor(0.5, 0.0, 0.0, 0.2))
+  01fb: Portal.GetWorldQuad(P1, P2, P3, P4)
+  0222: AddSolidQuad(P1, P2, P3, P4, PortalColor)
+  0245: AddSolidQuad(P1, P4, P3, P2, PortalColor)
+  0268: PortalColor.A = 1.0
+  027e: AddWireQuad(P1, P2, P3, P4, PortalColor)
+  02a1: return nothing
+  02a3: <eos>

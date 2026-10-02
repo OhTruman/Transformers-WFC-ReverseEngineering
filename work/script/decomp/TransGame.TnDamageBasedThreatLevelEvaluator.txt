@@ -1,0 +1,9 @@
+function TnDamageBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 132 bytes)
+  0000: OwnerController = TnAiController(self._Owner.Controller)
+  0019: if !((OwnerController == none)) goto 0x002a
+  0024: return 0.0
+  002a: if !((OwnerController.Pawn == none)) goto 0x0044
+  003e: return 0.0
+  0044: return ((self._Scale * OwnerController.GetDamageResult(Threat)) / OwnerController.Pawn.HealthMax)
+  007d: return return
+  0083: <eos>

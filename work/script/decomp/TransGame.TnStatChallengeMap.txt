@@ -1,0 +1,28 @@
+function TnStatChallengeMap.CheckChallengeCompleted  (script 192 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0034: ChallengeProp.PropertyId = ChallengeId
+  004a: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0060
+  005e: return false
+  0060: if !(!StatsInterface.GetKeyArchiveValue(ChallengeProp)) goto 0x0080
+  007e: return false
+  0080: ChallengeValue = (obj'Engine.Settings'.static.GetSettingsDataInt(ChallengeProp.Data) - 1)
+  00ac: return (ChallengeValue >= CompletionLevel)
+  00b9: return return
+  00bf: <eos>
+
+function TnStatChallengeMap.Initialize  (script 449 bytes)
+  0000: self.ChallengeClasses.Length = 0
+  0008: !! unknown token 0x59 at 0x8 ; raw 590100003e330f0100003e31250f0100003e30250f000000
+
+function TnStatChallengeMap.GetChallengesFromStatId  (script 73 bytes)
+  0000: !! unknown token 0x4f at 0x4 ; raw 07002b814f0100003e33000a0000003e490000003e47160f
+
+function TnStatChallengeMap.RemoveChallenge  (script 81 bytes)
+  0000: StatIdValue = Challenge.StatPropertyId
+  0014: !! unknown token 0x4f at 0x17 ; raw 07004e4f0100003e33000a0000003e4b0000003e4c563500
+
+function TnStatChallengeMap.GetPercentCompleteChallenges  (script 42 bytes)
+  0000: return ((self.TotalChallenges == 0) ? 0.0 : (cast3f(self.CompletedChallenges) / cast3f(self.TotalChallenges)))
+  0023: return return
+  0029: <eos>

@@ -1,0 +1,61 @@
+function TnDroppedPickupDecoyTrap.ReplicatedEvent  (script 51 bytes)
+  0000: if !((VarName == 'WeaponClass')) goto 0x0025
+  0013: SetDecoyWeapon(self.WeaponClass)
+  0022: goto 0x0030
+  0025: TnDroppedPickupDefrag.ReplicatedEvent(VarName)
+  0030: return nothing
+  0032: <eos>
+
+function TnDroppedPickupDecoyTrap.SetDecoyWeapon  (script 98 bytes)
+  0000: self.WeaponClass = W
+  000b: SetPickupMesh(W.static.GetPickupMesh())
+  0028: self.RotationRate = self.WeaponClass.static.default.PickupRotationRate
+  003c: self.RotationRate.Yaw = -self.RotationRate.Yaw
+  005f: return nothing
+  0061: <eos>
+
+function TnDroppedPickupDecoyTrap.ClientLanded  (script 29 bytes)
+  0000: self.Defragger.DefragTime = self.ArmDelay
+  0014: TnDroppedPickupDefrag.ClientLanded()
+  001a: return nothing
+  001c: <eos>
+
+function TnDroppedPickupDecoyTrap.OnFullyFadedIn  (script 55 bytes)
+  0000: self.Defragger.DefragTime = (self.GlitchDuration / 2.0)
+  001b: SetTimer(self.GlitchDelay, true, 'StartGlitching', )
+  002e: TnDroppedPickupDefrag.OnFullyFadedIn()
+  0034: return nothing
+  0036: <eos>
+
+function TnDroppedPickupDecoyTrap.StartGlitching  (script 22 bytes)
+  0000: self.Defragger.StartFadeOut()
+  0013: return nothing
+  0015: <eos>
+
+function TnDroppedPickupDecoyTrap.Pickup.EndState  (script 34 bytes)
+  0000: EndState(NextStateName)
+  000b: ClearTimer('StartGlitching', )
+  001f: return nothing
+  0021: <eos>
+
+function TnDroppedPickupDecoyTrap.Pickup.Tick  (script 162 bytes)
+  0000: IsOwnerDead = (((self.Instigator == none) || self.Instigator.IsDying()) || self.Instigator.IsDead())
+  003f: if !(((cast3a(self.Role) == cast3a(3)) && IsOwnerDead)) goto 0x006b
+  005a: GotoState('FadeOut', , , )
+  0068: goto 0x0094
+  006b: if !(self.Defragger.IsFullyFadedOut()) goto 0x0094
+  0081: self.Defragger.StartFadeIn()
+  0094: Tick(DeltaTime)
+  009f: return nothing
+  00a1: <eos>
+
+function TnDroppedPickupDecoyTrap.GetWeaponClass  (script 13 bytes)
+  0000: return self.WeaponClass
+  0006: return return
+  000c: <eos>
+
+function TnDroppedPickupDecoyTrap.OnFadeOut  (script 36 bytes)
+  0000: self.Defragger.DefragTime = (self.GlitchDuration / 2.0)
+  001b: TnDroppedPickupDefrag.OnFadeOut()
+  0021: return nothing
+  0023: <eos>

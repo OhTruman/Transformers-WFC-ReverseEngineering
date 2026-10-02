@@ -1,0 +1,72 @@
+function TnHitEffectPlayer.Initialize  (script 110 bytes)
+  0000: if !((none == BluePrizzle)) goto 0x000d
+  000b: return nothing
+  000d: self.Owner = OwningPawn
+  0018: self.Blueprint = BluePrizzle
+  0023: self.LastHitEffectTimes.Length = self.Blueprint.Effects.Length
+  0039: Index = 0
+  0040: if !((Index < self.LastHitEffectTimes.Length)) goto 0x006b
+  0050: Index[self.LastHitEffectTimes] = -1.0
+  0061: AddAdd_Int(Index)
+  0068: goto 0x0040
+  006b: return nothing
+  006d: <eos>
+
+function TnHitEffectPlayer.SpawnBloodDecal  (script 192 bytes)
+  0000: if !((DamageType == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((DamageType.static.default.BloodDecalTemplates.Length > 0)) goto 0x00bd
+  0022: DecalIndex = obj'Core.Random'.static.RandomInt(DamageType.static.default.BloodDecalTemplates.Length)
+  004a: self.DecalApplicator.Template = DecalIndex[DamageType.static.default.BloodDecalTemplates]
+  006d: self.DecalApplicator.Template.Material = DecalIndex[DamageType.static.default.BloodDecalMaterials]
+  009b: self.DecalApplicator.Apply(self.Owner, Location, Momentum)
+  00bd: return nothing
+  00bf: <eos>
+
+function TnHitEffectPlayer.PlayEffect  (script 506 bytes)
+  0000: EffectIndex = TnHitEffectPlayer.FindEffect(DamageType)
+  0011: if !(((EffectIndex != -1) && ((EffectIndex[self.LastHitEffectTimes] + EffectIndex[self.Blueprint.Effects].RetriggerTime) < obj'Engine.Engine'.static.GetWorldTime()))) goto 0x01dd
+  0066: EffectIndex[self.LastHitEffectTimes] = obj'Engine.Engine'.static.GetWorldTime()
+  0085: if !(IsBlocking) goto 0x00ec
+  008e: Effect = EffectIndex[self.Blueprint.Effects].BlockEffect
+  00b3: self.Owner.PlaySoundEvent(EffectIndex[self.Blueprint.Effects].BlockSound, , , , )
+  00e9: goto 0x0147
+  00ec: Effect = EffectIndex[self.Blueprint.Effects].PSTemplate
+  0111: self.Owner.PlaySoundEvent(EffectIndex[self.Blueprint.Effects].HitSound, , , , )
+  0147: if !((Effect != none)) goto 0x01d2
+  0152: BloodMomentum = (obj'Core.Math'.static.Normal((-1.0 * Momentum)) + (0.5 * obj'Core.Random'.static.RandomUnitVector()))
+  018b: self.Owner.WorldInfo.GetEmitterPool().SpawnEmitterAttachedToSkeletalMesh(Effect, Location, cast50(BloodMomentum), BoneName, SkelMeshComponent, , )
+  01d2: TnHitEffectPlayer.PlayCameraEffect(EffectIndex)
+  01dd: TnHitEffectPlayer.SpawnBloodDecal(Location, Momentum, class<TnDamageType>(DamageType))
+  01f7: return nothing
+  01f9: <eos>
+
+function TnHitEffectPlayer.FindEffect  (script 209 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x0011
+  000b: return -1
+  0011: I = 0
+  0018: if !((I < self.Blueprint.Effects.Length)) goto 0x006a
+  0031: if !((I[self.Blueprint.Effects].DamageType == DamageType)) goto 0x0060
+  005a: return I
+  0060: AddAdd_PreInt(I)
+  0067: goto 0x0018
+  006a: I = 0
+  0071: if !((I < self.Blueprint.Effects.Length)) goto 0x00c4
+  008a: if !(ClassIsChildOf(DamageType, I[self.Blueprint.Effects].DamageType)) goto 0x00ba
+  00b4: return I
+  00ba: AddAdd_PreInt(I)
+  00c1: goto 0x0071
+  00c4: return -1
+  00ca: return return
+  00d0: <eos>
+
+function TnHitEffectPlayer.PlayCameraEffect  (script 115 bytes)
+  0000: CameraEffect = EffectIndex[self.Blueprint.Effects].CameraEffect
+  0025: if !((CameraEffect == none)) goto 0x0032
+  0030: return nothing
+  0032: PC = TnPlayerController(self.Owner.Controller)
+  004b: if !((PC == none)) goto 0x0058
+  0056: return nothing
+  0058: PC.SpawnCameraEmitter(CameraEffect)
+  0070: return nothing
+  0072: <eos>

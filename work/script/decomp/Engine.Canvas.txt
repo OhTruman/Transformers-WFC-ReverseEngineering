@@ -1,0 +1,381 @@
+function Canvas.DrawTile  (script 37 bytes)
+  0000: Tex
+  0005: XL
+  000a: YL
+  000f: U
+  0014: V
+  0019: UL
+  001e: VL
+  0023: nothing
+  0024: <eos>
+
+function Canvas.DrawMaterialTile  (script 37 bytes)
+  0000: Mat
+  0005: XL
+  000a: YL
+  000f: U
+  0014: V
+  0019: UL
+  001e: VL
+  0023: nothing
+  0024: <eos>
+
+function Canvas.DrawMaterialTileClipped  (script 37 bytes)
+  0000: Mat
+  0005: XL
+  000a: YL
+  000f: U
+  0014: V
+  0019: UL
+  001e: VL
+  0023: nothing
+  0024: <eos>
+
+function Canvas.DrawTriangle2D  (script 67 bytes)
+  0000: Tex
+  0005: X0
+  000a: Y0
+  000f: U0
+  0014: V0
+  0019: X1
+  001e: Y1
+  0023: U1
+  0028: v1
+  002d: X2
+  0032: Y2
+  0037: U2
+  003c: v2
+  0041: nothing
+  0042: <eos>
+
+function Canvas.DrawMaterialTriangle2D  (script 67 bytes)
+  0000: Mat
+  0005: X0
+  000a: Y0
+  000f: U0
+  0014: V0
+  0019: X1
+  001e: Y1
+  0023: U1
+  0028: v1
+  002d: X2
+  0032: Y2
+  0037: U2
+  003c: v2
+  0041: nothing
+  0042: <eos>
+
+function Canvas.DrawRotatedTileAtPosition  (script 910 bytes)
+  0000: C = obj'Core.Math'.static.Cos(Angle)
+  0016: S = obj'Core.Math'.static.Sin(Angle)
+  002c: AspectRatio = (cast3f(self.SizeX) / cast3f(self.SizeY))
+  0042: self.DrawColor = Col
+  004d: X0 = ((X + ((C * (0.0 - XL)) * 0.5)) - ((S * (0.0 - YL)) * 0.5))
+  0090: Y0 = (Y + ((((S * (0.0 - XL)) * 0.5) + ((C * (0.0 - YL)) * 0.5)) * AspectRatio))
+  00da: U0 = U
+  00e5: V0 = V
+  00f0: X1 = ((X + ((C * (0.0 + XL)) * 0.5)) - ((S * (0.0 - YL)) * 0.5))
+  0133: Y1 = (Y + ((((S * (0.0 + XL)) * 0.5) + ((C * (0.0 - YL)) * 0.5)) * AspectRatio))
+  017d: U1 = (U + W)
+  018f: v1 = V
+  019a: X2 = ((X + ((C * (0.0 + XL)) * 0.5)) - ((S * (0.0 + YL)) * 0.5))
+  01dd: Y2 = (Y + ((((S * (0.0 + XL)) * 0.5) + ((C * (0.0 + YL)) * 0.5)) * AspectRatio))
+  0227: U2 = (U + W)
+  0239: v2 = (V + H)
+  024b: X3 = ((X + ((C * (0.0 - XL)) * 0.5)) - ((S * (0.0 + YL)) * 0.5))
+  028e: Y3 = (Y + ((((S * (0.0 - XL)) * 0.5) + ((C * (0.0 + YL)) * 0.5)) * AspectRatio))
+  02d8: U3 = U
+  02e3: V3 = (V + H)
+  02f5: DrawTriangle2D(Texture, X0, Y0, U0, V0, X1, Y1, U1, v1, X2, Y2, U2, v2)
+  0340: DrawTriangle2D(Texture, X0, Y0, U0, V0, X2, Y2, U2, v2, X3, Y3, U3, V3)
+  038b: return nothing
+  038d: <eos>
+
+function Canvas.StrLen  (script 17 bytes)
+  0000: String
+  0005: XL
+  000a: YL
+  000f: nothing
+  0010: <eos>
+
+function Canvas.TextSize  (script 17 bytes)
+  0000: String
+  0005: XL
+  000a: YL
+  000f: nothing
+  0010: <eos>
+
+function Canvas.DrawTextNormal  (script 22 bytes)
+  0000: Text
+  0005: CR
+  000a: XScale
+  000f: YScale
+  0014: nothing
+  0015: <eos>
+
+function Canvas.DrawTextClipped  (script 22 bytes)
+  0000: Text
+  0005: bCheckHotKey
+  000a: XScale
+  000f: YScale
+  0014: nothing
+  0015: <eos>
+
+function Canvas.DrawTextRA  (script 79 bytes)
+  0000: nothing
+  0001: TextSize(Text, XL, YL)
+  001a: SetPos((self.CurX - XL), self.CurY)
+  0035: DrawTextNormal(Text, CR, , )
+  004c: return nothing
+  004e: <eos>
+
+function Canvas.DrawTextCA  (script 79 bytes)
+  0000: StrLen(Text, XL, YL)
+  0019: SetPos((self.CurX - (XL / cast3f(2))), self.CurY)
+  003a: DrawTextClipped(Text, , , )
+  004c: return nothing
+  004e: <eos>
+
+function Canvas.DrawTextCentered  (script 167 bytes)
+  0000: StrLen(Text, XL, YL)
+  0019: X = (self.CurX - (XL / cast3f(2)))
+  0031: Y = (self.CurY - YL)
+  0043: SetPos(X, Y)
+  0057: DrawTextClipped(Text, , , )
+  0069: SetPos(X, Y)
+  007d: SetDrawColor(0, 0, 0, 128)
+  008f: DrawRect(XL, YL, )
+  00a4: return nothing
+  00a6: <eos>
+
+function Canvas.DrawTileClipped  (script 37 bytes, native 468)
+  0000: Tex
+  0005: XL
+  000a: YL
+  000f: U
+  0014: V
+  0019: UL
+  001e: VL
+  0023: nothing
+  0024: <eos>
+
+function Canvas.Project  (script 7 bytes)
+  0000: Location
+  0005: nothing
+  0006: <eos>
+
+function Canvas.PushTranslationMatrix  (script 7 bytes)
+  0000: TranslationVector
+  0005: nothing
+  0006: <eos>
+
+function Canvas.PopTransform  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Canvas.DrawTileStretched  (script 57 bytes)
+  0000: Tex
+  0005: XL
+  000a: YL
+  000f: U
+  0014: V
+  0019: UL
+  001e: VL
+  0023: LColor
+  0028: bStretchHorizontally
+  002d: bStretchVertically
+  0032: ScalingFactor
+  0037: nothing
+  0038: <eos>
+
+function Canvas.Reset  (script 108 bytes)
+  0000: nothing
+  0001: self.Font = default.Font
+  000c: if !(!bKeepOrigin) goto 0x002d
+  0017: self.OrgX = default.OrgX
+  0022: self.OrgY = default.OrgY
+  002d: self.CurX = default.CurX
+  0038: self.CurY = default.CurY
+  0043: self.DrawColor = default.DrawColor
+  004e: self.CurYL = default.CurYL
+  0059: self.bCenter = false
+  0061: self.bNoSmooth = false
+  0069: return nothing
+  006b: <eos>
+
+function Canvas.SetPos  (script 12 bytes)
+  0000: PosX
+  0005: PosY
+  000a: nothing
+  000b: <eos>
+
+function Canvas.SetOrigin  (script 25 bytes)
+  0000: self.OrgX = X
+  000b: self.OrgY = Y
+  0016: return nothing
+  0018: <eos>
+
+function Canvas.SetClip  (script 25 bytes)
+  0000: self.ClipX = X
+  000b: self.ClipY = Y
+  0016: return nothing
+  0018: <eos>
+
+function Canvas.DrawTexture  (script 117 bytes)
+  0000: if !((Tex != none)) goto 0x0072
+  000b: DrawTile(Tex, (cast3f(Tex.SizeX) * Scale), (cast3f(Tex.SizeY) * Scale), 0.0, 0.0, cast3f(Tex.SizeX), cast3f(Tex.SizeY))
+  0072: return nothing
+  0074: <eos>
+
+function Canvas.MakeIcon  (script 204 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !((Texture != none)) goto 0x00bf
+  000f: Icon.Texture = Texture
+  0025: Icon.U = U
+  003b: Icon.V = V
+  0051: Icon.UL = ((UL != 0.0) ? UL : cast3f(Texture.SizeX))
+  0088: Icon.VL = ((VL != 0.0) ? VL : cast3f(Texture.SizeY))
+  00bf: return Icon
+  00c5: return return
+  00cb: <eos>
+
+function Canvas.DrawIcon  (script 350 bytes)
+  0000: nothing
+  0001: if !((Icon.Texture != none)) goto 0x015b
+  0017: if !((Scale <= 0.0)) goto 0x0031
+  0026: Scale = 1.0
+  0031: if !((Icon.UL == 0.0)) goto 0x0077
+  004b: Icon.UL = cast3f(Icon.Texture.SizeX)
+  0077: if !((Icon.VL == 0.0)) goto 0x00bd
+  0091: Icon.VL = cast3f(Icon.Texture.SizeY)
+  00bd: self.CurX = X
+  00c8: self.CurY = Y
+  00d3: DrawTile(Icon.Texture, (Icon.UL * Scale), (Icon.VL * Scale), Icon.U, Icon.V, Icon.UL, Icon.VL)
+  015b: return nothing
+  015d: <eos>
+
+function Canvas.DrawIconSection  (script 492 bytes)
+  0000: nothing
+  0001: if !((Icon.Texture != none)) goto 0x01e9
+  0017: if !((Scale <= 0.0)) goto 0x0031
+  0026: Scale = 1.0
+  0031: if !((Icon.UL == 0.0)) goto 0x0077
+  004b: Icon.UL = cast3f(Icon.Texture.SizeX)
+  0077: if !((Icon.VL == 0.0)) goto 0x00bd
+  0091: Icon.VL = cast3f(Icon.Texture.SizeY)
+  00bd: self.CurX = (X + ((UStartPct * Icon.UL) * Scale))
+  00e8: self.CurY = (Y + ((VStartPct * Icon.VL) * Scale))
+  0113: DrawTile(Icon.Texture, ((Icon.UL * UEndPct) * Scale), ((Icon.VL * VEndPct) * Scale), (Icon.U + (UStartPct * Icon.UL)), (Icon.V + (VStartPct * Icon.VL)), (Icon.UL * UEndPct), (Icon.VL * VEndPct))
+  01e9: return nothing
+  01eb: <eos>
+
+function Canvas.DrawRect  (script 79 bytes)
+  0000: default=self.DefaultTexture
+  0009: DrawTile(Tex, RectX, RectY, 0.0, 0.0, cast3f(Tex.SizeX), cast3f(Tex.SizeY))
+  004c: return nothing
+  004e: <eos>
+
+function Canvas.DrawRotatedRect  (script 86 bytes)
+  0000: default=self.DefaultTexture
+  0009: DrawRotatedTile(Tex, Rotation, RectX, RectY, 0.0, 0.0, cast3f(Tex.SizeX), cast3f(Tex.SizeY), , )
+  0053: return nothing
+  0055: <eos>
+
+function Canvas.DrawBox  (script 279 bytes)
+  0000: X = cast44(self.CurX)
+  000d: Y = cast44(self.CurY)
+  001a: SetPos(cast3f(X), cast3f(Y))
+  0032: DrawRect(2.0, Height, )
+  0047: SetPos(((cast3f(X) + Width) - cast3f(2)), cast3f(Y))
+  006c: DrawRect(2.0, Height, )
+  0081: SetPos(cast3f((X + 2)), cast3f(Y))
+  009d: DrawRect((Width - cast3f(4)), 2.0, )
+  00b8: SetPos(cast3f((X + 2)), ((cast3f(Y) + Height) - cast3f(2)))
+  00e1: DrawRect((Width - cast3f(4)), 2.0, )
+  00fc: SetPos(cast3f(X), cast3f(Y))
+  0114: return nothing
+  0116: <eos>
+
+function Canvas.SetDrawColor  (script 22 bytes)
+  0000: R
+  0005: G
+  000a: B
+  000f: A
+  0014: nothing
+  0015: <eos>
+
+function Canvas.DrawRotatedTile  (script 52 bytes)
+  0000: Tex
+  0005: Rotation
+  000a: XL
+  000f: YL
+  0014: U
+  0019: V
+  001e: UL
+  0023: VL
+  0028: AnchorX
+  002d: AnchorY
+  0032: nothing
+  0033: <eos>
+
+function Canvas.DrawRotatedMaterialTile  (script 52 bytes)
+  0000: Mat
+  0005: Rotation
+  000a: XL
+  000f: YL
+  0014: U
+  0019: V
+  001e: UL
+  0023: VL
+  0028: AnchorX
+  002d: AnchorY
+  0032: nothing
+  0033: <eos>
+
+function Canvas.Draw2DLine  (script 27 bytes)
+  0000: X1
+  0005: Y1
+  000a: X2
+  000f: Y2
+  0014: LineColor
+  0019: nothing
+  001a: <eos>
+
+function Canvas.DrawLineStrip  (script 12 bytes)
+  0000: Points
+  0005: LineColor
+  000a: nothing
+  000b: <eos>
+
+function Canvas.DrawTextureLine  (script 52 bytes)
+  0000: StartPoint
+  0005: EndPoint
+  000a: Perc
+  000f: Width
+  0014: LineColor
+  0019: LineTexture
+  001e: U
+  0023: V
+  0028: UL
+  002d: VL
+  0032: nothing
+  0033: <eos>
+
+function Canvas.DrawTextureDoubleLine  (script 62 bytes)
+  0000: StartPoint
+  0005: EndPoint
+  000a: Perc
+  000f: Spacing
+  0014: Width
+  0019: LineColor
+  001e: AltLineColor
+  0023: Tex
+  0028: U
+  002d: V
+  0032: UL
+  0037: VL
+  003c: nothing
+  003d: <eos>

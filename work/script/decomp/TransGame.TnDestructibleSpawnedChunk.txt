@@ -1,0 +1,127 @@
+function TnDestructibleSpawnedChunk.get_IsAttached  (script 16 bytes)
+  0000: return (self.Base != none)
+  0009: return return
+  000f: <eos>
+
+function TnDestructibleSpawnedChunk.set_AttachToSocketInfo  (script 14 bytes)
+  0000: self._AttachToSocketInfo = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDestructibleSpawnedChunk.ReplicatedEvent  (script 131 bytes)
+  0000: if !((VarName == '_AttachToSocketInfo')) goto 0x0075
+  0013: if !((self._AttachToSocketInfo.Attacher == none)) goto 0x0036
+  0029: DetachFromSocket()
+  0033: goto 0x0072
+  0036: AttachToSocket(self._AttachToSocketInfo.Attacher, self._AttachToSocketInfo.AttachMode, self._AttachToSocketInfo.Socket, , )
+  0072: goto 0x0080
+  0075: ReplicatedEvent(VarName)
+  0080: return nothing
+  0082: <eos>
+
+function TnDestructibleSpawnedChunk.GetService  (script 32 bytes)
+  0000: return self._Services.GetService(Type)
+  0019: return return
+  001f: <eos>
+
+function TnDestructibleSpawnedChunk.PostBeginPlay  (script 165 bytes)
+  0000: PostBeginPlay()
+  0006: self._Services.Add('TnLockOnVictimService', self)
+  0023: self._Services.Add('TnGrabVictimService', self)
+  0040: self._Services.Add('TnAttacheeService', self)
+  005d: PhysicsService = new(self, nothing, obj'TnActorPhysicsService', nothing, DeltaTime)
+  0071: PhysicsService._OwnerActor = self
+  0081: self._Services.Add('TnPhysicsService', PhysicsService)
+  00a2: return nothing
+  00a4: <eos>
+
+function TnDestructibleSpawnedChunk.Tick  (script 73 bytes)
+  0000: if !(get_IsAttached()) goto 0x003b
+  000d: if !((GetCollisionLifeSpan() > 0.0)) goto 0x0030
+  0021: SetCollisionLifeSpan(60.0)
+  0030: self.LifeSpan = 60.0
+  003b: Tick(DeltaTime)
+  0046: return nothing
+  0048: <eos>
+
+function TnDestructibleSpawnedChunk.CanBeLockedOnToByAttacker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnDestructibleSpawnedChunk.NotifyLockOnBegin  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDestructibleSpawnedChunk.NotifyLockOnEnd  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDestructibleSpawnedChunk.GetGrabVictim  (script 14 bytes)
+  0000: return TnServiceProvider(self)
+  0007: return return
+  000d: <eos>
+
+function TnDestructibleSpawnedChunk.IsBeingGrabbed  (script 27 bytes)
+  0000: return (self._AttachToSocketInfo.Attacher != none)
+  0014: return return
+  001a: <eos>
+
+function TnDestructibleSpawnedChunk.CanBeGrabbedByAttacker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnDestructibleSpawnedChunk.NotifyGrabBegin  (script 23 bytes)
+  0000: SetPhysics(6, , )
+  000e: SetCollision(false, , )
+  0014: return nothing
+  0016: <eos>
+
+function TnDestructibleSpawnedChunk.NotifyGrabEnd  (script 23 bytes)
+  0000: SetPhysics(10, , )
+  000e: SetCollision(true, , )
+  0014: return nothing
+  0016: <eos>
+
+function TnDestructibleSpawnedChunk.AttachToSocket  (script 345 bytes)
+  0000: default=2
+  0006: default=0
+  000c: AttacherMesh = ((cast3a(AttachMode) == cast3a(1)) ? TnWeapon(Attacher.Weapon).GetWeaponMesh().GetAnimatedMeshComponent() : Attacher.Mesh)
+  0061: Socket = AttacherMesh.GetSocketByName(SocketName)
+  007f: if !((Socket == none)) goto 0x008c
+  008a: return nothing
+  008c: SetLocation(AttacherMesh.GetSocketWorldLocation(SocketName))
+  00a7: SetBase(AttacherMesh.Owner, , AttacherMesh, Socket.BoneName)
+  00d3: SetHardAttach(true)
+  00de: SetCollision(false, false, )
+  00e4: SetBlockRigidBody(false)
+  00ef: self.bReplicateMovement = false
+  00f7: self.bCollideWorld = false
+  00ff: if !((cast3a(GetRole()) == cast3a(3))) goto 0x0156
+  0114: self._AttachToSocketInfo.Attacher = Attacher
+  012a: self._AttachToSocketInfo.AttachMode = AttachMode
+  0140: self._AttachToSocketInfo.Socket = SocketName
+  0156: return nothing
+  0158: <eos>
+
+function TnDestructibleSpawnedChunk.DetachFromSocket  (script 150 bytes)
+  0000: SetBase(none, , , )
+  000e: SetHardAttach(false)
+  0019: SetCollision(true, true, )
+  001f: SetBlockRigidBody(true)
+  002a: self.bReplicateMovement = true
+  0032: self.bCollideWorld = true
+  003a: self.CollisionComponent.SetRBPosition(self.Location, )
+  0053: self.CollisionComponent.SetRBRotation(self.Rotation, )
+  006c: if !((cast3a(GetRole()) == cast3a(3))) goto 0x0093
+  0081: self._AttachToSocketInfo.Attacher = none
+  0093: return nothing
+  0095: <eos>
+
+function TnDestructibleSpawnedChunk.DetachFromSocketWithDamage  (script 61 bytes)
+  0000: DetachFromSocket()
+  000a: self.CollisionComponent.SetLinearVelocity(Momentum)
+  0022: self.CollisionComponent.SetAngularVelocity(Momentum)
+  003a: return nothing
+  003c: <eos>

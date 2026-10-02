@@ -1,0 +1,44 @@
+function HmLineCollisionBaseCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.OwningActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmLineCollisionBaseCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = HmCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmLineCollisionBaseCameraBehavior.GetTraceStartLocation  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmLineCollisionBaseCameraBehavior.Update  (script 248 bytes)
+  0000: if !((self.OwningActor == none)) goto 0x0011
+  000b: return Result
+  0011: CylinderComp = ((self.CameraActor == none) ? none : CylinderComponent(self.CameraActor.CollisionComponent))
+  0038: if !((CylinderComp != none)) goto 0x00a0
+  0043: TraceExtent.X = CylinderComp.CollisionRadius
+  0062: TraceExtent.Y = CylinderComp.CollisionRadius
+  0081: TraceExtent.Z = CylinderComp.CollisionHeight
+  00a0: TraceStart = GetTraceStartLocation(Result)
+  00b5: Result.Location = HmLineCollisionBaseCameraBehavior.GetCollisionAdjustedLocation(TraceStart, Result.Location, self.OwningActor, TraceExtent)
+  00eb: return Result
+  00f1: return return
+  00f7: <eos>
+
+function HmLineCollisionBaseCameraBehavior.IsValidCollidingActor  (script 39 bytes)
+  0000: return ((Pawn(HitActor) == none) && (SkeletalMeshActor(HitActor) == none))
+  0020: return return
+  0026: <eos>
+
+function HmLineCollisionBaseCameraBehavior.GetCollisionAdjustedLocation  (script 231 bytes)
+  0000: TraceActor.MultiTrace(Impacts, none, TraceEnd, TraceStart, TraceExtent, , )
+  002a: I = 0
+  0031: if !((I < Impacts.Length)) goto 0x00da
+  0041: if !((((I[Impacts].HitInfo.HitComponent == none) || I[Impacts].HitInfo.HitComponent.BlockCameras) && HmLineCollisionBaseCameraBehavior.IsValidCollidingActor(I[Impacts].HitActor))) goto 0x00d0
+  00b9: return I[Impacts].HitLocation
+  00d0: AddAdd_PreInt(I)
+  00d7: goto 0x0031
+  00da: return TraceEnd
+  00e0: return return
+  00e6: <eos>

@@ -1,0 +1,10 @@
+function SeqAct_SetActiveCheckpoint.Activated  (script 147 bytes)
+  0000: if !((self.Targets.Length > 0)) goto 0x0090
+  000c: CP = Checkpoint(0[self.Targets])
+  001e: if !((none != CP)) goto 0x0090
+  0029: obj'CheckpointManager'.static.GetInstance().SetActiveCheckpoint(CP)
+  004f: SetStatLabel(cast57(CP.Tag))
+  0069: SaveCheckpoint = new(nothing, nothing, obj'SeqAct_SaveActiveCheckpoint', nothing, AttachTreeCallback)
+  007d: SaveCheckpoint.Activated()
+  0090: return nothing
+  0092: <eos>

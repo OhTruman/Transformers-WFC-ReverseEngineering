@@ -1,0 +1,77 @@
+function TnPanStickyAdjuster.UpdateStickiness  (script 538 bytes)
+  0000: self.PanStickyDebug.Length = 0
+  0008: if !(self.DebugEnabled) goto 0x003c
+  0011: self.WorkAround = "===== PAN STICKY ====="
+  002f: self.PanStickyDebug.AddItem(self.WorkAround)
+  003c: Sticker = TnTargetSticker(get_Outer())
+  004a: if !((TargetAssistTarget != none)) goto 0x0073
+  0055: TC = obj'HM_Engine.HmTargetableComponent'.static.GetFromActor(TargetAssistTarget)
+  0073: if !(((TC != none) && TC.PanStickyEnabled)) goto 0x00bb
+  0092: self.CurrentStickiness = TnPanStickyAdjuster.PanSticky(TC, Sticker, DeltaTime)
+  00ad: self.RampOutTimeRemaining = self.RampOutTime
+  00b8: goto 0x020d
+  00bb: if !((self.RampOutTimeRemaining > cast3f(0))) goto 0x01b6
+  00c8: RampOutFactor = obj'Core.Math'.static.FMin((DeltaTime / self.RampOutTimeRemaining), 1.0)
+  00ea: self.CurrentStickiness.YawStickiness = obj'Core.Math'.static.Lerp(self.CurrentStickiness.YawStickiness, 1.0, RampOutFactor)
+  0120: self.CurrentStickiness.PitchStickiness = obj'Core.Math'.static.Lerp(self.CurrentStickiness.PitchStickiness, 1.0, RampOutFactor)
+  0156: if !(self.DebugEnabled) goto 0x01a7
+  015f: self.WorkAround = ((cast55(self.CurrentStickiness.YawStickiness) @ cast55(self.CurrentStickiness.PitchStickiness)) @ "Ramping out")
+  019a: self.PanStickyDebug.AddItem(self.WorkAround)
+  01a7: (self.RampOutTimeRemaining -= DeltaTime)
+  01b3: goto 0x020d
+  01b6: self.CurrentStickiness.YawStickiness = 1.0
+  01cc: self.CurrentStickiness.PitchStickiness = 1.0
+  01e2: if !(self.DebugEnabled) goto 0x020d
+  01eb: self.WorkAround = "No pan sticky"
+  0200: self.PanStickyDebug.AddItem(self.WorkAround)
+  020d: return self.CurrentStickiness
+  0213: return return
+  0219: <eos>
+
+function TnPanStickyAdjuster.PanSticky  (script 1154 bytes)
+  0000: Stickiness.YawStickiness = TC.TargetAssistStickynessYaw
+  001f: Stickiness.PitchStickiness = TC.TargetAssistStickynessPitch
+  003e: if !(self.DebugEnabled) goto 0x009b
+  0047: self.WorkAround = ((cast55(TC.TargetAssistStickynessYaw) @ cast55(TC.TargetAssistStickynessPitch)) @ "Target Component Stickiness")
+  008e: self.PanStickyDebug.AddItem(self.WorkAround)
+  009b: if !(Sticker.IsOwnerJumping()) goto 0x0120
+  00b1: (Stickiness.YawStickiness *= self.JumpStickyFactor)
+  00c8: (Stickiness.PitchStickiness *= self.JumpStickyFactor)
+  00df: if !(self.DebugEnabled) goto 0x011d
+  00e8: self.WorkAround = ((cast55(self.JumpStickyFactor) @ cast55(self.JumpStickyFactor)) @ "Jumping Factor")
+  0110: self.PanStickyDebug.AddItem(self.WorkAround)
+  011d: goto 0x0230
+  0120: if !(Sticker.IsOwnerMoving()) goto 0x0230
+  0136: if !(Sticker.IsTargetMoving()) goto 0x01bf
+  014c: (Stickiness.YawStickiness *= self.BothMovingStickyFactor)
+  0163: (Stickiness.PitchStickiness *= self.BothMovingStickyFactor)
+  017a: if !(self.DebugEnabled) goto 0x01bc
+  0183: self.WorkAround = ((cast55(self.BothMovingStickyFactor) @ cast55(self.BothMovingStickyFactor)) @ "Both Moving Factor")
+  01af: self.PanStickyDebug.AddItem(self.WorkAround)
+  01bc: goto 0x0230
+  01bf: (Stickiness.YawStickiness *= self.MovingStickyFactor)
+  01d6: (Stickiness.PitchStickiness *= self.MovingStickyFactor)
+  01ed: if !(self.DebugEnabled) goto 0x0230
+  01f6: self.WorkAround = ((cast55(self.MovingStickyFactor) @ cast55(self.MovingStickyFactor)) @ "Owner Moving Factor")
+  0223: self.PanStickyDebug.AddItem(self.WorkAround)
+  0230: if !(self.DebugEnabled) goto 0x0253
+  0239: self.WorkAround = "-----"
+  0246: self.PanStickyDebug.AddItem(self.WorkAround)
+  0253: if !(self.DebugEnabled) goto 0x02a2
+  025c: self.WorkAround = ((cast55(Stickiness.YawStickiness) @ cast55(Stickiness.PitchStickiness)) @ "Raw value")
+  0295: self.PanStickyDebug.AddItem(self.WorkAround)
+  02a2: Stickiness.YawStickiness = obj'Core.Math'.static.FClamp(Stickiness.YawStickiness, 0.1, 1.0)
+  02d8: Stickiness.PitchStickiness = obj'Core.Math'.static.FClamp(Stickiness.PitchStickiness, 0.1, 1.0)
+  030e: if !(self.DebugEnabled) goto 0x0361
+  0317: self.WorkAround = ((cast55(Stickiness.YawStickiness) @ cast55(Stickiness.PitchStickiness)) @ "Clamped value")
+  0354: self.PanStickyDebug.AddItem(self.WorkAround)
+  0361: if !((self.IdealDistance > cast3f(0))) goto 0x0475
+  036e: DistanceScaleFactor = obj'Core.Math'.static.FMin((obj'Core.Math'.static.VSize(Sticker.GetCameraToPanStickyTarget()) / self.IdealDistance), 1.0)
+  03a9: Stickiness.YawStickiness = obj'Core.Math'.static.Lerp(1.0, Stickiness.YawStickiness, DistanceScaleFactor)
+  03df: Stickiness.PitchStickiness = obj'Core.Math'.static.Lerp(1.0, Stickiness.PitchStickiness, DistanceScaleFactor)
+  0415: if !(self.DebugEnabled) goto 0x0475
+  041e: self.WorkAround = ((cast55(Stickiness.YawStickiness) @ cast55(Stickiness.PitchStickiness)) @ "Adjusted for IdealDistance")
+  0468: self.PanStickyDebug.AddItem(self.WorkAround)
+  0475: return Stickiness
+  047b: return return
+  0481: <eos>

@@ -1,0 +1,71 @@
+function TnWiggler3CameraBehavior.SetActor  (script 14 bytes)
+  0000: self.FollowActor = A
+  000b: return nothing
+  000d: <eos>
+
+function TnWiggler3CameraBehavior.SetCameraActor  (script 55 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: if !((self.CameraActor != none)) goto 0x0034
+  001b: self.WiggleData = self.CameraActor.GetWiggleData()
+  0034: return nothing
+  0036: <eos>
+
+function TnWiggler3CameraBehavior.Activate  (script 26 bytes)
+  0000: Activate(Result)
+  000b: self.CurrentProfileIndex = TnWiggler3CameraBehavior.GetTargetProfileIndex()
+  0017: return nothing
+  0019: <eos>
+
+function TnWiggler3CameraBehavior.GetTargetProfileIndex  (script 96 bytes)
+  0000: ProfileIndex = 0
+  0007: if !((ProfileIndex < self.ProfilesByPCS.Length)) goto 0x0053
+  0017: if !(self.CameraActor.HasAllPlayerCameraStates(ProfileIndex[self.ProfilesByPCS].PlayerCameraStates)) goto 0x0049
+  0043: return ProfileIndex
+  0049: AddAdd_PreInt(ProfileIndex)
+  0050: goto 0x0007
+  0053: return -1
+  0059: return return
+  005f: <eos>
+
+function TnWiggler3CameraBehavior.CheckUpdateWiggleProfile  (script 109 bytes)
+  0000: NextProfileIndex = TnWiggler3CameraBehavior.GetTargetProfileIndex()
+  000c: if !((self.CurrentProfileIndex != NextProfileIndex)) goto 0x006a
+  001b: self.CurrentProfileIndex = NextProfileIndex
+  0026: self.TransitionTimeLeft = ((self.CurrentProfileIndex >= 0) ? self.CurrentProfileIndex[self.ProfilesByPCS].WiggleProfile.TransitionTime : self.DefaultProfile.TransitionTime)
+  006a: return nothing
+  006c: <eos>
+
+function TnWiggler3CameraBehavior.UpdateTransition  (script 84 bytes)
+  0000: self.WiggleData.UpdateProfileTransition(((self.CurrentProfileIndex >= 0) ? self.CurrentProfileIndex[self.ProfilesByPCS].WiggleProfile : self.DefaultProfile), DeltaTime, self.TransitionTimeLeft)
+  0045: (self.TransitionTimeLeft -= DeltaTime)
+  0051: return nothing
+  0053: <eos>
+
+function TnWiggler3CameraBehavior.UpdateScaleAdjust  (script 285 bytes)
+  0000: self.ScaleAdjust = 1.0
+  000b: if !(((self.FullWiggleSpeedThreshold > 0.0) && (self.FollowActor != none))) goto 0x0089
+  0027: FractionOfFullSpeed = (obj'Core.Math'.static.VSize(self.FollowActor.Velocity) / self.FullWiggleSpeedThreshold)
+  004d: self.ScaleAdjust = obj'Core.Math'.static.FClamp(obj'Core.Math'.static.Lerp((1.0 - self.VelocityAdjustPercent), 1.0, FractionOfFullSpeed), 0.0, 1.0)
+  0089: if !((self.DampeningLimitRollDeg > 0.0)) goto 0x011a
+  0098: RollDeg = obj'Core.Math'.static.Abs((cast3f((Result.Rotation.Roll + Result.RotationAdjustment.Roll)) * 0.0054932))
+  00ea: (self.ScaleAdjust *= ((RollDeg > self.DampeningLimitRollDeg) ? 0.0 : ((self.DampeningLimitRollDeg - RollDeg) / self.DampeningLimitRollDeg)))
+  011a: return nothing
+  011c: <eos>
+
+function TnWiggler3CameraBehavior.Update  (script 57 bytes)
+  0000: TnWiggler3CameraBehavior.CheckUpdateWiggleProfile()
+  0006: TnWiggler3CameraBehavior.UpdateTransition(DeltaTime)
+  0011: TnWiggler3CameraBehavior.UpdateScaleAdjust(Result)
+  001c: return Update(DeltaTime, Result, CI)
+  0032: return return
+  0038: <eos>
+
+function TnWiggler3CameraBehavior.DisplayDebug  (script 191 bytes)
+  0000: if !((self.CurrentProfileIndex == -1)) goto 0x004b
+  000f: HUD.Canvas.DrawTextNormal("Wiggle Profile [Default]", , , )
+  0048: goto 0x008a
+  004b: HUD.Canvas.DrawTextNormal((("Wiggle Profile [" $ cast53(self.CurrentProfileIndex)) $ "]"), , , )
+  008a: (out_YPos += out_YL)
+  0096: HUD.Canvas.SetPos(16.0, out_YPos)
+  00bc: return nothing
+  00be: <eos>

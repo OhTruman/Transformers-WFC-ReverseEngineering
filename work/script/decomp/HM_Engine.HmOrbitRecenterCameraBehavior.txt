@@ -1,0 +1,57 @@
+function HmOrbitRecenterCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.Player = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRecenterCameraBehavior.Reset  (script 124 bytes)
+  0000: if !((self.Player != none)) goto 0x002a
+  000b: Result.OrbitRotation = self.Player.Rotation
+  002a: Result.OrbitRotation.Pitch = cast44((self.RecenterPitch * 182.0444489))
+  0054: Result.Recentering = false
+  0067: self.Recentering = false
+  006f: return Result
+  0075: return return
+  007b: <eos>
+
+function HmOrbitRecenterCameraBehavior.Activate  (script 11 bytes)
+  0000: self.Recentering = false
+  0008: return nothing
+  000a: <eos>
+
+function HmOrbitRecenterCameraBehavior.Update  (script 69 bytes)
+  0000: if !(CI.ResetCamera) goto 0x001f
+  0014: HmOrbitRecenterCameraBehavior.InitializeRecentering(Result)
+  001f: if !(self.Recentering) goto 0x0038
+  0028: HmOrbitRecenterCameraBehavior.UpdateRecentering(Result, DeltaTime)
+  0038: return Result
+  003e: return return
+  0044: <eos>
+
+function HmOrbitRecenterCameraBehavior.InitializeRecentering  (script 80 bytes)
+  0000: if !((self.RecenterTime > cast3f(0))) goto 0x0036
+  000d: self.RecenterTimer = self.RecenterTime
+  0018: self.Recentering = true
+  0020: Result.Recentering = true
+  0033: goto 0x004d
+  0036: Result.OrbitRotation = HmOrbitRecenterCameraBehavior.GetTargetRotation()
+  004d: return nothing
+  004f: <eos>
+
+function HmOrbitRecenterCameraBehavior.UpdateRecentering  (script 244 bytes)
+  0000: TargetRotation = HmOrbitRecenterCameraBehavior.GetTargetRotation()
+  000c: TargetRelativeOrbitRotation = obj'Core.Math'.static.Normalize((Result.OrbitRotation - TargetRotation))
+  003d: OrbitDelta = obj'Core.Math'.static.RLerp(TargetRelativeOrbitRotation, rot(0,0,0), obj'Core.Math'.static.FClamp((DeltaTime / self.RecenterTimer), 0.0, 1.0), )
+  008a: Result.OrbitRotation = obj'Core.Math'.static.Normalize((TargetRotation + OrbitDelta))
+  00bb: (self.RecenterTimer -= DeltaTime)
+  00c7: if !((self.RecenterTimer <= 0.0)) goto 0x00f1
+  00d6: self.Recentering = false
+  00de: Result.Recentering = false
+  00f1: return nothing
+  00f3: <eos>
+
+function HmOrbitRecenterCameraBehavior.GetTargetRotation  (script 64 bytes)
+  0000: TargetRotation = self.Player.Rotation
+  0014: TargetRotation.Pitch = cast44((self.RecenterPitch * 182.0444489))
+  0033: return TargetRotation
+  0039: return return
+  003f: <eos>

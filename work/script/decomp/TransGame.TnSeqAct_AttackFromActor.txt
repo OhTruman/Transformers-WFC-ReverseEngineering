@@ -1,0 +1,34 @@
+function TnSeqAct_AttackFromActor.__Constructor__TnSeqAct_AttackFromActor_0  (script 14 bytes)
+  0000: self.AttackFromActor = InAttackFromActor
+  000b: return nothing
+  000d: <eos>
+
+function TnSeqAct_AttackFromActor.Activated  (script 169 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Index = 0
+  001b: if !((Index < self.Targets.Length)) goto 0x00a6
+  002b: C = TnAiController(Index[self.Targets])
+  0041: if !((C == none)) goto 0x0086
+  004c: P = Pawn(Index[self.Targets])
+  0062: if !((P != none)) goto 0x0086
+  006d: C = TnAiController(P.Controller)
+  0086: if !((C != none)) goto 0x009c
+  0091: TnSeqAct_AttackFromActor.SetAttackFromActor(C)
+  009c: AddAdd_PreInt(Index)
+  00a3: goto 0x001b
+  00a6: return nothing
+  00a8: <eos>
+
+function TnSeqAct_AttackFromActor.SetAttackFromActor  (script 155 bytes)
+  0000: if !(0[self.InputLinks].bHasImpulse) goto 0x002d
+  0016: C._AttackFromActor = self.AttackFromActor
+  002a: goto 0x0098
+  002d: if !(1[self.InputLinks].bHasImpulse) goto 0x0056
+  0043: C._AttackFromActor = none
+  0053: goto 0x0098
+  0056: if !(2[self.InputLinks].bHasImpulse) goto 0x0098
+  006d: C._AttackFromActor = ((C._AttackFromActor != none) ? none : self.AttackFromActor)
+  0098: return nothing
+  009a: <eos>

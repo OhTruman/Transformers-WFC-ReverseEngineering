@@ -1,0 +1,195 @@
+function HmPathSmoother.__Constructor__HmPathSmoother_0  (script 14 bytes)
+  0000: self._SmoothSpecHeight = SmoothSpecHeight
+  000b: return nothing
+  000d: <eos>
+
+function HmPathSmoother.Initialize  (script 14 bytes)
+  0000: self._OwningController = Owner
+  000b: return nothing
+  000d: <eos>
+
+function HmPathSmoother.CalculateSmoothPath  (script 133 bytes)
+  0000: default=0.0
+  0009: default=true
+  000e: if !(self.DebugOn) goto 0x002a
+  0017: obj'Engine.Debug'.static.FlushPersistentLines()
+  002a: if !((RoughPath.Length == 0)) goto 0x0038
+  0036: return nothing
+  0038: self._RoughPath = RoughPath
+  0043: HmPathSmoother.BuildEdgesFromRoute(StartLocation, MaxRadius)
+  0053: HmPathSmoother.SmoothPathPassForward()
+  0059: HmPathSmoother.SmoothPathPassBackward()
+  005f: if !(SmoothCells) goto 0x006e
+  0068: HmPathSmoother.ApplySmoothedPath()
+  006e: if !(self.DebugOn) goto 0x0082
+  0077: HmPathSmoother.DrawPath(RoughPath)
+  0082: return nothing
+  0084: <eos>
+
+function HmPathSmoother.SmoothPathPassForward  (script 348 bytes)
+  0000: LOSStart = 0[self._SmoothingEdges].Anchor
+  0018: idx = 1
+  001f: if !((idx < (self._SmoothingEdges.Length - 1))) goto 0x0159
+  0032: LOSEnd = (idx + 1)[self._SmoothingEdges].Anchor
+  0051: SmoothEdge = idx[self._SmoothingEdges]
+  0062: EdgePlaneNormal = vect(0,0,1)
+  0075: if !((NavigationCell(SmoothEdge.Owner) != none)) goto 0x00b9
+  0090: EdgePlaneNormal = NavigationCell(SmoothEdge.Owner).get_CellNormal()
+  00b9: SmoothEdge.Anchor = obj'Core.Math'.static.ClosestPointOnLineSegmentToAnchors(SmoothEdge.Edge.Start, SmoothEdge.Edge.End, EdgePlaneNormal, LOSStart, LOSEnd)
+  0122: idx[self._SmoothingEdges] = SmoothEdge
+  0133: LOSStart = idx[self._SmoothingEdges].Anchor
+  014f: AddAdd_PreInt(idx)
+  0156: goto 0x001f
+  0159: return nothing
+  015b: <eos>
+
+function HmPathSmoother.SmoothPathPassBackward  (script 357 bytes)
+  0000: LOSStart = (self._SmoothingEdges.Length - 1)[self._SmoothingEdges].Anchor
+  0020: idx = (self._SmoothingEdges.Length - 2)
+  0030: if !((idx > 0)) goto 0x0162
+  003b: LOSEnd = (idx - 1)[self._SmoothingEdges].Anchor
+  005a: SmoothEdge = idx[self._SmoothingEdges]
+  006b: EdgePlaneNormal = vect(0,0,1)
+  007e: if !((NavigationCell(SmoothEdge.Owner) != none)) goto 0x00c2
+  0099: EdgePlaneNormal = NavigationCell(SmoothEdge.Owner).get_CellNormal()
+  00c2: SmoothEdge.Anchor = obj'Core.Math'.static.ClosestPointOnLineSegmentToAnchors(SmoothEdge.Edge.Start, SmoothEdge.Edge.End, EdgePlaneNormal, LOSStart, LOSEnd)
+  012b: idx[self._SmoothingEdges] = SmoothEdge
+  013c: LOSStart = idx[self._SmoothingEdges].Anchor
+  0158: SubtractSubtract_PreInt(idx)
+  015f: goto 0x0030
+  0162: return nothing
+  0164: <eos>
+
+function HmPathSmoother.GetSmoothedLocations  (script 178 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._SmoothingEdges.Length)) goto 0x00a5
+  0017: if !(idx[self._SmoothingEdges].PassThrough) goto 0x0072
+  0031: SmoothedLocation = (((idx - 1)[self._SmoothingEdges].Anchor + idx[self._SmoothingEdges].Anchor) * 0.5)
+  006f: goto 0x008e
+  0072: SmoothedLocation = idx[self._SmoothingEdges].Anchor
+  008e: SmoothedPath.AddItem(SmoothedLocation)
+  009b: AddAdd_PreInt(idx)
+  00a2: goto 0x0007
+  00a5: return SmoothedPath
+  00ab: return return
+  00b1: <eos>
+
+function HmPathSmoother.ApplySmoothedPath  (script 313 bytes)
+  0000: Cell = NavigationCell(0[self._SmoothingEdges].Owner)
+  001d: if !((Cell != none)) goto 0x0052
+  0028: Cell.SetSmoothingDestination(0[self._SmoothingEdges].Anchor, self._OwningController)
+  0052: idx = 1
+  0059: if !((idx < self._SmoothingEdges.Length)) goto 0x0136
+  0069: Cell = NavigationCell(idx[self._SmoothingEdges].Owner)
+  008a: if !((Cell == none)) goto 0x0098
+  0095: goto 0x012c
+  0098: if !(idx[self._SmoothingEdges].PassThrough) goto 0x00f3
+  00b2: SmoothedLocation = (((idx - 1)[self._SmoothingEdges].Anchor + idx[self._SmoothingEdges].Anchor) * 0.5)
+  00f0: goto 0x010f
+  00f3: SmoothedLocation = idx[self._SmoothingEdges].Anchor
+  010f: Cell.SetSmoothingDestination(SmoothedLocation, self._OwningController)
+  012c: AddAdd_PreInt(idx)
+  0133: goto 0x0059
+  0136: return nothing
+  0138: <eos>
+
+function HmPathSmoother.BuildEdgesFromRoute  (script 1027 bytes)
+  0000: self._SmoothingEdges.Length = 0
+  0008: NewEdge.Edge.End = StartLocation
+  0029: NewEdge.Edge.Start = StartLocation
+  004a: NewEdge.Anchor = StartLocation
+  0060: NewEdge.Edge.Neighbor.Nav = 0[self._RoughPath]
+  008e: self._SmoothingEdges.AddItem(NewEdge)
+  009b: idx = 0
+  00a2: if !((idx < (self._RoughPath.Length - 1))) goto 0x0337
+  00b5: Cell = NavigationCell(idx[self._RoughPath])
+  00cb: NextCell = NavigationCell((idx + 1)[self._RoughPath])
+  00e4: if !(((Cell == none) || (NextCell == none))) goto 0x023e
+  00fc: ZeroEdgeLocation = idx[self._RoughPath].Location
+  0116: if !(((Cell != none) && Cell.IsBoxInCell((idx + 1)[self._RoughPath].GetBBox()))) goto 0x0185
+  0155: ZeroEdgeLocation = (idx + 1)[self._RoughPath].Location
+  0172: NewEdge.PassThrough = true
+  0185: NewEdge.Edge.End = ZeroEdgeLocation
+  01a6: NewEdge.Edge.Start = ZeroEdgeLocation
+  01c7: NewEdge.Anchor = ZeroEdgeLocation
+  01dd: NewEdge.Edge.Neighbor.Nav = (idx + 1)[self._RoughPath]
+  0212: NewEdge.Owner = idx[self._RoughPath]
+  022e: self._SmoothingEdges.AddItem(NewEdge)
+  023b: goto 0x032d
+  023e: if !(self.DebugOn) goto 0x025d
+  0247: Cell.DrawDebug(true, , )
+  025d: NewEdge = DefaultEdge
+  0268: SharedEdgeIdx = Cell.FindNeighbor(NextCell)
+  0286: NewEdge.Edge = HmPathSmoother.ShrinkEdge(Cell.GetEdge(SharedEdgeIdx), MaxRadius)
+  02ba: NewEdge.Anchor = ((NewEdge.Edge.Start + NewEdge.Edge.End) * 0.5)
+  030a: NewEdge.Owner = Cell
+  0320: self._SmoothingEdges.AddItem(NewEdge)
+  032d: AddAdd_PreInt(idx)
+  0334: goto 0x00a2
+  0337: NewEdge = DefaultEdge
+  0342: NewEdge.Edge.End = (self._RoughPath.Length - 1)[self._RoughPath].Location
+  0376: NewEdge.Edge.Start = (self._RoughPath.Length - 1)[self._RoughPath].Location
+  03aa: NewEdge.Anchor = (self._RoughPath.Length - 1)[self._RoughPath].Location
+  03d3: NewEdge.Owner = (self._RoughPath.Length - 1)[self._RoughPath]
+  03f3: self._SmoothingEdges.AddItem(NewEdge)
+  0400: return nothing
+  0402: <eos>
+
+function HmPathSmoother.DrawPath  (script 296 bytes)
+  0000: idx = 0
+  0007: if !((idx < (Path.Length - 1))) goto 0x00cc
+  001a: Location = idx[Path].GetDestination(self._OwningController)
+  003e: obj'Engine.Debug'.static.DrawSphere(Location, 50.0, 4, MakeColor(0, cast3d(255), cast3d(255), ), true)
+  0073: obj'Engine.Debug'.static.DrawLine(Location, (idx + 1)[Path].GetDestination(self._OwningController), MakeColor(0, cast3d(255), cast3d(255), ), true)
+  00c2: AddAdd_PreInt(idx)
+  00c9: goto 0x0007
+  00cc: Location = idx[Path].GetDestination(self._OwningController)
+  00f0: obj'Engine.Debug'.static.DrawSphere(Location, 50.0, 4, MakeColor(0, cast3d(255), cast3d(255), ), true)
+  0125: return nothing
+  0127: <eos>
+
+function HmPathSmoother.DrawEdgeDirection  (script 156 bytes)
+  0000: MidPoint = ((Edge.Start + Edge.End) * 0.5)
+  002f: obj'Engine.Debug'.static.DrawCone(MidPoint, obj'Core.Math'.static.Normal((Edge.End - Edge.Start)), 100.0, (20.0 * 0.0174533), (20.0 * 0.0174533), 10, EdgeColor, true)
+  0099: return nothing
+  009b: <eos>
+
+function HmPathSmoother.DrawEdge  (script 177 bytes)
+  0000: MidPoint = ((Edge.Start + Edge.End) * 0.5)
+  002f: obj'Engine.Debug'.static.DrawLine(Edge.Start, Edge.End, EdgeColor, true)
+  0068: obj'Engine.Debug'.static.DrawLine(MidPoint, (MidPoint + (obj'Core.Math'.static.Normal(Edge.Normal) * cast3f(50))), EdgeColor, true)
+  00ae: return nothing
+  00b0: <eos>
+
+function HmPathSmoother.DrawBorder  (script 37 bytes)
+  0000: HmPathSmoother.DrawEdge(Edge, MakeColor(cast3d(255), cast3d(255), cast3d(255), ))
+  0022: return nothing
+  0024: <eos>
+
+function HmPathSmoother.DrawTestEdge  (script 33 bytes)
+  0000: HmPathSmoother.DrawEdge(Edge, MakeColor(cast3d(255), 0, 0, ))
+  001e: return nothing
+  0020: <eos>
+
+function HmPathSmoother.DrawInnerEdge  (script 33 bytes)
+  0000: HmPathSmoother.DrawEdge(Edge, MakeColor(0, cast3d(255), 0, ))
+  001e: return nothing
+  0020: <eos>
+
+function HmPathSmoother.DrawCrossingEdge  (script 388 bytes)
+  0000: obj'Engine.Debug'.static.DrawSphere(Edge.Start, 25.0, 4, MakeColor(cast3d(255), 0, 0, ), true)
+  003e: obj'Engine.Debug'.static.DrawSphere(Edge.End, 25.0, 4, MakeColor(0, cast3d(255), 0, ), true)
+  007c: obj'Engine.Debug'.static.DrawLine(Edge.Start, Edge.End, MakeColor(cast3d(255), 0, cast3d(255), ), true)
+  00c5: MidPoint = ((Edge.Start + Edge.End) * 0.5)
+  00f4: obj'Engine.Debug'.static.DrawSphere(MidPoint, 25.0, 4, MakeColor(cast3d(255), cast3d(255), 0, ), true)
+  0129: obj'Engine.Debug'.static.DrawLine(MidPoint, (MidPoint + (obj'Core.Math'.static.Normal(Edge.Normal) * cast3f(50))), MakeColor(cast3d(255), cast3d(255), cast3d(255), ), true)
+  0181: return nothing
+  0183: <eos>
+
+function HmPathSmoother.ShrinkEdge  (script 117 bytes)
+  0000: Shrink = (obj'Core.Math'.static.Normal((Edge.End - Edge.Start)) * Radius)
+  003a: (Edge.End -= Shrink)
+  0051: (Edge.Start += Shrink)
+  0068: return Edge
+  006e: return return
+  0074: <eos>

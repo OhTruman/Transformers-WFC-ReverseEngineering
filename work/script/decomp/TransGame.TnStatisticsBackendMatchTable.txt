@@ -1,0 +1,48 @@
+function TnStatisticsBackendMatchTable.RecordMatch  (script 512 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: GRI = TnGameReplicationInfo(Game.GameReplicationInfo)
+  0026: Settings = Game.GetOnlineGameSettings()
+  003f: if !((Settings != none)) goto 0x0067
+  004a: Match.GameType = Settings.get_Class()
+  0067: Match.NumStarted = GRI.NumPlayersStarted
+  0086: Match.NumLeft = GRI.NumPlayersLeft
+  00a5: Match.NumJoined = GRI.NumPlayersJoined
+  00c4: Match.MaxPlayers = GRI.MaxPlayers
+  00e3: Match.Duration = GRI.ElapsedTime
+  0102: Match.MapId = GRI.GetMapID()
+  0126: Match.Resets = Game.GetNumResets()
+  014a: Match.EndReason = Reason
+  0160: if !(GRI._bIconicMode) goto 0x0189
+  0172: Match.Chr = TnStatisticsBackendMatchTable.GetCurrentTransformer()
+  0189: if !(Game.IsCampaignGame()) goto 0x01f0
+  019f: Match.Dif = Game.get_GameDifficulty()
+  01c3: Match.Start = self.InitialCheckpointName
+  01d9: Match.End = TnStatisticsBackendMatchTable.GetCurrentCheckpoint()
+  01f0: self.Matches.AddItem(Match)
+  01fd: return nothing
+  01ff: <eos>
+
+function TnStatisticsBackendMatchTable.RecordInitialCheckpoint  (script 37 bytes)
+  0000: if !((self.InitialCheckpointName == "")) goto 0x0022
+  000c: self.InitialCheckpointName = cast57(CP.Tag)
+  0022: return nothing
+  0024: <eos>
+
+function TnStatisticsBackendMatchTable.GetCurrentTransformer  (script 92 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.GameEngine'.static.GetCurrentWorldInfo())
+  001e: PC = WI.GetLocalPlayerController()
+  0037: if !((PC == none)) goto 0x0045
+  0042: return ""
+  0045: return GetTransformerName(PC)
+  0055: return return
+  005b: <eos>
+
+function TnStatisticsBackendMatchTable.GetCurrentCheckpoint  (script 102 bytes)
+  0000: CPM = obj'Engine.Engine'.static.GetEngine().GetCheckpointManager()
+  0027: CP = CPM.GetActiveCheckpoint()
+  0040: if !((CP == none)) goto 0x004e
+  004b: return ""
+  004e: return cast57(CP.Tag)
+  005f: return return
+  0065: <eos>

@@ -1,0 +1,264 @@
+function HmGoapPlan.set_FutureActionCheckInterval  (script 14 bytes)
+  0000: self._FutureActionCheckInterval = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapPlan.get_CurrentActionIndex  (script 15 bytes)
+  0000: return cast3f(self._CurrentActionIndex)
+  0008: return return
+  000e: <eos>
+
+function HmGoapPlan.Update  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlan.Halt  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlan.IsComplete  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmGoapPlan.HasFailed  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmGoapPlan.IsStopped  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmGoapPlan.AllowsPlanningInteruption  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapPlan.GetCurrentActionDescription  (script 112 bytes)
+  0000: if !(((self._CurrentActionIndex >= self.Actions.Length) || (self._CurrentActionIndex[self.Actions].Action == none))) goto 0x0044
+  002e: return "(no action running)"
+  0044: return self._CurrentActionIndex[self.Actions].Action.get_DetailedDescription()
+  0069: return return
+  006f: <eos>
+
+function HmGoapPlan.GetCost  (script 115 bytes)
+  0000: I = self._CurrentActionIndex
+  000b: if !((I < self.Actions.Length)) goto 0x0066
+  001b: (RemainingCost += I[self.Actions].Action.CalculatePlanningCost(I[self.Actions].ExpectedEffects))
+  005c: AddAdd_PreInt(I)
+  0063: goto 0x000b
+  0066: return RemainingCost
+  006c: return return
+  0072: <eos>
+
+function HmGoapPlan.GetRunningCost  (script 115 bytes)
+  0000: I = self._CurrentActionIndex
+  000b: if !((I < self.Actions.Length)) goto 0x0066
+  001b: (RemainingCost += I[self.Actions].Action.CalculateRunningCost(I[self.Actions].ExpectedEffects))
+  005c: AddAdd_PreInt(I)
+  0063: goto 0x000b
+  0066: return RemainingCost
+  006c: return return
+  0072: <eos>
+
+function HmGoapPlan.PlanMade  (script 82 bytes)
+  0000: foreach self.Actions(Exe,) (end 0x003e)
+  000f: Exe.Action.PlanMade(Exe.ExpectedEffects)
+  003d: iternext
+  003e: iterpop
+  003f: self._InitialCost = GetCost()
+  004f: return nothing
+  0051: <eos>
+
+function HmGoapPlan.Start  (script 85 bytes)
+  0000: self._CurrentActionIndex = 0
+  0007: self.Owner = InOwner
+  0012: if !((self.Actions.Length == 0)) goto 0x002e
+  001e: GotoState('Complete', , , )
+  002c: return nothing
+  002e: GotoState('Running', , , )
+  003c: HmGoapPlan.NotfiyPlanStarted()
+  0042: HmGoapPlan.StartAction(self._CurrentActionIndex, WorldState)
+  0052: return nothing
+  0054: <eos>
+
+function HmGoapPlan.NotfiyPlanStarted  (script 66 bytes)
+  0000: foreach self.Actions(Exe,) (end 0x003e)
+  000f: Exe.Action.PlanStart(Exe.ExpectedEffects)
+  003d: iternext
+  003e: iterpop
+  003f: return nothing
+  0041: <eos>
+
+function HmGoapPlan.OnActionComplete  (script 8 bytes)
+  0000: assert(false)
+  0005: return nothing
+  0007: <eos>
+
+function HmGoapPlan.OnActionFailed  (script 8 bytes)
+  0000: assert(false)
+  0005: return nothing
+  0007: <eos>
+
+function HmGoapPlan.Complete.IsComplete  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapPlan.Stopped.IsStopped  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapPlan.Running.BeginState  (script 14 bytes)
+  0000: self._TimeUntilNextVerify = self._FutureActionCheckInterval
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapPlan.Running.Update  (script 196 bytes)
+  0000: (self._TimeUntilNextVerify -= DeltaTime)
+  000c: if !((self._TimeUntilNextVerify <= 0.0)) goto 0x0039
+  001b: if !(!FutureActionsAreValid()) goto 0x002e
+  0026: HaltWithFailure()
+  002c: return nothing
+  002e: self._TimeUntilNextVerify = self._FutureActionCheckInterval
+  0039: if !((self._CurrentActionIndex >= self.Actions.Length)) goto 0x004b
+  0049: return nothing
+  004b: if !((!self.GoalToSatisfy.VerifyRunningDesiredEffects(self.DesiredEffects) || !VerifyCurrentAction(WorldState))) goto 0x0082
+  007a: HaltWithFailure()
+  0080: return nothing
+  0082: self._CurrentActionIndex[self.Actions].Action.Update(self._CurrentActionIndex[self.Actions].ExpectedEffects, DeltaTime)
+  00c1: return nothing
+  00c3: <eos>
+
+function HmGoapPlan.Running.VerifyCurrentAction  (script 55 bytes)
+  0000: return obj'HmGoap'.static.ConditionsMet(self._CurrentActionIndex[self.Actions].RunningConditions, WorldState, true)
+  0030: return return
+  0036: <eos>
+
+function HmGoapPlan.Running.FutureActionsAreValid  (script 136 bytes)
+  0000: I = (self._CurrentActionIndex + 1)
+  000e: if !((I < self.Actions.Length)) goto 0x007f
+  001e: if !(!I[self.Actions].Action.IsValidForFutureExecution(I[self.Actions].ExpectedEffects, I[self.Actions].RunningConditions)) goto 0x0075
+  0073: return false
+  0075: AddAdd_PreInt(I)
+  007c: goto 0x000e
+  007f: return true
+  0081: return return
+  0087: <eos>
+
+function HmGoapPlan.Running.HaltWithFailure  (script 21 bytes)
+  0000: self.StoppingFromFailure = true
+  0008: Halt()
+  0012: return nothing
+  0014: <eos>
+
+function HmGoapPlan.Running.Halt  (script 17 bytes)
+  0000: GotoState('Stopping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmGoapPlan.Running.OnActionComplete  (script 333 bytes)
+  0000: CurrentWorldState = HmGoapWorldStateInterface(self.Owner).GetGoapWorldState()
+  001f: if !((obj'HmGoap'.static.NumberOfConditionsNotMet(self._CurrentActionIndex[self.Actions].ExpectedEffects, CurrentWorldState) != 0)) goto 0x00c0
+  0053: LogInternal((("Error: GOAP action '" $ self._CurrentActionIndex[self.Actions].Action._Description) $ "' completed but the effects aren't satisfied."), , , )
+  00c0: AddAdd_PreInt(self._CurrentActionIndex)
+  00c7: if !((self._CurrentActionIndex == self.Actions.Length)) goto 0x00e8
+  00d7: GotoState('Complete', , , )
+  00e5: goto 0x014a
+  00e8: if !((((self.Owner == none) || (self.Owner.Pawn == none)) || self.Owner.Pawn.IsDead())) goto 0x013a
+  012a: GotoState('Failed', , , )
+  0138: return nothing
+  013a: HmGoapPlan.StartAction(self._CurrentActionIndex, CurrentWorldState)
+  014a: return nothing
+  014c: <eos>
+
+function HmGoapPlan.Running.OnActionFailed  (script 17 bytes)
+  0000: GotoState('Failed', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmGoapPlan.Running.AllowsPlanningInteruption  (script 62 bytes)
+  0000: if !((self._CurrentActionIndex == self.Actions.Length)) goto 0x0012
+  0010: return true
+  0012: return self._CurrentActionIndex[self.Actions].Action.get_CanInterrupt()
+  0037: return return
+  003d: <eos>
+
+function HmGoapPlan.Failed.HasFailed  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapPlan.Stopping.BeginState  (script 39 bytes)
+  0000: self._CurrentActionIndex[self.Actions].Action.Halt()
+  0024: return nothing
+  0026: <eos>
+
+function HmGoapPlan.Stopping.Update  (script 174 bytes)
+  0000: assert((self._CurrentActionIndex < self.Actions.Length))
+  0011: assert((self._CurrentActionIndex[self.Actions].Action != none))
+  002e: if !(((self._CurrentActionIndex >= self.Actions.Length) || (self._CurrentActionIndex[self.Actions].Action == none))) goto 0x006c
+  005c: GotoState('Failed', , , )
+  006a: return nothing
+  006c: self._CurrentActionIndex[self.Actions].Action.Update(self._CurrentActionIndex[self.Actions].ExpectedEffects, DeltaTime)
+  00ab: return nothing
+  00ad: <eos>
+
+function HmGoapPlan.Stopping.OnActionComplete  (script 17 bytes)
+  0000: GotoState('Stopped', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmGoapPlan.Stopping.OnActionFailed  (script 17 bytes)
+  0000: GotoState('Failed', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmGoapPlan.GetGoal  (script 64 bytes)
+  0000: obj'HmGoap'.static.GetProperty(Prop, WorldState, ActionIndex[self.Actions].ExpectedEffects)
+  0033: return Prop
+  0039: return return
+  003f: <eos>
+
+function HmGoapPlan.GetRuntimeCondition  (script 64 bytes)
+  0000: obj'HmGoap'.static.GetProperty(Prop, WorldState, ActionIndex[self.Actions].RunningConditions)
+  0033: return Prop
+  0039: return return
+  003f: <eos>
+
+function HmGoapPlan.StartAction  (script 249 bytes)
+  0000: if !(!obj'HmGoap'.static.ConditionsMet(self._CurrentActionIndex[self.Actions].RunningConditions, WorldState, true)) goto 0x0044
+  0034: GotoState('Failed', , , )
+  0042: return nothing
+  0044: if !((self._CurrentActionIndex[self.Actions].Action.IsValidForFutureExecution(self._CurrentActionIndex[self.Actions].ExpectedEffects, self._CurrentActionIndex[self.Actions].RunningConditions) == false)) goto 0x00aa
+  009a: GotoState('Failed', , , )
+  00a8: return nothing
+  00aa: self._CurrentActionIndex[self.Actions].Action.Start(self._CurrentActionIndex[self.Actions].ExpectedEffects, delegate.OnActionComplete, delegate.OnActionFailed)
+  00f6: return nothing
+  00f8: <eos>
+
+function HmGoapPlan.GetShortDescription  (script 160 bytes)
+  0000: Cost = (IsInState('Running', ) ? GetRunningCost() : self._InitialCost)
+  0027: if !((Cost == self._InitialCost)) goto 0x0061
+  0036: return (((("[" $ self.GoalToSatisfy.Description) $ ": ") $ cast55(self._InitialCost)) $ "]")
+  005e: goto 0x0099
+  0061: return (((((("[" $ self.GoalToSatisfy.Description) $ ": ") $ cast55(self._InitialCost)) @ "now") @ cast55(Cost)) $ "]")
+  0099: return return
+  009f: <eos>
+
+function HmGoapPlan.GetDescription  (script 279 bytes)
+  0000: IsRunning = (IsInState('Running', ) || IsInState('Stopping', ))
+  0026: if !((self.Actions.Length == 0)) goto 0x004d
+  0032: TextPlan = (TextPlan $ "(no actions)")
+  004d: I = 0
+  0054: if !((I < self.Actions.Length)) goto 0x010a
+  0064: if !((I != 0)) goto 0x0082
+  006f: TextPlan = (TextPlan $ " -> ")
+  0082: Highlight = (IsRunning && (I == self._CurrentActionIndex))
+  00a0: ActionText = I[self.Actions].Action.get_DetailedDescription()
+  00ca: TextPlan = (((TextPlan $ (Highlight ? "*" : "")) $ ActionText) $ (Highlight ? "*" : ""))
+  0100: AddAdd_PreInt(I)
+  0107: goto 0x0054
+  010a: return TextPlan
+  0110: return return
+  0116: <eos>

@@ -1,0 +1,23 @@
+function FogVolumeDensityComponent.CheckForErrors  (script 511 bytes)
+  0000: CheckForErrors()
+  0006: ActorIndex = 0
+  000d: if !((ActorIndex < self.FogVolumeActors.Length)) goto 0x01fc
+  001d: CurrentActor = ActorIndex[self.FogVolumeActors]
+  002e: if !((CurrentActor != none)) goto 0x01f2
+  0039: foreach CurrentActor.ComponentList(obj'MeshComponent', CurrentComponent) (end 0x01f1)
+  0059: if !((((CurrentComponent != none) && (CurrentComponent.GetNumElements() > 0)) && (CurrentComponent.GetMaterial(0) != none))) goto 0x01f0
+  009b: BaseMaterial = CurrentComponent.GetMaterial(0).GetParentMaterial()
+  00c3: if !((BaseMaterial != none)) goto 0x01f0
+  00ce: if !((((!BaseMaterial.bUsedWithFogVolumes || (cast3a(BaseMaterial.LightingModel) != cast3a(2))) || (((cast3a(BaseMaterial.BlendMode) != cast3a(2)) && (cast3a(BaseMaterial.BlendMode) != cast3a(3))) && (cast3a(BaseMaterial.BlendMode) != cast3a(4)))) || (!BaseMaterial.EmissiveColor.UseConstant && (BaseMaterial.EmissiveColor.Expression == none)))) goto 0x01f0
+  0190: EmitCheckMessage(1, (("FogVolumeActor" @ cast56(CurrentActor)) @ "'s Material is not setup to be used with Fog Volumes!"), , )
+  01f0: iternext
+  01f1: iterpop
+  01f2: AddAdd_Int(ActorIndex)
+  01f9: goto 0x000d
+  01fc: return nothing
+  01fe: <eos>
+
+function FogVolumeDensityComponent.SetEnabled  (script 7 bytes)
+  0000: bSetEnabled
+  0005: nothing
+  0006: <eos>

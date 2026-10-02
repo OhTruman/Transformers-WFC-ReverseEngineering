@@ -1,0 +1,229 @@
+function HmGoap.AreSame  (script 215 bytes)
+  0000: if !((Lhs.Properties.Length != Rhs.Properties.Length)) goto 0x0029
+  0027: return false
+  0029: LhsIndex = 0
+  0030: if !((LhsIndex < Lhs.Properties.Length)) goto 0x00ce
+  004b: RhsIndex = HmGoap.FindPropertyIndex(LhsIndex[Lhs.Properties].Type, Rhs)
+  007d: if !(((RhsIndex == -1) || (LhsIndex[Lhs.Properties] != RhsIndex[Rhs.Properties]))) goto 0x00c4
+  00c2: return false
+  00c4: AddAdd_PreInt(LhsIndex)
+  00cb: goto 0x0030
+  00ce: return true
+  00d0: return return
+  00d6: <eos>
+
+function HmGoap.ContainsPropertyValueMatch  (script 171 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Prop.Type, WorldStateSet)
+  0021: if !((Index == -1)) goto 0x0033
+  0030: return 0
+  0033: if !((Index[WorldStateSet.Properties].Value.Any || (Index[WorldStateSet.Properties].Value == Prop.Value))) goto 0x00a1
+  009e: return 1
+  00a1: return 2
+  00a4: return return
+  00aa: <eos>
+
+function HmGoap.ContainsProperty  (script 31 bytes)
+  0000: return (HmGoap.FindPropertyIndex(Type, WorldStateSet) != -1)
+  0018: return return
+  001e: <eos>
+
+function HmGoap.FindPropertyIndex  (script 41 bytes)
+  0000: return WorldStateSet.Properties.Find('Type',Type)
+  0022: return return
+  0028: <eos>
+
+function HmGoap.SetProperty  (script 106 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Prop.Type, WorldStateSet)
+  0021: if !((Index == -1)) goto 0x004b
+  0030: WorldStateSet.Properties.AddItem(Prop)
+  0048: goto 0x0067
+  004b: Index[WorldStateSet.Properties] = Prop
+  0067: return nothing
+  0069: <eos>
+
+function HmGoap.SetPropertyWithDisregard  (script 130 bytes)
+  0000: Prop.DisregardSubject = DisregardSubject
+  0018: Index = HmGoap.FindPropertyIndex(Prop.Type, WorldStateSet)
+  0039: if !((Index == -1)) goto 0x0063
+  0048: WorldStateSet.Properties.AddItem(Prop)
+  0060: goto 0x007f
+  0063: Index[WorldStateSet.Properties] = Prop
+  007f: return nothing
+  0081: <eos>
+
+function HmGoap.ClearProperty  (script 65 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: if !((Index == -1)) goto 0x0027
+  0025: return nothing
+  0027: WorldStateSet.Properties.Remove(Index,1)
+  003e: return nothing
+  0040: <eos>
+
+function HmGoap.SetSubject  (script 81 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: if !((Index == -1)) goto 0x0027
+  0025: return nothing
+  0027: Index[WorldStateSet.Properties].Subject = Subject
+  004e: return nothing
+  0050: <eos>
+
+function HmGoap.ClearSubjects  (script 82 bytes)
+  0000: idx = 0
+  0007: if !((idx < WorldStateSet.Properties.Length)) goto 0x004f
+  0022: idx[WorldStateSet.Properties].Subject = none
+  0045: AddAdd_PreInt(idx)
+  004c: goto 0x0007
+  004f: return nothing
+  0051: <eos>
+
+function HmGoap.GetSubject  (script 81 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: return ((Index == -1) ? none : Index[WorldStateSet.Properties].Subject)
+  004a: return return
+  0050: <eos>
+
+function HmGoap.GetProperty  (script 76 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: if !((Index == -1)) goto 0x0027
+  0025: return false
+  0027: Prop = Index[WorldStateSet.Properties]
+  0043: return true
+  0045: return return
+  004b: <eos>
+
+function HmGoap.GetValue  (script 87 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: if !((Index == -1)) goto 0x0027
+  0025: return false
+  0027: Value = Index[WorldStateSet.Properties].Value
+  004e: return true
+  0050: return return
+  0056: <eos>
+
+function HmGoap.GetIntValue  (script 92 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: return ((Index == -1) ? 0 : Index[WorldStateSet.Properties].Value.IntVal)
+  0055: return return
+  005b: <eos>
+
+function HmGoap.GetBoolValue  (script 93 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: return ((Index == -1) ? false : Index[WorldStateSet.Properties].Value.BoolVal)
+  0056: return return
+  005c: <eos>
+
+function HmGoap.GetClassValue  (script 92 bytes)
+  0000: Index = HmGoap.FindPropertyIndex(Type, WorldStateSet)
+  0016: return ((Index == -1) ? none : Index[WorldStateSet.Properties].Value.ClassVal)
+  0055: return return
+  005b: <eos>
+
+function HmGoap.NumberOfConditionsNotMet  (script 111 bytes)
+  0000: I = 0
+  0007: if !((I < Conditions.Properties.Length)) goto 0x0062
+  0022: if !(WorldState.ConditionMet(I[Conditions.Properties])) goto 0x0051
+  004e: goto 0x0058
+  0051: AddAdd_Int(NumNotMet)
+  0058: AddAdd_PreInt(I)
+  005f: goto 0x0007
+  0062: return NumNotMet
+  0068: return return
+  006e: <eos>
+
+function HmGoap.NumberOfConditionsMet  (script 108 bytes)
+  0000: I = 0
+  0007: if !((I < Conditions.Properties.Length)) goto 0x005f
+  0022: if !(WorldState.ConditionMet(I[Conditions.Properties])) goto 0x0055
+  004e: AddAdd_Int(NumMet)
+  0055: AddAdd_PreInt(I)
+  005c: goto 0x0007
+  005f: return NumMet
+  0065: return return
+  006b: <eos>
+
+function HmGoap.NumberOfConditionsSet  (script 25 bytes)
+  0000: return Conditions.Properties.Length
+  0012: return return
+  0018: <eos>
+
+function HmGoap.PublishSubjectsToSet  (script 404 bytes)
+  0000: I = 0
+  0007: if !((I < Pitcher.Properties.Length)) goto 0x0191
+  0022: Index = HmGoap.FindPropertyIndex(I[Pitcher.Properties].Type, Catcher)
+  0054: if !((Index == -1)) goto 0x0066
+  0063: goto 0x0187
+  0066: if !((((Index[Catcher.Properties].Subject != none) && (I[Pitcher.Properties].Subject != none)) && (Index[Catcher.Properties].Subject != I[Pitcher.Properties].Subject))) goto 0x0144
+  00ff: LogInternal("Warning: Publishing subject is overwriting subject in property", , , )
+  0144: Index[Catcher.Properties].Subject = I[Pitcher.Properties].Subject
+  0187: AddAdd_PreInt(I)
+  018e: goto 0x0007
+  0191: return nothing
+  0193: <eos>
+
+function HmGoap.AddMissingProperties  (script 141 bytes)
+  0000: I = 0
+  0007: if !((I < FromSet.Properties.Length)) goto 0x008a
+  0022: if !(!ContainsProperty(I[FromSet.Properties].Type, ToSet)) goto 0x0080
+  0057: ToSet.Properties.AddItem(I[FromSet.Properties])
+  0080: AddAdd_PreInt(I)
+  0087: goto 0x0007
+  008a: return nothing
+  008c: <eos>
+
+function HmGoap.ConditionsMet  (script 159 bytes)
+  0000: default=false
+  0005: I = 0
+  000c: if !((I < Conditions.Properties.Length)) goto 0x0096
+  0027: if !((IsRunning && !I[Conditions.Properties].EvaluateWhileRunning)) goto 0x005c
+  0059: goto 0x008c
+  005c: if !(!WorldState.ConditionMet(I[Conditions.Properties])) goto 0x008c
+  008a: return false
+  008c: AddAdd_PreInt(I)
+  0093: goto 0x000c
+  0096: return true
+  0098: return return
+  009e: <eos>
+
+function HmGoap.Clear  (script 22 bytes)
+  0000: WorldStateSet.Properties.Length = 0
+  0013: return nothing
+  0015: <eos>
+
+function HmGoap.CreateBoolProperty  (script 147 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=true
+  0007: Prop.Type = Type
+  001d: Prop.Subject = Subject
+  0033: Prop.Value.BoolVal = Value
+  0056: Prop.DisregardSubject = DisregardSubject
+  006e: Prop.EvaluateWhileRunning = EvaluateWhileRunning
+  0086: return Prop
+  008c: return return
+  0092: <eos>
+
+function HmGoap.CreateIntProperty  (script 145 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=true
+  0007: Prop.Type = Type
+  001d: Prop.Subject = Subject
+  0033: Prop.Value.IntVal = Value
+  0054: Prop.DisregardSubject = DisregardSubject
+  006c: Prop.EvaluateWhileRunning = EvaluateWhileRunning
+  0084: return Prop
+  008a: return return
+  0090: <eos>
+
+function HmGoap.CreateClassProperty  (script 145 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=true
+  0007: Prop.Type = Type
+  001d: Prop.Subject = Subject
+  0033: Prop.Value.ClassVal = ClassVal
+  0054: Prop.DisregardSubject = DisregardSubject
+  006c: Prop.EvaluateWhileRunning = EvaluateWhileRunning
+  0084: return Prop
+  008a: return return
+  0090: <eos>

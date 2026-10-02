@@ -1,0 +1,25 @@
+function SeqAct_HmSetAiActionSet.Activated  (script 210 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x00cf
+  0017: C = HmGoapWorldStateInterface(SeqAct_HmSetAiActionSet.GetTargetController(I[self.Targets]))
+  0033: if !(EqualEqual_InterfaceInterface(C, HmGoapWorldStateInterface(none))) goto 0x004a
+  0047: goto 0x00c5
+  004a: PlanRunner = C.GetGoapPlanRunner()
+  0064: if !((PlanRunner == none)) goto 0x0072
+  006f: goto 0x00c5
+  0072: ClonedActionSet = obj'Engine.Allocation'.static.CreateObject(obj'HmGoapActionSet', PlanRunner)
+  0095: ClonedActionSet.InitializeFromTemplate(self.ActionSet)
+  00ad: PlanRunner.ReplaceActionSet(ClonedActionSet)
+  00c5: AddAdd_PreInt(I)
+  00cc: goto 0x0007
+  00cf: return nothing
+  00d1: <eos>
+
+function SeqAct_HmSetAiActionSet.GetTargetController  (script 72 bytes)
+  0000: if !((Controller(Target) != none)) goto 0x001b
+  0010: return Controller(Target)
+  001b: if !((Pawn(Target) != none)) goto 0x003f
+  002b: return Pawn(Target).Controller
+  003f: return none
+  0041: return return
+  0047: <eos>

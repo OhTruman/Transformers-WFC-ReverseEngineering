@@ -1,0 +1,24 @@
+function HmVersionedObject.get_EditedVersion  (script 13 bytes)
+  0000: return self.EditVersion
+  0006: return return
+  000c: <eos>
+
+function HmVersionedObject.OnPostEditChange  (script 21 bytes)
+  0000: AddAdd_Int(self.EditVersion)
+  0007: OnPostEditChange(PropertyName)
+  0012: return nothing
+  0014: <eos>
+
+function HmVersionedObject.PostLoad  (script 138 bytes)
+  0000: if !((IsDefaultObject() || (self.InstancedVersion == self.VersionMigrators.Length))) goto 0x0021
+  001f: return nothing
+  0021: I = self.InstancedVersion
+  002c: if !((I < self.VersionMigrators.Length)) goto 0x0071
+  003c: if !((I[self.VersionMigrators] != none)) goto 0x0067
+  004d: I[self.VersionMigrators].static.UpdateObject(self)
+  0067: AddAdd_PreInt(I)
+  006e: goto 0x002c
+  0071: self.InstancedVersion = self.VersionMigrators.Length
+  007d: MarkModified()
+  0087: return nothing
+  0089: <eos>

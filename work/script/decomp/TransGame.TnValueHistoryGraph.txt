@@ -1,0 +1,78 @@
+function TnValueHistoryGraph.get_NumDataSets  (script 14 bytes)
+  0000: return self._DataSets.Length
+  0007: return return
+  000d: <eos>
+
+function TnValueHistoryGraph.__Constructor__TnValueHistoryGraph_0  (script 14 bytes)
+  0000: self._TimeSpan = TimeSpan
+  000b: return nothing
+  000d: <eos>
+
+function TnValueHistoryGraph.AddDataSet  (script 59 bytes)
+  0000: self._DataSets.AddItem(new(self, nothing, obj'TnValueHistoryDataSet', nothing, ?obj10110464))
+  0016: ?obj2375936
+  001b: ?obj2375680
+  0020: ?obj2375425
+  0025: ?obj2373654
+  002a: return (self._DataSets.Length - 1)
+  0034: return return
+  003a: <eos>
+
+function TnValueHistoryGraph.AddSample  (script 90 bytes)
+  0000: if !(((DataSetIndex >= self._DataSets.Length) || obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled)) goto 0x0034
+  0032: return nothing
+  0034: DataSetIndex[self._DataSets].AddSample(sample, self._Time)
+  0057: return nothing
+  0059: <eos>
+
+function TnValueHistoryGraph.AddEvent  (script 90 bytes)
+  0000: if !(((DataSetIndex >= self._DataSets.Length) || obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled)) goto 0x0034
+  0032: return nothing
+  0034: DataSetIndex[self._DataSets].AddEvent(self._Time, EventName)
+  0057: return nothing
+  0059: <eos>
+
+function TnValueHistoryGraph.SetThreshold  (script 47 bytes)
+  0000: if !((DataSetIndex >= self._DataSets.Length)) goto 0x0012
+  0010: return nothing
+  0012: DataSetIndex[self._DataSets]._Threshold = Value
+  002c: return nothing
+  002e: <eos>
+
+function TnValueHistoryGraph.Update  (script 78 bytes)
+  0000: I = 0
+  0007: if !((I < self._DataSets.Length)) goto 0x003f
+  0017: I[self._DataSets].Update(self._Time)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: (self._Time += DeltaTime)
+  004b: return nothing
+  004d: <eos>
+
+function TnValueHistoryGraph.Draw  (script 723 bytes)
+  0000: HudCanvas.SetDrawColor(0, 0, 0, 128)
+  001b: HudCanvas.SetPos(X, Y)
+  0038: HudCanvas.DrawRect(cast3f(Width), cast3f(Height), )
+  005a: foreach self._DataSets(DataSet,) (end 0x0096)
+  0069: DataSet.Draw(HudCanvas, X, Y, Width, Height)
+  0095: iternext
+  0096: iterpop
+  0097: HudCanvas.SetDrawColor(50, 50, 50, 128)
+  00b2: HudCanvas.SetPos(X, Y)
+  00cf: HudCanvas.DrawRect(cast3f(Width), 20.0, )
+  00ef: XT = (X + cast3f(5))
+  0100: YT = (Y + cast3f(5))
+  0111: foreach self._DataSets(DataSet,) (end 0x0270)
+  0120: Text = (((((((DataSet._Title @ "[") $ cast53(cast44(DataSet._Range.Min))) $ ", ") $ cast53(cast44(DataSet.get_CurrentValue()))) $ ", ") $ cast53(cast44(DataSet._Range.Max))) $ "]")
+  01a1: HudCanvas.SetDrawColor(DataSet._LineColor.R, DataSet._LineColor.G, DataSet._LineColor.B, cast3d(255))
+  0203: HudCanvas.SetPos(XT, YT)
+  0220: HudCanvas.DrawTextNormal(Text, , , )
+  023b: HudCanvas.TextSize(Text, XL, YL)
+  025d: (XT += (XL + cast3f(5)))
+  026f: iternext
+  0270: iterpop
+  0271: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), 128)
+  0292: HudCanvas.SetPos(X, Y)
+  02af: HudCanvas.DrawBox(cast3f(Width), cast3f(Height))
+  02d0: return nothing
+  02d2: <eos>

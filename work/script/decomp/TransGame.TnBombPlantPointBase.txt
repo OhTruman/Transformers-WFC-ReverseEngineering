@@ -1,0 +1,202 @@
+function TnBombPlantPointBase.get_NormalizedDefuseTime  (script 20 bytes)
+  0000: return (self.CurrentDefuseTime / self.DefuseTime)
+  000d: return return
+  0013: <eos>
+
+function TnBombPlantPointBase.get_IsPlanted  (script 14 bytes)
+  0000: return self.bBombPlanted
+  0007: return return
+  000d: <eos>
+
+function TnBombPlantPointBase.ReplicatedEvent  (script 87 bytes)
+  0000: if !((VarName == 'bBombPlanted')) goto 0x0022
+  0013: TnBombPlantPointBase.SetBombPlanted(self.bBombPlanted)
+  001f: goto 0x0054
+  0022: if !(((VarName == 'bDetonated') && self.bDetonated)) goto 0x0049
+  0040: TnBombPlantPointBase.ClientDetonateBomb()
+  0046: goto 0x0054
+  0049: TnGameObjective.ReplicatedEvent(VarName)
+  0054: return nothing
+  0056: <eos>
+
+function TnBombPlantPointBase.PostBeginPlay  (script 94 bytes)
+  0000: if !(!self.WorldInfo.Game.HasRule(obj'TnGameRules_ScoreBombingRun')) goto 0x0028
+  0026: return nothing
+  0028: TnGameObjective.PostBeginPlay()
+  002e: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker(self.MarkerString, self, obj'TnObjectiveMarkerTypeBombPlantPoint', )
+  005b: return nothing
+  005d: <eos>
+
+function TnBombPlantPointBase.ScriptGetTeamNum  (script 45 bytes)
+  0000: if !(self.bBombPlanted) goto 0x0020
+  0009: return cast3d(((cast3a(self.DefenderTeamIndex) == 0) ? 1 : 0))
+  001d: goto 0x0026
+  0020: return self.DefenderTeamIndex
+  0026: return return
+  002c: <eos>
+
+function TnBombPlantPointBase.MatchStarting  (script 51 bytes)
+  0000: MatchStarting()
+  0006: self.AreaTracker.SetInclusionFilter(delegate.CheckOnDefendingTeam)
+  0022: GotoState('Idle', , , )
+  0030: return nothing
+  0032: <eos>
+
+function TnBombPlantPointBase.Touch  (script 107 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: self.AreaTracker.OnTouch(Other)
+  0032: TouchingPawn = TnPawn(Other)
+  0042: if !((TouchingPawn != none)) goto 0x0068
+  004d: HandleTouchingPawn(TouchingPawn)
+  005c: TnBombPlantPointBase.AdjustHud(TouchingPawn, true)
+  0068: return nothing
+  006a: <eos>
+
+function TnBombPlantPointBase.UnTouch  (script 55 bytes)
+  0000: UnTouch(Other)
+  000b: self.AreaTracker.OnUntouch(Other)
+  0023: TnBombPlantPointBase.AdjustHud(TnPawn(Other), false)
+  0034: return nothing
+  0036: <eos>
+
+function TnBombPlantPointBase.HandleTouchingPawn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnBombPlantPointBase.Idle.HandleTouchingPawn  (script 207 bytes)
+  0000: if !((cast3a(P.GetTeamNum()) == cast3a(self.DefenderTeamIndex))) goto 0x0023
+  0021: return nothing
+  0023: TouchedPRI = TnPlayerReplicationInfo(P.PlayerReplicationInfo)
+  003c: if !((TouchedPRI == none)) goto 0x0049
+  0047: return nothing
+  0049: HeldBomb = TnWeaponBombBase(P.InvManager.FindInventoryType(obj'TnWeaponBombBase', true))
+  0076: if !((HeldBomb == none)) goto 0x0083
+  0081: return nothing
+  0083: self.Planter = P.PlayerReplicationInfo
+  0097: self.BombBase = HeldBomb._HomeBase
+  00ab: HeldBomb.DestroyWeapon()
+  00be: GotoState('BombPlanted', , , )
+  00cc: return nothing
+  00ce: <eos>
+
+function TnBombPlantPointBase.BombPlanted.BeginState  (script 124 bytes)
+  0000: TnBombPlantPointBase.SetBombPlanted(true)
+  0007: TnPlayerReplicationInfo(self.Planter).AddBombPlant()
+  001f: self.BombBase.SetCurrentObjectiveHolder(self, false)
+  0034: self.BombBase.OnObjectiveEvent(5, self.Planter)
+  004e: TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI).ResetObjectiveCountdown(true, delegate.GetFuseTimeRemaining)
+  0079: return nothing
+  007b: <eos>
+
+function TnBombPlantPointBase.BombPlanted.EndState  (script 75 bytes)
+  0000: TnBombPlantPointBase.SetBombPlanted(false)
+  0007: self.CurrentFuseTime = 0.0
+  0012: self.CurrentDefuseTime = 0.0
+  001d: TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI).ResetObjectiveCountdown(false, delegate.None)
+  0048: return nothing
+  004a: <eos>
+
+function TnBombPlantPointBase.BombPlanted.Tick  (script 170 bytes)
+  0000: Tick(DeltaTime)
+  000b: self.AreaTracker.PurgeViaInclusion()
+  001e: if !((self.AreaTracker.GetNumOccupyingActors() > 0)) goto 0x006b
+  0037: (self.CurrentDefuseTime += DeltaTime)
+  0043: if !((self.CurrentDefuseTime >= self.DefuseTime)) goto 0x0068
+  0052: DefuseBomb()
+  0058: GotoState('Idle', , , )
+  0066: return nothing
+  0068: goto 0x0076
+  006b: self.CurrentDefuseTime = 0.0
+  0076: (self.CurrentFuseTime += DeltaTime)
+  0082: if !((self.CurrentFuseTime >= self.FuseTime)) goto 0x00a7
+  0091: DetonateBomb()
+  0097: GotoState('Idle', , , )
+  00a5: return nothing
+  00a7: return nothing
+  00a9: <eos>
+
+function TnBombPlantPointBase.BombPlanted.DetonateBomb  (script 144 bytes)
+  0000: self.WorldInfo.Game.ScoreObjective(self.Planter, 1)
+  0022: self.BombBase.ReturnSpawnedObjective(Controller(self.Planter.Owner), 3)
+  004a: HurtRadius(self.DetonateDamage, self.DetonateRadius, -1.0, obj'TnDamageTypeAOE', self.DetonateMomentum, self.Location, , Controller(self.Planter.Owner), true)
+  0087: TnBombPlantPointBase.ClientDetonateBomb()
+  008d: return nothing
+  008f: <eos>
+
+function TnBombPlantPointBase.BombPlanted.DefuseBomb  (script 918 bytes)
+  0000: Defusers = self.AreaTracker.GetOccupyingActors()
+  0019: foreach Defusers(A,) (end 0x0123)
+  0028: P = TnPawn(A)
+  0038: if !((P == none)) goto 0x0093
+  0043: LogInternal("ERROR: There's a none bomb defuser trying to get credit. Kick him out.", , , )
+  0090: goto 0x0122
+  0093: if !((P.PlayerReplicationInfo == none)) goto 0x00f6
+  00a7: LogInternal((("ERROR: Why does" @ cast56(P)) @ "have a none PRI when he defused the bomb?"), , , )
+  00f3: goto 0x0122
+  00f6: PRI = P.PlayerReplicationInfo
+  010a: TnPlayerReplicationInfo(PRI).AddBombDefuse()
+  0122: iternext
+  0123: iterpop
+  0124: self.BombBase.OnObjectiveEvent(4, PRI)
+  013e: SpotLocation = self.Location
+  0149: BoxExtent = vect(20,20,20)
+  015c: if !(!FindSpot(BoxExtent, SpotLocation)) goto 0x01cb
+  0175: LogInternal("ERROR: Find spot failed for spawning bomb after defuse.", , , )
+  01b3: self.BombBase.ReturnSpawnedObjective(none, 0)
+  01c9: return nothing
+  01cb: SpawnedAsInv = Spawn(self.DefuseBombSpawnClass, , , , , , , )
+  01e7: if !((SpawnedAsInv == none)) goto 0x0270
+  01f2: LogInternal((("ERROR: Could not spawn bomb after defuse at:" @ cast56(self)) $ ".  Returning to base so game can continue."), , , )
+  0258: self.BombBase.ReturnSpawnedObjective(none, 0)
+  026e: return nothing
+  0270: SpawnedAsInv.SetHomeBase(self.BombBase)
+  0288: SpawnedAsInv.InitializeForDrop()
+  029b: DP = TnGameObjectiveDroppedPickup(SpawnedAsInv.DropFrom(SpotLocation, vect(0,0,0), ))
+  02cc: if !((DP == none)) goto 0x0355
+  02d7: LogInternal((("ERROR: Could not spawn bomb after defuse at:" @ cast56(self)) $ ".  Returning to base so game can continue."), , , )
+  033d: self.BombBase.ReturnSpawnedObjective(none, 0)
+  0353: return nothing
+  0355: DP.SetPhysics(2, , )
+  036c: self.BombBase.SetCurrentObjectiveHolder(DP, )
+  0385: self.BombBase = none
+  038c: self.Planter = none
+  0393: return nothing
+  0395: <eos>
+
+function TnBombPlantPointBase.AdjustHud  (script 127 bytes)
+  0000: if !(((P == none) || !OnDefendingTeam(P))) goto 0x0023
+  0021: return nothing
+  0023: if !(Add) goto 0x0056
+  002c: TnPlayerController(P.Controller).AddHudObserver(obj'TnHudDataObserverBombDefuseTimer', self)
+  0053: goto 0x007c
+  0056: TnPlayerController(P.Controller).RemoveHudObserver(obj'TnHudDataObserverBombDefuseTimer')
+  007c: return nothing
+  007e: <eos>
+
+function TnBombPlantPointBase.SetBombPlanted  (script 106 bytes)
+  0000: self.bBombPlanted = Planted
+  000d: self.PlantedBombMesh.SetHidden(!Planted)
+  0028: if !(Planted) goto 0x0067
+  0031: self.bDetonated = false
+  0039: if !((self.PlantedAnimName != 'None')) goto 0x0067
+  004c: self.PlantedBombMesh.PlayAnim(self.PlantedAnimName, , , )
+  0067: return nothing
+  0069: <eos>
+
+function TnBombPlantPointBase.ClientDetonateBomb  (script 51 bytes)
+  0000: self.bDetonated = true
+  0008: self.DetonateEffect.ActivateSystem()
+  001c: PlaySound(self.DetonateSound, true, , , , )
+  0030: return nothing
+  0032: <eos>
+
+function TnBombPlantPointBase.CheckOnDefendingTeam  (script 93 bytes)
+  0000: P = Pawn(A)
+  0010: return (((P != none) && !P.IsDead()) && (cast3a(P.GetTeamNum()) == cast3a(self.DefenderTeamIndex)))
+  0056: return return
+  005c: <eos>
+
+function TnBombPlantPointBase.GetFuseTimeRemaining  (script 22 bytes)
+  0000: return cast44((self.FuseTime - self.CurrentFuseTime))
+  000f: return return
+  0015: <eos>

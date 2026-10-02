@@ -1,0 +1,14 @@
+function TnStatisticsBackendTeamTable.RecordTeams  (script 164 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(!Game.bTeamGame) goto 0x0023
+  0021: return nothing
+  0023: GRI = Game.GameReplicationInfo
+  0037: foreach GRI.Teams(Team,) (end 0x00a0)
+  004f: Stat.TM = Team.TeamIndex
+  006e: Stat.Scr = Team.GetScore()
+  0092: self.Teams.AddItem(Stat)
+  009f: iternext
+  00a0: iterpop
+  00a1: return nothing
+  00a3: <eos>

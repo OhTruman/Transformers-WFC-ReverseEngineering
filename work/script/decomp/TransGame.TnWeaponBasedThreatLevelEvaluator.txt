@@ -1,0 +1,17 @@
+function TnWeaponBasedThreatLevelEvaluator.set_LightWeaponThreatLevel  (script 14 bytes)
+  0000: self._LightWeaponThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponBasedThreatLevelEvaluator.set_HeavyWeaponThreatLevel  (script 14 bytes)
+  0000: self._HeavyWeaponThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 87 bytes)
+  0000: TransformerWeapon = TnWeapon(Threat.Weapon)
+  0019: if !((TransformerWeapon == none)) goto 0x002a
+  0024: return 0.0
+  002a: return ((cast3a(TransformerWeapon.WeaponType) == cast3a(5)) ? self._HeavyWeaponThreatLevel : self._LightWeaponThreatLevel)
+  0050: return return
+  0056: <eos>

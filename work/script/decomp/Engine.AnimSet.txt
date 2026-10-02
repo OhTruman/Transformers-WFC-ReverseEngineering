@@ -1,0 +1,121 @@
+function AnimSet.GetRawSize  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimSet.GetCompressedSize  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimSet.FindAnimSequence  (script 7 bytes)
+  0000: SequenceName
+  0005: nothing
+  0006: <eos>
+
+function AnimSet.ImportAnimSequence  (script 17 bytes)
+  0000: Seq
+  0005: SourceSet
+  000a: FillInMesh
+  000f: nothing
+  0010: <eos>
+
+function AnimSet.SequenceUsedByNodes  (script 104 bytes)
+  0000: I = 0
+  0007: if !((I < SeqNodes.Length)) goto 0x005f
+  0017: Seq = AnimNodeSequence(I[SeqNodes])
+  002d: if !((Seq == none)) goto 0x003b
+  0038: goto 0x0055
+  003b: if !((Seq.AnimSeqName == SequenceName)) goto 0x0055
+  0053: return true
+  0055: AddAdd_PreInt(I)
+  005c: goto 0x0007
+  005f: return false
+  0061: return return
+  0067: <eos>
+
+function AnimSet.FindUnusedSequences  (script 145 bytes)
+  0000: RootNode.GetNodesByClass(SeqNodes, obj'AnimNodeSequence')
+  001d: I = 0
+  0024: if !((I < self.Sequences.Length)) goto 0x0084
+  0034: if !(AnimSet.SequenceUsedByNodes(SeqNodes, I[self.Sequences].SequenceName)) goto 0x0059
+  0056: goto 0x007a
+  0059: UnusedSequences.Length[UnusedSequences] = I[self.Sequences].SequenceName
+  007a: AddAdd_PreInt(I)
+  0081: goto 0x0024
+  0084: return UnusedSequences
+  008a: return return
+  0090: <eos>
+
+function AnimSet.CheckForErrors  (script 433 bytes)
+  0000: I = 0
+  0007: if !((I < self.Sequences.Length)) goto 0x00bd
+  0017: if !((I[self.Sequences].SequenceName == 'None')) goto 0x008f
+  0039: self.Sequences.Remove(I,1)
+  0045: EmitCheckMessage(1, "Detected an invalid AnimSequence, removed from animset.", , )
+  008c: goto 0x00af
+  008f: I[self.Sequences].CheckForErrors()
+  00a8: AddAdd_PreInt(I)
+  00af: I = I
+  00ba: goto 0x0007
+  00bd: foreach self.ChooserGroups(CGroup,) (end 0x01ad)
+  00cc: if !((CGroup.GroupName == 'None')) goto 0x011c
+  00ea: EmitCheckMessage(0, "Empty animation chooser group name", , )
+  011c: if !((CGroup.Anims.Length == 0)) goto 0x01ac
+  0133: EmitCheckMessage(0, (("No animations specified in animation chooser group" @ cast57(CGroup.GroupName)) @ "please remove the chooser group"), , )
+  01ac: iternext
+  01ad: iterpop
+  01ae: return nothing
+  01b0: <eos>
+
+function AnimSet.FindWeightedAnim  (script 90 bytes)
+  0000: foreach WeightedAnims(Anim,) (end 0x0048)
+  000f: (TotalWeight += Anim.Weight)
+  0026: if !((WeightedIndex < TotalWeight)) goto 0x0047
+  0035: iterpop
+  0036: return Anim.AnimName
+  0047: iternext
+  0048: iterpop
+  0049: return 'None'
+  0053: return return
+  0059: <eos>
+
+function AnimSet.ChooseWeightedAnim  (script 94 bytes)
+  0000: foreach WeightedAnims(Anim,) (end 0x0027)
+  000f: (TotalWeight += Anim.Weight)
+  0026: iternext
+  0027: iterpop
+  0028: WeightedIndex = obj'Core.Random'.static.RandomInt(TotalWeight)
+  0046: return AnimSet.FindWeightedAnim(WeightedAnims, WeightedIndex)
+  0057: return return
+  005d: <eos>
+
+function AnimSet.ChooseAnimName  (script 111 bytes)
+  0000: foreach self.ChooserGroups(CGroup,) (end 0x005d)
+  000f: if !((CGroup.GroupName == ChooserName)) goto 0x005c
+  0029: if !((CGroup.Anims.Length == 0)) goto 0x0044
+  0040: iternext
+  0041: goto 0x005d
+  0044: iterpop
+  0045: return AnimSet.ChooseWeightedAnim(CGroup.Anims)
+  005c: iternext
+  005d: iterpop
+  005e: return 'None'
+  0068: return return
+  006e: <eos>
+
+function AnimSet.ChooserGroupExists  (script 37 bytes)
+  0000: return (self.ChooserGroups.Find('GroupName',ChooserName) != -1)
+  001e: return return
+  0024: <eos>
+
+function AnimSet.FindChooserGroup  (script 69 bytes)
+  0000: Index = self.ChooserGroups.Find('GroupName',ChooserName)
+  001c: return ((Index == -1) ? Group : Index[self.ChooserGroups])
+  003e: return return
+  0044: <eos>
+
+function AnimSet.OnPostEditChange  (script 53 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((PropertyName == 'ScaleType')) goto 0x0032
+  001e: self.TranslationScale = self.ScaleType.static.default.TranslationScale
+  0032: return nothing
+  0034: <eos>

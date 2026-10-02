@@ -1,0 +1,59 @@
+function TnBarrierSpawnable.ReplicatedEvent  (script 42 bytes)
+  0000: if !((VarName == 'BarrierBP')) goto 0x001c
+  0013: TnBarrierSpawnable.Initialize()
+  0019: goto 0x0027
+  001c: ReplicatedEvent(VarName)
+  0027: return nothing
+  0029: <eos>
+
+function TnBarrierSpawnable.SetBlueprint  (script 42 bytes)
+  0000: self.BarrierBP = BBP
+  000b: self.Health = self.BarrierBP.BarrierHealth
+  0021: TnBarrierSpawnable.Initialize()
+  0027: return nothing
+  0029: <eos>
+
+function TnBarrierSpawnable.Initialize  (script 123 bytes)
+  0000: self.SkeletalMeshComponent.PlayAnim(self.SpawnAnim, , , )
+  001b: self.SkeletalMeshComponent.ForceSkelUpdate()
+  002e: PlaySound(self.ActiveLoopSound, false, false, true, , )
+  0042: self.SkeletalMeshComponent.SetPhysicsAsset(self.SkeletalMeshComponent.PhysicsAsset, )
+  0064: self.SkeletalMeshComponent.SetHasPhysicsAssetInstance(true)
+  0078: return nothing
+  007a: <eos>
+
+function TnBarrierSpawnable.TakeDamage  (script 135 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((class<TnDamageTypeMelee>(DamageType) != none)) goto 0x0014
+  0012: return nothing
+  0014: TakeDamage(DamageAmount, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  003d: (self.Health -= DamageAmount)
+  0049: if !(((self.Health <= cast3f(0)) || (class<TnDamageTypeFlashBang>(DamageType) != none))) goto 0x0084
+  0068: PlaySound(self.DestroySound, false, false, false, , )
+  007c: self.IsFadingOut = true
+  0084: return nothing
+  0086: <eos>
+
+function TnBarrierSpawnable.ForceFadeout  (script 11 bytes)
+  0000: self.IsFadingOut = true
+  0008: return nothing
+  000a: <eos>
+
+function TnBarrierSpawnable.Tick  (script 255 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(self.IsFadingOut) goto 0x00a9
+  0014: self.CurrentFadeoutTime = obj'Core.Math'.static.FMin(self.BarrierBP.FadeOutTime, (self.CurrentFadeoutTime + DeltaTime))
+  0041: self.SkeletalMeshComponent.SetScalarParam(self.PowerDownParamName, (1.0 - (self.CurrentFadeoutTime / self.BarrierBP.FadeOutTime)))
+  0077: if !(((cast3a(self.Role) == cast3a(3)) && (self.CurrentFadeoutTime >= self.BarrierBP.FadeOutTime))) goto 0x00a6
+  00a3: DestroyActor()
+  00a6: goto 0x00fc
+  00a9: if !((cast3a(self.Role) == cast3a(3))) goto 0x00fc
+  00b9: TakeDamage((self.BarrierBP.DegenRate * DeltaTime), none, vect(0,0,0), vect(0,0,0), obj'TnDamageType', , )
+  00fc: return nothing
+  00fe: <eos>
+
+function TnBarrierSpawnable.CanAcceptRadiusDamage  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

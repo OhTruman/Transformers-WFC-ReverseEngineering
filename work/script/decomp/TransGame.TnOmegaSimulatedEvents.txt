@@ -1,0 +1,101 @@
+function TnOmegaSimulatedEvents.get_PowerShaderRamper  (script 13 bytes)
+  0000: return self._PowerShaderRamper
+  0006: return return
+  000c: <eos>
+
+function TnOmegaSimulatedEvents.Initialize  (script 404 bytes)
+  0000: self._Blueprint = Blueprint
+  000b: self._OmegaPawn = OmegaPawn
+  0016: self._Animator = TnAnimatorService(OmegaPawn.GetRobotService('TnAnimatorService'))
+  003d: self._Mesh = OmegaPawn.get_RobotMeshComponent()
+  0056: self._Sentries = OmegaPawn._Sentries
+  006a: self._TargetableComponent = OmegaPawn.FindComponent(obj'TnTargetableComponent')
+  0088: self._AdditiveSlot = AnimNodeSlot(self._Mesh.FindAnimNode('AdditiveSlot'))
+  00af: self._PowerShaderRamper._Exponent = self._Blueprint.PowerRampExponent
+  00ce: self._PowerShaderRamper._Style = 2
+  00df: self._PowerShaderRamper.set_MinValue(self._Blueprint.WoundedPower)
+  0102: self._PowerShaderRamper.set_MaxValue(self._Blueprint.HealthyPower)
+  0125: self._Mesh.SetScalarParam(self._Blueprint.PowerShaderName, self._Blueprint.WoundedPower)
+  0158: self._Mesh.SetScalarParam(self._Blueprint.CorruptShaderName, 0.0)
+  0180: self._TargetableComponent.TargetType = 0
+  0191: return nothing
+  0193: <eos>
+
+function TnOmegaSimulatedEvents.OnIntroduction  (script 68 bytes)
+  0000: self._PowerShaderRamper.Ramp(0, self._Blueprint.IntroductionRampTime)
+  0025: TnOmegaSimulatedEvents.PlayAnimation(self._Blueprint.IntroductionAnimation, false, IntroductionCallback)
+  0041: return nothing
+  0043: <eos>
+
+function TnOmegaSimulatedEvents.OnHealthy  (script 60 bytes)
+  0000: self._Mesh.SetScalarParam(self._Blueprint.CorruptShaderName, 0.0)
+  0028: self._TargetableComponent.TargetType = 0
+  0039: return nothing
+  003b: <eos>
+
+function TnOmegaSimulatedEvents.OnWounded  (script 22 bytes)
+  0000: self._Sentries.Deactivate()
+  0013: return nothing
+  0015: <eos>
+
+function TnOmegaSimulatedEvents.OnCorrupt  (script 82 bytes)
+  0000: if !(self._OmegaPawn.get_UseCorruptionShader()) goto 0x003e
+  0016: self._Mesh.SetScalarParam(self._Blueprint.CorruptShaderName, 1.0)
+  003e: self._TargetableComponent.TargetType = 3
+  004f: return nothing
+  0051: <eos>
+
+function TnOmegaSimulatedEvents.OnCritical  (script 97 bytes)
+  0000: self._Mesh.SetScalarParam(self._Blueprint.CorruptShaderName, 0.0)
+  0028: self._TargetableComponent.TargetType = 0
+  0039: self._PowerShaderRamper.Ramp(1, self._Blueprint.CriticalRampTime)
+  005e: return nothing
+  0060: <eos>
+
+function TnOmegaSimulatedEvents.OnHeartExposed  (script 190 bytes)
+  0000: self._AdditiveSlot.PlayCustomAnim(self._Blueprint.ExposeHeartIntroAnimation, 1.0, , , , )
+  002c: self._ExposeHeartTimer.Start(delegate.OnExposeHeartIntroComplete, self._Mesh.GetAnimLength(self._Blueprint.ExposeHeartIntroAnimation), )
+  006c: self._OmegaPawn._AdditivePoseName = self._Blueprint.HeartExposedAnimation
+  008b: HeartDestructible = self._OmegaPawn._HeartDestructibleActor
+  009f: if !((HeartDestructible != none)) goto 0x00bb
+  00aa: HeartDestructible._Invulnerable = false
+  00bb: return nothing
+  00bd: <eos>
+
+function TnOmegaSimulatedEvents.OnExposeHeartIntroComplete  (script 55 bytes)
+  0000: self._AdditiveSlot.PlayCustomAnim(self._Blueprint.ExposeHeartLoopAnimation, 1.0, 0.1, 0.0, true, )
+  0034: return nothing
+  0036: <eos>
+
+function TnOmegaSimulatedEvents.OnDead  (script 110 bytes)
+  0000: self._PowerShaderRamper.set_MinValue(self._Blueprint.DeadPower)
+  0023: self._PowerShaderRamper.set_MaxValue(self._Blueprint.WoundedPower)
+  0046: self._PowerShaderRamper.Ramp(1, self._Blueprint.DeadRampTime)
+  006b: return nothing
+  006d: <eos>
+
+function TnOmegaSimulatedEvents.PlayAnimation  (script 204 bytes)
+  0000: Params.AnimName = AnimName
+  0016: Params.Looping = Looping
+  002e: Params.MaskType = 0
+  0041: Params.Override = 2
+  0054: Params.Priority = 1
+  0067: Params.RootMotionMode = 2
+  007a: Params.BlendInTime = 0.3
+  0090: Params.BlendOutTime = 0.3
+  00a6: self._Animator.EnqueueLocalAnimation(Params, CompleteCallback, CompleteCallback)
+  00c9: return nothing
+  00cb: <eos>
+
+function TnOmegaSimulatedEvents.Tick  (script 38 bytes)
+  0000: TnOmegaSimulatedEvents.UpdatePowerDownShader(DeltaTime)
+  000b: self._ExposeHeartTimer.Tick(DeltaTime)
+  0023: return nothing
+  0025: <eos>
+
+function TnOmegaSimulatedEvents.UpdatePowerDownShader  (script 113 bytes)
+  0000: if !((!self._PowerShaderRamper.get_IsActive() && (self._Mesh != none))) goto 0x006e
+  0025: self._PowerShaderRamper.Update(DeltaTime)
+  003d: self._Mesh.SetScalarParam(self._Blueprint.PowerShaderName, self._PowerShaderRamper._Value)
+  006e: return nothing
+  0070: <eos>

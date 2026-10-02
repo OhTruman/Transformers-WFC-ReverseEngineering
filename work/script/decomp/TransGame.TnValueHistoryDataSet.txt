@@ -1,0 +1,100 @@
+function TnValueHistoryDataSet.get_Title  (script 13 bytes)
+  0000: return self._Title
+  0006: return return
+  000c: <eos>
+
+function TnValueHistoryDataSet.get_LineColor  (script 13 bytes)
+  0000: return self._LineColor
+  0006: return return
+  000c: <eos>
+
+function TnValueHistoryDataSet.get_Range  (script 13 bytes)
+  0000: return self._Range
+  0006: return return
+  000c: <eos>
+
+function TnValueHistoryDataSet.get_CurrentValue  (script 80 bytes)
+  0000: return ((self._ValueHistory.History.Length == 0) ? 0.0 : (self._ValueHistory.History.Length - 1)[self._ValueHistory.History].Value)
+  0049: return return
+  004f: <eos>
+
+function TnValueHistoryDataSet.set_Threshold  (script 14 bytes)
+  0000: self._Threshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnValueHistoryDataSet.__Constructor__TnValueHistoryDataSet_0  (script 91 bytes)
+  0000: self._Title = Title
+  000b: self._LineColor = LineColor
+  0016: self._Range = DataRange
+  0021: self._TimeSpan = TimeSpan
+  002c: self._ValueHistory = new(self, nothing, obj'HM_Engine.HmFloatValueHistory', nothing, DeltaTime)
+  0040: self._ValueHistory.SetSampleTime(TimeSpan)
+  0058: return nothing
+  005a: <eos>
+
+function TnValueHistoryDataSet.AddSample  (script 32 bytes)
+  0000: self._ValueHistory.AddValue(sample, Time)
+  001d: return nothing
+  001f: <eos>
+
+function TnValueHistoryDataSet.AddEvent  (script 60 bytes)
+  0000: E.Description = EventName
+  0016: E.TimeStamp = Time
+  002c: self._EventHistory.AddItem(E)
+  0039: return nothing
+  003b: <eos>
+
+function TnValueHistoryDataSet.Update  (script 42 bytes)
+  0000: self._ValueHistory.Update(Time)
+  0018: UpdateEventHistory(Time)
+  0027: return nothing
+  0029: <eos>
+
+function TnValueHistoryDataSet.UpdateEventHistory  (script 104 bytes)
+  0000: Cutoff = (Time - self._TimeSpan)
+  0012: I = 0
+  0019: if !((I < self._EventHistory.Length)) goto 0x0059
+  0029: if !((I[self._EventHistory].TimeStamp < Cutoff)) goto 0x004c
+  0049: goto 0x004f
+  004c: goto 0x0059
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x0019
+  0059: self._EventHistory.Remove(0,I)
+  0065: return nothing
+  0067: <eos>
+
+function TnValueHistoryDataSet.Draw  (script 1115 bytes)
+  0000: if !((self._ValueHistory.History.Length < 2)) goto 0x0018
+  0016: return nothing
+  0018: WidthScale = (cast3f(Width) / self._ValueHistory.SampleTime)
+  0035: HeightScale = (cast3f(Height) / (self._Range.Max - self._Range.Min))
+  0066: InitialTimeStamp = 0[self._ValueHistory.History].TimeStamp
+  0087: DarkColor = MakeColor(cast43((cast3c(self._LineColor.R) * 0.5)), cast43((cast3c(self._LineColor.G) * 0.5)), cast43((cast3c(self._LineColor.B) * 0.5)), self._LineColor.A)
+  00f8: I = 0
+  00ff: if !((I < self._EventHistory.Length)) goto 0x02bb
+  010f: PX = ((I[self._EventHistory].TimeStamp - InitialTimeStamp) * WidthScale)
+  0139: HudCanvas.StrLen(I[self._EventHistory].Description, TextWidth, TextHeight)
+  016c: TextX = (X + PX)
+  017e: TextY = ((Y + cast3f(Height)) + TextHeight)
+  0199: if !((TextX < RightText)) goto 0x01c1
+  01a8: TextY = (Y + (0.5 * TextHeight))
+  01c1: HudCanvas.SetDrawColor(self._LineColor.R, self._LineColor.G, self._LineColor.B, cast3d(255))
+  0208: HudCanvas.SetPos(TextX, TextY)
+  0225: HudCanvas.DrawTextCentered(I[self._EventHistory].Description)
+  024e: RightText = ((X + PX) + (TextWidth * 0.5))
+  026e: HudCanvas.Draw2DLine((X + PX), Y, (X + PX), (Y + cast3f(Height)), DarkColor)
+  02b1: AddAdd_PreInt(I)
+  02b8: goto 0x00ff
+  02bb: ThresholdY = obj'Core.Math'.static.FClamp((cast3f(Height) - ((self._Threshold - self._Range.Min) * HeightScale)), 0.0, cast3f(Height))
+  02ff: HudCanvas.Draw2DLine(X, (Y + ThresholdY), (X + cast3f(Width)), (Y + ThresholdY), DarkColor)
+  0342: I = 1
+  0349: if !((I < self._ValueHistory.History.Length)) goto 0x043b
+  0362: PX = (((I - 1)[self._ValueHistory.History].TimeStamp - InitialTimeStamp) * WidthScale)
+  0398: PY = obj'Core.Math'.static.FClamp((cast3f(Height) - (((I - 1)[self._ValueHistory.History].Value - self._Range.Min) * HeightScale)), 0.0, cast3f(Height))
+  03f9: Points.AddItem(obj'Core.Math'.static.MakeVector((X + PX), (Y + PY), 0.0))
+  0431: AddAdd_PreInt(I)
+  0438: goto 0x0349
+  043b: HudCanvas.DrawLineStrip(Points, self._LineColor)
+  0458: return nothing
+  045a: <eos>

@@ -1,0 +1,14 @@
+function HmDebugLookTargetBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.Cam = HmCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmDebugLookTargetBehavior.Update  (script 207 bytes)
+  0000: DM = HmDebugManager(self.Cam.WorldInfo.GetDebugManager())
+  0027: TraceEnd = (Result.Location + (cast39(Result.Rotation) * cast3f(1000000000)))
+  005a: HitActor = obj'Engine.Engine'.static.GetCurrentWorldInfo().Trace(HitLocation, HitNormal, none, TraceEnd, Result.Location, true, , , , )
+  009f: if !((HitActor != none)) goto 0x00c2
+  00aa: DM.SetDebugTarget(HitActor)
+  00c2: return Result
+  00c8: return return
+  00ce: <eos>

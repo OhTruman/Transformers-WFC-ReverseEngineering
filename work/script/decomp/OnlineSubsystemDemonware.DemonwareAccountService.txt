@@ -1,0 +1,250 @@
+function DemonwareAccountService.Init  (script 44 bytes)
+  0000: if !(!Init(NewOnlineSub)) goto 0x0012
+  0010: return false
+  0012: self.LoggedInPlayerName = self.LocalProfileName
+  001d: DemonwareAccountService.NativeInit()
+  0023: return true
+  0025: return return
+  002b: <eos>
+
+function DemonwareAccountService.AllowedToAutoConnect  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.Login  (script 10 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: return return
+  0009: <eos>
+
+function DemonwareAccountService.StartAuthentication  (script 22 bytes)
+  0000: LocalUserNum
+  0005: LoginName
+  000a: Password
+  000f: bWantsLocalOnly
+  0014: nothing
+  0015: <eos>
+
+function DemonwareAccountService.UpdateAuthenticating  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.UpdateCookie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.SetWasDNSCheckCompleteAndSuccessful  (script 7 bytes)
+  0000: bWasSuccessful
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.NotConnected.Login  (script 101 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: if !(obj'Engine.WorldInfo'.static.IsConsoleBuild(2)) goto 0x0028
+  001b: self.LoggedInPlayerNum = LocalUserNum
+  0026: return true
+  0028: if !(!StartAuthentication(LocalUserNum, LoginName, Password, bWantsLocalOnly)) goto 0x004e
+  004c: return false
+  004e: GotoState('Authenticating', , , )
+  005c: return true
+  005e: return return
+  0064: <eos>
+
+function DemonwareAccountService.OnAuthenticationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareAccountService.AutoAuthenticating.BeginState  (script 156 bytes)
+  0000: LogInternal("Starting authentication...", 'DevDemonware', , )
+  0029: if !(!StartAuthentication(self.LoggedInPlayerNum, , , )) goto 0x008b
+  0040: LogInternal("Failed to start authentication.", 'DevDemonware', , )
+  006e: NotifyConnectionFailed(0)
+  007a: GotoState('WaitingForReconnect', , , )
+  0088: goto 0x0099
+  008b: GotoState('Authenticating', , , )
+  0099: return nothing
+  009b: <eos>
+
+function DemonwareAccountService.Authenticating.Tick  (script 28 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: UpdateAuthenticating()
+  0019: return nothing
+  001b: <eos>
+
+function DemonwareAccountService.Authenticating.SetWasDNSCheckCompleteAndSuccessful  (script 52 bytes)
+  0000: DemonwareAccountService.SetWasDNSCheckCompleteAndSuccessful(bWasSuccessful)
+  000c: if !(!bWasSuccessful) goto 0x0031
+  0017: NotifyAuthorizationFailed(0)
+  0023: GotoState('NotConnected', , , )
+  0031: return nothing
+  0033: <eos>
+
+function DemonwareAccountService.Authenticating.OnAuthenticationComplete  (script 162 bytes)
+  0000: self.IsTicketAuthorizationRunning = false
+  0008: if !((cast3a(Status) == cast3a(1))) goto 0x005d
+  0018: LogInternal("Authentication successful.", 'DevDemonware', , )
+  0041: self.LoggedInPlayerNum = LocalUserNum
+  004c: GotoState('Connecting', , , )
+  005a: goto 0x009f
+  005d: LogInternal("Authentication failed.", 'DevDemonware', , )
+  0082: NotifyAuthorizationFailed(Status)
+  0091: GotoState('NotConnected', , , )
+  009f: return nothing
+  00a1: <eos>
+
+function DemonwareAccountService.Connecting.OnLobbyConnectComplete  (script 31 bytes)
+  0000: OnLobbyConnectComplete(WasSuccessful)
+  000c: HandleLobbyConnection(WasSuccessful)
+  001c: return nothing
+  001e: <eos>
+
+function DemonwareAccountService.NativeInit  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.Shutdown  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.CreateProfileName  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.SignInLocally  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.ConnectToLobbyServiceGateway  (script 7 bytes)
+  0000: InLocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.HandleLobbyConnection  (script 7 bytes)
+  0000: WasSuccessful
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.CreateOnlineAccount  (script 22 bytes)
+  0000: UserName
+  0005: Password
+  000a: EmailAddress
+  000f: ProductKey
+  0014: nothing
+  0015: <eos>
+
+function DemonwareAccountService.OnCreateOnlineAccountCompleted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareAccountService.AddCreateOnlineAccountCompletedDelegate  (script 71 bytes)
+  0000: if !((self.AccountCreateDelegates.Find(AccountCreateDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.AccountCreateDelegates.Length
+  0023: self.AccountCreateDelegates.Length = (self.AccountCreateDelegates.Length + 1)
+  0033: AddIndex[self.AccountCreateDelegates] = AccountCreateDelegate
+  0044: return nothing
+  0046: <eos>
+
+function DemonwareAccountService.ClearCreateOnlineAccountCompletedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.AccountCreateDelegates.Find(AccountCreateDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.AccountCreateDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareAccountService.GetProductKeyAccountNames  (script 14 bytes)
+  0000: Accounts = self.ProductKeyAccountNames
+  000b: return nothing
+  000d: <eos>
+
+function DemonwareAccountService.ReadProductKeyAccountNames  (script 7 bytes)
+  0000: ProductKey
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.OnReadProductKeyAccountNamesComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareAccountService.AddReadProductKeyAccountNamesCompletedDelegate  (script 71 bytes)
+  0000: if !((self.ReadProductKeyAccountNamesCompleteDelegates.Find(ReadProductKeyAccountNamesDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.ReadProductKeyAccountNamesCompleteDelegates.Length
+  0023: self.ReadProductKeyAccountNamesCompleteDelegates.Length = (self.ReadProductKeyAccountNamesCompleteDelegates.Length + 1)
+  0033: AddIndex[self.ReadProductKeyAccountNamesCompleteDelegates] = ReadProductKeyAccountNamesDelegate
+  0044: return nothing
+  0046: <eos>
+
+function DemonwareAccountService.ClearReadProductKeyAccountNamesCompletedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadProductKeyAccountNamesCompleteDelegates.Find(ReadProductKeyAccountNamesDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadProductKeyAccountNamesCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareAccountService.DeleteOnlineAccount  (script 12 bytes)
+  0000: UserName
+  0005: ProductKey
+  000a: nothing
+  000b: <eos>
+
+function DemonwareAccountService.OnDeleteOnlineAccountComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareAccountService.AddDeleteOnlineAccountCompletedDelegate  (script 71 bytes)
+  0000: if !((self.DeleteOnlineAccountCompleteDelegates.Find(DeleteOnlineAccountDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.DeleteOnlineAccountCompleteDelegates.Length
+  0023: self.DeleteOnlineAccountCompleteDelegates.Length = (self.DeleteOnlineAccountCompleteDelegates.Length + 1)
+  0033: AddIndex[self.DeleteOnlineAccountCompleteDelegates] = DeleteOnlineAccountDelegate
+  0044: return nothing
+  0046: <eos>
+
+function DemonwareAccountService.ClearDeleteOnlineAccountCompletedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.DeleteOnlineAccountCompleteDelegates.Find(DeleteOnlineAccountDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DeleteOnlineAccountCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareAccountService.GetCdKeyFromWindowsRegistry  (script 7 bytes)
+  0000: CdKeyString
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.AutoLogin  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareAccountService.ClearPlayerInfo  (script 11 bytes)
+  0000: self.AccountUserName = ""
+  0008: return nothing
+  000a: <eos>
+
+function DemonwareAccountService.GetAccountUserName  (script 13 bytes)
+  0000: return self.AccountUserName
+  0006: return return
+  000c: <eos>
+
+function DemonwareAccountService.GetUniquePlayerId  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function DemonwareAccountService.GetPlayerNickname  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function DemonwareAccountService.IsLocalLogin  (script 31 bytes)
+  0000: return (cast3a(GetLoginStatus(LocalUserNum)) == cast3a(1))
+  0018: return return
+  001e: <eos>
+
+function DemonwareAccountService.NotifyAuthorizationFailed  (script 7 bytes)
+  0000: Status
+  0005: nothing
+  0006: <eos>

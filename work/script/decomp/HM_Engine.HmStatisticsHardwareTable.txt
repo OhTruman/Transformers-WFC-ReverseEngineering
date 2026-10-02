@@ -1,0 +1,17 @@
+function HmStatisticsHardwareTable.RecordHardware  (script 392 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0026: if !(OnlineSub.SystemInterface.GetHardwareDetails(Details)) goto 0x0185
+  004b: Stat.Reg = Details.Region
+  006c: Stat.Lang = Details.Language
+  008d: Stat.VW = Details.VideoWidth
+  00ae: Stat.VH = Details.VideoHeight
+  00cf: Stat.Prgsv = Details.Progressive
+  00f2: Stat.Wide = Details.Widescreen
+  0115: Stat.Hz = Details.RefreshRate
+  0136: Stat.Std = Details.VideoStandard
+  0157: Stat.NAT = Details.NAT
+  0178: self.Stats.AddItem(Stat)
+  0185: return nothing
+  0187: <eos>

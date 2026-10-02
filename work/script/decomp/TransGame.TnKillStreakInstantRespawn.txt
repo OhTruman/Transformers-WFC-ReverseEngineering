@@ -1,0 +1,16 @@
+function TnKillStreakInstantRespawn.ServerTriggerAbility  (script 42 bytes)
+  0000: TnPlayerController(self.OwnerPawn.Controller).TriggerInstantRespawn()
+  0021: TnAbility.ServerTriggerAbility()
+  0027: return nothing
+  0029: <eos>
+
+function TnKillStreakInstantRespawn.OwnerKilled  (script 133 bytes)
+  0000: KillerPawn = TnPawn(Killer.Pawn)
+  0019: if !((KillerPawn == none)) goto 0x0026
+  0024: return nothing
+  0026: KillerBuffs = TnBuffService(KillerPawn.GetService('TnBuffService'))
+  004d: if !(EqualEqual_InterfaceInterface(KillerBuffs, TnBuffService(none))) goto 0x0063
+  0061: return nothing
+  0063: KillerBuffs.AddBuff(obj'TnBuffRevengeMarker', 0, Owner)
+  0082: return nothing
+  0084: <eos>

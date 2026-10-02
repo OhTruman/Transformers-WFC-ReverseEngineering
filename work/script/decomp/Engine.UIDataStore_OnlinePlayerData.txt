@@ -1,0 +1,84 @@
+function UIDataStore_OnlinePlayerData.OnRegister  (script 432 bytes)
+  0000: if !((InPlayer == none)) goto 0x007b
+  000b: WarnInternal((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "No player available (probably running in editor). Cannot register data store."))
+  0079: return nothing
+  007b: self.Player = InPlayer
+  0086: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  009f: if !((OnlineSub != none)) goto 0x0195
+  00aa: PlayerInterface = OnlineSub.PlayerInterface
+  00be: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00ef
+  00d2: PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChange)
+  00ef: if !(NotEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0142
+  010c: OnlineSub.PlayerInterfaceEx.AddProfileDataChangedDelegate(cast3d(self.Player.ControllerId), delegate.OnPlayerDataChange)
+  0142: if !(NotEqual_InterfaceInterface(OnlineSub.ContentInterface, OnlineContentInterface(none))) goto 0x0195
+  015f: OnlineSub.ContentInterface.AddQueryAvailableDownloadsComplete(cast3d(self.Player.ControllerId), delegate.OnDownloadableContentQueryDone)
+  0195: UIDataStore_OnlinePlayerData.OnLoginChange(cast3d(InPlayer.ControllerId), 0)
+  01ad: return nothing
+  01af: <eos>
+
+function UIDataStore_OnlinePlayerData.OnUnregister  (script 274 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x010f
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0069
+  004c: PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChange)
+  0069: if !(NotEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x00bc
+  0086: OnlineSub.PlayerInterfaceEx.ClearProfileDataChangedDelegate(cast3d(self.Player.ControllerId), delegate.OnPlayerDataChange)
+  00bc: if !(NotEqual_InterfaceInterface(OnlineSub.ContentInterface, OnlineContentInterface(none))) goto 0x010f
+  00d9: OnlineSub.ContentInterface.ClearQueryAvailableDownloadsComplete(cast3d(self.Player.ControllerId), delegate.OnDownloadableContentQueryDone)
+  010f: return nothing
+  0111: <eos>
+
+function UIDataStore_OnlinePlayerData.OnLoginChange  (script 210 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x00cf
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00cf
+  004c: if !(NotEqual_InterfaceInterface(OnlineSub.ContentInterface, OnlineContentInterface(none))) goto 0x0097
+  0069: OnlineSub.ContentInterface.QueryAvailableDownloads(cast3d(self.Player.ControllerId), )
+  0097: self.PlayerNick = PlayerInterface.GetPlayerNickname(cast3d(self.Player.ControllerId))
+  00c1: RefreshSubscribers(, , , )
+  00cf: return nothing
+  00d1: <eos>
+
+function UIDataStore_OnlinePlayerData.OnPlayerDataChange  (script 133 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0082
+  0024: if !(NotEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0082
+  0041: self.PlayerNick = OnlineSub.PlayerInterface.GetPlayerNickname(cast3d(self.Player.ControllerId))
+  0074: RefreshSubscribers(, , , )
+  0082: return nothing
+  0084: <eos>
+
+function UIDataStore_OnlinePlayerData.RegisterDelegates  (script 143 bytes)
+  0000: self.FriendsProvider.AddPropertyNotificationChangeRequest(delegate.OnProviderChanged)
+  001c: self.FriendMessagesProvider.AddPropertyNotificationChangeRequest(delegate.OnProviderChanged)
+  0038: self.PlayersProvider.AddPropertyNotificationChangeRequest(delegate.OnProviderChanged)
+  0054: self.ClanMatesProvider.AddPropertyNotificationChangeRequest(delegate.OnProviderChanged)
+  0070: self.ProfileProvider.AddPropertyNotificationChangeRequest(delegate.OnProviderChanged)
+  008c: return nothing
+  008e: <eos>
+
+function UIDataStore_OnlinePlayerData.OnProviderChanged  (script 26 bytes)
+  0000: nothing
+  0001: RefreshSubscribers(PropTag, true, SourceProvider, )
+  0017: return nothing
+  0019: <eos>
+
+function UIDataStore_OnlinePlayerData.OnDownloadableContentQueryDone  (script 199 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((OnlineSub != none) && NotEqual_InterfaceInterface(OnlineSub.ContentInterface, OnlineContentInterface(none)))) goto 0x00c4
+  0043: if !((bWasSuccessful == true)) goto 0x0097
+  004f: OnlineSub.ContentInterface.GetAvailableDownloadCounts(cast3d(self.Player.ControllerId), self.NumNewDownloads, self.NumTotalDownloads)
+  0086: RefreshSubscribers(, , , )
+  0094: goto 0x00c4
+  0097: LogInternal("Failed to query for downloaded content", , , )
+  00c4: return nothing
+  00c6: <eos>
+
+function UIDataStore_OnlinePlayerData.SaveProfileData  (script 40 bytes)
+  0000: if !((self.ProfileProvider != none)) goto 0x001f
+  000b: return self.ProfileProvider.SaveProfileData()
+  001f: return false
+  0021: return return
+  0027: <eos>

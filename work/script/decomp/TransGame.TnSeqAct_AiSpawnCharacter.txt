@@ -1,0 +1,31 @@
+function TnSeqAct_AiSpawnCharacter.Activated  (script 198 bytes)
+  0000: if !((self.Targets.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: TargetController = TnAiController(0[self.Targets])
+  0020: if !((TargetController == none)) goto 0x0070
+  002b: TargetPawn = TnPawn(0[self.Targets])
+  003d: if !((TargetPawn == none)) goto 0x004a
+  0048: return nothing
+  004a: TargetController = TnAiController(TargetPawn.Controller)
+  0063: if !((TargetController == none)) goto 0x0070
+  006e: return nothing
+  0070: self.CharacterInfo.OnSpawnComplete = delegate.OnSpawnComplete
+  0088: self._HasSpawned = false
+  0090: TargetController.SetWorldStateBool(obj'TnAiWorldStateSpawnCharacter', true, self.CharacterInfo)
+  00ae: TargetController.RequestReplan(1)
+  00c3: return nothing
+  00c5: <eos>
+
+function TnSeqAct_AiSpawnCharacter.OnSpawnComplete  (script 69 bytes)
+  0000: foreach LinkedVariables(obj'Engine.SeqVar_Object', ObjVar, "Spawned") (end 0x0039)
+  0020: ObjVar.SetObjectValue(SpawnedPawn)
+  0038: iternext
+  0039: iterpop
+  003a: self._HasSpawned = true
+  0042: return nothing
+  0044: <eos>
+
+function TnSeqAct_AiSpawnCharacter.Update  (script 16 bytes)
+  0000: return !self._HasSpawned
+  0009: return return
+  000f: <eos>

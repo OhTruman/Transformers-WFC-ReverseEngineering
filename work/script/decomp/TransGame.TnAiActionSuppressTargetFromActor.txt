@@ -1,0 +1,107 @@
+function TnAiActionSuppressTargetFromActor.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionSuppressTargetFromActor.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionSuppressTargetFromActor.get_Target  (script 13 bytes)
+  0000: return self._Target
+  0006: return return
+  000c: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnBind  (script 44 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnInitialize  (script 97 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionSuppressTargetFromActorBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateTransformerForm', cast3a(self._Blueprint.RequiredForm), , , ))
+  005e: return nothing
+  0060: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnSetUpConditions  (script 151 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects)))) goto 0x003c
+  003a: return false
+  003c: AttackFromActor = self._TransformerController._AttackFromActor
+  0050: if !((AttackFromActor == none)) goto 0x005d
+  005b: return false
+  005d: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', AttackFromActor)
+  007f: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0090: return return
+  0096: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnIsValidForFutureExecution  (script 84 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects)))) goto 0x003c
+  003a: return false
+  003c: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  004d: return return
+  0053: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnStart  (script 104 bytes)
+  0000: self.EnemyInLOSTime = self._Blueprint.EnemyInLOSTimeThreshold
+  0014: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  003c: self._TransformerController.StopMovement()
+  004f: TnAiActionSuppressTargetFromActor.ActivateShooting()
+  0055: return OnStart(ExpectedEffects)
+  0061: return return
+  0067: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnUpdate  (script 122 bytes)
+  0000: if !((get_WeaponShooter().get_ActiveWeapon() == none)) goto 0x0029
+  001e: return Fail()
+  0029: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0051
+  0046: return Succeed()
+  0051: TnAiActionSuppressTargetFromActor.UpdateLOSBehavior(DeltaTime)
+  005c: TnAiActionSuppressTargetFromActor.UpdateFiring()
+  0062: return OnUpdate(ExpectedEffects, DeltaTime)
+  0073: return return
+  0079: <eos>
+
+function TnAiActionSuppressTargetFromActor.OnFinish  (script 93 bytes)
+  0000: OnFinish(CurrentState)
+  000b: TnAiActionSuppressTargetFromActor.DeactivateShooting()
+  0011: if !((cast3a(CurrentState) != cast3a(3))) goto 0x0023
+  0021: return nothing
+  0023: get_WeaponAimer().Reset()
+  003b: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  005a: return nothing
+  005c: <eos>
+
+function TnAiActionSuppressTargetFromActor.ActivateShooting  (script 96 bytes)
+  0000: self._TransformerController.Enemy = Pawn(self._Target)
+  0019: self._TransformerController.Focus = IFocusible(self._Target)
+  0032: get_WeaponShooter().Activate(get_WeaponClass(), delegate.FailCallback)
+  005d: return nothing
+  005f: <eos>
+
+function TnAiActionSuppressTargetFromActor.DeactivateShooting  (script 27 bytes)
+  0000: get_WeaponShooter().Deactivate()
+  0018: return nothing
+  001a: <eos>
+
+function TnAiActionSuppressTargetFromActor.UpdateFiring  (script 170 bytes)
+  0000: if !((get_WeaponAimer().get_OwnerIsAiming() && !get_WeaponShooter().IsFiring())) goto 0x0055
+  003a: get_WeaponShooter().StartFire()
+  0052: goto 0x00a7
+  0055: if !((!get_WeaponAimer().get_OwnerIsAiming() && get_WeaponShooter().IsFiring())) goto 0x00a7
+  008f: get_WeaponShooter().StopFire()
+  00a7: return nothing
+  00a9: <eos>
+
+function TnAiActionSuppressTargetFromActor.UpdateLOSBehavior  (script 157 bytes)
+  0000: if !(get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x0069
+  0020: (self.EnemyInLOSTime += DeltaTime)
+  002c: if !((self.EnemyInLOSTime >= self._Blueprint.EnemyInLOSTimeThreshold)) goto 0x0066
+  0044: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  0066: goto 0x009a
+  0069: self.EnemyInLOSTime = 0.0
+  0074: get_WeaponAimer().AimAtLocation(self._TransformerController._LastVisibleEnemyLocation)
+  009a: return nothing
+  009c: <eos>

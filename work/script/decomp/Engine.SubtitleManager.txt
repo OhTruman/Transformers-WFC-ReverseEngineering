@@ -1,0 +1,45 @@
+function SubtitleManager.KillSubtitles  (script 16 bytes)
+  0000: !! unknown token 0x4e at 0x0 ; raw 4e0100002cc000050000002cc1040b535353535353535353
+
+function SubtitleManager.ClearSubtitles  (script 9 bytes)
+  0000: !! unknown token 0x59 at 0x0 ; raw 590100002cc0040b535353535353535353
+
+function SubtitleManager.FindHighestPrioritySubtitle  (script 125 bytes)
+  0000: HighestPriority = -1.0
+  000b: ThePointer = ThePointer
+  0016: SubtitleManager.UpdateSubtitles(CurrentTime)
+  0021: !! unknown token 0x50 at 0x21 ; raw 500100002cc00000002cc60000002cc5006f07004fb21900
+
+function SubtitleManager.UpdateSubtitles  (script 112 bytes)
+  0000: !! unknown token 0x50 at 0x0 ; raw 500100002cc00000002ccd0000002cce004e190000002cce
+
+function SubtitleManager.QueueSubtitles  (script 563 bytes)
+  0000: if !((Subtitles.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: if !((SoundDuration == cast3f(0))) goto 0x004d
+  001b: LogInternal("Received subtitle with no sound duration.", , , )
+  004b: return nothing
+  004d: StartTime = obj'Engine'.static.GetWorldTime()
+  0066: NewSubtitle = new(self, nothing, obj'ActiveSubtitle', nothing, GetRemoteRole)
+  007a: NewSubtitle.Index = 0
+  008a: NewSubtitle.Priority = Priority
+  009e: NewSubtitle.bSplit = bManualWordWrap
+  00b4: NewSubtitle.Subtitles = Subtitles
+  00c8: NewSubtitle.Speaker = Speaker
+  00dc: !! unknown token 0x4d at 0xdc ; raw 4d0100002cc0000a0000002cdb0000002cd40f0000002cd2
+
+function SubtitleManager.SplitLinesToSafeZone  (script 55 bytes)
+  0000: ThePointer = ThePointer
+  000b: !! unknown token 0x50 at 0xb ; raw 500100002cc00000002cdd0000002cde00331c00002ce500
+
+function SubtitleManager.SplitLineToSafeZone  (script 17 bytes)
+  0000: Subtitle
+  0005: SubtitleRegionMin
+  000a: SubtitleRegionMax
+  000f: nothing
+  0010: <eos>
+
+function SubtitleManager.GetSubtitleManager  (script 36 bytes)
+  0000: return obj'Engine'.static.GetEngine().SubtitleManager
+  001d: return return
+  0023: <eos>

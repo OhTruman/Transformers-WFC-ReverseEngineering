@@ -1,0 +1,4277 @@
+function TnPlayerController.get_AchievementManager  (script 13 bytes)
+  0000: return self._AchievementManager
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.get_CameraStrategyManager  (script 13 bytes)
+  0000: return self._CameraStrategyManager
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.set_CameraStrategyManager  (script 14 bytes)
+  0000: self._CameraStrategyManager = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.get_PointOfInterestManager  (script 13 bytes)
+  0000: return self._PointOfInterestManager
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.set_PointOfInterestManager  (script 14 bytes)
+  0000: self._PointOfInterestManager = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.get_PickupManager  (script 13 bytes)
+  0000: return self._PickupManager
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.set_FineAimManager  (script 14 bytes)
+  0000: self._FineAimManager = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.get_XpManager  (script 51 bytes)
+  0000: LP = TnLocalPlayer(self.Player)
+  0010: if !((LP == none)) goto 0x001d
+  001b: return none
+  001d: return LP._XpManager
+  002c: return return
+  0032: <eos>
+
+function TnPlayerController.get_HudOffInCinematicMode  (script 14 bytes)
+  0000: return self.bHudOffInCinematicMode
+  0007: return return
+  000d: <eos>
+
+function TnPlayerController.get_TransformerPawn  (script 18 bytes)
+  0000: return TnPlayerPawn(self.Pawn)
+  000b: return return
+  0011: <eos>
+
+function TnPlayerController.get_DialogManager  (script 13 bytes)
+  0000: return self._DialogManager
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.get_IsBoosting  (script 18 bytes)
+  0000: return IsVehicleBoosted()
+  000b: return return
+  0011: <eos>
+
+function TnPlayerController.get_LastPawnWhoKilledMe  (script 13 bytes)
+  0000: return self._LastPawnWhoKilledMe
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.get_XpTransactionHandler  (script 13 bytes)
+  0000: return self._XpTransactionHandler
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.get_CheckpointOverrideCharacterData  (script 13 bytes)
+  0000: return self._CheckpointOverrideCharacterData
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.set_CheckpointOverrideCharacterData  (script 14 bytes)
+  0000: self._CheckpointOverrideCharacterData = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.get_HasUseableInteract  (script 16 bytes)
+  0000: return (self.UseableInteract != none)
+  0009: return return
+  000f: <eos>
+
+function TnPlayerController.get_CurrentCharacter  (script 44 bytes)
+  0000: if !((self.PlayerReplicationInfo == none)) goto 0x0011
+  000b: return EmptyCharacter
+  0011: return TnPlayerReplicationInfo(self.PlayerReplicationInfo)._CurrentCharacter
+  0025: return return
+  002b: <eos>
+
+function TnPlayerController.get_SelectedCharacter  (script 44 bytes)
+  0000: if !((self.PlayerReplicationInfo == none)) goto 0x0011
+  000b: return EmptyCharacter
+  0011: return TnPlayerReplicationInfo(self.PlayerReplicationInfo)._SelectedCharacter
+  0025: return return
+  002b: <eos>
+
+function TnPlayerController.get_InputCommandToBindingMapper  (script 13 bytes)
+  0000: return self._InputCommandToBindingMapper
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.get_ProfileReadInProgress  (script 14 bytes)
+  0000: return self._ProfileReadInProgress
+  0007: return return
+  000d: <eos>
+
+function TnPlayerController.get_CustomCharactersLoaded  (script 28 bytes)
+  0000: return TnLocalPlayer(self.Player)._CharactersLoaded
+  0015: return return
+  001b: <eos>
+
+function TnPlayerController.get_IsUsingTurret  (script 16 bytes)
+  0000: return (self.TurretInUse != none)
+  0009: return return
+  000f: <eos>
+
+function TnPlayerController.get_CustomCharacterData  (script 166 bytes)
+  0000: LP = TnLocalPlayer(self.Player)
+  0010: if !((LP == none)) goto 0x008b
+  001b: LogInternal("ERROR:  Attempting to execute something on the custom character data on a non local player", , , )
+  007c: return new(nothing, nothing, obj'TnCharacterCustomizationData', nothing, DeltaTime)
+  008b: return TnLocalPlayer(self.Player)._CustomCharacterData
+  009f: return return
+  00a5: <eos>
+
+function TnPlayerController.get_ServerStampedTime  (script 13 bytes)
+  0000: return self.ServerTimeStamp
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.get_PressedHover  (script 14 bytes)
+  0000: return self._PressedHover
+  0007: return return
+  000d: <eos>
+
+function TnPlayerController.set_PressedHover  (script 16 bytes)
+  0000: self._PressedHover = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlayerController.set_CanShowContentCorruptMessage  (script 16 bytes)
+  0000: self._CanShowContentCorruptMessage = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlayerController.get_PInput  (script 13 bytes)
+  0000: return self._TnPlayerInput
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.ClientUnlockAchievement  (script 27 bytes)
+  0000: self._AchievementManager.UnlockAchievement(AchievementId)
+  0018: return nothing
+  001a: <eos>
+
+function TnPlayerController.ClientUnlockAllAchievements  (script 22 bytes)
+  0000: self._AchievementManager.UnlockAllAchievements()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.ClientIncrementAchievement  (script 32 bytes)
+  0000: self._AchievementManager.IncrementAchievement(AchievementId, Amount)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.ClientSetBitOnAchievement  (script 32 bytes)
+  0000: self._AchievementManager.SetBitOnAchievement(AchievementId, BitNumber)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.GetService  (script 81 bytes)
+  0000: if !((Type == 'TnDialogNotificationService')) goto 0x0019
+  0013: return self._DialogManager
+  0019: return ((get_TransformerPawn() == none) ? none : get_TransformerPawn().GetService(Type))
+  004a: return return
+  0050: <eos>
+
+function TnPlayerController.ReplicatedEvent  (script 110 bytes)
+  0000: switch (VarName)
+  0007: case 'PlayerInteractState': (next 0x001c)
+  0013: TnPlayerController.ClientInteractStateChange()
+  0019: goto 0x006b
+  001c: case 'GuidedMissile': (next 0x003c)
+  0028: if !((self.GuidedMissile != none)) goto 0x0039
+  0033: TnPlayerController.OnGuideMissile()
+  0039: goto 0x006b
+  003c: case 'SpectateActor': (next 0x005a)
+  0048: SpectateActorSubject(self.SpectateActor)
+  0057: goto 0x006b
+  005a: default:
+  005d: ReplicatedEvent(VarName)
+  0068: goto 0x006b
+  006b: return nothing
+  006d: <eos>
+
+function TnPlayerController.InitInputSystem  (script 25 bytes)
+  0000: InitInputSystem()
+  0006: self._TnPlayerInput = TnPlayerInput(self.PlayerInput)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerController.IsUnderMouseAndKeyboardControl  (script 40 bytes)
+  0000: if !((self._TnPlayerInput != none)) goto 0x001f
+  000b: return self._TnPlayerInput.IsUnderMouseAndKeyboardControl()
+  001f: return false
+  0021: return return
+  0027: <eos>
+
+function TnPlayerController.Dance  (script 9 bytes)
+  0000: TnPlayerController.EnqueueAnimation()
+  0006: return nothing
+  0008: <eos>
+
+function TnPlayerController.EnqueueAnimation  (script 135 bytes)
+  0000: AnimatorService = TnAnimatorService(get_TransformerPawn().GetRobotService('TnAnimatorService'))
+  002c: Params.Priority = 1
+  003f: Params.AnimName = 'NAV_Idle_Turret'
+  0059: AnimatorService.EnqueueLocalAnimation(Params, delegate.EnqueueAnimation, delegate.EnqueueAnimation)
+  0084: return nothing
+  0086: <eos>
+
+function TnPlayerController.PostBeginPlay  (script 135 bytes)
+  0000: PostBeginPlay()
+  0006: TnPlayerController.InitTargeting()
+  000c: self._AchievementManager.Initialize(self)
+  0020: self._PointOfInterestManager.Initialize(self)
+  0034: self.XButtonInputHandler.Initialize(delegate.OnXButtonInputEvent)
+  0050: self.DownedSuicideButtonInputHandler.Initialize(delegate.OnDownedSuicideButtonInputEvent)
+  006c: RegisterReplicatedObject(self._PickupManager, '_PickupManager')
+  0084: return nothing
+  0086: <eos>
+
+function TnPlayerController.OnPieSessionEnding  (script 47 bytes)
+  0000: obj'Engine.Engine'.static.GetEngine().__OnNewError__Delegate = delegate.None
+  0026: OnPieSessionEnding()
+  002c: return nothing
+  002e: <eos>
+
+function TnPlayerController.ShouldSpawnPRIOnPostBeginPlay  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.SeamlessTravelFrom  (script 43 bytes)
+  0000: OldPC.ClearOnlineDelegates()
+  0013: InitPlayerReplicationInfo()
+  001d: SeamlessTravelFrom(OldPC)
+  0028: return nothing
+  002a: <eos>
+
+function TnPlayerController.ReceivedPlayer  (script 19 bytes)
+  0000: ReceivedPlayer()
+  0006: UpdateGamerTag()
+  0010: return nothing
+  0012: <eos>
+
+function TnPlayerController.NotifyLocalPlayerTeamReceived  (script 83 bytes)
+  0000: NotifyLocalPlayerTeamReceived()
+  0006: if !((cast3a(GetTeamNum()) < 2)) goto 0x0046
+  0019: TnWorldInfo(self.WorldInfo)._Announcer.SetTeam(cast3a(GetTeamNum()))
+  0046: RefreshPlayerSubscribers()
+  0050: return nothing
+  0052: <eos>
+
+function TnPlayerController.RefreshPlayerSubscribers  (script 37 bytes)
+  0000: if !((self.CurrentPlayerData != none)) goto 0x0022
+  000b: self.CurrentPlayerData.RefreshSubscribers(, , , )
+  0022: return nothing
+  0024: <eos>
+
+function TnPlayerController.NotifyTakeHit  (script 253 bytes)
+  0000: TransDamageType = class<TnDamageType>(DamageType)
+  0010: if !(((TransDamageType != none) && TransDamageType.static.default.TriggerDamageIndicator)) goto 0x00ab
+  002f: if !(((InstigatedBy != none) && (InstigatedBy.Pawn != none))) goto 0x0080
+  0050: IncomingHitVector = (self.Pawn.Location - InstigatedBy.Pawn.Location)
+  007d: goto 0x009b
+  0080: IncomingHitVector = (self.Pawn.Location - HitLocation)
+  009b: TnPlayerController.AddNewHitData(IncomingHitVector, Damage)
+  00ab: self._FineAimManager.NotifyTakeHit()
+  00be: self.DamageHistory.AddDamage(Damage, InstigatedBy)
+  00db: NotifyTakeHit(InstigatedBy, HitLocation, Damage, DamageType, Momentum)
+  00fa: return nothing
+  00fc: <eos>
+
+function TnPlayerController.NotifyHitByFriendlyFire  (script 46 bytes)
+  0000: self._DialogManager.PlayFriendlyFireDialog(DamageType, TnPawn(InstigatedBy.Pawn))
+  002b: return nothing
+  002d: <eos>
+
+function TnPlayerController.AddNewHitData  (script 76 bytes)
+  0000: self.PendingDamageIndicators.Insert(0,1)
+  0008: 0[self.PendingDamageIndicators].WorldSpaceYawRotation = cast3f(cast50(-IncomingHitVector).Yaw)
+  0031: 0[self.PendingDamageIndicators].DamageAmount = Damage
+  0049: return nothing
+  004b: <eos>
+
+function TnPlayerController.GetDamageHistory  (script 13 bytes)
+  0000: return self.DamageHistory
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.GetNewFormStateName  (script 122 bytes)
+  0000: if !((cast3a(TargetForm) == cast3a(0))) goto 0x001a
+  0010: return 'PlayerWalking'
+  001a: switch (get_TransformerPawn().get_VehicleType())
+  0034: case 0: (next 0x0039)
+  0039: case 1: (next 0x0048)
+  003e: return 'PlayerInCarForm'
+  0048: case 2: (next 0x0057)
+  004d: return 'PlayerInPlaneForm'
+  0057: case 3: (next 0x0066)
+  005c: return 'PlayerInTankForm'
+  0066: default:
+  0069: return 'PlayerWalking'
+  0073: return return
+  0079: <eos>
+
+function TnPlayerController.GotoNewFormState  (script 59 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(2))) goto 0x0012
+  0010: return nothing
+  0012: GotoState(TnPlayerController.GetNewFormStateName(TargetForm), , , )
+  0022: ClientGotoState(TnPlayerController.GetNewFormStateName(TargetForm), )
+  0038: return nothing
+  003a: <eos>
+
+function TnPlayerController.Restart  (script 25 bytes)
+  0000: ClearPlayerInteractState()
+  000a: Restart(bVehicleTransition)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerController.EnterStartState  (script 141 bytes)
+  0000: if !((get_TransformerPawn() != none)) goto 0x0046
+  0010: CD = get_TransformerPawn()._CurrentCharacter
+  0029: self._DialogManager.InitializeWithPlayerPawn(get_TransformerPawn())
+  0046: NewState = TnPlayerController.GetNewFormStateName(CD.StartingForm)
+  0062: if !(IsInState(NewState, )) goto 0x0080
+  006e: BeginState(NewState)
+  007d: goto 0x008a
+  0080: GotoState(NewState, , , )
+  008a: return nothing
+  008c: <eos>
+
+function TnPlayerController.SetCamerasTemplate  (script 93 bytes)
+  0000: if !((self._CameraStrategyManager == none)) goto 0x000d
+  000b: return nothing
+  000d: self._CameraStrategyManager.Reset()
+  0020: self._CameraStrategyManager.set_CameraOwner(get_TransformerPawn())
+  003d: self._CameraStrategyManager.SetCamerasTemplate(Cameras, StartingForm)
+  005a: return nothing
+  005c: <eos>
+
+function TnPlayerController.OpenUIMovie  (script 82 bytes)
+  0000: OpenedMovie = Movie.StartClone()
+  001a: if !((OpenedMovie == none)) goto 0x0027
+  0025: return none
+  0027: if !(GiveFocus) goto 0x0045
+  0030: OpenedMovie.SetFocus(true, true)
+  0045: return OpenedMovie
+  004b: return return
+  0051: <eos>
+
+function TnPlayerController.CloseUIMovie  (script 29 bytes)
+  0000: Movie.Close()
+  0014: return true
+  0016: return return
+  001c: <eos>
+
+function TnPlayerController.OnMovieClosed  (script 38 bytes)
+  0000: if !((self.UIController != none)) goto 0x0023
+  000b: self.UIController.NotifyUIClosed(Movie)
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.OnOpenFrontEnd  (script 35 bytes)
+  0000: if !((self.UIController != none)) goto 0x0020
+  000b: self.UIController.OnUIEvent(0)
+  0020: return nothing
+  0022: <eos>
+
+function TnPlayerController.OnToggleHidden  (script 32 bytes)
+  0000: OnToggleHidden(Action)
+  000b: SetHudVisible(!self.bHidden)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.SetHudVisible  (script 97 bytes)
+  0000: if !((self.UIController != none)) goto 0x0030
+  000b: self.UIController.OnUIEvent((IsVisible ? 13 : 12))
+  002d: goto 0x005e
+  0030: myTnHud = TnHUD(self.myHUD)
+  0040: if !((myTnHud != none)) goto 0x005e
+  004b: myTnHud.ForceHudInvisible()
+  005e: return nothing
+  0060: <eos>
+
+function TnPlayerController.SpawnPlayerCamera  (script 149 bytes)
+  0000: SpawnPlayerCamera()
+  0006: if !(IsLocalPlayerController()) goto 0x0092
+  0013: if !((self._CameraStrategyManager == none)) goto 0x0035
+  001e: self._CameraStrategyManager = new(nothing, nothing, self._CameraStrategyManagerClass, nothing, DeltaTime)
+  0032: goto 0x0048
+  0035: self._CameraStrategyManager.Reset()
+  0048: self._CameraStrategyManager._Camera = TnCamera(self.PlayerCamera)
+  0061: HmCamera(self.PlayerCamera).__OnUpdateCamera__Delegate = delegate.UpdatePlayerViewPoint
+  007e: self._CameraStrategyManager.StartSpectating()
+  0092: return nothing
+  0094: <eos>
+
+function TnPlayerController.UpdatePlayerViewPoint  (script 41 bytes)
+  0000: SetLocation(NewPOV.Location)
+  0013: SetRotation(NewPOV.Rotation)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.GetPlayerViewPoint  (script 75 bytes)
+  0000: if !(((get_TransformerPawn() != none) && IsLocalPlayerController())) goto 0x0038
+  001f: out_Location = self.Location
+  002a: out_Rotation = self.Rotation
+  0035: goto 0x0048
+  0038: GetPlayerViewPoint(out_Location, out_Rotation)
+  0048: return nothing
+  004a: <eos>
+
+function TnPlayerController.SetRestartCount  (script 14 bytes)
+  0000: self.NumRestarts = RestartCount
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.GetRestartCount  (script 13 bytes)
+  0000: return self.NumRestarts
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.ClientRestart  (script 57 bytes)
+  0000: ClientRestart(NewPawn)
+  000b: if !((self.Pawn != none)) goto 0x0036
+  0016: if !((self.PlayerCamera == none)) goto 0x002b
+  0021: SpawnPlayerCamera()
+  002b: TnPlayerController.SetActiveTargeting(self.PlayerTargeting)
+  0036: return nothing
+  0038: <eos>
+
+function TnPlayerController.OnTeleport  (script 68 bytes)
+  0000: OnTeleport(Action)
+  000b: if !((self.WorldInfo.Game != none)) goto 0x0041
+  001f: TnGame(self.WorldInfo.Game).NotifyTeleported(self)
+  0041: return nothing
+  0043: <eos>
+
+function TnPlayerController.SetCinematicModeWithoutHidingPlayer  (script 128 bytes)
+  0000: if !((bInCinematicMode && bAffectsButtons)) goto 0x0024
+  0014: ClearInputs()
+  001e: TnPlayerController.StopMovement()
+  0024: if !((bInCinematicMode && (get_TransformerPawn() != none))) goto 0x0059
+  003f: get_TransformerPawn().GetRevive(none, false)
+  0059: SetCinematicModeWithoutHidingPlayer(bInCinematicMode, bAffectsHUD, bAffectsMovement, bAffectsTurning, bAffectsButtons)
+  007d: return nothing
+  007f: <eos>
+
+function TnPlayerController.ClientSetCinematicMode  (script 232 bytes)
+  0000: if !((bInCinematicMode && bAffectsButtons)) goto 0x0024
+  0014: ClearInputs()
+  001e: TnPlayerController.StopMovement()
+  0024: if !(bAffectsHUD) goto 0x00c1
+  002d: self.bHudOffInCinematicMode = bInCinematicMode
+  003a: if !((self.UIController == none)) goto 0x0087
+  0045: LogInternal(("ERROR: EngineTeam - UIController was none in " $ cast57(GetFuncName())), , , )
+  0087: if !(((!self.bHudOffInCinematicMode && !self.bFullScreenMoviePlaying) && (self.UIController != none))) goto 0x00c1
+  00ac: self.UIController.OnUIEvent(13)
+  00c1: ClientSetCinematicMode(bInCinematicMode, bAffectsMovement, bAffectsTurning, bAffectsHUD, bAffectsButtons)
+  00e5: return nothing
+  00e7: <eos>
+
+function TnPlayerController.ClearInputs  (script 22 bytes)
+  0000: StopDeferredFire()
+  000b: self.IsBoostPressed = false
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.StopMovement  (script 108 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0043
+  000b: self.Pawn.Velocity = vect(0,0,0)
+  0027: self.Pawn.Acceleration = vect(0,0,0)
+  0043: self.Velocity = vect(0,0,0)
+  0056: self.Acceleration = vect(0,0,0)
+  0069: return nothing
+  006b: <eos>
+
+function TnPlayerController.OnDownRevive  (script 204 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0082
+  001f: get_TransformerPawn()._DrainHealthWhenDown = Action.DrainHealthWhenDown
+  0043: get_TransformerPawn()._CanHealWhenDown = Action.CanHealWhenDown
+  0067: get_TransformerPawn().DownTransformer()
+  007f: goto 0x00c9
+  0082: if !(1[Action.InputLinks].bHasImpulse) goto 0x00c9
+  00a1: get_TransformerPawn().GetRevive(none, Action.FullRevive)
+  00c9: return nothing
+  00cb: <eos>
+
+function TnPlayerController.UpdateRevivablePawn  (script 320 bytes)
+  0000: if !((get_TransformerPawn() != none)) goto 0x00d3
+  0010: IsInteracting = ((cast3a(self.PlayerInteractState) == cast3a(2)) || (cast3a(self.PlayerInteractState) == cast3a(3)))
+  0036: if !((!get_TransformerPawn().get_IsDownedOrReviving() && !IsInteracting)) goto 0x0070
+  0060: NewRevivablePawn = FindRevivablePawn()
+  0070: obj'TnTeamHandler'.static.GetTeamMembers(get_TransformerPawn(), TeamMembers, false)
+  0093: foreach TeamMembers(TeamMember,) (end 0x00d2)
+  00a2: if !(((TeamMember != none) && (TeamMember._ReviveTarget == NewRevivablePawn))) goto 0x00d1
+  00c7: NewRevivablePawn = none
+  00ce: goto 0x00d2
+  00d1: iternext
+  00d2: iterpop
+  00d3: if !((NewRevivablePawn != self.RevivablePawn)) goto 0x0132
+  00e2: if !((self.RevivablePawn != none)) goto 0x010f
+  00ed: AbortRevive()
+  00f7: self.ContextualCommander.UnregisterContextualCommand(obj'TnContextualCommandRevive')
+  010f: if !((NewRevivablePawn != none)) goto 0x0132
+  011a: self.ContextualCommander.RegisterContextualCommand(self.ReviveContextualCommand)
+  0132: self.RevivablePawn = NewRevivablePawn
+  013d: return nothing
+  013f: <eos>
+
+function TnPlayerController.FindRevivablePawn  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.FindRevivablePawnByDistance  (script 209 bytes)
+  0000: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  0010: if !((PRI == none)) goto 0x001d
+  001b: return none
+  001d: BestDistSq = (Distance * Distance)
+  002f: DownedTeammates = PRI.GetDownedTeammates()
+  0048: foreach DownedTeammates(P,) (end 0x00c3)
+  0057: if !((P == none)) goto 0x0066
+  0062: iternext
+  0063: goto 0x00c3
+  0066: DistSq = obj'Core.Math'.static.VSizeSq((P.Location - self.Pawn.Location))
+  009d: if !((DistSq < BestDistSq)) goto 0x00c2
+  00ac: RP = P
+  00b7: BestDistSq = DistSq
+  00c2: iternext
+  00c3: iterpop
+  00c4: return RP
+  00ca: return return
+  00d0: <eos>
+
+function TnPlayerController.UpdateUiController  (script 230 bytes)
+  0000: if !((self.UIController != none)) goto 0x000d
+  000b: return nothing
+  000d: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  001d: if !((PRI == none)) goto 0x002a
+  0028: return nothing
+  002a: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0043: if !((GRI == none)) goto 0x0050
+  004e: return nothing
+  0050: GameClass = class<TnGame>(GRI.GameClass)
+  0069: if !((GameClass == none)) goto 0x0076
+  0074: return nothing
+  0076: InitializeUIController(GameClass.static.default.UIControllerClass, !PRI.HasSelectedCharacter())
+  00a3: if !((self.UIController == none)) goto 0x00b0
+  00ae: return nothing
+  00b0: if !((cast3a(GRI.GetGameStatus()) == cast3a(3))) goto 0x00e3
+  00ce: self.UIController.OnUIEvent(3)
+  00e3: return nothing
+  00e5: <eos>
+
+function TnPlayerController.CheckForInactiveControllerAcceptedInvite  (script 199 bytes)
+  0000: if !(!self.WorldInfo.IsConsoleBuild(1)) goto 0x001c
+  001a: return nothing
+  001c: GameInviteAccepterControllerId = self.OnlineSub.GetDeferredGameInviteControllerId()
+  0035: LocalUserNum = GetLocalUserNum()
+  0045: if !((((GameInviteAccepterControllerId >= 0) && (LocalUserNum != 255)) && (GameInviteAccepterControllerId != LocalUserNum))) goto 0x00c4
+  006f: self.bIgnoreNetworkMessages = true
+  0077: LocalPlayer(self.Player).set_CurrentStorageDeviceId(-1)
+  0094: self.OnlineSub.PlayerInterface.LogoutOfOnlineService(cast3d(LocalUserNum))
+  00b8: QuitGame(2)
+  00c4: return nothing
+  00c6: <eos>
+
+function TnPlayerController.PlayerTick  (script 539 bytes)
+  0000: PlayerTick(DeltaTime)
+  000b: TnPlayerController.UpdateUiController()
+  0011: self.LongAdjustHistory.Update(self.WorldInfo.TimeSeconds)
+  0032: TnPlayerController.CheckDeferredFire()
+  0038: if !((self.Pawn != none)) goto 0x00ea
+  0043: if !((self._CameraStrategyManager != none)) goto 0x0061
+  004e: self._CameraStrategyManager.Update()
+  0061: if !(IsDebugCameraActive()) goto 0x008a
+  006e: self.Pawn.Velocity = vect(0,0,0)
+  008a: self._DialogManager.UpdateHealthDialog(DeltaTime, get_TransformerPawn().GetNormalizedHealth())
+  00ba: self._FineAimManager.Tick(DeltaTime)
+  00d2: get_TransformerPawn().UpdateLockOnSound()
+  00ea: TnPlayerController.UpdateRevivablePawn()
+  00f0: self.XButtonInputHandler.Update(DeltaTime)
+  0108: self.DownedSuicideButtonInputHandler.Update(DeltaTime)
+  0120: TnWorldInfo(self.WorldInfo)._Announcer.Tick()
+  0141: if !((self.bUpdateOnlineRequired && (self.WorldInfo.GRI != none))) goto 0x016c
+  0160: TnPlayerController.UpdateOnlineRichPresence()
+  0166: TnPlayerController.UpdateOnlineGroups()
+  016c: if !(self._NeedsContentCorruptMessageShown) goto 0x017f
+  0175: OnContentCorrupt()
+  017f: if !((((!self.HasCheckedForLogin && (self.OnlineSub != none)) && (LocalPlayer(self.Player) != none)) && (cast3a(self.WorldInfo.NetMode) != cast3a(0)))) goto 0x0218
+  01c4: if !((cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(GetLocalUserNum()))) != cast3a(2))) goto 0x0210
+  01f8: NotifyLoginChange(cast3d(GetLocalUserNum()), 0)
+  0210: self.HasCheckedForLogin = true
+  0218: return nothing
+  021a: <eos>
+
+function TnPlayerController.UpdateDamageHistory  (script 52 bytes)
+  0000: self.DamageHistory.set_TotalDamage((self.Pawn.HealthMax - self.Pawn.Health))
+  0031: return nothing
+  0033: <eos>
+
+function TnPlayerController.DisplayDebug  (script 68 bytes)
+  0000: if !(HUD.ShouldDisplayDebug('mouse')) goto 0x0041
+  001f: self._TnPlayerInput.DisplayDebug(HUD, out_YL, out_YPos)
+  0041: return nothing
+  0043: <eos>
+
+function TnPlayerController.ToggleTargetingDebug  (script 22 bytes)
+  0000: self.PlayerTargeting.ToggleTargetingDebug()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.UpdateInvertMouse  (script 13 bytes)
+  0000: UpdateInvertMouseByRobotForm()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.UpdateInvertMouseByRobotForm  (script 67 bytes)
+  0000: if !(((self.PlayerInput != none) && (self.ProfileSettings != none))) goto 0x0040
+  0018: self.PlayerInput.bInvertMouse = TnProfileSettings(self.ProfileSettings).GetInvertY_Robot()
+  0040: return nothing
+  0042: <eos>
+
+function TnPlayerController.UpdateInvertMouseByVehicleForm  (script 225 bytes)
+  0000: if !((((self.PlayerInput == none) || (self.ProfileSettings == none)) || (get_TransformerPawn() == none))) goto 0x002c
+  002a: return nothing
+  002c: switch (get_TransformerPawn().get_VehicleType())
+  0046: case 0: (next 0x004b)
+  004b: case 1: (next 0x007b)
+  0050: self.PlayerInput.bInvertMouse = TnProfileSettings(self.ProfileSettings).GetInvertY_Car()
+  0078: goto 0x00de
+  007b: case 2: (next 0x00ab)
+  0080: self.PlayerInput.bInvertMouse = TnProfileSettings(self.ProfileSettings).GetInvertY_Plane()
+  00a8: goto 0x00de
+  00ab: case 3: (next 0x00db)
+  00b0: self.PlayerInput.bInvertMouse = TnProfileSettings(self.ProfileSettings).GetInvertY_Tank()
+  00d8: goto 0x00de
+  00db: default:
+  00de: return nothing
+  00e0: <eos>
+
+function TnPlayerController.ToggleRumble  (script 47 bytes)
+  0000: if !((self.ForceFeedbackManager != none)) goto 0x002c
+  000b: self.ForceFeedbackManager.bAllowsForceFeedback = !self.ForceFeedbackManager.bAllowsForceFeedback
+  002c: return nothing
+  002e: <eos>
+
+function TnPlayerController.ClientPlayForceFeedbackWaveform  (script 67 bytes)
+  0000: TheInput = HmPlayerInput(self.PlayerInput)
+  0010: if !(((TheInput != none) && TheInput.get_IsGeneratingInput())) goto 0x0035
+  0033: return nothing
+  0035: ClientPlayForceFeedbackWaveform(FFWaveform)
+  0040: return nothing
+  0042: <eos>
+
+function TnPlayerController.SetDeferredFire  (script 23 bytes)
+  0000: nothing
+  0001: self.bDeferredFire = true
+  0009: self.DeferredFireMode = FireModeNum
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.StopDeferredFire  (script 31 bytes)
+  0000: nothing
+  0001: StopFire()
+  000c: self.bDeferredFire = false
+  0014: self.IsAllowedToFire = true
+  001c: return nothing
+  001e: <eos>
+
+function TnPlayerController.IsAbleToFire  (script 366 bytes)
+  0000: PlayerPawn = TnPlayerPawn(self.Pawn)
+  0010: if !((PlayerPawn == none)) goto 0x001d
+  001b: return true
+  001d: ShieldService = TnShieldService(PlayerPawn.GetService('TnShieldService'))
+  0044: AnimatorService = TnAnimatorService(PlayerPawn.GetService('TnAnimatorService'))
+  006b: if !((NotEqual_InterfaceInterface(ShieldService, TnShieldService(none)) && ShieldService.get_IsShieldActive())) goto 0x009a
+  0098: return false
+  009a: if !(((!PlayerPawn.get_IsTransforming() && NotEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) && (AnimatorService.IsPlayingMaskedAnimation(0) || AnimatorService.IsPlayingMaskedAnimation(1)))) goto 0x0100
+  00fe: return false
+  0100: CurrentWeapon = TnWeapon(self.Pawn.Weapon)
+  0119: if !(((CurrentWeapon != none) && (CurrentWeapon.IsOverheating() || !CurrentWeapon.IsAttached()))) goto 0x0158
+  0156: return false
+  0158: if !(!self.IsAllowedToFire) goto 0x0165
+  0163: return false
+  0165: return true
+  0167: return return
+  016d: <eos>
+
+function TnPlayerController.OnFireAmmunition  (script 95 bytes)
+  0000: if !(((self.Pawn == none) || (self.Pawn.Weapon == none))) goto 0x0023
+  0021: return nothing
+  0023: if !((!TnWeapon(self.Pawn.Weapon).GetAutoFire() && self.bDeferredFire)) goto 0x005c
+  0054: self.IsAllowedToFire = false
+  005c: return nothing
+  005e: <eos>
+
+function TnPlayerController.CheckDeferredFire  (script 193 bytes)
+  0000: IsFiring = (((self.Pawn != none) && (self.Pawn.Weapon != none)) && self.Pawn.Weapon.PendingFire(0))
+  0047: if !(self.bDeferredFire) goto 0x00aa
+  0050: AbleToFire = IsAbleToFire()
+  0061: if !((IsFiring && !AbleToFire)) goto 0x0085
+  0077: StopFire()
+  0082: goto 0x00a7
+  0085: if !((!IsFiring && AbleToFire)) goto 0x00a7
+  009b: StartFire(0)
+  00a7: goto 0x00be
+  00aa: if !(IsFiring) goto 0x00be
+  00b3: StopFire()
+  00be: return nothing
+  00c0: <eos>
+
+function TnPlayerController.DebugUnlockAchievement  (script 18 bytes)
+  0000: ClientUnlockAchievement(AchievementId)
+  000f: return nothing
+  0011: <eos>
+
+function TnPlayerController.DebugUnlockAllAchievements  (script 13 bytes)
+  0000: ClientUnlockAllAchievements()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.TriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.UnTriggerAbility  (script 74 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((get_TransformerPawn().AbilityManager.GetAbilityType(number) == obj'TnAbilityShield')) goto 0x0047
+  003d: ReleaseBlock()
+  0047: return nothing
+  0049: <eos>
+
+function TnPlayerController.UpdateKillstreakRewards  (script 94 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return nothing
+  0012: KillstreakClass = self.CustomCharacterOptions.FindKillstreak(get_CurrentCharacter().Specialty, KillstreakCount)
+  0045: if !((KillstreakClass != none)) goto 0x005b
+  0050: TnPlayerController.AcquireKillstreak(KillstreakClass)
+  005b: return nothing
+  005d: <eos>
+
+function TnPlayerController.UpdateCurrentKillstreakId  (script 77 bytes)
+  0000: if !((self.AcquiredKillstreaks.Length == 0)) goto 0x0017
+  000c: self.CurrentKillstreakId = ""
+  0014: goto 0x004a
+  0017: KillstreakClass = (self.AcquiredKillstreaks.Length - 1)[self.AcquiredKillstreaks]
+  002c: self.CurrentKillstreakId = self.CustomCharacterOptions.FindKillstreakIdByClass(KillstreakClass)
+  004a: return nothing
+  004c: <eos>
+
+function TnPlayerController.AcquireKillstreak  (script 45 bytes)
+  0000: if !((self.AcquiredKillstreaks.Find(KillstreakClass) == -1)) goto 0x002a
+  0017: self.AcquiredKillstreaks.AddItem(KillstreakClass)
+  0024: TnPlayerController.UpdateCurrentKillstreakId()
+  002a: return nothing
+  002c: <eos>
+
+function TnPlayerController.TriggerKillstreak  (script 197 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return nothing
+  0012: if !((self.AcquiredKillstreaks.Length <= 0)) goto 0x0020
+  001e: return nothing
+  0020: Killstreak = (self.AcquiredKillstreaks.Length - 1)[self.AcquiredKillstreaks]
+  0035: if !((Killstreak.static.default.RequiresRobotForm && !get_TransformerPawn().get_IsInRobotForm())) goto 0x007b
+  0066: if !(TnPlayerController.StartTransform(0)) goto 0x0079
+  0071: self.DeferredTriggerKillstreak = true
+  0079: return nothing
+  007b: get_TransformerPawn().AbilityManager.TriggerKillstreak(Killstreak)
+  00a1: self.AcquiredKillstreaks.Remove((self.AcquiredKillstreaks.Length - 1),1)
+  00b1: TnPlayerController.UpdateCurrentKillstreakId()
+  00b7: TnPlayerController.UpdateKillstreakStats(Killstreak)
+  00c2: return nothing
+  00c4: <eos>
+
+function TnPlayerController.UpdateKillstreakStats  (script 96 bytes)
+  0000: Provider = self.CustomCharacterOptions.FindKillstreakProviderByKillstreak(TriggeredKillstreak)
+  001e: if !((Provider != none)) goto 0x005d
+  0029: TnPlayerReplicationInfo(self.PlayerReplicationInfo).IncrementKillstreakStats(Provider.SpecialtyRestriction, Provider.KillsRequired)
+  005d: return nothing
+  005f: <eos>
+
+function TnPlayerController.GetCurrentKillstreakId  (script 13 bytes)
+  0000: return self.CurrentKillstreakId
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.RemoveStaleKillstreaks  (script 147 bytes)
+  0000: if !((self.AcquiredKillstreaks.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: I = (self.AcquiredKillstreaks.Length - 1)
+  001d: if !((I >= 0)) goto 0x008a
+  0028: Provider = self.CustomCharacterOptions.FindKillstreakProviderByKillstreak(I[self.AcquiredKillstreaks])
+  004c: if !((Provider.SpecialtyRestriction != get_SelectedCharacter().Specialty)) goto 0x0080
+  0074: self.AcquiredKillstreaks.Remove(I,1)
+  0080: SubtractSubtract_PreInt(I)
+  0087: goto 0x001d
+  008a: TnPlayerController.UpdateCurrentKillstreakId()
+  0090: return nothing
+  0092: <eos>
+
+function TnPlayerController.Interact  (script 38 bytes)
+  0000: if !((cast3a(self.PlayerInteractState) == cast3a(4))) goto 0x001b
+  0010: TnPlayerController.SendServerInteractCommand(3)
+  0018: goto 0x0023
+  001b: TnPlayerController.SendServerInteractCommand(0)
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.InteractCommand0  (script 11 bytes)
+  0000: TnPlayerController.SendServerInteractCommand(1)
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerController.InteractCommand1  (script 11 bytes)
+  0000: TnPlayerController.SendServerInteractCommand(2)
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerController.SendServerInteractCommand  (script 40 bytes)
+  0000: if !((cast3a(self.PlayerInteractState) != cast3a(0))) goto 0x0025
+  0010: StopFineAim()
+  001a: TnPlayerController.ServerInteractCommand(CommandID)
+  0025: return nothing
+  0027: <eos>
+
+function TnPlayerController.ServerInteractCommand  (script 48 bytes)
+  0000: if !((self.UseableInteract != none)) goto 0x002d
+  000b: self.UseableInteract.InteractCommand(TnPawn(self.Pawn), CommandID)
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerController.ClientInteractStateChange  (script 228 bytes)
+  0000: LogInternal(("^^^Changing Interact state:" @ cast52(self.PlayerInteractState)), , , )
+  002b: if !(((cast3a(self.PlayerInteractState) == cast3a(1)) || (cast3a(self.PlayerInteractState) == cast3a(4)))) goto 0x0068
+  004d: self.ContextualCommander.RegisterContextualCommand(self.UseInteractCommand)
+  0065: goto 0x0087
+  0068: self.ContextualCommander.UnregisterContextualCommand(self.UseInteractCommand.get_Class())
+  0087: switch (self.PlayerInteractState)
+  008e: case 0: (next 0x00b1)
+  0093: if !((self._CameraStrategyManager != none)) goto 0x00b1
+  009e: self._CameraStrategyManager.StopCameraAnimation()
+  00b1: case 1: (next 0x00c2)
+  00b6: TryLeaveInteractState()
+  00c0: return nothing
+  00c2: case 2: (next 0x00d7)
+  00c7: GotoState('AnimControl', , , )
+  00d5: return nothing
+  00d7: case 3: (next 0x00de)
+  00dc: return nothing
+  00de: default:
+  00e1: return nothing
+  00e3: <eos>
+
+function TnPlayerController.SetPlayerInteractState  (script 99 bytes)
+  0000: if !(((self.UseableInteract != none) && (self.UseableInteract != Interact))) goto 0x001e
+  001c: return nothing
+  001e: self.UseableInteract = ((cast3a(InteractState) == cast3a(0)) ? none : Interact)
+  003c: if !((cast3a(InteractState) != cast3a(self.PlayerInteractState))) goto 0x0060
+  004f: self.PlayerInteractState = InteractState
+  005a: TnPlayerController.ClientInteractStateChange()
+  0060: return nothing
+  0062: <eos>
+
+function TnPlayerController.ClearPlayerInteractState  (script 42 bytes)
+  0000: if !((cast3a(self.PlayerInteractState) == cast3a(0))) goto 0x0012
+  0010: return nothing
+  0012: self.PlayerInteractState = 0
+  001a: self.UseableInteract = none
+  0021: TnPlayerController.ClientInteractStateChange()
+  0027: return nothing
+  0029: <eos>
+
+function TnPlayerController.PressXButton  (script 50 bytes)
+  0000: self.XButtonInputHandler.SetButtonEventDelegate(delegate.OnXButtonInputEvent)
+  001c: self.XButtonInputHandler.OnPress()
+  002f: return nothing
+  0031: <eos>
+
+function TnPlayerController.ReleaseXButton  (script 22 bytes)
+  0000: self.XButtonInputHandler.OnRelease()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.PressKeyboardInteractKey  (script 50 bytes)
+  0000: self.XButtonInputHandler.SetButtonEventDelegate(delegate.OnKeyboardInteractInputEvent)
+  001c: self.XButtonInputHandler.OnPress()
+  002f: return nothing
+  0031: <eos>
+
+function TnPlayerController.ReleaseKeyboardInteractKey  (script 22 bytes)
+  0000: self.XButtonInputHandler.OnRelease()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.DownedSuicide  (script 58 bytes)
+  0000: if !(((self.Pawn != none) && get_TransformerPawn()._IsDowned)) goto 0x0037
+  0024: self.DownedSuicideButtonInputHandler.OnPress()
+  0037: return nothing
+  0039: <eos>
+
+function TnPlayerController.ReleaseDownedSuicide  (script 22 bytes)
+  0000: self.DownedSuicideButtonInputHandler.OnRelease()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.OnXButtonInputEvent  (script 91 bytes)
+  0000: switch (EventType)
+  0007: case 3: (next 0x0026)
+  000c: if !(TryRevive()) goto 0x001b
+  0019: return nothing
+  001b: if !(TnPlayerController.TryPickup()) goto 0x0026
+  0024: return nothing
+  0026: case 2: (next 0x0043)
+  002b: if !(TnPlayerController.TryInteract()) goto 0x0036
+  0034: return nothing
+  0036: ReloadWeapon()
+  0040: goto 0x0058
+  0043: case 4: (next 0x0055)
+  0048: AbortRevive()
+  0052: goto 0x0058
+  0055: default:
+  0058: return nothing
+  005a: <eos>
+
+function TnPlayerController.OnKeyboardInteractInputEvent  (script 81 bytes)
+  0000: switch (EventType)
+  0007: case 3: (next 0x0026)
+  000c: if !(TryRevive()) goto 0x001b
+  0019: return nothing
+  001b: if !(TnPlayerController.TryPickup()) goto 0x0026
+  0024: return nothing
+  0026: case 2: (next 0x0039)
+  002b: if !(TnPlayerController.TryInteract()) goto 0x0036
+  0034: return nothing
+  0036: goto 0x004e
+  0039: case 4: (next 0x004b)
+  003e: AbortRevive()
+  0048: goto 0x004e
+  004b: default:
+  004e: return nothing
+  0050: <eos>
+
+function TnPlayerController.OnDownedSuicideButtonInputEvent  (script 81 bytes)
+  0000: switch (EventType)
+  0007: case 3: (next 0x004b)
+  000c: if !(((self.Pawn != none) && get_TransformerPawn()._IsDowned)) goto 0x0048
+  0030: get_TransformerPawn().DownedSuicide()
+  0048: goto 0x004e
+  004b: default:
+  004e: return nothing
+  0050: <eos>
+
+function TnPlayerController.TryRevive  (script 67 bytes)
+  0000: if !(((self.Pawn == none) || (self.RevivablePawn == none))) goto 0x001a
+  0018: return false
+  001a: get_TransformerPawn().GiveRevive(self.RevivablePawn, , , )
+  003a: return true
+  003c: return return
+  0042: <eos>
+
+function TnPlayerController.AbortRevive  (script 53 bytes)
+  0000: if !(((self.Pawn == none) || (self.RevivablePawn == none))) goto 0x001a
+  0018: return nothing
+  001a: get_TransformerPawn().AbortGiveRevive()
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerController.CanPickupInventory  (script 16 bytes)
+  0000: return (self.RevivablePawn == none)
+  0009: return return
+  000f: <eos>
+
+function TnPlayerController.TryInteract  (script 37 bytes)
+  0000: if !((cast3a(self.PlayerInteractState) == cast3a(0))) goto 0x0012
+  0010: return false
+  0012: Interact()
+  001c: return true
+  001e: return return
+  0024: <eos>
+
+function TnPlayerController.TryPickup  (script 41 bytes)
+  0000: if !(!self._PickupManager.IsPickupAvailable()) goto 0x001a
+  0018: return false
+  001a: TnPlayerController.ServerPickup()
+  0020: return true
+  0022: return return
+  0028: <eos>
+
+function TnPlayerController.ServerPickup  (script 22 bytes)
+  0000: self._PickupManager.Pickup()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.PressJump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StartFocus  (script 22 bytes)
+  0000: self._PointOfInterestManager.StartFocus()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.StopFocus  (script 22 bytes)
+  0000: self._PointOfInterestManager.StopFocus()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.CheckJumpOrDuck  (script 104 bytes)
+  0000: AsTnPawn = TnPawn(self.Pawn)
+  0010: if !(((AsTnPawn != none) && self.bPressedJump)) goto 0x0065
+  0026: if !((AsTnPawn._ReviveTarget == none)) goto 0x005d
+  003a: AsTnPawn._RobotForm.Jump(, self.bUpdating)
+  005d: self.bPressedJump = false
+  0065: return nothing
+  0067: <eos>
+
+function TnPlayerController.AbortMelee  (script 113 bytes)
+  0000: PlayerPawn = TnPlayerPawn(self.Pawn)
+  0010: if !((PlayerPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: MeleeService = TnMeleeService(PlayerPawn.GetRobotService('TnMeleeService'))
+  0044: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x005a
+  0058: return nothing
+  005a: MeleeService.AbortMeleeAttack()
+  006e: return nothing
+  0070: <eos>
+
+function TnPlayerController.PreWeaponSwitch  (script 200 bytes)
+  0000: if !(((self.Pawn == none) || (self.Pawn.InvManager == none))) goto 0x0023
+  0021: return false
+  0023: if !(get_TransformerPawn().get_IsTransforming()) goto 0x0040
+  003e: return false
+  0040: WPI = HmWeaponPawnInterface(self.Pawn)
+  0050: if !((EqualEqual_InterfaceInterface(WPI, HmWeaponPawnInterface(none)) || !WPI.CanSwitchWeapons())) goto 0x0081
+  007f: return false
+  0081: if !(((self.Pawn.Weapon != none) && TnWeapon(self.Pawn.Weapon).DisallowWeaponSwitching)) goto 0x00b9
+  00b7: return false
+  00b9: TnPlayerController.AbortMelee()
+  00bf: return true
+  00c1: return return
+  00c7: <eos>
+
+function TnPlayerController.NextWeapon  (script 18 bytes)
+  0000: if !(TnPlayerController.PreWeaponSwitch()) goto 0x000f
+  0009: NextWeapon()
+  000f: return nothing
+  0011: <eos>
+
+function TnPlayerController.TossGrenade  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.OnWeaponFired  (script 202 bytes)
+  0000: TnPlayerCamera = TnCamera(self.PlayerCamera)
+  0010: if !(((IsLocalPlayerController() && (FiredWeapon != none)) && (TnPlayerCamera != none))) goto 0x006c
+  0037: TnPlayerCamera.OnWeaponFired(FiredWeapon)
+  004f: StartCameraShake(FiredWeapon.GetWeaponFiredCameraShakeParams())
+  006c: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  007c: if !((((cast3a(self.Role) == cast3a(3)) && (PRI != none)) && (FiredWeapon != none))) goto 0x00c7
+  00a6: PRI.AddShotFired(FiredWeapon.ShotStatId)
+  00c7: return nothing
+  00c9: <eos>
+
+function TnPlayerController.StartCameraShake  (script 56 bytes)
+  0000: TnPlayerCamera = TnCamera(self.PlayerCamera)
+  0010: if !((TnPlayerCamera == none)) goto 0x001d
+  001b: return nothing
+  001d: TnPlayerCamera.StartShake(Params)
+  0035: return nothing
+  0037: <eos>
+
+function TnPlayerController.PlayCameraAnimation  (script 69 bytes)
+  0000: nothing
+  0001: default=0.0
+  000a: default=true
+  000f: if !((self._CameraStrategyManager != none)) goto 0x0042
+  001a: self._CameraStrategyManager.PlayCameraAnimation(CamAnim, BaseActor, StartingPoint, bUseCollision)
+  0042: return nothing
+  0044: <eos>
+
+function TnPlayerController.StopCameraAnimation  (script 33 bytes)
+  0000: if !((self._CameraStrategyManager != none)) goto 0x001e
+  000b: self._CameraStrategyManager.StopCameraAnimation()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerController.SpectateActorSubject  (script 154 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x001b
+  0010: self.SpectateActor = Subject
+  001b: if !((self._CameraStrategyManager == none)) goto 0x0028
+  0026: return nothing
+  0028: if !((Subject != none)) goto 0x004e
+  0033: self._CameraStrategyManager.SpectateActorSubject(Subject)
+  004b: goto 0x0097
+  004e: StartingForm = 2
+  0056: if !((self.Pawn != none)) goto 0x007f
+  0061: StartingForm = TnPawn(self.Pawn).get_FormType()
+  007f: self._CameraStrategyManager.EndSpectateActor(StartingForm)
+  0097: return nothing
+  0099: <eos>
+
+function TnPlayerController.NotifyCausedDamage  (script 297 bytes)
+  0000: dt = class<TnDamageType>(DamageType)
+  0010: if !((dt == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(((Damage <= cast3f(0)) && !dt.static.default.AllowNoDamageNotification)) goto 0x0042
+  0040: return nothing
+  0042: NotifyCausedDamage(DamagedPawn, Damage, DamageType, IsFatalDamage, HitInfo)
+  0062: TnPlayerController.ClientNotifyCausedDamage(dt)
+  006d: if !((DamagedPawn != none)) goto 0x00e1
+  0078: if !(IsFatalDamage) goto 0x0091
+  0081: TnPlayerController.TellClientToPlayKilledPawnSound(TnPawn(DamagedPawn))
+  0091: if !((self.WorldInfo.Game != none)) goto 0x00e1
+  00a5: TnGame(self.WorldInfo.Game).NotifyCausedDamage(self, DamagedPawn, Damage, DamageType, IsFatalDamage, HitInfo)
+  00e1: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  00f1: if !(((cast3a(self.Role) == cast3a(3)) && (PRI != none))) goto 0x0126
+  010e: PRI.AddShotHit(DamageType)
+  0126: return nothing
+  0128: <eos>
+
+function TnPlayerController.TellClientToPlayKilledPawnSound  (script 206 bytes)
+  0000: if !(KilledPawn.WasLastHitHeadshot()) goto 0x0028
+  0016: ClientPlaySound(self.KilledWithHeadshotSound)
+  0025: goto 0x00cb
+  0028: if !(KilledPawn.get_IsInRobotForm()) goto 0x0050
+  003e: ClientPlaySound(self.KilledRobotSound)
+  004d: goto 0x00cb
+  0050: if !((cast3a(KilledPawn._CurrentCharacter.CharacterType) == cast3a(6))) goto 0x0086
+  0074: ClientPlaySound(self.KilledJetSound)
+  0083: goto 0x00cb
+  0086: if !((cast3a(KilledPawn._CurrentCharacter.CharacterType) == cast3a(5))) goto 0x00bc
+  00aa: ClientPlaySound(self.KilledCarSound)
+  00b9: goto 0x00cb
+  00bc: ClientPlaySound(self.KilledVehicleSound)
+  00cb: return nothing
+  00cd: <eos>
+
+function TnPlayerController.NotifyKilled  (script 325 bytes)
+  0000: KilledAsTnPawn = TnPawn(KilledPawn)
+  0010: if !((KilledAsTnPawn != none)) goto 0x004f
+  001b: WasLastHitHeadshot = KilledAsTnPawn.WasLastHitHeadshot()
+  0035: InVehicleForm = KilledAsTnPawn.get_IsInVehicleForm()
+  004f: if !((KilledPawn == self.Pawn)) goto 0x008c
+  005e: if !((!WasLastHitHeadshot && !InVehicleForm)) goto 0x0089
+  0076: self._DialogManager.PlayKilledDialog()
+  0089: goto 0x00c2
+  008c: if !(((Killer == self) && (KilledAsTnPawn != none))) goto 0x00c2
+  00a4: self._DialogManager.PlayTargetKilledDialog(DamageType, WasLastHitHeadshot)
+  00c2: if !((((Killed == self) && (Killed != Killer)) && ShouldInstantRespawn())) goto 0x0106
+  00ed: obj'TnKillStreakInstantRespawn'.static.OwnerKilled(self, Killer)
+  0106: self._LastPawnWhoKilledMe = ((Killer == none) ? none : Killer.Pawn)
+  0128: NotifyKilled(Killer, Killed, KilledPawn, DamageType)
+  0142: return nothing
+  0144: <eos>
+
+function TnPlayerController.ClientNotifyCausedDamage  (script 202 bytes)
+  0000: StartCameraShake(dt.static.default.AttackerCameraShakeParams)
+  0018: SpawnCameraEmitter(dt.static.default.AttackerCameraEffect)
+  0030: if !((dt.static.default.AttackerForceFeedbackSamples.Length > 0)) goto 0x0090
+  0045: FFW = obj'Engine.Allocation'.static.CreateObject(obj'Engine.ForceFeedbackWaveform', )
+  0064: FFW.Samples = dt.static.default.AttackerForceFeedbackSamples
+  0081: ClientPlayForceFeedbackWaveform(FFW)
+  0090: if !((dt.static.default.ShowHudFeedback && (self.myHUD != none))) goto 0x00c7
+  00af: TnHUD(self.myHUD).NotifyCausedDamage()
+  00c7: return nothing
+  00c9: <eos>
+
+function TnPlayerController.NotifyCausedDamageToDestructible  (script 96 bytes)
+  0000: dt = class<TnDamageType>(DamageType)
+  0010: if !((dt == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(((Damage <= cast3f(0)) && !dt.static.default.AllowNoDamageNotification)) goto 0x0042
+  0040: return nothing
+  0042: NotifyCausedDamageToDestructible(Damage, DamageType)
+  0052: TnPlayerController.ClientNotifyCausedDamageToDestructible(dt)
+  005d: return nothing
+  005f: <eos>
+
+function TnPlayerController.ClientNotifyCausedDamageToDestructible  (script 82 bytes)
+  0000: StartCameraShake(dt.static.default.AttackerCameraShakeParams)
+  0018: if !((dt.static.default.ShowHudFeedback && (self.myHUD != none))) goto 0x004f
+  0037: TnHUD(self.myHUD).NotifyCausedDamage()
+  004f: return nothing
+  0051: <eos>
+
+function TnPlayerController.OnStartDowned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.OnStopDowned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.IsUsingFineAim  (script 27 bytes)
+  0000: return self._FineAimManager.IsFineAiming()
+  0014: return return
+  001a: <eos>
+
+function TnPlayerController.CanFineAim  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.FineAim  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StopFineAim  (script 23 bytes)
+  0000: self._FineAimManager.SetWantsToFineAim(false)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.ToggleFineAim  (script 39 bytes)
+  0000: if !(IsUsingFineAim()) goto 0x001a
+  000d: StopFineAim()
+  0017: goto 0x0024
+  001a: FineAim()
+  0024: return nothing
+  0026: <eos>
+
+function TnPlayerController.GetRampedLookRates  (script 142 bytes)
+  0000: TnScales = TnLookScales(self.CurrentLookScales)
+  0010: if !((TnScales == none)) goto 0x003c
+  001b: GetRampedLookRates(DeltaTime, RawJoyLookRight, RawJoyLookUp, LookRightScale, LookUpScale)
+  003a: return nothing
+  003c: bResetOverdrive = (self.PlayerTargeting.GetTargetAssistTarget() != none)
+  0059: TnScales.GetRampedLookRates(DeltaTime, RawJoyLookRight, RawJoyLookUp, LookRightScale, LookUpScale, bResetOverdrive)
+  008b: return nothing
+  008d: <eos>
+
+function TnPlayerController.ApplyLookCompensatedStrafeStickiness  (script 281 bytes)
+  0000: TSF = 1.0
+  000b: if !((self.ActiveTargeting == none)) goto 0x001c
+  0016: return PreviousLookRotation
+  001c: if !((self.Pawn != none)) goto 0x0090
+  0027: GrabAttackerService = TnGrabAttackerService(get_TransformerPawn().GetService('TnGrabAttackerService'))
+  0053: W = TnWeapon(self.Pawn.Weapon)
+  006c: if !((W != none)) goto 0x0090
+  0077: TSF = W.GetTargetStickinessFactor()
+  0090: if !((NotEqual_InterfaceInterface(GrabAttackerService, TnGrabAttackerService(none)) && GrabAttackerService.get_IsActive())) goto 0x00c3
+  00bd: return PreviousLookRotation
+  00c3: self.ActiveTargeting.UpdateViewpoint(NewLookLocation, PreviousLookRotation)
+  00e0: return TnPlayerTargeting(self.ActiveTargeting).ApplyLookCompensatedStrafeStickiness(LookRotationDelta, PreviousLookRotation, NewLookLocation, DeltaTime, TSF)
+  0112: return return
+  0118: <eos>
+
+function TnPlayerController.Dodge  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Hover  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PressTransform  (script 216 bytes)
+  0000: if !(((get_TransformerPawn() == none) || !get_TransformerPawn()._ReceivedWeapon)) goto 0x002d
+  002b: return nothing
+  002d: if !((cast3a(self.PlayerInteractState) != cast3a(0))) goto 0x003f
+  003d: return nothing
+  003f: if !((self.RevivablePawn != none)) goto 0x004c
+  004a: return nothing
+  004c: BS = TnBuffService(GetService('TnBuffService'))
+  006a: if !(((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasBuff(obj'TnBuffTransformDisruptor')) || !Transform())) goto 0x00d5
+  00ad: if !((self.Pawn != none)) goto 0x00d5
+  00b8: self.Pawn.PlaySound(self.TransformFailedSound, true, , , , )
+  00d5: return nothing
+  00d7: <eos>
+
+function TnPlayerController.Transform  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerController.PressBlock  (script 31 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return nothing
+  0012: StartBlock()
+  001c: return nothing
+  001e: <eos>
+
+function TnPlayerController.StartBlock  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ReleaseBlock  (script 13 bytes)
+  0000: EndBlock()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.EndBlock  (script 109 bytes)
+  0000: TP = get_TransformerPawn()
+  0010: if !((TP != none)) goto 0x0042
+  001b: ShieldService = TnShieldService(TP.GetService('TnShieldService'))
+  0042: if !(NotEqual_InterfaceInterface(ShieldService, TnShieldService(none))) goto 0x006a
+  0056: ShieldService.StopShield()
+  006a: return nothing
+  006c: <eos>
+
+function TnPlayerController.WeaponMelee  (script 51 bytes)
+  0000: if !(((self.Pawn != none) && (TnMeleeWeapon(self.Pawn.Weapon) != none))) goto 0x0030
+  0026: Melee()
+  0030: return nothing
+  0032: <eos>
+
+function TnPlayerController.Melee  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.MeleeComplete  (script 22 bytes)
+  0000: SetTimer(self.SpamMeleeDelay, false, 'SpamMeleeTimer', )
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.SpamMeleeTimer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerWalking.BeginState  (script 247 bytes)
+  0000: self.DoubleClickDir = 0
+  0008: if !(((((self.Pawn != none) && (cast3a(self.Pawn.Physics) != cast3a(2))) && (cast3a(self.Pawn.Physics) != cast3a(10))) && (cast3a(self.Pawn.Physics) != cast3a(4)))) goto 0x007b
+  0064: self.Pawn.SetPhysics(1, , )
+  007b: if !((self._CameraStrategyManager != none)) goto 0x009b
+  0086: self._CameraStrategyManager.StartForm(0)
+  009b: UpdateInvertMouseByRobotForm()
+  00a5: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  00b5: if !(((PRI != none) && (PRI._ClassFormTracker != none))) goto 0x00f4
+  00d6: PRI._ClassFormTracker.SetForm(0)
+  00f4: return nothing
+  00f6: <eos>
+
+function TnPlayerController.PlayerWalking.EndState  (script 53 bytes)
+  0000: StopFineAim()
+  000a: self._PressedHover = false
+  0012: if !((self.Pawn != none)) goto 0x0032
+  001d: self.Pawn.StopFire(0)
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerController.PlayerWalking.ProcessMoveDodge  (script 151 bytes)
+  0000: if !(((cast3a(DoubleClickMove) == cast3a(5)) && get_TransformerPawn()._RobotForm.get_IsDodging())) goto 0x0041
+  0036: self.DoubleClickDir = 5
+  003e: goto 0x0094
+  0041: if !(((cast3a(DoubleClickMove) != cast3a(0)) && (cast3a(DoubleClickMove) < cast3a(5)))) goto 0x0094
+  0063: get_TransformerPawn()._RobotForm.Dodge(DoubleClickMove, 0.0, self.bUpdating)
+  0094: return nothing
+  0096: <eos>
+
+function TnPlayerController.PlayerWalking.ProcessMoveHover  (script 45 bytes)
+  0000: if !(self._PressedHover) goto 0x002a
+  0009: get_TransformerPawn()._RobotForm.Hover()
+  002a: return nothing
+  002c: <eos>
+
+function TnPlayerController.PlayerWalking.ProcessMove  (script 338 bytes)
+  0000: if !(((get_TransformerPawn() == none) || (get_TransformerPawn()._RobotForm == none))) goto 0x002d
+  002b: return nothing
+  002d: ProcessMoveDodge(DoubleClickMove)
+  0038: ProcessMoveHover()
+  003e: if !((self.bUpdating && get_TransformerPawn()._RobotForm.get_IsDodging())) goto 0x009c
+  006d: get_TransformerPawn()._RobotForm._AcrobaticsManager.Update(DeltaTime)
+  009c: if !(get_TransformerPawn()._RobotForm.get_IsDodging()) goto 0x00ca
+  00c0: self.DoubleClickDir = 5
+  00c8: return nothing
+  00ca: MeleeService = TnMeleeService(get_TransformerPawn().GetService('TnMeleeService'))
+  00f6: Adjusted = (NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none)) ? MeleeService.AdjustAcceleration(DesiredNormalizedVelocity, DeltaTime) : DesiredNormalizedVelocity)
+  0135: ProcessMove(DeltaTime, Adjusted, DoubleClickMove, DeltaRot)
+  014f: return nothing
+  0151: <eos>
+
+function TnPlayerController.PlayerWalking.PlayerMove  (script 22 bytes)
+  0000: PlayerMove(DeltaTime)
+  000b: self._PressedHover = false
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.PlayerWalking.Dodge  (script 22 bytes)
+  0000: self._TnPlayerInput.Dodge()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.PlayerWalking.Hover  (script 11 bytes)
+  0000: self._PressedHover = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerController.PlayerWalking.PressJump  (script 162 bytes)
+  0000: if !((get_TransformerPawn().get_IsDownedOrReviving() || !get_TransformerPawn().get_IsJumpingEnabled())) goto 0x003c
+  003a: return nothing
+  003c: ShieldService = TnShieldService(get_TransformerPawn().GetRobotService('TnShieldService'))
+  0068: if !((EqualEqual_InterfaceInterface(ShieldService, TnShieldService(none)) || !ShieldService.get_IsShieldActive())) goto 0x009f
+  0097: self.bPressedJump = true
+  009f: return nothing
+  00a1: <eos>
+
+function TnPlayerController.PlayerWalking.StartBlock  (script 112 bytes)
+  0000: ShieldService = TnShieldService(get_TransformerPawn().GetRobotService('TnShieldService'))
+  002c: if !((NotEqual_InterfaceInterface(ShieldService, TnShieldService(none)) && ShieldService.get_CanShield())) goto 0x006d
+  0059: ShieldService.StartShield()
+  006d: return nothing
+  006f: <eos>
+
+function TnPlayerController.PlayerWalking.Melee  (script 261 bytes)
+  0000: PlayerPawn = TnPlayerPawn(self.Pawn)
+  0010: if !((PlayerPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(PlayerPawn.get_IsDownedOrReviving()) goto 0x0035
+  0033: return nothing
+  0035: self._MeleeRequested = true
+  003d: if !(IsTimerActive('SpamMeleeTimer', )) goto 0x0056
+  0054: return nothing
+  0056: if !(PlayerPawn.get_IsVehicleVisible()) goto 0x006e
+  006c: return nothing
+  006e: MeleeService = TnMeleeService(PlayerPawn.GetRobotService('TnMeleeService'))
+  0095: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x00ab
+  00a9: return nothing
+  00ab: Victim = self.PlayerTargeting.GetMeleeAssistTarget()
+  00c4: MeleeService.StartMeleeAttack((ShouldStomp(Victim) ? 8 : 1), Victim, delegate.MeleeComplete)
+  00fa: self._MeleeRequested = false
+  0102: return nothing
+  0104: <eos>
+
+function TnPlayerController.PlayerWalking.ShouldStomp  (script 165 bytes)
+  0000: if !(((Victim == none) || (TnPlayerPawn(Victim) != none))) goto 0x001f
+  001d: return false
+  001f: NormalizedHeight = ((Victim.Location.Z - (self.Pawn.Location.Z - self.Pawn.CylinderComponent.CollisionHeight)) / (cast3f(2) * self.Pawn.CylinderComponent.CollisionHeight))
+  0091: return (NormalizedHeight < self.NormalizedStompHeight)
+  009e: return return
+  00a4: <eos>
+
+function TnPlayerController.PlayerWalking.Transform  (script 81 bytes)
+  0000: if !((((get_TransformerPawn() == none) || get_TransformerPawn().get_IsDownedOrReviving()) || !TnPlayerController.StartTransform(1))) goto 0x003e
+  003c: return false
+  003e: UpdateInvertMouseByVehicleForm()
+  0048: return true
+  004a: return return
+  0050: <eos>
+
+function TnPlayerController.PlayerWalking.TossGrenade  (script 228 bytes)
+  0000: if !((self.Pawn.InvManager == none)) goto 0x0016
+  0014: return nothing
+  0016: GrenadeBag = TnGrenadeBag(self.Pawn.InvManager.FindInventoryType(obj'TnGrenadeBag', true))
+  0043: if !((GrenadeBag == none)) goto 0x0050
+  004e: return nothing
+  0050: CurrentWeapon = TnWeapon(self.Pawn.Weapon)
+  0069: IsCarryingHeavyTurret = ((CurrentWeapon != none) && (cast3a(CurrentWeapon.WeaponType) == cast3a(5)))
+  0093: if !((IsCarryingHeavyTurret || get_TransformerPawn().get_IsDownedOrReviving())) goto 0x00ce
+  00b9: GrenadeBag.PlayDryFireSound()
+  00cc: return nothing
+  00ce: GrenadeBag.TossGrenade()
+  00e1: return nothing
+  00e3: <eos>
+
+function TnPlayerController.PlayerWalking.FineAim  (script 109 bytes)
+  0000: GrenadeLauncher = TnWeaponGrenadeLauncherBase(self.Pawn.Weapon)
+  0019: if !((GrenadeLauncher != none)) goto 0x0039
+  0024: GrenadeLauncher.AttemptToDetonate()
+  0037: return nothing
+  0039: if !(get_TransformerPawn().get_IsDownedOrReviving()) goto 0x0056
+  0054: return nothing
+  0056: self._FineAimManager.SetWantsToFineAim(true)
+  006a: return nothing
+  006c: <eos>
+
+function TnPlayerController.PlayerWalking.CanFineAim  (script 202 bytes)
+  0000: MeleeService = TnMeleeService(get_TransformerPawn().GetRobotService('TnMeleeService'))
+  002c: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0042
+  0040: return false
+  0042: if !(MeleeService.IsMeleeing(10)) goto 0x005d
+  005b: return false
+  005d: W = HmWeapon(self.Pawn.Weapon)
+  0076: if !(((W != none) && W.IsReloading())) goto 0x009b
+  0099: return false
+  009b: if !(get_TransformerPawn()._RobotForm.get_IsDodging()) goto 0x00c1
+  00bf: return false
+  00c1: return true
+  00c3: return return
+  00c9: <eos>
+
+function TnPlayerController.PlayerWalking.TriggerAbility  (script 154 bytes)
+  0000: if !(CanUseAbilities()) goto 0x006f
+  0009: if !((get_TransformerPawn().AbilityManager.GetAbilityType(number) == obj'TnAbilityShield')) goto 0x0046
+  0039: PressBlock()
+  0043: goto 0x006c
+  0046: get_TransformerPawn().AbilityManager.TriggerAbility(number)
+  006c: goto 0x0097
+  006f: if !((self.Pawn != none)) goto 0x0097
+  007a: self.Pawn.PlaySound(self.AbilitiesJammedSound, true, , , , )
+  0097: return nothing
+  0099: <eos>
+
+function TnPlayerController.PlayerWalking.CanUseAbilities  (script 212 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return false
+  0012: if !(!get_TransformerPawn().get_AreAbilitiesEnabled()) goto 0x0031
+  002f: return false
+  0031: if !(get_TransformerPawn().get_IsDownedOrReviving()) goto 0x004e
+  004c: return false
+  004e: if !(get_TransformerPawn().get_IsGivingRevive()) goto 0x006b
+  0069: return false
+  006b: BS = TnBuffService(get_TransformerPawn().GetService('TnBuffService'))
+  0097: if !((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasDerivedBuff(obj'TnBuffAbilityJammed'))) goto 0x00cb
+  00c9: return false
+  00cb: return true
+  00cd: return return
+  00d3: <eos>
+
+function TnPlayerController.PlayerWalking.FindRevivablePawn  (script 77 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return none
+  0012: if !(!get_TransformerPawn()._RobotForm.get_IsOnTheGround()) goto 0x003a
+  0038: return none
+  003a: return TnPlayerController.FindRevivablePawnByDistance(self.ReviveDistance)
+  0046: return return
+  004c: <eos>
+
+function TnPlayerController.PlayerWalking.ClearInputs  (script 39 bytes)
+  0000: EndBlock()
+  000a: TnPlayerController.AbortMelee()
+  0010: StopFineAim()
+  001a: global.ClearInputs()
+  0024: return nothing
+  0026: <eos>
+
+function TnPlayerController.PlayerWalking.PlayerTick  (script 64 bytes)
+  0000: global.PlayerTick(DeltaTime)
+  000f: if !(self.DeferredTriggerKillstreak) goto 0x002a
+  0018: self.DeferredTriggerKillstreak = false
+  0020: TriggerKillstreak()
+  002a: if !(self._MeleeRequested) goto 0x003d
+  0033: Melee()
+  003d: return nothing
+  003f: <eos>
+
+function TnPlayerController.GuideMissile  (script 20 bytes)
+  0000: self.GuidedMissile = GuidedMissile_
+  000b: TnPlayerController.OnGuideMissile()
+  0011: return nothing
+  0013: <eos>
+
+function TnPlayerController.OnGuideMissile  (script 68 bytes)
+  0000: if !((self._CameraStrategyManager != none)) goto 0x0023
+  000b: self._CameraStrategyManager.StartGuidedMissile(self.GuidedMissile)
+  0023: ClearInputs()
+  002d: TnPlayerController.StopMovement()
+  0033: GotoState('GuidingMissile', , , )
+  0041: return nothing
+  0043: <eos>
+
+function TnPlayerController.UpdateGuidingMissile  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ServerSetGuidedMissileInput  (script 67 bytes)
+  0000: if !(((self.GuidedMissile != none) && self.GuidedMissile.IsControllable())) goto 0x0040
+  0023: self.GuidedMissile.SetInput(UpDown, LeftRight)
+  0040: return nothing
+  0042: <eos>
+
+function TnPlayerController.ServerDetonate  (script 33 bytes)
+  0000: if !((self.GuidedMissile != none)) goto 0x001e
+  000b: self.GuidedMissile.Detonate()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerController.IsGuidingMissile  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.GuidingMissile.SetDeferredFire  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function TnPlayerController.GuidingMissile.BeginState  (script 36 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0016
+  0010: StartGuidingMissile()
+  0016: BeginState(PreviousStateName)
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerController.GuidingMissile.EndState  (script 255 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0037
+  000b: Animator = TnAnimatorService(TnPawn(self.Pawn).GetService('TnAnimatorService'))
+  0037: StopParams.MaskType = 0
+  004a: if !((cast3a(self.Role) == cast3a(3))) goto 0x00a2
+  005a: StopGuidingMissile()
+  0060: if !(NotEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x009f
+  0074: Animator.EnqueueReplicatedAnimation(StopParams, delegate.None, delegate.None)
+  009f: goto 0x00f1
+  00a2: if !((cast3a(self.Role) == cast3a(2))) goto 0x00f1
+  00b2: if !(NotEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x00f1
+  00c6: Animator.EnqueueLocalAnimation(StopParams, delegate.None, delegate.None)
+  00f1: EndState(PreviousStateName)
+  00fc: return nothing
+  00fe: <eos>
+
+function TnPlayerController.GuidingMissile.IsGuidingMissile  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.GuidingMissile.StartGuidingMissile  (script 22 bytes)
+  0000: SetTimer(0.1, true, 'UpdateGuidingMissile', )
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.GuidingMissile.UpdateGuidingMissile  (script 74 bytes)
+  0000: if !(((self.GuidedMissile == none) || !self.GuidedMissile.IsControllable())) goto 0x0047
+  0025: GotoState('PlayerWalking', , , )
+  0033: ClientGotoState('PlayerWalking', )
+  0047: return nothing
+  0049: <eos>
+
+function TnPlayerController.GuidingMissile.StopGuidingMissile  (script 60 bytes)
+  0000: if !((self.GuidedMissile != none)) goto 0x0025
+  000b: self.GuidedMissile.Detonate()
+  001e: self.GuidedMissile = none
+  0025: ClearTimer('UpdateGuidingMissile', )
+  0039: return nothing
+  003b: <eos>
+
+function TnPlayerController.GuidingMissile.PlayerTick  (script 273 bytes)
+  0000: if !(self._TnPlayerInput.IsUnderMouseAndKeyboardControl()) goto 0x0079
+  0016: LeftRight = obj'Core.Math'.static.FClamp((self.GuidedMissileMouseSensitivity * self._TnPlayerInput._CameraYaw), -1.0, 1.0)
+  0046: UpDown = obj'Core.Math'.static.FClamp((self.GuidedMissileMouseSensitivity * self._TnPlayerInput._CameraPitch), -1.0, 1.0)
+  0076: goto 0x00cd
+  0079: LeftRight = obj'Core.Math'.static.FClamp(self._TnPlayerInput.RawJoyLookRight, -1.0, 1.0)
+  00a2: UpDown = obj'Core.Math'.static.FClamp(-self._TnPlayerInput.RawJoyLookUp, -1.0, 1.0)
+  00cd: UpDown = (self.PlayerInput.bInvertMouse ? -UpDown : UpDown)
+  00f3: TnPlayerController.ServerSetGuidedMissileInput(UpDown, LeftRight)
+  0103: TnPlayerController.PlayerTick(DeltaTime)
+  010e: return nothing
+  0110: <eos>
+
+function TnPlayerController.GuidingMissile.TriggerAbility  (script 9 bytes)
+  0000: TnPlayerController.ServerDetonate()
+  0006: return nothing
+  0008: <eos>
+
+function TnPlayerController.ClientGameEnded  (script 36 bytes)
+  0000: ClientGameEnded(EndGameFocus, bIsWinner)
+  0011: self.AcquiredKillstreaks.Length = 0
+  0019: self.CurrentKillstreakId = ""
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerController.UpdateTargeting  (script 54 bytes)
+  0000: self.PlayerTargeting.SetSticknessEnabled(!self._TnPlayerInput.ShouldDisableTargetStickiness())
+  0028: UpdateTargeting(DeltaTime)
+  0033: return nothing
+  0035: <eos>
+
+function TnPlayerController.RoundEnded.UpdateTargeting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.RoundEnded.BeginState  (script 44 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !((self._CameraStrategyManager != none)) goto 0x0029
+  0016: self._CameraStrategyManager.Died()
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerController.SwitchSpectatorTarget  (script 27 bytes)
+  0000: self._CameraStrategyManager.SwitchSpectatingTarget(Direction)
+  0018: return nothing
+  001a: <eos>
+
+function TnPlayerController.StartClientPlayerWaiting  (script 114 bytes)
+  0000: LogInternal("Error: StartClientPlayerWaiting called on server but server was not in PlayerWaiting state.  Get Mike R.", , , )
+  006f: return nothing
+  0071: <eos>
+
+function TnPlayerController.ClientStartPlayerWaitingSpectating  (script 124 bytes)
+  0000: LogInternal("Error: ClientStartPlayerWaitingSpectating called on client but client was not in PlayerWaiting state.  Get Mike R.", , , )
+  0079: return nothing
+  007b: <eos>
+
+function TnPlayerController.ClientStartPlayerWaitingWatchingMatinee  (script 129 bytes)
+  0000: LogInternal("Error: ClientStartPlayerWaitingWatchingMatinee called on client but client was not in PlayerWaiting state.  Get Mike R.", , , )
+  007e: return nothing
+  0080: <eos>
+
+function TnPlayerController.PlayerWaiting.UpdateTargeting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerWaiting.GotoNewFormState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerWaiting.EndState  (script 83 bytes)
+  0000: if !(IsChildState(NextStateName, 'PlayerWaiting')) goto 0x001d
+  001b: return nothing
+  001d: if !((get_XpManager() != none)) goto 0x0045
+  002d: get_XpManager().ResetCurrentGameXp()
+  0045: EndState(NextStateName)
+  0050: return nothing
+  0052: <eos>
+
+function TnPlayerController.PlayerWaiting.IsAbleToFire  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.PlayerWaiting.IsDead  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.PlayerWaiting.ServerChangeTeam  (script 76 bytes)
+  0000: LobbyGame = TnGameLobbyGame(self.WorldInfo.Game)
+  0019: if !(((LobbyGame != none) && LobbyGame.get_AutobalanceTeams())) goto 0x003e
+  003c: return nothing
+  003e: ServerChangeTeam(N)
+  0049: return nothing
+  004b: <eos>
+
+function TnPlayerController.PlayerWaiting.StartClientPlayerWaiting  (script 104 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  0022: if !((PRI != none)) goto 0x0045
+  002d: PRI.SetTimeToRespawn(-1.0)
+  0045: if !(self.bCinematicMode) goto 0x005b
+  004e: ClientStartPlayerWaitingWatchingMatinee()
+  0058: goto 0x0065
+  005b: ClientStartPlayerWaitingSpectating()
+  0065: return nothing
+  0067: <eos>
+
+function TnPlayerController.PlayerWaiting.ClientStartPlayerWaitingSpectating  (script 17 bytes)
+  0000: GotoState('PlayerWaitingSpectating', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.PlayerWaiting.ClientStartPlayerWaitingWatchingMatinee  (script 17 bytes)
+  0000: GotoState('PlayerWaitingWatchingMatinee', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.PlayerWaitingSpectating.BeginState  (script 131 bytes)
+  0000: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  0010: if !((PRI != none)) goto 0x0033
+  001b: PRI.SetTimeToRespawn(-1.0)
+  0033: UpdateInvertMouseByRobotForm()
+  003d: if !((self.UIController != none)) goto 0x005d
+  0048: self.UIController.OnUIEvent(4)
+  005d: if !((self._CameraStrategyManager != none)) goto 0x0080
+  0068: self._CameraStrategyManager.StartSpectating(obj'TnPlayerPawn')
+  0080: return nothing
+  0082: <eos>
+
+function TnPlayerController.PlayerWaitingSpectating.EndState  (script 76 bytes)
+  0000: if !((self.UIController != none)) goto 0x0020
+  000b: self.UIController.OnUIEvent(5)
+  0020: if !((self._CameraStrategyManager != none)) goto 0x003e
+  002b: self._CameraStrategyManager.Reset()
+  003e: EndState(NextStateName)
+  0049: return nothing
+  004b: <eos>
+
+function TnPlayerController.PlayerWaitingSpectating.ClientSetCinematicMode  (script 66 bytes)
+  0000: global.ClientSetCinematicMode(bInCinematicMode, bAffectsMovement, bAffectsTurning, bAffectsHUD, bAffectsButtons)
+  0028: if !(bInCinematicMode) goto 0x003f
+  0031: GotoState('PlayerWaitingWatchingMatinee', , , )
+  003f: return nothing
+  0041: <eos>
+
+function TnPlayerController.PlayerWaitingWatchingMatinee.BeginState  (script 46 bytes)
+  0000: if !((self.UIController != none)) goto 0x0020
+  000b: self.UIController.OnUIEvent(5)
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TnPlayerController.PlayerWaitingWatchingMatinee.EndState  (script 14 bytes)
+  0000: EndState(NextStateName)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.PlayerWaitingWatchingMatinee.ClientSetCinematicMode  (script 68 bytes)
+  0000: global.ClientSetCinematicMode(bInCinematicMode, bAffectsMovement, bAffectsTurning, bAffectsHUD, bAffectsButtons)
+  0028: if !(!bInCinematicMode) goto 0x0041
+  0033: GotoState('PlayerWaitingSpectating', , , )
+  0041: return nothing
+  0043: <eos>
+
+function TnPlayerController.WaitingForPawn.UpdateTargeting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.WaitingForPawn.GotoNewFormState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Spectating.UpdateTargeting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Spectating.GotoNewFormState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.BeginAnimControl  (script 30 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: GotoState('AnimControl', , , )
+  001b: return nothing
+  001d: <eos>
+
+function TnPlayerController.TryLeaveInteractState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ForceEndInteract  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.AnimControl.ProcessMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.AnimControl.StartFire  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function TnPlayerController.AnimControl.NextWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.AnimControl.TriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.AnimControl.UnTriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.AnimControl.BeginState  (script 52 bytes)
+  0000: StopFire()
+  000b: self.Acceleration = vect(0,0,0)
+  001e: self.Velocity = vect(0,0,0)
+  0031: return nothing
+  0033: <eos>
+
+function TnPlayerController.AnimControl.EndState  (script 44 bytes)
+  0000: EndState(NextStateName)
+  000b: if !((self.Pawn != none)) goto 0x0029
+  0016: self.Pawn.FinishAnimControl()
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerController.AnimControl.SetAnimPosition  (script 67 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Pawn.SetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bFireNotifies, bLooping)
+  0040: return nothing
+  0042: <eos>
+
+function TnPlayerController.AnimControl.SetAnimWeights  (script 40 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Pawn.SetAnimWeights(SlotInfos)
+  0025: return nothing
+  0027: <eos>
+
+function TnPlayerController.AnimControl.FinishAnimControl  (script 38 bytes)
+  0000: GotoState(TnPlayerController.GetNewFormStateName(TnPawn(self.Pawn).get_FormType()), , , )
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.AnimControl.TryLeaveInteractState  (script 38 bytes)
+  0000: GotoState(TnPlayerController.GetNewFormStateName(TnPawn(self.Pawn).get_FormType()), , , )
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.BeginTurretControl  (script 28 bytes)
+  0000: self.TurretInUse = Turret
+  000b: GotoState('ControllingTurret', , , )
+  0019: return nothing
+  001b: <eos>
+
+function TnPlayerController.ServerUpdateTurretRotation  (script 38 bytes)
+  0000: if !((self.TurretInUse != none)) goto 0x0023
+  000b: self.TurretInUse.SetAimRotation(ClientsDesiredRotation)
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.GetConstrainedCameraRotation  (script 13 bytes)
+  0000: return InRot
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.ControllingTurret.ProcessMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.NextWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.TriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.UnTriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.BeginState  (script 138 bytes)
+  0000: StopFire()
+  000b: self.Pawn.Acceleration = vect(0,0,0)
+  0027: self.Pawn.Velocity = vect(0,0,0)
+  0043: self.Acceleration = vect(0,0,0)
+  0056: self.Velocity = vect(0,0,0)
+  0069: if !((self._CameraStrategyManager != none)) goto 0x0087
+  0074: self._CameraStrategyManager.EnterTurret()
+  0087: return nothing
+  0089: <eos>
+
+function TnPlayerController.ControllingTurret.EndState  (script 40 bytes)
+  0000: self.TurretInUse = none
+  0007: if !((self._CameraStrategyManager != none)) goto 0x0025
+  0012: self._CameraStrategyManager.ExitTurret()
+  0025: return nothing
+  0027: <eos>
+
+function TnPlayerController.ControllingTurret.IsAbleToFire  (script 40 bytes)
+  0000: return ((self.TurretInUse != none) && self.TurretInUse.get_IsAbleToFire())
+  0021: return return
+  0027: <eos>
+
+function TnPlayerController.ControllingTurret.ShouldEnterDeadStateWhenPawnIsLost  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.ControllingTurret.PlayerMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.GetConstrainedCameraRotation  (script 86 bytes)
+  0000: if !((self.TurretInUse != none)) goto 0x0049
+  000b: return (self.TurretInUse.GetConstrainedRotation((InRot - self.TurretInUse.Rotation)) + self.TurretInUse.Rotation)
+  0046: goto 0x004f
+  0049: return InRot
+  004f: return return
+  0055: <eos>
+
+function TnPlayerController.ControllingTurret.FineAim  (script 23 bytes)
+  0000: self._FineAimManager.SetWantsToFineAim(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.ControllingTurret.CanFineAim  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.ControllingTurret.TryLeaveInteractState  (script 17 bytes)
+  0000: GotoState('PlayerWalking', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.ControllingTurret.ForceEndInteract  (script 22 bytes)
+  0000: self.TurretInUse.ForceEndUse()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.ControllingTurret.PressXButton  (script 13 bytes)
+  0000: InteractCommand0()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.ControllingTurret.ReleaseXButton  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.PressKeyboardInteractKey  (script 13 bytes)
+  0000: InteractCommand0()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.ControllingTurret.ReleaseKeyboardInteractKey  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ControllingTurret.OnStartDowned  (script 23 bytes)
+  0000: ForceEndInteract()
+  000a: TryLeaveInteractState()
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.NotifyGrabBegin  (script 17 bytes)
+  0000: GotoState('Grabbed', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.NotifyGrabEnd  (script 32 bytes)
+  0000: if !(IsDead()) goto 0x000f
+  000d: return nothing
+  000f: GotoState('PlayerWalking', , , )
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.Grabbed.SetDeferredFire  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function TnPlayerController.Grabbed.ProcessMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Grabbed.BeginState  (script 55 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: SetHudVisible(false)
+  0016: if !((self._CameraStrategyManager != none)) goto 0x0034
+  0021: self._CameraStrategyManager.StartGrabVictim()
+  0034: return nothing
+  0036: <eos>
+
+function TnPlayerController.Grabbed.EndState  (script 25 bytes)
+  0000: SetHudVisible(true)
+  000b: EndState(NextStateName)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerController.Grabbed.ShouldEnterDeadStateWhenPawnIsLost  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.Grabbed.PlayerMove  (script 89 bytes)
+  0000: OldRotation = self.Rotation
+  000b: UpdateRotation(DeltaTime)
+  001a: if !((cast3a(self.Role) < cast3a(3))) goto 0x0056
+  002a: ReplicateMove(DeltaTime, self.Pawn.Acceleration, 0, (OldRotation - self.Rotation))
+  0056: return nothing
+  0058: <eos>
+
+function TnPlayerController.IsBoostDisabled  (script 118 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return true
+  000d: BuffService = TnBuffService(get_TransformerPawn().GetService('TnBuffService'))
+  0039: if !((NotEqual_InterfaceInterface(BuffService, TnBuffService(none)) && BuffService.HasDerivedBuff(obj'TnBuffImpairVehicleSpeed'))) goto 0x006d
+  006b: return true
+  006d: return false
+  006f: return return
+  0075: <eos>
+
+function TnPlayerController.StartBoost  (script 32 bytes)
+  0000: if !(TnPlayerController.IsBoostDisabled()) goto 0x000b
+  0009: return nothing
+  000b: self.IsBoostPressed = true
+  0013: OnStartBoost()
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.StopBoost  (script 21 bytes)
+  0000: self.IsBoostPressed = false
+  0008: OnStopBoost()
+  0012: return nothing
+  0014: <eos>
+
+function TnPlayerController.OnStartBoost  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.OnStopBoost  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ProcessInput  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StartVehicleSpecialMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StopVehicleSpecialMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.IsVehicleBoosted  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerController.StartAscend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StopAscend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StartDescend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.StopDescend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.OnServerSetLocationAndRotation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ServerSetLocationAndRotation  (script 54 bytes)
+  0000: SetLocation(ViewLocation)
+  0008: SetRotation(ViewRotation)
+  0010: OnServerSetLocationAndRotation(PackedFlags)
+  001f: self.ServerTimeStamp = self.WorldInfo.TimeSeconds
+  0033: return nothing
+  0035: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.Use  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.TriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.UnTriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.BeginState  (script 300 bytes)
+  0000: CleanOutSavedMoves()
+  000a: UpdateInvertMouseByVehicleForm()
+  0014: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  0024: if !((PRI != none)) goto 0x0050
+  002f: PRI._ClassFormTracker.SetForm(1)
+  004d: goto 0x00f6
+  0050: LogInternal(((((("ERROR: Please report this to Robert M, a player is entering vehicle form without a PRI.  Player is:" @ cast56(self)) $ ", PRI is:") @ cast56(self.PlayerReplicationInfo)) $ ", Cast version:") @ cast56(TnPlayerReplicationInfo(self.PlayerReplicationInfo))), , , )
+  00f6: if !(self.IsBoostPressed) goto 0x0109
+  00ff: OnStartBoost()
+  0109: if !((self._CameraStrategyManager != none)) goto 0x0129
+  0114: self._CameraStrategyManager.StartForm(1)
+  0129: return nothing
+  012b: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.DisplayVehicleTutorialMessage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.EndState  (script 33 bytes)
+  0000: ClearTimer('DisplayVehicleTutorialMessage', )
+  0014: CleanOutSavedMoves()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.Transform  (script 34 bytes)
+  0000: if !(!TnPlayerController.StartTransform(0)) goto 0x000f
+  000d: return false
+  000f: UpdateInvertMouseByRobotForm()
+  0019: return true
+  001b: return return
+  0021: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.ShouldEnterDeadStateWhenPawnIsLost  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.PlayerMove  (script 49 bytes)
+  0000: GetPlayerViewPoint(CameraLocation, CameraRotation)
+  0014: SetRotation(CameraRotation)
+  001c: SetLocation(CameraLocation)
+  0024: ProcessInput()
+  002e: return nothing
+  0030: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.UpdateInvertMouse  (script 13 bytes)
+  0000: UpdateInvertMouseByVehicleForm()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.IsAbleToFire  (script 69 bytes)
+  0000: if !(((self.Pawn.Weapon != none) && TnWeapon(self.Pawn.Weapon).IsOverheating())) goto 0x003c
+  003a: return false
+  003c: return true
+  003e: return return
+  0044: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.EndBlock  (script 87 bytes)
+  0000: ShieldService = TnShieldService(get_TransformerPawn().GetVehicleService('TnShieldService'))
+  002c: if !(NotEqual_InterfaceInterface(ShieldService, TnShieldService(none))) goto 0x0054
+  0040: ShieldService.StopShield()
+  0054: return nothing
+  0056: <eos>
+
+function TnPlayerController.PlayerInVehicleForm.ClearInputs  (script 19 bytes)
+  0000: StopBoost()
+  000a: TnPlayerController.ClearInputs()
+  0010: return nothing
+  0012: <eos>
+
+function TnPlayerController.PlayerInTankForm.BeginState  (script 44 bytes)
+  0000: self.TankForm = TnTankForm(get_TransformerPawn()._VehicleForm)
+  001e: BeginState(NextStateName)
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerController.PlayerInTankForm.EndState  (script 63 bytes)
+  0000: if !(((self.TankForm != none) && (self.TankForm._InputState != none))) goto 0x0031
+  0021: ClearInputs()
+  002b: SetRemoteInputs()
+  0031: EndState(NextStateName)
+  003c: return nothing
+  003e: <eos>
+
+function TnPlayerController.PlayerInTankForm.ProcessInput  (script 15 bytes)
+  0000: SetLocalInputs()
+  0006: SetRemoteInputs()
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerController.PlayerInTankForm.SetRemoteInputs  (script 92 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(2))) goto 0x0012
+  0010: return nothing
+  0012: self.TankForm._InputState.PackInputs()
+  002e: ServerSetLocationAndRotation(self.Location, self.Rotation, self.TankForm._InputState._PackedFlags)
+  0059: return nothing
+  005b: <eos>
+
+function TnPlayerController.PlayerInTankForm.SetLocalInputs  (script 139 bytes)
+  0000: if !((self.PlayerInput == none)) goto 0x000d
+  000b: return nothing
+  000d: self.TankForm.set_StrafeRightLeftInput(self.PlayerInput.RawJoyRight)
+  002e: self.TankForm.set_StrafeForwardBackInput(self.PlayerInput.RawJoyUp)
+  004f: self.TankForm.set_TurnInput(self.PlayerInput.RawJoyLookRight)
+  0070: self.TankForm.set_ViewRotation(self.Rotation)
+  0088: return nothing
+  008a: <eos>
+
+function TnPlayerController.PlayerInTankForm.ClearInputs  (script 48 bytes)
+  0000: if !((self.TankForm != none)) goto 0x0027
+  000b: self.TankForm._InputState.Reset()
+  0027: ClearInputs()
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerController.PlayerInTankForm.OnServerSetLocationAndRotation  (script 73 bytes)
+  0000: if !((self.TankForm == none)) goto 0x000d
+  000b: return nothing
+  000d: self.TankForm._InputState._PackedFlags = PackedFlags
+  002a: self.TankForm._InputState.UnpackInputs()
+  0046: return nothing
+  0048: <eos>
+
+function TnPlayerController.PlayerInTankForm.OnStartBoost  (script 23 bytes)
+  0000: self.TankForm.set_BoostingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInTankForm.OnStopBoost  (script 34 bytes)
+  0000: if !((self.TankForm != none)) goto 0x001f
+  000b: self.TankForm.set_BoostingInput(false)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerController.PlayerInTankForm.PressJump  (script 23 bytes)
+  0000: self.TankForm.set_JumpingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInTankForm.IsVehicleBoosted  (script 27 bytes)
+  0000: return self.TankForm.get_IsBoosting()
+  0014: return return
+  001a: <eos>
+
+function TnPlayerController.PlayerInTankForm.StartVehicleSpecialMove  (script 70 bytes)
+  0000: if !(!self.TankForm.CanUseSpecialMove()) goto 0x001a
+  0018: return nothing
+  001a: TnCamera(self.PlayerCamera).RecenterCamera = true
+  0030: self.TankForm.OnSpecialMove()
+  0043: return nothing
+  0045: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.BeginState  (script 44 bytes)
+  0000: self.PlaneForm = TnPlaneForm(get_TransformerPawn()._VehicleForm)
+  001e: BeginState(NextStateName)
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.EndState  (script 63 bytes)
+  0000: if !(((self.PlaneForm != none) && (self.PlaneForm._InputState != none))) goto 0x0031
+  0021: ClearInputs()
+  002b: SetRemoteInputs()
+  0031: EndState(NextStateName)
+  003c: return nothing
+  003e: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.ProcessInput  (script 15 bytes)
+  0000: SetLocalInputs()
+  0006: SetRemoteInputs()
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.SetRemoteInputs  (script 92 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(2))) goto 0x0012
+  0010: return nothing
+  0012: self.PlaneForm._InputState.PackFlags()
+  002e: ServerSetLocationAndRotation(self.Location, self.Rotation, self.PlaneForm._InputState._PackedFlags)
+  0059: return nothing
+  005b: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.SetLocalInputs  (script 182 bytes)
+  0000: if !((self._TnPlayerInput == none)) goto 0x000d
+  000b: return nothing
+  000d: self.PlaneForm.set_StrafeForwardBackInput(self._TnPlayerInput.RawJoyUp)
+  002e: self.PlaneForm.set_StrafeRightLeftInput(self._TnPlayerInput.RawJoyRight)
+  004f: self.PlaneForm.set_YawInput(self._TnPlayerInput.GetNormalizedTurn())
+  0075: self.PlaneForm.set_PitchInput(self._TnPlayerInput.GetNormalizedLookUp())
+  009b: self.PlaneForm.set_ViewRotation(self.Rotation)
+  00b3: return nothing
+  00b5: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.ClearInputs  (script 48 bytes)
+  0000: if !((self.PlaneForm != none)) goto 0x0027
+  000b: self.PlaneForm._InputState.Reset()
+  0027: ClearInputs()
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.OnServerSetLocationAndRotation  (script 73 bytes)
+  0000: if !((self.PlaneForm == none)) goto 0x000d
+  000b: return nothing
+  000d: self.PlaneForm._InputState._PackedFlags = PackedFlags
+  002a: self.PlaneForm._InputState.UnpackFlags()
+  0046: return nothing
+  0048: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.OnStartBoost  (script 23 bytes)
+  0000: self.PlaneForm.set_BoostingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.OnStopBoost  (script 34 bytes)
+  0000: if !((self.PlaneForm != none)) goto 0x001f
+  000b: self.PlaneForm.set_BoostingInput(false)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.StartVehicleSpecialMove  (script 23 bytes)
+  0000: self.PlaneForm.set_RollingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.StopVehicleSpecialMove  (script 23 bytes)
+  0000: self.PlaneForm.set_RollingInput(false)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.IsVehicleBoosted  (script 27 bytes)
+  0000: return self.PlaneForm.get_IsBoosting()
+  0014: return return
+  001a: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.StartAscend  (script 23 bytes)
+  0000: self.PlaneForm.set_AscendingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.StopAscend  (script 23 bytes)
+  0000: self.PlaneForm.set_AscendingInput(false)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.StartDescend  (script 23 bytes)
+  0000: self.PlaneForm.set_DescendingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.StopDescend  (script 23 bytes)
+  0000: self.PlaneForm.set_DescendingInput(false)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.FindRevivablePawn  (script 19 bytes)
+  0000: return TnPlayerController.FindRevivablePawnByDistance(self.PlaneReviveDistance)
+  000c: return return
+  0012: <eos>
+
+function TnPlayerController.PlayerInPlaneForm.OnStartDowned  (script 93 bytes)
+  0000: BS = TnBuffService(GetService('TnBuffService'))
+  001e: if !(NotEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x004c
+  0032: BS.AddSelfBuff(obj'TnBuffDownVehicle', 0)
+  004c: GotoState('PlaneDowned', , , )
+  005a: return nothing
+  005c: <eos>
+
+function TnPlayerController.PlaneDowned.BeginState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlaneDowned.PressJump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlaneDowned.OnStartBoost  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlaneDowned.Transform  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerController.PlaneDowned.StartVehicleSpecialMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.PlaneDowned.OnStopDowned  (script 92 bytes)
+  0000: BS = TnBuffService(GetService('TnBuffService'))
+  001e: if !(NotEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x004b
+  0032: BS.RemoveBuff(obj'TnBuffDownVehicle')
+  004b: GotoState('PlayerInPlaneForm', , , )
+  0059: return nothing
+  005b: <eos>
+
+function TnPlayerController.PlayerInCarForm.BeginState  (script 44 bytes)
+  0000: self.CarForm = TnCarForm(get_TransformerPawn()._VehicleForm)
+  001e: BeginState(NextStateName)
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerController.PlayerInCarForm.EndState  (script 63 bytes)
+  0000: if !(((self.CarForm != none) && (self.CarForm._InputState != none))) goto 0x0031
+  0021: ClearInputs()
+  002b: SetRemoteInputs()
+  0031: EndState(NextStateName)
+  003c: return nothing
+  003e: <eos>
+
+function TnPlayerController.PlayerInCarForm.ProcessInput  (script 15 bytes)
+  0000: SetLocalInputs()
+  0006: SetRemoteInputs()
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerController.PlayerInCarForm.SetRemoteInputs  (script 92 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(2))) goto 0x0012
+  0010: return nothing
+  0012: self.CarForm._InputState.PackFlags()
+  002e: ServerSetLocationAndRotation(self.Location, self.Rotation, self.CarForm._InputState._PackedFlags)
+  0059: return nothing
+  005b: <eos>
+
+function TnPlayerController.PlayerInCarForm.SetLocalInputs  (script 144 bytes)
+  0000: if !((self._TnPlayerInput == none)) goto 0x000d
+  000b: return nothing
+  000d: self.CarForm.set_StrafeForwardBackInput(self._TnPlayerInput.RawJoyUp)
+  002e: self.CarForm.set_StrafeLeftRightInput(self._TnPlayerInput.RawJoyRight)
+  004f: self.CarForm.set_SteeringInput(self._TnPlayerInput.GetNormalizedTurn())
+  0075: self.CarForm.set_ViewRotation(self.Rotation)
+  008d: return nothing
+  008f: <eos>
+
+function TnPlayerController.PlayerInCarForm.ClearInputs  (script 48 bytes)
+  0000: if !((self.CarForm != none)) goto 0x0027
+  000b: self.CarForm._InputState.Reset()
+  0027: ClearInputs()
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerController.PlayerInCarForm.OnServerSetLocationAndRotation  (script 73 bytes)
+  0000: if !((self.CarForm == none)) goto 0x000d
+  000b: return nothing
+  000d: self.CarForm._InputState._PackedFlags = PackedFlags
+  002a: self.CarForm._InputState.UnpackFlags()
+  0046: return nothing
+  0048: <eos>
+
+function TnPlayerController.PlayerInCarForm.OnStartBoost  (script 23 bytes)
+  0000: self.CarForm.set_BoostingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInCarForm.OnStopBoost  (script 34 bytes)
+  0000: if !((self.CarForm != none)) goto 0x001f
+  000b: self.CarForm.set_BoostingInput(false)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerController.PlayerInCarForm.StartVehicleSpecialMove  (script 23 bytes)
+  0000: self.CarForm.set_DashingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInCarForm.StopVehicleSpecialMove  (script 23 bytes)
+  0000: self.CarForm.set_DashingInput(false)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInCarForm.PressJump  (script 23 bytes)
+  0000: self.CarForm.set_JumpingInput(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPlayerController.PlayerInCarForm.IsVehicleBoosted  (script 27 bytes)
+  0000: return self.CarForm.get_IsBoosting()
+  0014: return return
+  001a: <eos>
+
+function TnPlayerController.NotifyWeaponChanged  (script 11 bytes)
+  0000: self.IsAllowedToFire = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerController.HandlePickup  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.CommonSetCameraMode  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ClientSetRotation  (script 51 bytes)
+  0000: nothing
+  0001: ClientSetRotation(NewRotation, bResetCamera)
+  0012: if !((self.PlayerCamera != none)) goto 0x0030
+  001d: self.PlayerCamera.Reset()
+  0030: return nothing
+  0032: <eos>
+
+function TnPlayerController.UpdateRotation  (script 194 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(IsDebugCameraActive()) goto 0x001c
+  001a: return nothing
+  001c: Cam = TnCamera(self.PlayerCamera)
+  002c: if !((((Cam == none) || Cam.IsPlayingCameraAnimation()) || Cam.MatineeCameraActive())) goto 0x0069
+  0067: return nothing
+  0069: if !(((self.UseableInteract != none) && self.UseableInteract.IsAdjustingRotation())) goto 0x008e
+  008c: return nothing
+  008e: GetPlayerViewPoint(ViewLocation, ViewRotation)
+  00a2: self.Pawn.FaceRotation(ViewRotation, DeltaTime)
+  00bf: return nothing
+  00c1: <eos>
+
+function TnPlayerController.InitTargeting  (script 34 bytes)
+  0000: self.PlayerTargeting = new(self, nothing, obj'TnPlayerTargeting', nothing, DeltaTime)
+  0014: TnPlayerController.SetActiveTargeting(self.PlayerTargeting)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerController.SetActiveTargeting  (script 34 bytes)
+  0000: self.ActiveTargeting = NewTargeting
+  000b: self.ActiveTargeting._TargetingOwner = self.Pawn
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerController.ShouldStrafe  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.IsTargetingEnemy  (script 80 bytes)
+  0000: Targeting = TnPlayerTargeting(self.ActiveTargeting)
+  0010: return (((Targeting != none) && Targeting.HasValidTarget()) && Targeting.IsTargetDirectHit())
+  0049: return return
+  004f: <eos>
+
+function TnPlayerController.SeeEnemy  (script 82 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: Team = TnFactionTeam(self.PlayerReplicationInfo.Team)
+  002b: if !((Team != none)) goto 0x004f
+  0036: Team.NotifyNearbyMembersOfEnemy(self, Seen)
+  004f: return nothing
+  0051: <eos>
+
+function TnPlayerController.ClientSetProgressMessage  (script 122 bytes)
+  0000: nothing
+  0001: nothing
+  0002: ClientSetProgressMessage(MessageType, Message, Title, ((cast3a(MessageType) == cast3a(4)) || (cast3a(MessageType) == cast3a(5))))
+  0036: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  004f: if !((GRI != none)) goto 0x0077
+  005a: GRI.SetProgressMessage(Message, Title)
+  0077: return nothing
+  0079: <eos>
+
+function TnPlayerController.OnConnectionStatusChange  (script 556 bytes)
+  0000: OnConnectionStatusChange(ConnectionStatus)
+  000b: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && (cast3a(ConnectionStatus) != cast3a(1)))) goto 0x0229
+  0036: if !(!self.bIgnoreNetworkMessages) goto 0x0201
+  0041: PrimaryLoginStatus = self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LocalPlayer(self.Player).ControllerId))
+  0079: switch (PrimaryLoginStatus)
+  0080: case 0: (next 0x00f9)
+  0085: NotifyConnectionError(Localize("MessagePrompts", "LogInToPlayOnline", "UIText"), Localize("Errors", "ConnectionFailed_Title", "Engine"))
+  00f6: goto 0x01fe
+  00f9: case 1: (next 0x0181)
+  00fe: NotifyConnectionError(Localize("MessagePrompts", "LogInToOnlineServiceToPlayOnline", "UIText"), Localize("Errors", "ConnectionFailed_Title", "Engine"))
+  017e: goto 0x01fe
+  0181: default:
+  0184: NotifyConnectionError(Localize("MessagePrompts", "NoLinkConnectionMessage", "UIText"), Localize("Errors", "ConnectionFailed_Title", "Engine"))
+  01fb: goto 0x01fe
+  01fe: goto 0x0229
+  0201: LogInternal("Ignoring connection status change", , , )
+  0229: return nothing
+  022b: <eos>
+
+function TnPlayerController.OnLinkStatusChange  (script 220 bytes)
+  0000: OnLinkStatusChange(bIsConnected)
+  000c: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && !bIsConnected)) goto 0x00d9
+  0032: if !(!self.bIgnoreNetworkMessages) goto 0x00b7
+  003d: NotifyConnectionError(Localize("MessagePrompts", "NoLinkConnectionMessage", "UIText"), Localize("Errors", "ConnectionFailed_Title", "Engine"))
+  00b4: goto 0x00d9
+  00b7: LogInternal("Ignoring link status change", , , )
+  00d9: return nothing
+  00db: <eos>
+
+function TnPlayerController.IsPlayerAllowed  (script 97 bytes)
+  0000: if !(!TnPlayerController.HasReservation(UniqueId)) goto 0x004e
+  0010: LogInternal((obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(UniqueId) @ "does not have a reservation"), , , )
+  004c: return false
+  004e: return IsPlayerAllowed(UniqueId)
+  005a: return return
+  0060: <eos>
+
+function TnPlayerController.HasReservation  (script 101 bytes)
+  0000: if !(IsLocalPlayerController()) goto 0x000f
+  000d: return true
+  000f: Reservations = self.OnlineSub.ReservationInterface.GetReservations()
+  0032: if !(((Reservations != none) && Reservations.IsMember(UniqueId))) goto 0x005c
+  005a: return true
+  005c: return false
+  005e: return return
+  0064: <eos>
+
+function TnPlayerController.IsInPartyLobby  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.ClientWasKicked  (script 345 bytes)
+  0000: ClientWasKicked(KickReason)
+  000b: if !(((self.OnlineSub != none) && (cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(GetLocalUserNum()))) != cast3a(2)))) goto 0x0099
+  004c: KickMessage = Localize("MessagePrompts", "LogInToOnlineServiceToPlayOnline", "UIText")
+  0096: goto 0x0109
+  0099: KickMessage = ((cast3a(KickReason) == cast3a(1)) ? Localize("Errors", "KickedForIdling", "Engine") : Localize("Errors", "ConnectionTimeout", "Engine"))
+  0109: ClientSetProgressMessage(4, KickMessage, Localize("MessagePrompts", "OnlineNotificationTitle", "UIText"), true)
+  0156: return nothing
+  0158: <eos>
+
+function TnPlayerController.ConnectionErrorQuitGame  (script 15 bytes)
+  0000: QuitGame(1)
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerController.PreClientTravel  (script 131 bytes)
+  0000: PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel)
+  0016: obj'TnMoviePlayer'.static.StartLoadingMovie(PendingURL)
+  002e: if !((self.OnlineSub == none)) goto 0x003b
+  0039: return nothing
+  003b: StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  0056: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x006c
+  006a: return nothing
+  006c: StatsInterface.ClearDeferredKeyArchiveWrites()
+  0080: return nothing
+  0082: <eos>
+
+function TnPlayerController.ClientRestartFromCheckpoint  (script 45 bytes)
+  0000: obj'TnMoviePlayer'.static.StartLoadFromCheckpointLoadingMovie(cast3a(GetTeamNum()))
+  001f: ClientRestartFromCheckpoint(FinalCheckpointDataPiece)
+  002a: return nothing
+  002c: <eos>
+
+function TnPlayerController.OnForcedOutOfGame  (script 110 bytes)
+  0000: StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  001b: if !(NotEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0043
+  002f: StatsInterface.ClearDeferredKeyArchiveWrites()
+  0043: if !((get_XpManager() != none)) goto 0x006b
+  0053: get_XpManager().ResetCurrentGameXp()
+  006b: return nothing
+  006d: <eos>
+
+function TnPlayerController.QuitGame  (script 831 bytes)
+  0000: GE = GameEngine(obj'Engine.Engine'.static.GetEngine())
+  001e: GE.CancelMapPrestreaming()
+  0031: if !(ClassIsChildOf(self.WorldInfo.GetGameClass(), obj'TnCampaignGameBase')) goto 0x0059
+  004f: FinalSaveProfileSettings()
+  0059: TnPlayerController.OnForcedOutOfGame()
+  005f: CancelSessionJoining()
+  0069: self.bIgnoreNetworkMessages = true
+  0071: LogInternal(((("Quitting game, Method:" @ cast52(QuitGameMethod)) $ ", NetMode:") @ cast52(self.WorldInfo.NetMode)), , , )
+  00b7: if !((cast3a(QuitGameMethod) == cast3a(2))) goto 0x00cf
+  00c7: TnPlayerController.QuitToFrontEnd()
+  00cd: return nothing
+  00cf: if !((cast3a(QuitGameMethod) == cast3a(1))) goto 0x0286
+  00df: HasLinkConnection = self.OnlineSub.SystemInterface.HasLinkConnection()
+  0103: if !(!HasLinkConnection) goto 0x013e
+  010e: LogInternal("Quitting game, no link connection", , , )
+  0136: TnPlayerController.QuitToFrontEnd()
+  013c: return nothing
+  013e: LocalUserNum = GetLocalUserNum()
+  014e: Status = self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LocalUserNum))
+  0178: SecondaryStatus = self.OnlineSub.PlayerInterface.GetSecondaryLoginStatus(cast3d(LocalUserNum))
+  01a2: LogInternal(((((((((((("Quitting game, LocalUserNum[" $ cast53(LocalUserNum)) $ "]: LoginStatus[") $ cast53(LocalUserNum)) $ "]:") @ cast52(Status)) $ ", SecondaryLoginStatus[") $ cast53(LocalUserNum)) $ "]:") @ cast52(SecondaryStatus)) $ ", HasLinkConnection:") @ cast54(HasLinkConnection)), , , )
+  024e: if !((((LocalUserNum == 255) || (cast3a(Status) != cast3a(2))) || (cast3a(SecondaryStatus) != cast3a(2)))) goto 0x0286
+  027e: TnPlayerController.QuitToFrontEnd()
+  0284: return nothing
+  0286: Game = TnGame(self.WorldInfo.Game)
+  029f: if !((Game != none)) goto 0x02bd
+  02aa: Game.OnQuitGame()
+  02bd: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x02df
+  02d6: TnPlayerController.QuitToFrontEnd()
+  02dc: goto 0x033c
+  02df: if !((cast3a(self.WorldInfo.NetMode) == cast3a(2))) goto 0x0336
+  02f8: if !(Game.IsCampaignGame()) goto 0x0317
+  030e: TnPlayerController.QuitToPartyLobby()
+  0314: goto 0x0333
+  0317: if !(IsInPartyLobby()) goto 0x032d
+  0324: TnPlayerController.QuitToFrontEnd()
+  032a: goto 0x0333
+  032d: TnPlayerController.QuitToPartyLobby()
+  0333: goto 0x033c
+  0336: TnPlayerController.QuitToPartyLobby()
+  033c: return nothing
+  033e: <eos>
+
+function TnPlayerController.ClientAutomatedTestingQuitGame  (script 15 bytes)
+  0000: QuitGame(0)
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerController.DisconnectFromSessions  (script 52 bytes)
+  0000: nothing
+  0001: if !((self.UIController != none)) goto 0x0021
+  000c: self.UIController.OnUIEvent(11)
+  0021: DisconnectFromSessions(SessionNames, DisconnectFromSessionsCompleteDelegate)
+  0031: return nothing
+  0033: <eos>
+
+function TnPlayerController.QuitToFrontEnd  (script 213 bytes)
+  0000: LogInternal("Quitting game, to front end", , , )
+  0022: self.WorldInfo.ConsoleCommand("disconnect local", )
+  004d: SessionNames.AddItem('Party')
+  005e: SessionNames.AddItem(GetGameSessionName())
+  0070: self.OnlineSub.ReservationInterface.DestroyReservationHost()
+  008d: self.OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  00af: DisconnectFromSessions(SessionNames, )
+  00bf: obj'TnGame'.static.OpenFrontEndMap()
+  00d2: return nothing
+  00d4: <eos>
+
+function TnPlayerController.QuitToPartyLobby  (script 422 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0074
+  0014: LogInternal("Quit before desired game mode could be determined, returning to frontend.", 'DevOnline', , )
+  006c: TnPlayerController.QuitToFrontEnd()
+  0072: return nothing
+  0074: LogInternal("Quitting game, to party lobby", , , )
+  0098: SessionNames.AddItem(GetGameSessionName())
+  00aa: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x0103
+  00c3: if !(IsInPartyLobby()) goto 0x00e1
+  00d0: SessionNames.AddItem('Party')
+  00e1: self.OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  0103: DisconnectFromSessions(SessionNames, )
+  0113: if !((cast3a(self.WorldInfo.NetMode) == cast3a(2))) goto 0x0150
+  012c: self.WorldInfo.Game.TellClientsToReturnToPartyHost(self.PlayerReplicationInfo)
+  014d: goto 0x01a3
+  0150: self.WorldInfo.ConsoleCommand("disconnect local", )
+  017b: PartyLobbyURL = BuildPartyLobbyURL()
+  018b: obj'TnGame'.static.ClientTravelToMap(PartyLobbyURL)
+  01a3: return nothing
+  01a5: <eos>
+
+function TnPlayerController.ClientReturnToParty  (script 221 bytes)
+  0000: self.WorldInfo.ConsoleCommand("disconnect local", )
+  002b: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x0088
+  0044: SessionNames.AddItem(GetGameSessionName())
+  0056: self.OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  0078: DisconnectFromSessions(SessionNames, )
+  0088: PartyLobbyURL = BuildPartyLobbyURL()
+  0098: if !(IsPartyLeader()) goto 0x00c2
+  00a5: obj'TnGame'.static.ServerTravelToMap(PartyLobbyURL, true, true)
+  00bf: goto 0x00da
+  00c2: obj'TnGame'.static.ClientTravelToMap(PartyLobbyURL)
+  00da: return nothing
+  00dc: <eos>
+
+function TnPlayerController.ClientPartyDisbanded  (script 9 bytes)
+  0000: TnPlayerController.QuitToPartyLobby()
+  0006: return nothing
+  0008: <eos>
+
+function TnPlayerController.GetPartyGameTypeName  (script 13 bytes)
+  0000: return default.PartyLobbyGameType
+  0006: return return
+  000c: <eos>
+
+function TnPlayerController.GetPartyMapName  (script 25 bytes)
+  0000: return "UI_PartyLobby_m"
+  0012: return return
+  0018: <eos>
+
+function TnPlayerController.OnGameInviteAccepted  (script 46 bytes)
+  0000: if !((self.UIController != none)) goto 0x0020
+  000b: self.UIController.OnUIEvent(16)
+  0020: OnGameInviteAccepted(GameInviteSettings)
+  002b: return nothing
+  002d: <eos>
+
+function TnPlayerController.FinalizeOnGameInviteAccepted  (script 396 bytes)
+  0000: if !((obj'Engine.WorldInfo'.static.IsConsoleBuild(2) && (cast3a(self.OnlineSub.PlayerInterface.CanCommunicate(cast3d(GetLocalUserNum()))) != cast3a(2)))) goto 0x0183
+  004e: if !((self.UIController != none)) goto 0x0180
+  0059: ChatRestrictMessageBox = self.UIController.ShowPopupUI("$UIText.MessagePrompts.JoinFriendGameTitle", "$UIText.MessagePrompts.CantCommunicateMessage", false)
+  00ce: ChatRestrictMessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmCantCommunicate, , )
+  011a: ChatRestrictMessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  015c: ChatRestrictMessageBox.bShowDefaultButtons = false
+  016d: ChatRestrictMessageBox.Show()
+  0180: goto 0x0189
+  0183: FinalizeOnGameInviteAccepted()
+  0189: return nothing
+  018b: <eos>
+
+function TnPlayerController.ConfirmCantCommunicate  (script 13 bytes)
+  0000: JoinSessionUsingGameInvite()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.NotifyJoinSessionFailed  (script 41 bytes)
+  0000: NotifyJoinSessionFailed()
+  0006: if !((self.UIController != none)) goto 0x0026
+  0011: self.UIController.OnUIEvent(17)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.NotifyInviteFailed  (script 41 bytes)
+  0000: NotifyInviteFailed()
+  0006: if !((self.UIController != none)) goto 0x0026
+  0011: self.UIController.OnUIEvent(17)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.NotifyNotAllPlayersCanJoinInvite  (script 41 bytes)
+  0000: NotifyNotAllPlayersCanJoinInvite()
+  0006: if !((self.UIController != none)) goto 0x0026
+  0011: self.UIController.OnUIEvent(17)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.NotifyNotEnoughSpaceInInvite  (script 41 bytes)
+  0000: NotifyNotEnoughSpaceInInvite()
+  0006: if !((self.UIController != none)) goto 0x0026
+  0011: self.UIController.OnUIEvent(17)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.NotifyNotLoggedIntoPrimaryOnlineServiceForJoinInvite  (script 41 bytes)
+  0000: NotifyNotLoggedIntoPrimaryOnlineServiceForJoinInvite()
+  0006: if !((self.UIController != none)) goto 0x0026
+  0011: self.UIController.OnUIEvent(19)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.NotifyNotLoggedIntoSecondaryOnlineServiceForJoinInvite  (script 41 bytes)
+  0000: NotifyNotLoggedIntoSecondaryOnlineServiceForJoinInvite()
+  0006: if !((self.UIController != none)) goto 0x0026
+  0011: self.UIController.OnUIEvent(18)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.GetGameSessionName  (script 42 bytes)
+  0000: DefaultPRIClass = obj'TnGame'.static.default.PlayerReplicationInfoClass
+  0014: return DefaultPRIClass.static.default.SessionName
+  0023: return return
+  0029: <eos>
+
+function TnPlayerController.ClientSetOnlineStatus  (script 17 bytes)
+  0000: ClientSetOnlineStatus()
+  0006: self.bUpdateOnlineRequired = true
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.UpdateOnlineRichPresence  (script 452 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !((LP == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(((self.OnlineSub == none) || EqualEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x0049
+  0047: return nothing
+  0049: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0062: if !((GRI == none)) goto 0x006f
+  006d: return nothing
+  006f: GameClass = class<TnGame>(GRI.GameClass)
+  0088: if !((GameClass == none)) goto 0x0095
+  0093: return nothing
+  0095: GameModeSetting.Id = 1
+  00a7: GameModeSetting.ValueIndex = GRI.GetGameModeProperty()
+  00cb: GameModeSetting.AdvertisementType = 1
+  00de: StringSettings.AddItem(GameModeSetting)
+  00eb: MapSetting.Id = 2
+  00fe: MapSetting.ValueIndex = obj'TnDataStore_MenuItems'.static.ConvertMapIdToPresenceId(GRI.GetMapID())
+  0135: if !((MapSetting.ValueIndex != -1)) goto 0x016f
+  014f: MapSetting.AdvertisementType = 1
+  0162: StringSettings.AddItem(MapSetting)
+  016f: self.OnlineSub.PlayerInterface.SetOnlineStatus(cast3d(LocalPlayer(self.Player).ControllerId), GameClass.static.default.PresenceId, StringSettings, Props)
+  01b9: self.bUpdateOnlineRequired = false
+  01c1: return nothing
+  01c3: <eos>
+
+function TnPlayerController.UpdateOnlineGroups  (script 159 bytes)
+  0000: if !((self.OnlineSub == none)) goto 0x000d
+  000b: return nothing
+  000d: StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  0028: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x003e
+  003c: return nothing
+  003e: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0057: if !((GRI != none)) goto 0x007a
+  0062: GRI.AddOnlineGroups(GroupIds)
+  007a: GroupIds.AddItem(1)
+  0083: StatsInterface.SetGroups(GroupIds)
+  009c: return nothing
+  009e: <eos>
+
+function TnPlayerController.OnReadProfileSettingsBegin  (script 11 bytes)
+  0000: self._ProfileReadInProgress = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerController.OnReadProfileSettingsComplete  (script 414 bytes)
+  0000: OnReadProfileSettingsComplete(LocalUserNum, bWasSuccessful)
+  0011: if !(bWasSuccessful) goto 0x0193
+  001a: if !((cast3a(self.ProfileSettings.GetProfileCorruptionState()) == cast3a(1))) goto 0x016a
+  0038: self.ProfileSettings.SetProfileCorruptionState(2)
+  004d: if !((self.UIController != none)) goto 0x0167
+  0058: MessageBox = self.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.ResetCorruptProfile", false)
+  00c8: MessageBox.SetAButton("$UIText.ButtonHints.ResetToDefaults", delegate.ResetCorruptProfile, , )
+  010b: MessageBox.SetBButton("$UIText.ButtonHints.ContinueWithoutSaving", delegate.ContinueWithoutSavingCorruptProfile, , )
+  0154: MessageBox.Show()
+  0167: goto 0x0190
+  016a: if !((cast3a(self.ProfileSettings.GetProfileCorruptionState()) != cast3a(2))) goto 0x0190
+  0188: self._ProfileReadInProgress = false
+  0190: goto 0x019b
+  0193: self._ProfileReadInProgress = false
+  019b: return nothing
+  019d: <eos>
+
+function TnPlayerController.ResetCorruptProfile  (script 226 bytes)
+  0000: if !((self.UIController != none)) goto 0x009b
+  000b: self.DeletingProfilePopup = self.UIController.ShowPopupUI("$UIText.MessagePrompts.LoadingTitle", "$UIText.MessagePrompts.DeletingProfileTitle", false)
+  0077: self.DeletingProfilePopup.bShowDefaultButtons = false
+  0088: self.DeletingProfilePopup.Show()
+  009b: if !((self.ProfileDeleter == none)) goto 0x00ba
+  00a6: self.ProfileDeleter = new(nothing, nothing, obj'HM_Engine.HmQueuedDataReaderWriter', nothing, DeltaTime)
+  00ba: self.ProfileDeleter.DeleteData("PROFILE", delegate.ProfileDeleteDone)
+  00df: return nothing
+  00e1: <eos>
+
+function TnPlayerController.ProfileDeleteDone  (script 249 bytes)
+  0000: self.DeletingProfilePopup.Close()
+  0013: self.DeletingProfilePopup = none
+  001a: Profile = TnProfileSettings(self.ProfileSettings)
+  002a: if !((Profile == none)) goto 0x0037
+  0035: return nothing
+  0037: if !(bSuccess) goto 0x00ca
+  0040: Profile.SetToDefaults()
+  0053: LP = TnLocalPlayer(self.Player)
+  0063: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x00bf
+  008d: self.OnlineSub.PlayerInterface.WriteProfileSettings(cast3d(LP.ControllerId), self.ProfileSettings)
+  00bf: self._ProfileReadInProgress = false
+  00c7: goto 0x00f6
+  00ca: Profile.SetProfileCorruptionState(1)
+  00df: OnReadProfileSettingsComplete(cast3d(GetLocalUserNum()), true)
+  00f6: return nothing
+  00f8: <eos>
+
+function TnPlayerController.ContinueWithoutSavingCorruptProfile  (script 80 bytes)
+  0000: Profile = TnProfileSettings(self.ProfileSettings)
+  0010: if !((Profile == none)) goto 0x001d
+  001b: return nothing
+  001d: Profile.SetToDefaults()
+  0030: Profile.SetProfileCorruptionState(3)
+  0045: self._ProfileReadInProgress = false
+  004d: return nothing
+  004f: <eos>
+
+function TnPlayerController.UpdateLocalCacheOfProfileSettings  (script 206 bytes)
+  0000: UpdateLocalCacheOfProfileSettings()
+  0006: get_CustomCharacterData().RefreshCharacterSlots()
+  001e: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  002e: if !((PRI != none)) goto 0x0064
+  0039: PRI.set_PrimeMode(get_XpManager().GetPrimeModeUnlocked())
+  0064: Settings = TnProfileSettings(self.ProfileSettings)
+  0074: if !((self.PlayerCamera != none)) goto 0x00aa
+  007f: HmCamera(self.PlayerCamera).SetCameraSensitivity(Settings.GetCameraSensitivity())
+  00aa: if !((get_XpManager() != none)) goto 0x00c1
+  00ba: TnPlayerController.SendPlayerLevelToServer()
+  00c1: UpdateInvertMouse()
+  00cb: return nothing
+  00cd: <eos>
+
+function TnPlayerController.RegisterOnlineDelegates  (script 429 bytes)
+  0000: RegisterOnlineDelegates()
+  0006: if !((self.OnlineSub == none)) goto 0x0013
+  0011: return nothing
+  0013: if !(NotEqual_InterfaceInterface(self.OnlineSub.SystemInterface, OnlineSystemInterface(none))) goto 0x004f
+  0030: self.OnlineSub.SystemInterface.SetNetworkNotificationPosition(8)
+  004f: StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  006a: if !(NotEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x009b
+  007e: StatsInterface.AddReadGroupCountsCompleteDelegate(delegate.OnGroupCountRead)
+  009b: if !((NotEqual_InterfaceInterface(self.OnlineSub.VoiceInterface, OnlineVoiceInterface(none)) && IsLocalPlayerController())) goto 0x00ed
+  00c7: self.OnlineSub.VoiceInterface.AddPlayerTalkingDelegate(delegate.OnPlayerTalking)
+  00ed: if !((!obj'Engine.WorldInfo'.static.IsConsoleBuild(1) && !obj'Engine.WorldInfo'.static.IsConsoleBuild(2))) goto 0x01aa
+  0123: LP = LocalPlayer(self.Player)
+  0133: if !((LP != none)) goto 0x01aa
+  013e: self.OnlineSub.PlayerInterface.AddFriendInviteReceivedDelegate(cast3d(LP.ControllerId), delegate.OnFriendInviteReceived)
+  0174: self.OnlineSub.PlayerInterface.AddReceivedGameInviteDelegate(cast3d(LP.ControllerId), delegate.OnGameInviteReceived)
+  01aa: return nothing
+  01ac: <eos>
+
+function TnPlayerController.ClearOnlineDelegates  (script 379 bytes)
+  0000: if !((self.OnlineSub == none)) goto 0x000d
+  000b: return nothing
+  000d: LogInternal((((cast56(self) @ "[") $ GetHumanReadableName()) $ "] clearing online delegates"), 'DevOnline', , )
+  004d: LP = LocalPlayer(self.Player)
+  005d: if !((LP != none)) goto 0x00d4
+  0068: self.OnlineSub.PlayerInterface.ClearReceivedGameInviteDelegate(cast3d(LP.ControllerId), delegate.OnGameInviteReceived)
+  009e: self.OnlineSub.PlayerInterface.ClearFriendInviteReceivedDelegate(cast3d(LP.ControllerId), delegate.OnFriendInviteReceived)
+  00d4: StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  00ef: if !(NotEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0120
+  0103: StatsInterface.ClearReadGroupCountsCompleteDelegate(delegate.OnGroupCountRead)
+  0120: if !((NotEqual_InterfaceInterface(self.OnlineSub.VoiceInterface, OnlineVoiceInterface(none)) && IsLocalPlayerController())) goto 0x0172
+  014c: self.OnlineSub.VoiceInterface.ClearPlayerTalkingDelegate(delegate.OnPlayerTalking)
+  0172: ClearOnlineDelegates()
+  0178: return nothing
+  017a: <eos>
+
+function TnPlayerController.OnPlayerTalking  (script 101 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0016
+  0014: return nothing
+  0016: PRI = TnPlayerReplicationInfo(self.WorldInfo.GRI.FindPlayerByUniqueNetId(PlayerID))
+  0042: if !((PRI == none)) goto 0x004f
+  004d: return nothing
+  004f: PRI.OnTalking()
+  0062: return nothing
+  0064: <eos>
+
+function TnPlayerController.OnFriendInviteReceived  (script 53 bytes)
+  0000: if !((self.UIController != none)) goto 0x0032
+  000b: self.UIController.OnFriendInviteReceived(LocalUserNum, RequestingPlayer, RequestingNick, Message)
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerController.OnGameInviteReceived  (script 43 bytes)
+  0000: if !((self.UIController != none)) goto 0x0028
+  000b: self.UIController.OnGameInviteReceived(LocalUserNum, InviterName)
+  0028: return nothing
+  002a: <eos>
+
+function TnPlayerController.OnGroupCountRead  (script 99 bytes)
+  0000: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0019: I = GroupIds.Find(1)
+  0028: if !((I == -1)) goto 0x0039
+  0037: return nothing
+  0039: if !(bWasSuccessful) goto 0x0060
+  0042: GRI.SetNumOnlinePlayers(I[GroupCounts])
+  0060: return nothing
+  0062: <eos>
+
+function TnPlayerController.OnWriteProfileSettingsComplete  (script 179 bytes)
+  0000: OnWriteProfileSettingsComplete(LocalUserNum, bWasSuccessful)
+  0011: if !(!self.WorldInfo.IsConsoleBuild(1)) goto 0x002d
+  002b: return nothing
+  002d: if !((!bWasSuccessful && (self.UIController != none))) goto 0x00b0
+  0045: self.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.ProfileWriteFailed", )
+  00b0: return nothing
+  00b2: <eos>
+
+function TnPlayerController.InitializeUIController  (script 325 bytes)
+  0000: nothing
+  0001: LP = LocalPlayer(self.Player)
+  0011: if !((LP == none)) goto 0x001e
+  001c: return nothing
+  001e: if !((self.UIController != none)) goto 0x003c
+  0029: self.UIController.Cleanup()
+  003c: OldUIController = self.UIController
+  0047: self.UIController = new(self, nothing, UIControllerClass, nothing, DeltaTime)
+  005b: if !((self.UIController != none)) goto 0x00b4
+  0066: TnHUD(self.myHUD).SetHudVisibilityDelegate(self.UIController)
+  0083: self.UIController.Initialize(delegate.OpenUIMovie, delegate.CloseUIMovie, self, UseInGameLobby, OldUIController)
+  00b4: TnPlayerController.CheckForConnectionErrors()
+  00ba: VC = TnGameViewportClient(LP.ViewportClient)
+  00d3: if !(self._HandleControllerChanged) goto 0x00f4
+  00dc: TnPlayerController.HandleControllerChanged(self._HandleControllerId, get_IsControllerConnected())
+  00f1: goto 0x0142
+  00f4: if !((((VC != none) && VC._HasAssignedControllerId) && !get_IsControllerConnected())) goto 0x0142
+  0124: TnPlayerController.HandleControllerChanged(LP.ControllerId, get_IsControllerConnected())
+  0142: return nothing
+  0144: <eos>
+
+function TnPlayerController.CheckForConnectionErrors  (script 220 bytes)
+  0000: CurrentURL = self.WorldInfo.GetLocalURL()
+  0019: CurrentURL = obj'Core.Strings'.static.Mid(CurrentURL, obj'Core.Strings'.static.InStr(CurrentURL, "?", ), )
+  0044: if !(self.bIgnoreNetworkMessages) goto 0x004f
+  004d: return nothing
+  004f: GE = GameEngine(obj'Engine.Engine'.static.GetEngine())
+  006d: if !(((GE == none) || !GE.GetCurrentErrorMessage(LocalizedFailedTitle, LocalizedFailedMessage))) goto 0x009e
+  009c: return nothing
+  009e: GE.ClearCurrentErrorMessage()
+  00b1: if !((self.UIController != none)) goto 0x00d9
+  00bc: self.UIController.OnConnectionError(LocalizedFailedMessage, LocalizedFailedTitle)
+  00d9: return nothing
+  00db: <eos>
+
+function TnPlayerController.OnUIEvent  (script 38 bytes)
+  0000: if !((self.UIController != none)) goto 0x0023
+  000b: self.UIController.OnUIEvent(EventType)
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.ShowMenu  (script 35 bytes)
+  0000: if !((self.UIController != none)) goto 0x0020
+  000b: self.UIController.OnUIEvent(6)
+  0020: return nothing
+  0022: <eos>
+
+function TnPlayerController.OnSwitchTeams  (script 13 bytes)
+  0000: SwitchTeam()
+  000a: return nothing
+  000c: <eos>
+
+function TnPlayerController.StartTransform  (script 217 bytes)
+  0000: if !((get_TransformerPawn().get_IsTransforming() || !get_TransformerPawn().get_IsTransformingEnabled())) goto 0x003c
+  003a: return false
+  003c: if !(!get_TransformerPawn().MoveToSafeTransformationLocation(TargetForm)) goto 0x008e
+  005e: myTnHud = TnHUD(self.myHUD)
+  006e: if !((myTnHud != none)) goto 0x008c
+  0079: myTnHud.NotifyCantTransform()
+  008c: return false
+  008e: if !((cast3a(self.Role) < cast3a(3))) goto 0x00c5
+  009e: TnPlayerController.ServerTransform(TargetForm, self.Pawn.Location, self.Pawn.Rotation)
+  00c5: TnPlayerController.DoTransform(TargetForm)
+  00d0: return true
+  00d2: return return
+  00d8: <eos>
+
+function TnPlayerController.ServerTransform  (script 97 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return nothing
+  0012: if !((cast3a(TargetForm) == cast3a(0))) goto 0x0043
+  0022: DummyFlags = 0
+  002a: ServerSetLocationAndRotation(ClientLocation, ClientRotation, DummyFlags)
+  0043: if !((cast3a(self.Role) == cast3a(3))) goto 0x005e
+  0053: TnPlayerController.DoTransform(TargetForm)
+  005e: return nothing
+  0060: <eos>
+
+function TnPlayerController.DoTransform  (script 112 bytes)
+  0000: EndBlock()
+  000a: TnPlayerController.AbortMelee()
+  0010: if !((cast3a(self.Role) == cast3a(3))) goto 0x0038
+  0020: self._DialogManager.PlayTransformDialog(TargetForm)
+  0038: GotoNewFormState(TargetForm)
+  0047: get_TransformerPawn().Transform(TargetForm, delegate.None)
+  006d: return nothing
+  006f: <eos>
+
+function TnPlayerController.PawnDied  (script 58 bytes)
+  0000: self._DialogManager.DialogUnregisterAllEnemies()
+  0013: if !(self.bCinematicMode) goto 0x002c
+  001c: SetCinematicMode(false, false, true, true, true, true)
+  002c: PawnDied(P)
+  0037: return nothing
+  0039: <eos>
+
+function TnPlayerController.StartSpectating  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.UpdateTargeting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.Transform  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerController.Dead.StartFocus  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.FineAim  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.StartBoost  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.PressXButton  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.PressKeyboardInteractKey  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.StartVehicleSpecialMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.TriggerAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.StartAscend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.StartDescend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.DownedSuicide  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.TossGrenade  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.NextWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.TriggerKillstreak  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.Dead.BeginState  (script 235 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !((self._CameraStrategyManager != none)) goto 0x0029
+  0016: self._CameraStrategyManager.Died()
+  0029: RemoveFullScreenMaterialEffect()
+  0033: if !(IsLocalPlayerController()) goto 0x0053
+  0040: self.WorldInfo.ForceGarbageCollection()
+  0053: if !(((self.WorldInfo.GRI != none) && self.WorldInfo.GRI.IsMultiplayerGame())) goto 0x009b
+  0088: SetTimer(self.MinRespawnDelay, false, 'StartSpectating', )
+  009b: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  00ab: if !(((PRI != none) && (PRI._ClassFormTracker != none))) goto 0x00e8
+  00cc: PRI._ClassFormTracker.DisableTracking()
+  00e8: return nothing
+  00ea: <eos>
+
+function TnPlayerController.Dead.StartSpectating  (script 17 bytes)
+  0000: GotoState('PlayerSpectating', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.Dead.ServerRestartPlayer  (script 161 bytes)
+  0000: if !(!self.WorldInfo.Game.PlayerCanRestart(self)) goto 0x007c
+  0022: CM = TnCheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  004e: if !((CM.GetActiveCheckpoint() != none)) goto 0x007c
+  0067: CM.RestartFromActiveCheckpoint()
+  007a: return nothing
+  007c: TnGame(self.WorldInfo.Game).RequestRespawn(self)
+  009e: return nothing
+  00a0: <eos>
+
+function TnPlayerController.Dead.IsAbleToFire  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.Dead.Use  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ClientStartSpectating  (script 17 bytes)
+  0000: GotoState('PlayerSpectating', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.ToggleSpectator  (script 17 bytes)
+  0000: GotoState('PlayerSpectating', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerController.PlayerSpectating.BeginState  (script 76 bytes)
+  0000: UpdateInvertMouse()
+  000a: if !((self.UIController != none)) goto 0x002a
+  0015: self.UIController.OnUIEvent(4)
+  002a: if !((self._CameraStrategyManager != none)) goto 0x0049
+  0035: self._CameraStrategyManager.StartSpectating()
+  0049: return nothing
+  004b: <eos>
+
+function TnPlayerController.PlayerSpectating.EndState  (script 46 bytes)
+  0000: EndState(NextStateName)
+  000b: if !((self.UIController != none)) goto 0x002b
+  0016: self.UIController.OnUIEvent(5)
+  002b: return nothing
+  002d: <eos>
+
+function TnPlayerController.PlayerSpectating.IsDead  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerController.PlayerSpectating.ToggleSpectator  (script 33 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001e
+  000b: self.Pawn.Suicide()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerController.SpawnCameraEmitter  (script 56 bytes)
+  0000: if !(((self.PlayerCamera != none) && (PSTemplate != none))) goto 0x0035
+  0018: TnCamera(self.PlayerCamera).SpawnEmitter(PSTemplate)
+  0035: return nothing
+  0037: <eos>
+
+function TnPlayerController.ActivatePostProcessModification  (script 43 bytes)
+  0000: if !((self.PlayerCamera != none)) goto 0x0028
+  000b: TnCamera(self.PlayerCamera).ActivatePostProcessModification(Modification)
+  0028: return nothing
+  002a: <eos>
+
+function TnPlayerController.ShouldRecordPlayerRecord  (script 149 bytes)
+  0000: AsPlayer = TnPlayerPawn(self.Pawn)
+  0010: if !((AsPlayer == none)) goto 0x001d
+  001b: return false
+  001d: if !(IsDead()) goto 0x002c
+  002a: return false
+  002c: ActorBase = AsPlayer.GetActorBase()
+  0045: if !(((ActorBase != none) && (cast3a(ActorBase.Physics) == cast3a(7)))) goto 0x006d
+  006b: return false
+  006d: if !((AsPlayer != none)) goto 0x008c
+  0078: return AsPlayer.ShouldRecordPlayerRecord()
+  008c: return true
+  008e: return return
+  0094: <eos>
+
+function TnPlayerController.AllowTeammateRespawn  (script 33 bytes)
+  0000: return ((self.Pawn != none) && !IsDead())
+  001a: return return
+  0020: <eos>
+
+function TnPlayerController.SetFullScreenMaterialEffect  (script 39 bytes)
+  0000: RemoveFullScreenMaterialEffect()
+  000a: self.FullScreenMaterialEffect = Effect
+  0015: AddPostProcessEffectToFront(self.FullScreenMaterialEffect)
+  0024: return nothing
+  0026: <eos>
+
+function TnPlayerController.RemoveFullScreenMaterialEffect  (script 38 bytes)
+  0000: if !((self.FullScreenMaterialEffect == none)) goto 0x000d
+  000b: return nothing
+  000d: RemovePostProcessEffect(self.FullScreenMaterialEffect)
+  001c: self.FullScreenMaterialEffect = none
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerController.GetScaleformInterface  (script 160 bytes)
+  0000: foreach LocalPlayer(self.Player).get_Outer().GameViewport.GlobalInteractions(CI,) (end 0x004c)
+  002d: GI = GFxInteraction(CI)
+  003d: if !((GI != none)) goto 0x004b
+  0048: goto 0x004c
+  004b: iternext
+  004c: iterpop
+  004d: if !((GI == none)) goto 0x005a
+  0058: return none
+  005a: FocusMovie = GI.GetFocusMovie()
+  0073: if !((FocusMovie == none)) goto 0x0080
+  007e: return none
+  0080: return FocusMovie.FindInterface(InterfaceName)
+  0099: return return
+  009f: <eos>
+
+function TnPlayerController.RunKeyboardUi  (script 98 bytes)
+  0000: ConsoleBinding = TnConsoleActionScriptBinding(TnPlayerController.GetScaleformInterface('Console'))
+  001a: if !((ConsoleBinding != none)) goto 0x005f
+  0025: ConsoleBinding.StartKeyboard(LocalPlayer(self.Player).ControllerId, "Test", "TestDesc", , , , )
+  005f: return nothing
+  0061: <eos>
+
+function TnPlayerController.TransformPP  (script 59 bytes)
+  0000: CharacterBinding = TnCharacterScriptBinding(TnPlayerController.GetScaleformInterface('Customize'))
+  001a: if !((CharacterBinding != none)) goto 0x0038
+  0025: CharacterBinding.TransformPreviewCharacter()
+  0038: return nothing
+  003a: <eos>
+
+function TnPlayerController.GetCurrentTargetName  (script 132 bytes)
+  0000: if !((self.PlayerTargeting != none)) goto 0x007a
+  000b: TargetedPawn = Pawn(self.PlayerTargeting.GetTarget())
+  0029: if !((((TargetedPawn != none) && (TargetedPawn.PlayerReplicationInfo != none)) && self.PlayerTargeting.IsTargetDirectHit())) goto 0x007a
+  0062: return TargetedPawn.PlayerReplicationInfo.PlayerName
+  007a: return ""
+  007d: return return
+  0083: <eos>
+
+function TnPlayerController.GetTargetHealthDisplay  (script 228 bytes)
+  0000: DisplayType = 2
+  0008: NormalizedHealth = -1.0
+  0013: if !((self.PlayerTargeting == none)) goto 0x0020
+  001e: return nothing
+  0020: TargetServices = TnServiceProvider(self.PlayerTargeting.GetTarget())
+  003e: if !(EqualEqual_InterfaceInterface(TargetServices, TnServiceProvider(none))) goto 0x0054
+  0052: return nothing
+  0054: HealthDisplayService = TnHealthDisplayService(TargetServices.GetService('TnHealthDisplayService'))
+  007c: if !((EqualEqual_InterfaceInterface(HealthDisplayService, TnHealthDisplayService(none)) || !HealthDisplayService.ShouldDisplayHealth())) goto 0x00ad
+  00ab: return nothing
+  00ad: DisplayType = HealthDisplayService.get_DisplayType()
+  00c7: NormalizedHealth = HealthDisplayService.get_NormalizedHealth()
+  00e1: return nothing
+  00e3: <eos>
+
+function TnPlayerController.GetCustomCharacterNames  (script 42 bytes)
+  0000: get_CustomCharacterData().AppendCharacterNamesToList(Characters)
+  001d: return Characters
+  0023: return return
+  0029: <eos>
+
+function TnPlayerController.IsValidIconicCharacterName  (script 49 bytes)
+  0000: CD = GetIconicCharacter(CharacterName)
+  0015: return (CD.CharacterName != "")
+  002a: return return
+  0030: <eos>
+
+function TnPlayerController.GetIconicCharacter  (script 32 bytes)
+  0000: return obj'TnProfileSettings'.static.GetIconicCharacter(CharacterName)
+  0019: return return
+  001f: <eos>
+
+function TnPlayerController.GetAllIconicCharacterNames  (script 27 bytes)
+  0000: return obj'TnProfileSettings'.static.GetAllIconicCharacterNames()
+  0014: return return
+  001a: <eos>
+
+function TnPlayerController.ServerSetCharacterData  (script 25 bytes)
+  0000: self._CheckpointOverrideCharacterData = EmptyData
+  000b: TnPlayerController.SetCharacterData(CD)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerController.SetCharacterData  (script 62 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x001e
+  0010: TnPlayerController.ServerSetCharacterData(CD)
+  001b: goto 0x003b
+  001e: TnPlayerReplicationInfo(self.PlayerReplicationInfo).SelectCharacter(CD)
+  003b: return nothing
+  003d: <eos>
+
+function TnPlayerController.FindCustomCharacter  (script 37 bytes)
+  0000: return get_CustomCharacterData().FindCharacter(CharacterName)
+  001e: return return
+  0024: <eos>
+
+function TnPlayerController.FindIconicCharacter  (script 32 bytes)
+  0000: return obj'TnProfileSettings'.static.FindIconicCharacter(CharacterName)
+  0019: return return
+  001f: <eos>
+
+function TnPlayerController.ClientSelectRandomCharacter  (script 202 bytes)
+  0000: if !((self.PlayerReplicationInfo == none)) goto 0x000d
+  000b: return nothing
+  000d: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0026: if !((GRI == none)) goto 0x0033
+  0031: return nothing
+  0033: if !(GRI._bIconicMode) goto 0x0069
+  0045: CharacterNames = GRI.GetPlayableIconicCharacterNames()
+  005e: CharType = 1
+  0066: goto 0x008e
+  0069: get_CustomCharacterData().AppendCharacterNamesToList(CharacterNames)
+  0086: CharType = 0
+  008e: CharacterIndex = obj'Core.Random'.static.RandomInt(CharacterNames.Length)
+  00ad: SelectCharacter(CharacterIndex[CharacterNames], CharType)
+  00c7: return nothing
+  00c9: <eos>
+
+function TnPlayerController.SelectCharacter  (script 370 bytes)
+  0000: switch (PresetCharacterType)
+  0007: case 1: (next 0x0024)
+  000c: CharacterToSelect = FindIconicCharacter(CharacterName)
+  0021: goto 0x0044
+  0024: case 0: (next 0x0041)
+  0029: CharacterToSelect = FindCustomCharacter(CharacterName)
+  003e: goto 0x0044
+  0041: default:
+  0044: if !((CharacterToSelect.CharacterName == "")) goto 0x0094
+  005b: LogInternal(("Error: Could not select character with name" @ CharacterName), , , )
+  0094: CCD = self.CharacterDataHelpers.ReplicateCharacterData(CharacterToSelect)
+  00b2: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  00c2: IsSelectedCharacterNew = (PRI.HasSelectedCharacter() && (PRI._SelectedCharacter.CharacterName != CCD.CharacterName))
+  010c: if !((self.UIController != none)) goto 0x0140
+  0117: self.UIController.OnCharacterSelected(CharacterToSelect.FriendlyName, IsSelectedCharacterNew)
+  0140: self._CheckpointOverrideCharacterData = EmptyData
+  014b: TnPlayerController.SetCharacterData(CCD)
+  0156: return (CCD.CharacterName != "")
+  016b: return return
+  0171: <eos>
+
+function TnPlayerController.LogXpData  (script 27 bytes)
+  0000: get_XpManager().LogXpData()
+  0018: return nothing
+  001a: <eos>
+
+function TnPlayerController.ToggleXpTransaction  (script 45 bytes)
+  0000: if !(TnGameReplicationInfo(self.WorldInfo.GRI).CanGainXp()) goto 0x002a
+  0024: TnPlayerController.ClientToggleXpTransaction()
+  002a: return nothing
+  002c: <eos>
+
+function TnPlayerController.ClientToggleXpTransaction  (script 22 bytes)
+  0000: self._XpTransactionHandler.ToggleTransaction()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.NotifyXpEvent  (script 93 bytes)
+  0000: if !(!TnGameReplicationInfo(self.WorldInfo.GRI).ShowXpEvents()) goto 0x0028
+  0026: return nothing
+  0028: TnGame(self.WorldInfo.Game).NotifyXpGained(self, XpType)
+  004f: TnPlayerController.ClientNotifyXpEvent(XpType)
+  005a: return nothing
+  005c: <eos>
+
+function TnPlayerController.ClientNotifyXpEvent  (script 360 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0058
+  0014: LogInternal("ERROR:  Client recieved xp event before GRI was replicated.", , , )
+  0056: return nothing
+  0058: if !((XpType == none)) goto 0x009f
+  0063: LogInternal("Error: Client received none xp event type, ignoring", , , )
+  009d: return nothing
+  009f: self._XpTransactionHandler.AddEvent(XpType)
+  00b7: if !(!TnGameReplicationInfo(self.WorldInfo.GRI).CanGainXp()) goto 0x00df
+  00dd: return nothing
+  00df: if !((get_XpManager() == none)) goto 0x00f1
+  00ef: return nothing
+  00f1: Specialty = get_CurrentCharacter().Specialty
+  010c: PreXpLevel = cast3f(get_XpManager().GetLevelForSpecialty(Specialty))
+  0131: get_XpManager().NotifyXpEvent(Specialty, XpType)
+  0153: TnPlayerController.CheckForLevelUp(Specialty, cast44(PreXpLevel))
+  0165: return nothing
+  0167: <eos>
+
+function TnPlayerController.OnChallengeUnlocked  (script 181 bytes)
+  0000: XpAmount = CompletionLevel[Challenge.XpRewardValues]
+  001a: if !(Challenge.PrimeChallenge) goto 0x008e
+  002c: NotifyChallengeXpEvent("Scout", XpAmount)
+  0042: NotifyChallengeXpEvent("Soldier", XpAmount)
+  005a: NotifyChallengeXpEvent("Scientist", XpAmount)
+  0074: NotifyChallengeXpEvent("Leader", XpAmount)
+  008b: goto 0x00b2
+  008e: NotifyChallengeXpEvent(get_CurrentCharacter().Specialty, XpAmount)
+  00b2: return nothing
+  00b4: <eos>
+
+function TnPlayerController.NotifyChallengeXpEvent  (script 19 bytes)
+  0000: TnPlayerController.ClientNotifyChallengeXpEvent(Specialty, Amount)
+  0010: return nothing
+  0012: <eos>
+
+function TnPlayerController.ClientNotifyChallengeXpEvent  (script 110 bytes)
+  0000: if !((get_XpManager() == none)) goto 0x0012
+  0010: return nothing
+  0012: PreXpLevel = cast3f(get_XpManager().GetLevelForSpecialty(Specialty))
+  0037: get_XpManager().NotifyChallengeXpEvent(Specialty, Amount)
+  0059: TnPlayerController.CheckForLevelUp(Specialty, cast44(PreXpLevel))
+  006b: return nothing
+  006d: <eos>
+
+function TnPlayerController.CheckForLevelUp  (script 474 bytes)
+  0000: NewLevel = get_XpManager().GetLevelForSpecialty(Specialty)
+  0023: if !((NewLevel <= OldLevel)) goto 0x0034
+  0032: return nothing
+  0034: if !((NewLevel >= 5)) goto 0x004c
+  0040: ClientUnlockAchievement(38)
+  004c: if !((NewLevel >= 25)) goto 0x0064
+  0058: ClientUnlockAchievement(39)
+  0064: LevelSum = get_XpManager().GetLevelSum()
+  0082: LevelIsForCurrentSpecialty = (Specialty == get_CurrentCharacter().Specialty)
+  00a5: TnPlayerController.SendPlayerLevelToServer((LevelIsForCurrentSpecialty ? NewLevel : -1))
+  00c0: if !((LevelSum >= 50)) goto 0x00d8
+  00cc: ClientUnlockAchievement(40)
+  00d8: if !((LevelSum >= 75)) goto 0x00f0
+  00e4: ClientUnlockAchievement(41)
+  00f0: if !((LevelSum >= 100)) goto 0x0108
+  00fc: ClientUnlockAchievement(42)
+  0108: if !(LevelIsForCurrentSpecialty) goto 0x0133
+  0111: TnHUD(self.myHUD).NotifyLevelUp(NewLevel, Specialty)
+  0133: I = (OldLevel + 1)
+  0141: if !((I <= NewLevel)) goto 0x017c
+  0150: self.CustomCharacterOptions.GetSkillsForLevel(SkillsUnlockedNow, Specialty, I)
+  0172: AddAdd_PreInt(I)
+  0179: goto 0x0141
+  017c: J = 0
+  0183: if !((J < SkillsUnlockedNow.Length)) goto 0x01d7
+  0193: SkillToAdd = ((get_CurrentCharacter().Specialty $ ".") $ J[SkillsUnlockedNow])
+  01c0: self.SkillsUnlockedThisGame.AddItem(SkillToAdd)
+  01cd: AddAdd_PreInt(J)
+  01d4: goto 0x0183
+  01d7: return nothing
+  01d9: <eos>
+
+function TnPlayerController.NotifyScoreEvent  (script 14 bytes)
+  0000: TnPlayerController.ClientNotifyScoreEvent(ScoreAmount)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.ClientNotifyScoreEvent  (script 32 bytes)
+  0000: TnHUD(self.myHUD).NotifyScoreEvent(ScoreAmount)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.OnPrimeModeUnlocked  (script 178 bytes)
+  0000: LP = TnLocalPlayer(self.Player)
+  0010: ClientUnlockAchievement(43)
+  001c: PS = TnProfileSettings(self.ProfileSettings)
+  002c: PS.ChallengeManager.ClearPrimeModeStats()
+  0048: get_XpManager().SetPrimeModeUnlocked(true)
+  0061: get_XpManager().ClearXp()
+  0079: LP._CustomCharacterData.ResetNewlyUnlockedSkills()
+  0095: LP.ResetCharacters()
+  00a8: TnPlayerController.SendPlayerLevelToServer()
+  00af: return nothing
+  00b1: <eos>
+
+function TnPlayerController.SendPlayerLevelToServer  (script 47 bytes)
+  0000: default=-1
+  0009: TnPlayerController.ServerSetPlayerLevel(get_XpManager().PackLevels(), AnnounceLevel)
+  002c: return nothing
+  002e: <eos>
+
+function TnPlayerController.ServerSetPlayerLevel  (script 90 bytes)
+  0000: default=-1
+  0009: if !((self.PlayerReplicationInfo != none)) goto 0x0057
+  0014: TnPlayerReplicationInfo(self.PlayerReplicationInfo).SetPlayerLevel(NewPlayerLevel)
+  0031: if !((AnnounceLevel >= 0)) goto 0x0057
+  003c: BroadcastLocalizedMessage(obj'TnPlayerLevelUpMessage', AnnounceLevel, self.PlayerReplicationInfo, , )
+  0057: return nothing
+  0059: <eos>
+
+function TnPlayerController.OnSetPawn  (script 179 bytes)
+  0000: PlayerPawn = TnPlayerPawn(aPawn)
+  0010: self._MeleeRequested = false
+  0018: self._PickupManager.Initialize(PlayerPawn, (IsLocalPlayerController() ? self.ContextualCommander : none))
+  0045: self._FineAimManager.Initialize(aPawn, self.PlayerTargeting, self._CameraStrategyManager)
+  0067: if !(IsLocalPlayerController()) goto 0x00b0
+  0074: TnPlayerController.ResetHud(PlayerPawn)
+  007f: self._PointOfInterestManager.Reset()
+  0092: self.DeferredTriggerKillstreak = false
+  009a: if !((PlayerPawn != none)) goto 0x00b0
+  00a5: TnPlayerController.RemoveStaleKillstreaks(PlayerPawn)
+  00b0: return nothing
+  00b2: <eos>
+
+function TnPlayerController.ResetHud  (script 199 bytes)
+  0000: if !(((self.myHUD == none) || (self.myHUD.get_Class() != self.HUDClass))) goto 0x003f
+  0023: self.myHUD = Spawn(self.HUDClass, self, , , , , , )
+  003f: self.ContextualCommander.ClearAllContextualCommands()
+  0052: self.myHUD.Reset()
+  0065: if !(((self.UIController != none) && self.UIController.IsHidingHUD())) goto 0x009c
+  0088: self.myHUD.SetVisibility(false)
+  009c: if !((PlayerPawn != none)) goto 0x00c4
+  00a7: PlayerPawn.SetHud(TnHUD(self.myHUD))
+  00c4: return nothing
+  00c6: <eos>
+
+function TnPlayerController.Possess  (script 90 bytes)
+  0000: nothing
+  0001: Possess(aPawn, bVehicleTransition)
+  0012: TnPlayerController.OnSetPawn(aPawn)
+  001d: SetTimer(0.1, true, 'UpdatePickupCommand', )
+  0030: self._LastPawnWhoKilledMe = none
+  0037: self._ShouldInstantRespawn = false
+  003f: TnPlayerController.InitializeSpectateActor()
+  0045: UpdateDamageHistory()
+  004f: self.bGodMode = false
+  0057: return nothing
+  0059: <eos>
+
+function TnPlayerController.UpdatePickupCommand  (script 82 bytes)
+  0000: self._PickupManager.UpdateCommand()
+  0013: if !((self._PickupManager.IsPickupAvailable() && (cast3a(self._PickupManager.get_AvailablePickup()) == cast3a(2)))) goto 0x004f
+  0049: TnPlayerController.TryPickup()
+  004f: return nothing
+  0051: <eos>
+
+function TnPlayerController.InitializeSpectateActor  (script 81 bytes)
+  0000: AsTnGame = TnGame(self.WorldInfo.Game)
+  0019: if !(((AsTnGame != none) && (AsTnGame._SpectateActor != none))) goto 0x004e
+  003a: self.SpectateActor = AsTnGame._SpectateActor
+  004e: return nothing
+  0050: <eos>
+
+function TnPlayerController.ClientSetPawn  (script 25 bytes)
+  0000: TnPlayerController.OnSetPawn(P)
+  000b: ClientSetPawn(P)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerController.ReceiveErrorStatistic  (script 74 bytes)
+  0000: if !((TnGame(self.WorldInfo.Game) == none)) goto 0x001b
+  0019: return nothing
+  001b: TnGame(self.WorldInfo.Game).ReceiveErrorStatistic(self, ErrorString, Callstack)
+  0047: return nothing
+  0049: <eos>
+
+function TnPlayerController.StartSendErrorStatisticToServer  (script 22 bytes)
+  0000: self.ClientErrorString = ErrorString
+  000b: self.ClientErrorCallstack = ""
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerController.SendErrorStatisticCallstackPieceToServer  (script 21 bytes)
+  0000: ConcatEqual_StrStr(self.ClientErrorCallstack, ErrorString)
+  0012: return nothing
+  0014: <eos>
+
+function TnPlayerController.FinishSendErrorStatisticToServer  (script 35 bytes)
+  0000: TnPlayerController.ReceiveErrorStatistic(self.ClientErrorString, self.ClientErrorCallstack)
+  0010: self.ClientErrorString = ""
+  0018: self.ClientErrorCallstack = ""
+  0020: return nothing
+  0022: <eos>
+
+function TnPlayerController.ReceiveError  (script 209 bytes)
+  0000: kNumberOfCharactersToSend = 250
+  0008: if !((cast3a(self.Role) == cast3a(3))) goto 0x002b
+  0018: TnPlayerController.ReceiveErrorStatistic(ErrorString, Callstack)
+  0028: goto 0x00ce
+  002b: StartSendErrorStatisticToServer(ErrorString)
+  003a: if !((obj'Core.Strings'.static.Len(Callstack) > 0)) goto 0x00c4
+  0050: SendErrorStatisticCallstackPieceToServer(obj'Core.Strings'.static.Left(Callstack, kNumberOfCharactersToSend))
+  006f: if !((obj'Core.Strings'.static.Len(Callstack) <= kNumberOfCharactersToSend)) goto 0x0094
+  0089: Callstack = ""
+  0091: goto 0x00c1
+  0094: Callstack = obj'Core.Strings'.static.Right(Callstack, (obj'Core.Strings'.static.Len(Callstack) - kNumberOfCharactersToSend))
+  00c1: goto 0x003a
+  00c4: FinishSendErrorStatisticToServer()
+  00ce: return nothing
+  00d0: <eos>
+
+function TnPlayerController.InstallErrorStatisticsDelegate  (script 41 bytes)
+  0000: obj'Engine.Engine'.static.GetEngine().__OnNewError__Delegate = delegate.ReceiveError
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.LongClientAdjustPosition  (script 232 bytes)
+  0000: if !((NewState != GetStateName())) goto 0x0062
+  000d: LogInternal(((("Ignoring server state " $ cast57(NewState)) $ " since the controller is already in ") $ cast57(GetStateName())), , , )
+  0062: LongClientAdjustPosition(TimeStamp, GetStateName(), NewPhysics, NewLocX, NewLocY, NewLocZ, NewVelX, NewVelY, NewVelZ, NewBase, NewFloorX, NewFloorY, NewFloorZ)
+  00a7: self.LongAdjustHistory.SetSampleTime(5.0)
+  00bf: self.LongAdjustHistory.AddValue(1.0, self.WorldInfo.TimeSeconds)
+  00e5: return nothing
+  00e7: <eos>
+
+function TnPlayerController.SetLockOnThreatLevel  (script 64 bytes)
+  0000: LOT = TnLockOnThreatInterface(self.Pawn)
+  0010: if !(NotEqual_InterfaceInterface(LOT, TnLockOnThreatInterface(none))) goto 0x003d
+  0024: LOT.SetLockOnThreatLevel(ThreatLevel)
+  003d: return nothing
+  003f: <eos>
+
+function TnPlayerController.ClearLockOnThreatLevel  (script 43 bytes)
+  0000: if !((get_TransformerPawn() != none)) goto 0x0028
+  0010: get_TransformerPawn().ClearLockOnThreatLevel()
+  0028: return nothing
+  002a: <eos>
+
+function TnPlayerController.OnToggleHUD  (script 92 bytes)
+  0000: if !(0[inAction.InputLinks].bHasImpulse) goto 0x002e
+  001f: OnUIEvent(13)
+  002b: goto 0x0059
+  002e: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0059
+  004d: OnUIEvent(12)
+  0059: return nothing
+  005b: <eos>
+
+function TnPlayerController.OnFullScreenMovieStart  (script 43 bytes)
+  0000: if !((self.UIController != none)) goto 0x0020
+  000b: self.UIController.OnUIEvent(12)
+  0020: self.bFullScreenMoviePlaying = true
+  0028: return nothing
+  002a: <eos>
+
+function TnPlayerController.OnFullScreenMovieStop  (script 121 bytes)
+  0000: if !((!self.bHudOffInCinematicMode && (self.UIController != none))) goto 0x002d
+  0018: self.UIController.OnUIEvent(13)
+  002d: if !((self.UIController != none)) goto 0x006e
+  0038: self.UIController.InvokeOnCurrentUIConditional(self.UIController.FrontEndUI, "_global.MovieEnded", )
+  006e: self.bFullScreenMoviePlaying = false
+  0076: return nothing
+  0078: <eos>
+
+function TnPlayerController.FakeScoreKill  (script 29 bytes)
+  0000: nothing
+  0001: default=obj'TnDamageType'
+  000a: TnPlayerController.ServerFakeScoreKill(Kills, DamageType)
+  001a: return nothing
+  001c: <eos>
+
+function TnPlayerController.ServerFakeScoreKill  (script 121 bytes)
+  0000: if !((Kills == 0)) goto 0x0012
+  000b: Kills = 1
+  0012: I = 0
+  0019: if !((I < Kills)) goto 0x0055
+  0028: self.WorldInfo.Game.ScoreKill(self, none, DamageType)
+  004b: AddAdd_PreInt(I)
+  0052: goto 0x0019
+  0055: self.WorldInfo.Game.CheckScore(self.PlayerReplicationInfo)
+  0076: return nothing
+  0078: <eos>
+
+function TnPlayerController.FakeScoreObjective  (script 15 bytes)
+  0000: nothing
+  0001: TnPlayerController.ServerFakeScoreObjective(num)
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerController.ServerFakeScoreObjective  (script 41 bytes)
+  0000: self.WorldInfo.Game.ScoreObjective(self.PlayerReplicationInfo, num)
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.ForceToForm  (script 14 bytes)
+  0000: TnPlayerController.DoTransform(TargetForm)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.RecordClientAdjust  (script 41 bytes)
+  0000: self.WorldInfo.Game.NotifyClientAdjust(self, 'ClientAdjustPosition')
+  0026: return nothing
+  0028: <eos>
+
+function TnPlayerController.OnShieldDestroyed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.SkipMatinee  (script 66 bytes)
+  0000: if !(((cast3a(self.Role) == cast3a(3)) && (LocalPlayer(self.Player) != none))) goto 0x003f
+  0022: LocalPlayer(self.Player).CancelMatinee(0.0)
+  003f: return nothing
+  0041: <eos>
+
+function TnPlayerController.StartDowned  (script 94 bytes)
+  0000: ClearInputs()
+  000a: if !((cast3a(self.Role) == cast3a(3))) goto 0x0033
+  001a: TnPlayerController.ForceEquipRobotWeapon()
+  0020: self._DialogManager.PlayDownedDialog()
+  0033: if !((self._CameraStrategyManager != none)) goto 0x0051
+  003e: self._CameraStrategyManager.Downed()
+  0051: OnStartDowned()
+  005b: return nothing
+  005d: <eos>
+
+function TnPlayerController.ForceEquipRobotWeapon  (script 326 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(TnPawn(self.Pawn).get_FormType()) == cast3a(1))) goto 0x0032
+  0030: return nothing
+  0032: IM = TnInventoryManager(self.Pawn.InvManager)
+  004b: if !((IM == none)) goto 0x0058
+  0056: return nothing
+  0058: PendingWeapon = TnWeapon(IM.PendingWeapon)
+  0071: if !(((PendingWeapon != none) && ((cast3a(PendingWeapon.WeaponType) == cast3a(1)) || (cast3a(PendingWeapon.WeaponType) == cast3a(2))))) goto 0x00b4
+  00b2: return nothing
+  00b4: CurrentWeapon = TnWeapon(self.Pawn.Weapon)
+  00cd: if !(((CurrentWeapon != none) && ((cast3a(CurrentWeapon.WeaponType) == cast3a(1)) || (cast3a(CurrentWeapon.WeaponType) == cast3a(2))))) goto 0x0110
+  010e: return nothing
+  0110: CurrentWeapon = IM.GetWeaponByType(1)
+  012b: IM.SetCurrentWeapon(CurrentWeapon)
+  0143: return nothing
+  0145: <eos>
+
+function TnPlayerController.StopDowned  (script 102 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0023
+  0010: self._DialogManager.PlayRevivedDialog()
+  0023: if !((self._CameraStrategyManager != none)) goto 0x0059
+  002e: self._CameraStrategyManager.StartForm(TnPawn(self.Pawn).get_FormType())
+  0059: OnStopDowned()
+  0063: return nothing
+  0065: <eos>
+
+function TnPlayerController.ClientArbitratedMatchEnded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerController.ClientWriteLeaderboardStats  (script 386 bytes)
+  0000: LogInternal(("PlayerController is writing leaderboard statistics for " $ GetHumanReadableName()), 'DevOnline', , )
+  0052: SaveProfileSettings()
+  005d: if !((TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI) != none)) goto 0x00e1
+  0076: get_CustomCharacterData().RefreshCharacterSlots()
+  008e: get_CustomCharacterData().AddNewlyUnlockedSkills(self.SkillsUnlockedThisGame)
+  00ab: LP = TnLocalPlayer(self.Player)
+  00bb: if !((LP != none)) goto 0x00d9
+  00c6: LP.WriteCustomizationFile()
+  00d9: self.SkillsUnlockedThisGame.Length = 0
+  00e1: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  00f1: if !((PRI != none)) goto 0x017f
+  00fc: I = 0
+  0103: if !(((I < 4) && (I[StatClasses] != none))) goto 0x017f
+  0122: Stats = TnStatsWrite(new(nothing, nothing, I[StatClasses], nothing, DeltaTime))
+  0141: Stats.CopyAndWriteAllStats(self.PlayerReplicationInfo.UniqueId, PRI, self.OnlineSub.StatsInterface)
+  0175: AddAdd_PreInt(I)
+  017c: goto 0x0103
+  017f: return nothing
+  0181: <eos>
+
+function TnPlayerController.ClientCompleteMission  (script 90 bytes)
+  0000: PS = TnProfileSettings(self.ProfileSettings)
+  0010: if !((PS != none)) goto 0x0057
+  001b: PS.CompleteMission(MapId, Difficulty)
+  0038: PS.CheckForLevelCompletionAchievements(self)
+  004c: SaveProfileSettings()
+  0057: return nothing
+  0059: <eos>
+
+function TnPlayerController.FDec  (script 68 bytes)
+  0000: ClientCompleteMission(101, 1)
+  000d: ClientCompleteMission(102, 1)
+  001a: ClientCompleteMission(103, 1)
+  0027: ClientCompleteMission(104, 1)
+  0034: ClientCompleteMission(105, 1)
+  0041: return nothing
+  0043: <eos>
+
+function TnPlayerController.FAut  (script 55 bytes)
+  0000: ClientCompleteMission(96, 1)
+  000d: ClientCompleteMission(97, 1)
+  001a: ClientCompleteMission(98, 1)
+  0027: ClientCompleteMission(99, 1)
+  0034: return nothing
+  0036: <eos>
+
+function TnPlayerController.ClientReachedCheckpoint  (script 87 bytes)
+  0000: TnPlayerController.CheckpointActivated(CP)
+  000b: if !(((CheckpointIndex != -1) && (self.ProfileSettings != none))) goto 0x0054
+  0027: TnProfileSettings(self.ProfileSettings).ReachedCheckpoint(MapId, CheckpointIndex)
+  0049: SaveProfileSettings(true)
+  0054: return nothing
+  0056: <eos>
+
+function TnPlayerController.CheckpointActivated  (script 128 bytes)
+  0000: if !((CP == none)) goto 0x000d
+  000b: return nothing
+  000d: Index = 0
+  0014: if !((Index < CP.GeneratedEvents.Length)) goto 0x007d
+  002d: E = SeqEvent_CheckpointActivated(Index[CP.GeneratedEvents])
+  004c: if !((E != none)) goto 0x0073
+  0057: E.CheckActivate(CP, self, , , )
+  0073: AddAdd_Int(Index)
+  007a: goto 0x0014
+  007d: return nothing
+  007f: <eos>
+
+function TnPlayerController.ClientDisplayTutorialMessage  (script 18 bytes)
+  0000: DisplayTutorialMessage(MessageType)
+  000f: return nothing
+  0011: <eos>
+
+function TnPlayerController.DisplayTutorialMessage  (script 48 bytes)
+  0000: if !((TnHUD(self.myHUD) != none)) goto 0x002d
+  0010: TnHUD(self.myHUD).DisplayTutorialMessage(MessageType)
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerController.AddHudObserver  (script 62 bytes)
+  0000: AddedObserver = TnHUD(self.myHUD).AddHudDataObserver(ObserverClass)
+  0023: AddedObserver.AddAssociatedActor(AssociatedActor)
+  003b: return nothing
+  003d: <eos>
+
+function TnPlayerController.RemoveHudObserver  (script 32 bytes)
+  0000: TnHUD(self.myHUD).RemoveHudDataObserver(ObserverClass)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerController.NotifyClientLoadedCheckpoint  (script 33 bytes)
+  0000: if !((self.UIController != none)) goto 0x001e
+  000b: self.UIController.OnClearPause()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerController.CameraTeleported  (script 156 bytes)
+  0000: HMC = HmCamera(self.PlayerCamera)
+  0010: if !((HMC == none)) goto 0x001d
+  001b: return nothing
+  001d: HMC.CameraState.CameraStrategyResult.OrbitRotation = NewRotation
+  0045: HMC.CameraState.CameraStrategyResult.OrbitRotationAdjustment = rot(0,0,0)
+  0075: HMC.RecenterCamera = true
+  0086: HMC.Reset()
+  0099: return nothing
+  009b: <eos>
+
+function TnPlayerController.EnableFlyingTurnaroundBehavior  (script 40 bytes)
+  0000: if !((self._CameraStrategyManager == none)) goto 0x000d
+  000b: return nothing
+  000d: self._CameraStrategyManager.EnableFlyingTurnaroundBehavior(Params)
+  0025: return nothing
+  0027: <eos>
+
+function TnPlayerController.DisableFlyingTurnaroundBehavior  (script 40 bytes)
+  0000: if !((self._CameraStrategyManager == none)) goto 0x000d
+  000b: return nothing
+  000d: self._CameraStrategyManager.DisableFlyingTurnaroundBehavior(Strategy)
+  0025: return nothing
+  0027: <eos>
+
+function TnPlayerController.TriggerInstantRespawn  (script 11 bytes)
+  0000: self._ShouldInstantRespawn = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerController.ShouldInstantRespawn  (script 14 bytes)
+  0000: return self._ShouldInstantRespawn
+  0007: return return
+  000d: <eos>
+
+function TnPlayerController.BuildPartyLobbyURL  (script 203 bytes)
+  0000: PartyLobbyURL = BuildPartyLobbyURL()
+  000c: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0025: if !((GRI == none)) goto 0x007b
+  0030: LogInternal("GRI was null, returning to default party lobby...", 'DevOnline', , )
+  0070: GameTeamStatus = 3
+  0078: goto 0x0096
+  007b: GameTeamStatus = cast3a(GRI.GetGameTeamStatus())
+  0096: ConcatEqual_StrStr(PartyLobbyURL, ("?GameTeamStatus=" $ cast53(GameTeamStatus)))
+  00be: return PartyLobbyURL
+  00c4: return return
+  00ca: <eos>
+
+function TnPlayerController.OnNotifyLoginChange  (script 290 bytes)
+  0000: OnNotifyLoginChange(LoginType, PrimaryStatus, SecondaryStatus)
+  0015: if !((cast3a(LoginType) == cast3a(0))) goto 0x0046
+  0025: obj'HM_Engine.CheckpointManager'.static.GetInstance().CheckCheckpointFileExistence()
+  0046: GameClass = class<TnGame>(self.WorldInfo.GetGameClass())
+  0064: if !((GameClass == none)) goto 0x00ce
+  006f: LogInternal("ERROR: Login change occured before game was replicated. Defaulting to TnGame.", , , )
+  00c3: GameClass = obj'TnGame'
+  00ce: GameClass.static.NotifyLoginChange(self, LoginType, PrimaryStatus, SecondaryStatus)
+  00f1: LP = TnLocalPlayer(self.Player)
+  0101: if !((LP != none)) goto 0x011f
+  010c: LP.OnLoginStatusChange()
+  011f: return nothing
+  0121: <eos>
+
+function TnPlayerController.OnControllerChanged  (script 172 bytes)
+  0000: OnControllerChanged(ControllerId, bIsConnected)
+  0011: LP = LocalPlayer(self.Player)
+  0021: if !(((((LP != none) && (LP.ControllerId == ControllerId)) && self.WorldInfo.IsConsoleBuild()) && ((self.WorldInfo.Game == none) || !self.WorldInfo.Game.get_IsAutomatedTesting()))) goto 0x00a9
+  0098: TnPlayerController.HandleControllerChanged(ControllerId, bIsConnected)
+  00a9: return nothing
+  00ab: <eos>
+
+function TnPlayerController.HandleControllerChanged  (script 185 bytes)
+  0000: LP = LocalPlayer(self.Player)
+  0010: if !(((LP == none) || !LP.HasAssignedController())) goto 0x0037
+  0035: return nothing
+  0037: if !((self.UIController == none)) goto 0x0057
+  0042: self._HandleControllerId = ControllerId
+  004d: self._HandleControllerChanged = true
+  0055: return nothing
+  0057: if !(!bIsConnected) goto 0x0075
+  0062: self.UIController.OnPause()
+  0075: if !(!bIsConnected) goto 0x009b
+  0080: self.UIController.ShowControllerReconnectUI(ControllerId)
+  0098: goto 0x00ae
+  009b: self.UIController.CloseControllerReconnectUI()
+  00ae: self._HandleControllerChanged = false
+  00b6: return nothing
+  00b8: <eos>
+
+function TnPlayerController.PostControllerIdChange  (script 49 bytes)
+  0000: PostControllerIdChange()
+  0006: obj'Engine.HmMoviePlayer'.static.SetSkippableByOneController(cast3d(LocalPlayer(self.Player).ControllerId))
+  002e: return nothing
+  0030: <eos>
+
+function TnPlayerController.OnStorageDeviceChange  (script 42 bytes)
+  0000: OnStorageDeviceChange()
+  0006: obj'HM_Engine.CheckpointManager'.static.GetInstance().CheckCheckpointFileExistence()
+  0027: return nothing
+  0029: <eos>
+
+function TnPlayerController.OnStorageDeviceRemoved  (script 16 bytes)
+  0000: OnStorageDeviceRemoved()
+  0006: TnPlayerController.ShowDeviceSelectionMessageBox(true)
+  000d: return nothing
+  000f: <eos>
+
+function TnPlayerController.ShowDeviceSelectionMessageBox  (script 457 bytes)
+  0000: if !((cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LocalPlayer(self.Player).ControllerId))) == cast3a(0))) goto 0x003f
+  003d: return nothing
+  003f: if !((self.DeviceRemovedPopup != none)) goto 0x004c
+  004a: return nothing
+  004c: if !((self.UIController != none)) goto 0x01c6
+  0057: self.DeviceRemovedPopup = self.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericErrorTitle", (Removed ? "$UIText.MessagePrompts.StorageDeviceRemovedMessage" : "$UIText.MessagePrompts.NoStorageDeviceSelectedMessage"), false)
+  0111: self.DeviceRemovedPopup.SetAButton("$UIText.MessagePrompts.SelectStorageDeviceButton", delegate.SelectStorageDevice, , )
+  0161: self.DeviceRemovedPopup.SetBButton("$UIText.MessagePrompts.ContinueWithoutSavingButton", delegate.ContinueWithoutSaving, , )
+  01b3: self.DeviceRemovedPopup.Show()
+  01c6: return nothing
+  01c8: <eos>
+
+function TnPlayerController.SelectStorageDevice  (script 14 bytes)
+  0000: ShowDeviceSelectionUI(true)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.ContinueWithoutSaving  (script 35 bytes)
+  0000: self.DeviceRemovedPopup = none
+  0007: HmLocalPlayer(self.Player).set_CurrentStorageDeviceId(0)
+  0020: return nothing
+  0022: <eos>
+
+function TnPlayerController.OnInsufficientDeviceSpace  (script 383 bytes)
+  0000: if !((self.UIController == none)) goto 0x000d
+  000b: return nothing
+  000d: MessageString = Localize("MessagePrompts", "InsufficientDeviceSpaceMessage", "UIText")
+  0055: MessageString = obj'Core.Strings'.static.Repl(MessageString, "`n", cast53((self.NumBytesRequiredToPlayGame / 1000)), )
+  007e: MessageBox = self.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericErrorTitle", MessageString, false)
+  00c7: MessageBox.SetAButton("$UIText.MessagePrompts.SelectStorageDeviceButton", delegate.SelectStorageDevice, , )
+  0117: MessageBox.SetBButton("$UIText.MessagePrompts.ContinueWithoutSavingButton", delegate.ContinueWithoutSaving, , )
+  0169: MessageBox.Show()
+  017c: return nothing
+  017e: <eos>
+
+function TnPlayerController.OnDeviceSelectFailed  (script 10 bytes)
+  0000: TnPlayerController.ShowDeviceSelectionMessageBox(false)
+  0007: return nothing
+  0009: <eos>
+
+function TnPlayerController.NotifyDeviceSelectComplete  (script 55 bytes)
+  0000: self.DeviceRemovedPopup = none
+  0007: NotifyDeviceSelectComplete(bWasSuccessful)
+  0013: obj'HM_Engine.CheckpointManager'.static.GetInstance().CheckCheckpointFileExistence()
+  0034: return nothing
+  0036: <eos>
+
+function TnPlayerController.HasCheckpointOverridePlayerData  (script 33 bytes)
+  0000: return (self._CheckpointOverrideCharacterData.Health != cast3f(-1))
+  001a: return return
+  0020: <eos>
+
+function TnPlayerController.NotifySavingCheckpoint  (script 33 bytes)
+  0000: if !((self.UIController != none)) goto 0x001e
+  000b: self.UIController.OnCheckpointSaved()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerController.OnContentAvailabilityChange  (script 226 bytes)
+  0000: if !(Added) goto 0x000b
+  0009: return nothing
+  000b: MessageString = Localize("MessagePrompts", "DLCContentRemovedMessage", "UIText")
+  004d: foreach Content(OC,) (end 0x007f)
+  005c: ConcatEqual_StrStr(MessageString, ("
+" $ OC.FriendlyName))
+  007e: iternext
+  007f: iterpop
+  0080: class<TnGame>(self.WorldInfo.GRI.GameClass).static.HandleContentAvailabilityChangeMessage(self, "$UIText.MessagePrompts.DLCContentRemovedTitle", MessageString)
+  00df: return nothing
+  00e1: <eos>
+
+function TnPlayerController.OnContentCorrupt  (script 129 bytes)
+  0000: if !(!self._CanShowContentCorruptMessage) goto 0x0015
+  000b: self._NeedsContentCorruptMessageShown = true
+  0013: return nothing
+  0015: if !((self.UIController != none)) goto 0x007e
+  0020: self.UIController.ShowPopupUI("$Engine.Errors.CorruptDLCTitle", "$Engine.Errors.CorruptDLCMessage", )
+  0076: self._NeedsContentCorruptMessageShown = false
+  007e: return nothing
+  0080: <eos>
+
+function TnPlayerController.OnCampaignGameOver  (script 130 bytes)
+  0000: ClientStopMusic(0.25)
+  000f: PlaySound(self.DeathSound, true, , , , )
+  0023: PlaySound(self.GameOverMusic, true, , , , )
+  0037: obj'Engine.Engine'.static.GetAudioDevice().EnableMixerPreset(self.GameOverMixerPreset)
+  005d: HmWorldInfo(self.WorldInfo)._DialogEventManager.DisablePlayback(true)
+  007f: return nothing
+  0081: <eos>
+
+function TnPlayerController.DisableSubtitles  (script 14 bytes)
+  0000: SetShowSubtitles(false)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerController.RestoreSubtitles  (script 61 bytes)
+  0000: Settings = TnProfileSettings(self.ProfileSettings)
+  0010: if !((Settings == none)) goto 0x001d
+  001b: return nothing
+  001d: SetShowSubtitles(Settings.GetSubtitleConfigOption())
+  003a: return nothing
+  003c: <eos>
+
+function TnPlayerController.ShouldDelayGameInvites  (script 277 bytes)
+  0000: if !(((self.PlayerReplicationInfo != none) && !OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface)).HasReadKeyArchiveFor(self.PlayerReplicationInfo.UniqueId))) goto 0x0091
+  0044: LogInternal("Delaying invite because of key archive has not been read yet", 'DevOnline', , )
+  008f: return true
+  0091: if !((self.WorldInfo.IsConsoleBuild(1) && !HmLocalPlayer(self.Player).HasSelectedStorageDevice())) goto 0x010c
+  00c8: LogInternal("Delaying invite because has not selected storage device yet", , , )
+  010a: return true
+  010c: return false
+  010e: return return
+  0114: <eos>
+
+function TnPlayerController.OnExternalUIChanged  (script 56 bytes)
+  0000: OnExternalUIChanged(bIsOpening)
+  000c: if !((bIsOpening && (self.UIController != none))) goto 0x0035
+  0022: self.UIController.OnPause()
+  0035: return nothing
+  0037: <eos>
+
+function TnPlayerController.PostMoveToSeamlessTravelWorld  (script 116 bytes)
+  0000: PostMoveToSeamlessTravelWorld(OldWorldInfo, NewWorldInfo, bIsReloadingMap)
+  0016: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  0026: if !(((PRI != none) && bIsReloadingMap)) goto 0x0058
+  003c: PRI._ScoreTracker.ResetScore()
+  0058: self._PointOfInterestManager.Reset()
+  006b: TnPlayerController.CleanupUIController()
+  0071: return nothing
+  0073: <eos>
+
+function TnPlayerController.Destroyed  (script 71 bytes)
+  0000: Game = TnGame(self.WorldInfo.Game)
+  0019: if !((Game != none)) goto 0x0038
+  0024: Game.NotifyPlayerRemoved(self)
+  0038: TnPlayerController.CleanupUIController()
+  003e: Destroyed()
+  0044: return nothing
+  0046: <eos>
+
+function TnPlayerController.CleanupUIController  (script 40 bytes)
+  0000: if !((self.UIController != none)) goto 0x0025
+  000b: self.UIController.Cleanup()
+  001e: self.UIController = none
+  0025: return nothing
+  0027: <eos>
+
+function TnPlayerController.UpdateStateFromAdjustment  (script 67 bytes)
+  0000: UpdateStateFromAdjustment(NewState)
+  000b: if !((self.Pawn != none)) goto 0x0040
+  0016: get_TransformerPawn()._RobotForm._AcrobaticsManager.NotifyClientAdjusted()
+  0040: return nothing
+  0042: <eos>
+
+function TnPlayerController.IsLoggedIntoPrimary  (script 70 bytes)
+  0000: return ((self.OnlineSub != none) && (cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(GetLocalUserNum()))) == cast3a(2)))
+  003f: return return
+  0045: <eos>
+
+function TnPlayerController.StressTest  (script 36 bytes)
+  0000: TnGame(self.WorldInfo.Game).StartStressTester()
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerController.ClientStartRandomInput  (script 37 bytes)
+  0000: HmPlayerInput(self.PlayerInput)._InputGenerator = new(self, nothing, obj'TnInputGenerator', nothing, DeltaTime)
+  0022: return nothing
+  0024: <eos>

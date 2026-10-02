@@ -1,0 +1,19 @@
+function TnKillAwardRuleKillerBuffCheck.CheckRule  (script 349 bytes)
+  0000: KillerPawn = TnPawn(Killer.Pawn)
+  0019: if !((KillerPawn == none)) goto 0x0026
+  0024: return nothing
+  0026: BS = TnBuffService(KillerPawn.GetService('TnBuffService'))
+  004d: if !(EqualEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x0063
+  0061: return nothing
+  0063: I = 0
+  006a: if !((I < self.BuffChecks.Length)) goto 0x015a
+  007a: if !((BS.GetBuff(I[self.BuffChecks].BuffClass) == none)) goto 0x00ad
+  00aa: goto 0x0150
+  00ad: if !((I[self.BuffChecks].XpEvent != none)) goto 0x00f2
+  00c9: Killer.NotifyXpEvent(I[self.BuffChecks].XpEvent)
+  00f2: if !((I[self.BuffChecks].StatId != -1)) goto 0x0150
+  0112: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, I[self.BuffChecks].StatId, 0)
+  0150: AddAdd_PreInt(I)
+  0157: goto 0x006a
+  015a: return nothing
+  015c: <eos>

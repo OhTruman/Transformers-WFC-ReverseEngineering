@@ -1,0 +1,20 @@
+function TnStatisticsPathFailures.RecordPathFailure  (script 715 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(((Start == none) || (End == none))) goto 0x0027
+  0025: return nothing
+  0027: if !((self.Failures.Length > 3)) goto 0x015e
+  0034: if !(((((cast57(Start.Name) == (self.Failures.Length - 1)[self.Failures].StartActor) && (cast57(End.Name) == (self.Failures.Length - 1)[self.Failures].EndActor)) || ((cast57(Start.Name) == (self.Failures.Length - 2)[self.Failures].StartActor) && (cast57(End.Name) == (self.Failures.Length - 2)[self.Failures].EndActor))) || ((cast57(Start.Name) == (self.Failures.Length - 3)[self.Failures].StartActor) && (cast57(End.Name) == (self.Failures.Length - 3)[self.Failures].EndActor)))) goto 0x015e
+  015c: return nothing
+  015e: Stat.StartActor = cast57(Start.Name)
+  017f: Stat.StartLocationX = Start.Location.X
+  01a9: Stat.StartLocationY = Start.Location.Y
+  01d3: Stat.StartLocationZ = Start.Location.Z
+  01fd: Stat.EndActor = cast57(End.Name)
+  021e: Stat.EndLocationX = End.Location.X
+  0248: Stat.EndLocationY = End.Location.Y
+  0272: Stat.EndLocationZ = End.Location.Z
+  029c: Stat.Session_Id = Game.StatisticsSessionId
+  02bb: self.Failures.AddItem(Stat)
+  02c8: return nothing
+  02ca: <eos>

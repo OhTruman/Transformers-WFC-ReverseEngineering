@@ -1,0 +1,24 @@
+function TnDroppedPickupWeapon.PostBeginPlay  (script 59 bytes)
+  0000: if !((obj'TnGame'.static.GetCurrentSkillDataIndex() == 0)) goto 0x0027
+  0019: self.LifeSpan = self.MultiplayerLifeSpan
+  0024: goto 0x0032
+  0027: self.LifeSpan = self.CampaignLifeSpan
+  0032: PostBeginPlay()
+  0038: return nothing
+  003a: <eos>
+
+function TnDroppedPickupWeapon.SetPickupMesh  (script 139 bytes)
+  0000: TnDroppedPickupDefrag.SetPickupMesh(PickupMesh)
+  000b: InventoryClassAsWeapon = GetWeaponClass()
+  001b: if !((InventoryClassAsWeapon != none)) goto 0x0088
+  0026: MC = FindComponent(obj'Engine.MeshComponent')
+  003b: if !((MC != none)) goto 0x0088
+  0046: MC.SetRotation(InventoryClassAsWeapon.static.default.SpawnOffsetAngle)
+  0067: MC.SetScale(InventoryClassAsWeapon.static.default.PickupScale)
+  0088: return nothing
+  008a: <eos>
+
+function TnDroppedPickupWeapon.GetWeaponClass  (script 18 bytes)
+  0000: return class<TnWeapon>(self.InventoryClass)
+  000b: return return
+  0011: <eos>

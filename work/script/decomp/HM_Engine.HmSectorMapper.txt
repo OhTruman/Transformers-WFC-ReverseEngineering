@@ -1,0 +1,35 @@
+function HmSectorMapper.GetSectorId  (script 51 bytes)
+  0000: NewId = HmSectorMapper.GetHistorySectorId(InputHistory)
+  0011: if !((NewId == -1)) goto 0x0026
+  0020: return SectorId
+  0026: return NewId
+  002c: return return
+  0032: <eos>
+
+function HmSectorMapper.GetHistorySectorId  (script 166 bytes)
+  0000: LastSampleId = -1
+  000b: SampleCount = InputHistory.GetSampleCount()
+  0024: I = 0
+  002b: if !((I < SampleCount)) goto 0x0099
+  003a: SampleId = HmSectorMapper.GetSampleSectorId(InputHistory.GetSample(I))
+  005e: if !(((LastSampleId != -1) && (SampleId != LastSampleId))) goto 0x0084
+  007e: return -1
+  0084: LastSampleId = SampleId
+  008f: AddAdd_PreInt(I)
+  0096: goto 0x002b
+  0099: return LastSampleId
+  009f: return return
+  00a5: <eos>
+
+function HmSectorMapper.GetSampleSectorId  (script 234 bytes)
+  0000: InputAngle = (cast3f(obj'Core.Math'.static.NormalizeRotAxis(cast50(InputDir).Yaw)) * 0.0054932)
+  0034: I = 0
+  003b: if !((I < self.SectorList.Length)) goto 0x00e1
+  004b: if !(((InputAngle >= I[self.SectorList].MinAngle) && (InputAngle <= I[self.SectorList].MaxAngle))) goto 0x00d7
+  008d: if !((obj'Core.Math'.static.VSize2D(InputDir) > I[self.SectorList].MagnitudeThreshold)) goto 0x00d7
+  00c0: return I[self.SectorList].Id
+  00d7: AddAdd_PreInt(I)
+  00de: goto 0x003b
+  00e1: return 0
+  00e3: return return
+  00e9: <eos>

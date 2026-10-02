@@ -1,0 +1,20 @@
+function HmAttachToActorCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.Base = A
+  000b: return nothing
+  000d: <eos>
+
+function HmAttachToActorCameraBehavior.Reset  (script 57 bytes)
+  0000: self.LocationSmoother.Reset()
+  0013: self.RotationSmoother.Reset()
+  0026: return HmCameraBehavior.Reset(Result)
+  0032: return return
+  0038: <eos>
+
+function HmAttachToActorCameraBehavior.Update  (script 211 bytes)
+  0000: DesiredLocation = (self.Base.Location + (self.LocalOffset >> self.Base.Rotation))
+  002c: DesiredRotation = self.Base.Rotation
+  0040: Result.Location = self.LocationSmoother.Smooth(Result.Location, DesiredLocation, self.SmoothTime, DeltaTime)
+  0083: Result.Rotation = self.RotationSmoother.Smooth(Result.Rotation, DesiredRotation, self.SmoothTime, DeltaTime)
+  00c6: return Result
+  00cc: return return
+  00d2: <eos>

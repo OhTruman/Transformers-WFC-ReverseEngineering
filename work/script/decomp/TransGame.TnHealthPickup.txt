@@ -1,0 +1,24 @@
+function TnHealthPickup.GivenTo  (script 37 bytes)
+  0000: nothing
+  0001: ThisPawn.HealDamage(self.AddedHealth, none, obj'TnHealTypeHealthPickup')
+  001f: DestroyActor()
+  0022: return nothing
+  0024: <eos>
+
+function TnHealthPickup.TryDroppedPickupFirstSpawn  (script 38 bytes)
+  0000: return Spawn(SpawnedPickupClass, , , StartLocation, StartRotation, , true, )
+  001f: return return
+  0025: <eos>
+
+function TnHealthPickup.AnnouncePickup  (script 75 bytes)
+  0000: AnnouncePickup(Other)
+  000b: TnWorldInfo(Other.WorldInfo)._DialogEventManager.Play(TnPawn(Other), self.PickupObtainedDialog, , , , )
+  0048: return nothing
+  004a: <eos>
+
+function TnHealthPickup.PickupAllowed  (script 44 bytes)
+  0000: if !((Pickuper.Health >= Pickuper.HealthMax)) goto 0x0023
+  0021: return false
+  0023: return true
+  0025: return return
+  002b: <eos>

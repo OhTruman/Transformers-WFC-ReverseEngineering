@@ -1,0 +1,10 @@
+function TnAiActionHealFromCurrentLocation.OnUpdate  (script 178 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateHealTarget', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: HitActor = self._TransformerPawn.Trace(HitLocation, HitNormal, Target, Target.Location, , , , , , )
+  0073: if !(((HitActor != none) && (HitActor != Target))) goto 0x009a
+  008f: return Fail()
+  009a: return TnAiActionHeal.OnUpdate(ExpectedEffects, DeltaTime)
+  00ab: return return
+  00b1: <eos>

@@ -1,0 +1,15 @@
+function ParticleModuleTypeDataMesh.GetNumMeshVertices  (script 41 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return 0
+  000d: return self.Mesh.GetNumVertices(0)
+  0022: return return
+  0028: <eos>
+
+function ParticleModuleTypeDataMesh.CheckForErrors  (script 174 bytes)
+  0000: CheckForErrors()
+  0006: if !((none == self.Mesh)) goto 0x00ab
+  0011: OwningEmitter = GetEmitter()
+  0021: if !((none != OwningEmitter)) goto 0x00ab
+  002c: EmitCheckMessage(1, (((("Mesh emitter" @ cast57(OwningEmitter.EmitterName)) @ " of particle system ") @ PathName(GetParticleSystem())) @ "doesn't have a static mesh set."), , )
+  00ab: return nothing
+  00ad: <eos>

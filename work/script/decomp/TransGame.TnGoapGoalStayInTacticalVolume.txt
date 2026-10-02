@@ -1,0 +1,41 @@
+function TnGoapGoalStayInTacticalVolume.Bind  (script 139 bytes)
+  0000: Bind(InAiController)
+  000b: self.MoveToRangeSensor = TnAiMoveToRangeSensor(self.SensorFactory.CreateObject(obj'TnAiMoveToRangeSensor', ))
+  002f: self.MoveToRangeSensor.set_MoveType(obj'TnAiWorldStateMoveToTacticalVolume')
+  0047: self.TransformerController = TnAiController(self.BoundController)
+  0057: if !((self.TransformerController != none)) goto 0x0088
+  0062: self.TransformerController.GetTacticalAnalyzer().AddSensor(self.MoveToRangeSensor)
+  0088: return nothing
+  008a: <eos>
+
+function TnGoapGoalStayInTacticalVolume.Unbind  (script 58 bytes)
+  0000: if !((self.TransformerController != none)) goto 0x0031
+  000b: self.TransformerController.GetTacticalAnalyzer().RemoveSensor(self.MoveToRangeSensor)
+  0031: Unbind()
+  0037: return nothing
+  0039: <eos>
+
+function TnGoapGoalStayInTacticalVolume.PopulateGoals  (script 221 bytes)
+  0000: if !((PopulateGoals(WorldState, out_PopulatedGoals) == false)) goto 0x0018
+  0016: return false
+  0018: if !((TnGoapGoalStayInTacticalVolume.NeedsToMoveBackToTacticalVolume(WorldState) == false)) goto 0x002b
+  0029: return false
+  002b: CurrentDestination = TnAiController(self.BoundController)._OccupiedNavigationPoint
+  0044: if !((CurrentDestination != none)) goto 0x007f
+  004f: if !(TnAiController(self.BoundController).GetTacticalVolume().EncompassesActorLocation(CurrentDestination)) goto 0x007f
+  007d: return false
+  007f: obj'HM_Engine.HmGoap'.static.SetProperty(out_PopulatedGoals, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateAtActor', cast3a(self.MoveToRangeSensor._Range), self.MoveToRangeSensor.get_Subject(), , ))
+  00d4: return true
+  00d6: return return
+  00dc: <eos>
+
+function TnGoapGoalStayInTacticalVolume.VerifyRunningDesiredEffects  (script 68 bytes)
+  0000: return (obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActor', RunningDesiredEffects) == TnAiController(self.BoundController).GetWorldStateSubject(obj'TnAiWorldStateMoveToTacticalVolume'))
+  003d: return return
+  0043: <eos>
+
+function TnGoapGoalStayInTacticalVolume.NeedsToMoveBackToTacticalVolume  (script 93 bytes)
+  0000: WorldStateProperty = WorldState.GetState(obj'TnAiWorldStateMoveToTacticalVolume')
+  001e: return ((WorldStateProperty.Subject != none) && (WorldStateProperty.Value.BoolVal == false))
+  0056: return return
+  005c: <eos>

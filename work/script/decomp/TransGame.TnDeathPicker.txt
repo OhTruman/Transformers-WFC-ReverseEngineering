@@ -1,0 +1,59 @@
+function TnDeathPicker.IsSupported  (script 28 bytes)
+  0000: return (self.SupportedDeathTypes.Find(Type) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnDeathPicker.Pick  (script 151 bytes)
+  0000: self.ActiveIndex = -1
+  000b: self.ActiveTypes.Length = 0
+  0013: FindActiveTypes(Owner, self.ActiveTypes)
+  0027: Index = 0
+  002e: if !((Index < Deaths.Length)) goto 0x007a
+  003e: if !(TnDeathPicker.AreAllTypesActive(self.ActiveTypes, Index[Deaths].Types)) goto 0x0070
+  0062: self.ActiveIndex = Index
+  006d: goto 0x007a
+  0070: AddAdd_PreInt(Index)
+  0077: goto 0x002e
+  007a: TnDeathPicker.DrawDebug(Owner, Deaths)
+  008a: return self.ActiveIndex
+  0090: return return
+  0096: <eos>
+
+function TnDeathPicker.FindActiveTypes  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDeathPicker.AreAllTypesActive  (script 73 bytes)
+  0000: Index = 0
+  0007: if !((Index < Expected.Length)) goto 0x0040
+  0017: if !((Test.Find(Index[Expected]) == -1)) goto 0x0036
+  0034: return false
+  0036: AddAdd_PreInt(Index)
+  003d: goto 0x0007
+  0040: return true
+  0042: return return
+  0048: <eos>
+
+function TnDeathPicker.DrawDebug  (script 317 bytes)
+  0000: if !(!self.DisplayDebug) goto 0x000d
+  000b: return nothing
+  000d: if !((self.ActiveIndex != -1)) goto 0x007b
+  001c: DebugString = (("[" $ cast53(self.ActiveIndex)) $ "] Chosen: ")
+  003c: foreach self.ActiveIndex[Deaths].Types(Type,) (end 0x0077)
+  005c: ConcatEqual_StrStr(DebugString, (cast56(Type) $ ", "))
+  0076: iternext
+  0077: iterpop
+  0078: goto 0x0091
+  007b: DebugString = "Default Chosen"
+  0091: ConcatEqual_StrStr(DebugText, (DebugString $ "
+"))
+  00a8: DebugString = "Active Types: "
+  00be: foreach self.ActiveTypes(Type,) (end 0x00e8)
+  00cd: ConcatEqual_StrStr(DebugString, (cast56(Type) $ ", "))
+  00e7: iternext
+  00e8: iterpop
+  00e9: ConcatEqual_StrStr(DebugText, (DebugString $ "
+"))
+  0100: obj'Engine.Debug'.static.DrawText(Owner.Location, DebugText, obj'Core.Colors'.static.White(), true)
+  013a: return nothing
+  013c: <eos>

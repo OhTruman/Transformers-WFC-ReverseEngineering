@@ -1,0 +1,58 @@
+function TnDroppedPickupFlagBase.get_NormalizedTimeLeftToReturn  (script 20 bytes)
+  0000: return (self.TimeLeftToReturn / self.ReturnFlagTime)
+  000d: return return
+  0013: <eos>
+
+function TnDroppedPickupFlagBase.PostBeginPlay  (script 48 bytes)
+  0000: TnGameObjectiveDroppedPickup.PostBeginPlay()
+  0006: self.TimeLeftToReturn = self.ReturnFlagTime
+  0011: self.AreaTracker.SetInclusionFilter(delegate.CheckOnDefendingTeam)
+  002d: return nothing
+  002f: <eos>
+
+function TnDroppedPickupFlagBase.CheckOnDefendingTeam  (script 102 bytes)
+  0000: P = Pawn(A)
+  0010: return (((P != none) && !P.IsDead()) && (cast3a(P.GetTeamNum()) == cast3a(self._HomeBase.DefenderTeamIndex)))
+  005f: return return
+  0065: <eos>
+
+function TnDroppedPickupFlagBase.Pickup.ValidTouch  (script 63 bytes)
+  0000: if !((cast3a(Other.GetTeamNum()) == cast3a(self._HomeBase.DefenderTeamIndex))) goto 0x002c
+  002a: return false
+  002c: return ValidTouch(Other)
+  0038: return return
+  003e: <eos>
+
+function TnDroppedPickupFlagBase.Pickup.Tick  (script 313 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((cast3a(self.Role) < cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: self.AreaTracker.PurgeViaInclusion()
+  0030: NumDefenders = self.AreaTracker.GetNumOccupyingActors()
+  0049: if !((NumDefenders > 0)) goto 0x006c
+  0054: (self.TimeLeftToReturn -= (DeltaTime * cast3f(NumDefenders)))
+  0069: goto 0x0093
+  006c: self.TimeLeftToReturn = obj'Core.Math'.static.FClamp((self.TimeLeftToReturn + DeltaTime), 0.0, self.ReturnFlagTime)
+  0093: if !((self.TimeLeftToReturn <= cast3f(0))) goto 0x0136
+  00a0: ReturningPawns = self.AreaTracker.GetOccupyingActors()
+  00b9: foreach ReturningPawns(A,) (end 0x011b)
+  00c8: P = TnPawn(A)
+  00d8: if !(((P != none) && (P.PlayerReplicationInfo != none))) goto 0x011a
+  00f9: TnPlayerReplicationInfo(P.PlayerReplicationInfo).AddFlagReturned()
+  011a: iternext
+  011b: iterpop
+  011c: SendHome(P.Controller, 0)
+  0136: return nothing
+  0138: <eos>
+
+function TnDroppedPickupFlagBase.Pickup.Touch  (script 53 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: self.AreaTracker.OnTouch(Other)
+  0032: return nothing
+  0034: <eos>
+
+function TnDroppedPickupFlagBase.Pickup.UnTouch  (script 38 bytes)
+  0000: UnTouch(Other)
+  000b: self.AreaTracker.OnUntouch(Other)
+  0023: return nothing
+  0025: <eos>

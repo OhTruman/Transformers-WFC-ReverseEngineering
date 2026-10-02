@@ -1,0 +1,48 @@
+function HmDroppedPickup.SetImpactSound  (script 14 bytes)
+  0000: self.ImpactSound = ImpactSoundNew
+  000b: return nothing
+  000d: <eos>
+
+function HmDroppedPickup.RigidBodyCollision  (script 67 bytes)
+  0000: if !((true == HmDroppedPickup.GetIsImpactSoundRetriggerTimerElapsed())) goto 0x0026
+  000c: PlaySound(self.ImpactSound, , , , , )
+  0020: HmDroppedPickup.ResetImpactSoundRetriggerTimer()
+  0026: RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  0040: return nothing
+  0042: <eos>
+
+function HmDroppedPickup.Tick  (script 25 bytes)
+  0000: HmDroppedPickup.UpdateImpactSoundRetriggerTimer(DeltaTime)
+  000b: Tick(DeltaTime)
+  0016: return nothing
+  0018: <eos>
+
+function HmDroppedPickup.ResetImpactSoundRetriggerTimer  (script 14 bytes)
+  0000: self.ImpactSoundRetriggerTimer = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function HmDroppedPickup.ElapseImpactSoundRetriggerTimer  (script 14 bytes)
+  0000: self.ImpactSoundRetriggerTimer = self.ImpactSoundRetriggerDelay
+  000b: return nothing
+  000d: <eos>
+
+function HmDroppedPickup.UpdateImpactSoundRetriggerTimer  (script 15 bytes)
+  0000: (self.ImpactSoundRetriggerTimer += DeltaTime)
+  000c: return nothing
+  000e: <eos>
+
+function HmDroppedPickup.GetIsImpactSoundRetriggerTimerElapsed  (script 29 bytes)
+  0000: if !((self.ImpactSoundRetriggerTimer >= self.ImpactSoundRetriggerDelay)) goto 0x0014
+  000f: return true
+  0011: goto 0x0016
+  0014: return false
+  0016: return return
+  001c: <eos>
+
+function HmDroppedPickup.SetupLightEnvironment  (script 40 bytes)
+  0000: if !((PickupMesh == none)) goto 0x000d
+  000b: return nothing
+  000d: PickupMesh.SetLightEnvironment(self.LightEnvironment)
+  0025: return nothing
+  0027: <eos>

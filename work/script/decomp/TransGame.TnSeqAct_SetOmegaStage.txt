@@ -1,0 +1,22 @@
+function TnSeqAct_SetOmegaStage.Activated  (script 136 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Omega = TnSeqAct_SetOmegaStage.GetOmega()
+  0020: if !((Omega == none)) goto 0x006d
+  002b: LogInternal("ERROR: TnSeqAct_SetOmegaStage can only be used with Omega", , , )
+  006b: return nothing
+  006d: Omega.SetStage(self.Stage)
+  0085: return nothing
+  0087: <eos>
+
+function TnSeqAct_SetOmegaStage.GetOmega  (script 93 bytes)
+  0000: Omega = TnOmegaSupremePawn(0[self.Targets])
+  0012: if !((Omega != none)) goto 0x0023
+  001d: return Omega
+  0023: C = Controller(0[self.Targets])
+  0035: if !((C != none)) goto 0x0054
+  0040: return TnOmegaSupremePawn(C.Pawn)
+  0054: return none
+  0056: return return
+  005c: <eos>

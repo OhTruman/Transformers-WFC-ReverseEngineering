@@ -1,0 +1,34 @@
+function HmMultiFrequencyWaveGenerator.ResetTime  (script 14 bytes)
+  0000: self.Time = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function HmMultiFrequencyWaveGenerator.SetSpectrum  (script 14 bytes)
+  0000: self.Spectrum = S
+  000b: return nothing
+  000d: <eos>
+
+function HmMultiFrequencyWaveGenerator.AddWave  (script 87 bytes)
+  0000: W.Frequency = F
+  0016: W.Amplitude = A
+  002c: self.Spectrum.Waves.Length[self.Spectrum.Waves] = W
+  0054: return nothing
+  0056: <eos>
+
+function HmMultiFrequencyWaveGenerator.Update  (script 31 bytes)
+  0000: (self.Time += DeltaTime)
+  000c: return HmMultiFrequencyWaveGenerator.EvaluateWave(self.Time)
+  0018: return return
+  001e: <eos>
+
+function HmMultiFrequencyWaveGenerator.EvaluateWave  (script 168 bytes)
+  0000: V = 0.0
+  000b: I = 0
+  0012: if !((I != self.Spectrum.Waves.Length)) goto 0x009b
+  002d: W = I[self.Spectrum.Waves]
+  0049: (V += (W.Amplitude * obj'Core.Math'.static.Sin((((T * W.Frequency) * cast3f(2)) * 3.1415927))))
+  0091: AddAdd_PreInt(I)
+  0098: goto 0x0012
+  009b: return V
+  00a1: return return
+  00a7: <eos>

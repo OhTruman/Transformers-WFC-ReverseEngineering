@@ -1,0 +1,15 @@
+function CameraActor.GetCameraView  (script 67 bytes)
+  0000: GetActorEyesViewPoint(OutPOV.Location, OutPOV.Rotation)
+  002a: OutPOV.Fov = self.FOVAngle
+  0040: return nothing
+  0042: <eos>
+
+function CameraActor.DisplayDebug  (script 157 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: Actor.DisplayDebug(HUD, out_YL, out_YPos)
+  0029: Canvas.StrLen("TEST", XL, out_YL)
+  004c: (out_YPos += out_YL)
+  0058: Canvas.SetPos(4.0, out_YPos)
+  0075: Canvas.DrawTextNormal(("FOV:" $ cast55(self.FOVAngle)), false, , )
+  009a: return nothing
+  009c: <eos>

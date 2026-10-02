@@ -1,0 +1,79 @@
+function TnAiActionLockedOnShootingFrenzy.OnInitialize  (script 95 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionLockedOnShootingFrenzyBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._Blueprint.WeaponClass, , , ))
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.OnBind  (script 80 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: get_InvManager().FindOrCreateInventory(self._Blueprint.WeaponClass, true)
+  004d: return nothing
+  004f: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.OnSetUpConditions  (script 168 bytes)
+  0000: Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._TransformerController.IsDangerous(Target) == false)) goto 0x0048
+  0046: return false
+  0048: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 2)) goto 0x006e
+  006c: return false
+  006e: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateLockedOnTarget', Target)
+  0090: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00a1: return return
+  00a7: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.OnIsValidForFutureExecution  (script 85 bytes)
+  0000: if !((self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))) == false)) goto 0x003d
+  003b: return false
+  003d: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.OnStart  (script 148 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: self._TimeRemaining = self._Blueprint.ShootingFrenzyTimeDuration
+  003c: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.ShootingFrenzyParams, delegate.None, delegate.None)
+  0070: SetCharacterState(0)
+  007b: TnAiActionLockedOnShootingFrenzy.ActivateShooting()
+  0081: return OnStart(ExpectedEffects)
+  008d: return return
+  0093: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.OnUpdate  (script 144 bytes)
+  0000: (self._TimeRemaining -= DeltaTime)
+  000c: if !((self._TimeRemaining < 0.0)) goto 0x0026
+  001b: return Fail()
+  0026: if !((get_WeaponShooter().get_ActiveWeapon() == none)) goto 0x004f
+  0044: return Fail()
+  004f: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0078
+  006d: return Succeed()
+  0078: return OnUpdate(ExpectedEffects, DeltaTime)
+  0089: return return
+  008f: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.OnFinish  (script 146 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: TnAiActionLockedOnShootingFrenzy.DeactivateShooting()
+  0027: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateLockedOnTarget', false, )
+  0046: if !((cast3a(CurrentState) != cast3a(3))) goto 0x0058
+  0056: return nothing
+  0058: get_WeaponAimer().Reset()
+  0070: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  008f: return nothing
+  0091: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.ActivateShooting  (script 158 bytes)
+  0000: self._TransformerController.Enemy = Pawn(self._Target)
+  0019: self._TransformerController.Focus = IFocusible(self._Target)
+  0032: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  0054: get_WeaponShooter().Activate(self._Blueprint.WeaponClass, delegate.FailCallback)
+  0083: get_WeaponShooter().StartFire()
+  009b: return nothing
+  009d: <eos>
+
+function TnAiActionLockedOnShootingFrenzy.DeactivateShooting  (script 27 bytes)
+  0000: get_WeaponShooter().Deactivate()
+  0018: return nothing
+  001a: <eos>

@@ -1,0 +1,43 @@
+function TnDestructibleHealthDisplay.Initialize  (script 14 bytes)
+  0000: self._Destructible = Destructible
+  000b: return nothing
+  000d: <eos>
+
+function TnDestructibleHealthDisplay.GetDisplayType  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function TnDestructibleHealthDisplay.GetHealth  (script 168 bytes)
+  0000: Pieces = self._Destructible.GetPieces()
+  0019: if !(self._Destructible._HealthBarDisplaysTotalStateHealth) goto 0x0070
+  002b: foreach Pieces(Piece,) (end 0x0055)
+  003a: (PiecesDamage += Piece.GetAccumulatedDamageForAllStates())
+  0054: iternext
+  0055: iterpop
+  0056: PiecesHealth = (GetMaximumHealth() - PiecesDamage)
+  006d: goto 0x009b
+  0070: foreach Pieces(Piece,) (end 0x009a)
+  007f: (PiecesHealth += Piece.GetHealth())
+  0099: iternext
+  009a: iterpop
+  009b: return PiecesHealth
+  00a1: return return
+  00a7: <eos>
+
+function TnDestructibleHealthDisplay.GetMaximumHealth  (script 120 bytes)
+  0000: Pieces = self._Destructible.GetPieces()
+  0019: foreach Pieces(Piece,) (end 0x006a)
+  0028: (PiecesInitialHealth += (self._Destructible._HealthBarDisplaysTotalStateHealth ? Piece.GetInitialHealthTotalForAllStates() : Piece.GetInitialHealth()))
+  0069: iternext
+  006a: iterpop
+  006b: return PiecesInitialHealth
+  0071: return return
+  0077: <eos>
+
+function TnDestructibleHealthDisplay.ShouldDisplayHealth  (script 34 bytes)
+  0000: if !(self._Destructible._Invulnerable) goto 0x0014
+  0012: return false
+  0014: return TnHealthDisplay.ShouldDisplayHealth()
+  001b: return return
+  0021: <eos>

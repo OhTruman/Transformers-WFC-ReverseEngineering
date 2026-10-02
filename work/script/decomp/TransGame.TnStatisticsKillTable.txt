@@ -1,0 +1,45 @@
+function TnStatisticsKillTable.RecordKill  (script 1265 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(((((Killer == none) || (Killer.PlayerReplicationInfo == none)) || (KilledPlayer == none)) || (KilledPlayer.PlayerReplicationInfo == none))) goto 0x0053
+  0051: return nothing
+  0053: MK.KillerName = Killer.PlayerReplicationInfo.GetHumanReadableName()
+  0080: if !((TnPlayerController(Killer) != none)) goto 0x00bc
+  0090: MK.KillerRestartCount = TnPlayerController(Killer).GetRestartCount()
+  00b9: goto 0x00d2
+  00bc: MK.KillerRestartCount = -1
+  00d2: KillerPawn = Killer.Pawn
+  00e6: if !((KillerPawn != none)) goto 0x0269
+  00f1: MK.KillerLocationX = KillerPawn.Location.X
+  011b: MK.KillerLocationY = KillerPawn.Location.Y
+  0145: MK.KillerLocationZ = KillerPawn.Location.Z
+  016f: MK.Distance = obj'Core.Math'.static.VSize((KillerPawn.Location - KillerPawn.Location))
+  01a9: if !((KillerPawn.Weapon != none)) goto 0x01e3
+  01bd: MK.KillerWeapon = KillerPawn.Weapon.get_Class()
+  01e3: if !((KillerPawn.GetTeam() != none)) goto 0x0229
+  01fc: MK.KillerTeam = KillerPawn.GetTeam().TeamName
+  0229: MK.KillerForm = GetFormName(KillerPawn)
+  0249: MK.KillerTransformer = GetTransformerName(Killer)
+  0269: MK.VictimName = KilledPlayer.PlayerReplicationInfo.GetHumanReadableName()
+  0296: if !((TnPlayerController(KilledPlayer) != none)) goto 0x02d2
+  02a6: MK.VictimRestartCount = TnPlayerController(KilledPlayer).GetRestartCount()
+  02cf: goto 0x02e8
+  02d2: MK.VictimRestartCount = -1
+  02e8: if !((KilledPawn != none)) goto 0x0455
+  02f3: MK.VictimLocationX = KilledPawn.Location.X
+  031d: MK.VictimLocationY = KilledPawn.Location.Y
+  0347: MK.VictimLocationZ = KilledPawn.Location.Z
+  0371: if !((KilledPawn.Weapon != none)) goto 0x03ab
+  0385: MK.VictimWeapon = KilledPawn.Weapon.get_Class()
+  03ab: if !((KilledPawn.GetTeam() != none)) goto 0x03f1
+  03c4: MK.VictimTeam = KilledPawn.GetTeam().TeamName
+  03f1: MK.VictimAge = KilledPawn.GetAge()
+  0415: MK.VictimForm = GetFormName(KilledPawn)
+  0435: MK.VictimTransformer = GetTransformerName(KilledPlayer)
+  0455: MK.DamageType = DamageType
+  046b: if !(((KillerPawn != none) && (KilledPawn != none))) goto 0x04bd
+  0483: MK.Distance = obj'Core.Math'.static.VSize((KillerPawn.Location - KilledPawn.Location))
+  04bd: MK.Session_Id = Game.StatisticsSessionId
+  04dc: self.Kills.Length[self.Kills] = MK
+  04ee: return nothing
+  04f0: <eos>

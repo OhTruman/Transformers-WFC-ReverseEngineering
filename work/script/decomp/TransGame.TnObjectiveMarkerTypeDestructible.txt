@@ -1,0 +1,33 @@
+function TnObjectiveMarkerTypeDestructible.GetMarkerSetup  (script 28 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: return self.MarkerSetup
+  0015: return return
+  001b: <eos>
+
+function TnObjectiveMarkerTypeDestructible.ShouldDisplayMarker  (script 94 bytes)
+  0000: MarkerAsDestructible = TnDestructibleActor(Marker.MarkerBase)
+  001b: if !(((MarkerAsDestructible != none) && MarkerAsDestructible._Invulnerable)) goto 0x003c
+  003a: return false
+  003c: if !((GetNormalizedHealth(Marker) <= cast3f(0))) goto 0x0055
+  0053: return false
+  0055: return true
+  0057: return return
+  005d: <eos>
+
+function TnObjectiveMarkerTypeDestructible.GetNormalizedHealth  (script 178 bytes)
+  0000: ServiceProvider = TnServiceProvider(Marker.MarkerBase)
+  001b: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x0035
+  002f: return 0.0
+  0035: HealthService = TnHealthDisplayService(ServiceProvider.GetService('TnHealthDisplayService'))
+  005d: if !(EqualEqual_InterfaceInterface(HealthService, TnHealthDisplayService(none))) goto 0x0077
+  0071: return 0.0
+  0077: if !(!HealthService.ShouldDisplayHealth()) goto 0x0096
+  0090: return 0.0
+  0096: return HealthService.get_NormalizedHealth()
+  00ab: return return
+  00b1: <eos>
+
+function TnObjectiveMarkerTypeDestructible.DrawLabel  (script 55 bytes)
+  0000: DrawHealthBar(Setup, GetNormalizedHealth(MarkerData), LabelLocationSS, self.HealthBarOffsetFromLabel, self.HealthBarSize, 1, C)
+  0034: return nothing
+  0036: <eos>

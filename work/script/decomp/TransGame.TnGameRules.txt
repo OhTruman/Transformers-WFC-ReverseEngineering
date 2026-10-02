@@ -1,0 +1,62 @@
+function TnGameRules.SetupGameOnClient  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameRules.HandleStartGame  (script 17 bytes)
+  0000: HandleStartGame()
+  0006: TnGameRules.BroadcastGameTypeMessage(0, )
+  000e: return nothing
+  0010: <eos>
+
+function TnGameRules.HandleEndGame  (script 27 bytes)
+  0000: HandleEndGame(Winner)
+  000b: TnGameRules.BroadcastGameTypeMessage(2, Winner)
+  0018: return nothing
+  001a: <eos>
+
+function TnGameRules.HandleGameNearlyComplete  (script 17 bytes)
+  0000: HandleGameNearlyComplete()
+  0006: TnGameRules.BroadcastGameTypeMessage(1, )
+  000e: return nothing
+  0010: <eos>
+
+function TnGameRules.ApplyBuff  (script 113 bytes)
+  0000: if !((PC.Pawn == none)) goto 0x0016
+  0014: return nothing
+  0016: BuffService = TnBuffService(TnPawn(PC.Pawn).GetService('TnBuffService'))
+  004b: BuffService.AddBuff(Buff, BuffLevel, PC)
+  006e: return nothing
+  0070: <eos>
+
+function TnGameRules.ApplyBuffToTeam  (script 103 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PCIter) (end 0x0063)
+  0020: if !(self.WorldInfo.GRI.OnSameTeam(PC, PCIter)) goto 0x0062
+  0049: ApplyBuff(PCIter, Buff, BuffLevel)
+  0062: iternext
+  0063: iterpop
+  0064: return nothing
+  0066: <eos>
+
+function TnGameRules.HasBuff  (script 121 bytes)
+  0000: if !(((PC == none) || (PC.Pawn == none))) goto 0x0023
+  0021: return false
+  0023: BuffService = TnBuffService(TnPawn(PC.Pawn).GetService('TnBuffService'))
+  0058: return BuffService.HasBuff(Buff)
+  0072: return return
+  0078: <eos>
+
+function TnGameRules.GetGameType  (script 46 bytes)
+  0000: if !((self.NextGameRules != none)) goto 0x0024
+  000b: return TnGameRules(self.NextGameRules).GetGameType()
+  0024: return 0
+  0027: return return
+  002d: <eos>
+
+function TnGameRules.BroadcastGameTypeMessage  (script 140 bytes)
+  0000: nothing
+  0001: if !((self.WorldInfo.Game.bTeamGame && (self.TeamGameMessageClass != none))) goto 0x0044
+  0029: BroadcastLocalizedMessage(self.TeamGameMessageClass, MessageType, RelatedPRI_1, , )
+  0044: if !((!self.WorldInfo.Game.bTeamGame && (self.FFAGameMessageClass != none))) goto 0x0089
+  006e: BroadcastLocalizedMessage(self.FFAGameMessageClass, MessageType, RelatedPRI_1, , )
+  0089: return nothing
+  008b: <eos>

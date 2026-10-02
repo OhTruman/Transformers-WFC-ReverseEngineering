@@ -1,0 +1,187 @@
+function OnlineSessionJoiner.set_OnlineSub  (script 53 bytes)
+  0000: self._OnlineSub = Value
+  000b: self._OnlineDisconnector = Value.GetOnlineDisconnector()
+  0024: GotoState('Ready', , , )
+  0032: return nothing
+  0034: <eos>
+
+function OnlineSessionJoiner.get_LocalPlayerController  (script 75 bytes)
+  0000: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'PlayerController', PC) (end 0x003d)
+  0039: goto 0x003d
+  003c: iternext
+  003d: iterpop
+  003e: return PC
+  0044: return return
+  004a: <eos>
+
+function OnlineSessionJoiner.JoinSession  (script 87 bytes)
+  0000: LogInternal((("Error: JoinSession called in state (" $ cast57(GetStateName())) $ ") which is not allowed"), 'DevOnline', , )
+  0054: return nothing
+  0056: <eos>
+
+function OnlineSessionJoiner.JoinSessionUsingGameInvite  (script 102 bytes)
+  0000: LogInternal((("Error: JoinSessionUsingGameInvite called in state (" $ cast57(GetStateName())) $ ") which is not allowed"), 'DevOnline', , )
+  0063: return nothing
+  0065: <eos>
+
+function OnlineSessionJoiner.IsInProgress  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function OnlineSessionJoiner.NotifyFailed  (script 37 bytes)
+  0000: GotoState('Ready', , , )
+  000e: OnlineSessionJoiner.get_LocalPlayerController().NotifyJoinSessionFailed()
+  0022: return nothing
+  0024: <eos>
+
+function OnlineSessionJoiner.Cancel  (script 181 bytes)
+  0000: LogInternal("ERROR: Canceling session joining is not safe.", 'DevOnline', , )
+  003c: self._OnlineSub.ReservationInterface.ClearRequestReservationCompleteDelegate(delegate.OnRequestReservationComplete)
+  0062: self._OnlineSub.GameInterface.ClearJoinOnlineGameCompleteDelegate(delegate.OnJoinOnlineGameComplete)
+  0088: self._OnlineDisconnector.ClearDisconnectFromSessionsCompleteDelegate(delegate.OnDisconnectFromSessionComplete)
+  00a4: GotoState('Ready', , , )
+  00b2: return nothing
+  00b4: <eos>
+
+function OnlineSessionJoiner.OnRequestReservationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSessionJoiner.OnDisconnectFromSessionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSessionJoiner.OnJoinOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSessionJoiner.Ready.BeginState  (script 43 bytes)
+  0000: PC = OnlineSessionJoiner.get_LocalPlayerController()
+  000c: if !((PC != none)) goto 0x0028
+  0017: PC.bIgnoreSocketErrorMessage = false
+  0028: return nothing
+  002a: <eos>
+
+function OnlineSessionJoiner.Ready.JoinSession  (script 518 bytes)
+  0000: LogInternal((((((("JoinSession requested for Session (" $ cast57(SessionName)) $ ") with option (") $ cast52(PostJoinSessionOption)) $ ") for (") $ cast56(OnlineSessionJoiner.get_LocalPlayerController())) $ ")"), 'DevOnline', , )
+  0071: self._JoinSessionParams.GameSearch = new(nothing, nothing, obj'OnlineGameSearch', nothing, GetRemoteRole)
+  0090: self._JoinSessionParams.SessionName = SessionName
+  00a6: self._JoinSessionParams.PostJoinSessionOption = PostJoinSessionOption
+  00bc: self._IsJoiningGameInvite = false
+  00c4: self._JoiningUserNum = OnlineSessionJoiner.get_LocalPlayerController().GetLocalUserNum()
+  00de: if !(!self._OnlineSub.GameInterface.BindPlatformSpecificSessionToSearch(cast3d(self._JoiningUserNum), self._JoinSessionParams.GameSearch, PlatformSpecificInfo)) goto 0x0124
+  011c: OnlineSessionJoiner.NotifyFailed()
+  0122: return nothing
+  0124: JoinSettings = 0[self._JoinSessionParams.GameSearch.Results].GameSettings
+  0150: JoinSettings.bWasFromInvite = false
+  0161: JoinSettings.NumOpenPublicConnections = JoinSettings.NumPublicConnections
+  017e: JoinSettings.NumOpenPrivateConnections = JoinSettings.NumPrivateConnections
+  019b: if !((cast3a(PostJoinSessionOption) == cast3a(0))) goto 0x01bc
+  01ab: GotoState('Reserving', , , )
+  01b9: goto 0x0203
+  01bc: if !((self._OnlineSub.GameInterface.GetGameSettings(SessionName) != none)) goto 0x01f5
+  01e4: GotoState('Disconnecting', , , )
+  01f2: goto 0x0203
+  01f5: GotoState('Joining', , , )
+  0203: return nothing
+  0205: <eos>
+
+function OnlineSessionJoiner.Ready.JoinSessionUsingGameInvite  (script 224 bytes)
+  0000: LogInternal((("JoinSessionUsingGameInvite requested for (" $ cast56(OnlineSessionJoiner.get_LocalPlayerController())) $ ")"), 'DevOnline', , )
+  0048: self._JoinSessionParams.GameSearch = new(nothing, nothing, obj'OnlineGameSearch', nothing, GetRemoteRole)
+  0067: 0[self._JoinSessionParams.GameSearch.Results] = SearchResult
+  0088: self._JoinSessionParams.PostJoinSessionOption = 0
+  009b: self._IsJoiningGameInvite = true
+  00a3: self._JoiningUserNum = OnlineSessionJoiner.get_LocalPlayerController().GetLocalUserNum()
+  00bd: OnlineSessionJoiner.get_LocalPlayerController().bIgnoreSocketErrorMessage = true
+  00cf: GotoState('Reserving', , , )
+  00dd: return nothing
+  00df: <eos>
+
+function OnlineSessionJoiner.Ready.IsInProgress  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSessionJoiner.Reserving.BeginState  (script 105 bytes)
+  0000: self._OnlineSub.ReservationInterface.AddRequestReservationCompleteDelegate(delegate.OnRequestReservationComplete)
+  0026: self._OnlineSub.ReservationInterface.RequestReservation(0[self._JoinSessionParams.GameSearch.Results], !self._IsJoiningGameInvite)
+  0066: return nothing
+  0068: <eos>
+
+function OnlineSessionJoiner.Reserving.OnRequestReservationComplete  (script 377 bytes)
+  0000: self._OnlineSub.ReservationInterface.ClearRequestReservationCompleteDelegate(delegate.OnRequestReservationComplete)
+  0026: if !(!bWasSuccessful) goto 0x0039
+  0031: OnlineSessionJoiner.NotifyFailed()
+  0037: return nothing
+  0039: self._JoinSessionParams.GameSearch = new(nothing, nothing, obj'OnlineGameSearch', nothing, GetRemoteRole)
+  0058: self._JoinSessionParams.SessionName = SessionName
+  006e: if !(!self._OnlineSub.GameInterface.BindPlatformSpecificSessionToSearch(cast3d(self._JoiningUserNum), self._JoinSessionParams.GameSearch, PlatformSpecificInfo)) goto 0x00b4
+  00ac: OnlineSessionJoiner.NotifyFailed()
+  00b2: return nothing
+  00b4: JoinSettings = 0[self._JoinSessionParams.GameSearch.Results].GameSettings
+  00e0: JoinSettings.bWasFromInvite = self._IsJoiningGameInvite
+  00f6: JoinSettings.NumOpenPublicConnections = JoinSettings.NumPublicConnections
+  0113: JoinSettings.NumOpenPrivateConnections = JoinSettings.NumPrivateConnections
+  0130: if !((cast3a(obj'Engine'.static.GetCurrentWorldInfo().NetMode) == cast3a(0))) goto 0x0168
+  0157: GotoState('Joining', , , )
+  0165: goto 0x0176
+  0168: GotoState('Disconnecting', , , )
+  0176: return nothing
+  0178: <eos>
+
+function OnlineSessionJoiner.Disconnecting.BeginState  (script 217 bytes)
+  0000: if !(self._IsJoiningGameInvite) goto 0x008a
+  0009: SessionNames.AddItem('Party')
+  001a: SessionNames.AddItem('Game')
+  002b: if !((self._JoinSessionParams.SessionName == 'Game')) goto 0x005b
+  0049: CancelReservationToSession('Party')
+  0058: goto 0x006a
+  005b: CancelReservationToSession('Game')
+  006a: self._OnlineSub.ReservationInterface.DestroyReservationHost()
+  0087: goto 0x00a2
+  008a: SessionNames.AddItem(self._JoinSessionParams.SessionName)
+  00a2: self._OnlineDisconnector.AddDisconnectFromSessionsCompleteDelegate(delegate.OnDisconnectFromSessionComplete)
+  00be: self._OnlineDisconnector.DisconnectFromSessions(SessionNames)
+  00d6: return nothing
+  00d8: <eos>
+
+function OnlineSessionJoiner.Disconnecting.CancelReservationToSession  (script 50 bytes)
+  0000: SessionNames.AddItem(SessionToCancel)
+  000d: self._OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  002f: return nothing
+  0031: <eos>
+
+function OnlineSessionJoiner.Disconnecting.OnDisconnectFromSessionComplete  (script 45 bytes)
+  0000: self._OnlineDisconnector.ClearDisconnectFromSessionsCompleteDelegate(delegate.OnDisconnectFromSessionComplete)
+  001c: GotoState('Joining', , , )
+  002a: return nothing
+  002c: <eos>
+
+function OnlineSessionJoiner.Joining.BeginState  (script 120 bytes)
+  0000: self._OnlineSub.GameInterface.AddJoinOnlineGameCompleteDelegate(delegate.OnJoinOnlineGameComplete)
+  0026: self._OnlineSub.GameInterface.JoinOnlineGame(cast3d(self._JoiningUserNum), self._JoinSessionParams.SessionName, 0[self._JoinSessionParams.GameSearch.Results])
+  0075: return nothing
+  0077: <eos>
+
+function OnlineSessionJoiner.Joining.OnJoinOnlineGameComplete  (script 118 bytes)
+  0000: self._OnlineSub.GameInterface.ClearJoinOnlineGameCompleteDelegate(delegate.OnJoinOnlineGameComplete)
+  0026: if !(!bWasSuccessful) goto 0x0039
+  0031: OnlineSessionJoiner.NotifyFailed()
+  0037: return nothing
+  0039: if !((cast3a(self._JoinSessionParams.PostJoinSessionOption) == cast3a(0))) goto 0x0065
+  0054: GotoState('Travelling', , , )
+  0062: goto 0x0073
+  0065: GotoState('Ready', , , )
+  0073: return nothing
+  0075: <eos>
+
+function OnlineSessionJoiner.Travelling.BeginState  (script 227 bytes)
+  0000: if !(self._OnlineSub.GameInterface.GetResolvedConnectString(self._JoinSessionParams.SessionName, URL)) goto 0x00e0
+  0035: ConcatEqual_StrStr(URL, ("?UniqueId=" $ self._OnlineSub.UniqueNetIdToString(OnlineSessionJoiner.get_LocalPlayerController().PlayerReplicationInfo.UniqueId)))
+  007b: LogInternal((((("Resulting url for" @ cast57(self._JoinSessionParams.SessionName)) @ "is (") $ URL) $ ")"), 'DevOnline', , )
+  00c3: OnlineSessionJoiner.get_LocalPlayerController().ClientTravel(URL, 0, , )
+  00e0: return nothing
+  00e2: <eos>

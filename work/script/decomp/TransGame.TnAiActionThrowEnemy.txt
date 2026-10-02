@@ -1,0 +1,67 @@
+function TnAiActionThrowEnemy.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionThrowEnemyBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionThrowEnemy.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._GrabAttackerService = TnGrabAttackerService(GetService('TnGrabAttackerService', 2))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionThrowEnemy.OnSetUpConditions  (script 96 bytes)
+  0000: Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateGrabbedObject', Target)
+  0057: return true
+  0059: return return
+  005f: <eos>
+
+function TnAiActionThrowEnemy.OnStart  (script 191 bytes)
+  0000: self._Target = Pawn(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateGrabbedObject'))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: SetCharacterState((1 | 8))
+  004d: self._ActivatedTimer.Start(delegate.ThrowEnemy, self._Blueprint.ReleaseTime, )
+  0078: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAnimationComplete, delegate.OnAnimationComplete)
+  00ac: return OnStart(ExpectedEffects)
+  00b8: return return
+  00be: <eos>
+
+function TnAiActionThrowEnemy.OnUpdate  (script 48 bytes)
+  0000: self._ActivatedTimer.Tick(DeltaTime)
+  0018: return OnUpdate(ExpectedEffects, DeltaTime)
+  0029: return return
+  002f: <eos>
+
+function TnAiActionThrowEnemy.OnAnimationComplete  (script 54 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0029
+  001d: SucceedCallback()
+  0027: return nothing
+  0029: FailCallback()
+  0033: return nothing
+  0035: <eos>
+
+function TnAiActionThrowEnemy.OnFinish  (script 87 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._ActivatedTimer.Clear()
+  001e: self._AnimatorService.StopAnimation(, )
+  0034: TnAiActionThrowEnemy.ThrowEnemy()
+  003a: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateGrabbedObject', false, )
+  0054: return nothing
+  0056: <eos>
+
+function TnAiActionThrowEnemy.ThrowEnemy  (script 67 bytes)
+  0000: if !((self._GrabAttackerService.get_IsActive() == false)) goto 0x001c
+  001a: return nothing
+  001c: self._GrabAttackerService.Throw(cast39(self._TransformerPawn.Rotation))
+  0040: return nothing
+  0042: <eos>
+
+function TnAiActionThrowEnemy.DoCalculateAdditionalCost  (script 73 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') == 1) ? 2.0 : 0.0))
+  0042: return return
+  0048: <eos>

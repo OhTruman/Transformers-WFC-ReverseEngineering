@@ -1,0 +1,54 @@
+function TnTacticalDatabase.RegisterEnemy  (script 63 bytes)
+  0000: if !(IsAwareOfEnemy(C)) goto 0x0014
+  0012: return nothing
+  0014: TI.EnemyController = C
+  002a: self.Enemies.Length[self.Enemies] = TI
+  003c: return nothing
+  003e: <eos>
+
+function TnTacticalDatabase.UnregisterEnemy  (script 83 bytes)
+  0000: I = 0
+  0007: if !((I < self.Enemies.Length)) goto 0x0050
+  0017: if !((I[self.Enemies].EnemyController == C)) goto 0x0046
+  0037: self.Enemies.Remove(I,1)
+  0043: goto 0x0050
+  0046: AddAdd_PreInt(I)
+  004d: goto 0x0007
+  0050: return nothing
+  0052: <eos>
+
+function TnTacticalDatabase.IsAwareOfEnemy  (script 76 bytes)
+  0000: I = 0
+  0007: if !((I < self.Enemies.Length)) goto 0x0043
+  0017: if !((I[self.Enemies].EnemyController == C)) goto 0x0039
+  0037: return true
+  0039: AddAdd_PreInt(I)
+  0040: goto 0x0007
+  0043: return false
+  0045: return return
+  004b: <eos>
+
+function TnTacticalDatabase.SetEnemyRange  (script 104 bytes)
+  0000: EnemyIdx = self.Enemies.Find('EnemyController',Enemy)
+  001c: if !((EnemyIdx == -1)) goto 0x002d
+  002b: return nothing
+  002d: EnemyIdx[self.Enemies].CenterPointRange = CenterPointRange
+  0049: EnemyIdx[self.Enemies].NearestRange = NearestRange
+  0065: return nothing
+  0067: <eos>
+
+function TnTacticalDatabase.GetEnemyNearestRange  (script 76 bytes)
+  0000: idx = self.Enemies.Find('EnemyController',C)
+  001c: if !((idx == -1)) goto 0x002e
+  002b: return 0
+  002e: return idx[self.Enemies].NearestRange
+  0045: return return
+  004b: <eos>
+
+function TnTacticalDatabase.GetEnemyCenterPointRange  (script 76 bytes)
+  0000: idx = self.Enemies.Find('EnemyController',C)
+  001c: if !((idx == -1)) goto 0x002e
+  002b: return 0
+  002e: return idx[self.Enemies].CenterPointRange
+  0045: return return
+  004b: <eos>

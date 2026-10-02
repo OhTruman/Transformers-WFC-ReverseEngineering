@@ -1,0 +1,162 @@
+function TnSpawnPointManager.Initialize  (script 391 bytes)
+  0000: self.Clusters.Length = 0
+  0008: self.ActiveFactionClusters.Length = 0
+  0010: self.CurrentGameType = Game.GetGameType()
+  0029: foreach Game.AllActors(obj'TnSpawnCluster', Cluster) (end 0x0090)
+  0049: if !(((Cluster.ActiveGameTypes.Length == 0) || (Cluster.ActiveGameTypes.Find(self.CurrentGameType) != -1))) goto 0x008f
+  0080: RegisterSpawnCluster(Cluster)
+  008f: iternext
+  0090: iterpop
+  0091: if !((self.InitialSpawns.Length > self.ActiveFactionClusters.Length)) goto 0x0125
+  00a2: LogInternal("ERROR:  More initial spawn clusters specified then factions playing, listing them.", , , )
+  00fb: foreach self.InitialSpawns(Cluster,) (end 0x0121)
+  010a: LogInternal(("ERROR:" @ cast56(Cluster)), , , )
+  0120: iternext
+  0121: iterpop
+  0122: goto 0x0184
+  0125: self.UsingInitialSpawn = true
+  012d: foreach self.InitialSpawns(Cluster,) (end 0x0183)
+  013c: I = self.ActiveFactionClusters.Find('TeamNum',Cluster.get_Faction())
+  0166: I[self.ActiveFactionClusters].Cluster = Cluster
+  0182: iternext
+  0183: iterpop
+  0184: return nothing
+  0186: <eos>
+
+function TnSpawnPointManager.RegisterSpawnCluster  (script 191 bytes)
+  0000: if !((self.Clusters.Find(Cluster) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.Clusters.AddItem(Cluster)
+  0026: if !((self.ActiveFactionClusters.Find('TeamNum',Cluster.get_Faction()) == -1)) goto 0x0096
+  0054: I = self.ActiveFactionClusters.Length
+  0060: self.ActiveFactionClusters.Insert(I,1)
+  006c: I[self.ActiveFactionClusters].TeamNum = Cluster.get_Faction()
+  0096: if !(Cluster.InitialSpawn) goto 0x00b5
+  00a8: self.InitialSpawns.AddItem(Cluster)
+  00b5: TnSpawnPointManager.UpdateClusters()
+  00bc: return nothing
+  00be: <eos>
+
+function TnSpawnPointManager.RegisterSpawnModifier  (script 144 bytes)
+  0000: if !((self.Modifiers.Find(SpawnModifier) != -1)) goto 0x0079
+  0017: LogInternal((("ERROR:  Attempting to register Spawn Modifier," @ cast56(SpawnModifier)) $ ", but it is already registered"), , , )
+  0077: return nothing
+  0079: self.Modifiers.AddItem(SpawnModifier)
+  0086: TnSpawnPointManager.UpdateClusters()
+  008d: return nothing
+  008f: <eos>
+
+function TnSpawnPointManager.UnregisterSpawnModifier  (script 142 bytes)
+  0000: if !((self.Modifiers.Find(SpawnModifier) == -1)) goto 0x0077
+  0017: LogInternal((("ERROR:  Attempting to unregister Spawn Modifier," @ cast56(SpawnModifier)) $ ", but it is not registered"), , , )
+  0075: return nothing
+  0077: self.Modifiers.RemoveItem(SpawnModifier)
+  0084: TnSpawnPointManager.UpdateClusters()
+  008b: return nothing
+  008d: <eos>
+
+function TnSpawnPointManager.Update  (script 56 bytes)
+  0000: (self.TimeSinceLastUpdate += DeltaTime)
+  000c: if !((self.TimeSinceLastUpdate >= self.UpdateInterval)) goto 0x0026
+  001b: TnSpawnPointManager.UpdateClusters(self.TimeSinceLastUpdate)
+  0026: if !(self.DebugActive) goto 0x0035
+  002f: TnSpawnPointManager.DrawDebug()
+  0035: return nothing
+  0037: <eos>
+
+function TnSpawnPointManager.FindSpawnPoint  (script 572 bytes)
+  0000: if !((SpawningController == none)) goto 0x000d
+  000b: return none
+  000d: ControllerTeam = SpawningController.GetTeamNum()
+  0026: Index = self.ActiveFactionClusters.Find('TeamNum',ControllerTeam)
+  0042: if !((Index == -1)) goto 0x00e3
+  0051: LogInternal((((("ERROR:  Attempting to find spawn point for," @ cast56(SpawningController)) $ ", on team,") @ cast52(ControllerTeam)) $ ", but there are no Spawn Clusters registered to that team."), , , )
+  00e1: return none
+  00e3: if !((Index[self.ActiveFactionClusters].Cluster == none)) goto 0x0184
+  00ff: LogInternal((((("ERROR:  Attempting to find spawn point for," @ cast56(SpawningController)) $ ", on team,") @ cast52(ControllerTeam)) $ ", but that faction has a null active cluster."), , , )
+  0182: return none
+  0184: I = 0
+  018b: if !(((I < self.MaxSpawnPointsToConsider) && (NP == none))) goto 0x022f
+  01a7: NP = Index[self.ActiveFactionClusters].Cluster.GetSpawnPoint()
+  01d1: NP.GetBoundingCylinder(Radius, Height)
+  01ee: if !(!self.LocationValidator.IsSafeSpawnLocation(NP.Location, Radius, Height)) goto 0x0225
+  021e: NP = none
+  0225: AddAdd_PreInt(I)
+  022c: goto 0x018b
+  022f: return NP
+  0235: return return
+  023b: <eos>
+
+function TnSpawnPointManager.UpdateClusters  (script 514 bytes)
+  0000: nothing
+  0001: if !(self.UsingInitialSpawn) goto 0x0026
+  000a: if !((self.TimeSinceLastUpdate >= self.InitialSpawnTime)) goto 0x0024
+  0019: self.UsingInitialSpawn = false
+  0021: goto 0x0026
+  0024: return nothing
+  0026: I = 0
+  002d: if !((I < self.ActiveFactionClusters.Length)) goto 0x01f4
+  003d: TopScore = -3.4028234663852886e+38
+  004a: TopCluster = none
+  0051: CurrentCluster = I[self.ActiveFactionClusters].Cluster
+  006d: (I[self.ActiveFactionClusters].Uptime += DeltaTime)
+  008a: foreach self.Clusters(Cluster,) (end 0x0158)
+  0099: if !(((cast3a(Cluster.get_Faction()) != cast3a(I[self.ActiveFactionClusters].TeamNum)) && (Cluster.FactionNeutralGameTypes.Find(self.CurrentGameType) == -1))) goto 0x00f1
+  00ed: iternext
+  00ee: goto 0x0158
+  00f1: Score = TnSpawnPointManager.ScoreCluster(Cluster, I[self.ActiveFactionClusters].TeamNum)
+  0118: if !((Cluster == CurrentCluster)) goto 0x0132
+  0127: CurrentScore = Score
+  0132: if !((Score > TopScore)) goto 0x0157
+  0141: TopCluster = Cluster
+  014c: TopScore = Score
+  0157: iternext
+  0158: iterpop
+  0159: if !((TopCluster == CurrentCluster)) goto 0x016b
+  0168: goto 0x01ea
+  016b: if !((((DeltaTime == cast3f(0)) || ((TopScore - CurrentScore) >= self.EarlyCutoffScoreDifference)) || (I[self.ActiveFactionClusters].Uptime >= self.ActiveClusterTime))) goto 0x01ea
+  01b2: I[self.ActiveFactionClusters].Cluster = TopCluster
+  01ce: I[self.ActiveFactionClusters].Uptime = 0.0
+  01ea: AddAdd_PreInt(I)
+  01f1: goto 0x002d
+  01f4: self.TimeSinceLastUpdate = 0.0
+  01ff: return nothing
+  0201: <eos>
+
+function TnSpawnPointManager.ScoreCluster  (script 122 bytes)
+  0000: I = 0
+  0007: if !((I < self.Modifiers.Length)) goto 0x006d
+  0017: if !((I[self.Modifiers] == none)) goto 0x0039
+  0028: self.Modifiers.Remove(SubtractSubtract_Int(I),1)
+  0036: goto 0x0063
+  0039: (Total += I[self.Modifiers].ScoreCluster(Cluster, Faction))
+  0063: AddAdd_PreInt(I)
+  006a: goto 0x0007
+  006d: return Total
+  0073: return return
+  0079: <eos>
+
+function TnSpawnPointManager.ToggleDebug  (script 18 bytes)
+  0000: self.DebugActive = !self.DebugActive
+  000f: return nothing
+  0011: <eos>
+
+function TnSpawnPointManager.DrawDebug  (script 347 bytes)
+  0000: foreach self.Clusters(Cluster,) (end 0x0157)
+  000f: OutString = (("--" $ cast56(Cluster)) $ "--")
+  0028: I = 0
+  002f: if !((I < self.ActiveFactionClusters.Length)) goto 0x0118
+  003f: Faction = I[self.ActiveFactionClusters].TeamNum
+  005b: if !((cast3a(Cluster.get_Faction()) != cast3a(Faction))) goto 0x007f
+  007c: goto 0x010e
+  007f: OutString = (((((OutString $ "
+") @ "Faction") $ cast52(Faction)) $ ":") @ cast55(TnSpawnPointManager.ScoreCluster(Cluster, Faction)))
+  00bc: if !((I[self.ActiveFactionClusters].Cluster == Cluster)) goto 0x010e
+  00dc: OutString = (((OutString @ "OPEN") @ "-") @ cast55(I[self.ActiveFactionClusters].Uptime))
+  010e: AddAdd_PreInt(I)
+  0115: goto 0x002f
+  0118: obj'Engine.Debug'.static.DrawText(Cluster._CenterPoint, OutString, MakeColor(cast3d(255), cast3d(255), cast3d(255), ), )
+  0156: iternext
+  0157: iterpop
+  0158: return nothing
+  015a: <eos>

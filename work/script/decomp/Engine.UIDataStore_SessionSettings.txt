@@ -1,0 +1,15 @@
+function UIDataStore_SessionSettings.ClearDataProviders  (script 69 bytes)
+  0000: I = 0
+  0007: if !((I < self.SessionSettings.Length)) goto 0x003a
+  0017: I[self.SessionSettings].CleanupDataProvider()
+  0030: AddAdd_Int(I)
+  0037: goto 0x0007
+  003a: self.SessionSettings.Length = 0
+  0042: return nothing
+  0044: <eos>
+
+function UIDataStore_SessionSettings.NotifyGameSessionEnded  (script 20 bytes)
+  0000: UIDataStore_SessionSettings.ClearDataProviders()
+  0006: return UIDataStore.NotifyGameSessionEnded()
+  000d: return return
+  0013: <eos>

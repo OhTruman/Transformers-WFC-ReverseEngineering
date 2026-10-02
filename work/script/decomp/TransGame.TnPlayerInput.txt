@@ -1,0 +1,76 @@
+function TnPlayerInput.Dodge  (script 107 bytes)
+  0000: if !((obj'Core.Math'.static.Abs(self.RawJoyUp) >= obj'Core.Math'.static.Abs(self.RawJoyRight))) goto 0x0048
+  0025: if !((self.RawJoyUp < cast3f(0))) goto 0x003d
+  0032: self.ForcedDoubleClick = 4
+  003a: goto 0x0045
+  003d: self.ForcedDoubleClick = 3
+  0045: goto 0x0068
+  0048: if !((self.RawJoyRight < cast3f(0))) goto 0x0060
+  0055: self.ForcedDoubleClick = 1
+  005d: goto 0x0068
+  0060: self.ForcedDoubleClick = 2
+  0068: return nothing
+  006a: <eos>
+
+function TnPlayerInput.CheckForDoubleClickMove  (script 46 bytes)
+  0000: get_Outer().DoubleClickDir = self.ForcedDoubleClick
+  0012: self.ForcedDoubleClick = 0
+  001a: return get_Outer().DoubleClickDir
+  0027: return return
+  002d: <eos>
+
+function TnPlayerInput.IgnoreInput  (script 60 bytes)
+  0000: DM = TnDebugManager(get_Outer().WorldInfo.GetDebugManager())
+  0025: return DM.IgnoreInput
+  0035: return return
+  003b: <eos>
+
+function TnPlayerInput.InputAxis  (script 52 bytes)
+  0000: nothing
+  0001: if !(TnPlayerInput.IgnoreInput()) goto 0x000c
+  000a: return true
+  000c: return InputAxis(ControllerId, Key, Delta, DeltaTime, bGamepad)
+  002d: return return
+  0033: <eos>
+
+function TnPlayerInput.InputKey  (script 68 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: if !(TnPlayerInput.IgnoreInput()) goto 0x001c
+  0013: self.KeyDownCount = 0
+  001a: return true
+  001c: return InputKey(ControllerId, Key, EventType, AmountDepressed, bGamepad)
+  003d: return return
+  0043: <eos>
+
+function TnPlayerInput.ReplaceIfOverridden  (script 28 bytes)
+  0000: if !((Overriden != "")) goto 0x0019
+  000c: Description = Overriden
+  0017: return nothing
+  0019: return nothing
+  001b: <eos>
+
+function TnPlayerInput.GetKeyDescription  (script 428 bytes)
+  0000: LP = LocalPlayer(PC.Player)
+  0019: VC = TnGameViewportClient(LP.ViewportClient)
+  0032: MappedKey = VC.MapInputKeyForController(PC, Key)
+  0055: I = self.KeyDescriptions.Find('Key',MappedKey)
+  0071: if !((I == -1)) goto 0x0083
+  0080: return ""
+  0083: Description = I[self.KeyDescriptions].Description
+  009f: if !((Form == "Robot")) goto 0x00d4
+  00b0: TnPlayerInput.ReplaceIfOverridden(Description, I[self.KeyDescriptions].Robot)
+  00d1: goto 0x0104
+  00d4: if !((Form == "Car")) goto 0x0104
+  00e3: TnPlayerInput.ReplaceIfOverridden(Description, I[self.KeyDescriptions].Car)
+  0104: if !((Form == "Truck")) goto 0x0139
+  0115: TnPlayerInput.ReplaceIfOverridden(Description, I[self.KeyDescriptions].Truck)
+  0136: goto 0x019f
+  0139: if !((Form == "Tank")) goto 0x016d
+  0149: TnPlayerInput.ReplaceIfOverridden(Description, I[self.KeyDescriptions].Tank)
+  016a: goto 0x019f
+  016d: if !((Form == "Plane")) goto 0x019f
+  017e: TnPlayerInput.ReplaceIfOverridden(Description, I[self.KeyDescriptions].Plane)
+  019f: return Description
+  01a5: return return
+  01ab: <eos>

@@ -1,0 +1,127 @@
+function PCSettingManager.ValidateResolution  (script 7 bytes)
+  0000: Resolution
+  0005: nothing
+  0006: <eos>
+
+function PCSettingManager.QueryAvailableResolutions  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.SaveCurrentResolution  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.LoadCurrentResolution  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.GetNativeResolution  (script 7 bytes)
+  0000: AdapterIndex
+  0005: nothing
+  0006: <eos>
+
+function PCSettingManager.GetDefaultResolution  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.GetAvailableResolutions  (script 12 bytes)
+  0000: OutResolutionInfo
+  0005: AdapterIndex
+  000a: nothing
+  000b: <eos>
+
+function PCSettingManager.GetCurrentResolution  (script 7 bytes)
+  0000: OutResolutionInfo
+  0005: nothing
+  0006: <eos>
+
+function PCSettingManager.SetCurrentResolution  (script 240 bytes)
+  0000: if !((self.CurrentResolutionIsValid && (self.CurrentResolution == NewResolution))) goto 0x001f
+  001d: return nothing
+  001f: if !(PCSettingManager.ValidateResolution(NewResolution)) goto 0x0038
+  002d: self.CurrentResolution = NewResolution
+  0038: self.CurrentResolutionIsValid = true
+  0040: if !((obj'WorldInfo'.static.IsConsoleBuild(1) || obj'WorldInfo'.static.IsConsoleBuild(2))) goto 0x0074
+  0072: return nothing
+  0074: Engine = obj'Engine'.static.GetEngine()
+  008d: if !((Engine == none)) goto 0x009a
+  0098: return nothing
+  009a: Engine.GameViewport.ResizeViewport(self.CurrentResolution.Width, self.CurrentResolution.Height, self.CurrentResolution.Fullscreen)
+  00e7: PCSettingManager.SaveCurrentResolution()
+  00ed: return nothing
+  00ef: <eos>
+
+function PCSettingManager.SaveCurrentVSyncState  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.LoadCurrentVSyncState  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.SetRHIVSyncState  (script 7 bytes)
+  0000: bVSyncEnabled
+  0005: nothing
+  0006: <eos>
+
+function PCSettingManager.GetDefaultVSyncState  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.GetCurrentVSyncState  (script 61 bytes)
+  0000: if !(!self.CurrentVSyncStateIsValid) goto 0x002f
+  000b: if !(!PCSettingManager.LoadCurrentVSyncState()) goto 0x002f
+  0016: self.CurrentVSyncState = GetDefaultVSyncState()
+  0027: self.CurrentVSyncStateIsValid = true
+  002f: return self.CurrentVSyncState
+  0036: return return
+  003c: <eos>
+
+function PCSettingManager.SetCurrentVSyncState  (script 124 bytes)
+  0000: if !((self.CurrentVSyncStateIsValid && (self.CurrentVSyncState == IsVSyncEnabled))) goto 0x001e
+  001c: return nothing
+  001e: self.CurrentVSyncState = IsVSyncEnabled
+  002b: self.CurrentVSyncStateIsValid = true
+  0033: if !((obj'WorldInfo'.static.IsConsoleBuild(1) || obj'WorldInfo'.static.IsConsoleBuild(2))) goto 0x0067
+  0065: return nothing
+  0067: PCSettingManager.SetRHIVSyncState(self.CurrentVSyncState)
+  0073: PCSettingManager.SaveCurrentVSyncState()
+  0079: return nothing
+  007b: <eos>
+
+function PCSettingManager.SaveCurrentTextureQualityLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.LoadCurrentTextureQualityLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.SetTextureStreamingSettings  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.GetDefaultTextureQualityLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PCSettingManager.GetCurrentTextureQualityLevel  (script 59 bytes)
+  0000: if !(!self.CurrentTextureQualityLevelIsValid) goto 0x002e
+  000b: if !(!PCSettingManager.LoadCurrentTextureQualityLevel()) goto 0x002e
+  0016: self.CurrentTextureQualityLevel = GetDefaultTextureQualityLevel()
+  0026: self.CurrentTextureQualityLevelIsValid = true
+  002e: return self.CurrentTextureQualityLevel
+  0034: return return
+  003a: <eos>
+
+function PCSettingManager.SetCurrentTextureQualityLevel  (script 114 bytes)
+  0000: if !((self.CurrentTextureQualityLevelIsValid && (self.CurrentTextureQualityLevel == TextureQualityLevel))) goto 0x001c
+  001a: return nothing
+  001c: self.CurrentTextureQualityLevel = TextureQualityLevel
+  0027: self.CurrentTextureQualityLevelIsValid = true
+  002f: if !((obj'WorldInfo'.static.IsConsoleBuild(1) || obj'WorldInfo'.static.IsConsoleBuild(2))) goto 0x0063
+  0061: return nothing
+  0063: PCSettingManager.SetTextureStreamingSettings()
+  0069: PCSettingManager.SaveCurrentTextureQualityLevel()
+  006f: return nothing
+  0071: <eos>

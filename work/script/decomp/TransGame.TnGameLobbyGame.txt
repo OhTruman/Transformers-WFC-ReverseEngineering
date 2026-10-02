@@ -1,0 +1,257 @@
+function TnGameLobbyGame.get_AutostartCountdown  (script 57 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0015: if !((LobbyGRI == none)) goto 0x0022
+  0020: return false
+  0022: return LobbyGRI.AutostartCountdown
+  0032: return return
+  0038: <eos>
+
+function TnGameLobbyGame.InitGame  (script 71 bytes)
+  0000: TnGame.InitGame(Options, ErrorMessage)
+  0010: CurrentSettings = TnOnlineGameSettingsBase(GetOnlineGameSettings())
+  0025: if !((CurrentSettings != none)) goto 0x0044
+  0030: self.NumRequiredPlayers = CurrentSettings.NumRequiredPlayers
+  0044: return nothing
+  0046: <eos>
+
+function TnGameLobbyGame.PreBeginPlay  (script 47 bytes)
+  0000: PreBeginPlay()
+  0006: if !(get_IsAutomatedTesting()) goto 0x002c
+  0013: get_TransTestingPolicy().HandleEnterGameLobby(self)
+  002c: return nothing
+  002e: <eos>
+
+function TnGameLobbyGame.AddGameRulesFromSettings  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameLobbyGame.GetSearchClassForGameType  (script 13 bytes)
+  0000: return obj'TnOnlineGameSearchBase'
+  0006: return return
+  000c: <eos>
+
+function TnGameLobbyGame.NotifyCharacterSelected  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameLobbyGame.NotifyMapVeto  (script 28 bytes)
+  0000: self.Statistics.RecordVeto(PRI, self)
+  0019: return nothing
+  001b: <eos>
+
+function TnGameLobbyGame.InitGameReplicationInfo  (script 300 bytes)
+  0000: TnLobbyGameBase.InitGameReplicationInfo()
+  0006: GRI = TnGameReplicationInfoGameLobby(GetGRI())
+  001b: CurrentSettings = TnOnlineGameSettingsBase(GetOnlineGameSettings())
+  0030: if !((CurrentSettings != none)) goto 0x0103
+  003b: GRI.AutostartCountdown = !CurrentSettings.IsPrivateGame()
+  0060: if !(CurrentSettings.GetStringSettingValue(1073741844, ValueIndex)) goto 0x00e2
+  0080: GRI.MapSelectionMethod = ValueIndex
+  0094: GRI.AllowMapVeto = (ValueIndex == 0)
+  00ac: if !(!IsPrivateMatch()) goto 0x00df
+  00bb: GRI.VetoQuarum = ((CurrentSettings.NumRequiredPlayers / 2) + 1)
+  00df: goto 0x0103
+  00e2: GRI.MapSelectionMethod = 1
+  00f2: GRI.AllowMapVeto = false
+  0103: GRI.OnEnterLobbyFromMap(GRI.GetMapID())
+  0129: return nothing
+  012b: <eos>
+
+function TnGameLobbyGame.HandleSeamlessTravelPlayer  (script 99 bytes)
+  0000: TnGame.HandleSeamlessTravelPlayer(C)
+  000b: PRI = TnPlayerReplicationInfo(C.PlayerReplicationInfo)
+  0024: PRI._ClassFormTracker.DisableTracking()
+  0040: if !(get_AutobalanceTeams()) goto 0x0060
+  004d: self.TeamHandler.DisbandTeams()
+  0060: return nothing
+  0062: <eos>
+
+function TnGameLobbyGame.PostSeamlessTravel  (script 47 bytes)
+  0000: TnGame.PostSeamlessTravel()
+  0006: if !(get_AutobalanceTeams()) goto 0x0026
+  0013: self.TeamHandler.DisbandTeams()
+  0026: TnGameLobbyGame.ResetTeamInfos()
+  002c: return nothing
+  002e: <eos>
+
+function TnGameLobbyGame.ResetTeamInfos  (script 48 bytes)
+  0000: foreach self.GameReplicationInfo.Teams(TI,) (end 0x002c)
+  0018: TI.Reset()
+  002b: iternext
+  002c: iterpop
+  002d: return nothing
+  002f: <eos>
+
+function TnGameLobbyGame.IsInFinalCountdown  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGameLobbyGame.AbortCountdown  (script 102 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0015: if !((LobbyGRI == none)) goto 0x0022
+  0020: return nothing
+  0022: LobbyGRI.HaltIntermissionCountdown()
+  0035: if !(get_AutobalanceTeams()) goto 0x0055
+  0042: self.TeamHandler.DisbandTeams()
+  0055: GotoState('PendingMatch', , , )
+  0063: return nothing
+  0065: <eos>
+
+function TnGameLobbyGame.Logout  (script 71 bytes)
+  0000: TnGame.Logout(Exiting)
+  000b: if !(((!IsPrivateMatch() && !self.CountdownRubicon) && !AreGameAutoStartConditionsMet(, ))) goto 0x0044
+  003a: AbortCountdown()
+  0044: return nothing
+  0046: <eos>
+
+function TnGameLobbyGame.OnBeginFinalCountdown  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameLobbyGame.PendingMatch.AbortCountdown  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameLobbyGame.PendingMatch.Tick  (script 212 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0024: LobbyGRI.SetHostCanRequestGameStart(CanHostRequestGameStart())
+  0041: if !(IsPrivateMatch()) goto 0x0067
+  004e: LobbyGRI.SetLobbyStatus(3, )
+  0064: goto 0x00d1
+  0067: ConditionsMet = AreGameAutoStartConditionsMet(NewStatus, NewParam)
+  0082: if !(!ConditionsMet) goto 0x00ad
+  008d: LobbyGRI.SetLobbyStatus(NewStatus, NewParam)
+  00aa: goto 0x00d1
+  00ad: LobbyGRI.SetLobbyStatus(0, )
+  00c3: GotoState('CountingDown', , , )
+  00d1: return nothing
+  00d3: <eos>
+
+function TnGameLobbyGame.CountingDown.BeginState  (script 65 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0015: LobbyGRI.SetLobbyStatus(0, )
+  002b: LobbyGRI.BeginIntermissionCountdown()
+  003e: return nothing
+  0040: <eos>
+
+function TnGameLobbyGame.CountingDown.Tick  (script 59 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: if !(GetGRI().IsCountdownBelowThreshold()) goto 0x0038
+  002a: GotoState('FinalCountdown', , , )
+  0038: return nothing
+  003a: <eos>
+
+function TnGameLobbyGame.FinalCountdown.BeginState  (script 110 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0015: LobbyGRI.SetLobbyStatus(0, )
+  002b: if !(get_AutobalanceTeams()) goto 0x004e
+  0038: self.TeamHandler.AssignTeams()
+  004b: goto 0x0061
+  004e: self.TeamHandler.ForceToTeam()
+  0061: OnBeginFinalCountdown()
+  006b: return nothing
+  006d: <eos>
+
+function TnGameLobbyGame.FinalCountdown.IsInFinalCountdown  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGameLobbyGame.FinalCountdown.PickTeam  (script 24 bytes)
+  0000: return TnGameLobbyGame.PickTeam(Current, C)
+  0011: return return
+  0017: <eos>
+
+function TnGameLobbyGame.FinalCountdown.ShouldStartGame  (script 101 bytes)
+  0000: PC = TnWorldInfo(self.WorldInfo).GetLocalPlayerController()
+  001e: if !((PC == none)) goto 0x002b
+  0029: return false
+  002b: return (GetGRI().HasCountdownExpired() && !PC.IsJoiningASession())
+  005e: return return
+  0064: <eos>
+
+function TnGameLobbyGame.FinalCountdown.Tick  (script 41 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: if !(ShouldStartGame()) goto 0x0026
+  001c: StartLevel()
+  0026: return nothing
+  0028: <eos>
+
+function TnGameLobbyGame.StartLevel  (script 167 bytes)
+  0000: self.Statistics.RecordMatch(self, "Start")
+  001b: self.Statistics.StartWrite(1)
+  0030: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0045: GameSettings = TnOnlineGameSettingsBase(GetOnlineGameSettings())
+  005a: GameSettings.BuildURL(MapURL)
+  0072: LobbyGRI.ModifyURL(MapURL)
+  008a: obj'TnGame'.static.ServerTravelToMap(MapURL, true, false)
+  00a4: return nothing
+  00a6: <eos>
+
+function TnGameLobbyGame.OnQuitGame  (script 50 bytes)
+  0000: self.Statistics.RecordMatch(self, "Quit")
+  001a: self.Statistics.StartWrite(1)
+  002f: return nothing
+  0031: <eos>
+
+function TnGameLobbyGame.CanHostRequestGameStart  (script 18 bytes)
+  0000: return IsPrivateMatch()
+  000b: return return
+  0011: <eos>
+
+function TnGameLobbyGame.AreGameAutoStartConditionsMet  (script 155 bytes)
+  0000: nothing
+  0001: nothing
+  0002: GameSettings = GetOnlineGameSettings()
+  0012: if !(((GameSettings == none) || GameSettings.IsPrivateGame())) goto 0x003f
+  0035: WaitingStatus = 0
+  003d: return false
+  003f: if !((self.NumPlayers < self.NumRequiredPlayers)) goto 0x006a
+  004e: WaitingStatus = 1
+  0056: Param = (self.NumRequiredPlayers - self.NumPlayers)
+  0068: return false
+  006a: if !(self.TeamHandler.AreTeamsUnbalanced()) goto 0x008a
+  0080: WaitingStatus = 4
+  0088: return false
+  008a: WaitingStatus = 0
+  0092: return true
+  0094: return return
+  009a: <eos>
+
+function TnGameLobbyGame.HostRequestMapID  (script 59 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0015: if !((LobbyGRI != none)) goto 0x0038
+  0020: LobbyGRI.HostRequestMapID(NewMapId)
+  0038: return nothing
+  003a: <eos>
+
+function TnGameLobbyGame.HostRequestCheckpoint  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameLobbyGame.HostRequestsGameStart  (script 106 bytes)
+  0000: if !(!CanHostRequestGameStart()) goto 0x0011
+  000f: return nothing
+  0011: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0026: if !(LobbyGRI.IsCountdownActive()) goto 0x003e
+  003c: return nothing
+  003e: self.CountdownRubicon = true
+  0046: LobbyGRI.BeginShortCountdown()
+  0059: GotoState('FinalCountdown', , , )
+  0067: return nothing
+  0069: <eos>
+
+function TnGameLobbyGame.ChangeTeam  (script 45 bytes)
+  0000: if !(get_AutobalanceTeams()) goto 0x000f
+  000d: return true
+  000f: return TnGame.ChangeTeam(Other, N, bNewTeam)
+  0026: return return
+  002c: <eos>
+
+function TnGameLobbyGame.PickTeam  (script 42 bytes)
+  0000: if !(get_AutobalanceTeams()) goto 0x0012
+  000d: return cast3d(255)
+  0012: return TnGame.PickTeam(Current, C)
+  0023: return return
+  0029: <eos>

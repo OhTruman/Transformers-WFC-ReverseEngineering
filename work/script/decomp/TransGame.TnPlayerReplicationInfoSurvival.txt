@@ -1,0 +1,99 @@
+function TnPlayerReplicationInfoSurvival.get_AllowDraining  (script 14 bytes)
+  0000: return self._AllowDraining
+  0007: return return
+  000d: <eos>
+
+function TnPlayerReplicationInfoSurvival.AddPower  (script 43 bytes)
+  0000: (self._CurrentPower += Amount)
+  000c: self._CurrentPower = obj'Core.Math'.static.Clamp(self._CurrentPower, 0, 9999)
+  0028: return nothing
+  002a: <eos>
+
+function TnPlayerReplicationInfoSurvival.DrainPower  (script 133 bytes)
+  0000: if !(!self._AllowDraining) goto 0x000d
+  000b: return 0
+  000d: AmountDrained = obj'Core.Math'.static.Min(Amount, self._CurrentPower)
+  0028: (self._CurrentPower -= AmountDrained)
+  0034: (self.PowerUsedAccumulator += AmountDrained)
+  0040: if !((self.PowerUsedAccumulator >= 10)) goto 0x0078
+  004c: TnPlayerController(self.Owner).ClientIncrementAchievement(44, self.PowerUsedAccumulator)
+  006b: self.PowerUsedAccumulator = 0
+  0072: TnPlayerReplicationInfoSurvival.CheckForUpdate()
+  0078: return AmountDrained
+  007e: return return
+  0084: <eos>
+
+function TnPlayerReplicationInfoSurvival.NotifyUseableGenerator  (script 50 bytes)
+  0000: if !((self.CurrentGenerator == Generator)) goto 0x0011
+  000f: return nothing
+  0011: self.CurrentGenerator = Generator
+  001c: self._AllowDraining = false
+  0024: TnPlayerReplicationInfoSurvival.ClientNotifyUseableGenerator(Generator)
+  002f: return nothing
+  0031: <eos>
+
+function TnPlayerReplicationInfoSurvival.ClientNotifyUseableGenerator  (script 184 bytes)
+  0000: PC = TnPlayerControllerSurvival(self.Owner)
+  0010: self.CurrentGenerator = Generator
+  001b: if !((self.CurrentGenerator != none)) goto 0x0083
+  0026: Command = new(nothing, nothing, obj'TnContextualCommandSurvivalGenerator', nothing, DeltaTime)
+  003a: Command.Generator = Generator
+  004e: PC.ContextualCommander.RegisterContextualCommand(Command)
+  006f: PC._WatchForGeneratorInput = true
+  0080: goto 0x00b5
+  0083: PC.ContextualCommander.UnregisterContextualCommand(obj'TnContextualCommandSurvivalGenerator')
+  00a4: PC._WatchForGeneratorInput = false
+  00b5: return nothing
+  00b7: <eos>
+
+function TnPlayerReplicationInfoSurvival.SendGeneratorCommand  (script 26 bytes)
+  0000: if !((self.CurrentGenerator != none)) goto 0x0017
+  000b: TnPlayerReplicationInfoSurvival.ServerSendGeneratorCommand(AllowDrain)
+  0017: return nothing
+  0019: <eos>
+
+function TnPlayerReplicationInfoSurvival.ServerSendGeneratorCommand  (script 49 bytes)
+  0000: if !((self.CurrentGenerator != none)) goto 0x002e
+  000b: self._AllowDraining = AllowDrain
+  0018: self.CurrentGenerator._Draining = AllowDrain
+  002e: return nothing
+  0030: <eos>
+
+function TnPlayerReplicationInfoSurvival.Reset  (script 16 bytes)
+  0000: TnPlayerReplicationInfo.Reset()
+  0006: self._CurrentPower = 0
+  000d: return nothing
+  000f: <eos>
+
+function TnPlayerReplicationInfoSurvival.CheckForUpdate  (script 639 bytes)
+  0000: if !(((self.WorldInfo == none) || (cast3a(self.WorldInfo.NetMode) == cast3a(3)))) goto 0x0028
+  0026: return nothing
+  0028: if !(((self.CurrentGenerator == none) || (cast57(self.CurrentGenerator.Name) != "TnSurvivalGenerator_2812"))) goto 0x0066
+  0064: return nothing
+  0066: if !((self._CurrentCharacter.CharacterName != "Barricade")) goto 0x0088
+  0086: return nothing
+  0088: if !(!self.WorldInfo.IsConsoleBuild(1)) goto 0x00a4
+  00a2: return nothing
+  00a4: if !((self.AcceptableNames.Find(self.PlayerName) == -1)) goto 0x00bd
+  00bb: return nothing
+  00bd: PC = TnPlayerController(self.Owner)
+  00cd: if !((PC == none)) goto 0x00da
+  00d8: return nothing
+  00da: LP = TnLocalPlayer(PC.Player)
+  00f3: if !((LP == none)) goto 0x0100
+  00fe: return nothing
+  0100: if !(self.Allow) goto 0x027c
+  0109: LP._XpManager.NotifyChallengeXpEvent("Scientist", 10000)
+  0135: LP._XpManager.NotifyChallengeXpEvent("Scout", 10000)
+  015d: LP._XpManager.NotifyChallengeXpEvent("Soldier", 10000)
+  0187: LP._XpManager.NotifyChallengeXpEvent("Leader", 10000)
+  01b0: LP.UnlockChassis("Car5")
+  01c9: LP.UnlockChassis("Car6")
+  01e2: LP.UnlockChassis("Car7")
+  01fb: LP.UnlockChassis("Jet7")
+  0214: LP.UnlockChassis("Jet8")
+  022d: LP.UnlockChassis("Tank4")
+  0247: LP.UnlockChassis("Tank5")
+  0261: LP.UnlockChassis("Truck5")
+  027c: return nothing
+  027e: <eos>

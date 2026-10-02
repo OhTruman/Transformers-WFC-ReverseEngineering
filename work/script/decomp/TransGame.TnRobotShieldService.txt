@@ -1,0 +1,36 @@
+function TnRobotShieldService.get_IsShieldActive  (script 40 bytes)
+  0000: if !((self._BlockController == none)) goto 0x000d
+  000b: return false
+  000d: return self._BlockController.IsBlocking()
+  0021: return return
+  0027: <eos>
+
+function TnRobotShieldService.get_CanShield  (script 53 bytes)
+  0000: return (self._BlockController.CanBlock() && !self._MeleeManager.get_IsAttacking())
+  002e: return return
+  0034: <eos>
+
+function TnRobotShieldService.Initialize  (script 36 bytes)
+  0000: self._BlockController = BlockController
+  000b: self._InventoryManager = InvManager
+  0016: self._MeleeManager = MeleeManager
+  0021: return nothing
+  0023: <eos>
+
+function TnRobotShieldService.StartShield  (script 44 bytes)
+  0000: self._BlockController.SetBlocking(true)
+  0014: self._InventoryManager.StopFire(0)
+  0029: return nothing
+  002b: <eos>
+
+function TnRobotShieldService.StopShield  (script 36 bytes)
+  0000: if !((self._BlockController == none)) goto 0x000d
+  000b: return nothing
+  000d: self._BlockController.SetBlocking(false)
+  0021: return nothing
+  0023: <eos>
+
+function TnRobotShieldService.DestroyShield  (script 22 bytes)
+  0000: self._BlockController.DestroyShield()
+  0013: return nothing
+  0015: <eos>

@@ -1,0 +1,48 @@
+function TnAiActionScriptedBombingRun.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionScriptedBombingRunBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionScriptedBombingRun.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._CollisionService = TnCollisionService(GetService('TnCollisionService', 2))
+  0026: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 1))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionScriptedBombingRun.OnSetUpConditions  (script 147 bytes)
+  0000: BombingRunInfo = TnAiScriptedBombingRunInfo(self._TransformerController.GetWorldStateSubject(obj'TnAiWorldStateBombingRun'))
+  0023: if !((BombingRunInfo == none)) goto 0x0030
+  002e: return false
+  0030: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateBombingRun', BombingRunInfo)
+  0052: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', 0[BombingRunInfo.BombingRunInstances].StartingPoint)
+  008a: return true
+  008c: return return
+  0092: <eos>
+
+function TnAiActionScriptedBombingRun.OnStart  (script 153 bytes)
+  0000: self._CurrentBombingRun = TnAiScriptedBombingRunInfo(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateBombingRun'))
+  0028: SetCharacterState(1)
+  0033: self._CollisionService.PushCollisionMode(0)
+  0049: self._TransformerController.Enemy = none
+  0059: self._TransformerPawn.SetPhysics(0, , )
+  0070: TnAiActionScriptedBombingRun.BeginRun(0[self._CurrentBombingRun.BombingRunInstances])
+  0086: return OnStart(ExpectedEffects)
+  0092: return return
+  0098: <eos>
+
+function TnAiActionScriptedBombingRun.BeginRun  (script 168 bytes)
+  0000: self._TransformerPawn.Teleport(BombingRunInstance.StartingPoint.Location, BombingRunInstance.StartingPoint.Rotation)
+  0045: Params = self._Blueprint.Params
+  0059: Params.AnimName = BombingRunInstance.BombingRunAnim
+  007a: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.FailCallback, delegate.FailCallback)
+  00a5: return nothing
+  00a7: <eos>
+
+function TnAiActionScriptedBombingRun.OnFinish  (script 60 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateBombingRun', 0, none)
+  0025: self._CollisionService.PopCollisionMode()
+  0039: return nothing
+  003b: <eos>

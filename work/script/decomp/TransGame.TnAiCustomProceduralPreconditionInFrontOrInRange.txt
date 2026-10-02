@@ -1,0 +1,29 @@
+function TnAiCustomProceduralPreconditionInFrontOrInRange.OnPostEditChange  (script 69 bytes)
+  0000: if !(('_InFrontAngle' == PropertyName)) goto 0x0037
+  0013: self._InFrontHalfAngleCos = obj'Core.Math'.static.Cos(((self._InFrontAngle * 0.5) * 0.0174533))
+  0037: OnPostEditChange(PropertyName)
+  0042: return nothing
+  0044: <eos>
+
+function TnAiCustomProceduralPreconditionInFrontOrInRange.__Constructor__TnAiCustomProceduralPreconditionInFrontOrInRange_0  (script 57 bytes)
+  0000: self._MaxAttackDistance = MaxAttackDistance
+  000b: self._IgnoreZAxisDistance = IgnoreZAxisDistance
+  0018: self._InFrontAngle = InFrontAngle
+  0023: OnPostEditChange('_InFrontAngle')
+  0036: return nothing
+  0038: <eos>
+
+function TnAiCustomProceduralPreconditionInFrontOrInRange.CheckProceduralPrecondition  (script 308 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: TargetDirection = (Target.Location - C.Pawn.Location)
+  0062: if !(self._IgnoreZAxisDistance) goto 0x0081
+  006b: TargetDirection.Z = 0.0
+  0081: if !((C.MoveTarget != none)) goto 0x00f3
+  0095: InFront = ((obj'Core.Math'.static.Normal((C.MoveTarget.Location - C.Pawn.Location)) dot obj'Core.Math'.static.Normal(TargetDirection)) > self._InFrontHalfAngleCos)
+  00f0: goto 0x00fb
+  00f3: InFront = true
+  00fb: return ((obj'Core.Math'.static.VSizeSq(TargetDirection) < (self._MaxAttackDistance * self._MaxAttackDistance)) || InFront)
+  012d: return return
+  0133: <eos>

@@ -1,0 +1,89 @@
+function TnCheatManager.NotifyCheatUsed  (script 84 bytes)
+  0000: NotifyCheatUsed(CheatName)
+  000b: G = TnGame(get_Outer().WorldInfo.Game)
+  002b: if !((G != none)) goto 0x0051
+  0036: G.NotifyCheatUsed(get_Outer(), CheatName)
+  0051: return nothing
+  0053: <eos>
+
+function TnCheatManager.FindCheckpointByName  (script 126 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetEngine().GetCurrentWorldInfo()
+  0027: CheckpointNameAsName = cast60(CheckpointName)
+  0034: foreach WI.AllNavigationPoints(obj'Engine.Checkpoint', CP) (end 0x0074)
+  0054: if !((CP.Tag == CheckpointNameAsName)) goto 0x0073
+  006c: iterpop
+  006d: return CP
+  0073: iternext
+  0074: iterpop
+  0075: return none
+  0077: return return
+  007d: <eos>
+
+function TnCheatManager.SkipToCheckpoint  (script 120 bytes)
+  0000: CP = TnCheatManager.FindCheckpointByName(CheckpointName)
+  0011: if !((CP == none)) goto 0x001e
+  001c: return nothing
+  001e: CM = TnCheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  004a: CM.SetActiveCheckpoint(CP)
+  0062: CM.RestartFromActiveCheckpoint()
+  0075: return nothing
+  0077: <eos>
+
+function TnCheatManager.PseudoGodAi  (script 95 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.DynamicActors(obj'Engine.AIController', AI) (end 0x005b)
+  0039: AI.bPseudoGodMode = !AI.bPseudoGodMode
+  005a: iternext
+  005b: iterpop
+  005c: return nothing
+  005e: <eos>
+
+function TnCheatManager.IsPlayer  (script 21 bytes)
+  0000: return (PlayerController(C) != none)
+  000e: return return
+  0014: <eos>
+
+function TnCheatManager.Kill  (script 828 bytes)
+  0000: nothing
+  0001: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  001a: if !((((Type ~= "ai") || (Type ~= "bots")) || (Type ~= "all"))) goto 0x00cd
+  004b: foreach WI.DynamicActors(obj'Engine.AIController', AI) (end 0x00c9)
+  006b: V = Vehicle(AI.Pawn)
+  0084: if !((V != none)) goto 0x00a3
+  008f: V.DriverLeave(true)
+  00a3: DeadPawn = HmPawn(AI.Pawn)
+  00bc: AI.DestroyActor()
+  00c8: iternext
+  00c9: iterpop
+  00ca: goto 0x0339
+  00cd: if !((((Type ~= "enemy") || (Type ~= "enemies")) || (Type ~= "badguys"))) goto 0x020d
+  0108: foreach get_Outer().LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x015b)
+  0126: if !(PC.IsLocalPlayerController()) goto 0x015a
+  013c: PlayerTeam = cast3a(PC.GetTeamNum())
+  0157: goto 0x015b
+  015a: iternext
+  015b: iterpop
+  015c: foreach WI.DynamicActors(obj'Engine.Controller', chkPlayer) (end 0x0209)
+  017c: if !(!TnCheatManager.IsPlayer(chkPlayer)) goto 0x0208
+  018c: V = Vehicle(chkPlayer.Pawn)
+  01a5: if !((V != none)) goto 0x01c4
+  01b0: V.DriverLeave(true)
+  01c4: DeadPawn = HmPawn(chkPlayer.Pawn)
+  01dd: if !((cast3a(DeadPawn.GetTeamNum()) != PlayerTeam)) goto 0x0208
+  01fc: chkPlayer.DestroyActor()
+  0208: iternext
+  0209: iterpop
+  020a: goto 0x0339
+  020d: if !(((((Type ~= "friend") || (Type ~= "friends")) || (Type ~= "goodguys")) || (Type ~= "friendlies"))) goto 0x0339
+  0262: foreach WI.DynamicActors(obj'Engine.Controller', chkPlayer) (end 0x0338)
+  0282: if !(!TnCheatManager.IsPlayer(chkPlayer)) goto 0x0337
+  0292: V = Vehicle(chkPlayer.Pawn)
+  02ab: if !((V != none)) goto 0x02ca
+  02b6: V.DriverLeave(true)
+  02ca: DeadPawn = HmPawn(chkPlayer.Pawn)
+  02e3: if !((DeadPawn != none)) goto 0x0337
+  02ee: DeadPawn.TakeDamage((DeadPawn.Health + cast3f(1)), none, DeadPawn.Location, vect(0,0,0), obj'HM_Engine.HmDamageType', , )
+  0337: iternext
+  0338: iterpop
+  0339: return nothing
+  033b: <eos>

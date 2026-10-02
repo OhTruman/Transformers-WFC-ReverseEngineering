@@ -1,0 +1,173 @@
+function TnCharacterDataHelpers.set_CustomCharacterOptions  (script 14 bytes)
+  0000: self._CustomCharacterOptions = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCharacterDataHelpers.ReplicateCharacterData  (script 1709 bytes)
+  0000: CDOut.CharacterName = CDIn.CharacterName
+  0021: CDOut.CharacterType = CDIn.CharacterType
+  0042: CDOut.Specialty = CDIn.Specialty
+  0063: CDOut.Factions = CDIn.Factions
+  0084: CDOut.StartingForm = CDIn.StartingForm
+  00a5: CDOut.RevivedForm = CDIn.RevivedForm
+  00c6: CDOut.PrimaryColors = CDIn.PrimaryColors
+  00e7: CDOut.SecondaryColors = CDIn.SecondaryColors
+  0108: CDOut.EnergonColor = CDIn.EnergonColor
+  0129: CDOut.bEnableOpacity = CDIn.bEnableOpacity
+  014c: CDOut.Opacity = CDIn.Opacity
+  016d: CDOut.ChassisTypes = CDIn.ChassisTypes
+  018e: foreach CDIn.Skills(SkillString,) (end 0x031e)
+  01a8: obj'TnSkill'.static.SplitSkill(SkillString, SkillUniqueId, SkillLevel)
+  01ca: if !((SkillUniqueId == "")) goto 0x01da
+  01d6: iternext
+  01d7: goto 0x031e
+  01da: SkillClass = self._CustomCharacterOptions.FindSkill(SkillUniqueId)
+  01f8: if !((SkillClass != none)) goto 0x0288
+  0203: SkillProvider = self._CustomCharacterOptions.FindSkillProvider(SkillUniqueId)
+  0221: if !((SkillProvider != none)) goto 0x0253
+  022c: SkillLevel = obj'Core.Math'.static.Min(SkillLevel, (SkillProvider.MaxSkillLevel - 1))
+  0253: CDOut.Skills.AddItem(SkillClass)
+  026b: CDOut.SkillLevels.AddItem(cast3d(SkillLevel))
+  0285: goto 0x031d
+  0288: LogInternal((((("Error: Could not find skill" @ SkillUniqueId) @ "for") @ CDIn.CharacterName) @ ", it must be the UniqueId of the skill in defaultgame.ini and is case sensitive"), , , )
+  031d: iternext
+  031e: iterpop
+  031f: foreach CDIn.WeaponTypes(WeaponString,) (end 0x03cc)
+  0339: WeaponClass = self._CustomCharacterOptions.FindWeapon(WeaponString)
+  0357: if !((WeaponClass != none)) goto 0x037d
+  0362: CDOut.WeaponTypes.AddItem(WeaponClass)
+  037a: goto 0x03cb
+  037d: LogInternal((((("Error: Could not map" @ WeaponString) @ "for") @ CDIn.CharacterName) @ "to weapon asset"), , , )
+  03cb: iternext
+  03cc: iterpop
+  03cd: foreach CDIn.VehicleWeapons(WeaponString,) (end 0x04ca)
+  03e7: WeaponClass = self._CustomCharacterOptions.FindWeapon(WeaponString)
+  0405: if !((WeaponClass != none)) goto 0x042b
+  0410: CDOut.VehicleWeapons.AddItem(WeaponClass)
+  0428: goto 0x04c9
+  042b: LogInternal((((("Error: Could not find VehicleWeapon" @ WeaponString) @ "for") @ CDIn.CharacterName) @ ", it must be the UniqueId of the weapon in defaultgame.ini and is case sensitive"), , , )
+  04c9: iternext
+  04ca: iterpop
+  04cb: foreach CDIn.MeleeWeapons(WeaponString,) (end 0x0583)
+  04e5: MeleeWeaponClass = class<TnMeleeWeapon>(self._CustomCharacterOptions.FindWeapon(WeaponString))
+  0508: if !((MeleeWeaponClass != none)) goto 0x052e
+  0513: CDOut.MeleeWeapons.AddItem(MeleeWeaponClass)
+  052b: goto 0x0582
+  052e: LogInternal((((("Error: Could not map" @ WeaponString) @ "for") @ CDIn.CharacterName) @ "to melee weapon asset"), , , )
+  0582: iternext
+  0583: iterpop
+  0584: foreach CDIn.Abilities(AbilityString,) (end 0x069f)
+  059e: if !((AbilityString == "")) goto 0x05c1
+  05aa: CDOut.Abilities.AddItem(none)
+  05be: goto 0x069e
+  05c1: AbilityClass = self._CustomCharacterOptions.FindAbility(AbilityString)
+  05df: if !((AbilityClass != none)) goto 0x0605
+  05ea: CDOut.Abilities.AddItem(AbilityClass)
+  0602: goto 0x069e
+  0605: LogInternal((((("Error: Could not find Ability" @ AbilityString) @ "for") @ CDIn.CharacterName) @ ", it must be the UniqueId of the Ability in defaultgame.ini and is case sensitive"), , , )
+  069e: iternext
+  069f: iterpop
+  06a0: return CDOut
+  06a6: return return
+  06ac: <eos>
+
+function TnCharacterDataHelpers.ResolveReplicatedCharacterData  (script 1205 bytes)
+  0000: default=cast3d(255)
+  0008: if !((cast3a(FactionNumber) != 255)) goto 0x00e7
+  0016: I = 0
+  001d: if !((I < CDIn.Factions.Length)) goto 0x0071
+  0038: if !((cast3a(I[CDIn.Factions]) == cast3a(FactionNumber))) goto 0x0067
+  005c: Index = I
+  0067: AddAdd_PreInt(I)
+  006e: goto 0x001d
+  0071: if !((Index == -1)) goto 0x00e7
+  0080: LogInternal(((("ERROR: Could not resolve replicated character," @ CDIn.CharacterName) @ ", to faction,") @ cast52(FactionNumber)), , , )
+  00e1: return CDOut
+  00e7: if !((CDIn.Factions.Length > Index)) goto 0x01d5
+  0102: CDOut.Faction = Index[CDIn.Factions]
+  0129: CDOut.PrimaryColor = Index[CDIn.PrimaryColors]
+  0150: CDOut.SecondaryColor = Index[CDIn.SecondaryColors]
+  0177: ChassisTypeString = Index[CDIn.ChassisTypes]
+  0193: if !((Index < CDIn.MeleeWeapons.Length)) goto 0x01d5
+  01ae: CDOut.MeleeWeapon = Index[CDIn.MeleeWeapons]
+  01d5: CDOut.CharacterName = CDIn.CharacterName
+  01f6: CDOut.CharacterType = CDIn.CharacterType
+  0217: CDOut.Specialty = CDIn.Specialty
+  0238: CDOut.EnergonColor = CDIn.EnergonColor
+  0259: CDOut.bEnableOpacity = CDIn.bEnableOpacity
+  027c: CDOut.Opacity = CDIn.Opacity
+  029d: if !((ChassisTypeString != "")) goto 0x03c1
+  02a9: CDOut.ChassisType = default._CustomCharacterOptions.FindChassis(ChassisTypeString)
+  02d2: if !((CDOut.ChassisType == none)) goto 0x03c1
+  02e8: CDOut.ChassisType = TnTransformer(FindObject(ChassisTypeString, obj'TnTransformer'))
+  0312: if !((CDOut.ChassisType == none)) goto 0x03c1
+  0328: LogInternal((((("Error: Could not find Chassis" @ ChassisTypeString) @ "for") @ CDIn.CharacterName) @ ", it must be the UniqueId of the Chassis in defaultgame.ini and is case sensitive"), , , )
+  03c1: CDOut.Skills = CDIn.Skills
+  03e2: CDOut.SkillLevels = CDIn.SkillLevels
+  0403: CDOut.WeaponTypes = CDIn.WeaponTypes
+  0424: CDOut.Abilities = CDIn.Abilities
+  0445: CDOut.VehicleWeapons = CDIn.VehicleWeapons
+  0466: CDOut.StartingForm = CDIn.StartingForm
+  0487: CDOut.RevivedForm = CDIn.RevivedForm
+  04a8: return CDOut
+  04ae: return return
+  04b4: <eos>
+
+function TnCharacterDataHelpers.ReplicateResolvedCharacterData  (script 718 bytes)
+  0000: CDOut.CharacterName = CDIn.CharacterName
+  0021: CDOut.CharacterType = CDIn.CharacterType
+  0042: CDOut.Specialty = CDIn.Specialty
+  0063: 0[CDOut.ChassisTypes] = self._CustomCharacterOptions.GetChassisTypeFromObjectPath(PathName(CDIn.ChassisType))
+  00a3: if !((0[CDOut.ChassisTypes] == "")) goto 0x00e9
+  00bc: 0[CDOut.ChassisTypes] = PathName(CDIn.ChassisType)
+  00e9: 0[CDOut.Factions] = CDIn.Faction
+  010c: CDOut.Skills = CDIn.Skills
+  012d: CDOut.SkillLevels = CDIn.SkillLevels
+  014e: CDOut.WeaponTypes = CDIn.WeaponTypes
+  016f: CDOut.Abilities = CDIn.Abilities
+  0190: 0[CDOut.PrimaryColors] = CDIn.PrimaryColor
+  01b3: 0[CDOut.SecondaryColors] = CDIn.SecondaryColor
+  01d6: CDOut.EnergonColor = CDIn.EnergonColor
+  01f7: CDOut.bEnableOpacity = CDIn.bEnableOpacity
+  021a: CDOut.Opacity = CDIn.Opacity
+  023b: CDOut.VehicleWeapons = CDIn.VehicleWeapons
+  025c: 0[CDOut.MeleeWeapons] = CDIn.MeleeWeapon
+  027f: CDOut.StartingForm = CDIn.StartingForm
+  02a0: CDOut.RevivedForm = CDIn.RevivedForm
+  02c1: return CDOut
+  02c7: return return
+  02cd: <eos>
+
+function TnCharacterDataHelpers.ResolveCharacterData  (script 45 bytes)
+  0000: CDTemp = ReplicateCharacterData(CDIn)
+  0015: return ResolveReplicatedCharacterData(CDTemp, )
+  0026: return return
+  002c: <eos>
+
+function TnCharacterDataHelpers.VerifyCharacterData  (script 970 bytes)
+  0000: CDR = ReplicateCharacterData(CD)
+  0015: if !((CDR.VehicleWeapons.Length == 0)) goto 0x0086
+  002c: LogInternal((("Error: Character" @ CD.CharacterName) @ "failed verification. No vehicle weapons found"), , , )
+  0086: if !((CDR.WeaponTypes.Length == 0)) goto 0x00f5
+  009d: LogInternal((("Error: Character" @ CD.CharacterName) @ "failed verification. No robot weapons found"), , , )
+  00f5: I = 0
+  00fc: if !((I < CDR.Factions.Length)) goto 0x03c7
+  0117: CDRes = ResolveReplicatedCharacterData(CDR, I[CDR.Factions])
+  0142: if !((CDRes.ChassisType == none)) goto 0x0217
+  0158: TempString = ((I < CD.ChassisTypes.Length) ? I[CD.ChassisTypes] : "")
+  0193: LogInternal(((((("Error: Character" @ CD.CharacterName) @ cast52(I[CDR.Factions])) @ "failed verification.  Chassis (") $ TempString) $ ") could not resolve"), , , )
+  0217: if !((CDRes.MeleeWeapon == none)) goto 0x02f0
+  022d: TempString = ((I < CD.MeleeWeapons.Length) ? I[CD.MeleeWeapons] : "")
+  0268: LogInternal(((((("Error: Character" @ CD.CharacterName) @ cast52(I[CDR.Factions])) @ "failed verification.  MeleeWeapon (") $ TempString) $ ") could not resolve"), , , )
+  02f0: J = 0
+  02f7: if !((J < CDRes.WeaponTypes.Length)) goto 0x0345
+  0312: if !((class<TnGrenadeBag>(J[CDRes.WeaponTypes]) != none)) goto 0x033b
+  0333: HasGrenade = true
+  033b: AddAdd_PreInt(J)
+  0342: goto 0x02f7
+  0345: if !(!HasGrenade) goto 0x03bd
+  0350: LogInternal(((("Error: Character" @ CD.CharacterName) @ cast52(I[CDR.Factions])) @ "failed verification. No Grenades found"), , , )
+  03bd: AddAdd_PreInt(I)
+  03c4: goto 0x00fc
+  03c7: return nothing
+  03c9: <eos>

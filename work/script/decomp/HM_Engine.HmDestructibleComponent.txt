@@ -1,0 +1,360 @@
+function HmDestructibleComponent.OnPostEditChange  (script 43 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((PropertyName == 'Blueprint')) goto 0x0028
+  001e: Rebuild()
+  0028: return nothing
+  002a: <eos>
+
+function HmDestructibleComponent.PreSave  (script 26 bytes)
+  0000: if !(NeedsRebuild()) goto 0x0017
+  000d: Rebuild()
+  0017: return nothing
+  0019: <eos>
+
+function HmDestructibleComponent.RebuildIfMeshComponentOutersAreIncorrect  (script 152 bytes)
+  0000: foreach self.Pieces(Piece,) (end 0x0094)
+  000f: Effects = Piece.GetMeshEffects()
+  0028: foreach Effects(Effect,) (end 0x0092)
+  0037: if !((Effect != none)) goto 0x0091
+  0042: Components = Effect.GetMeshComponents()
+  005b: foreach Components(Component,) (end 0x0090)
+  006a: if !((Component.get_Outer() != Effect)) goto 0x008f
+  0080: Rebuild()
+  008a: iterpop
+  008b: iterpop
+  008c: iterpop
+  008d: return nothing
+  008f: iternext
+  0090: iterpop
+  0091: iternext
+  0092: iterpop
+  0093: iternext
+  0094: iterpop
+  0095: return nothing
+  0097: <eos>
+
+function HmDestructibleComponent.Rebuild  (script 18 bytes)
+  0000: Initialize(self.Blueprint)
+  000f: return nothing
+  0011: <eos>
+
+function HmDestructibleComponent.OnAddToPrefab  (script 11 bytes)
+  0000: self.Pieces.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmDestructibleComponent.NeedsRebuild  (script 86 bytes)
+  0000: return (!IsTemplate() && (((self.CodeVersion != 1) || ((self.Blueprint != none) && (self.BlueprintVersion != self.Blueprint.BlueprintVersion))) || (self.Pieces.Length == 0)))
+  004f: return return
+  0055: <eos>
+
+function HmDestructibleComponent.Initialize  (script 163 bytes)
+  0000: HmDestructibleComponent.DetachPiecesFromOwner()
+  0006: self.Blueprint = Blueprint_
+  0011: self.Pieces.Length = 0
+  0019: if !((self.Blueprint == none)) goto 0x0026
+  0024: return nothing
+  0026: self.BlueprintVersion = self.Blueprint.BlueprintVersion
+  003a: self.CodeVersion = 1
+  0041: foreach self.Blueprint.PieceBlueprints(PieceBlueprint,) (end 0x0099)
+  0059: Piece = new(self, nothing, obj'HmDestructiblePiece', nothing, AttachTreeCallback)
+  006d: Piece.Initialize(self.Pieces.Length, PieceBlueprint)
+  008b: self.Pieces.AddItem(Piece)
+  0098: iternext
+  0099: iterpop
+  009a: HmDestructibleComponent.AttachPiecesToOwner()
+  00a0: return nothing
+  00a2: <eos>
+
+function HmDestructibleComponent.Shutdown  (script 9 bytes)
+  0000: HmDestructibleComponent.DetachPiecesFromOwner()
+  0006: return nothing
+  0008: <eos>
+
+function HmDestructibleComponent.AttachPiecesToOwner  (script 160 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.Blueprint.PieceBlueprints.Length)) goto 0x009d
+  002d: I[self.Pieces].SetBlueprint(I[self.Blueprint.PieceBlueprints])
+  005a: I[self.Pieces].AttachToActor(self.Owner)
+  0078: I[self.Pieces].Reset(0)
+  0093: AddAdd_PreInt(I)
+  009a: goto 0x0014
+  009d: return nothing
+  009f: <eos>
+
+function HmDestructibleComponent.SetRelativeLocation  (script 101 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.Pieces.Length)) goto 0x0062
+  0024: Transform.Position = RelativeLocation
+  003a: I[self.Pieces].SetAttachToActorTransform(Transform)
+  0058: AddAdd_PreInt(I)
+  005f: goto 0x0014
+  0062: return nothing
+  0064: <eos>
+
+function HmDestructibleComponent.DetachPiecesFromOwner  (script 39 bytes)
+  0000: foreach self.Pieces(Piece,) (end 0x0023)
+  000f: Piece.DetachFromActor()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function HmDestructibleComponent.Attached  (script 61 bytes)
+  0000: if !(self.Owner.bHidden) goto 0x0014
+  0012: return nothing
+  0014: HmDestructibleComponent.RebuildIfMeshComponentOutersAreIncorrect()
+  001a: if !(NeedsRebuild()) goto 0x0034
+  0027: Rebuild()
+  0031: goto 0x003a
+  0034: HmDestructibleComponent.AttachPiecesToOwner()
+  003a: return nothing
+  003c: <eos>
+
+function HmDestructibleComponent.Detached  (script 40 bytes)
+  0000: if !((!bWillReattach || self.Owner.bHidden)) goto 0x0025
+  001f: HmDestructibleComponent.DetachPiecesFromOwner()
+  0025: return nothing
+  0027: <eos>
+
+function HmDestructibleComponent.Reset  (script 47 bytes)
+  0000: HmDestructibleComponent.RebuildIfMeshComponentOutersAreIncorrect()
+  0006: foreach self.Pieces(Piece,) (end 0x002b)
+  0015: Piece.Reset(0)
+  002a: iternext
+  002b: iterpop
+  002c: return nothing
+  002e: <eos>
+
+function HmDestructibleComponent.FindPiece  (script 62 bytes)
+  0000: foreach self.Pieces(P,) (end 0x0034)
+  000f: if !((P.GetPieceName() == PieceName)) goto 0x0033
+  002c: iterpop
+  002d: return P
+  0033: iternext
+  0034: iterpop
+  0035: return none
+  0037: return return
+  003d: <eos>
+
+function HmDestructibleComponent.NotifyHit  (script 293 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=true
+  0007: DamType = class<HmDamageType>(DamageType)
+  0017: if !(((DamType != none) && ClassIsChildOf(DamType.static.default.DestructionTrigger, obj'HmKismetDestructionTrigger'))) goto 0x008d
+  003d: foreach self.Pieces(Piece,) (end 0x0089)
+  004c: Piece.NotifyHit(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser, AllowStateChange)
+  0088: iternext
+  0089: iterpop
+  008a: goto 0x0122
+  008d: if !((HitInfo.HitComponent == none)) goto 0x00a5
+  00a3: return nothing
+  00a5: foreach self.Pieces(Piece,) (end 0x0121)
+  00b4: if !((Piece.ContainsPrimitiveComponent(HitInfo.HitComponent) == false)) goto 0x00e1
+  00dd: iternext
+  00de: goto 0x0121
+  00e1: Piece.NotifyHit(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser, AllowStateChange)
+  011d: iterpop
+  011e: return nothing
+  0120: iternext
+  0121: iterpop
+  0122: return nothing
+  0124: <eos>
+
+function HmDestructibleComponent.NotifyRadiusHit  (script 390 bytes)
+  0000: default=true
+  0005: MaxDamage = 0.0
+  0010: foreach self.Pieces(Piece,) (end 0x0178)
+  001f: MeshComp = Piece.GetActiveMeshComponent()
+  0038: if !((MeshComp == none)) goto 0x0047
+  0043: iternext
+  0044: goto 0x0178
+  0047: Bounds = MeshComp.GetBounds()
+  0060: DistanceToOrigin = obj'Core.Math'.static.VSize((Bounds.Origin - HitLocation))
+  0088: DistanceToBoundingSphere = obj'Core.Math'.static.FClamp((DistanceToOrigin - Bounds.SphereRadius), 0.0, DistanceToOrigin)
+  00ba: if !(bFullDamage) goto 0x00d1
+  00c3: DamageScale = 1.0
+  00ce: goto 0x00ea
+  00d1: DamageScale = (1.0 - (DistanceToBoundingSphere / DamageRadius))
+  00ea: if !(((DamageScale <= 0.0) || (DistanceToBoundingSphere > DamageRadius))) goto 0x010e
+  010a: iternext
+  010b: goto 0x0178
+  010e: actualDamage = (DamageScale * Damage)
+  0120: Piece.NotifyRadiusHit(EventInstigator, actualDamage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser, )
+  015d: if !((actualDamage > MaxDamage)) goto 0x0177
+  016c: MaxDamage = actualDamage
+  0177: iternext
+  0178: iterpop
+  0179: return MaxDamage
+  017f: return return
+  0185: <eos>
+
+function HmDestructibleComponent.NotifyTrigger  (script 49 bytes)
+  0000: foreach self.Pieces(Piece,) (end 0x002d)
+  000f: Piece.NotifyDamage(Damage, DestructionTrigger)
+  002c: iternext
+  002d: iterpop
+  002e: return nothing
+  0030: <eos>
+
+function HmDestructibleComponent.DamageDependentPieces  (script 90 bytes)
+  0000: PieceBlueprint = PieceHandle[self.Blueprint.PieceBlueprints]
+  001a: foreach PieceBlueprint.DependentPieceHandles(DependentPieceHandle,) (end 0x0056)
+  0032: DependentPieceHandle[self.Pieces].NotifyDamage(DamageAmount, DestructionTrigger)
+  0055: iternext
+  0056: iterpop
+  0057: return nothing
+  0059: <eos>
+
+function HmDestructibleComponent.SetPieceState  (script 58 bytes)
+  0000: if !(!HmDestructibleComponent.IsValidPieceHandleIndex(PieceHandle, "state")) goto 0x0019
+  0017: return nothing
+  0019: PieceHandle[self.Pieces].TransitionToState(StateHandle)
+  0037: return nothing
+  0039: <eos>
+
+function HmDestructibleComponent.SetPieceHealth  (script 59 bytes)
+  0000: if !(!HmDestructibleComponent.IsValidPieceHandleIndex(PieceHandle, "health")) goto 0x001a
+  0018: return nothing
+  001a: PieceHandle[self.Pieces].SetSimulatedHealth(Health)
+  0038: return nothing
+  003a: <eos>
+
+function HmDestructibleComponent.SetPieceHealthFromByteValue  (script 116 bytes)
+  0000: if !(!HmDestructibleComponent.IsValidPieceHandleIndex(PieceHandle, "health")) goto 0x001a
+  0018: return nothing
+  001a: PieceHandle[self.Pieces].SetSimulatedHealth((PieceHandle[self.Pieces].GetInitialHealth() * obj'Core.Math'.static.FClamp((cast3c(Health) / 255.0), 0.0, 1.0)))
+  0071: return nothing
+  0073: <eos>
+
+function HmDestructibleComponent.SetPieceAccumulatedDamageFromByteValue  (script 127 bytes)
+  0000: if !(!HmDestructibleComponent.IsValidPieceHandleIndex(PieceHandle, "AccumulatedDamage")) goto 0x0025
+  0023: return nothing
+  0025: PieceHandle[self.Pieces].SetSimulatedAccumulatedDamage((PieceHandle[self.Pieces].GetInitialHealthTotalForAllStates() * obj'Core.Math'.static.FClamp((cast3c(AccumulatedDamage) / 255.0), 0.0, 1.0)))
+  007c: return nothing
+  007e: <eos>
+
+function HmDestructibleComponent.IsValidPieceHandleIndex  (script 256 bytes)
+  0000: ErrorMessage = (((("ERROR: Trying to set piece " $ SetType) $ " on ") $ cast56(self)) $ " with")
+  0040: if !((PieceHandleIndex < 0)) goto 0x006a
+  004b: LogInternal((ErrorMessage @ " negative index"), , , )
+  0068: return false
+  006a: if !((PieceHandleIndex >= self.Pieces.Length)) goto 0x00b8
+  007a: LogInternal(((((ErrorMessage @ " index ") @ cast53(PieceHandleIndex)) @ " on array sized ") @ cast53(self.Pieces.Length)), , , )
+  00b6: return false
+  00b8: if !((PieceHandleIndex[self.Pieces] == none)) goto 0x00f7
+  00c9: LogInternal(((ErrorMessage @ " none Piece at index ") @ cast53(PieceHandleIndex)), , , )
+  00f5: return false
+  00f7: return true
+  00f9: return return
+  00ff: <eos>
+
+function HmDestructibleComponent.GetBlueprintVersion  (script 13 bytes)
+  0000: return self.BlueprintVersion
+  0006: return return
+  000c: <eos>
+
+function HmDestructibleComponent.GetPieces  (script 13 bytes)
+  0000: return self.Pieces
+  0006: return return
+  000c: <eos>
+
+function HmDestructibleComponent.GetBlueprint  (script 13 bytes)
+  0000: return self.Blueprint
+  0006: return return
+  000c: <eos>
+
+function HmDestructibleComponent.AreAllPiecesInFinalState  (script 53 bytes)
+  0000: foreach self.Pieces(Piece,) (end 0x002b)
+  000f: if !(!Piece.IsInFinalState()) goto 0x002a
+  0027: iterpop
+  0028: return false
+  002a: iternext
+  002b: iterpop
+  002c: return true
+  002e: return return
+  0034: <eos>
+
+function HmDestructibleComponent.GetAllMeshes  (script 172 bytes)
+  0000: foreach self.Pieces(PieceIter,) (end 0x009e)
+  000f: if !((PieceIter == none)) goto 0x001e
+  001a: iternext
+  001b: goto 0x009e
+  001e: Effects = PieceIter.GetMeshEffects()
+  0037: foreach Effects(EffectIter,) (end 0x009c)
+  0046: if !((EffectIter == none)) goto 0x0055
+  0051: iternext
+  0052: goto 0x009c
+  0055: EffectMCs = EffectIter.GetMeshComponents()
+  006e: foreach EffectMCs(EffectMCIter,) (end 0x009a)
+  007d: if !((EffectMCIter == none)) goto 0x008c
+  0088: iternext
+  0089: goto 0x009a
+  008c: MCs.AddItem(EffectMCIter)
+  0099: iternext
+  009a: iterpop
+  009b: iternext
+  009c: iterpop
+  009d: iternext
+  009e: iterpop
+  009f: return MCs
+  00a5: return return
+  00ab: <eos>
+
+function HmDestructibleComponent.CanAcceptDamageFromTrigger  (script 56 bytes)
+  0000: foreach self.Pieces(PieceIter,) (end 0x002e)
+  000f: if !(PieceIter.ActiveStateAcceptsDamageFromTrigger(DestructionTrigger)) goto 0x002d
+  002a: iterpop
+  002b: return true
+  002d: iternext
+  002e: iterpop
+  002f: return false
+  0031: return return
+  0037: <eos>
+
+function HmDestructibleComponent.MapHitComponentToIndex  (script 85 bytes)
+  0000: I = 0
+  0007: if !((I < self.Pieces.Length)) goto 0x0048
+  0017: if !(I[self.Pieces].ContainsPrimitiveComponent(HitComponent)) goto 0x003e
+  0038: return I
+  003e: AddAdd_PreInt(I)
+  0045: goto 0x0007
+  0048: return -1
+  004e: return return
+  0054: <eos>
+
+function HmDestructibleComponent.MapIndexToHitComponent  (script 64 bytes)
+  0000: if !(((Index < 0) || (Index >= self.Pieces.Length))) goto 0x001f
+  001d: return none
+  001f: return Index[self.Pieces].GetActiveMeshComponent()
+  0039: return return
+  003f: <eos>
+
+function HmDestructibleComponent.GetPhysicsCookingOptions  (script 27 bytes)
+  0000: return self.Blueprint.GetPhysicsCookingOptions()
+  0014: return return
+  001a: <eos>
+
+function HmDestructibleComponent.TempCodeToRemovePiecesInPrefabs  (script 53 bytes)
+  0000: if !(((Prefab(self.get_Outer().get_Outer()) != none) && (self.Pieces.Length != 0))) goto 0x0032
+  0028: OnAddToPrefab()
+  0032: return nothing
+  0034: <eos>
+
+function HmDestructibleComponent.CheckForErrors  (script 136 bytes)
+  0000: HmDestructibleComponent.TempCodeToRemovePiecesInPrefabs()
+  0006: foreach self.Pieces(Piece,) (end 0x007e)
+  0015: if !((Piece == none)) goto 0x006a
+  0020: EmitCheckMessage(0, (cast56(self.Owner) @ "has a destructible component with a NONE piece"), , )
+  0067: goto 0x007d
+  006a: Piece.CheckForErrors()
+  007d: iternext
+  007e: iterpop
+  007f: CheckForErrors()
+  0085: return nothing
+  0087: <eos>

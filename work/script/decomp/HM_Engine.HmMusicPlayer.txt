@@ -1,0 +1,219 @@
+function HmMusicPlayer.set_SoloTrackIndex  (script 14 bytes)
+  0000: self._SoloTrackIndex = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmMusicPlayer.Initialize  (script 28 bytes)
+  0000: self.Owner = _Owner
+  000b: GotoState('Stopped', , , )
+  0019: return nothing
+  001b: <eos>
+
+function HmMusicPlayer.PlayMusic  (script 99 bytes)
+  0000: default=true
+  0005: default=false
+  000a: default=-1.0
+  0013: if !((none == MusicTrack.SoundCue)) goto 0x002b
+  0029: return nothing
+  002b: if !(Replicate) goto 0x004a
+  0034: HmMusicPlayer.ReplicatePlay(MusicTrack, IgnoreSpazTimer, _FadeOutTimeOverride)
+  004a: HmMusicPlayer.QueueMusicTrack(MusicTrack, _FadeOutTimeOverride, IgnoreSpazTimer)
+  0060: return nothing
+  0062: <eos>
+
+function HmMusicPlayer.StopMusic  (script 62 bytes)
+  0000: default=-1.0
+  0009: default=true
+  000e: if !(Replicate) goto 0x0022
+  0017: HmMusicPlayer.ReplicateStop(_FadeOutTimeOverride)
+  0022: self.FadeOutTimeOverride = _FadeOutTimeOverride
+  002d: GotoState('Stopped', , , )
+  003b: return nothing
+  003d: <eos>
+
+function HmMusicPlayer.PlayStinger  (script 175 bytes)
+  0000: default=true
+  0005: if !(Replicate) goto 0x0019
+  000e: HmMusicPlayer.ReplicateStinger(Stinger)
+  0019: if !(!HmMusicPlayer.IsStingerHigherPriority(Stinger)) goto 0x002b
+  0029: return false
+  002b: if !((none != self.StingerComponent)) goto 0x0053
+  0036: self.StingerComponent.FadeOut(0.1, 0.0)
+  0053: self.StingerComponent = self.Owner.CreateAudioComponent(Stinger, true, true, , , )
+  0076: if !(((none != self.StingerComponent) && (self._SoloTrackIndex >= 0))) goto 0x00a6
+  008e: self.StingerComponent.SoloTrack(self._SoloTrackIndex)
+  00a6: return true
+  00a8: return return
+  00ae: <eos>
+
+function HmMusicPlayer.Tick  (script 18 bytes)
+  0000: TickInternal(DeltaTime)
+  000f: return nothing
+  0011: <eos>
+
+function HmMusicPlayer.GetPlayingMusic  (script 23 bytes)
+  0000: return GetPlayingMusicInternal(MusicTrack)
+  0010: return return
+  0016: <eos>
+
+function HmMusicPlayer.TickInternal  (script 41 bytes)
+  0000: (self.SpazTimer -= DeltaTime)
+  000c: if !((self.SpazTimer <= 0.0)) goto 0x0026
+  001b: self.SpazTimer = 0.0
+  0026: return nothing
+  0028: <eos>
+
+function HmMusicPlayer.GetPlayingMusicInternal  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmMusicPlayer.QueueMusicTrack  (script 265 bytes)
+  0000: if !((MusicTrack.SoundCue == self.MusicTrackCurrent.SoundCue)) goto 0x0056
+  0025: self.MusicTrackCurrent = MusicTrack
+  0030: self.MusicTrackQueued = MusicTrack
+  003b: self.FadeOutTimeOverride = _FadeOutTimeOverride
+  0046: GotoState('Playing', , , )
+  0054: return nothing
+  0056: if !((MusicTrack.Priority < self.MusicTrackQueued.Priority)) goto 0x007d
+  007b: return nothing
+  007d: if !(((MusicTrack.Priority == self.MusicTrackQueued.Priority) && (MusicTrack.SoundCue == self.MusicTrackQueued.SoundCue))) goto 0x00cb
+  00c9: return nothing
+  00cb: self.MusicTrackQueued = MusicTrack
+  00d6: self.FadeOutTimeOverride = _FadeOutTimeOverride
+  00e1: if !((true == IgnoreSpazTimer)) goto 0x00f8
+  00ed: self.SpazTimer = 0.0
+  00f8: GotoState('Queued', , , )
+  0106: return nothing
+  0108: <eos>
+
+function HmMusicPlayer.StopMusicComponent  (script 118 bytes)
+  0000: if !((none != self.MusicComponent)) goto 0x0073
+  000b: if !((self.FadeOutTimeOverride < 0.0)) goto 0x0033
+  001a: FadeOutTime = self.MusicTrackCurrent.FadeOutTime
+  0030: goto 0x003e
+  0033: FadeOutTime = self.FadeOutTimeOverride
+  003e: self.MusicComponent.bAutoDestroy = true
+  004f: self.MusicComponent.FadeOut(FadeOutTime, 0.0)
+  006c: self.MusicComponent = none
+  0073: return nothing
+  0075: <eos>
+
+function HmMusicPlayer.IsStingerHigherPriority  (script 168 bytes)
+  0000: if !(((none == self.StingerComponent) || !self.StingerComponent.IsPlaying())) goto 0x0027
+  0025: return true
+  0027: RootNodeCurrent = SoundNodeRoot(self.StingerComponent.SoundCue.FirstNode)
+  0049: if !((none == RootNodeCurrent)) goto 0x0056
+  0054: return false
+  0056: RootNodeNew = SoundNodeRoot(_SoundCue.FirstNode)
+  006f: if !((none == RootNodeNew)) goto 0x007c
+  007a: return false
+  007c: if !((RootNodeCurrent.Priority >= RootNodeNew.Priority)) goto 0x009f
+  009d: return false
+  009f: return true
+  00a1: return return
+  00a7: <eos>
+
+function HmMusicPlayer.ReplicatePlay  (script 146 bytes)
+  0000: if !((none == self.Owner)) goto 0x000d
+  000b: return nothing
+  000d: WI = self.Owner.WorldInfo
+  0021: if !((none == WI)) goto 0x002e
+  002c: return nothing
+  002e: foreach WI.AllControllers(obj'HmPlayerController', PC) (end 0x008e)
+  004e: if !((true == PC.IsLocalPlayerController())) goto 0x008d
+  0067: PC.ServerPlayMusic(MusicTrack, IgnoreSpazTimer, _FadeOutTimeOverride)
+  008a: goto 0x008e
+  008d: iternext
+  008e: iterpop
+  008f: return nothing
+  0091: <eos>
+
+function HmMusicPlayer.ReplicateStop  (script 135 bytes)
+  0000: if !((none == self.Owner)) goto 0x000d
+  000b: return nothing
+  000d: WI = self.Owner.WorldInfo
+  0021: if !((none == WI)) goto 0x002e
+  002c: return nothing
+  002e: foreach WI.AllControllers(obj'HmPlayerController', PC) (end 0x0083)
+  004e: if !((true == PC.IsLocalPlayerController())) goto 0x0082
+  0067: PC.ServerStopMusic(_FadeOutTimeOverride)
+  007f: goto 0x0083
+  0082: iternext
+  0083: iterpop
+  0084: return nothing
+  0086: <eos>
+
+function HmMusicPlayer.ReplicateStinger  (script 135 bytes)
+  0000: if !((none == self.Owner)) goto 0x000d
+  000b: return nothing
+  000d: WI = self.Owner.WorldInfo
+  0021: if !((none == WI)) goto 0x002e
+  002c: return nothing
+  002e: foreach WI.AllControllers(obj'HmPlayerController', PC) (end 0x0083)
+  004e: if !((true == PC.IsLocalPlayerController())) goto 0x0082
+  0067: PC.ServerPlayStinger(Stinger)
+  007f: goto 0x0083
+  0082: iternext
+  0083: iterpop
+  0084: return nothing
+  0086: <eos>
+
+function HmMusicPlayer.Stopped.BeginState  (script 213 bytes)
+  0000: HmMusicPlayer.StopMusicComponent()
+  0006: self.MusicTrackCurrent.SoundCue = none
+  0018: self.MusicTrackCurrent.FadeInTime = 1.0
+  002e: self.MusicTrackCurrent.FadeOutTime = 1.0
+  0044: self.MusicTrackCurrent.BoredomTime = 0.0
+  005a: self.MusicTrackCurrent.Priority = 0
+  006c: self.MusicTrackQueued.SoundCue = none
+  007e: self.MusicTrackQueued.FadeInTime = 1.0
+  0094: self.MusicTrackQueued.FadeOutTime = 1.0
+  00aa: self.MusicTrackQueued.BoredomTime = 0.0
+  00c0: self.MusicTrackQueued.Priority = 0
+  00d2: return nothing
+  00d4: <eos>
+
+function HmMusicPlayer.Queued.TickInternal  (script 43 bytes)
+  0000: HmMusicPlayer.TickInternal(DeltaTime)
+  000b: if !((self.SpazTimer <= 0.0)) goto 0x0028
+  001a: GotoState('Crossfading', , , )
+  0028: return nothing
+  002a: <eos>
+
+function HmMusicPlayer.Queued.GetPlayingMusicInternal  (script 20 bytes)
+  0000: MusicTrack = self.MusicTrackQueued
+  000b: return true
+  000d: return return
+  0013: <eos>
+
+function HmMusicPlayer.Crossfading.BeginState  (script 204 bytes)
+  0000: HmMusicPlayer.StopMusicComponent()
+  0006: self.MusicComponent = self.Owner.CreateAudioComponent(self.MusicTrackQueued.SoundCue, false, true, , , )
+  0034: if !((none == self.MusicComponent)) goto 0x004f
+  003f: GotoState('Stopped', , , )
+  004d: return nothing
+  004f: if !((self._SoloTrackIndex >= 0)) goto 0x0072
+  005a: self.MusicComponent.SoloTrack(self._SoloTrackIndex)
+  0072: self.MusicComponent.FadeIn(self.MusicTrackQueued.FadeInTime, 1.0)
+  009a: self.MusicTrackCurrent = self.MusicTrackQueued
+  00a5: self.SpazTimer = self.SpazTime
+  00b0: self.BoredomTimer = 0.0
+  00bb: GotoState('Playing', , , )
+  00c9: return nothing
+  00cb: <eos>
+
+function HmMusicPlayer.Playing.TickInternal  (script 92 bytes)
+  0000: HmMusicPlayer.TickInternal(DeltaTime)
+  000b: if !((self.MusicTrackCurrent.BoredomTime > 0.0)) goto 0x0059
+  0025: (self.BoredomTimer += DeltaTime)
+  0031: if !((self.BoredomTimer >= self.MusicTrackCurrent.BoredomTime)) goto 0x0059
+  004b: GotoState('Crossfading', , , )
+  0059: return nothing
+  005b: <eos>
+
+function HmMusicPlayer.Playing.GetPlayingMusicInternal  (script 20 bytes)
+  0000: MusicTrack = self.MusicTrackCurrent
+  000b: return true
+  000d: return return
+  0013: <eos>

@@ -1,0 +1,37 @@
+function TnMultiplayerGameTestingPolicy.HandleEnterPartyLobby  (script 106 bytes)
+  0000: LogInternal(("Playing playlist" @ cast53(self._PlaylistToPlay)), 'DevAutomatedTesting', , )
+  0028: self._Game = Game
+  0033: Game.SetTimer(obj'Core.Random'.static.RandRangeFloat(1.0, 10.0), false, 'StartPlaylist', self)
+  0067: return nothing
+  0069: <eos>
+
+function TnMultiplayerGameTestingPolicy.StartPlaylist  (script 29 bytes)
+  0000: self._Game.PlayPlaylist(self._PlaylistToPlay, 0)
+  001a: return nothing
+  001c: <eos>
+
+function TnMultiplayerGameTestingPolicy.HandleEnterGame  (script 42 bytes)
+  0000: TnOnlineTestingPolicy.HandleEnterGame(Game)
+  000b: Game.SetTimer(1.0, true, 'AssignCharacters', self)
+  0027: return nothing
+  0029: <eos>
+
+function TnMultiplayerGameTestingPolicy.AssignCharacters  (script 201 bytes)
+  0000: self._Game.WorldInfo.GetAllControllers(obj'TnPlayerController', PCS)
+  0026: I = 0
+  002d: if !((I < PCS.Length)) goto 0x00c6
+  003d: PC = TnPlayerController(I[PCS])
+  0053: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  006c: if !(((PC.HasClientTravelFinished() && (PRI != none)) && !PRI.HasSelectedCharacter())) goto 0x00bc
+  00a9: PC.ClientSelectRandomCharacter()
+  00bc: AddAdd_PreInt(I)
+  00c3: goto 0x002d
+  00c6: return nothing
+  00c8: <eos>
+
+function TnMultiplayerGameTestingPolicy.HandlePlayerEnterGame  (script 49 bytes)
+  0000: if !((self._Game != none)) goto 0x002e
+  000b: PC = TnPlayerController(NewPlayer)
+  001b: PC.ClientStartRandomInput()
+  002e: return nothing
+  0030: <eos>

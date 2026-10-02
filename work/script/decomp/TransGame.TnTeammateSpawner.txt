@@ -1,0 +1,240 @@
+function TnTeammateSpawner.SetValidator  (script 14 bytes)
+  0000: self.Validator = Validator_
+  000b: return nothing
+  000d: <eos>
+
+function TnTeammateSpawner.EnableDebug  (script 65 bytes)
+  0000: self.Validator.EnableDebug(TnDebugManager(FriendlyPawn.WorldInfo.GetDebugManager()).CoopSpawnDebug)
+  003e: return nothing
+  0040: <eos>
+
+function TnTeammateSpawner.CreateStartPointFromPlayerRecords  (script 210 bytes)
+  0000: RecordIndex = 0
+  0007: if !((RecordIndex < PlayerIndex[self.PlayerRecords].GetNumRecords())) goto 0x00c9
+  002a: if !(!PlayerIndex[self.PlayerRecords].GetRecord(RecordIndex, SpawnLocation, SpawnRotation)) goto 0x005a
+  0057: goto 0x00bf
+  005a: TnTeammateSpawner.EnableDebug(FriendlyPawn)
+  0065: if !(self.Validator.IsSafeSpawnLocation(SpawnLocation, FriendlyPawn.CylinderComponent.CollisionRadius, FriendlyPawn.CylinderComponent.CollisionHeight)) goto 0x00bf
+  00ae: return TnTeammateSpawner.CreateDynamicPlayerStart(SpawnLocation, SpawnRotation)
+  00bf: AddAdd_PreInt(RecordIndex)
+  00c6: goto 0x0007
+  00c9: return none
+  00cb: return return
+  00d1: <eos>
+
+function TnTeammateSpawner.CanSpawnNear  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTeammateSpawner.FindPlayerStartNearTeammate  (script 289 bytes)
+  0000: PlayerIndex = 0
+  0007: if !((PlayerIndex < self.PlayerRecords.Length)) goto 0x0118
+  0017: FriendlyController = PlayerIndex[self.PlayerRecords].GetPlayer()
+  0036: if !(((FriendlyController == none) || (FriendlyController == Player))) goto 0x0055
+  0052: goto 0x010e
+  0055: if !(!FriendlyController.AllowTeammateRespawn()) goto 0x0070
+  006d: goto 0x010e
+  0070: FriendlyPawn = FriendlyController.Pawn
+  0084: if !(((FriendlyPawn != none) && (cast3a(FriendlyController.Pawn.GetTeamNum()) != cast3a(InTeam)))) goto 0x00be
+  00bb: goto 0x010e
+  00be: if !(AndAnd_BoolBool((CanSpawnNearFunction != emptydelegate))) goto 0x00e7
+  00ca: !CanSpawnNear(FriendlyController)
+  00e3: <endparms>
+  00e4: goto 0x010e
+  00e7: NP = TnTeammateSpawner.CreateStartPointFromPlayerRecords(FriendlyPawn, PlayerIndex)
+  00fd: if !((NP != none)) goto 0x010e
+  0108: return NP
+  010e: AddAdd_PreInt(PlayerIndex)
+  0115: goto 0x0007
+  0118: return none
+  011a: return return
+  0120: <eos>
+
+function TnTeammateSpawner.FindPlayerStart  (script 306 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(UseSpawnPointArray) goto 0x0096
+  000b: if !((SpawnPointArray.Length > 0)) goto 0x0094
+  0017: NP = TnTeammateSpawner.FindPlayerStartInSpawnPointArray(Player, SpawnPointArray)
+  002d: if !((NP != none)) goto 0x008b
+  0038: LogInternal(("=====> Player start NavigationPoint obtained from SpawnPointArray: " $ cast56(NP)), , , )
+  008b: return NP
+  0091: goto 0x0096
+  0094: return none
+  0096: if !(HasAnyPlayerRecords()) goto 0x0129
+  00a3: NP = FindPlayerStartNearTeammate(Player, InTeam, delegate.None)
+  00c6: if !((NP != none)) goto 0x0129
+  00d1: LogInternal(("=====> Player start NavigationPoint obtained from player records: " $ cast56(NP)), , , )
+  0123: return NP
+  0129: return none
+  012b: return return
+  0131: <eos>
+
+function TnTeammateSpawner.FindPlayerStartInSpawnPointArray  (script 290 bytes)
+  0000: PC = TnPlayerController(Player)
+  0010: if !((PC == none)) goto 0x001d
+  001b: return none
+  001d: CDR = obj'TnCharacterDataHelpers'.static.ResolveReplicatedCharacterData(PC.get_SelectedCharacter(), Player.GetTeamNum())
+  005c: Transformer = CDR.ChassisType
+  0072: if !((Transformer == none)) goto 0x007f
+  007d: return none
+  007f: foreach SpawnPointArray(NP,) (end 0x0118)
+  008e: if !((NP == none)) goto 0x009d
+  0099: iternext
+  009a: goto 0x0118
+  009d: if !(self.Validator.IsSafeSpawnLocation(NP.Location, Transformer.Collision.CollisionRadius, Transformer.Collision.CollisionHeight)) goto 0x0117
+  00f3: iterpop
+  00f4: return TnTeammateSpawner.CreateDynamicPlayerStart(NP.Location, NP.Rotation)
+  0117: iternext
+  0118: iterpop
+  0119: return none
+  011b: return return
+  0121: <eos>
+
+function TnTeammateSpawner.Tick  (script 63 bytes)
+  0000: TnTeammateSpawner.ClearBogusPlayerRecords()
+  0006: (self.TimeSinceLastPlayerRecord += DeltaTime)
+  0012: if !((self.TimeSinceLastPlayerRecord >= self.TimeBetweenPlayerLocationRecords)) goto 0x0036
+  0021: RecordPlayerLocations()
+  002b: self.TimeSinceLastPlayerRecord = 0.0
+  0036: TnTeammateSpawner.UpdateWorldLevelForPawns()
+  003c: return nothing
+  003e: <eos>
+
+function TnTeammateSpawner.ResetLevel  (script 16 bytes)
+  0000: self.PlayerRecords.Remove(0,self.PlayerRecords.Length)
+  000d: return nothing
+  000f: <eos>
+
+function TnTeammateSpawner.RecordPlayerLocations  (script 290 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x011e)
+  0039: if !(!PC.ShouldRecordPlayerRecord()) goto 0x0055
+  0051: iternext
+  0052: goto 0x011e
+  0055: PlayerIndex = TnTeammateSpawner.FindPlayerRecord(PC)
+  0066: if !((PlayerIndex == -1)) goto 0x00ba
+  0075: PlayerIndex = self.PlayerRecords.Length
+  0081: PlayerIndex[self.PlayerRecords] = CreatePlayerRecord()
+  009c: PlayerIndex[self.PlayerRecords].InitializeRecord(PC)
+  00ba: PlayerIndex[self.PlayerRecords].AddRecord(PC.Pawn.Location, PC.Pawn.Rotation, PC.get_TransformerPawn().LastWorldLevel)
+  011d: iternext
+  011e: iterpop
+  011f: return nothing
+  0121: <eos>
+
+function TnTeammateSpawner.ClearBogusPlayerRecords  (script 101 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x0061)
+  0039: if !(!PC.ShouldRecordPlayerRecord()) goto 0x0060
+  0051: TnTeammateSpawner.PrunePlayerRecords(PC)
+  005c: iternext
+  005d: goto 0x0061
+  0060: iternext
+  0061: iterpop
+  0062: return nothing
+  0064: <eos>
+
+function TnTeammateSpawner.FindPlayerRecord  (script 87 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayerRecords.Length)) goto 0x004a
+  0017: if !((I[self.PlayerRecords].GetPlayer() == PC)) goto 0x0040
+  003a: return I
+  0040: AddAdd_PreInt(I)
+  0047: goto 0x0007
+  004a: return -1
+  0050: return return
+  0056: <eos>
+
+function TnTeammateSpawner.PrunePlayerRecords  (script 190 bytes)
+  0000: if !((I < self.PlayerRecords.Length)) goto 0x00bb
+  0010: Record = I[self.PlayerRecords]
+  0021: if !(((Record == none) || (I[self.PlayerRecords].GetPlayer() == PC))) goto 0x00b1
+  0051: if !((Record == none)) goto 0x00a2
+  005c: LogInternal(("ERROR: EngineTeam - PlayerRecords[i] was none in " $ cast57(GetFuncName())), , , )
+  00a2: self.PlayerRecords.Remove(I,1)
+  00ae: goto 0x00b8
+  00b1: AddAdd_PreInt(I)
+  00b8: goto 0x0000
+  00bb: return nothing
+  00bd: <eos>
+
+function TnTeammateSpawner.CreatePlayerRecord  (script 22 bytes)
+  0000: return new(nothing, nothing, obj'TnPlayerRecord', nothing, DeltaTime)
+  000f: return return
+  0015: <eos>
+
+function TnTeammateSpawner.CreateDynamicPlayerStart  (script 72 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: return WI.Spawn(obj'TnDynamicPlayerStart', , , SpawnLocation, SpawnRotation, , , )
+  0041: return return
+  0047: <eos>
+
+function TnTeammateSpawner.NotifyTeleported  (script 59 bytes)
+  0000: TnTeammateSpawner.PrunePlayerRecords(PC)
+  000b: RecordPlayerLocations()
+  0015: TnPlayerController(PC).get_TransformerPawn().LastWorldLevel = none
+  0038: return nothing
+  003a: <eos>
+
+function TnTeammateSpawner.NotifyPlayerWithinTogethernessVolume  (script 14 bytes)
+  0000: TnTeammateSpawner.PrunePlayerRecords(PC)
+  000b: return nothing
+  000d: <eos>
+
+function TnTeammateSpawner.NotifyLevelStreamedOut  (script 66 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayerRecords.Length)) goto 0x003f
+  0017: I[self.PlayerRecords].NotifyLevelStreamedOut(StreamedOutLevel)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return nothing
+  0041: <eos>
+
+function TnTeammateSpawner.UpdateWorldLevelForPawns  (script 411 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllPawns(obj'TnPlayerPawn', P, , ) (end 0x0197)
+  003b: TraceOffset.Z = (P.GetCollisionHeight() + self.LevelTraceDistanceBelowPawn)
+  0066: HitActor = P.Trace(HitLoc, HitNorm, none, (P.Location - TraceOffset), P.Location, false, vect(0,0,0), true, HitInfo, )
+  00bb: if !((HitActor != none)) goto 0x0134
+  00c6: if !((HitInfo.LevelIndex > 0)) goto 0x0111
+  00dc: P.LastWorldLevel = WI.GetWorldLevelFromIndex(HitInfo.LevelIndex)
+  010e: goto 0x0131
+  0111: P.LastWorldLevel = Level(HitActor.get_Outer())
+  0131: goto 0x0196
+  0134: foreach P.WorldInfo.RadiusNavigationPoints(obj'Engine.NavigationPoint', NearbyNavPoint, P.Location, self.NearbyNavPointSearchRadius) (end 0x0195)
+  0170: P.LastWorldLevel = Level(NearbyNavPoint.get_Outer())
+  0190: iterpop
+  0191: iterpop
+  0192: return nothing
+  0194: iternext
+  0195: iterpop
+  0196: iternext
+  0197: iterpop
+  0198: return nothing
+  019a: <eos>
+
+function TnTeammateSpawner.DrawRecords  (script 166 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayerRecords.Length)) goto 0x00a3
+  0017: J = 0
+  001e: if !((J < I[self.PlayerRecords].GetNumRecords())) goto 0x0099
+  0041: if !(I[self.PlayerRecords].GetRecord(J, Position, Rotation)) goto 0x008f
+  006c: obj'Engine.Debug'.static.DrawCoordinateSystem(Position, Rotation, 50.0, )
+  008f: AddAdd_PreInt(J)
+  0096: goto 0x001e
+  0099: AddAdd_PreInt(I)
+  00a0: goto 0x0007
+  00a3: return nothing
+  00a5: <eos>
+
+function TnTeammateSpawner.HasAnyPlayerRecords  (script 54 bytes)
+  0000: foreach self.PlayerRecords(PR,) (end 0x002c)
+  000f: if !((PR.GetNumRecords() > 1)) goto 0x002b
+  0028: iterpop
+  0029: return true
+  002b: iternext
+  002c: iterpop
+  002d: return false
+  002f: return return
+  0035: <eos>

@@ -1,0 +1,15 @@
+function TnMinionAiPawn.set_SpawnAnimation  (script 14 bytes)
+  0000: self._SpawnAnimation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnMinionAiPawn.OnInitialized  (script 38 bytes)
+  0000: PlayAnimation(self._SpawnAnimation, delegate.None, delegate.None, 3)
+  0023: return nothing
+  0025: <eos>
+
+function TnMinionAiPawn.InVehicleForm.StateClientStartDowned  (script 23 bytes)
+  0000: self.bPlayDownedAnimation = true
+  0008: ForceIntoForm(0)
+  0014: return nothing
+  0016: <eos>

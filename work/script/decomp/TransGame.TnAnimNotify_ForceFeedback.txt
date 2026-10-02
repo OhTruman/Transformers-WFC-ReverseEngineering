@@ -1,0 +1,7 @@
+function TnAnimNotify_ForceFeedback.Notify  (script 107 bytes)
+  0000: PlayerPawn = TnPlayerPawn(AnimSeq.SkelComponent.Owner)
+  0022: if !(((PlayerPawn != none) && PlayerPawn.IsLocallyControlled())) goto 0x005d
+  0045: PlayerPawn.PlayForceFeedbackWaveform(self.ForceFeedback)
+  005d: Notify(AnimSeq)
+  0068: return nothing
+  006a: <eos>

@@ -1,0 +1,12 @@
+function TnStunnedEnemyBasedThreatLevelEvaluator.set_StunnedEnemyThreatLevel  (script 14 bytes)
+  0000: self._StunnedEnemyThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnStunnedEnemyBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 70 bytes)
+  0000: ThreatTnPawn = TnPawn(Threat)
+  0010: if !(((ThreatTnPawn != none) && ThreatTnPawn.IsStunned())) goto 0x0039
+  0033: return self._StunnedEnemyThreatLevel
+  0039: return 0.0
+  003f: return return
+  0045: <eos>

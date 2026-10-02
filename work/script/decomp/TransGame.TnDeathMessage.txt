@@ -1,0 +1,35 @@
+function TnDeathMessage.GetUnparsedMessage  (script 83 bytes)
+  0000: if !((OptionSwitch == 1)) goto 0x0029
+  000b: return class<DamageType>(OptionalObject).static.SuicideMessage(RelatedPRI_2)
+  0029: return class<DamageType>(OptionalObject).static.DeathMessage(RelatedPRI_1, RelatedPRI_2)
+  004c: return return
+  0052: <eos>
+
+function TnDeathMessage.GetColoredString  (script 537 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: if !((class<DamageType>(OptionalObject) == none)) goto 0x001b
+  0015: return CS
+  001b: if !((RelatedPRI_1 != none)) goto 0x0083
+  0026: KillerName = RelatedPRI_1.GetPlayerAlias()
+  003f: if !(RelatedPRI_1.bBot) goto 0x0083
+  0051: KillerName = Localize("AICharacterNames", KillerName, "TransGame")
+  0083: if !((RelatedPRI_2 != none)) goto 0x00eb
+  008e: VictimName = RelatedPRI_2.GetPlayerAlias()
+  00a7: if !(RelatedPRI_2.bBot) goto 0x00eb
+  00b9: VictimName = Localize("AICharacterNames", VictimName, "TransGame")
+  00eb: UnparsedDeathMsg = GetUnparsedMessage(OptionSwitch, LocalPlayerPRI, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0114: StringReplacements.Insert(0,2)
+  011d: 0[StringReplacements].SourceString = "`k"
+  0134: 0[StringReplacements].DestString = KillerName
+  014c: 0[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(LocalPlayerPRI, RelatedPRI_1)
+  017c: 1[StringReplacements].SourceString = "`o"
+  0193: 1[StringReplacements].DestString = VictimName
+  01ab: 1[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(LocalPlayerPRI, RelatedPRI_2)
+  01db: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedDeathMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  020c: return CS
+  0212: return return
+  0218: <eos>

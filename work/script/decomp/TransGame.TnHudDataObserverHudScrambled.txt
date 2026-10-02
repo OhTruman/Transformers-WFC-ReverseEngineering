@@ -1,0 +1,18 @@
+function TnHudDataObserverHudScrambled.CheckData  (script 29 bytes)
+  0000: ProcessNewValue(Movie, TnHudDataObserverHudScrambled.IsScrambled(PC))
+  001a: return nothing
+  001c: <eos>
+
+function TnHudDataObserverHudScrambled.IsScrambled  (script 118 bytes)
+  0000: BuffService = TnBuffService(PC.GetService('TnBuffService'))
+  0027: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x003d
+  003b: return false
+  003d: foreach self.ScrambleHudBuffs(Buff,) (end 0x006c)
+  004c: if !(BuffService.HasDerivedBuff(Buff)) goto 0x006b
+  0068: iterpop
+  0069: return true
+  006b: iternext
+  006c: iterpop
+  006d: return false
+  006f: return return
+  0075: <eos>

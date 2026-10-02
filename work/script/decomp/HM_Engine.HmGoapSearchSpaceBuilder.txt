@@ -1,0 +1,46 @@
+function HmGoapSearchSpaceBuilder.Build  (script 397 bytes)
+  0000: if !(((TemplateGoalSet == none) || (TemplateActionSet == none))) goto 0x001a
+  0018: return nothing
+  001a: GoalSet = obj'Engine.Allocation'.static.CreateObject(obj'HmGoapGoalSet', self)
+  0039: GoalSet.InitializeFromTemplate(TemplateGoalSet)
+  0051: ActionSet = obj'Engine.Allocation'.static.CreateObject(obj'HmGoapActionSet', self)
+  0070: ActionSet.InitializeFromTemplate(TemplateActionSet)
+  0088: idx = 0
+  008f: if !((idx < GoalSet.Goals.Length)) goto 0x018a
+  00a8: Goal = idx[GoalSet.Goals]
+  00c2: if !((!Goal._GenerateSearchSpace || (Goal.Goals.Properties.Length == 0))) goto 0x00fb
+  00f8: goto 0x0180
+  00fb: SearchSpace._Prebuilt = true
+  010c: RootState.UnsatisfiedConditions = Goal.Goals
+  012b: SearchSpace.AddPlanningState(RootState)
+  0143: SearchSpace.AddDesiredStatePair(idx, RootState.SearchSpaceIdx)
+  016b: HmGoapSearchSpaceBuilder.BuildTree(RootState, ActionSet, SearchSpace)
+  0180: AddAdd_PreInt(idx)
+  0187: goto 0x008f
+  018a: return nothing
+  018c: <eos>
+
+function HmGoapSearchSpaceBuilder.BuildTree  (script 354 bytes)
+  0000: self.PathQueue.Length = 0
+  0008: self.PathQueue.AddItem(DestinationPathState)
+  0015: if !((self.PathQueue.Length != 0)) goto 0x0159
+  0021: CurrentPathState = 0[self.PathQueue]
+  002e: self.PathQueue.Remove(0,1)
+  0036: ClosedList.AddItem(CurrentPathState.SearchSpaceIdx)
+  004e: if !((SearchSpace.get_Length() > 1000)) goto 0x00b2
+  006b: LogInternal("ERROR: Unable to generate search space (SearchSpace too large)", , , )
+  00b0: return false
+  00b2: SearchSpace.BuildSuccessors(CurrentPathState, ActionSet)
+  00cf: foreach CurrentPathState.Successors(SuccessorIdx,) (end 0x0155)
+  00e9: if !(((-1 != ClosedList.Find(SuccessorIdx)) || (-1 != OpenList.Find(SuccessorIdx)))) goto 0x011d
+  0119: iternext
+  011a: goto 0x0155
+  011d: SearchSpace.GetPlanningState(SuccessorState, SuccessorIdx)
+  013a: self.PathQueue.AddItem(SuccessorState)
+  0147: OpenList.AddItem(SuccessorIdx)
+  0154: iternext
+  0155: iterpop
+  0156: goto 0x0015
+  0159: return true
+  015b: return return
+  0161: <eos>

@@ -1,0 +1,176 @@
+function AIController.Reset  (script 17 bytes)
+  0000: self.bHunting = false
+  0008: Controller.Reset()
+  000e: return nothing
+  0010: <eos>
+
+function AIController.Destroyed  (script 48 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0027
+  0010: if !((self.Pawn != none)) goto 0x0027
+  001b: self.Pawn.DestroyActor()
+  0027: Controller.Destroyed()
+  002d: return nothing
+  002f: <eos>
+
+function AIController.DisplayDebug  (script 929 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: Controller.DisplayDebug(HUD, out_YL, out_YPos)
+  0029: if !(HUD.ShouldDisplayDebug('AI')) goto 0x039e
+  0048: Canvas.DrawColor.B = cast3d(255)
+  0066: if !((((self.Pawn != none) && (self.MoveTarget != none)) && self.Pawn.ReachedDestination(self.MoveTarget))) goto 0x0105
+  009b: Canvas.DrawTextNormal(((("     NAVIGATION MoveTarget " $ GetItemName(cast56(self.MoveTarget))) $ "(REACHED) MoveTimer ") $ cast55(self.MoveTimer)), false, , )
+  0102: goto 0x0163
+  0105: Canvas.DrawTextNormal(((("     NAVIGATION MoveTarget " $ GetItemName(cast56(self.MoveTarget))) $ " MoveTimer ") $ cast55(self.MoveTimer)), false, , )
+  0163: (out_YPos += out_YL)
+  016f: Canvas.SetPos(4.0, out_YPos)
+  018c: Canvas.DrawTextNormal(((((("      Destination " $ cast58(self.Destination)) $ " Focus ") $ GetItemName(cast37(self.Focus))) $ " Preparing Move ") $ cast54(self.bPreparingMove)), false, , )
+  01fb: (out_YPos += out_YL)
+  0207: Canvas.SetPos(4.0, out_YPos)
+  0224: Canvas.DrawTextNormal(((("     RouteGoal " $ GetItemName(cast56(self.RouteGoal))) $ " RouteDist ") $ cast55(self.RouteDist)), false, , )
+  0276: (out_YPos += out_YL)
+  0282: Canvas.SetPos(4.0, out_YPos)
+  029f: I = 0
+  02a6: if !((I < self.RouteCache.Length)) goto 0x0345
+  02b6: if !((I[self.RouteCache] == none)) goto 0x0306
+  02c7: if !((I > 5)) goto 0x0300
+  02d3: T = ((T $ "--") $ GetItemName(cast56((I - 1)[self.RouteCache])))
+  0300: goto 0x0345
+  0303: goto 0x033b
+  0306: if !((I < 5)) goto 0x033b
+  0312: T = ((T $ GetItemName(cast56(I[self.RouteCache]))) $ "-")
+  033b: AddAdd_Int(I)
+  0342: goto 0x02a6
+  0345: Canvas.DrawTextNormal(("     RouteCache: " $ T), false, , )
+  0375: (out_YPos += out_YL)
+  0381: Canvas.SetPos(4.0, out_YPos)
+  039e: return nothing
+  03a0: <eos>
+
+function AIController.SetOrders  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AIController.GetOrderObject  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function AIController.GetOrders  (script 17 bytes)
+  0000: return 'None'
+  000a: return return
+  0010: <eos>
+
+function AIController.PriorityObjective  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function AIController.SetTeam  (script 58 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x0037
+  0014: self.WorldInfo.Game.ChangeTeam(self, inTeamIdx, true)
+  0037: return nothing
+  0039: <eos>
+
+function AIController.GetPlayerViewPoint  (script 73 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0036
+  000b: out_Location = self.Pawn.Location
+  001f: out_Rotation = self.Pawn.Rotation
+  0033: goto 0x0046
+  0036: Controller.GetPlayerViewPoint(out_Location, out_Rotation)
+  0046: return nothing
+  0048: <eos>
+
+function AIController.OnAIMoveToActor  (script 467 bytes)
+  0000: ClearLatentAction(obj'SeqAct_AIMoveToActor', true, Action)
+  0015: foreach Action.LinkedVariables(obj'SeqVar_Object', ObjVar, "Destination") (end 0x006f)
+  0042: destActor = Actor(ObjVar.GetObjectValue())
+  0060: if !((destActor != none)) goto 0x006e
+  006b: goto 0x006f
+  006e: iternext
+  006f: iterpop
+  0070: if !((destActor != none)) goto 0x01a7
+  007b: self.ScriptedRoute = Route(destActor)
+  008b: if !((self.ScriptedRoute != none)) goto 0x0115
+  0096: if !((self.ScriptedRoute.NavList.Length == 0)) goto 0x00e5
+  00ab: WarnInternal("Invalid route with empty MoveList for scripted move")
+  00e2: goto 0x0112
+  00e5: self.ScriptedRouteIndex = 0
+  00ec: if !(!IsInState('ScriptedRouteMove', )) goto 0x0112
+  00fe: PushState('ScriptedRouteMove', )
+  0112: goto 0x0146
+  0115: self.ScriptedMoveTarget = destActor
+  0120: if !(!IsInState('ScriptedMove', )) goto 0x0146
+  0132: PushState('ScriptedMove', )
+  0146: self.ScriptedFocus = none
+  014d: foreach Action.LinkedVariables(obj'SeqVar_Object', ObjVar, "Look At") (end 0x01a3)
+  0176: self.ScriptedFocus = Actor(ObjVar.GetObjectValue())
+  0194: if !((self.ScriptedFocus != none)) goto 0x01a2
+  019f: goto 0x01a3
+  01a2: iternext
+  01a3: iterpop
+  01a4: goto 0x01d0
+  01a7: WarnInternal("Invalid destination for scripted move")
+  01d0: return nothing
+  01d2: <eos>
+
+function AIController.Dead.SeeEnemy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AIController.Dead.SeeTeammate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AIController.Dead.HearNoise  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function AIController.Dead.KilledBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AIController.Dead.Tick  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>
+
+function AIController.ScriptedMove.PoppedState  (script 45 bytes)
+  0000: if !((self.ScriptedRoute == none)) goto 0x0023
+  000b: ClearLatentAction(obj'SeqAct_AIMoveToActor', (self.ScriptedMoveTarget == none), )
+  0023: self.ScriptedMoveTarget = none
+  002a: return nothing
+  002c: <eos>
+
+function AIController.ScriptedMove.PushedState  (script 33 bytes)
+  0000: if !((self.Pawn != none)) goto 0x001e
+  000b: self.Pawn.SetMovementPhysics()
+  001e: return nothing
+  0020: <eos>
+
+function AIController.ScriptedRouteMove.PoppedState  (script 34 bytes)
+  0000: ClearLatentAction(obj'SeqAct_AIMoveToActor', (self.ScriptedRoute == none), )
+  0018: self.ScriptedRoute = none
+  001f: return nothing
+  0021: <eos>
+
+function AIController.NotifyWeaponFired  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AIController.NotifyWeaponFinishedFiring  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AIController.ShouldRefire  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function AIController.ShouldAutoReload  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function AIController.ReactToStimulus  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>

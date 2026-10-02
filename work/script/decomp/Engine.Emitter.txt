@@ -1,0 +1,131 @@
+function Emitter.CheckForErrors  (script 201 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.ParticleSystemComponent == none)) goto 0x0058
+  0011: EmitCheckMessage(1, "NULL ParticleSystemComponent property - please delete!", 1, )
+  0058: if !(self.bHidden) goto 0x00c6
+  0061: EmitCheckMessage(0, "Emitter is hidden, client's will never see this flag change, please unhide or delete", 0, )
+  00c6: return nothing
+  00c8: <eos>
+
+function Emitter.SetTemplateNative  (script 12 bytes)
+  0000: NewTemplate
+  0005: bDestroyOnFinish
+  000a: nothing
+  000b: <eos>
+
+function Emitter.SetTemplate  (script 21 bytes)
+  0000: nothing
+  0001: Emitter.SetTemplateNative(NewTemplate, bDestroyOnFinish)
+  0012: return nothing
+  0014: <eos>
+
+function Emitter.PostBeginPlay  (script 102 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x002a
+  001f: self.LifeSpan = 0.2
+  002a: if !((self.ParticleSystemComponent != none)) goto 0x0063
+  0035: self.ParticleSystemComponent.__OnSystemFinished__Delegate = delegate.OnParticleSystemFinished
+  004d: self.bCurrentlyActive = self.ParticleSystemComponent.bAutoActivate
+  0063: return nothing
+  0065: <eos>
+
+function Emitter.ReplicatedEvent  (script 87 bytes)
+  0000: if !((VarName == 'bCurrentlyActive')) goto 0x0049
+  0013: if !(self.bCurrentlyActive) goto 0x0033
+  001c: self.ParticleSystemComponent.ActivateSystem()
+  0030: goto 0x0046
+  0033: self.ParticleSystemComponent.DeactivateSystem()
+  0046: goto 0x0054
+  0049: ReplicatedObject.ReplicatedEvent(VarName)
+  0054: return nothing
+  0056: <eos>
+
+function Emitter.OnParticleSystemFinished  (script 41 bytes)
+  0000: if !(self.bDestroyOnSystemFinish) goto 0x0014
+  0009: self.LifeSpan = 0.0001
+  0014: self.bCurrentlyActive = false
+  001c: ForceNetRelevant()
+  0026: return nothing
+  0028: <eos>
+
+function Emitter.OnToggle  (script 290 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x003e
+  001f: self.ParticleSystemComponent.ActivateSystem()
+  0033: self.bCurrentlyActive = true
+  003b: goto 0x00f8
+  003e: if !(1[Action.InputLinks].bHasImpulse) goto 0x007b
+  005d: self.ParticleSystemComponent.DeactivateSystem()
+  0070: self.bCurrentlyActive = false
+  0078: goto 0x00f8
+  007b: if !(2[Action.InputLinks].bHasImpulse) goto 0x00f8
+  009b: if !(((self.ParticleSystemComponent.bSuppressSpawning == true) || (self.bCurrentlyActive == false))) goto 0x00dd
+  00be: self.ParticleSystemComponent.ActivateSystem()
+  00d2: self.bCurrentlyActive = true
+  00da: goto 0x00f8
+  00dd: self.ParticleSystemComponent.DeactivateSystem()
+  00f0: self.bCurrentlyActive = false
+  00f8: self.ParticleSystemComponent.LastRenderTime = self.WorldInfo.TimeSeconds
+  0115: ForceNetRelevant()
+  011f: return nothing
+  0121: <eos>
+
+function Emitter.SetFloatParameter  (script 132 bytes)
+  0000: if !((self.ParticleSystemComponent != none)) goto 0x002b
+  000b: self.ParticleSystemComponent.SetFloatParameter(ParameterName, Param)
+  0028: goto 0x0081
+  002b: LogInternal((("Warning: Attempting to set a parameter on " $ cast56(self)) $ " when the PSC does not exist"), , , )
+  0081: return nothing
+  0083: <eos>
+
+function Emitter.SetVectorParameter  (script 132 bytes)
+  0000: if !((self.ParticleSystemComponent != none)) goto 0x002b
+  000b: self.ParticleSystemComponent.SetVectorParameter(ParameterName, Param)
+  0028: goto 0x0081
+  002b: LogInternal((("Warning: Attempting to set a parameter on " $ cast56(self)) $ " when the PSC does not exist"), , , )
+  0081: return nothing
+  0083: <eos>
+
+function Emitter.SetColorParameter  (script 132 bytes)
+  0000: if !((self.ParticleSystemComponent != none)) goto 0x002b
+  000b: self.ParticleSystemComponent.SetColorParameter(ParameterName, Param)
+  0028: goto 0x0081
+  002b: LogInternal((("Warning: Attempting to set a parameter on " $ cast56(self)) $ " when the PSC does not exist"), , , )
+  0081: return nothing
+  0083: <eos>
+
+function Emitter.SetExtColorParameter  (script 220 bytes)
+  0000: if !((self.ParticleSystemComponent != none)) goto 0x0083
+  000b: C.R = Red
+  0021: C.G = Green
+  0037: C.B = Blue
+  004d: C.A = Alpha
+  0063: self.ParticleSystemComponent.SetColorParameter(ParameterName, C)
+  0080: goto 0x00d9
+  0083: LogInternal((("Warning: Attempting to set a parameter on " $ cast56(self)) $ " when the PSC does not exist"), , , )
+  00d9: return nothing
+  00db: <eos>
+
+function Emitter.SetActorParameter  (script 132 bytes)
+  0000: if !((self.ParticleSystemComponent != none)) goto 0x002b
+  000b: self.ParticleSystemComponent.SetActorParameter(ParameterName, Param)
+  0028: goto 0x0081
+  002b: LogInternal((("Warning: Attempting to set a parameter on " $ cast56(self)) $ " when the PSC does not exist"), , , )
+  0081: return nothing
+  0083: <eos>
+
+function Emitter.OnSetParticleSysParam  (script 349 bytes)
+  0000: if !(((self.ParticleSystemComponent != none) && (Action.InstanceParameters.Length > 0))) goto 0x015a
+  0022: idx = 0
+  0029: if !((idx < Action.InstanceParameters.Length)) goto 0x015a
+  0042: if !((cast3a(idx[Action.InstanceParameters].ParamType) != cast3a(0))) goto 0x0150
+  006c: ParamIdx = self.ParticleSystemComponent.InstanceParameters.Find('Name',idx[Action.InstanceParameters].Name)
+  00ab: if !((ParamIdx == -1)) goto 0x00e7
+  00ba: ParamIdx = self.ParticleSystemComponent.InstanceParameters.Length
+  00cf: self.ParticleSystemComponent.InstanceParameters.Length = (ParamIdx + 1)
+  00e7: ParamIdx[self.ParticleSystemComponent.InstanceParameters] = idx[Action.InstanceParameters]
+  0110: if !(Action.bOverrideScalar) goto 0x0150
+  0122: ParamIdx[self.ParticleSystemComponent.InstanceParameters].Scalar = Action.ScalarValue
+  0150: AddAdd_Int(idx)
+  0157: goto 0x0029
+  015a: return nothing
+  015c: <eos>

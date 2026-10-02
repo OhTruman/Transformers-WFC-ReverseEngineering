@@ -1,0 +1,234 @@
+function TnCustomCharacterOptions.FindCharacterOptionProvider  (script 170 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders(ProviderTag)
+  0054: foreach Providers(Provider,) (end 0x00a0)
+  0063: CharacterOption = TnDataProvider_CharacterOption(Provider)
+  0073: if !(((CharacterOption != none) && (CharacterOption.UniqueId == UniqueId))) goto 0x009f
+  0098: iterpop
+  0099: return CharacterOption
+  009f: iternext
+  00a0: iterpop
+  00a1: return none
+  00a3: return return
+  00a9: <eos>
+
+function TnCustomCharacterOptions.FindLoadObjectOptionByObject  (script 198 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders(ProviderTag)
+  0054: foreach Providers(Provider,) (end 0x00bc)
+  0063: CharacterOption = TnDataProvider_LoadObjectOption(Provider)
+  0073: if !((CharacterOption == none)) goto 0x0082
+  007e: iternext
+  007f: goto 0x00bc
+  0082: TestObject = FindObject(CharacterOption.ObjectPath, obj'Core.Class')
+  00a5: if !((TestObject == SearchObject)) goto 0x00bb
+  00b4: iterpop
+  00b5: return CharacterOption
+  00bb: iternext
+  00bc: iterpop
+  00bd: return none
+  00bf: return return
+  00c5: <eos>
+
+function TnCustomCharacterOptions.FindLoadObjectOptionByObjectPath  (script 172 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders(ProviderTag)
+  0054: foreach Providers(Provider,) (end 0x00a2)
+  0063: CharacterOption = TnDataProvider_LoadObjectOption(Provider)
+  0073: if !((CharacterOption == none)) goto 0x0082
+  007e: iternext
+  007f: goto 0x00a2
+  0082: if !((CharacterOption.ObjectPath == ObjectPath)) goto 0x00a1
+  009a: iterpop
+  009b: return CharacterOption
+  00a1: iternext
+  00a2: iterpop
+  00a3: return none
+  00a5: return return
+  00ab: <eos>
+
+function TnCustomCharacterOptions.FindChassis  (script 77 bytes)
+  0000: ChassisPath = GetChassisObjectPath(Description)
+  0015: if !((ChassisPath != "")) goto 0x0040
+  0021: ReturnObject = TnTransformer(FindObject(ChassisPath, obj'TnTransformer'))
+  0040: return ReturnObject
+  0046: return return
+  004c: <eos>
+
+function TnCustomCharacterOptions.FindAllChassis  (script 207 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders('Chassis')
+  0058: foreach Providers(Provider,) (end 0x00c1)
+  0067: CharacterOption = TnDataProvider_LoadObjectOption(Provider)
+  0077: if !((CharacterOption == none)) goto 0x0086
+  0082: iternext
+  0083: goto 0x00c1
+  0086: Transformer = FindChassis(CharacterOption.UniqueId)
+  00a4: if !((Transformer == none)) goto 0x00b3
+  00af: iternext
+  00b0: goto 0x00c1
+  00b3: Transformers.AddItem(Transformer)
+  00c0: iternext
+  00c1: iterpop
+  00c2: return Transformers
+  00c8: return return
+  00ce: <eos>
+
+function TnCustomCharacterOptions.GetChassisObjectPath  (script 90 bytes)
+  0000: Provider = TnDataProvider_LoadObjectOption(TnCustomCharacterOptions.FindCharacterOptionProvider('Chassis', Description))
+  001f: if !(((Provider == none) || (Provider.ObjectPath == ""))) goto 0x0044
+  0041: return ""
+  0044: return Provider.ObjectPath
+  0053: return return
+  0059: <eos>
+
+function TnCustomCharacterOptions.GetChassisTypeFromObjectPath  (script 57 bytes)
+  0000: Provider = GetChassisProviderFromObjectPath(ObjectPath)
+  0015: if !((Provider == none)) goto 0x0023
+  0020: return ""
+  0023: return Provider.UniqueId
+  0032: return return
+  0038: <eos>
+
+function TnCustomCharacterOptions.GetChassisProviderFromObjectPath  (script 44 bytes)
+  0000: Provider = TnDataProvider_Chassis(TnCustomCharacterOptions.FindLoadObjectOptionByObjectPath('Chassis', ObjectPath))
+  001f: return Provider
+  0025: return return
+  002b: <eos>
+
+function TnCustomCharacterOptions.FindSkillByClass  (script 53 bytes)
+  0000: Provider = TnDataProvider_Skill(TnCustomCharacterOptions.FindLoadObjectOptionByObject('Skills', SkillClass))
+  001f: return Provider.UniqueId
+  002e: return return
+  0034: <eos>
+
+function TnCustomCharacterOptions.FindSkillProvider  (script 33 bytes)
+  0000: return TnDataProvider_Skill(TnCustomCharacterOptions.FindCharacterOptionProvider('Skills', SkillUniqueId))
+  001a: return return
+  0020: <eos>
+
+function TnCustomCharacterOptions.FindSkill  (script 201 bytes)
+  0000: Provider = FindSkillProvider(Description)
+  0015: if !(((Provider != none) && (Provider.ObjectPath != ""))) goto 0x005f
+  0037: ReturnObject = class<TnSkill>(FindObject(Provider.ObjectPath, obj'Core.Class'))
+  005f: if !((ReturnObject == none)) goto 0x00bc
+  006a: LogInternal(("Error: TnCustomCharacterOptions::FindSkill could not find object for" @ Description), , , )
+  00bc: return ReturnObject
+  00c2: return return
+  00c8: <eos>
+
+function TnCustomCharacterOptions.FindWeapon  (script 212 bytes)
+  0000: Provider = TnDataProvider_LoadObjectOption(TnCustomCharacterOptions.FindCharacterOptionProvider('Weapons', Description))
+  001f: if !(((Provider != none) && (Provider.ObjectPath != ""))) goto 0x0069
+  0041: ReturnObject = class<TnWeapon>(FindObject(Provider.ObjectPath, obj'Core.Class'))
+  0069: if !((ReturnObject == none)) goto 0x00c7
+  0074: LogInternal(("Error: TnCustomCharacterOptions::FindWeapon could not find object for" @ Description), , , )
+  00c7: return ReturnObject
+  00cd: return return
+  00d3: <eos>
+
+function TnCustomCharacterOptions.FindAbilityProvider  (script 33 bytes)
+  0000: return TnDataProvider_Ability(TnCustomCharacterOptions.FindCharacterOptionProvider('Abilities', AbilityUniqueId))
+  001a: return return
+  0020: <eos>
+
+function TnCustomCharacterOptions.FindAbility  (script 203 bytes)
+  0000: Provider = FindAbilityProvider(Description)
+  0015: if !(((Provider != none) && (Provider.ObjectPath != ""))) goto 0x005f
+  0037: ReturnObject = class<TnAbility>(FindObject(Provider.ObjectPath, obj'Core.Class'))
+  005f: if !((ReturnObject == none)) goto 0x00be
+  006a: LogInternal(("Error: TnCustomCharacterOptions::FindAbility could not find object for" @ Description), , , )
+  00be: return ReturnObject
+  00c4: return return
+  00ca: <eos>
+
+function TnCustomCharacterOptions.IsSpecialtyInList  (script 98 bytes)
+  0000: SpecialtiesSupported = obj'Core.Strings'.static.Split(SpecialtyList, ",")
+  0021: I = 0
+  0028: if !((I < SpecialtiesSupported.Length)) goto 0x0059
+  0038: if !((I[SpecialtiesSupported] == Specialty)) goto 0x004f
+  004d: return true
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x0028
+  0059: return false
+  005b: return return
+  0061: <eos>
+
+function TnCustomCharacterOptions.FindKillstreakProvider  (script 212 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders('Killstreaks')
+  0058: foreach Providers(Provider,) (end 0x00ca)
+  0067: KillstreakOption = TnDataProvider_Killstreak(Provider)
+  0077: if !((KillstreakOption == none)) goto 0x0086
+  0082: iternext
+  0083: goto 0x00ca
+  0086: if !((KillstreakOption.KillsRequired != StreakCount)) goto 0x00a2
+  009e: iternext
+  009f: goto 0x00ca
+  00a2: if !(IsSpecialtyInList(Specialty, KillstreakOption.SpecialtyRestriction)) goto 0x00c9
+  00c2: iterpop
+  00c3: return KillstreakOption
+  00c9: iternext
+  00ca: iterpop
+  00cb: return none
+  00cd: return return
+  00d3: <eos>
+
+function TnCustomCharacterOptions.FindKillstreak  (script 81 bytes)
+  0000: Killstreak = FindKillstreakProvider(Specialty, StreakCount)
+  001a: if !((Killstreak == none)) goto 0x0027
+  0025: return none
+  0027: return class<TnAbility>(FindObject(Killstreak.ObjectPath, obj'Core.Class'))
+  004a: return return
+  0050: <eos>
+
+function TnCustomCharacterOptions.FindKillstreakIdByClass  (script 32 bytes)
+  0000: return FindKillstreakProviderByKillstreak(KillstreakClass).UniqueId
+  0019: return return
+  001f: <eos>
+
+function TnCustomCharacterOptions.FindKillstreakProviderByKillstreak  (script 44 bytes)
+  0000: Provider = TnDataProvider_Killstreak(TnCustomCharacterOptions.FindLoadObjectOptionByObject('Killstreaks', KillstreakClass))
+  001f: return Provider
+  0025: return return
+  002b: <eos>
+
+function TnCustomCharacterOptions.GetSkillsForLevel  (script 389 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders('Abilities')
+  0058: foreach Providers(Provider,) (end 0x00db)
+  0067: AbilityOption = TnDataProvider_Ability(Provider)
+  0077: if !((((AbilityOption == none) || !IsSpecialtyInList(Specialty, AbilityOption.SpecialtyRestriction)) || (AbilityOption.LevelRestriction != NewLevel))) goto 0x00c4
+  00c0: iternext
+  00c1: goto 0x00db
+  00c4: NewSkills.AddItem(AbilityOption.UniqueId)
+  00da: iternext
+  00db: iterpop
+  00dc: Providers = MenuItems.GetProviders('Skills')
+  00fe: foreach Providers(Provider,) (end 0x0181)
+  010d: SkillOption = TnDataProvider_Skill(Provider)
+  011d: if !((((SkillOption == none) || !IsSpecialtyInList(Specialty, SkillOption.SpecialtyRestriction)) || (SkillOption.LevelRestriction != NewLevel))) goto 0x016a
+  0166: iternext
+  0167: goto 0x0181
+  016a: NewSkills.AddItem(SkillOption.UniqueId)
+  0180: iternext
+  0181: iterpop
+  0182: return nothing
+  0184: <eos>
+
+function TnCustomCharacterOptions.CheckForErrors  (script 191 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: foreach MenuItems.ElementProviderTypes(GameProvider,) (end 0x00bb)
+  004e: Providers = MenuItems.GetProviders(GameProvider.ProviderTag)
+  0077: foreach Providers(Provider,) (end 0x00b9)
+  0086: CharacterOption = TnDataProvider_CharacterOption(Provider)
+  0096: if !((CharacterOption == none)) goto 0x00a5
+  00a1: iternext
+  00a2: goto 0x00b9
+  00a5: CharacterOption.CheckForErrors()
+  00b8: iternext
+  00b9: iterpop
+  00ba: iternext
+  00bb: iterpop
+  00bc: return nothing
+  00be: <eos>

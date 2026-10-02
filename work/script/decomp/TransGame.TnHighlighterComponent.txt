@@ -1,0 +1,55 @@
+function TnHighlighterComponent.get_MeshComponents  (script 13 bytes)
+  0000: return self.Meshes
+  0006: return return
+  000c: <eos>
+
+function TnHighlighterComponent.CollectMeshes  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnHighlighterComponent.ChooseHighlightMaterial  (script 13 bytes)
+  0000: return self.HighlightMaterial
+  0006: return return
+  000c: <eos>
+
+function TnHighlighterComponent.RefreshMeshes  (script 28 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: TnHighlighterComponent.CollectAndHighlightMeshes(self.IsHighlighted)
+  0019: return nothing
+  001b: <eos>
+
+function TnHighlighterComponent.CollectAndHighlightMeshes  (script 113 bytes)
+  0000: CollectedMeshes = CollectMeshes()
+  0010: Freeze()
+  001a: foreach CollectedMeshes(MeshIter,) (end 0x0063)
+  0029: if !((MeshIter == none)) goto 0x0038
+  0034: iternext
+  0035: goto 0x0063
+  0038: if !(Value) goto 0x0053
+  0041: AddMesh(MeshIter)
+  0050: goto 0x0062
+  0053: RemoveMesh(MeshIter)
+  0062: iternext
+  0063: iterpop
+  0064: Thaw()
+  006e: return nothing
+  0070: <eos>
+
+function TnHighlighterComponent.CanHighlight  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnHighlighterComponent.SetHighlighting  (script 109 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(!CanHighlight(HighLighter)) goto 0x0029
+  0021: Value = false
+  0029: if !((self.IsHighlighted == Value)) goto 0x003c
+  003a: return nothing
+  003c: self.HighlightMaterial = ChooseHighlightMaterial(HighLighter)
+  0051: TnHighlighterComponent.CollectAndHighlightMeshes(Value)
+  005d: self.IsHighlighted = Value
+  006a: return nothing
+  006c: <eos>

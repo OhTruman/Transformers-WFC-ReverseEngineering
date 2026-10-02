@@ -1,0 +1,20 @@
+function TnActorFactorySpawnableDestructible.CheckForErrors  (script 294 bytes)
+  0000: CheckForErrors()
+  0006: foreach self.Blueprint.PieceBlueprints(PieceBlueprint,) (end 0x0122)
+  001e: foreach PieceBlueprint.StateBlueprints(StateBlueprint,) (end 0x0120)
+  0036: foreach StateBlueprint.EffectFactories(EffectFactory,) (end 0x011e)
+  004e: StaticMeshEffect = HmStaticMeshDestructionEffectFactory(EffectFactory)
+  005e: if !((StaticMeshEffect != none)) goto 0x011d
+  0069: if !((cast3a(StaticMeshEffect.GetLightingOption()) != cast3a(2))) goto 0x011d
+  0087: ErrorString = (((cast57(PieceBlueprint.PieceName) $ ":") $ cast57(StateBlueprint.StateName)) $ ":")
+  00b9: ConcatEqual_StrStr(ErrorString, StaticMeshEffect.GetEffectDescription())
+  00d9: ConcatEqual_StrStr(ErrorString, " must use dynamic lighting.")
+  0103: get_Outer().EmitCheckMessage(0, ErrorString, , )
+  011d: iternext
+  011e: iterpop
+  011f: iternext
+  0120: iterpop
+  0121: iternext
+  0122: iterpop
+  0123: return nothing
+  0125: <eos>

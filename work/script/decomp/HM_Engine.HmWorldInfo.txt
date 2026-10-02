@@ -1,0 +1,63 @@
+function HmWorldInfo.get_DialogEventManager  (script 13 bytes)
+  0000: return self._DialogEventManager
+  0006: return return
+  000c: <eos>
+
+function HmWorldInfo.get_MusicPlayer  (script 13 bytes)
+  0000: return self._MusicPlayer
+  0006: return return
+  000c: <eos>
+
+function HmWorldInfo.Reset  (script 68 bytes)
+  0000: Reset()
+  0006: self._DialogEventManager.Initialize()
+  0019: self._MusicPlayer.Initialize(self)
+  002d: self.AudioCategoryEffectsManager.Initialize(self)
+  0041: return nothing
+  0043: <eos>
+
+function HmWorldInfo.PreBeginPlay  (script 28 bytes)
+  0000: PreBeginPlay()
+  0006: self._FileSaveNotificationUI.ForceEndNotification()
+  0019: return nothing
+  001b: <eos>
+
+function HmWorldInfo.PostBeginPlay  (script 68 bytes)
+  0000: PostBeginPlay()
+  0006: self._DialogEventManager.Initialize()
+  0019: self._MusicPlayer.Initialize(self)
+  002d: self.AudioCategoryEffectsManager.Initialize(self)
+  0041: return nothing
+  0043: <eos>
+
+function HmWorldInfo.Update  (script 99 bytes)
+  0000: self._DialogEventManager.Tick(DeltaTime)
+  0018: self._MusicPlayer.Tick(DeltaTime)
+  0030: self.AudioCategoryEffectsManager.Tick(DeltaTime)
+  0048: self._FileSaveNotificationUI.Tick(DeltaTime)
+  0060: return nothing
+  0062: <eos>
+
+function HmWorldInfo.GetTargetableComponents  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmWorldInfo.GetCurrentCheckpointIndex  (script 9 bytes)
+  0000: return 0
+  0002: return return
+  0008: <eos>
+
+function HmWorldInfo.OnBeginFileSave  (script 22 bytes)
+  0000: self._FileSaveNotificationUI.SaveStarted()
+  0013: return nothing
+  0015: <eos>
+
+function HmWorldInfo.OnEndFileSave  (script 22 bytes)
+  0000: self._FileSaveNotificationUI.SaveCompleted()
+  0013: return nothing
+  0015: <eos>
+
+function HmWorldInfo.OnGamePaused  (script 22 bytes)
+  0000: self._FileSaveNotificationUI.ForceEndNotification()
+  0013: return nothing
+  0015: <eos>

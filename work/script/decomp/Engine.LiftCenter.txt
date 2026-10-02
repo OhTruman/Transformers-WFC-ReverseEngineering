@@ -1,0 +1,46 @@
+function LiftCenter.PostBeginPlay  (script 64 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: if !(((self.Base == self.MyLift) && (self.MyLift != none))) goto 0x003d
+  0022: self.LiftOffset = (self.Location - self.MyLift.Location)
+  003d: return nothing
+  003f: <eos>
+
+function LiftCenter.SpecialHandling  (script 62 bytes)
+  0000: if !((((self.MyLift == none) || (self.LiftTrigger == none)) || self.LiftTrigger.bRecentlyTriggered)) goto 0x0031
+  002c: return self
+  002e: goto 0x0037
+  0031: return self.LiftTrigger
+  0037: return return
+  003d: <eos>
+
+function LiftCenter.SuggestMovePreparation  (script 236 bytes)
+  0000: if !((Other.Base == self.MyLift)) goto 0x001a
+  0018: return false
+  001a: if !(((self.Base != self.MyLift) || (self.Location != (self.MyLift.Location + self.LiftOffset)))) goto 0x008b
+  004a: LogInternal((cast56(self) $ " drifted!!!"), , , )
+  0061: SetLocation((self.MyLift.Location + self.LiftOffset))
+  0079: SetBase(self.MyLift, , , )
+  008b: if !((!obj'Core.Math'.static.IsZero(self.MyLift.Velocity) || !ProceedWithMove(Other))) goto 0x00e3
+  00c0: Other.Controller.WaitForMover(self.MyLift)
+  00e1: return true
+  00e3: return false
+  00e5: return return
+  00eb: <eos>
+
+function LiftCenter.ProceedWithMove  (script 600 bytes)
+  0000: if !((self.Name == cast60("LiftCenter_6"))) goto 0x0025
+  001a: LogInternal("TEST", , , )
+  0025: if !((Other.Controller == none)) goto 0x003e
+  0039: return false
+  003b: goto 0x01f5
+  003e: if !(((LiftExit(Other.Controller.MoveTarget) != none) && Other.ReachedDestination(self))) goto 0x00ac
+  0079: return LiftExit(Other.Controller.MoveTarget).CanBeReachedFromLiftBy(Other)
+  00a9: goto 0x01f5
+  00ac: if !(((((self.Location.Z - self.CollisionHeight) < (((Other.Location.Z - Other.GetCollisionHeight()) + Other._WorkingMovementCapabilities.MaxStepHeight) + 2.0)) && ((self.Location.Z - self.CollisionHeight) > ((Other.Location.Z - Other.GetCollisionHeight()) - cast3f(1200)))) && ((obj'Core.Math'.static.VSize2D((self.Location - Other.Location)) < self.MaxDist2D) || ((obj'Core.Math'.static.IsZero(self.MyLift.Velocity) && Other.ValidAnchor()) && (LiftExit(Other.Anchor) != none))))) goto 0x01f5
+  01f3: return true
+  01f5: if !((((self.LiftTrigger != none) && !self.LiftTrigger.bRecentlyTriggered) && obj'Core.Math'.static.IsZero(self.MyLift.Velocity))) goto 0x024f
+  0235: Other.SetMoveTarget(self.LiftTrigger)
+  024d: return true
+  024f: return false
+  0251: return return
+  0257: <eos>

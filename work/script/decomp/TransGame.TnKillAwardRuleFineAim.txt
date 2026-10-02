@@ -1,0 +1,10 @@
+function TnKillAwardRuleFineAim.CheckRule  (script 187 bytes)
+  0000: dt = class<TnDamageType>(DamageType)
+  0010: if !(((dt != none) && (dt.static.default.ExemptFromAccuracyKills || dt.static.default.VehicleWeaponDamageType))) goto 0x0045
+  0043: return nothing
+  0045: if !(Killer.IsUsingFineAim()) goto 0x008b
+  005b: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, 5895, 0)
+  0088: goto 0x00b8
+  008b: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, 5894, 0)
+  00b8: return nothing
+  00ba: <eos>

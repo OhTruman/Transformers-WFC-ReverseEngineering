@@ -1,0 +1,39 @@
+function TnGoapGoalBuddyLead.Bind  (script 75 bytes)
+  0000: Bind(InAiController)
+  000b: self._BoundController = TnAiController(self.BoundController)
+  001b: self._BoundPawn = self._BoundController.get_TransformerPawn()
+  0034: self._Finder._OwningController = self._BoundController
+  0048: return nothing
+  004a: <eos>
+
+function TnGoapGoalBuddyLead.PopulateGoals  (script 220 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: TheObjective = Actor(WorldState.GetSubject(obj'TnAiWorldStateMoveToObjective'))
+  003a: self._Buddy = self._BoundController._Friend
+  004e: if !(((TheObjective == none) || (self._Buddy == none))) goto 0x0068
+  0066: return false
+  0068: Emote = self._Finder.FindEmote(self._Buddy, TheObjective)
+  008b: if !((Emote == none)) goto 0x0098
+  0096: return false
+  0098: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateInteractedWith', Emote)
+  00ba: self._LastValidPathTime = obj'Engine.Engine'.static.GetWorldTime()
+  00d3: return true
+  00d5: return return
+  00db: <eos>
+
+function TnGoapGoalBuddyLead.VerifyRunningDesiredEffects  (script 277 bytes)
+  0000: self._Buddy = self._BoundController._Friend
+  0014: TheObjective = Actor(self._BoundController.AiWorldState.GetSubject(obj'TnAiWorldStateMoveToObjective'))
+  0040: if !(((TheObjective == none) || (self._Buddy == none))) goto 0x005a
+  0058: return false
+  005a: if !(((obj'Engine.Engine'.static.GetWorldTime() - self._LastValidPathTime) < 0.5)) goto 0x0080
+  007e: return true
+  0080: CurrentEmote = TnInteractEmoteBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateInteractedWith', RunningDesiredEffects))
+  00a8: if !(!self._Finder.IsEmoteValid(CurrentEmote, self._Buddy, TheObjective)) goto 0x00f3
+  00cf: self._BoundController.AiWorldState.SetSubject(obj'TnAiWorldStateInteractedWith', none)
+  00f1: return false
+  00f3: self._LastValidPathTime = obj'Engine.Engine'.static.GetWorldTime()
+  010c: return true
+  010e: return return
+  0114: <eos>

@@ -1,0 +1,11 @@
+function TnKillAwardRuleConditional.CheckRule  (script 175 bytes)
+  0000: if !((((self.AllowedGameRule == none) || Killer.WorldInfo.Game.HasRule(self.AllowedGameRule)) && ConditionMet(Killer, Killed, DamageType))) goto 0x00ac
+  0058: Killer.NotifyXpEvent(self.XpEvent)
+  0070: if !((self.StatId != -1)) goto 0x00ac
+  007f: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, self.StatId, 0)
+  00ac: return nothing
+  00ae: <eos>
+
+function TnKillAwardRuleConditional.ConditionMet  (script 7 bytes)
+  0000: return return
+  0006: <eos>

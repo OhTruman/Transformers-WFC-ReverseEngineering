@@ -1,0 +1,50 @@
+function SeqAct_ActorDistance.IsComplete  (script 47 bytes)
+  0000: if !((1[self.InputLinks].bHasImpulse || self.bComplete)) goto 0x0026
+  0021: return true
+  0023: goto 0x0028
+  0026: return false
+  0028: return return
+  002e: <eos>
+
+function SeqAct_ActorDistance.OnUpdate  (script 79 bytes)
+  0000: if !(((self.CheckActorA == none) || (self.CheckActorB == none))) goto 0x0022
+  0018: self.bComplete = true
+  0020: return nothing
+  0022: if !((GetWorldInfo().TimeSeconds >= (self.LastCheckTime + self.CheckDelay))) goto 0x004c
+  0046: SeqAct_ActorDistance.PerformDistanceCheck()
+  004c: return nothing
+  004e: <eos>
+
+function SeqAct_ActorDistance.PerformDistanceCheck  (script 301 bytes)
+  0000: Dist = obj'Core.Math'.static.VSize((self.CheckActorA.Location - self.CheckActorB.Location))
+  002f: if !(((Dist < self.DistanceToFire) && (self.bCheckInitialDistance || !self.bCurrentlyInRange))) goto 0x0087
+  0056: 0[self.OutputLinks].bHasImpulse = true
+  006b: self.bCurrentlyInRange = true
+  0073: if !(self.bStopCheckingAfterOutputFires) goto 0x0084
+  007c: self.bComplete = true
+  0084: goto 0x00da
+  0087: if !(((Dist > self.DistanceToFire) && (self.bCheckInitialDistance || self.bCurrentlyInRange))) goto 0x00da
+  00ac: 1[self.OutputLinks].bHasImpulse = true
+  00c1: self.bCurrentlyInRange = false
+  00c9: if !(self.bStopCheckingAfterOutputFires) goto 0x00da
+  00d2: self.bComplete = true
+  00da: self.LastCheckTime = GetWorldInfo().TimeSeconds
+  00f3: foreach LinkedVariables(obj'Engine.SeqVar_Float', OutFloat, "Distance") (end 0x0129)
+  0114: OutFloat.FloatValue = Dist
+  0128: iternext
+  0129: iterpop
+  012a: return nothing
+  012c: <eos>
+
+function SeqAct_ActorDistance.Activated  (script 147 bytes)
+  0000: self.bComplete = false
+  0008: if !(((self.InputA != none) && (PlayerController(self.InputA) != none))) goto 0x0041
+  0025: self.CheckActorA = PlayerController(self.InputA).Pawn
+  003e: goto 0x004c
+  0041: self.CheckActorA = self.InputA
+  004c: if !(((self.InputB != none) && (PlayerController(self.InputB) != none))) goto 0x0085
+  0069: self.CheckActorB = PlayerController(self.InputB).Pawn
+  0082: goto 0x0090
+  0085: self.CheckActorB = self.InputB
+  0090: return nothing
+  0092: <eos>

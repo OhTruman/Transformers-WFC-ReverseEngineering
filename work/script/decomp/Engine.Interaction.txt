@@ -1,0 +1,76 @@
+function Interaction.OnReceivedNativeInputKey  (script 17 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: return return
+  0010: <eos>
+
+function Interaction.OnReceivedNativeInputAxis  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function Interaction.OnReceivedNativeInputChar  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Interaction.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Interaction.Init  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Interaction.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Interaction.Initialized  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Interaction.NotifyGameSessionEnded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Interaction.NotifyPlayerAdded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Interaction.NotifyPlayerRemoved  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Interaction.PostConstruct  (script 54 bytes)
+  0000: PostConstruct()
+  0006: self.__OnInitialize__Delegate = delegate.Initialized
+  0015: self.__OnReceivedNativeInputKey__Delegate = delegate.InputKeyInternal
+  0024: self.__OnReceivedNativeInputAxis__Delegate = delegate.InputAxisInternal
+  0033: return nothing
+  0035: <eos>
+
+function Interaction.InputKey  (script 19 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: return false
+  000c: return return
+  0012: <eos>
+
+function Interaction.InputAxis  (script 10 bytes)
+  0000: nothing
+  0001: return false
+  0003: return return
+  0009: <eos>
+
+function Interaction.InputKeyInternal  (script 54 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: return InputKey(ControllerId, Key, EventType, AmountDepressed, bGamepad)
+  002f: return return
+  0035: <eos>
+
+function Interaction.InputAxisInternal  (script 45 bytes)
+  0000: nothing
+  0001: return InputAxis(ControllerId, Key, Delta, DeltaTime, bGamepad)
+  0026: return return
+  002c: <eos>

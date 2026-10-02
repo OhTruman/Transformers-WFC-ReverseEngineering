@@ -1,0 +1,90 @@
+function DoorMarker.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DoorMarker.PostBeginPlay  (script 48 bytes)
+  0000: self.bBlocked = (self.bInitiallyClosed && self.bBlockedWhenClosed)
+  0018: self.bDoorOpen = !self.bInitiallyClosed
+  0027: Actor.PostBeginPlay()
+  002d: return nothing
+  002f: <eos>
+
+function DoorMarker.MoverOpened  (script 71 bytes)
+  0000: self.bBlocked = (!self.bInitiallyClosed && self.bBlockedWhenClosed)
+  001a: self.bDoorOpen = self.bInitiallyClosed
+  0027: self.WorldInfo.Game.NotifyNavigationChanged(self)
+  0044: return nothing
+  0046: <eos>
+
+function DoorMarker.MoverClosed  (script 71 bytes)
+  0000: self.bBlocked = (self.bInitiallyClosed && self.bBlockedWhenClosed)
+  0018: self.bDoorOpen = !self.bInitiallyClosed
+  0027: self.WorldInfo.Game.NotifyNavigationChanged(self)
+  0044: return nothing
+  0046: <eos>
+
+function DoorMarker.SpecialHandling  (script 197 bytes)
+  0000: if !(((self.bDoorOpen || (self.MyDoor == none)) || (self.bInitiallyClosed == (self.bDoorOpen || (obj'Core.Math'.static.VSizeSq(self.MyDoor.Velocity) > 1.0))))) goto 0x005b
+  0056: return self
+  0058: goto 0x00be
+  005b: if !((cast3a(self.DoorType) == cast3a(1))) goto 0x00bc
+  006b: if !((self.DoorTrigger == none)) goto 0x007f
+  0076: return self.MyDoor
+  007c: goto 0x00b9
+  007f: TouchActor = self.DoorTrigger.SpecialHandling(Other)
+  009d: if !((TouchActor == none)) goto 0x00b3
+  00a8: TouchActor = self.DoorTrigger
+  00b3: return TouchActor
+  00b9: goto 0x00be
+  00bc: return self
+  00be: return return
+  00c4: <eos>
+
+function DoorMarker.ProceedWithMove  (script 308 bytes)
+  0000: if !(((cast3a(self.DoorType) == cast3a(0)) && (Actor(cast36(Other.Controller.Focus)) == self.MyDoor))) goto 0x0056
+  003a: Other.Controller.StopFiring()
+  0056: if !((self.bDoorOpen || (cast3a(self.DoorType) != cast3a(0)))) goto 0x0073
+  0071: return true
+  0073: Other.Controller.Focus = IFocusible(((self.DoorTrigger != none) ? self.DoorTrigger : self.MyDoor))
+  00a7: if !(!Other.Controller.FireWeaponAt(cast36(Other.Controller.Focus))) goto 0x0101
+  00e1: Other.Controller.MoveTimer = 0.25
+  00fe: goto 0x012b
+  0101: if !(self.bWaitUntilCompletelyOpened) goto 0x012b
+  010a: Other.Controller.WaitForMover(self.MyDoor)
+  012b: return false
+  012d: return return
+  0133: <eos>
+
+function DoorMarker.SuggestMovePreparation  (script 624 bytes)
+  0000: if !((self.bDoorOpen || (self.MyDoor == none))) goto 0x001b
+  0016: return false
+  0018: goto 0x0269
+  001b: if !((obj'Core.Math'.static.VSizeSq(self.MyDoor.Velocity) > 1.0)) goto 0x006c
+  0046: Other.Controller.WaitForMover(self.MyDoor)
+  0067: return true
+  0069: goto 0x0269
+  006c: if !((cast3a(self.DoorType) == cast3a(0))) goto 0x0174
+  007c: Other.Controller.Focus = IFocusible(((self.DoorTrigger != none) ? self.DoorTrigger : self.MyDoor))
+  00b0: if !(!Other.Controller.FireWeaponAt(cast36(Other.Controller.Focus))) goto 0x0126
+  00ea: Other.Controller.MoveTimer = 0.25
+  0107: Other.Controller.bPreparingMove = true
+  0121: return true
+  0123: goto 0x0171
+  0126: if !(self.bWaitUntilCompletelyOpened) goto 0x016f
+  012f: Other.Controller.WaitForMover(self.MyDoor)
+  0150: Other.Controller.bPreparingMove = true
+  016a: return true
+  016c: goto 0x0171
+  016f: return false
+  0171: goto 0x0269
+  0174: if !((((cast3a(self.DoorType) == cast3a(1)) && (self.DoorTrigger != none)) && Other.Controller.ActorReachable(self.DoorTrigger))) goto 0x0267
+  01b7: if !((Actor(cast36(Other.Controller.Focus)) == Other.Controller.MoveTarget)) goto 0x0213
+  01f1: Other.Controller.Focus = IFocusible(self.DoorTrigger)
+  0213: Other.Controller.MoveTarget = self.DoorTrigger
+  0230: Other.Controller.CurrentPath = none
+  0249: Other.Controller.NextRoutePath = none
+  0262: return false
+  0264: goto 0x0269
+  0267: return false
+  0269: return return
+  026f: <eos>

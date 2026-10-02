@@ -1,0 +1,7 @@
+function TnCustomCostEnemyOnGround.DoCalculateAdditionalCost  (script 129 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0039
+  0033: return 0.0
+  0039: return (((cast3a(Target.Physics) == cast3a(4)) || (cast3a(Target.Physics) == cast3a(10))) ? 0.0 : self.Cost)
+  007a: return return
+  0080: <eos>

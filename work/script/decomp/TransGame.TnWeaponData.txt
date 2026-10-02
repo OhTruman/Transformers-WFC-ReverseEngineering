@@ -1,0 +1,81 @@
+function TnWeaponData.GetNumUsedFireModes  (script 45 bytes)
+  0000: if !(((self.WeaponProjectiles.Length > 1) && (0[self.WeaponProjectiles] != 1[self.WeaponProjectiles]))) goto 0x0024
+  0021: return 2
+  0024: return 1
+  0026: return return
+  002c: <eos>
+
+function TnWeaponData.GetDamagePerFire  (script 251 bytes)
+  0000: if !(((FireMode < self.WeaponProjectiles.Length) && (FireMode[self.WeaponProjectiles] != none))) goto 0x00c4
+  0023: Proj = class<TnProjectile>(FireMode[self.WeaponProjectiles])
+  0039: switch (DataType)
+  0040: case 1: (next 0x006a)
+  0045: DPF = (cast3f(self.NumShotsToFire) * Proj.static.GetDamage())
+  0067: goto 0x00c1
+  006a: case 2: (next 0x0094)
+  006f: DPF = (cast3f(self.NumShotsToFire) * Proj.static.GetAIDamage())
+  0091: goto 0x00c1
+  0094: case 3: (next 0x00be)
+  0099: DPF = (cast3f(self.NumShotsToFire) * Proj.static.GetMPDamage())
+  00bb: goto 0x00c1
+  00be: default:
+  00c1: goto 0x00ee
+  00c4: if !((FireMode < self.InstantHitDamage.Length)) goto 0x00ee
+  00d4: DPF = (cast3f(self.NumShotsToFire) * FireMode[self.InstantHitDamage])
+  00ee: return DPF
+  00f4: return return
+  00fa: <eos>
+
+function TnWeaponData.GetTimeToEmptyClip  (script 125 bytes)
+  0000: if !((self.ShotsPerBurst == 0)) goto 0x0024
+  000b: TimeToEmpty = TnWeaponData.GetSimulatedTimeToEmptyAmmo(FireMode, self.MaxAmmoClipCount)
+  0021: goto 0x0070
+  0024: BurstsPerClip = cast3f((self.MaxAmmoClipCount / self.ShotsPerBurst))
+  0038: TimeToEmpty = (BurstsPerClip * (self.BurstDelay + (cast3f(self.ShotsPerBurst) * self.FireIntervalModifier.IntervalRange.Min)))
+  0070: return TimeToEmpty
+  0076: return return
+  007c: <eos>
+
+function TnWeaponData.GetSimulatedTimeToEmptyAmmo  (script 288 bytes)
+  0000: CurrentFireInterval = self.FireIntervalModifier.IntervalRange.Min
+  0021: CurrentClipCount = ClipSize
+  002c: if !((FireMode[self.ShotCost] <= 0)) goto 0x0043
+  003d: return 3.4028234663852886e+38
+  0043: if !((CurrentClipCount > 0)) goto 0x0113
+  004e: (CurrentClipCount -= FireMode[self.ShotCost])
+  0060: (TimeToEmpty += CurrentFireInterval)
+  006c: if !((self.FireIntervalModifier.RampTime > cast3f(0))) goto 0x00b9
+  0084: FireIntervalPct = obj'Core.Math'.static.FClamp((TimeToEmpty / self.FireIntervalModifier.RampTime), 0.0, 1.0)
+  00b6: goto 0x00c4
+  00b9: FireIntervalPct = 0.0
+  00c4: CurrentFireInterval = obj'Core.Math'.static.Lerp(self.FireIntervalModifier.IntervalRange.Min, self.FireIntervalModifier.IntervalRange.Max, FireIntervalPct)
+  0110: goto 0x0043
+  0113: return TimeToEmpty
+  0119: return return
+  011f: <eos>
+
+function TnWeaponData.GetDpsBurst  (script 71 bytes)
+  0000: if !((self.MaxAmmoClipCount == 1)) goto 0x0020
+  000b: return GetDpsSustained(FireMode, DataType)
+  0020: return TnWeaponData.GetDpsFromTime(FireMode, GetTimeToEmptyClip(FireMode), DataType)
+  0040: return return
+  0046: <eos>
+
+function TnWeaponData.GetDpsSustained  (script 46 bytes)
+  0000: return TnWeaponData.GetDpsFromTime(FireMode, (GetTimeToEmptyClip(FireMode) + self.WeaponReloadAnimTime), DataType)
+  0027: return return
+  002d: <eos>
+
+function TnWeaponData.GetDpsFromTime  (script 103 bytes)
+  0000: if !((Seconds <= cast3f(0))) goto 0x0022
+  000d: return GetDamagePerFire(FireMode, DataType)
+  0022: return (GetDamagePerFire(FireMode, DataType) * (cast3f(obj'Core.Math'.static.Max(1, (self.MaxAmmoClipCount / FireMode[self.ShotCost]))) / Seconds))
+  0060: return return
+  0066: <eos>
+
+function TnWeaponData.CheckForErrors  (script 133 bytes)
+  0000: CheckForErrors()
+  0006: if !(((self.SpreadPattern.Length != 0) && (self.NumShotsToFire != self.SpreadPattern.Length))) goto 0x0082
+  0024: EmitCheckMessage(0, "NumShotsToFire does not match number of shots specified in SpreadPattern array", , )
+  0082: return nothing
+  0084: <eos>

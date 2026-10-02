@@ -1,0 +1,29 @@
+function TnHealthRegener.Initalize  (script 25 bytes)
+  0000: self.OwningPawn = P
+  000b: self.RegenParameters = Parameters
+  0016: return nothing
+  0018: <eos>
+
+function TnHealthRegener.Update  (script 381 bytes)
+  0000: if !((self.OwningPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(((self.OwningPawn.Health >= self.OwningPawn.HealthMax) || (self.RegenParameters.RegenRate == cast3f(0)))) goto 0x004a
+  0048: return nothing
+  004a: BuffService = TnBuffService(self.OwningPawn.GetService('TnBuffService'))
+  0071: if !((NotEqual_InterfaceInterface(BuffService, TnBuffService(none)) && BuffService.HasBuff(obj'TnBuffHealthRegenKillStreak'))) goto 0x00bc
+  00a3: HealType = obj'TnHealTypeRegenAll'
+  00ae: TimePastDelay = DeltaTime
+  00b9: goto 0x0109
+  00bc: HealType = obj'TnHealTypeRegen'
+  00c7: (self.TimeSinceRegenInterrupted += DeltaTime)
+  00d3: TimePastDelay = (self.TimeSinceRegenInterrupted - self.RegenDelayModifier.ModifyFloat(self.RegenParameters.RegenDelay, self.OwningPawn, ))
+  0109: if !((TimePastDelay > cast3f(0))) goto 0x017a
+  0116: Amount = (self.RegenRateModifier.ModifyFloat(self.RegenParameters.RegenRate, self.OwningPawn, ) * obj'Core.Math'.static.FMin(DeltaTime, TimePastDelay))
+  015c: self.OwningPawn.HealDamage(Amount, none, HealType)
+  017a: return nothing
+  017c: <eos>
+
+function TnHealthRegener.InterruptRegen  (script 14 bytes)
+  0000: self.TimeSinceRegenInterrupted = 0.0
+  000b: return nothing
+  000d: <eos>

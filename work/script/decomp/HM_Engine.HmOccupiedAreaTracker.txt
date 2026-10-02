@@ -1,0 +1,52 @@
+function HmOccupiedAreaTracker.InclusionCheck  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmOccupiedAreaTracker.OnTouch  (script 102 bytes)
+  0000: if !((((self.ActorsInArea.Find(Toucher) == -1) && ClassIsChildOf(Toucher.get_Class(), self.ClassFilter)) && (!self.InclusionCheckSet || InclusionCheck(Toucher)))) goto 0x0063
+  0056: self.ActorsInArea.AddItem(Toucher)
+  0063: return nothing
+  0065: <eos>
+
+function HmOccupiedAreaTracker.OnUntouch  (script 16 bytes)
+  0000: self.ActorsInArea.RemoveItem(Untoucher)
+  000d: return nothing
+  000f: <eos>
+
+function HmOccupiedAreaTracker.GetNumOccupyingActors  (script 14 bytes)
+  0000: return self.ActorsInArea.Length
+  0007: return return
+  000d: <eos>
+
+function HmOccupiedAreaTracker.GetOccupyingActors  (script 13 bytes)
+  0000: return self.ActorsInArea
+  0006: return return
+  000c: <eos>
+
+function HmOccupiedAreaTracker.SetInclusionFilter  (script 22 bytes)
+  0000: self.__InclusionCheck__Delegate = CheckFunction
+  000b: self.InclusionCheckSet = true
+  0013: return nothing
+  0015: <eos>
+
+function HmOccupiedAreaTracker.PurgeViaInclusion  (script 94 bytes)
+  0000: if !(!self.InclusionCheckSet) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.ActorsInArea.Length)) goto 0x005b
+  0024: if !(!InclusionCheck(I[self.ActorsInArea])) goto 0x0051
+  0043: self.ActorsInArea.Remove(SubtractSubtract_Int(I),1)
+  0051: AddAdd_PreInt(I)
+  0058: goto 0x0014
+  005b: return nothing
+  005d: <eos>
+
+function HmOccupiedAreaTracker.GetActorsWithFilter  (script 66 bytes)
+  0000: foreach self.ActorsInArea(A,) (end 0x0034)
+  000f: if !(InclusionCheck(A)) goto 0x0033
+  0026: FilteredActors.AddItem(A)
+  0033: iternext
+  0034: iterpop
+  0035: return FilteredActors
+  003b: return return
+  0041: <eos>

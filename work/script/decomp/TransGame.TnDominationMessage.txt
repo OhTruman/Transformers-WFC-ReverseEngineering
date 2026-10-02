@@ -1,0 +1,24 @@
+function TnDominationMessage.ClientReceive  (script 198 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: MessageType = cast44((cast3f(Switch) % cast3f(10)))
+  0019: PointNumber = (Switch / 10)
+  0028: switch (MessageType)
+  002f: case 2: (next 0x0048)
+  0034: Dialog = PointNumber[default.AutobotsCapturingPointDialog]
+  0045: goto 0x0094
+  0048: case 3: (next 0x0061)
+  004d: Dialog = PointNumber[default.DecepticonsCapturingPointDialog]
+  005e: goto 0x0094
+  0061: case 0: (next 0x0079)
+  0065: Dialog = PointNumber[default.AutobotsTakePointDialog]
+  0076: goto 0x0094
+  0079: case 1: (next 0x0091)
+  007d: Dialog = PointNumber[default.DecepticonsTakePointDialog]
+  008e: goto 0x0094
+  0091: default:
+  0094: TnWorldInfo(P.WorldInfo)._Announcer.PlayEvent(Dialog)
+  00c3: return nothing
+  00c5: <eos>

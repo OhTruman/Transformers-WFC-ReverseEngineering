@@ -1,0 +1,7 @@
+function TnHudDataObserverBool.ProcessNewValue  (script 89 bytes)
+  0000: if !((self.SavedValue != NewValue)) goto 0x0056
+  0011: self.SavedValue = NewValue
+  001e: AddBoolValue(args, 0, NewValue)
+  0034: Movie.Invoke(self.CallbackBindingName, args)
+  0056: return nothing
+  0058: <eos>

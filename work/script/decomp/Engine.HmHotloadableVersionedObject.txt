@@ -1,0 +1,49 @@
+function HmHotloadableVersionedObject.AssetChangedObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmHotloadableVersionedObject.OnPieSessionEnding  (script 13 bytes)
+  0000: ClearAssetChangedObservers()
+  000a: return nothing
+  000c: <eos>
+
+function HmHotloadableVersionedObject.TryNotifyObservers  (script 31 bytes)
+  0000: if !(self.AssetHasChanged) goto 0x001c
+  0009: NotifyAssetChangedObservers(self)
+  0014: self.AssetHasChanged = false
+  001c: return nothing
+  001e: <eos>
+
+function HmHotloadableVersionedObject.OnPostEditChange  (script 11 bytes)
+  0000: self.AssetHasChanged = true
+  0008: return nothing
+  000a: <eos>
+
+function HmHotloadableVersionedObject.AddAssetChangedObserver  (script 46 bytes)
+  0000: if !((self.AssetChangedObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.AssetChangedObservers.Length[self.AssetChangedObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function HmHotloadableVersionedObject.RemoveAssetChangedObserver  (script 49 bytes)
+  0000: Index = self.AssetChangedObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.AssetChangedObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function HmHotloadableVersionedObject.ClearAssetChangedObservers  (script 11 bytes)
+  0000: self.AssetChangedObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmHotloadableVersionedObject.NotifyAssetChangedObservers  (script 73 bytes)
+  0000: I = 0
+  0007: if !((I < self.AssetChangedObservers.Length)) goto 0x0046
+  0017: N = I[self.AssetChangedObservers]
+  0028: AssetChangedObserver(X)
+  003c: AddAdd_PreInt(I)
+  0043: goto 0x0007
+  0046: return nothing
+  0048: <eos>

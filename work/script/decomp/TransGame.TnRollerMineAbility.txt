@@ -1,0 +1,119 @@
+function TnRollerMineAbility.ReplicatedEvent  (script 42 bytes)
+  0000: if !((VarName == 'Instigator')) goto 0x001c
+  0013: TnRollerMineAbility.ClientSetEnergonColor()
+  0019: goto 0x0027
+  001c: ReplicatedEvent(VarName)
+  0027: return nothing
+  0029: <eos>
+
+function TnRollerMineAbility.PostBeginPlay  (script 77 bytes)
+  0000: TnRollerMine.PostBeginPlay()
+  0006: SetTimer(self.ArmTime, false, 'ArmTimer', )
+  0019: TnRollerMineAbility.ClientSetEnergonColor()
+  001f: self.Defragger.AddDefragMesh(self.StaticMeshComponent)
+  0037: self.Defragger.StartFadeIn()
+  004a: return nothing
+  004c: <eos>
+
+function TnRollerMineAbility.ArmTimer  (script 23 bytes)
+  0000: PlaySound(self.ArmSound, true, , true, , )
+  0014: return nothing
+  0016: <eos>
+
+function TnRollerMineAbility.DestroyedBy  (script 135 bytes)
+  0000: TnRollerMine.DestroyedBy(Killer)
+  000b: if !((Killer != none)) goto 0x002f
+  0016: KillerPRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  002f: if !((KillerPRI != none)) goto 0x0084
+  003a: if !((!Killer.OnSameTeamAs(self.Instigator) && (Killer.Pawn != self.Instigator))) goto 0x0084
+  0071: KillerPRI.AddRollerMineKill()
+  0084: return nothing
+  0086: <eos>
+
+function TnRollerMineAbility.Tick  (script 449 bytes)
+  0000: TnInstigator = TnPawn(self.Instigator)
+  0010: if !((((TnInstigator == none) || TnInstigator.IsDead()) || TnInstigator.IsDying())) goto 0x005b
+  004b: GotoState('FadingOut', , , )
+  0059: return nothing
+  005b: self.Defragger.Update(DeltaTime)
+  0073: foreach VisibleCollidingActors(obj'TnPawn', P, self.BuffRadius, self.Location, ) (end 0x01b2)
+  008e: RollerBuffClass = none
+  0095: BS = TnBuffService(P.GetService('TnBuffService'))
+  00bc: if !(((P != self.Instigator) && !P.IsSameTeam(TnInstigator))) goto 0x00f5
+  00ea: RollerBuffClass = obj'TnBuffRollerSphere'
+  00f5: if !(((P == self.Instigator) || P.IsSameTeam(TnInstigator))) goto 0x0147
+  0121: if !(TnInstigator.HasSkill(obj'TnSkillRollerSphereIncreaseFriendlySpeed')) goto 0x0147
+  013c: RollerBuffClass = obj'TnBuffRollerSphereIncreaseSpeed'
+  0147: if !((RollerBuffClass != none)) goto 0x01b1
+  0152: RollerBuff = BS.GetBuff(RollerBuffClass)
+  0171: if !((RollerBuff == none)) goto 0x019e
+  017c: BS.AddBuff(RollerBuffClass, 0, self.Instigator)
+  019b: goto 0x01b1
+  019e: RollerBuff.ResetBuffTime()
+  01b1: iternext
+  01b2: iterpop
+  01b3: TnRollerMine.Tick(DeltaTime)
+  01be: return nothing
+  01c0: <eos>
+
+function TnRollerMineAbility.CanExplodeFromRigidBodyCollision  (script 90 bytes)
+  0000: if !(IsTimerActive('ArmTimer', )) goto 0x0019
+  0017: return false
+  0019: if !((HitGuy.IsSameTeam(self.Instigator) || (HitGuy == self.Instigator))) goto 0x0047
+  0045: return false
+  0047: return TnRollerMine.CanExplodeFromRigidBodyCollision(HitGuy)
+  0053: return return
+  0059: <eos>
+
+function TnRollerMineAbility.ClientSetEnergonColor  (script 89 bytes)
+  0000: InstigatorPawn = TnPawn(self.Instigator)
+  0010: if !((InstigatorPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: CharacterApplier = InstigatorPawn._CharacterApplier
+  0031: if !((CharacterApplier == none)) goto 0x003e
+  003c: return nothing
+  003e: CharacterApplier.ApplyColorsToMesh(self.StaticMeshComponent)
+  0056: return nothing
+  0058: <eos>
+
+function TnRollerMineAbility.TakeDamage  (script 226 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((((class<TnDamageTypeMelee>(DamageType) != none) && (EventInstigator != none)) && (EventInstigator.OnSameTeamAs(self.Instigator) || (EventInstigator.Pawn == self.Instigator)))) goto 0x00b6
+  0056: ImpulseDir = (self.Location - EventInstigator.Location)
+  0071: ImpulseDir.Z = 0.0
+  0087: self.CollisionComponent.AddLinearVelocity((obj'Core.Math'.static.Normal(ImpulseDir) * self.MeleeImpulse), , )
+  00b3: goto 0x00df
+  00b6: TnRollerMine.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  00df: return nothing
+  00e1: <eos>
+
+function TnRollerMineAbility.FadingOut.TakeDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function TnRollerMineAbility.FadingOut.TakeRadiusDamage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnRollerMineAbility.FadingOut.RigidBodyCollision  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnRollerMineAbility.FadingOut.PlayExplosion  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnRollerMineAbility.FadingOut.BeginState  (script 22 bytes)
+  0000: self.Defragger.StartFadeOut()
+  0013: return nothing
+  0015: <eos>
+
+function TnRollerMineAbility.FadingOut.Tick  (script 52 bytes)
+  0000: self.Defragger.Update(DeltaTime)
+  0018: if !(self.Defragger.IsFullyFadedOut()) goto 0x0031
+  002e: DestroyActor()
+  0031: return nothing
+  0033: <eos>

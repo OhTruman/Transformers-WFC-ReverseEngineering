@@ -1,0 +1,281 @@
+function DemonwareLobbyService.Init  (script 134 bytes)
+  0000: self.OnlineSub = NewOnlineSub
+  000b: self.PlayerInterface = NewOnlineSub.PlayerInterface
+  001f: self.TaskCollection = IDemonwareAsyncTaskCollection(NewOnlineSub)
+  002f: if !(!DemonwareLobbyService.CreateLobbyService()) goto 0x006f
+  003a: LogInternal("ERROR: Demonware did not initialize.", 'DevDemonware', , )
+  006d: return false
+  006f: GotoState('NotConnected', , , )
+  007d: return true
+  007f: return return
+  0085: <eos>
+
+function DemonwareLobbyService.OnLoginChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.AddLoginChangeDelegate  (script 39 bytes)
+  0000: if !((self.LoginChangeDelegates.Find(LoginDelegate) == -1)) goto 0x0024
+  0017: self.LoginChangeDelegates.AddItem(LoginDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareLobbyService.ClearLoginChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LoginChangeDelegates.Find(LoginDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LoginChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareLobbyService.OnLogoutCompleted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.AddLogoutCompletedDelegate  (script 39 bytes)
+  0000: if !((self.LogoutCompletedDelegates.Find(LogoutDelegate) == -1)) goto 0x0024
+  0017: self.LogoutCompletedDelegates.AddItem(LogoutDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareLobbyService.ClearLogoutCompletedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LogoutCompletedDelegates.Find(LogoutDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LogoutCompletedDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareLobbyService.OnLoginStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.AddLoginStatusChangeDelegate  (script 39 bytes)
+  0000: if !((self.LoginStatusChangeDelegates.Find(LoginStatusDelegate) == -1)) goto 0x0024
+  0017: self.LoginStatusChangeDelegates.AddItem(LoginStatusDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareLobbyService.ClearLoginStatusChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LoginStatusChangeDelegates.Find(LoginStatusDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LoginStatusChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareLobbyService.OnLoginFailed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.AddLoginFailedDelegate  (script 39 bytes)
+  0000: if !((self.LoginFailedDelegates.Find(LoginDelegate) == -1)) goto 0x0024
+  0017: self.LoginFailedDelegates.AddItem(LoginDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareLobbyService.ClearLoginFailedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LoginFailedDelegates.Find(LoginDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LoginFailedDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareLobbyService.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.GetLoginStatus  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function DemonwareLobbyService.GetUniquePlayerId  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function DemonwareLobbyService.CreateLobbyService  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareLobbyService.DestroyLobbyService  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareLobbyService.ConnectToLobbyServiceGateway  (script 7 bytes)
+  0000: InLocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function DemonwareLobbyService.DisconnectFromLobbyServiceGateway  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareLobbyService.PumpLobby  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareLobbyService.OnLobbyConnectComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.AllowedToAutoConnect  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function DemonwareLobbyService.Login  (script 10 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: return return
+  0009: <eos>
+
+function DemonwareLobbyService.Logout  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function DemonwareLobbyService.SetLogoutErrorCode  (script 14 bytes)
+  0000: self.LastLogoutReason = Code
+  000b: return nothing
+  000d: <eos>
+
+function DemonwareLobbyService.GetLogoutErrorCode  (script 41 bytes)
+  0000: ReturnCode = self.LastLogoutReason
+  000b: if !(bShouldReset) goto 0x001c
+  0014: self.LastLogoutReason = 0
+  001c: return ReturnCode
+  0022: return return
+  0028: <eos>
+
+function DemonwareLobbyService.NotConnected.Tick  (script 45 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: if !(AllowedToAutoConnect()) goto 0x002a
+  001c: GotoState('WaitingForReconnect', , , )
+  002a: return nothing
+  002c: <eos>
+
+function DemonwareLobbyService.AttemptConnect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyService.Connecting.BeginState  (script 13 bytes)
+  0000: AttemptConnect()
+  000a: return nothing
+  000c: <eos>
+
+function DemonwareLobbyService.Connecting.AttemptConnect  (script 87 bytes)
+  0000: LogInternal("Connecting to Demonware LSG server...", 'DevDemonware', , )
+  0034: if !(!ConnectToLobbyServiceGateway(cast3a(self.LoggedInPlayerNum))) goto 0x0054
+  004a: HandleConnectionFailure()
+  0054: return nothing
+  0056: <eos>
+
+function DemonwareLobbyService.Connecting.Tick  (script 28 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: PumpLobby()
+  0019: return nothing
+  001b: <eos>
+
+function DemonwareLobbyService.Connecting.OnLobbyConnectComplete  (script 209 bytes)
+  0000: if !(WasSuccessful) goto 0x0066
+  0009: LogInternal(("Connected to the Demonware lobby service on attempt " $ cast53(self.NumConnectionAttempts)), 'DevDemonware', , )
+  0055: GotoState('Connected', , , )
+  0063: goto 0x00ce
+  0066: LogInternal(("Failed to connect to the Demonware lobby service on attempt " $ cast53(self.NumConnectionAttempts)), 'DevDemonware', , )
+  00ba: DisconnectFromLobbyServiceGateway()
+  00c4: HandleConnectionFailure()
+  00ce: return nothing
+  00d0: <eos>
+
+function DemonwareLobbyService.Connecting.HandleConnectionFailure  (script 29 bytes)
+  0000: NotifyConnectionFailed(0)
+  000c: GotoState('WaitingForReconnect', , , )
+  001a: return nothing
+  001c: <eos>
+
+function DemonwareLobbyService.IsConnectedToLobby  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareLobbyService.Connected.BeginState  (script 80 bytes)
+  0000: LogInternal("Connected to the Demonware LSG server.", 'DevDemonware', , )
+  0035: self.DelayForNextLogin = default.DelayForNextLogin
+  0040: self.NumConnectionAttempts = 0
+  0047: NotifyDefaultConnectionChanged()
+  004d: return nothing
+  004f: <eos>
+
+function DemonwareLobbyService.Connected.EndState  (script 29 bytes)
+  0000: DisconnectFromLobbyServiceGateway()
+  000a: NotifyDefaultConnectionChanged()
+  0010: self.LoggedInPlayerNum = cast3d(255)
+  001a: return nothing
+  001c: <eos>
+
+function DemonwareLobbyService.Connected.NotifyDefaultConnectionChanged  (script 83 bytes)
+  0000: if !((obj'Engine.WorldInfo'.static.IsConsoleBuild(1) || obj'Engine.WorldInfo'.static.IsConsoleBuild(2))) goto 0x003d
+  0032: LoginType = 1
+  003a: goto 0x0045
+  003d: LoginType = 0
+  0045: DemonwareLobbyService.NotifyConnectionChanged(LoginType)
+  0050: return nothing
+  0052: <eos>
+
+function DemonwareLobbyService.Connected.Tick  (script 83 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: PumpLobby()
+  0019: if !(!DemonwareLobbyService.IsConnectedToLobby()) goto 0x0050
+  0024: if !(AllowedToAutoConnect()) goto 0x0042
+  0031: GotoState('WaitingForReconnect', , , )
+  003f: goto 0x0050
+  0042: GotoState('NotConnected', , , )
+  0050: return nothing
+  0052: <eos>
+
+function DemonwareLobbyService.Connected.GetLoginStatus  (script 72 bytes)
+  0000: if !((cast3a(LocalUserNum) != cast3a(self.LoggedInPlayerNum))) goto 0x0023
+  0013: return global.GetLoginStatus(LocalUserNum)
+  0023: if !(!DemonwareLobbyService.IsConnectedToLobby()) goto 0x003e
+  002e: return global.GetLoginStatus(LocalUserNum)
+  003e: return 2
+  0041: return return
+  0047: <eos>
+
+function DemonwareLobbyService.Connected.Logout  (script 34 bytes)
+  0000: self.LastLogoutReason = ErrorCode
+  000b: GotoState('NotConnected', , , )
+  0019: return true
+  001b: return return
+  0021: <eos>
+
+function DemonwareLobbyService.WaitingForReconnect.BeginState  (script 89 bytes)
+  0000: self.DelayForNextLogin = obj'Core.Math'.static.FMin((self.DelayForNextLogin * cast3f(2)), self.MaxReconnectInterval)
+  0021: self.ReconnectCountdown = self.DelayForNextLogin
+  002c: LogInternal(("Will reconnect in " $ cast55(self.DelayForNextLogin)), 'DevDemonware', , )
+  0056: return nothing
+  0058: <eos>
+
+function DemonwareLobbyService.WaitingForReconnect.Tick  (script 84 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: (self.ReconnectCountdown -= DeltaTime)
+  001b: if !(!AllowedToAutoConnect()) goto 0x003a
+  002a: GotoState('NotConnected', , , )
+  0038: return nothing
+  003a: if !(IsReadyForReconnect()) goto 0x0051
+  0047: GotoState(self.AutoConnectInitialState, , , )
+  0051: return nothing
+  0053: <eos>
+
+function DemonwareLobbyService.WaitingForReconnect.IsReadyForReconnect  (script 18 bytes)
+  0000: return (self.ReconnectCountdown <= cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function DemonwareLobbyService.NotifyConnectionFailed  (script 7 bytes)
+  0000: ErrorCode
+  0005: nothing
+  0006: <eos>
+
+function DemonwareLobbyService.NotifyConnectionChanged  (script 7 bytes)
+  0000: LoginType
+  0005: nothing
+  0006: <eos>

@@ -1,0 +1,21 @@
+function TnAbilityHardLock.LocalTriggerAbility  (script 177 bytes)
+  0000: PC = TnPlayerController(self.OwnerPawn.GetController())
+  001e: if !((PC == none)) goto 0x005c
+  0029: LogInternal("Error: Hard Lock only supported on players", , , )
+  005a: return false
+  005c: HardLockee = TnPawn(PC.PlayerTargeting.GetHomingLockTarget())
+  0083: if !((HardLockee == none)) goto 0x0090
+  008e: return false
+  0090: self.OwnerPawn.ServerHardLock(HardLockee)
+  00a8: return true
+  00aa: return return
+  00b0: <eos>
+
+function TnAbilityHardLock.ServerHardLock  (script 170 bytes)
+  0000: IHL = self.OwnerBuffService.GetBuff(obj'TnBuffImprovedHardLock')
+  001f: BuffLevel = ((IHL != none) ? (1 + IHL.GetLevel()) : 0)
+  0049: HardLockeeBuffService = TnBuffService(HardLockee.GetService('TnBuffService'))
+  0070: if !(NotEqual_InterfaceInterface(HardLockeeBuffService, TnBuffService(none))) goto 0x00a7
+  0084: HardLockeeBuffService.AddBuff(obj'TnBuffHardLocked', BuffLevel, self.OwnerPawn)
+  00a7: return nothing
+  00a9: <eos>

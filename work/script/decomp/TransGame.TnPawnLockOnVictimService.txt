@@ -1,0 +1,26 @@
+function TnPawnLockOnVictimService.set_OwnerPawn  (script 14 bytes)
+  0000: self._OwnerPawn = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawnLockOnVictimService.CanBeLockedOnToByAttacker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawnLockOnVictimService.NotifyLockOnBegin  (script 55 bytes)
+  0000: if !(self._OwnerPawn.get_IsInVehicleForm()) goto 0x0034
+  0016: self._OwnerPawn.Transform(0, delegate.None)
+  0034: return nothing
+  0036: <eos>
+
+function TnPawnLockOnVictimService.NotifyLockOnEnd  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawnLockOnVictimService.GetGrabVictim  (script 66 bytes)
+  0000: if !((self._OwnerPawn.get_IsInVehicleForm() || self._OwnerPawn.get_IsTransforming())) goto 0x0030
+  002e: return none
+  0030: return TnServiceProvider(self._OwnerPawn)
+  003b: return return
+  0041: <eos>

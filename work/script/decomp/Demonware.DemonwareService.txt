@@ -1,0 +1,13 @@
+function DemonwareService.Init  (script 61 bytes)
+  0000: self.OnlineSub = NewOnlineSub
+  000b: self.PlayerInterface = NewOnlineSub.PlayerInterface
+  001f: self.TaskCollection = IDemonwareAsyncTaskCollection(NewOnlineSub)
+  002f: self.LobbyService = NewLobbyService
+  003a: return nothing
+  003c: <eos>
+
+function DemonwareService.GetPlayerId  (script 45 bytes)
+  0000: self.PlayerInterface.GetUniquePlayerId(cast3d(LocalUserNum), Id)
+  0020: return Id
+  0026: return return
+  002c: <eos>

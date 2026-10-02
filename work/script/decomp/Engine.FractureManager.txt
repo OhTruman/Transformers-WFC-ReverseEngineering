@@ -1,0 +1,78 @@
+function FractureManager.SpawnChunkDestroyEffect  (script 133 bytes)
+  0000: ChunkMiddle = (0.5 * (ChunkBox.Min + ChunkBox.Max))
+  002f: EffectComp = self.WorldInfo.GetEmitterPool().SpawnEmitter(Effect, ChunkMiddle, cast50(ChunkDir), , , )
+  006a: EffectComp.SetScale(Scale)
+  0082: return nothing
+  0084: <eos>
+
+function FractureManager.GetFSMFractureCullDistanceScale  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FractureManager.PreBeginPlay  (script 15 bytes)
+  0000: Actor.PreBeginPlay()
+  0006: FractureManager.CreateFSMParts()
+  000c: return nothing
+  000e: <eos>
+
+function FractureManager.Destroyed  (script 15 bytes)
+  0000: Actor.Destroyed()
+  0006: FractureManager.CleanUpFSMParts()
+  000c: return nothing
+  000e: <eos>
+
+function FractureManager.CleanUpFSMParts  (script 67 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.PartPool.Length)) goto 0x0040
+  0017: idx[self.PartPool].DestroyActor()
+  0029: idx[self.PartPool] = none
+  0036: AddAdd_Int(idx)
+  003d: goto 0x0007
+  0040: return nothing
+  0042: <eos>
+
+function FractureManager.CreateFSMParts  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FractureManager.ResetPoolVisibility  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FractureManager.GetFSMPart  (script 17 bytes)
+  0000: Parent
+  0005: SpawnLocation
+  000a: SpawnRotation
+  000f: nothing
+  0010: <eos>
+
+function FractureManager.SpawnPartActor  (script 83 bytes)
+  0000: NewPart = FractureManager.GetFSMPart(Parent, SpawnLocation, SpawnRotation)
+  001b: if !((NewPart != none)) goto 0x0046
+  0026: NewPart.SetTimer(10.0, false, 'TryToCleanUp', NewPart)
+  0046: return NewPart
+  004c: return return
+  0052: <eos>
+
+function FractureManager.ReturnPartActor  (script 25 bytes)
+  0000: self.FreeParts.AddItem(Part.PartPoolIndex)
+  0016: return nothing
+  0018: <eos>
+
+function FractureManager.SpawnDeferredParts  (script 95 bytes)
+  0000: if !((self.FracturersWithDeferredPartsToSpawn.Length > 0)) goto 0x005c
+  000c: CurActorIndex = 0
+  0013: if !((CurActorIndex < self.FracturersWithDeferredPartsToSpawn.Length)) goto 0x005c
+  0023: if !(CurActorIndex[self.FracturersWithDeferredPartsToSpawn].SpawnDeferredParts()) goto 0x0052
+  003f: self.FracturersWithDeferredPartsToSpawn.Remove(CurActorIndex,1)
+  004b: SubtractSubtract_PreInt(CurActorIndex)
+  0052: AddAdd_PreInt(CurActorIndex)
+  0059: goto 0x0013
+  005c: return nothing
+  005e: <eos>
+
+function FractureManager.Tick  (script 20 bytes)
+  0000: Actor.Tick(DeltaTime)
+  000b: FractureManager.SpawnDeferredParts()
+  0011: return nothing
+  0013: <eos>

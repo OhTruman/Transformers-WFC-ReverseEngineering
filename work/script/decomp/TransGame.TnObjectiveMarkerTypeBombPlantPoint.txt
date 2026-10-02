@@ -1,0 +1,53 @@
+function TnObjectiveMarkerTypeBombPlantPoint.GetLabelText  (script 130 bytes)
+  0000: PlantPoint = TnBombPlantPointBase(MarkerData.MarkerBase)
+  001b: if !(TnObjectiveMarkerTypeBombPlantPoint.IsAttacking(Owner, MarkerData)) goto 0x0056
+  002e: if !(PlantPoint.get_IsPlanted()) goto 0x004d
+  0044: return self.DefuseLabel
+  004a: goto 0x0053
+  004d: return self.PlantLabel
+  0053: goto 0x007b
+  0056: if !(PlantPoint.get_IsPlanted()) goto 0x0075
+  006c: return self.DefendLabel
+  0072: goto 0x007b
+  0075: return self.DefendLabel
+  007b: return return
+  0081: <eos>
+
+function TnObjectiveMarkerTypeBombPlantPoint.ShouldDisplayMarker  (script 183 bytes)
+  0000: GRI = TnGameReplicationInfoMultiplayer(Owner.WorldInfo.GRI)
+  0022: AttackingTeamIndex = GRI.get_AttackingTeam()
+  003b: if !(((AttackingTeamIndex == 255) || (AttackingTeamIndex == -1))) goto 0x005a
+  0058: return false
+  005a: PlantPoint = TnBombPlantPointBase(MarkerData.MarkerBase)
+  0075: if !(PlantPoint.get_IsPlanted()) goto 0x008d
+  008b: return true
+  008d: if !((cast3a(PlantPoint.GetTeamNum()) != AttackingTeamIndex)) goto 0x00ae
+  00ac: return true
+  00ae: return false
+  00b0: return return
+  00b6: <eos>
+
+function TnObjectiveMarkerTypeBombPlantPoint.GetMarkerSetup  (script 48 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: SetupParameters(Owner, MarkerData)
+  0023: return self.MarkerSetup
+  0029: return return
+  002f: <eos>
+
+function TnObjectiveMarkerTypeBombPlantPoint.IsAttacking  (script 79 bytes)
+  0000: PlantPoint = TnBombPlantPointBase(MarkerData.MarkerBase)
+  001b: return (cast3a(Owner.GetTeamNum()) != cast3a(PlantPoint.GetTeamNum()))
+  0048: return return
+  004e: <eos>
+
+function TnObjectiveMarkerTypeBombPlantPoint.SetupParameters  (script 190 bytes)
+  0000: if !(TnObjectiveMarkerTypeBombPlantPoint.IsAttacking(Owner, MarkerData)) goto 0x0021
+  0013: NeutralValue = 0.0
+  001e: goto 0x002c
+  0021: NeutralValue = 1.0
+  002c: FlashingValue = 1.0
+  0037: self.MarkerSetup.MatInst.SetScalarParameterValue('Neutral', NeutralValue, )
+  0064: self.MarkerSetup.MatInst.SetScalarParameterValue('Flashing', FlashingValue, )
+  0091: self.MarkerSetup.LabelColor = ((NeutralValue == cast3f(1)) ? self.FriendlyLabelColor : self.EnemyLabelColor)
+  00bb: return nothing
+  00bd: <eos>

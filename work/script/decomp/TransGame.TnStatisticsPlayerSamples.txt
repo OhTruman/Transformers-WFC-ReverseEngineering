@@ -1,0 +1,35 @@
+function TnStatisticsPlayerSamples.RecordPlayerSample  (script 965 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: sample.PlayerLocationX = P.Location.X
+  0037: sample.PlayerLocationY = P.Location.Y
+  0061: sample.PlayerLocationZ = P.Location.Z
+  008b: AsPlayer = TnPlayerPawn(P)
+  009b: if !((AsPlayer != none)) goto 0x013f
+  00a6: sample.Health = AsPlayer.GetHealth()
+  00ca: sample.Age = AsPlayer.GetAge()
+  00ee: sample.PlayerName = AsPlayer.GetHumanReadableName()
+  0112: sample.EnergonCharge = AsPlayer.AbilityManager.GetNormalizedResource()
+  013f: InvManager = TnInventoryManager(P.InvManager)
+  0158: if !((InvManager != none)) goto 0x0284
+  0163: W = InvManager.GetWeaponByType(1)
+  017e: if !((W != none)) goto 0x01d1
+  0189: sample.AmmoPctA = (cast3f((W.AmmoClipCount + W.ReserveAmmoCount)) / cast3f(W.GetMaxAmmoCount()))
+  01d1: W = InvManager.GetWeaponByType(2)
+  01ec: if !((W != none)) goto 0x023f
+  01f7: sample.AmmoPctB = (cast3f((W.AmmoClipCount + W.ReserveAmmoCount)) / cast3f(W.GetMaxAmmoCount()))
+  023f: W = InvManager.GetWeaponByType(4)
+  025a: if !((W != none)) goto 0x0284
+  0265: sample.Grenades = W.AmmoClipCount
+  0284: if !((P.WorldInfo.CurrentStreamingState != none)) goto 0x02d4
+  02a1: sample.StreamingState = cast57(P.WorldInfo.CurrentStreamingState.Name)
+  02d4: sample.ResetGeneration = Game.GetNumResets()
+  02f8: sample.WorldTime = obj'Engine.Engine'.static.GetWorldTime()
+  031c: sample.ActiveCheckpoint = GetActiveCheckpoint()
+  0337: if !((P.Weapon != none)) goto 0x0371
+  034b: sample.EquippedWeapon = P.Weapon.get_Class()
+  0371: sample.Form = GetFormName(P)
+  0391: sample.Session_Id = Game.StatisticsSessionId
+  03b0: self.Samples.Length[self.Samples] = sample
+  03c2: return nothing
+  03c4: <eos>

@@ -1,0 +1,29 @@
+function TnRecoiler.Initialize  (script 131 bytes)
+  0000: self._SkeletalMeshComponent = SkelMeshComponent
+  000b: self.SpineController = HmSkelControlRecoil(self._SkeletalMeshComponent.FindSkelControl('SpineRecoil'))
+  0032: self.RightHandController = HmSkelControlRecoil(self._SkeletalMeshComponent.FindSkelControl('RightHandRecoil'))
+  0059: self.LeftHandController = HmSkelControlRecoil(self._SkeletalMeshComponent.FindSkelControl('LeftHandRecoil'))
+  0080: return nothing
+  0082: <eos>
+
+function TnRecoiler.StartRecoil  (script 67 bytes)
+  0000: if !((RecoilController != none)) goto 0x0040
+  000b: RecoilController.bPlayRecoil = !RecoilController.bPlayRecoil
+  002c: RecoilController.Aim = AimOffsetPct
+  0040: return nothing
+  0042: <eos>
+
+function TnRecoiler.Recoil  (script 236 bytes)
+  0000: TnRecoiler.StartRecoil(self.SpineController, AimOffsetPct)
+  0010: WM = TnWeaponMesh(RecoilWeapon.GetWeaponMesh())
+  002e: if !(((WM == none) || (self.SpineController == none))) goto 0x0048
+  0046: return nothing
+  0048: self.SpineController.Recoil = WM.GetCurrentSpineWeaponRecoil()
+  006a: if !(!WM.IsFiringSecondaryWeapon()) goto 0x00b7
+  0082: TnRecoiler.StartRecoil(self.RightHandController, AimOffsetPct)
+  0092: self.RightHandController.Recoil = WM.GetCurrentWeaponRecoil()
+  00b4: goto 0x00e9
+  00b7: TnRecoiler.StartRecoil(self.LeftHandController, AimOffsetPct)
+  00c7: self.LeftHandController.Recoil = WM.GetCurrentWeaponRecoil()
+  00e9: return nothing
+  00eb: <eos>

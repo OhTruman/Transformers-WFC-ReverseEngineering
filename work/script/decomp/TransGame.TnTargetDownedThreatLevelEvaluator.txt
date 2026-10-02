@@ -1,0 +1,12 @@
+function TnTargetDownedThreatLevelEvaluator.__Constructor__TnTargetDownedThreatLevelEvaluator_0  (script 14 bytes)
+  0000: self._DownedThreatLevel = DownedThreatLevel
+  000b: return nothing
+  000d: <eos>
+
+function TnTargetDownedThreatLevelEvaluator.OnCalculateThreatLevel  (script 71 bytes)
+  0000: TransformerPawn = TnPawn(Threat)
+  0010: if !((TransformerPawn == none)) goto 0x0021
+  001b: return 0.0
+  0021: return (TransformerPawn._IsDowned ? self._DownedThreatLevel : 0.0)
+  0040: return return
+  0046: <eos>

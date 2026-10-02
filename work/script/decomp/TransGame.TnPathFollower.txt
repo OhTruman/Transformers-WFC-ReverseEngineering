@@ -1,0 +1,163 @@
+function TnPathFollower.get_TargetLocation  (script 13 bytes)
+  0000: return self._TargetLocation
+  0006: return return
+  000c: <eos>
+
+function TnPathFollower.set_Offset  (script 14 bytes)
+  0000: self._Offset = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPathFollower.get_PathDistance  (script 13 bytes)
+  0000: return self._PathDistance
+  0006: return return
+  000c: <eos>
+
+function TnPathFollower.get_Predecessor  (script 84 bytes)
+  0000: return (((self._End.PredecessorIndex >= 0) && (self._End.PredecessorIndex < self._Path.Length)) ? self._End.PredecessorIndex[self._Path] : none)
+  004d: return return
+  0053: <eos>
+
+function TnPathFollower.get_Successor  (script 84 bytes)
+  0000: return (((self._End.SuccessorIndex >= 0) && (self._End.SuccessorIndex < self._Path.Length)) ? self._End.SuccessorIndex[self._Path] : none)
+  004d: return return
+  0053: <eos>
+
+function TnPathFollower.get_OnFinalSegmentInPath  (script 19 bytes)
+  0000: return TnPathFollower.IsFinalSegmentInPath(self._End)
+  000c: return return
+  0012: <eos>
+
+function TnPathFollower.get_PathIsValid  (script 14 bytes)
+  0000: return self._PathIsValid
+  0007: return return
+  000d: <eos>
+
+function TnPathFollower.Initialize  (script 39 bytes)
+  0000: self._Controller = TransformerController
+  000b: self._Pawn = self._Controller.get_TransformerPawn()
+  0024: return nothing
+  0026: <eos>
+
+function TnPathFollower.Update  (script 393 bytes)
+  0000: self._PathIsValid = TnPathFollower.UpdatePath()
+  000d: if !((self._PathIsValid == false)) goto 0x0042
+  0019: LogInternal("Error: Failed to update the path", , , )
+  0040: return false
+  0042: TargetIndex = self._Path.Find(Target)
+  0055: if !((TargetIndex == -1)) goto 0x00ec
+  0064: LogInternal(((("Error:" @ cast56(self._Controller.get_TransformerPawn())) @ "TnPathFollower goal actor index in the current path is not valid. The path length is") @ cast53(self._Path.Length)), , , )
+  00ea: return false
+  00ec: if !((TargetIndex == 0)) goto 0x0106
+  00f7: self._Begin = TnPathFollower.CreateInitialPathProjection()
+  0103: goto 0x011f
+  0106: self._Begin = TnPathFollower.CreatePathProjection((TargetIndex - 1), TargetIndex)
+  011f: self._End = self._Begin
+  012a: self._TargetLocation = TnPathFollower.CalculateOffsetLocation()
+  0136: self._PathDistance = TnPathFollower.CalculateDistanceToEndOfPath()
+  0142: return (self._Pawn.ReachedDestination(Target) || (self._End.DistanceToSquared < self._Begin.DistanceToSquared))
+  0182: return return
+  0188: <eos>
+
+function TnPathFollower.CalculateStraightDistance  (script 299 bytes)
+  0000: if !((self._PathIsValid == false)) goto 0x0012
+  000c: return 0.0
+  0012: PreviousSegment = TnPathFollower.CreatePathSegment(self._Pawn.Location, self._TargetLocation)
+  0031: Distance = PreviousSegment.Length
+  0047: I = self._End.SuccessorIndex
+  005d: if !((I < self._Path.Length)) goto 0x011e
+  006d: CurrentSegment = TnPathFollower.CreatePathSegment(PreviousSegment.SuccessorLocation, I[self._Path].GetDestination(self._Controller))
+  00a7: CosTurnAngle = obj'Core.Math'.static.NormalizeDot2D(CurrentSegment.Direction, PreviousSegment.Direction)
+  00e0: if !((CosTurnAngle < CosMaxTurnAngle)) goto 0x00f2
+  00ef: goto 0x011e
+  00f2: (Distance += CurrentSegment.Length)
+  0109: PreviousSegment = CurrentSegment
+  0114: AddAdd_PreInt(I)
+  011b: goto 0x005d
+  011e: return Distance
+  0124: return return
+  012a: <eos>
+
+function TnPathFollower.UpdatePath  (script 183 bytes)
+  0000: self._Path = self._Controller.GetCurrentRoute()
+  0019: if !((self._Path.Length <= 1)) goto 0x0059
+  0025: LogInternal("Warning: Path has too few navigation points", , , )
+  0057: return false
+  0059: foreach self._Path(NavPoint,) (end 0x00ad)
+  0068: if !((NavPoint == none)) goto 0x00ac
+  0073: LogInternal("Warning: Part of the path has been streamed out", , , )
+  00a9: iterpop
+  00aa: return false
+  00ac: iternext
+  00ad: iterpop
+  00ae: return true
+  00b0: return return
+  00b6: <eos>
+
+function TnPathFollower.CreatePathSegment  (script 238 bytes)
+  0000: PathSegment.PredecessorLocation = PredecessorLocation
+  0016: PathSegment.SuccessorLocation = SuccessorLocation
+  002c: PathSegment.Direction = (SuccessorLocation - PredecessorLocation)
+  0049: PathSegment.Length = obj'Core.Math'.static.VSize(PathSegment.Direction)
+  0075: if !((PathSegment.Length > cast3f(0))) goto 0x00c3
+  008d: PathSegment.Direction = (PathSegment.Direction / PathSegment.Length)
+  00c0: goto 0x00e1
+  00c3: PathSegment.Direction = vect(1,0,0)
+  00e1: return PathSegment
+  00e7: return return
+  00ed: <eos>
+
+function TnPathFollower.CreateInitialPathProjection  (script 169 bytes)
+  0000: Projection.PredecessorIndex = -1
+  0016: Projection.SuccessorIndex = 0
+  0028: Projection.PathSegment = TnPathFollower.CreatePathSegment(self._Controller.Pawn.Location, 0[self._Path].GetDestination(self._Controller))
+  0070: Projection.DistanceAlong = 0.0
+  0086: Projection.DistanceToSquared = 0.0
+  009c: return Projection
+  00a2: return return
+  00a8: <eos>
+
+function TnPathFollower.CreatePathProjection  (script 409 bytes)
+  0000: Projection.PredecessorIndex = PredecessorIndex
+  0016: Projection.SuccessorIndex = SuccessorIndex
+  002c: Projection.PathSegment = TnPathFollower.CreatePathSegment(PredecessorIndex[self._Path].GetDestination(self._Controller), SuccessorIndex[self._Path].GetDestination(self._Controller))
+  007f: PawnToPredecessor = (self._Pawn.Location - Projection.PathSegment.PredecessorLocation)
+  00b0: Projection.DistanceAlong = obj'Core.Math'.static.FClamp((PawnToPredecessor dot Projection.PathSegment.Direction), 0.0, Projection.PathSegment.Length)
+  010e: Projection.DistanceToSquared = obj'Core.Math'.static.VSizeSq((self._Pawn.Location - (Projection.PathSegment.PredecessorLocation + (Projection.PathSegment.Direction * Projection.DistanceAlong))))
+  018c: return Projection
+  0192: return return
+  0198: <eos>
+
+function TnPathFollower.CalculateOffsetLocation  (script 297 bytes)
+  0000: Offset = self._Offset
+  000b: if !((TnPathFollower.IsFinalSegmentInPath(self._End) == false)) goto 0x00aa
+  001c: DistanceToGo = TnPathFollower.CalculateDistanceToGo(self._End, Offset)
+  0032: if !((DistanceToGo > 0.0)) goto 0x0044
+  0041: goto 0x00aa
+  0044: (Offset -= (self._End.PathSegment.Length - self._End.DistanceAlong))
+  0078: self._End = TnPathFollower.CreatePathProjection(self._End.SuccessorIndex, (self._End.SuccessorIndex + 1))
+  00a7: goto 0x000b
+  00aa: return (self._End.PathSegment.PredecessorLocation + (self._End.PathSegment.Direction * obj'Core.Math'.static.FMin(self._End.PathSegment.Length, (self._End.DistanceAlong + Offset))))
+  0122: return return
+  0128: <eos>
+
+function TnPathFollower.CalculateDistanceToEndOfPath  (script 198 bytes)
+  0000: Distance = (self._Begin.PathSegment.Length - self._Begin.DistanceAlong)
+  0033: idx = self._Begin.SuccessorIndex
+  0049: if !((idx != (self._Path.Length - 1))) goto 0x00b9
+  005c: (Distance += obj'Core.Math'.static.VSize((idx[self._Path].GetDestination(self._Controller) - (idx + 1)[self._Path].GetDestination(self._Controller))))
+  00af: AddAdd_Int(idx)
+  00b6: goto 0x0049
+  00b9: return Distance
+  00bf: return return
+  00c5: <eos>
+
+function TnPathFollower.CalculateDistanceToGo  (script 60 bytes)
+  0000: return (Projection.PathSegment.Length - (Projection.DistanceAlong + Offset))
+  0035: return return
+  003b: <eos>
+
+function TnPathFollower.IsFinalSegmentInPath  (script 48 bytes)
+  0000: return (!self._PathIsValid || (Projection.SuccessorIndex == (self._Path.Length - 1)))
+  0029: return return
+  002f: <eos>

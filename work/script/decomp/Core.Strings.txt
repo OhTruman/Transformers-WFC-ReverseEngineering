@@ -1,0 +1,176 @@
+function Strings.Len  (script 7 bytes, native 125)
+  0000: S
+  0005: nothing
+  0006: <eos>
+
+function Strings.InStr  (script 17 bytes, native 126)
+  0000: S
+  0005: substring
+  000a: bSearchFromRight
+  000f: nothing
+  0010: <eos>
+
+function Strings.Mid  (script 17 bytes, native 127)
+  0000: S
+  0005: I
+  000a: J
+  000f: nothing
+  0010: <eos>
+
+function Strings.Left  (script 12 bytes, native 128)
+  0000: S
+  0005: I
+  000a: nothing
+  000b: <eos>
+
+function Strings.Right  (script 12 bytes, native 234)
+  0000: S
+  0005: I
+  000a: nothing
+  000b: <eos>
+
+function Strings.Caps  (script 7 bytes, native 235)
+  0000: S
+  0005: nothing
+  0006: <eos>
+
+function Strings.Locs  (script 7 bytes, native 238)
+  0000: S
+  0005: nothing
+  0006: <eos>
+
+function Strings.Chr  (script 7 bytes, native 236)
+  0000: I
+  0005: nothing
+  0006: <eos>
+
+function Strings.Asc  (script 7 bytes, native 237)
+  0000: S
+  0005: nothing
+  0006: <eos>
+
+function Strings.Repl  (script 22 bytes, native 201)
+  0000: Src
+  0005: Match
+  000a: With
+  000f: bCaseSensitive
+  0014: nothing
+  0015: <eos>
+
+function Strings.StartsWith  (script 12 bytes)
+  0000: Src
+  0005: Match
+  000a: nothing
+  000b: <eos>
+
+function Strings.Split  (script 164 bytes)
+  0000: if !((Text == "")) goto 0x0012
+  000c: return Result
+  0012: RemainingString = Text
+  001d: Pos = InStr(RemainingString, Seperator, )
+  0030: if !((Pos != -1)) goto 0x008a
+  003f: Section = Left(RemainingString, Pos)
+  0051: Result.AddItem(Section)
+  005e: RemainingString = Mid(RemainingString, (Pos + 1), )
+  0074: Pos = InStr(RemainingString, Seperator, )
+  0087: goto 0x0030
+  008a: Result.AddItem(RemainingString)
+  0097: return Result
+  009d: return return
+  00a3: <eos>
+
+function Strings.JoinArray  (script 167 bytes)
+  0000: default=","
+  0007: default=true
+  000c: out_Result = ""
+  0014: I = 0
+  001b: if !((I < StringArray.Length)) goto 0x00a4
+  002b: if !(((I[StringArray] != "") || !bIgnoreBlanks)) goto 0x009a
+  004a: if !(((out_Result != "") || (!bIgnoreBlanks && (I > 0)))) goto 0x0082
+  0070: ConcatEqual_StrStr(out_Result, Delim)
+  0082: ConcatEqual_StrStr(out_Result, I[StringArray])
+  009a: AddAdd_Int(I)
+  00a1: goto 0x001b
+  00a4: return nothing
+  00a6: <eos>
+
+function Strings.ParseCommandLineStringOption  (script 12 bytes)
+  0000: Key
+  0005: Value
+  000a: nothing
+  000b: <eos>
+
+function Strings.ParseStringIntoArray  (script 22 bytes)
+  0000: BaseString
+  0005: Pieces
+  000a: Delim
+  000f: bCullEmpty
+  0014: nothing
+  0015: <eos>
+
+function Strings.GrabOption  (script 154 bytes)
+  0000: if !((Left(Options, 1) == "?")) goto 0x0091
+  0010: Result = Mid(Options, 1, )
+  001f: if !((InStr(Result, "?", ) >= 0)) goto 0x0048
+  0030: Result = Left(Result, InStr(Result, "?", ))
+  0048: Options = Mid(Options, 1, )
+  0057: if !((InStr(Options, "?", ) >= 0)) goto 0x0084
+  0068: Options = Mid(Options, InStr(Options, "?", ), )
+  0081: goto 0x008c
+  0084: Options = ""
+  008c: return true
+  008e: goto 0x0093
+  0091: return false
+  0093: return return
+  0099: <eos>
+
+function Strings.GetKeyValue  (script 113 bytes)
+  0000: if !((InStr(Pair, "=", ) >= 0)) goto 0x005b
+  0011: Key = Left(Pair, InStr(Pair, "=", ))
+  0029: Value = Mid(Pair, (InStr(Pair, "=", ) + 1), )
+  0045: Value = Repl(Value, """, "", )
+  0058: goto 0x006e
+  005b: Key = Pair
+  0066: Value = ""
+  006e: return nothing
+  0070: <eos>
+
+function Strings.ParseOption  (script 74 bytes)
+  0000: if !(Strings.GrabOption(Options, Pair)) goto 0x0040
+  0013: Strings.GetKeyValue(Pair, Key, Value)
+  0028: if !((Key ~= InKey)) goto 0x003d
+  0037: return Value
+  003d: goto 0x0000
+  0040: return ""
+  0043: return return
+  0049: <eos>
+
+function Strings.HasOption  (script 69 bytes)
+  0000: if !(Strings.GrabOption(Options, Pair)) goto 0x003c
+  0013: Strings.GetKeyValue(Pair, Key, Value)
+  0028: if !((Key ~= InKey)) goto 0x0039
+  0037: return true
+  0039: goto 0x0000
+  003c: return false
+  003e: return return
+  0044: <eos>
+
+function Strings.GetIntOption  (script 59 bytes)
+  0000: InOpt = ParseOption(Options, ParseString)
+  001a: if !((InOpt != "")) goto 0x002e
+  0026: return cast4a(InOpt)
+  002e: return CurrentValue
+  0034: return return
+  003a: <eos>
+
+function Strings.LoadFileIntoString  (script 12 bytes)
+  0000: Filename
+  0005: Content
+  000a: nothing
+  000b: <eos>
+
+function Strings.SaveStringIntoFile  (script 12 bytes)
+  0000: Filename
+  0005: Content
+  000a: nothing
+  000b: <eos>

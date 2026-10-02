@@ -1,0 +1,379 @@
+function WorldInfo.SetSemiTransparentPostProcess  (script 7 bytes)
+  0000: PostProcess
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.GetSemiTransparentPostProcess  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.GetEmitterPool  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.HasReceivedInitialFullTick  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.PredictNextPhysicsUpdateTime  (script 134 bytes)
+  0000: Remaining = (self.PhysicsSceneTiming.RemainingTime + DeltaTime)
+  001d: NumSubsteps = obj'Core.Math'.static.Min(self.PhysicsSceneTiming.MaxSubSteps, cast44((1e-06 + (Remaining * (1.0 / self.PhysicsSceneTiming.TimeStep)))))
+  0065: return (self.PhysicsSceneTiming.TimeStep * cast3f(NumSubsteps))
+  007f: return return
+  0085: <eos>
+
+function WorldInfo.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.CreateDebugManager  (script 23 bytes)
+  0000: self.DebugManager = new(nothing, nothing, self.DebugManagerClass, nothing, GetRemoteRole)
+  0014: return nothing
+  0016: <eos>
+
+function WorldInfo.GetDebugManager  (script 13 bytes)
+  0000: return self.DebugManager
+  0006: return return
+  000c: <eos>
+
+function WorldInfo.PerformPreGameplaySetup  (script 7 bytes)
+  0000: CP
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.PreSaveWorld  (script 33 bytes)
+  0000: if !((!bAutosaving && !bPIESaving)) goto 0x001e
+  0018: WorldInfo.TrimUnusedStreamingStateLevelReferences()
+  001e: return nothing
+  0020: <eos>
+
+function WorldInfo.PostSaveWorld  (script 83 bytes)
+  0000: if !(((!bAutosaving && !bPIESaving) && bWasSaveSuccessful)) goto 0x0050
+  0023: ConsoleCommand("MAP CHECK DONTCLEARMESSAGES", )
+  0050: return nothing
+  0052: <eos>
+
+function WorldInfo.TrimUnusedStreamingStateLevelReferences  (script 198 bytes)
+  0000: I = 0
+  0007: if !((I < self.StreamingStates.Length)) goto 0x00c3
+  0017: J = (I[self.StreamingStates].Levels.Length - 1)
+  0035: if !((J >= 0)) goto 0x00b9
+  0040: if !((WorldInfo.GetStreamingLevel(J[I[self.StreamingStates].Levels].LevelName) == none)) goto 0x00af
+  0071: I[self.StreamingStates].RemoveLevel(J[I[self.StreamingStates].Levels].LevelName)
+  00af: SubtractSubtract_PreInt(J)
+  00b6: goto 0x0035
+  00b9: AddAdd_PreInt(I)
+  00c0: goto 0x0007
+  00c3: return nothing
+  00c5: <eos>
+
+function WorldInfo.GetStreamingLevel  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < self.StreamingLevels.Length)) goto 0x004b
+  0017: if !((I[self.StreamingLevels].PackageName == LevelName)) goto 0x0041
+  0035: return I[self.StreamingLevels]
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return none
+  004d: return return
+  0053: <eos>
+
+function WorldInfo.GetWorldLevelFromIndex  (script 7 bytes)
+  0000: WorldLevelIndex
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.IsServer  (script 39 bytes)
+  0000: return ((cast3a(self.NetMode) == cast3a(1)) || (cast3a(self.NetMode) == cast3a(2)))
+  0020: return return
+  0026: <eos>
+
+function WorldInfo.GetGravityZ  (script 68 bytes)
+  0000: if !((self.WorldGravityZ == 0.0)) goto 0x0037
+  000f: if !((self.GlobalGravityZ != 0.0)) goto 0x002c
+  001e: self.WorldGravityZ = self.GlobalGravityZ
+  0029: goto 0x0037
+  002c: self.WorldGravityZ = self.DefaultGravityZ
+  0037: return self.WorldGravityZ
+  003d: return return
+  0043: <eos>
+
+function WorldInfo.GetGameSequence  (script 7 bytes)
+  0000: OwnerLevel
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.SetLevelRBGravity  (script 7 bytes)
+  0000: NewGrav
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.GetLocalURL  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.IsDemoBuild  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.GetLanguageCode  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.GetRegionCode  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.IsShipBuild  (script 14 bytes)
+  0000: return self.ShipBuild
+  0007: return return
+  000d: <eos>
+
+function WorldInfo.IsPreviewBuild  (script 14 bytes)
+  0000: return self.PreviewBuild
+  0007: return return
+  000d: <eos>
+
+function WorldInfo.IsConsoleBuild  (script 7 bytes)
+  0000: ConsoleType
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.GetBuildConfigurationName  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.IsNonShippingBuild  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function WorldInfo.IsPlayInEditor  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.IsInEditor  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.IsUCC  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.ForceGarbageCollection  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.GetAddressURL  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.GetGameClass  (script 99 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x002a
+  0014: return self.WorldInfo.Game.get_Class()
+  002a: if !(((self.GRI != none) && (self.GRI.GameClass != none))) goto 0x005a
+  004b: return self.GRI.GameClass
+  005a: return none
+  005c: return return
+  0062: <eos>
+
+function WorldInfo.ServerTravel  (script 365 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((obj'Core.Strings'.static.InStr(URL, "%", ) >= 0)) goto 0x0048
+  001c: LogInternal("URL Contains illegal character '%'.", , , )
+  0046: return nothing
+  0048: if !((((obj'Core.Strings'.static.InStr(URL, ":", ) >= 0) || (obj'Core.Strings'.static.InStr(URL, "/", ) >= 0)) || (obj'Core.Strings'.static.InStr(URL, "\", ) >= 0))) goto 0x00ae
+  009a: LogInternal("URL blocked", , , )
+  00ac: return nothing
+  00ae: if !(((self.Game != none) && self.Game.bHasNetworkError)) goto 0x00fc
+  00cd: LogInternal("Not traveling because of network error", , , )
+  00fa: return nothing
+  00fc: self.NextTravelType = (bAbsolute ? 0 : 2)
+  0111: if !((self.NextURL == "")) goto 0x016a
+  011d: self.NextURL = URL
+  0128: if !((self.Game != none)) goto 0x015f
+  0133: if !(!bShouldSkipGameNotify) goto 0x015c
+  013e: self.Game.ProcessServerTravel(URL, bAbsolute)
+  015c: goto 0x016a
+  015f: self.NextSwitchCountdown = 0.0
+  016a: return nothing
+  016c: <eos>
+
+function WorldInfo.ThisIsNeverExecuted  (script 10 bytes)
+  0000: P = none
+  0007: return nothing
+  0009: <eos>
+
+function WorldInfo.OnPieSessionEnding  (script 39 bytes)
+  0000: if !((self.MyEmitterPool != none)) goto 0x001e
+  000b: self.MyEmitterPool.DestroyActor()
+  0017: self.MyEmitterPool = none
+  001e: OnPieSessionEnding()
+  0024: return nothing
+  0026: <eos>
+
+function WorldInfo.PreBeginPlay  (script 382 bytes)
+  0000: Actor.PreBeginPlay()
+  0006: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(1)) && (obj'Engine'.static.GetCurrentWorldInfo() == self))) goto 0x017b
+  003a: if !((self.EmitterPoolClassPath != "")) goto 0x00a5
+  0046: PoolClass = class<EmitterPool>(DynamicLoadObject(self.EmitterPoolClassPath, obj'Core.Class', ))
+  0066: if !((PoolClass != none)) goto 0x00a5
+  0071: self.MyEmitterPool = Spawn(PoolClass, self, , vect(0,0,0), rot(0,0,0), , , )
+  00a5: if !((self.DecalManagerClassPath != "")) goto 0x0110
+  00b1: DecalManagerClass = class<DecalManager>(DynamicLoadObject(self.DecalManagerClassPath, obj'Core.Class', ))
+  00d1: if !((DecalManagerClass != none)) goto 0x0110
+  00dc: self.MyDecalManager = Spawn(DecalManagerClass, self, , vect(0,0,0), rot(0,0,0), , , )
+  0110: if !((self.FractureManagerClassPath != "")) goto 0x017b
+  011c: FractureManagerClass = class<FractureManager>(DynamicLoadObject(self.FractureManagerClassPath, obj'Core.Class', ))
+  013c: if !((FractureManagerClass != none)) goto 0x017b
+  0147: self.MyFractureManager = Spawn(FractureManagerClass, self, , vect(0,0,0), rot(0,0,0), , , )
+  017b: return nothing
+  017d: <eos>
+
+function WorldInfo.PostBeginPlay  (script 75 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: if !(IsConsoleBuild()) goto 0x001c
+  0014: self.bUseConsoleInput = true
+  001c: if !((obj'Engine'.static.GetCurrentWorldInfo() == self)) goto 0x0048
+  0035: self.PatchHelperClass.static.PatchBaseLayer()
+  0048: return nothing
+  004a: <eos>
+
+function WorldInfo.Reset  (script 9 bytes)
+  0000: Actor.Reset()
+  0006: return nothing
+  0008: <eos>
+
+function WorldInfo.AllNavigationPoints  (script 12 bytes)
+  0000: BaseClass
+  0005: N
+  000a: nothing
+  000b: <eos>
+
+function WorldInfo.RadiusNavigationPoints  (script 22 bytes)
+  0000: BaseClass
+  0005: N
+  000a: Point
+  000f: Radius
+  0014: nothing
+  0015: <eos>
+
+function WorldInfo.GetAllNavigationPointsInRadius  (script 51 bytes)
+  0000: foreach RadiusNavigationPoints(NavPointClass, NavPoint, Point, Radius) (end 0x002f)
+  0021: FoundPoints.AddItem(NavPoint)
+  002e: iternext
+  002f: iterpop
+  0030: return nothing
+  0032: <eos>
+
+function WorldInfo.GetAllNavigationPointsInExtent  (script 39 bytes)
+  0000: NavigationPointCheck(Point, Extent, NavPoints, )
+  001a: return NavPoints
+  0020: return return
+  0026: <eos>
+
+function WorldInfo.GetAllNavigationPoints  (script 56 bytes)
+  0000: foreach AllNavigationPoints(NavPointClass, NavPoint) (end 0x002a)
+  0017: NavPoints.Length[NavPoints] = NavPoint
+  0029: iternext
+  002a: iterpop
+  002b: return NavPoints
+  0031: return return
+  0037: <eos>
+
+function WorldInfo.NavigationPointCheck  (script 22 bytes)
+  0000: Point
+  0005: Extent
+  000a: Navs
+  000f: Specs
+  0014: nothing
+  0015: <eos>
+
+function WorldInfo.AllControllers  (script 12 bytes)
+  0000: BaseClass
+  0005: C
+  000a: nothing
+  000b: <eos>
+
+function WorldInfo.GetAllControllers  (script 41 bytes)
+  0000: foreach AllControllers(BaseClass, C) (end 0x0025)
+  0017: Controllers.AddItem(C)
+  0024: iternext
+  0025: iterpop
+  0026: return nothing
+  0028: <eos>
+
+function WorldInfo.AllPawns  (script 22 bytes)
+  0000: BaseClass
+  0005: P
+  000a: TestLocation
+  000f: TestRadius
+  0014: nothing
+  0015: <eos>
+
+function WorldInfo.SeamlessTravel  (script 17 bytes)
+  0000: URL
+  0005: bAbsolute
+  000a: MapPackageGuid
+  000f: nothing
+  0010: <eos>
+
+function WorldInfo.GetSeamlessTravelActorList  (script 158 bytes)
+  0000: if !((self.Game != none)) goto 0x0028
+  000b: self.Game.GetSeamlessTravelActorList(TravelToURL, ActorList)
+  0028: foreach AllActors(obj'PlayerReplicationInfo', PRI) (end 0x0074)
+  003f: if !(PRI.bBot) goto 0x0055
+  0051: iternext
+  0052: goto 0x0074
+  0055: PRI.bFromPreviousLevel = true
+  0066: ActorList.AddItem(PRI)
+  0073: iternext
+  0074: iterpop
+  0075: foreach AllActors(obj'TeamInfo', Team) (end 0x009a)
+  008c: ActorList.AddItem(Team)
+  0099: iternext
+  009a: iterpop
+  009b: return nothing
+  009d: <eos>
+
+function WorldInfo.GetMapInfo  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.SetMapInfo  (script 7 bytes)
+  0000: NewMapInfo
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.GetMapName  (script 7 bytes)
+  0000: bIncludePrefix
+  0005: nothing
+  0006: <eos>
+
+function WorldInfo.GetDetailMode  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function WorldInfo.GetNumAliveAIPawns  (script 95 bytes)
+  0000: foreach AllPawns(obj'Pawn', P, , ) (end 0x0051)
+  0019: if !(((P.Health > cast3f(0)) && !P.IsPlayerPawn())) goto 0x0050
+  0049: AddAdd_PreInt(NumAlivePawns)
+  0050: iternext
+  0051: iterpop
+  0052: return NumAlivePawns
+  0058: return return
+  005e: <eos>
+
+function WorldInfo.GetNumTotalPawns  (script 47 bytes)
+  0000: foreach AllPawns(obj'Pawn', P, , ) (end 0x0021)
+  0019: AddAdd_PreInt(NumPawns)
+  0020: iternext
+  0021: iterpop
+  0022: return NumPawns
+  0028: return return
+  002e: <eos>
+
+function WorldInfo.GetWorldFractureSettings  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

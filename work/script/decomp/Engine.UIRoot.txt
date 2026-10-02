@@ -1,0 +1,34 @@
+function UIRoot.GetCurrentUIController  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIRoot.SetDataStoreFieldValue  (script 17 bytes)
+  0000: InDataStoreMarkup
+  0005: InFieldValue
+  000a: OwnerPlayer
+  000f: nothing
+  0010: <eos>
+
+function UIRoot.SetDataStoreStringValue  (script 71 bytes)
+  0000: nothing
+  0001: FieldValue.StringValue = InStringValue
+  0017: FieldValue.PropertyType = 0
+  002a: return UIRoot.SetDataStoreFieldValue(InDataStoreMarkup, FieldValue, OwnerPlayer)
+  0040: return return
+  0046: <eos>
+
+function UIRoot.GetDataStoreFieldValue  (script 17 bytes)
+  0000: InDataStoreMarkup
+  0005: OutFieldValue
+  000a: OwnerPlayer
+  000f: nothing
+  0010: <eos>
+
+function UIRoot.GetDataStoreStringValue  (script 73 bytes)
+  0000: default=none
+  0005: if !(UIRoot.GetDataStoreFieldValue(InDataStoreMarkup, FieldValue, OwnerPlayer)) goto 0x003b
+  001d: OutStringValue = FieldValue.StringValue
+  0033: Result = true
+  003b: return Result
+  0042: return return
+  0048: <eos>

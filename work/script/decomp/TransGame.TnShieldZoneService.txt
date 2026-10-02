@@ -1,0 +1,33 @@
+function TnShieldZoneService.get_IsShieldActive  (script 40 bytes)
+  0000: if !((self._BlockController == none)) goto 0x000d
+  000b: return false
+  000d: return self._BlockController.IsBlocking()
+  0021: return return
+  0027: <eos>
+
+function TnShieldZoneService.get_CanShield  (script 27 bytes)
+  0000: return self._BlockController.CanBlock()
+  0014: return return
+  001a: <eos>
+
+function TnShieldZoneService.Initialize  (script 14 bytes)
+  0000: self._BlockController = BlockController
+  000b: return nothing
+  000d: <eos>
+
+function TnShieldZoneService.StartShield  (script 27 bytes)
+  0000: self._BlockController.StartTimedBlock(self.SecondsToShield)
+  0018: return nothing
+  001a: <eos>
+
+function TnShieldZoneService.StopShield  (script 36 bytes)
+  0000: if !((self._BlockController == none)) goto 0x000d
+  000b: return nothing
+  000d: self._BlockController.SetBlocking(false)
+  0021: return nothing
+  0023: <eos>
+
+function TnShieldZoneService.DestroyShield  (script 22 bytes)
+  0000: self._BlockController.DestroyShield()
+  0013: return nothing
+  0015: <eos>

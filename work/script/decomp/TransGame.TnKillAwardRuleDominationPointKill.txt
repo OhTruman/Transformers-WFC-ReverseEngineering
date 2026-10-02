@@ -1,0 +1,12 @@
+function TnKillAwardRuleDominationPointKill.ConditionMet  (script 156 bytes)
+  0000: KilledPawn = Killed.Pawn
+  0014: foreach KilledPawn.TouchingActors(obj'Engine.Volume', V) (end 0x0092)
+  0034: Point = TnDominationPointBase(V.GetAssociatedActor())
+  0052: if !(((Point != none) && (cast3a(Point.GetTeamNum()) != cast3a(Killed.GetTeamNum())))) goto 0x0091
+  008e: iterpop
+  008f: return true
+  0091: iternext
+  0092: iterpop
+  0093: return false
+  0095: return return
+  009b: <eos>

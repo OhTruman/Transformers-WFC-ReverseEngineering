@@ -1,0 +1,114 @@
+function OnlinePartyCollection.ResetTeamAssignments  (script 67 bytes)
+  0000: I = 0
+  0007: if !((I < self.Parties.Length)) goto 0x003a
+  0017: I[self.Parties].TeamIndex = 255
+  0030: AddAdd_PreInt(I)
+  0037: goto 0x0007
+  003a: !! unknown token 0x59 at 0x3a ; raw 590100004b21040b535353535353535353
+
+function OnlinePartyCollection.IsMember  (script 26 bytes)
+  0000: return (OnlinePartyCollection.GetPartyIndexForPlayer(NetId) != -1)
+  0013: return return
+  0019: <eos>
+
+function OnlinePartyCollection.GetNumMembers  (script 76 bytes)
+  0000: I = 0
+  0007: if !((I < self.Parties.Length)) goto 0x003f
+  0017: (Count += I[self.Parties].Members.Length)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return Count
+  0045: return return
+  004b: <eos>
+
+function OnlinePartyCollection.GetNumMultiPersonParties  (script 82 bytes)
+  0000: I = 0
+  0007: if !((I < self.Parties.Length)) goto 0x0045
+  0017: if !((I[self.Parties].Members.Length > 1)) goto 0x003b
+  0034: AddAdd_PreInt(Count)
+  003b: AddAdd_PreInt(I)
+  0042: goto 0x0007
+  0045: return Count
+  004b: return return
+  0051: <eos>
+
+function OnlinePartyCollection.GetPartyIndexForPlayer  (script 112 bytes)
+  0000: PartyIndex = 0
+  0007: if !((PartyIndex < self.Parties.Length)) goto 0x0063
+  0017: MemberIndex = PartyIndex[self.Parties].Members.Find('NetId',NetId)
+  0044: if !((MemberIndex != -1)) goto 0x0059
+  0053: return PartyIndex
+  0059: AddAdd_PreInt(PartyIndex)
+  0060: goto 0x0007
+  0063: return -1
+  0069: return return
+  006f: <eos>
+
+function OnlinePartyCollection.SetTeamForPlayer  (script 39 bytes)
+  0000: if !(IsMember(NetId)) goto 0x0024
+  0012: !! unknown token 0x4d at 0x12 ; raw 4d0100004b21000a0000004b360000004b35040b53535353
+
+function OnlinePartyCollection.GetTeamIndexForPlayer  (script 96 bytes)
+  0000: !! unknown token 0x4f at 0x3 ; raw 07001b4f0100004b21000a0000004b3b0000004b38040000
+
+function OnlinePartyCollection.GetPartySizeForPlayer  (script 69 bytes)
+  0000: PartyIndex = OnlinePartyCollection.GetPartyIndexForPlayer(NetId)
+  0011: if !((PartyIndex != -1)) goto 0x0038
+  0020: return PartyIndex[self.Parties].Members.Length
+  0038: return -1
+  003e: return return
+  0044: <eos>
+
+function OnlinePartyCollection.GetPartyForPlayer  (script 129 bytes)
+  0000: PartyIndex = OnlinePartyCollection.GetPartyIndexForPlayer(NetId)
+  0011: TeamIndex = cast3a(GetTeamIndexForPlayer(NetId))
+  0028: MemberIndex = 0
+  002f: if !((MemberIndex < PartyIndex[self.Parties].Members.Length)) goto 0x007e
+  0050: Players.AddItem(MemberIndex[PartyIndex[self.Parties].Members])
+  0074: AddAdd_PreInt(MemberIndex)
+  007b: goto 0x002f
+  007e: return nothing
+  0080: <eos>
+
+function OnlinePartyCollection.RemovePlayerFromParty  (script 158 bytes)
+  0000: PartyIndex = OnlinePartyCollection.GetPartyIndexForPlayer(NetId)
+  0011: if !((PartyIndex == -1)) goto 0x0022
+  0020: return false
+  0022: MemberIndex = PartyIndex[self.Parties].Members.Find('NetId',NetId)
+  004f: PartyIndex[self.Parties].Members.Remove(MemberIndex,1)
+  006c: if !((PartyIndex[self.Parties].Members.Length == 0)) goto 0x0095
+  0089: self.Parties.Remove(PartyIndex,1)
+  0095: return true
+  0097: return return
+  009d: <eos>
+
+function OnlinePartyCollection.GetPlayer  (script 98 bytes)
+  0000: PartyIndex = OnlinePartyCollection.GetPartyIndexForPlayer(NetId)
+  0011: MemberIndex = PartyIndex[self.Parties].Members.Find('NetId',NetId)
+  003e: return MemberIndex[PartyIndex[self.Parties].Members]
+  005b: return return
+  0061: <eos>
+
+function OnlinePartyCollection.GetAllMembers  (script 122 bytes)
+  0000: PartyIndex = 0
+  0007: if !((PartyIndex < self.Parties.Length)) goto 0x0077
+  0017: MemberIndex = 0
+  001e: if !((MemberIndex < PartyIndex[self.Parties].Members.Length)) goto 0x006d
+  003f: Players.AddItem(MemberIndex[PartyIndex[self.Parties].Members])
+  0063: AddAdd_PreInt(MemberIndex)
+  006a: goto 0x001e
+  006d: AddAdd_PreInt(PartyIndex)
+  0074: goto 0x0007
+  0077: return nothing
+  0079: <eos>
+
+function OnlinePartyCollection.GetTeamSize  (script 90 bytes)
+  0000: GetAllMembers(Players)
+  000f: foreach Players(Player,) (end 0x004c)
+  001e: if !((cast3a(GetTeamIndexForPlayer(Player.NetId)) == TeamIndex)) goto 0x004b
+  0044: AddAdd_PreInt(Size)
+  004b: iternext
+  004c: iterpop
+  004d: return Size
+  0053: return return
+  0059: <eos>

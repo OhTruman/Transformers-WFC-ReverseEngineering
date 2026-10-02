@@ -1,0 +1,29 @@
+function TnSeqAct_ForceIntoForm.Update  (script 161 bytes)
+  0000: foreach self.Targets(O,) (end 0x0097)
+  000f: P = TnSeqAct_ForceIntoForm.GetTarget(O)
+  0020: if !((P == none)) goto 0x002f
+  002b: iternext
+  002c: goto 0x0097
+  002f: if !(!P.IsInForm(self.ForcedForm)) goto 0x007c
+  004c: if !(!P.get_IsTransforming()) goto 0x0076
+  0064: AbortFor(P)
+  0073: iterpop
+  0074: return false
+  0076: iterpop
+  0077: return true
+  0079: goto 0x0096
+  007c: P.ClearLatentAction(obj'TnSeqAct_ForceIntoForm', , )
+  0096: iternext
+  0097: iterpop
+  0098: return false
+  009a: return return
+  00a0: <eos>
+
+function TnSeqAct_ForceIntoForm.GetTarget  (script 90 bytes)
+  0000: P = TnPawn(O)
+  0010: if !((P != none)) goto 0x0021
+  001b: return P
+  0021: C = Controller(O)
+  0031: return ((C == none) ? none : TnPawn(C.Pawn))
+  0053: return return
+  0059: <eos>

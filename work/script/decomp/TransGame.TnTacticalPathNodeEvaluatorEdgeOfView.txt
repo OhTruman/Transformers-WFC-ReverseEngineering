@@ -1,0 +1,27 @@
+function TnTacticalPathNodeEvaluatorEdgeOfView.CalculateAngleToTacticalPathNode  (script 347 bytes)
+  0000: if !((Enemy == none)) goto 0x0011
+  000b: return 0.0
+  0011: EnemyPlayerController = TnPlayerController(Enemy.Controller)
+  002a: if !((((EnemyPlayerController != none) && (EnemyPlayerController.PlayerCamera != none)) && !EnemyPlayerController.IsDebugCameraActive())) goto 0x0085
+  0065: EnemyLocation = EnemyPlayerController.PlayerCamera.Location
+  0082: goto 0x0099
+  0085: EnemyLocation = Enemy.Location
+  0099: EnemyToNode = (Tactical._Location - EnemyLocation)
+  00b4: EnemyToNode.Z = 0.0
+  00ca: EnemyToNode = obj'Core.Math'.static.Normal(EnemyToNode)
+  00e0: EnemyRotation = cast39(Enemy.Rotation)
+  00f6: EnemyRotation.Z = 0.0
+  010c: EnemyRotation = obj'Core.Math'.static.Normal(EnemyRotation)
+  0122: DotProd = (EnemyRotation dot EnemyToNode)
+  0134: return (obj'Core.Math'.static.Acos(DotProd) * 57.2957802)
+  0154: return return
+  015a: <eos>
+
+function TnTacticalPathNodeEvaluatorEdgeOfView.Score  (script 117 bytes)
+  0000: AngleToNode = TnTacticalPathNodeEvaluatorEdgeOfView.CalculateAngleToTacticalPathNode(Tactical, Searcher.Enemy)
+  001f: DegreesFromEdge = obj'Core.Math'.static.Abs((obj'Core.Math'.static.Abs(AngleToNode) - (self.Fov / 2.0)))
+  004e: if !((DegreesFromEdge < self.MaxRange)) goto 0x0068
+  005d: Result = 1.0
+  0068: return Result
+  006e: return return
+  0074: <eos>

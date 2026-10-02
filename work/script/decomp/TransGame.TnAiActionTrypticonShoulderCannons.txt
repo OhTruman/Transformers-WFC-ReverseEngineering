@@ -1,0 +1,107 @@
+function TnAiActionTrypticonShoulderCannons.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTrypticonShoulderCannonsBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTrypticonShoulderCannons.OnBind  (script 89 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._SentryGroup = TnSentryGroupService(GetService('TnSentryGroupService', 2))
+  0026: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0046: self._Trypticon = TnTrypticonPawn(self._TransformerPawn)
+  0056: return nothing
+  0058: <eos>
+
+function TnAiActionTrypticonShoulderCannons.OnSetUpConditions  (script 53 bytes)
+  0000: if !((self._SentryGroup.get_KillCount() >= 2)) goto 0x001d
+  001b: return false
+  001d: return OnSetUpConditions(ExpectedEffects, Conditions)
+  002e: return return
+  0034: <eos>
+
+function TnAiActionTrypticonShoulderCannons.OnStart  (script 247 bytes)
+  0000: Params = self._Blueprint.Params
+  0014: Params.AnimName = self._Blueprint.IntroLoopAnimation
+  0033: Params.Looping = true
+  0046: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.None, delegate.None)
+  0071: self._SentryGroup.ForEachSentry(delegate.ActivateSentry)
+  008e: self._AttackTimer.Start(delegate.StopAttacking, self._Blueprint.AttackLength, )
+  00b9: self._StartShootingTimer.Start(delegate.StartShooting, self._Blueprint.StartShootingTime, )
+  00e4: return OnStart(ExpectedEffects)
+  00f0: return return
+  00f6: <eos>
+
+function TnAiActionTrypticonShoulderCannons.StartShooting  (script 62 bytes)
+  0000: self._SentryGroup.ForEachSentry(delegate.EnableShooting)
+  001d: if !((self._Trypticon != none)) goto 0x003b
+  0028: self._Trypticon.ShoulderCannonsStartFiring()
+  003b: return nothing
+  003d: <eos>
+
+function TnAiActionTrypticonShoulderCannons.StopAttacking  (script 175 bytes)
+  0000: Params = self._Blueprint.Params
+  0014: Params.AnimName = self._Blueprint.OutroAnimation
+  0033: Params.Looping = false
+  0046: self._SentryGroup.ForEachSentry(delegate.DeactivateSentry)
+  0063: if !((self._Trypticon != none)) goto 0x0081
+  006e: self._Trypticon.ShoulderCannonsStopFiring()
+  0081: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.SucceedCallback, delegate.FailCallback)
+  00ac: return nothing
+  00ae: <eos>
+
+function TnAiActionTrypticonShoulderCannons.OnUpdate  (script 150 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._TransformerController.Enemy)) goto 0x0031
+  0026: return Succeed()
+  0031: self._SentryGroup.ForEachSentry(delegate.UpdateTarget)
+  004e: self._StartShootingTimer.Tick(DeltaTime)
+  0066: self._AttackTimer.Tick(DeltaTime)
+  007e: return OnUpdate(ExpectedEffects, DeltaTime)
+  008f: return return
+  0095: <eos>
+
+function TnAiActionTrypticonShoulderCannons.OnFinish  (script 111 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._SentryGroup.ForEachSentry(delegate.DeactivateSentry)
+  0028: if !((self._Trypticon != none)) goto 0x0046
+  0033: self._Trypticon.ShoulderCannonsStopFiring()
+  0046: self._StartShootingTimer.Clear()
+  0059: self._AttackTimer.Clear()
+  006c: return nothing
+  006e: <eos>
+
+function TnAiActionTrypticonShoulderCannons.UpdateTarget  (script 74 bytes)
+  0000: SentryController = TnAiSentryController(Sentry.Controller)
+  0019: if !((SentryController == none)) goto 0x0026
+  0024: return nothing
+  0026: SentryController.ForceTarget(self._TransformerController.Enemy)
+  0047: return nothing
+  0049: <eos>
+
+function TnAiActionTrypticonShoulderCannons.ActivateSentry  (script 111 bytes)
+  0000: SentryController = TnAiSentryController(Sentry.Controller)
+  0019: if !((SentryController == none)) goto 0x0026
+  0024: return nothing
+  0026: SentryController.SetDormant(false)
+  003a: SentryController.ForceTarget(self._TransformerController.Enemy)
+  005b: Sentry._DisableShooting = true
+  006c: return nothing
+  006e: <eos>
+
+function TnAiActionTrypticonShoulderCannons.EnableShooting  (script 20 bytes)
+  0000: Sentry._DisableShooting = false
+  0011: return nothing
+  0013: <eos>
+
+function TnAiActionTrypticonShoulderCannons.DeactivateSentry  (script 81 bytes)
+  0000: SentryController = TnAiSentryController(Sentry.Controller)
+  0019: if !((SentryController == none)) goto 0x0026
+  0024: return nothing
+  0026: SentryController.SetDormant(true)
+  003a: SentryController.ForceTarget(none)
+  004e: return nothing
+  0050: <eos>
+
+function TnAiActionTrypticonShoulderCannons.CanInterruptNow  (script 36 bytes)
+  0000: return (self._TransformerController.GetWorldStateInt(obj'TnAiWorldStateReaction') == 3)
+  001d: return return
+  0023: <eos>

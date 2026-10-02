@@ -1,0 +1,12 @@
+function TnHudDataObserverDominationCapture.AddAssociatedActor  (script 19 bytes)
+  0000: self.DominationPoint = TnDominationPointBase(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnHudDataObserverDominationCapture.CheckData  (script 124 bytes)
+  0000: CurrentValue = 0.0
+  000b: if !((((self.DominationPoint != none) && (PC.Pawn != none)) && !self.DominationPoint.OnDefendingTeam(PC))) goto 0x0064
+  004b: CurrentValue = self.DominationPoint.get_NormalizedCaptureTime()
+  0064: ProcessNewValue(Movie, CurrentValue, )
+  0079: return nothing
+  007b: <eos>

@@ -1,0 +1,174 @@
+function TnSentryGroup.Killed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryGroup.KillCountReached  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryGroup.Healed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryGroup.get_KillCount  (script 13 bytes)
+  0000: return self._KillCount
+  0006: return return
+  000c: <eos>
+
+function TnSentryGroup.get_KillCountThreshold  (script 13 bytes)
+  0000: return self._KillCountThreshold
+  0006: return return
+  000c: <eos>
+
+function TnSentryGroup.set_KillCountThreshold  (script 14 bytes)
+  0000: self._KillCountThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryGroup.Add  (script 72 bytes)
+  0000: Sentry.AddSentryKilledObserver(delegate.OnSentryKilled)
+  001c: Sentry.AddSentryDamagedObserver(delegate.OnSentryDamaged)
+  0038: self._Sentries.AddItem(Sentry)
+  0045: return nothing
+  0047: <eos>
+
+function TnSentryGroup.Contains  (script 28 bytes)
+  0000: return (self._Sentries.Find(Sentry) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnSentryGroup.GetSentry  (script 57 bytes)
+  0000: foreach self._Sentries(Sentry,) (end 0x002f)
+  000f: if !((Sentry.AttachSocketName == AttachSocketName)) goto 0x002e
+  0027: iterpop
+  0028: return Sentry
+  002e: iternext
+  002f: iterpop
+  0030: return none
+  0032: return return
+  0038: <eos>
+
+function TnSentryGroup.OnSentryKilled  (script 97 bytes)
+  0000: AddAdd_Int(self._KillCount)
+  0007: Killed(Sentry)
+  001b: if !((self._KillCount == self._KillCountThreshold)) goto 0x0039
+  002a: KillCountReached()
+  0039: if !(!Sentry.get_IsRevivable()) goto 0x005e
+  0051: self._Sentries.RemoveItem(Sentry)
+  005e: return nothing
+  0060: <eos>
+
+function TnSentryGroup.OnSentryDamaged  (script 135 bytes)
+  0000: Index = self._DamageRecords.Find('Attacker',Attacker)
+  001c: if !((Index == -1)) goto 0x0067
+  002b: Record.Attacker = Attacker
+  0041: Record.Damage = Damage
+  0057: self._DamageRecords.AddItem(Record)
+  0064: goto 0x0084
+  0067: (Index[self._DamageRecords].Damage += Damage)
+  0084: return nothing
+  0086: <eos>
+
+function TnSentryGroup.FindDamageAmount  (script 80 bytes)
+  0000: Index = self._DamageRecords.Find('Attacker',Attacker)
+  001c: return ((Index == -1) ? 0.0 : Index[self._DamageRecords].Damage)
+  0049: return return
+  004f: <eos>
+
+function TnSentryGroup.Heal  (script 144 bytes)
+  0000: foreach self._Sentries(Sentry,) (end 0x006e)
+  000f: C = TnAiSentryController(Sentry.Controller)
+  0028: if !((C != none)) goto 0x0047
+  0033: C.set_Invulnerable(false)
+  0047: Sentry.Heal()
+  005a: Sentry.PlayReplicatedActivateAnim()
+  006d: iternext
+  006e: iterpop
+  006f: self._KillCount = 0
+  0076: self._DamageRecords.Length = 0
+  007e: Healed()
+  008d: return nothing
+  008f: <eos>
+
+function TnSentryGroup.Kill  (script 58 bytes)
+  0000: SentriesToKill = self._Sentries
+  000b: foreach SentriesToKill(Sentry,) (end 0x002e)
+  001a: Sentry.Kill()
+  002d: iternext
+  002e: iterpop
+  002f: self._DamageRecords.Length = 0
+  0037: return nothing
+  0039: <eos>
+
+function TnSentryGroup.KillAttachedSentry  (script 82 bytes)
+  0000: SentriesToKill = self._Sentries
+  000b: foreach SentriesToKill(Sentry,) (end 0x0046)
+  001a: if !((Sentry.AttachSocketName == AttachSocketName)) goto 0x0045
+  0032: Sentry.Kill()
+  0045: iternext
+  0046: iterpop
+  0047: self._DamageRecords.Length = 0
+  004f: return nothing
+  0051: <eos>
+
+function TnSentryGroup.DamageAttachedSentry  (script 121 bytes)
+  0000: SentriesToDamage = self._Sentries
+  000b: foreach SentriesToDamage(Sentry,) (end 0x006d)
+  001a: if !((Sentry.AttachSocketName == AttachSocketName)) goto 0x006c
+  0032: Sentry.TakeDamage(Damage, none, vect(0,0,0), vect(0,0,0), DamageType, , )
+  006c: iternext
+  006d: iterpop
+  006e: self._DamageRecords.Length = 0
+  0076: return nothing
+  0078: <eos>
+
+function TnSentryGroup.AddAttachedSentryObjectiveMarker  (script 79 bytes)
+  0000: SentriesToAddMarker = self._Sentries
+  000b: foreach SentriesToAddMarker(Sentry,) (end 0x004b)
+  001a: if !((Sentry.AttachSocketName == AttachSocketName)) goto 0x004a
+  0032: Sentry.AddObjectiveMarker(MarkerType)
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function TnSentryGroup.Deactivate  (script 123 bytes)
+  0000: foreach self._Sentries(Sentry,) (end 0x006f)
+  000f: C = TnAiSentryController(Sentry.Controller)
+  0028: if !((C != none)) goto 0x005b
+  0033: C.SetDormant(true)
+  0047: C.set_Invulnerable(true)
+  005b: Sentry.PlayReplicatedDeactivateAnim()
+  006e: iternext
+  006f: iterpop
+  0070: self._DamageRecords.Length = 0
+  0078: return nothing
+  007a: <eos>
+
+function TnSentryGroup.TargetableByAi  (script 42 bytes)
+  0000: foreach self._Sentries(Sentry,) (end 0x0026)
+  000f: Sentry._TargetableByAi = IsTargetableByAi
+  0025: iternext
+  0026: iterpop
+  0027: return nothing
+  0029: <eos>
+
+function TnSentryGroup.ShouldClaimEnemyTarget  (script 42 bytes)
+  0000: foreach self._Sentries(Sentry,) (end 0x0026)
+  000f: Sentry._ShouldRegisterEnemyClaim = ClaimEnemyTarget
+  0025: iternext
+  0026: iterpop
+  0027: return nothing
+  0029: <eos>
+
+function TnSentryGroup.SentryAction  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSentryGroup.ForEachSentry  (script 40 bytes)
+  0000: foreach self._Sentries(Sentry,) (end 0x0024)
+  000f: SentryAction(Sentry)
+  0023: iternext
+  0024: iterpop
+  0025: return nothing
+  0027: <eos>

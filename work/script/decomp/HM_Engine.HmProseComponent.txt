@@ -1,0 +1,142 @@
+function HmProseComponent.Play  (script 211 bytes)
+  0000: if !(self.IsDoomed) goto 0x000b
+  0009: return false
+  000b: if !((none == ProseCue)) goto 0x0018
+  0016: return false
+  0018: if !((self.ProseCuePlaying != none)) goto 0x0046
+  0023: if !((ProseCue.Priority <= self.ProseCuePlaying.Priority)) goto 0x0046
+  0044: return true
+  0046: self.Stop()
+  0055: if !((false == SelectProseLineVariation(ProseCue, ProseLineVariationSelected))) goto 0x0071
+  006f: return false
+  0071: if !((false == PlayAudio(ProseLineVariationSelected.SoundCue))) goto 0x0093
+  0091: return false
+  0093: if !((false == PlayText(ProseLineVariationSelected.SubtitleID))) goto 0x00bf
+  00b3: StopAudio()
+  00bd: return false
+  00bf: self.ProseCuePlaying = ProseCue
+  00ca: return true
+  00cc: return return
+  00d2: <eos>
+
+function HmProseComponent.PlayAndDoom  (script 74 bytes)
+  0000: if !(self.IsDoomed) goto 0x000b
+  0009: return false
+  000b: if !((false == self.Play(ProseCue))) goto 0x0027
+  0025: return false
+  0027: if !((false == DoomAudio())) goto 0x0039
+  0037: return false
+  0039: self.IsDoomed = true
+  0041: return true
+  0043: return return
+  0049: <eos>
+
+function HmProseComponent.Stop  (script 63 bytes)
+  0000: if !(self.IsDoomed) goto 0x000b
+  0009: return false
+  000b: if !((false == StopAudio())) goto 0x001d
+  001b: return false
+  001d: if !((false == StopText())) goto 0x002f
+  002d: return false
+  002f: self.ProseCuePlaying = none
+  0036: return true
+  0038: return return
+  003e: <eos>
+
+function HmProseComponent.GetIsPlaying  (script 43 bytes)
+  0000: if !((none != ProseCueTarget)) goto 0x001b
+  000b: return (self.ProseCuePlaying == ProseCueTarget)
+  0018: goto 0x0024
+  001b: return (none != self.ProseCuePlaying)
+  0024: return return
+  002a: <eos>
+
+function HmProseComponent.SetVoiceSetNames  (script 25 bytes)
+  0000: self.VoiceSetNames = VoiceSetNamesNew
+  000b: self.VoiceSetIndex = -1
+  0016: return nothing
+  0018: <eos>
+
+function HmProseComponent.SelectProseLineVariationIndex  (script 36 bytes)
+  0000: return obj'Core.Random'.static.Rand(ProseLineVariationsVoiceSet.ProseLineVariations.Length)
+  001d: return return
+  0023: <eos>
+
+function HmProseComponent.GetVoiceSetIndex  (script 63 bytes)
+  0000: if !((-1 == self.VoiceSetIndex)) goto 0x0032
+  000f: if !((0 != self.VoiceSetNames.Length)) goto 0x0032
+  001b: self.VoiceSetIndex = obj'Core.Random'.static.Rand(self.VoiceSetNames.Length)
+  0032: return self.VoiceSetIndex
+  0038: return return
+  003e: <eos>
+
+function HmProseComponent.SelectProseLineVariation  (script 193 bytes)
+  0000: VoiceSetIndexCurrent = GetVoiceSetIndex()
+  0010: if !((-1 == VoiceSetIndexCurrent)) goto 0x0021
+  001f: return false
+  0021: ProseLineVariationsVoiceSetIndex = 0
+  0028: if !((ProseLineVariationsVoiceSetIndex < ProseCue.ProseLineVariationsVoiceSets.Length)) goto 0x00b8
+  0041: ProseLineVariationsVoiceSetCurrent = ProseLineVariationsVoiceSetIndex[ProseCue.ProseLineVariationsVoiceSets]
+  005b: if !((ProseLineVariationsVoiceSetCurrent.VoiceSetName == VoiceSetIndexCurrent[self.VoiceSetNames])) goto 0x00ae
+  007b: ProseLineVariationIndexSelected = SelectProseLineVariationIndex(ProseLineVariationsVoiceSetCurrent)
+  0090: ProseLineVariationSelected = ProseLineVariationIndexSelected[ProseLineVariationsVoiceSetCurrent.ProseLineVariations]
+  00ac: return true
+  00ae: AddAdd_Int(ProseLineVariationsVoiceSetIndex)
+  00b5: goto 0x0028
+  00b8: return false
+  00ba: return return
+  00c0: <eos>
+
+function HmProseComponent.CreateAudioComponent  (script 68 bytes)
+  0000: if !((none == self.AudioComponent)) goto 0x003b
+  000b: self.AudioComponent = self.Owner.CreateAudioComponent(SoundCue, false, true, , , )
+  002e: if !((none == self.AudioComponent)) goto 0x003b
+  0039: return false
+  003b: return true
+  003d: return return
+  0043: <eos>
+
+function HmProseComponent.PlayAudio  (script 180 bytes)
+  0000: if !((none == SoundCue)) goto 0x000d
+  000b: return true
+  000d: if !((none == self.Owner)) goto 0x001a
+  0018: return false
+  001a: if !((none != self.Owner.WorldInfo.SoundInterceptor)) goto 0x0069
+  0037: self.Owner.WorldInfo.SoundInterceptor.AddSoundEvent(SoundCue, self.Owner, , , )
+  0069: if !((false == CreateAudioComponent(SoundCue))) goto 0x0080
+  007e: return false
+  0080: self.AudioComponent.SetSoundCue(SoundCue)
+  0098: self.AudioComponent.Play()
+  00ab: return true
+  00ad: return return
+  00b3: <eos>
+
+function HmProseComponent.PlayText  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmProseComponent.DoomAudio  (script 93 bytes)
+  0000: if !((none == self.AudioComponent)) goto 0x000d
+  000b: return true
+  000d: self.AudioComponent.bStopWhenOwnerDestroyed = false
+  001e: self.AudioComponent.bAutoDestroy = true
+  002f: if !(!self.AudioComponent.bWasPlaying) goto 0x004d
+  0043: StopAudio()
+  004d: self.AudioComponent = none
+  0054: return true
+  0056: return return
+  005c: <eos>
+
+function HmProseComponent.StopAudio  (script 41 bytes)
+  0000: if !((none == self.AudioComponent)) goto 0x000d
+  000b: return true
+  000d: self.AudioComponent.Stop()
+  0020: return true
+  0022: return return
+  0028: <eos>
+
+function HmProseComponent.StopText  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

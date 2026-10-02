@@ -1,0 +1,57 @@
+function TnInteractActionSequence.__Constructor__TnInteractActionSequence_0  (script 16 bytes)
+  0000: self._AllowForceEnd = AllowForceEnd
+  000d: return nothing
+  000f: <eos>
+
+function TnInteractActionSequence.TriggerAction  (script 35 bytes)
+  0000: TnLatentInteractAction.TriggerAction(Interact)
+  000b: self._ForcedToEnd = false
+  0013: self.CurrentActionIndex = 0
+  001a: TnInteractActionSequence.TriggerNextAction()
+  0020: return nothing
+  0022: <eos>
+
+function TnInteractActionSequence.CurrentActionComplete  (script 67 bytes)
+  0000: AddAdd_PreInt(self.CurrentActionIndex)
+  0007: if !((self._AllowForceEnd && self._ForcedToEnd)) goto 0x001d
+  001b: return nothing
+  001d: if !((self.CurrentActionIndex >= self.Actions.Length)) goto 0x003a
+  002d: ActionComplete()
+  0037: goto 0x0040
+  003a: TnInteractActionSequence.TriggerNextAction()
+  0040: return nothing
+  0042: <eos>
+
+function TnInteractActionSequence.TriggerNextAction  (script 242 bytes)
+  0000: if !((self.CurrentActionIndex >= self.Actions.Length)) goto 0x001c
+  0010: ActionComplete()
+  001a: return nothing
+  001c: CurrentAction = self.CurrentActionIndex[self.Actions]
+  002d: if !((CurrentAction == none)) goto 0x0086
+  0038: LogInternal((("Error: Interact Action in action sequence" @ cast56(self)) @ " is none!"), , , )
+  007a: ActionComplete()
+  0084: return nothing
+  0086: if !((TnLatentInteractAction(CurrentAction) != none)) goto 0x00b3
+  0096: TnLatentInteractAction(CurrentAction).__OnActionComplete__Delegate = delegate.CurrentActionComplete
+  00b3: CurrentAction.OnInteractEvent(none, self.OwningInteract)
+  00cc: if !(!CurrentAction.WaitForCompletion(none)) goto 0x00ef
+  00e5: CurrentActionComplete()
+  00ef: return nothing
+  00f1: <eos>
+
+function TnInteractActionSequence.Cleanup  (script 39 bytes)
+  0000: foreach self.Actions(Action,) (end 0x0023)
+  000f: Action.Cleanup()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function TnInteractActionSequence.Cancel  (script 47 bytes)
+  0000: self._ForcedToEnd = true
+  0008: foreach self.Actions(Action,) (end 0x002b)
+  0017: Action.Cancel()
+  002a: iternext
+  002b: iterpop
+  002c: return nothing
+  002e: <eos>

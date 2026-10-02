@@ -1,0 +1,28 @@
+function HmPhysicalMeshDestructionEffectFactory.GetEffectDescription  (script 38 bytes)
+  0000: return ((self.MeshTemplate == none) ? "" : PathName(self.MeshTemplate))
+  001f: return return
+  0025: <eos>
+
+function HmPhysicalMeshDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmPhysicalMeshDestructionEffectFactory.CalculatePrimitiveCount  (script 41 bytes)
+  0000: if !((self.MeshTemplate == none)) goto 0x000d
+  000b: return 0
+  000d: return self.MeshTemplate.GetNumElements(0)
+  0022: return return
+  0028: <eos>
+
+function HmPhysicalMeshDestructionEffectFactory.DoCreateInstance  (script 195 bytes)
+  0000: Effect = obj'Engine.Allocation'.static.CreateObject(obj'HmPhysicalMeshDestructionEffect', Owner)
+  0023: Effect.SetMeshTemplate(self.MeshTemplate)
+  003b: Effect.SetSpawnedActorType(self.SpawnedActorType)
+  0053: Effect.SetLinearVelocity(self.LinearVelocity)
+  006b: Effect.SetAngularVelocity(self.AngularVelocity)
+  0083: Effect.SetLifespans(self.LifeSpan, self.CollisionLifeSpan)
+  00a0: Effect._CollideWithPawns = self.CollideWithPawns
+  00b6: return Effect
+  00bc: return return
+  00c2: <eos>

@@ -1,0 +1,31 @@
+function ReplicatedObject.ReplicatedEvent  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ReplicatedObject.ReplicatedArrayEvent  (script 18 bytes)
+  0000: ReplicatedEvent(ArrayName)
+  000f: return nothing
+  0011: <eos>
+
+function ReplicatedObject.ReplicatedEventsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ReplicatedObject.NetTraffic  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ReplicatedObject.GetRemoteRole  (script 37 bytes)
+  0000: return ((self.Owner == none) ? 0 : self.Owner.RemoteRole)
+  001e: return return
+  0024: <eos>
+
+function ReplicatedObject.GetRole  (script 37 bytes)
+  0000: return ((self.Owner == none) ? 3 : self.Owner.Role)
+  001e: return return
+  0024: <eos>
+
+function ReplicatedObject.IsNetOwner  (script 37 bytes)
+  0000: return ((self.Owner == none) ? true : self.Owner.bNetOwner)
+  001e: return return
+  0024: <eos>

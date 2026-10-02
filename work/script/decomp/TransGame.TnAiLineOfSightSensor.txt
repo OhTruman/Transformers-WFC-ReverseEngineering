@@ -1,0 +1,28 @@
+function TnAiLineOfSightSensor.SetWorldStateLOSToEnemy  (script 246 bytes)
+  0000: LOSTarget = Actor(self._OwnerController.AiWorldState.GetSubject(obj'TnAiWorldStateLOSToEnemy'))
+  002c: PawnLOSTarget = Pawn(LOSTarget)
+  003c: if !((((LOSTarget != none) && (PawnLOSTarget == none)) || (((PawnLOSTarget != none) && !PawnLOSTarget.IsDying()) && !PawnLOSTarget.IsDead()))) goto 0x00c7
+  0095: HasLOSToEnemy = self.LineOfSightDetector.HasLOSToActor(self._OwnerController.get_TransformerPawn(), LOSTarget)
+  00c7: self._OwnerController.AiWorldState.SetBoolValue(obj'TnAiWorldStateLOSToEnemy', HasLOSToEnemy, LOSTarget)
+  00f3: return nothing
+  00f5: <eos>
+
+function TnAiLineOfSightSensor.SetWorldStateAtActorLOS  (script 152 bytes)
+  0000: TargetActor = Actor(self._OwnerController.AiWorldState.GetSubject(obj'TnAiWorldStateAtActorLOS'))
+  002c: if !((TargetActor != none)) goto 0x0069
+  0037: HasLOS = self.LineOfSightDetector.HasLOSToActor(self._OwnerController.get_TransformerPawn(), TargetActor)
+  0069: self._OwnerController.AiWorldState.SetBoolValue(obj'TnAiWorldStateAtActorLOS', HasLOS, TargetActor)
+  0095: return nothing
+  0097: <eos>
+
+function TnAiLineOfSightSensor.OnUpdate  (script 15 bytes)
+  0000: TnAiLineOfSightSensor.SetWorldStateLOSToEnemy()
+  0006: TnAiLineOfSightSensor.SetWorldStateAtActorLOS()
+  000c: return nothing
+  000e: <eos>
+
+function TnAiLineOfSightSensor.GetDebugStrings  (script 81 bytes)
+  0000: if !(!self._OwnerController.AiWorldState.GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x004e
+  0026: Strings.Length[Strings] = "No Line of Sight To Enemy"
+  004e: return nothing
+  0050: <eos>

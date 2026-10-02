@@ -1,0 +1,16 @@
+function PlayerOwnerDataProvider.SetPlayerDataProvider  (script 76 bytes)
+  0000: if !((NewPlayerData != none)) goto 0x003e
+  000b: PRI = NewPlayerData.GetDataSource()
+  0024: if !((PRI != none)) goto 0x003e
+  002f: BindProviderInstance(PRI)
+  003e: self.PlayerData = NewPlayerData
+  0049: return nothing
+  004b: <eos>
+
+function PlayerOwnerDataProvider.CleanupDataProvider  (script 27 bytes)
+  0000: if !(UIDynamicDataProvider.CleanupDataProvider()) goto 0x0012
+  0009: self.PlayerData = none
+  0010: return true
+  0012: return false
+  0014: return return
+  001a: <eos>

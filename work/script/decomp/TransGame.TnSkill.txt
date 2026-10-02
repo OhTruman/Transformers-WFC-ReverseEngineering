@@ -1,0 +1,18 @@
+function TnSkill.ApplySkill  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSkill.RemoveSkill  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSkill.SplitSkill  (script 140 bytes)
+  0000: LevelAsc = obj'Core.Strings'.static.Asc(obj'Core.Strings'.static.Right(SkillUniqueIdAndLevel, 1))
+  0022: if !(((LevelAsc >= 48) && (LevelAsc <= 57))) goto 0x0077
+  003c: SkillUniqueId = obj'Core.Strings'.static.Left(SkillUniqueIdAndLevel, (obj'Core.Strings'.static.Len(SkillUniqueIdAndLevel) - 1))
+  0065: Level = (LevelAsc - 48)
+  0074: goto 0x0089
+  0077: SkillUniqueId = SkillUniqueIdAndLevel
+  0082: Level = 0
+  0089: return nothing
+  008b: <eos>

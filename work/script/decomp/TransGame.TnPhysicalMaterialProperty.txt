@@ -1,0 +1,45 @@
+function TnPhysicalMaterialProperty.GetWeaponSpecificEffect  (script 88 bytes)
+  0000: foreach self.WeaponTypeSpecificEffects(WTSE,) (end 0x004e)
+  000f: foreach WTSE.WeaponTypes(WETClass,) (end 0x004c)
+  0029: if !((WETClass == WeaponType)) goto 0x004b
+  0038: iterpop
+  0039: iterpop
+  003a: return WTSE.ImpactSquib
+  004b: iternext
+  004c: iterpop
+  004d: iternext
+  004e: iterpop
+  004f: return none
+  0051: return return
+  0057: <eos>
+
+function TnPhysicalMaterialProperty.GetWeaponSpecificDecal  (script 140 bytes)
+  0000: foreach self.WeaponTypeSpecificDecals(WTSD,) (end 0x007e)
+  000f: foreach WTSD.WeaponTypes(WETClass,) (end 0x007c)
+  0029: if !((WETClass == WeaponType)) goto 0x007b
+  0038: DecalIndex = obj'Core.Random'.static.RandomInt(WTSD.ImpactDecal.Length)
+  0062: iterpop
+  0063: iterpop
+  0064: return DecalIndex[WTSD.ImpactDecal]
+  007b: iternext
+  007c: iterpop
+  007d: iternext
+  007e: iterpop
+  007f: return EmptyDecal
+  0085: return return
+  008b: <eos>
+
+function TnPhysicalMaterialProperty.GetWeaponSpecificImpactSound  (script 88 bytes)
+  0000: foreach self.WeaponTypeSpecificImpactSounds(WTSIS,) (end 0x004e)
+  000f: foreach WTSIS.WeaponTypes(WETClass,) (end 0x004c)
+  0029: if !((WETClass == WeaponType)) goto 0x004b
+  0038: iterpop
+  0039: iterpop
+  003a: return WTSIS.ImpactSound
+  004b: iternext
+  004c: iterpop
+  004d: iternext
+  004e: iterpop
+  004f: return none
+  0051: return return
+  0057: <eos>

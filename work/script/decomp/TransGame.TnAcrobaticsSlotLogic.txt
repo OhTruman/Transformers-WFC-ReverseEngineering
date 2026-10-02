@@ -1,0 +1,159 @@
+function TnAcrobaticsSlotLogic.Initialize  (script 22 bytes)
+  0000: self.CurrentAcrobaticsState = 8
+  0008: self.Slot = SlotNode
+  0013: return nothing
+  0015: <eos>
+
+function TnAcrobaticsSlotLogic.Tick  (script 608 bytes)
+  0000: OwningPawn = TnPawn(self.Slot.SkelComponent.Owner)
+  0022: if !((OwningPawn == none)) goto 0x002f
+  002d: return nothing
+  002f: AcrobaticsService = TnAcrobaticsService(OwningPawn.GetRobotService('TnAcrobaticsService'))
+  0056: if !(EqualEqual_InterfaceInterface(AcrobaticsService, TnAcrobaticsService(none))) goto 0x006c
+  006a: return nothing
+  006c: NewAcrobaticsState = AcrobaticsService.get_AcrobaticsState()
+  0086: if !((cast3a(self.CurrentAcrobaticsState) == cast3a(NewAcrobaticsState))) goto 0x00d2
+  0099: if !((cast3a(self.CurrentAcrobaticsState) == cast3a(7))) goto 0x00d0
+  00a9: TnAcrobaticsSlotLogic.CalculateSkidBlend(TnPhysicsService(OwningPawn.GetRobotService('TnPhysicsService')))
+  00d0: return nothing
+  00d2: self.PreviousAcrobaticState = self.CurrentAcrobaticsState
+  00dd: self.CurrentAcrobaticsState = NewAcrobaticsState
+  00e8: switch (self.CurrentAcrobaticsState)
+  00ef: case 0: (next 0x010d)
+  00f4: TnAcrobaticsSlotLogic.PlayAnimation(self.SingleJumpAnimations.EnterState)
+  010a: goto 0x025d
+  010d: case 1: (next 0x012b)
+  0112: TnAcrobaticsSlotLogic.PlayAnimation(self.DoubleJumpAnimations.EnterState)
+  0128: goto 0x025d
+  012b: case 2: (next 0x0149)
+  0130: TnAcrobaticsSlotLogic.PlayAnimation(self.SingleJumpAnimations.EnterState)
+  0146: goto 0x025d
+  0149: case 4: (next 0x015c)
+  014e: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.FallingAnimations)
+  0159: goto 0x025d
+  015c: case 3: (next 0x016f)
+  0161: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.HoveringAnimations)
+  016c: goto 0x025d
+  016f: case 7: (next 0x01f2)
+  0174: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.SkiddingAnimations.AllowingSkid)
+  018a: self.AllowingSkidNodeIndex = self.Slot.TargetChildIndex
+  019e: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.SkiddingAnimations.FightingSkid)
+  01b4: self.FightingSkidNodeIndex = self.Slot.TargetChildIndex
+  01c8: TnAcrobaticsSlotLogic.CalculateSkidBlend(TnPhysicsService(OwningPawn.GetRobotService('TnPhysicsService')))
+  01ef: goto 0x025d
+  01f2: case 5: (next 0x021a)
+  01f7: TnAcrobaticsSlotLogic.PlayAnimation(TnAcrobaticsSlotLogic.FindDodgeAnimation(AcrobaticsService.get_DodgeDirection()))
+  0217: goto 0x025d
+  021a: case 6: (next 0x0242)
+  021f: TnAcrobaticsSlotLogic.PlayAnimation(TnAcrobaticsSlotLogic.FindRammedAnimation(AcrobaticsService.get_DodgeDirection()))
+  023f: goto 0x025d
+  0242: default:
+  0245: SlotNode.StopCustomAnim(self.LastAnimationBlendOutTime)
+  025d: return nothing
+  025f: <eos>
+
+function TnAcrobaticsSlotLogic.EnterAnimationComplete  (script 133 bytes)
+  0000: switch (self.CurrentAcrobaticsState)
+  0007: case 0: (next 0x0025)
+  000c: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.SingleJumpAnimations.LoopState)
+  0022: goto 0x0082
+  0025: case 1: (next 0x0043)
+  002a: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.DoubleJumpAnimations.LoopState)
+  0040: goto 0x0082
+  0043: case 2: (next 0x0061)
+  0048: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.SingleJumpAnimations.LoopState)
+  005e: goto 0x0082
+  0061: case 5: (next 0x0066)
+  0066: case 6: (next 0x007f)
+  006b: if !(TnAcrobaticsSlotLogic.WasPreviouslyInAirborneState()) goto 0x007f
+  0074: TnAcrobaticsSlotLogic.PlayLoopingAnimation(self.FallingAnimations)
+  007f: default:
+  0082: return nothing
+  0084: <eos>
+
+function TnAcrobaticsSlotLogic.LoopingAnimationFailed  (script 78 bytes)
+  0000: LogInternal("Error: A looping animation in the acrobatics manager failed to play.", , , )
+  004b: return nothing
+  004d: <eos>
+
+function TnAcrobaticsSlotLogic.PlayAnimation  (script 252 bytes)
+  0000: if !((AcrobaticsAnim.AnimChooser == none)) goto 0x0018
+  0016: return false
+  0018: AnimName = AcrobaticsAnim.AnimChooser.ChooseSequence(TnPawn(self.Slot.SkelComponent.Owner))
+  0058: if !((AnimName == 'None')) goto 0x006d
+  006b: return false
+  006d: self.Slot.PlayCustomAnimWithCallbacks(AnimName, 1.0, ((self.Slot.NodeTotalWeight > 0.0) ? AcrobaticsAnim.BlendInTime : 0.0), AcrobaticsAnim.BlendOutTime, false, true, delegate.EnterAnimationComplete, delegate.EnterAnimationComplete)
+  00dd: self.LastAnimationBlendOutTime = AcrobaticsAnim.BlendOutTime
+  00f3: return true
+  00f5: return return
+  00fb: <eos>
+
+function TnAcrobaticsSlotLogic.PlayLoopingAnimation  (script 252 bytes)
+  0000: if !((AcrobaticsAnim.AnimChooser == none)) goto 0x0018
+  0016: return false
+  0018: AnimName = AcrobaticsAnim.AnimChooser.ChooseSequence(TnPawn(self.Slot.SkelComponent.Owner))
+  0058: if !((AnimName == 'None')) goto 0x006d
+  006b: return false
+  006d: self.Slot.PlayCustomAnimWithCallbacks(AnimName, 1.0, ((self.Slot.NodeTotalWeight > 0.0) ? AcrobaticsAnim.BlendInTime : 0.0), AcrobaticsAnim.BlendOutTime, true, true, delegate.None, delegate.LoopingAnimationFailed)
+  00dd: self.LastAnimationBlendOutTime = AcrobaticsAnim.BlendOutTime
+  00f3: return true
+  00f5: return return
+  00fb: <eos>
+
+function TnAcrobaticsSlotLogic.FindDodgeAnimation  (script 111 bytes)
+  0000: switch (DodgeDirection)
+  0007: case 3: (next 0x001d)
+  000c: return self.DodgeAnimations.ForwardAnimations
+  001d: case 4: (next 0x0033)
+  0022: return self.DodgeAnimations.BackAnimations
+  0033: case 2: (next 0x0049)
+  0038: return self.DodgeAnimations.RightAnimations
+  0049: case 1: (next 0x005f)
+  004e: return self.DodgeAnimations.LeftAnimations
+  005f: default:
+  0062: return Empty
+  0068: return return
+  006e: <eos>
+
+function TnAcrobaticsSlotLogic.FindRammedAnimation  (script 111 bytes)
+  0000: switch (DodgeDirection)
+  0007: case 3: (next 0x001d)
+  000c: return self.RammedAnimations.ForwardAnimations
+  001d: case 4: (next 0x0033)
+  0022: return self.RammedAnimations.BackAnimations
+  0033: case 2: (next 0x0049)
+  0038: return self.RammedAnimations.RightAnimations
+  0049: case 1: (next 0x005f)
+  004e: return self.RammedAnimations.LeftAnimations
+  005f: default:
+  0062: return Empty
+  0068: return return
+  006e: <eos>
+
+function TnAcrobaticsSlotLogic.WasPreviouslyInAirborneState  (script 41 bytes)
+  0000: switch (self.PreviousAcrobaticState)
+  0007: case 0: (next 0x000c)
+  000c: case 1: (next 0x0011)
+  0011: case 3: (next 0x0016)
+  0016: case 4: (next 0x001d)
+  001b: return true
+  001d: default:
+  0020: return false
+  0022: return return
+  0028: <eos>
+
+function TnAcrobaticsSlotLogic.CalculateSkidBlend  (script 297 bytes)
+  0000: AccelerationInVelocityDirection = ((obj'Core.Math'.static.VSize(PhysicsService.get_Acceleration()) == cast3f(0)) ? 0.0 : (obj'Core.Math'.static.Normal(PhysicsService.get_Velocity()) dot obj'Core.Math'.static.Normal(PhysicsService.get_Acceleration())))
+  0074: if !((AccelerationInVelocityDirection > 0.5)) goto 0x0091
+  0083: Blend = 0.0
+  008e: goto 0x00b9
+  0091: if !((AccelerationInVelocityDirection < -0.5)) goto 0x00ae
+  00a0: Blend = 1.0
+  00ab: goto 0x00b9
+  00ae: Blend = 0.5
+  00b9: if !((Blend != self.FightingSkidNodeIndex[self.Slot.TargetWeight])) goto 0x00eb
+  00d7: self.Slot.BlendTimeToGo = 0.2
+  00eb: self.AllowingSkidNodeIndex[self.Slot.TargetWeight] = (1.0 - Blend)
+  010c: self.FightingSkidNodeIndex[self.Slot.TargetWeight] = Blend
+  0126: return nothing
+  0128: <eos>

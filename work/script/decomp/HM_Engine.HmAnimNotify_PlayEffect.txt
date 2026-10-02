@@ -1,0 +1,78 @@
+function HmAnimNotify_PlayEffect.CheckForErrors  (script 104 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.SocketName == 'None')) goto 0x0065
+  0019: EmitCheckMessage(0, ((cast56(self) @ "does not have a socket set for particle system") @ cast56(self.ParticleSystemTemplate)), , )
+  0065: return nothing
+  0067: <eos>
+
+function HmAnimNotify_PlayEffect.StartEffect  (script 123 bytes)
+  0000: PlayCondition = (self.bAutoDeactivate ? 1 : 0)
+  0015: ParticleEffectManagerComponent = Owner.FindOrCreateComponent(obj'HmParticleEffectManagerComponent')
+  0033: return ParticleEffectManagerComponent.PlayEffect(AnimSeqInstigator.SkelComponent, self.SocketName, PSTemplate, self.bTickPostPhysicsBlendIn, self.RelativeLocation, self.RelativeRotation, PlayCondition)
+  0074: return return
+  007a: <eos>
+
+function HmAnimNotify_PlayEffect.OnParticleSystemSpawned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmAnimNotify_PlayEffect.Notify  (script 616 bytes)
+  0000: if !((self.SocketName == 'None')) goto 0x009d
+  0013: LogInternal((((("Error: AnimNotify_PlayEffect is trying to play:" @ cast56(self.ParticleSystemTemplate)) @ "for anim:") @ cast57(AnimSeqInstigator.AnimSeqName)) @ "with none socket.  Bones not supported"), , , )
+  009b: return nothing
+  009d: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x00b3
+  00b1: return nothing
+  00b3: Owner = AnimSeqInstigator.SkelComponent.Owner
+  00d0: PSC = HmAnimNotify_PlayEffect.StartEffect(Owner, AnimSeqInstigator, self.ParticleSystemTemplate)
+  00eb: if !((PSC == none)) goto 0x0168
+  00f6: LogInternal(((((("ERROR: Failed to start particle effect" @ cast56(self.ParticleSystemTemplate)) @ "on socket") @ cast57(self.SocketName)) @ "from animation") @ cast57(AnimSeqInstigator.AnimSeqName)), , , )
+  0166: return nothing
+  0168: if !((self.Parameters != none)) goto 0x0190
+  0173: self.Parameters.Apply(PSC, Owner)
+  0190: if !(self.bAutoDeactivate) goto 0x0251
+  0199: AutoDeactivateTime = (AnimSeqInstigator.GetAnimPlaybackLength() + 0.04)
+  01b9: deactivationEntry.SequencePathname = PathName(AnimSeqInstigator)
+  01d9: deactivationEntry.PSC = MakeWeakReference(PSC)
+  01f9: deactivationEntry.AutoDeactivateTime = (Owner.WorldInfo.TimeSeconds + AutoDeactivateTime)
+  0228: self.AutoDeactivateParticleSystems.AddItem(deactivationEntry)
+  0235: Owner.SetTimer(AutoDeactivateTime, false, 'DeactivateParticleSystemsBasedOnTime', self)
+  0251: OnParticleSystemSpawned(PSC, AnimSeqInstigator)
+  0265: return nothing
+  0267: <eos>
+
+function HmAnimNotify_PlayEffect.OnAnimSequenceStopped  (script 218 bytes)
+  0000: instigatorPathname = PathName(AnimSeqInstigator)
+  0015: I = 0
+  001c: if !((I < self.AutoDeactivateParticleSystems.Length)) goto 0x00b7
+  002c: entry = I[self.AutoDeactivateParticleSystems]
+  003d: if !((entry.SequencePathname == instigatorPathname)) goto 0x00ad
+  0057: PSC = WeakObjectReferenceToObject(obj'Engine.ParticleSystemComponent', entry.PSC)
+  007c: if !((PSC != none)) goto 0x009a
+  0087: PSC.DeactivateSystem()
+  009a: self.AutoDeactivateParticleSystems.Remove(I,1)
+  00a6: SubtractSubtract_Int(I)
+  00ad: AddAdd_Int(I)
+  00b4: goto 0x001c
+  00b7: if !((self.TerminateParticleSystemTemplate != none)) goto 0x00d7
+  00c2: HmAnimNotify_PlayEffect.StartEffect(Owner, AnimSeqInstigator, self.TerminateParticleSystemTemplate)
+  00d7: return nothing
+  00d9: <eos>
+
+function HmAnimNotify_PlayEffect.DeactivateParticleSystemsBasedOnTime  (script 232 bytes)
+  0000: WorldInf = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: WorldTime = 0.0
+  0024: if !((WorldInf != none)) goto 0x0043
+  002f: WorldTime = WorldInf.TimeSeconds
+  0043: I = 0
+  004a: if !((I < self.AutoDeactivateParticleSystems.Length)) goto 0x00e5
+  005a: entry = I[self.AutoDeactivateParticleSystems]
+  006b: if !((WorldTime >= entry.AutoDeactivateTime)) goto 0x00db
+  0085: PSC = WeakObjectReferenceToObject(obj'Engine.ParticleSystemComponent', entry.PSC)
+  00aa: if !((PSC != none)) goto 0x00c8
+  00b5: PSC.DeactivateSystem()
+  00c8: self.AutoDeactivateParticleSystems.Remove(I,1)
+  00d4: SubtractSubtract_Int(I)
+  00db: AddAdd_Int(I)
+  00e2: goto 0x004a
+  00e5: return nothing
+  00e7: <eos>

@@ -1,0 +1,11 @@
+function StimulusType.SatisfiesTeamConditions  (script 266 bytes)
+  0000: if !((((((cast3a(TeamCondition) == cast3a(0)) || (Instigator == none)) || (Reactor == none)) || (Instigator.Pawn == none)) || (Reactor.Pawn == none))) goto 0x0058
+  0056: return true
+  0058: if !((Instigator == Reactor)) goto 0x0069
+  0067: return false
+  0069: if !((((cast3a(TeamCondition) == cast3a(3)) || (cast3a(TeamCondition) == cast3a(4))) && (PlayerController(Instigator) == none))) goto 0x009f
+  009d: return false
+  009f: SameTeam = Instigator.Pawn.IsSameTeam(Reactor.Pawn)
+  00d0: return (((cast3a(TeamCondition) == cast3a(1)) || (cast3a(TeamCondition) == cast3a(3))) ? SameTeam : !SameTeam)
+  0103: return return
+  0109: <eos>

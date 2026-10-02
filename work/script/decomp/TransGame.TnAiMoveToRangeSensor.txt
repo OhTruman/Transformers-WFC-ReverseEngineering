@@ -1,0 +1,100 @@
+function TnAiMoveToRangeSensor.SubjectInRangeEvent  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiMoveToRangeSensor.get_Subject  (script 28 bytes)
+  0000: UpdateSubject(self._Subject)
+  000f: return self._Subject
+  0015: return return
+  001b: <eos>
+
+function TnAiMoveToRangeSensor.get_Range  (script 13 bytes)
+  0000: return self._Range
+  0006: return return
+  000c: <eos>
+
+function TnAiMoveToRangeSensor.get_MoveType  (script 13 bytes)
+  0000: return self._TargetWorldState
+  0006: return return
+  000c: <eos>
+
+function TnAiMoveToRangeSensor.set_MoveType  (script 14 bytes)
+  0000: self._TargetWorldState = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiMoveToRangeSensor.set_SubjectInRange  (script 14 bytes)
+  0000: self._SubjectInRange = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiMoveToRangeSensor.OnInitialize  (script 36 bytes)
+  0000: self._RangeDetector.Initialize(self._OwnerController.RangeSet)
+  0021: return nothing
+  0023: <eos>
+
+function TnAiMoveToRangeSensor.SetSubjectAndRange  (script 88 bytes)
+  0000: if !((cast3a(self._Range) <= cast3a(1))) goto 0x0016
+  0010: TnAiMoveToRangeSensor.TryToReleaseSubjectTactical()
+  0016: self._Subject = Subject
+  0021: self._Range = Range
+  002c: if !((Subject == none)) goto 0x0039
+  0037: return nothing
+  0039: if !((cast3a(Range) <= cast3a(1))) goto 0x004f
+  0049: TnAiMoveToRangeSensor.TryToClaimSubjectTactical()
+  004f: TnAiMoveToRangeSensor.UpdateWorldState()
+  0055: return nothing
+  0057: <eos>
+
+function TnAiMoveToRangeSensor.TryToClaimSubjectTactical  (script 94 bytes)
+  0000: TacticalNode = TnTacticalPathNode(self._Subject)
+  0010: if !((TacticalNode == none)) goto 0x001d
+  001b: return nothing
+  001d: Tactical = TacticalNode.GetTactical()
+  0036: if !((Tactical == none)) goto 0x0043
+  0041: return nothing
+  0043: Tactical.Claim(self._OwnerController)
+  005b: return nothing
+  005d: <eos>
+
+function TnAiMoveToRangeSensor.TryToReleaseSubjectTactical  (script 94 bytes)
+  0000: TacticalNode = TnTacticalPathNode(self._Subject)
+  0010: if !((TacticalNode == none)) goto 0x001d
+  001b: return nothing
+  001d: Tactical = TacticalNode.GetTactical()
+  0036: if !((Tactical == none)) goto 0x0043
+  0041: return nothing
+  0043: Tactical.Release(self._OwnerController)
+  005b: return nothing
+  005d: <eos>
+
+function TnAiMoveToRangeSensor.ClearSubject  (script 16 bytes)
+  0000: self._Subject = none
+  0007: TnAiMoveToRangeSensor.UpdateWorldState()
+  000d: return nothing
+  000f: <eos>
+
+function TnAiMoveToRangeSensor.OnUpdate  (script 9 bytes)
+  0000: TnAiMoveToRangeSensor.UpdateWorldState()
+  0006: return nothing
+  0008: <eos>
+
+function TnAiMoveToRangeSensor.UpdateWorldState  (script 276 bytes)
+  0000: if !((get_Subject() == none)) goto 0x0035
+  0010: self._OwnerController.AiWorldState.SetBoolValue(self._TargetWorldState, false, none)
+  0033: return nothing
+  0035: self._RangeDetector.GetRange(self._OwnerPawn, self._Subject, CenterPointRange, NearestRange)
+  005c: if !((cast3a(CenterPointRange) <= cast3a(self._Range))) goto 0x00ea
+  006f: if !(AndAnd_BoolBool((self._SubjectInRange != emptydelegate))) goto 0x00c0
+  007b: !self._OwnerController.AiWorldState.GetBoolValue(self._TargetWorldState)
+  00a1: <endparms>
+  00a2: SubjectInRangeEvent(get_Subject(), CenterPointRange)
+  00c0: self._OwnerController.AiWorldState.SetBoolValue(self._TargetWorldState, true, self._Subject)
+  00e7: goto 0x0111
+  00ea: self._OwnerController.AiWorldState.SetBoolValue(self._TargetWorldState, false, self._Subject)
+  0111: return nothing
+  0113: <eos>
+
+function TnAiMoveToRangeSensor.UpdateSubject  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

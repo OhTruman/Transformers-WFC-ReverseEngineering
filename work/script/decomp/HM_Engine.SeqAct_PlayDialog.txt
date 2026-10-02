@@ -1,0 +1,60 @@
+function SeqAct_PlayDialog.DialogEventCallback  (script 252 bytes)
+  0000: if !((cast3a(Event) == cast3a(0))) goto 0x0020
+  0010: AddAdd_Int(self.PlayingCount)
+  0017: SeqAct_PlayDialog.EnableDuckingMixerPreset()
+  001d: goto 0x00f9
+  0020: if !((cast3a(Event) == cast3a(3))) goto 0x0048
+  0030: 0[self.OutputLinks].bHasImpulse = true
+  0045: goto 0x00f9
+  0048: if !((cast3a(Event) == cast3a(4))) goto 0x0070
+  0058: 0[self.OutputLinks].bHasImpulse = true
+  006d: goto 0x00f9
+  0070: if !(((cast3a(Event) == cast3a(1)) || (cast3a(Event) == cast3a(2)))) goto 0x00f9
+  0092: if !((cast3a(Event) == cast3a(1))) goto 0x00ba
+  00a2: 0[self.OutputLinks].bHasImpulse = true
+  00b7: goto 0x00d7
+  00ba: if !((cast3a(Event) == cast3a(2))) goto 0x00d7
+  00ca: SeqAct_PlayDialog.ResetPostDelayTimer()
+  00d0: AddAdd_Int(self.FinishedCount)
+  00d7: SubtractSubtract_Int(self.PlayingCount)
+  00de: if !((self.PlayingCount < 0)) goto 0x00f3
+  00e9: self.PlayingCount = 0
+  00f0: goto 0x00f9
+  00f3: SeqAct_PlayDialog.DisableDuckingMixerPreset()
+  00f9: return nothing
+  00fb: <eos>
+
+function SeqAct_PlayDialog.PlayDialog  (script 82 bytes)
+  0000: DialogInterface = HmDialogInterface(Target)
+  0010: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0026
+  0024: return nothing
+  0026: DialogInterface.PlayDialog(Cue, true, self.DialogType, false, delegate.DialogEventCallback)
+  004f: return nothing
+  0051: <eos>
+
+function SeqAct_PlayDialog.StopDialog  (script 91 bytes)
+  0000: DialogInterface = HmDialogInterface(Target)
+  0010: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0026
+  0024: return nothing
+  0026: if !(DialogInterface.GetIsDialogPlaying(Cue)) goto 0x0058
+  0042: DialogInterface.StopDialog(, )
+  0058: return nothing
+  005a: <eos>
+
+function SeqAct_PlayDialog.ResetPostDelayTimer  (script 14 bytes)
+  0000: self.PostDelayTimer = self.PostDelayTime
+  000b: return nothing
+  000d: <eos>
+
+function SeqAct_PlayDialog.ElapsePostDelayTimer  (script 14 bytes)
+  0000: self.PostDelayTimer = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function SeqAct_PlayDialog.EnableDuckingMixerPreset  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_PlayDialog.DisableDuckingMixerPreset  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

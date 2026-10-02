@@ -1,0 +1,122 @@
+function TnCarInputState.get_StrafeForwardBack  (script 13 bytes)
+  0000: return self._StrafeForwardBack
+  0006: return return
+  000c: <eos>
+
+function TnCarInputState.set_StrafeForwardBack  (script 14 bytes)
+  0000: self._StrafeForwardBack = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarInputState.get_StrafeRightLeft  (script 13 bytes)
+  0000: return self._StrafeRightLeft
+  0006: return return
+  000c: <eos>
+
+function TnCarInputState.set_StrafeRightLeft  (script 14 bytes)
+  0000: self._StrafeRightLeft = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarInputState.get_Steering  (script 13 bytes)
+  0000: return self._Steering
+  0006: return return
+  000c: <eos>
+
+function TnCarInputState.set_Steering  (script 14 bytes)
+  0000: self._Steering = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarInputState.get_Drifting  (script 14 bytes)
+  0000: return self._Drifting
+  0007: return return
+  000d: <eos>
+
+function TnCarInputState.set_Drifting  (script 16 bytes)
+  0000: self._Drifting = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnCarInputState.get_Boosting  (script 14 bytes)
+  0000: return self._Boosting
+  0007: return return
+  000d: <eos>
+
+function TnCarInputState.set_Boosting  (script 16 bytes)
+  0000: self._Boosting = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnCarInputState.get_Dashing  (script 14 bytes)
+  0000: return self._Dashing
+  0007: return return
+  000d: <eos>
+
+function TnCarInputState.set_Dashing  (script 16 bytes)
+  0000: self._Dashing = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnCarInputState.get_Jumping  (script 14 bytes)
+  0000: return self._Jumping
+  0007: return return
+  000d: <eos>
+
+function TnCarInputState.set_Jumping  (script 16 bytes)
+  0000: self._Jumping = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnCarInputState.get_ViewRotation  (script 13 bytes)
+  0000: return self._ViewRotation
+  0006: return return
+  000c: <eos>
+
+function TnCarInputState.set_ViewRotation  (script 33 bytes)
+  0000: self._ViewRotation = obj'Core.Math'.static.Normalize(Value)
+  001e: return nothing
+  0020: <eos>
+
+function TnCarInputState.get_PackedFlags  (script 13 bytes)
+  0000: return self._PackedFlags
+  0006: return return
+  000c: <eos>
+
+function TnCarInputState.set_PackedFlags  (script 14 bytes)
+  0000: self._PackedFlags = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarInputState.Reset  (script 87 bytes)
+  0000: self._StrafeForwardBack = 0.0
+  000b: self._StrafeRightLeft = 0.0
+  0016: self._Steering = 0.0
+  0021: self._Boosting = false
+  0029: self._Dashing = false
+  0031: self._Jumping = false
+  0039: self._Drifting = false
+  0041: self._ViewRotation = rot(0,0,0)
+  0054: return nothing
+  0056: <eos>
+
+function TnCarInputState.Update  (script 65 bytes)
+  0000: if !((cast3a(GetRole()) == cast3a(3))) goto 0x001f
+  0015: PackFlags()
+  001f: if !((cast3a(GetRole()) == cast3a(1))) goto 0x003e
+  0034: UnpackFlags()
+  003e: return nothing
+  0040: <eos>
+
+function TnCarInputState.PackFlags  (script 72 bytes)
+  0000: self._PackedFlags = cast3d(((((self._Boosting ? 1 : 0) | (self._Dashing ? 2 : 0)) | (self._Jumping ? 4 : 0)) | (self._Drifting ? 8 : 0)))
+  0045: return nothing
+  0047: <eos>
+
+function TnCarInputState.UnpackFlags  (script 86 bytes)
+  0000: self._Boosting = ((cast3a(self._PackedFlags) & 1) > 0)
+  0014: self._Dashing = ((cast3a(self._PackedFlags) & 2) > 0)
+  0029: self._Jumping = ((cast3a(self._PackedFlags) & 4) > 0)
+  003e: self._Drifting = ((cast3a(self._PackedFlags) & 8) > 0)
+  0053: return nothing
+  0055: <eos>

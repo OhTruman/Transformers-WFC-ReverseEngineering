@@ -1,0 +1,52 @@
+function ParticleEmitter.GetLODArrayIndex  (script 7 bytes)
+  0000: LODLevel
+  0005: nothing
+  0006: <eos>
+
+function ParticleEmitter.GetLODLevelForSetting  (script 7 bytes)
+  0000: LODLevelSetting
+  0005: nothing
+  0006: <eos>
+
+function ParticleEmitter.GetHighLODLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleEmitter.GetLowLODLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleEmitter.CreateLODLevel  (script 12 bytes)
+  0000: LODLevel
+  0005: bGenerateModuleData
+  000a: nothing
+  000b: <eos>
+
+function ParticleEmitter.GetParticleSystem  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleEmitter.CalculateMaxActiveParticleCount  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleEmitter.CheckForErrors  (script 545 bytes)
+  0000: CheckForErrors()
+  0006: CalculateMaxActiveParticleCount()
+  0010: if !((0 == self.LODLevels.Length)) goto 0x009d
+  001c: EmitCheckMessage(0, (((("Emitter" @ cast57(self.EmitterName)) @ " of particle system ") @ PathName(GetParticleSystem())) @ "doesn't have any LOD levels. Please add one!."), , )
+  009b: return nothing
+  009d: if !((none != 0[self.LODLevels].TypeDataModule)) goto 0x01e4
+  00b3: I = 1
+  00ba: if !((I < self.LODLevels.Length)) goto 0x01e4
+  00ca: if !((I[self.LODLevels].TypeDataModule.get_Class() != 0[self.LODLevels].TypeDataModule.get_Class())) goto 0x01da
+  0101: EmitCheckMessage(0, ((((((((("Emitter" @ cast57(self.EmitterName)) @ " of particle system ") @ PathName(GetParticleSystem())) @ "has mismatching type data modules, LOD Level 0 =") @ cast56(0[self.LODLevels].TypeDataModule.get_Class())) @ ", LOD Level") @ cast53(I)) @ "=") @ cast56(I[self.LODLevels].TypeDataModule.get_Class())), , )
+  01da: AddAdd_PreInt(I)
+  01e1: goto 0x00ba
+  01e4: I = 0
+  01eb: if !((I < self.LODLevels.Length)) goto 0x021e
+  01fb: I[self.LODLevels].CheckForErrors()
+  0214: AddAdd_PreInt(I)
+  021b: goto 0x01eb
+  021e: return nothing
+  0220: <eos>

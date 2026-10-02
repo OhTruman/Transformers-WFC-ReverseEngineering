@@ -1,0 +1,125 @@
+function TnOrbitRotationCameraBehavior.Activate  (script 90 bytes)
+  0000: self.Ramper.Reset()
+  0013: self.TransitionSmoother.SetPercentRemapper(self.CameraActor.delegate.GetPointOnTransitionCurve)
+  0038: self.TransitionSmoother.EndTransition()
+  004b: self.CurrentLookSpeed = TnOrbitRotationCameraBehavior.GetTargetLookSpeed()
+  0057: return nothing
+  0059: <eos>
+
+function TnOrbitRotationCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.Player = TnPlayerPawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnOrbitRotationCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnOrbitRotationCameraBehavior.Reset  (script 135 bytes)
+  0000: if !((self.Player != none)) goto 0x0040
+  000b: Result.OrbitRotation.Yaw = self.Player.Rotation.Yaw
+  0040: Result.OrbitRotation.Pitch = 0
+  005d: Result.OrbitRotation.Roll = 0
+  007a: return Result
+  0080: return return
+  0086: <eos>
+
+function TnOrbitRotationCameraBehavior.SetTargetingData  (script 14 bytes)
+  0000: self.CameraTargetingData = TargetingData
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitRotationCameraBehavior.IsHoveringOverTarget  (script 113 bytes)
+  0000: if !((self.Player != none)) goto 0x0068
+  000b: C = TnPlayerController(self.Player.Controller)
+  0024: if !((((C != none) && (C.ActiveTargeting != none)) && C.ActiveTargeting.HasValidTarget())) goto 0x0068
+  0066: return true
+  0068: return false
+  006a: return return
+  0070: <eos>
+
+function TnOrbitRotationCameraBehavior.GetTargetLookSpeed  (script 132 bytes)
+  0000: NextSettingsIndex = TnOrbitRotationCameraBehavior.GetTargetLookSpeedIndex()
+  000c: if !((self.CurrentSettingsIndex != NextSettingsIndex)) goto 0x0051
+  001b: self.CurrentSettingsIndex = NextSettingsIndex
+  0026: self.TransitionSmoother.SetTransitionTime(self.SpeedTransitionTime)
+  003e: self.TransitionSmoother.Reset()
+  0051: if !((self.CurrentSettingsIndex != -1)) goto 0x0077
+  0060: return self.CurrentSettingsIndex[self.LookSpeedsByPCS].LookSpeed
+  0077: return self.DefaultLookSpeed
+  007d: return return
+  0083: <eos>
+
+function TnOrbitRotationCameraBehavior.GetTargetLookSpeedIndex  (script 96 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.LookSpeedsByPCS.Length)) goto 0x0053
+  0017: if !(self.CameraActor.HasAllPlayerCameraStates(Index[self.LookSpeedsByPCS].PlayerCameraStates)) goto 0x0049
+  0043: return Index
+  0049: AddAdd_PreInt(Index)
+  0050: goto 0x0007
+  0053: return -1
+  0059: return return
+  005f: <eos>
+
+function TnOrbitRotationCameraBehavior.UpdateCurrentLookSpeed  (script 595 bytes)
+  0000: TargetLookSpeed = TnOrbitRotationCameraBehavior.GetTargetLookSpeed()
+  000c: BlendValue = self.TransitionSmoother.Update(DeltaTime)
+  002a: self.CurrentLookSpeed.YawSpeed = obj'Core.Math'.static.Lerp(self.CurrentLookSpeed.YawSpeed, TargetLookSpeed.YawSpeed, BlendValue)
+  006b: self.CurrentLookSpeed.PitchSpeed = obj'Core.Math'.static.Lerp(self.CurrentLookSpeed.PitchSpeed, TargetLookSpeed.PitchSpeed, BlendValue)
+  00ac: self.CurrentLookSpeed.RampSpeedMultiplier = obj'Core.Math'.static.Lerp(self.CurrentLookSpeed.RampSpeedMultiplier, TargetLookSpeed.RampSpeedMultiplier, BlendValue)
+  00ed: self.CurrentLookSpeed.PitchRange.Max = obj'Core.Math'.static.Lerp(self.CurrentLookSpeed.PitchRange.Max, TargetLookSpeed.PitchRange.Max, BlendValue)
+  014f: self.CurrentLookSpeed.PitchRange.Min = obj'Core.Math'.static.Lerp(self.CurrentLookSpeed.PitchRange.Min, TargetLookSpeed.PitchRange.Min, BlendValue)
+  01b1: if !(((self.Player != none) && TargetLookSpeed.PitchRelativeToTargetActor)) goto 0x0250
+  01d2: (self.CurrentLookSpeed.PitchRange.Min += (cast3f(self.Player.Rotation.Pitch) * 0.0054932))
+  0211: (self.CurrentLookSpeed.PitchRange.Max += (cast3f(self.Player.Rotation.Pitch) * 0.0054932))
+  0250: return nothing
+  0252: <eos>
+
+function TnOrbitRotationCameraBehavior.GetCurrentSpeedMultiplier  (script 390 bytes)
+  0000: if !((self.Player != none)) goto 0x0024
+  000b: C = TnPlayerController(self.Player.Controller)
+  0024: if !(((C != none) && C.IsUnderMouseAndKeyboardControl())) goto 0x00ef
+  0047: if !((C.get_PInput() != none)) goto 0x00bf
+  0060: CameraSensitivity = obj'Core.Math'.static.Lerp(C.get_PInput().MouseOrbitRotationCameraBehaviorSensitivityLow, C.get_PInput().MouseOrbitRotationCameraBehaviorSensitivityHigh, self.CameraActor.GetCameraSensitivity())
+  00bc: goto 0x00ca
+  00bf: CameraSensitivity = 1.0
+  00ca: return ((CameraSensitivity * self.CameraActor.GetCameraSensitivityModifier()) * 182.0444489)
+  00ec: goto 0x017f
+  00ef: CameraSensitivity = obj'Core.Math'.static.Lerp(self.LowSensitivityMultiplier, self.HighSensitivityMultiplier, self.CameraActor.GetCameraSensitivity())
+  011d: CurrentRampSpeedMultiplier = (1.0 + (self.CurrentLookSpeed.RampSpeedMultiplier * self.Ramper.GetCurrentRampPercentage()))
+  014f: return ((((CameraSensitivity * self.CameraActor.GetCameraSensitivityModifier()) * CurrentRampSpeedMultiplier) * 182.0444489) * DeltaTime)
+  017f: return return
+  0185: <eos>
+
+function TnOrbitRotationCameraBehavior.Update  (script 496 bytes)
+  0000: if !(Result.Recentering) goto 0x001a
+  0014: return Result
+  001a: TnOrbitRotationCameraBehavior.UpdateCurrentLookSpeed(DeltaTime)
+  0025: self.Ramper.UpdateRampPercentage(CI, self.RampZone, self.MaxInputChange, self.RampTime, DeltaTime)
+  0051: CurrentSpeedMultiplier = TnOrbitRotationCameraBehavior.GetCurrentSpeedMultiplier(DeltaTime)
+  0062: (Result.OrbitRotation.Yaw += cast44(((CI.RightStickInputX * self.CurrentLookSpeed.YawSpeed) * CurrentSpeedMultiplier)))
+  00aa: (Result.OrbitRotation.Pitch += cast44(((CI.RightStickInputY * self.CurrentLookSpeed.PitchSpeed) * CurrentSpeedMultiplier)))
+  00f2: Result.OrbitRotation.Yaw = obj'Core.Math'.static.NormalizeRotAxis(Result.OrbitRotation.Yaw)
+  013c: Result.OrbitRotation.Pitch = obj'Core.Math'.static.Clamp(Result.OrbitRotation.Pitch, cast44((self.CurrentLookSpeed.PitchRange.Min * 182.0444489)), cast44((self.CurrentLookSpeed.PitchRange.Max * 182.0444489)))
+  01c6: Result.OrbitRotation.Roll = 0
+  01e3: return Result
+  01e9: return return
+  01ef: <eos>
+
+function TnOrbitRotationCameraBehavior.DisplayDebug  (script 230 bytes)
+  0000: if !((self.CurrentSettingsIndex == -1)) goto 0x0056
+  000f: HUD.Canvas.DrawTextNormal(("Look Speed [Default] =" @ TnOrbitRotationCameraBehavior.GetLookSpeedSettingsDebug(self.DefaultLookSpeed)), , , )
+  0053: goto 0x00b1
+  0056: HUD.Canvas.DrawTextNormal(((("Look Speed [" $ cast53(self.CurrentSettingsIndex)) $ "] =") @ TnOrbitRotationCameraBehavior.GetLookSpeedSettingsDebug(self.CurrentSettingsIndex[self.LookSpeedsByPCS].LookSpeed)), , , )
+  00b1: (out_YPos += out_YL)
+  00bd: HUD.Canvas.SetPos(16.0, out_YPos)
+  00e3: return nothing
+  00e5: <eos>
+
+function TnOrbitRotationCameraBehavior.GetLookSpeedSettingsDebug  (script 100 bytes)
+  0000: DebugString = ("Yaw Speed:" @ cast55(LSS.YawSpeed))
+  0026: ConcatEqual_StrStr(DebugString, (", Pitch Speed:" @ cast55(LSS.PitchSpeed)))
+  0057: return DebugString
+  005d: return return
+  0063: <eos>

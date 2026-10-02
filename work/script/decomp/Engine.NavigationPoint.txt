@@ -1,0 +1,360 @@
+function NavigationPoint.get_Gated  (script 14 bytes)
+  0000: return self.bGated
+  0007: return return
+  000d: <eos>
+
+function NavigationPoint.set_Gated  (script 16 bytes)
+  0000: self.bGated = Value
+  000d: return nothing
+  000f: <eos>
+
+function NavigationPoint.get_SmoothLocation  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function NavigationPoint.get_SmoothedNavigationPoint  (script 9 bytes)
+  0000: return self
+  0002: return return
+  0008: <eos>
+
+function NavigationPoint.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationPoint.CanAttachToBase  (script 7 bytes)
+  0000: NewBase
+  0005: nothing
+  0006: <eos>
+
+function NavigationPoint.PreAddReachSpec  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationPoint.ClearForPathFinding  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationPoint.GetOwningNavigationCell  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationPoint.GetBoundingCylinder  (script 12 bytes)
+  0000: CollisionRadius
+  0005: CollisionHeight
+  000a: nothing
+  000b: <eos>
+
+function NavigationPoint.GetReachSpecTo  (script 7 bytes)
+  0000: Nav
+  0005: nothing
+  0006: <eos>
+
+function NavigationPoint.CanTeleport  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function NavigationPoint.SpecialCost  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function NavigationPoint.Accept  (script 113 bytes)
+  0000: bResult = Incoming.SetLocation(self.Location)
+  0018: if !(bResult) goto 0x004e
+  0021: Incoming.Velocity = vect(0,0,0)
+  003d: Incoming.SetRotation(self.Rotation)
+  004e: Incoming.PlayTeleportEffect(true, false)
+  0063: return bResult
+  006a: return return
+  0070: <eos>
+
+function NavigationPoint.DetourWeight  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function NavigationPoint.SuggestMovePreparation  (script 77 bytes)
+  0000: if !(Other.SpecialMoveTo(Other.Anchor, self, Other.Controller.GetRouteGoalAfter(0))) goto 0x0044
+  0042: return true
+  0044: return false
+  0046: return return
+  004c: <eos>
+
+function NavigationPoint.ProceedWithMove  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function NavigationPoint.IsAvailableTo  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function NavigationPoint.GetNearestNavToActor  (script 271 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: if !((chkActor != none)) goto 0x0102
+  000e: foreach chkActor.WorldInfo.AllNavigationPoints(obj'NavigationPoint', Nav) (end 0x0101)
+  0037: if !(((((RequiredClass == none) || (Nav.get_Class() == RequiredClass)) && Nav.IsAvailableTo(chkActor)) && (ExcludeList.Find(Nav) == -1))) goto 0x0100
+  0090: Dist = obj'Core.Math'.static.VSize((Nav.Location - chkActor.Location))
+  00bf: if !((Dist > MinDist)) goto 0x0100
+  00ce: if !(((BestNav == none) || (Dist < bestDist))) goto 0x0100
+  00ea: BestNav = Nav
+  00f5: bestDist = Dist
+  0100: iternext
+  0101: iterpop
+  0102: return BestNav
+  0108: return return
+  010e: <eos>
+
+function NavigationPoint.GetNearestNavToPoint  (script 246 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((chkActor != none)) goto 0x00e9
+  000d: foreach chkActor.WorldInfo.AllNavigationPoints(obj'NavigationPoint', Nav) (end 0x00e8)
+  0036: if !(((((RequiredClass == none) || (Nav.get_Class() == RequiredClass)) && Nav.IsAvailableTo(chkActor)) && (ExcludeList.Find(Nav) == -1))) goto 0x00e7
+  008f: Dist = obj'Core.Math'.static.VSize((Nav.Location - ChkPoint))
+  00b5: if !(((BestNav == none) || (Dist < bestDist))) goto 0x00e7
+  00d1: BestNav = Nav
+  00dc: bestDist = Dist
+  00e7: iternext
+  00e8: iterpop
+  00e9: return BestNav
+  00ef: return return
+  00f5: <eos>
+
+function NavigationPoint.GetAllNavInRadius  (script 37 bytes)
+  0000: chkActor
+  0005: ChkPoint
+  000a: Radius
+  000f: out_NavList
+  0014: bSkipBlocked
+  0019: inNetworkID
+  001e: MinSize
+  0023: nothing
+  0024: <eos>
+
+function NavigationPoint.OnToggle  (script 163 bytes)
+  0000: if !(0[inAction.InputLinks].bHasImpulse) goto 0x002a
+  001f: self.bBlocked = false
+  0027: goto 0x0083
+  002a: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0054
+  0049: self.bBlocked = true
+  0051: goto 0x0083
+  0054: if !(2[inAction.InputLinks].bHasImpulse) goto 0x0083
+  0074: self.bBlocked = !self.bBlocked
+  0083: self.WorldInfo.Game.NotifyNavigationChanged(self)
+  00a0: return nothing
+  00a2: <eos>
+
+function NavigationPoint.OnToggleNavGate  (script 163 bytes)
+  0000: if !(0[inAction.InputLinks].bHasImpulse) goto 0x002a
+  001f: self.bGateOpen = true
+  0027: goto 0x0083
+  002a: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0054
+  0049: self.bGateOpen = false
+  0051: goto 0x0083
+  0054: if !(2[inAction.InputLinks].bHasImpulse) goto 0x0083
+  0074: self.bGateOpen = !self.bGateOpen
+  0083: self.WorldInfo.Game.NotifyNavigationChanged(self)
+  00a0: return nothing
+  00a2: <eos>
+
+function NavigationPoint.OnMatchingNetworks  (script 77 bytes)
+  0000: return ((((Nav == none) || (self.NetworkID < 0)) || (Nav.NetworkID < 0)) || (self.NetworkID == Nav.NetworkID))
+  0046: return return
+  004c: <eos>
+
+function NavigationPoint.GetNetworkID  (script 13 bytes)
+  0000: return self.NetworkID
+  0006: return return
+  000c: <eos>
+
+function NavigationPoint.GetConnections  (script 78 bytes)
+  0000: switch (ConnectionType)
+  0007: case 0: (next 0x0012)
+  000c: return self.EditorJumpPaths
+  0012: case 2: (next 0x001d)
+  0017: return self.EditorMoverWalkPaths
+  001d: case 1: (next 0x0028)
+  0022: return self.EditorMoverJumpPaths
+  0028: case 3: (next 0x0033)
+  002d: return self.EditorMoverFlyPaths
+  0033: default:
+  0036: EmptyConnections = EmptyConnections
+  0041: return EmptyConnections
+  0047: return return
+  004d: <eos>
+
+function NavigationPoint.SetConnections  (script 86 bytes)
+  0000: switch (ConnectionType)
+  0007: case 0: (next 0x001a)
+  000c: self.EditorJumpPaths = Connections
+  0017: goto 0x0053
+  001a: case 2: (next 0x002d)
+  001f: self.EditorMoverWalkPaths = Connections
+  002a: goto 0x0053
+  002d: case 1: (next 0x003d)
+  0032: self.EditorMoverJumpPaths = Connections
+  003d: case 3: (next 0x0050)
+  0042: self.EditorMoverFlyPaths = Connections
+  004d: goto 0x0053
+  0050: default:
+  0053: return nothing
+  0055: <eos>
+
+function NavigationPoint.IsConnectedTo  (script 58 bytes)
+  0000: Connections = GetConnections(ConnectionType)
+  0015: return (Connections.Find('Nav',NavPoint) != -1)
+  0033: return return
+  0039: <eos>
+
+function NavigationPoint.AddConnection  (script 175 bytes)
+  0000: Connections = GetConnections(ConnectionType)
+  0015: Index = Connections.Find('Nav',Destination)
+  0031: if !((Index != -1)) goto 0x0042
+  0040: return nothing
+  0042: ref.Nav = Destination
+  0058: ref.Guid = Destination.NavGuid
+  0077: Connections.AddItem(ref)
+  0084: SetConnections(ConnectionType, Connections)
+  0098: OnAddConnection(ConnectionType, Destination)
+  00ac: return nothing
+  00ae: <eos>
+
+function NavigationPoint.OnAddConnection  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function NavigationPoint.RemoveConnection  (script 119 bytes)
+  0000: Connections = GetConnections(ConnectionType)
+  0015: Index = Connections.Find('Nav',Destination)
+  0031: if !((Index != -1)) goto 0x0074
+  0040: Connections.Remove(Index,1)
+  004c: SetConnections(ConnectionType, Connections)
+  0060: OnRemoveConnection(ConnectionType, Destination)
+  0074: return nothing
+  0076: <eos>
+
+function NavigationPoint.OnRemoveConnection  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function NavigationPoint.IsDoubleJump  (script 26 bytes)
+  0000: return (self.bNotBased ? NavigationPoint.HasJumpLink() : false)
+  0013: return return
+  0019: <eos>
+
+function NavigationPoint.HasJumpLink  (script 64 bytes)
+  0000: foreach self.PathList(Spec,) (end 0x0031)
+  000f: if !(Spec.IsJumpRequired()) goto 0x0030
+  0025: HasJumpLink = true
+  002d: goto 0x0031
+  0030: iternext
+  0031: iterpop
+  0032: return HasJumpLink
+  0039: return return
+  003f: <eos>
+
+function NavigationPoint.CheckForErrors  (script 120 bytes)
+  0000: CheckForErrors()
+  0006: if !(((self.bCheckForNotBasedErrors && self.bNotBased) && !NavigationPoint.HasJumpLink())) goto 0x0075
+  0027: EmitCheckMessage(0, "NavigationPoint with 'base disabled' does not have a jump link", , )
+  0075: return nothing
+  0077: <eos>
+
+function NavigationPoint.AssignOccupier  (script 52 bytes)
+  0000: if !((self.Occupiers.Find(C) != -1)) goto 0x0019
+  0017: return false
+  0019: self.Occupiers.Length[self.Occupiers] = C
+  002b: return true
+  002d: return return
+  0033: <eos>
+
+function NavigationPoint.ReleaseOccupier  (script 57 bytes)
+  0000: RemoveIndex = self.Occupiers.Find(C)
+  0013: if !((RemoveIndex == -1)) goto 0x0024
+  0022: return false
+  0024: self.Occupiers.Remove(RemoveIndex,1)
+  0030: return true
+  0032: return return
+  0038: <eos>
+
+function NavigationPoint.IsOccupied  (script 23 bytes)
+  0000: if !((self.Occupiers.Length == 0)) goto 0x000e
+  000c: return false
+  000e: return true
+  0010: return return
+  0016: <eos>
+
+function NavigationPoint.IsOccupiedByController  (script 34 bytes)
+  0000: if !((self.Occupiers.Find(C) == -1)) goto 0x0019
+  0017: return false
+  0019: return true
+  001b: return return
+  0021: <eos>
+
+function NavigationPoint.IsOccupiedExcludeController  (script 50 bytes)
+  0000: if !((self.Occupiers.Find(C) != -1)) goto 0x0021
+  0017: return (self.Occupiers.Length > 1)
+  0021: return (self.Occupiers.Length > 0)
+  002b: return return
+  0031: <eos>
+
+function NavigationPoint.GetReachSpecArray  (script 13 bytes)
+  0000: return self.PathList
+  0006: return return
+  000c: <eos>
+
+function NavigationPoint.IsBlocked  (script 14 bytes)
+  0000: return self.bBlocked
+  0007: return return
+  000d: <eos>
+
+function NavigationPoint.CanSmoothThrough  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function NavigationPoint.BuildSmoothInfo  (script 12 bytes)
+  0000: default=0.0
+  0009: return nothing
+  000b: <eos>
+
+function NavigationPoint.GetBBox  (script 140 bytes)
+  0000: Bounds = self.CylinderComponent.GetBounds()
+  0019: BBox.Min = (Bounds.Origin - Bounds.BoxExtent)
+  004c: BBox.Max = (Bounds.Origin + Bounds.BoxExtent)
+  007f: return BBox
+  0085: return return
+  008b: <eos>
+
+function NavigationPoint.GetNavPointFromRef  (script 82 bytes)
+  0000: if !((ref.Nav != none)) goto 0x0027
+  0016: return ref.Nav
+  0027: return obj'Pathing'.static.FindNavByGuid(ref.Guid)
+  004b: return return
+  0051: <eos>
+
+function NavigationPoint.GetNavGuid  (script 67 bytes)
+  0000: if !(!obj'Core.Object'.static.IsGuidValid(self.NavGuid)) goto 0x0036
+  001d: self.NavGuid = obj'Core.Object'.static.CreateGuid()
+  0036: return self.NavGuid
+  003c: return return
+  0042: <eos>
+
+function NavigationPoint.HasEditorSpecifiedConnections  (script 101 bytes)
+  0000: return (((((((self.EditorForcedPaths.Length > 0) || (self.EditorProscribedPaths.Length > 0)) || (self.EditorForcedPaths.Length > 0)) || (self.EditorJumpPaths.Length > 0)) || (self.EditorMoverWalkPaths.Length > 0)) || (self.EditorMoverJumpPaths.Length > 0)) || (self.EditorMoverFlyPaths.Length > 0))
+  005e: return return
+  0064: <eos>
+
+function NavigationPoint.SetValidPlacement  (script 25 bytes)
+  0000: self._NavProxy._IsPlacementValid = IsValid
+  0016: return nothing
+  0018: <eos>
+
+function NavigationPoint.ScriptGetTeamNum  (script 13 bytes)
+  0000: return self.TeamNum
+  0006: return return
+  000c: <eos>

@@ -1,0 +1,31 @@
+function CrowdReplicationActor.ReplicatedEvent  (script 455 bytes)
+  0000: if !(((VarName == 'Spawner') || (VarName == 'bSpawningActive'))) goto 0x0068
+  0028: if !((self.Spawner != none)) goto 0x0065
+  0033: self.Spawner.bSpawningActive = self.bSpawningActive
+  0049: if !(self.bSpawningActive) goto 0x0065
+  0052: self.Spawner.CacheSpawnerVars()
+  0065: goto 0x01c4
+  0068: if !((VarName == 'DestroyAllCount')) goto 0x0112
+  007b: if !((self.Spawner == none)) goto 0x00eb
+  0086: LogInternal((("Error:" @ cast56(self)) @ "received replicated event 'DestroyAllCount' but does not have a valid spawner"), , , )
+  00e9: return nothing
+  00eb: self.Spawner.DestroyAgents()
+  00fe: self.Spawner.bSpawningActive = false
+  010f: goto 0x01c4
+  0112: if !((VarName == 'KillAllCount')) goto 0x01b9
+  0125: if !((self.Spawner == none)) goto 0x0192
+  0130: LogInternal((("Error:" @ cast56(self)) @ "received replicated event 'KillAllCount' but does not have a valid spawner"), , , )
+  0190: return nothing
+  0192: self.Spawner.KillAgents()
+  01a5: self.Spawner.bSpawningActive = false
+  01b6: goto 0x01c4
+  01b9: ReplicatedObject.ReplicatedEvent(VarName)
+  01c4: return nothing
+  01c6: <eos>
+
+function CrowdReplicationActor.Tick  (script 87 bytes)
+  0000: Actor.Tick(DeltaTime)
+  000b: if !((((cast3a(self.Role) < cast3a(3)) && (self.Spawner != none)) && self.Spawner.bSpawningActive)) goto 0x0054
+  003c: self.Spawner.UpdateSpawning(DeltaTime)
+  0054: return nothing
+  0056: <eos>

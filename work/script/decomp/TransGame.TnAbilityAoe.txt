@@ -1,0 +1,14 @@
+function TnAbilityAoe.ServerTriggerAbility  (script 271 bytes)
+  0000: foreach self.OwnerPawn.WorldInfo.AllPawns(obj'TnPawn', P, self.OwnerPawn.Location, self.AoeRange) (end 0x0105)
+  003c: SameTeam = (P.IsSameTeam(self.OwnerPawn) || (P == self.OwnerPawn))
+  006c: if !(((SameTeam && (cast3a(self.AoeEffectType) == cast3a(1))) || (!SameTeam && (cast3a(self.AoeEffectType) == cast3a(0))))) goto 0x00aa
+  00a6: iternext
+  00a7: goto 0x0105
+  00aa: BuffService = TnBuffService(P.GetService('TnBuffService'))
+  00d1: if !(NotEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0104
+  00e5: BuffService.AddBuff(self.BuffToApply, 0, self.OwnerPawn)
+  0104: iternext
+  0105: iterpop
+  0106: TnAbility.ServerTriggerAbility()
+  010c: return nothing
+  010e: <eos>

@@ -1,0 +1,27 @@
+function HmFracturedMeshDestructionEffectFactory.GetEffectDescription  (script 56 bytes)
+  0000: return ((self.FracturedComponentTemplate.StaticMesh == none) ? "" : PathName(self.FracturedComponentTemplate.StaticMesh))
+  0031: return return
+  0037: <eos>
+
+function HmFracturedMeshDestructionEffectFactory.DoCreateInstance  (script 138 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmFracturedMeshDestructionEffect', nothing, AttachTreeCallback)
+  0018: StaticComponent = FracturedStaticMeshComponent(self.FracturedComponentTemplate.Clone(Effect, ))
+  003c: SkinnedComponent = FracturedSkinnedMeshComponent(self.SkinnedComponentTemplate.Clone(Effect, ))
+  0060: Effect.SetComponents(StaticComponent, SkinnedComponent)
+  007d: return Effect
+  0083: return return
+  0089: <eos>
+
+function HmFracturedMeshDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmFracturedMeshDestructionEffectFactory.CalculatePrimitiveCount  (script 125 bytes)
+  0000: if !((self.FracturedComponentTemplate.StaticMesh != none)) goto 0x0038
+  0014: (PrimitiveCount += self.FracturedComponentTemplate.StaticMesh.GetNumElements(0))
+  0038: if !((self.SkinnedComponentTemplate.StaticMesh != none)) goto 0x0070
+  004c: (PrimitiveCount += self.SkinnedComponentTemplate.StaticMesh.GetNumElements(0))
+  0070: return PrimitiveCount
+  0076: return return
+  007c: <eos>

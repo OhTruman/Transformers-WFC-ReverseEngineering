@@ -1,0 +1,23 @@
+function SeqCond_GameRuleActive.Activated  (script 111 bytes)
+  0000: WI = GetWorldInfo()
+  0010: if !(((WI == none) || (WI.Game == none))) goto 0x0039
+  0031: SeqCond_GameRuleActive.DoesNotMatch()
+  0037: return nothing
+  0039: if !(WI.Game.HasRule(self.GameRule)) goto 0x0066
+  005d: SeqCond_GameRuleActive.DoesMatch()
+  0063: goto 0x006c
+  0066: SeqCond_GameRuleActive.DoesNotMatch()
+  006c: return nothing
+  006e: <eos>
+
+function SeqCond_GameRuleActive.DoesMatch  (script 45 bytes)
+  0000: 0[self.OutputLinks].bHasImpulse = true
+  0015: 1[self.OutputLinks].bHasImpulse = false
+  002a: return nothing
+  002c: <eos>
+
+function SeqCond_GameRuleActive.DoesNotMatch  (script 45 bytes)
+  0000: 0[self.OutputLinks].bHasImpulse = false
+  0015: 1[self.OutputLinks].bHasImpulse = true
+  002a: return nothing
+  002c: <eos>

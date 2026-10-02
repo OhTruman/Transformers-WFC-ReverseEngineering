@@ -1,0 +1,46 @@
+function TnTeamDrafterJoinInProgress.AreTeamsBalanced  (script 42 bytes)
+  0000: return (obj'Core.Math'.static.Abs(cast3f((0[self.TeamCounts] - 1[self.TeamCounts]))) <= cast3f(1))
+  0023: return return
+  0029: <eos>
+
+function TnTeamDrafterJoinInProgress.OnDraft  (script 393 bytes)
+  0000: self.PartyCollection = Parties
+  000b: TnTeamDrafterJoinInProgress.PopulateTeamCounts(Parties)
+  0016: self.Sorter.__Compare__Delegate = delegate.ComparePartiesBySize
+  002e: self.Sorter.SortArray(self.PartyCollection.Parties.Length)
+  0050: I = 0
+  0057: if !((I < self.Sorter.SortedIndices.Length)) goto 0x0174
+  0070: PartyIndex = I[self.Sorter.SortedIndices]
+  008a: if !((PartyIndex[Parties.Parties].TeamIndex != 255)) goto 0x00b3
+  00b0: goto 0x016a
+  00b3: PartySize = PartyIndex[Parties.Parties].Members.Length
+  00d9: TeamCountsIndex = ((0[self.TeamCounts] <= 1[self.TeamCounts]) ? 0 : 1)
+  00f6: (TeamCountsIndex[self.TeamCounts] += PartySize)
+  0108: Result = ((TeamCountsIndex[self.TeamCounts] <= MaxPlayersPerTeam) && TnTeamDrafterJoinInProgress.AreTeamsBalanced())
+  012c: if !((Result && (PartySize > 1))) goto 0x0167
+  0142: PartyIndex[Parties.Parties].TeamIndex = TeamCountsIndex
+  0167: goto 0x0174
+  016a: AddAdd_PreInt(I)
+  0171: goto 0x0057
+  0174: self.PartyCollection = none
+  017b: return Result
+  0182: return return
+  0188: <eos>
+
+function TnTeamDrafterJoinInProgress.PopulateTeamCounts  (script 157 bytes)
+  0000: 0[self.TeamCounts] = 0
+  0009: 1[self.TeamCounts] = 0
+  0012: PartyIndex = 0
+  0019: if !((PartyIndex < Parties.Parties.Length)) goto 0x009a
+  0032: TeamIndex = PartyIndex[Parties.Parties].TeamIndex
+  0057: if !((TeamIndex != 255)) goto 0x0090
+  0063: (TeamIndex[self.TeamCounts] += PartyIndex[Parties.Parties].Members.Length)
+  0090: AddAdd_PreInt(PartyIndex)
+  0097: goto 0x0019
+  009a: return nothing
+  009c: <eos>
+
+function TnTeamDrafterJoinInProgress.ComparePartiesBySize  (script 74 bytes)
+  0000: return (IndexB[self.PartyCollection.Parties].Members.Length - IndexA[self.PartyCollection.Parties].Members.Length)
+  0043: return return
+  0049: <eos>

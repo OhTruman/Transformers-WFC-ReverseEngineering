@@ -1,0 +1,10 @@
+function TnGameRules_ScoreObjectives.ScoreObjective  (script 134 bytes)
+  0000: ScoreObjective(Scorer, Score)
+  0010: if !((Scorer == none)) goto 0x001d
+  001b: return nothing
+  001d: Scorer.AddScore(self.IndividualScore, Score)
+  003a: PC = TnPlayerController(Scorer.Owner)
+  0053: if !(((PC != none) && (self.XpEvent != none))) goto 0x0083
+  006b: PC.NotifyXpEvent(self.XpEvent)
+  0083: return nothing
+  0085: <eos>

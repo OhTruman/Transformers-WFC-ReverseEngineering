@@ -1,0 +1,21 @@
+function TnKingOfTheHillMessage.GetColoredString  (script 247 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: Part.Text = MessageSwitch[default.KOTHMessages]
+  0021: MessageTeamIndex = -1
+  002c: if !((MessageSwitch == 0)) goto 0x0041
+  0037: MessageTeamIndex = 0
+  003e: goto 0x0053
+  0041: if !((MessageSwitch == 1)) goto 0x0053
+  004c: MessageTeamIndex = 1
+  0053: if !((MessageTeamIndex != -1)) goto 0x00b3
+  0062: Part.TextColor = ((cast3a(LocalPlayerPRI.GetTeamNum()) == MessageTeamIndex) ? obj'TnMessageTextColors'.static.default.FriendlyColor : obj'TnMessageTextColors'.static.default.EnemyColor)
+  00b0: goto 0x00d2
+  00b3: Part.TextColor = obj'TnMessageTextColors'.static.default.NeutralColor
+  00d2: 0[TheString.StringParts] = Part
+  00ea: return TheString
+  00f0: return return
+  00f6: <eos>

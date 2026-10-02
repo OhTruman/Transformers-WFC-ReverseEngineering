@@ -1,0 +1,47 @@
+function TnAbilityAddBuff.OnInitialize  (script 39 bytes)
+  0000: BuffAbilityCooldown = TnAbilityCooldownConditionBuffEnded(self.CooldownCondition)
+  0010: BuffAbilityCooldown.BuffType = self.BuffToAdd
+  0024: return nothing
+  0026: <eos>
+
+function TnAbilityAddBuff.ServerTriggerAbility  (script 189 bytes)
+  0000: if !((cast3a(self.BuffTarget) == cast3a(0))) goto 0x001e
+  0010: TnAbilityAddBuff.AddBuffToPawn(self.OwnerPawn)
+  001b: goto 0x00b4
+  001e: if !((cast3a(self.BuffTarget) == cast3a(1))) goto 0x006b
+  002e: obj'TnTeamHandler'.static.GetTeamMembers(self.OwnerPawn, Members, )
+  004c: foreach Members(Member,) (end 0x0067)
+  005b: TnAbilityAddBuff.AddBuffToPawn(Member)
+  0066: iternext
+  0067: iterpop
+  0068: goto 0x00b4
+  006b: if !((cast3a(self.BuffTarget) == cast3a(2))) goto 0x00b4
+  007b: obj'TnTeamHandler'.static.GetOpposingTeamMembers(self.OwnerPawn, Members)
+  0098: foreach Members(Member,) (end 0x00b3)
+  00a7: TnAbilityAddBuff.AddBuffToPawn(Member)
+  00b2: iternext
+  00b3: iterpop
+  00b4: TnAbility.ServerTriggerAbility()
+  00ba: return nothing
+  00bc: <eos>
+
+function TnAbilityAddBuff.AddBuffToPawn  (script 95 bytes)
+  0000: BuffService = TnBuffService(P.GetService('TnBuffService'))
+  0027: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x003d
+  003b: return nothing
+  003d: BuffService.AddBuff(self.BuffToAdd, 0, self.OwnerPawn)
+  005c: return nothing
+  005e: <eos>
+
+function TnAbilityAddBuff.ForceEndAbility  (script 143 bytes)
+  0000: if !(!self.CanBeForceEnded) goto 0x000d
+  000b: return nothing
+  000d: if !((self.OwnerPawn == none)) goto 0x001a
+  0018: return nothing
+  001a: BuffService = TnBuffService(self.OwnerPawn.GetService('TnBuffService'))
+  0041: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0057
+  0055: return nothing
+  0057: if !(BuffService.HasBuff(self.BuffToAdd)) goto 0x008c
+  0073: BuffService.RemoveBuff(self.BuffToAdd)
+  008c: return nothing
+  008e: <eos>

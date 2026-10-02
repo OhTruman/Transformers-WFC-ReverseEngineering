@@ -1,0 +1,32 @@
+function HmVectorSpeedLimiter.Initialize  (script 14 bytes)
+  0000: self.Location = StartLocation
+  000b: return nothing
+  000d: <eos>
+
+function HmVectorSpeedLimiter.Activate  (script 11 bytes)
+  0000: self.Activated = true
+  0008: return nothing
+  000a: <eos>
+
+function HmVectorSpeedLimiter.Deactivate  (script 11 bytes)
+  0000: self.Activated = false
+  0008: return nothing
+  000a: <eos>
+
+function HmVectorSpeedLimiter.Update  (script 217 bytes)
+  0000: if !(self.Activated) goto 0x0099
+  0009: Distance = obj'Core.Math'.static.VSize((Loc - self.Location))
+  0026: MaxSpeed = ((self.MaxSpeedA * Distance) + self.MaxSpeedB)
+  003f: Distance = obj'Core.Math'.static.FClamp(Distance, 0.0, (MaxSpeed * DeltaTime))
+  0066: Direction = obj'Core.Math'.static.Normal((Loc - self.Location))
+  0083: (self.Location += (Distance * Direction))
+  0096: goto 0x00a4
+  0099: self.Location = Loc
+  00a4: return (obj'Core.Math'.static.VSizeSq((self.Location - Loc)) < (self.ReachedTargetTolerance * self.ReachedTargetTolerance))
+  00d2: return return
+  00d8: <eos>
+
+function HmVectorSpeedLimiter.GetValue  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>

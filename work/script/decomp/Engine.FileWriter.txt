@@ -1,0 +1,22 @@
+function FileWriter.OpenFile  (script 27 bytes)
+  0000: InFilename
+  0005: InFileType
+  000a: InExtension
+  000f: bUnique
+  0014: bIncludeTimeStamp
+  0019: nothing
+  001a: <eos>
+
+function FileWriter.CloseFile  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FileWriter.Logf  (script 7 bytes)
+  0000: logString
+  0005: nothing
+  0006: <eos>
+
+function FileWriter.Destroyed  (script 13 bytes)
+  0000: CloseFile()
+  000a: return nothing
+  000c: <eos>

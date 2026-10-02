@@ -1,0 +1,183 @@
+function TnPawnCollisionController.get_CollisionMode  (script 13 bytes)
+  0000: return self._CollisionMode
+  0006: return return
+  000c: <eos>
+
+function TnPawnCollisionController.Initialize  (script 205 bytes)
+  0000: if !(((Owner_ == none) || (RobotMeshComponent == none))) goto 0x001a
+  0018: return nothing
+  001a: self._Owner = Owner_
+  0025: self._RobotMeshComponent = RobotMeshComponent
+  0030: self._VehicleMeshComponent = VehicleMeshComponent
+  003b: self._PawnCylinderComponent = PawnCylinderComponent
+  0046: self._RobotMeshComponent.bUpdateKinematicBonesFromAnimation = false
+  0057: self._RobotMeshComponent.PhysicsWeight = 0.0
+  006b: self._RobotMeshComponent.SetComponentRBFixed(true)
+  007f: if !((self._VehicleMeshComponent != none)) goto 0x009e
+  008a: self._VehicleMeshComponent.SetComponentRBFixed(true)
+  009e: IsPlayerPawn = (TnPlayerPawn(self._Owner) != none)
+  00b2: TnPawnCollisionController.SetRBCollidesWithChannel(15, IsPlayerPawn)
+  00c0: SetupTeamBlockingChannels()
+  00ca: return nothing
+  00cc: <eos>
+
+function TnPawnCollisionController.SetCollisionMode  (script 33 bytes)
+  0000: if !((self._Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: self._CollisionMode = Mode
+  0018: TnPawnCollisionController.UpdateCollisionState()
+  001e: return nothing
+  0020: <eos>
+
+function TnPawnCollisionController.SetRBCollidesWithChannel  (script 74 bytes)
+  0000: self._RobotMeshComponent.SetRBCollidesWithChannel(Channel, Value)
+  001e: if !((self._VehicleMeshComponent != none)) goto 0x0047
+  0029: self._VehicleMeshComponent.SetRBCollidesWithChannel(Channel, Value)
+  0047: return nothing
+  0049: <eos>
+
+function TnPawnCollisionController.SetupTeamBlockingChannels  (script 123 bytes)
+  0000: if !((self._Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: TnPawnCollisionController.SetRBCollidesWithChannel(16, false)
+  0016: TnPawnCollisionController.SetRBCollidesWithChannel(17, false)
+  001f: TnPawnCollisionController.SetRBCollidesWithChannel(18, false)
+  0028: TnPawnCollisionController.SetRBCollidesWithChannel(19, false)
+  0031: TnPawnCollisionController.SetRBCollidesWithChannel(20, false)
+  003a: TI = TnTeamInfo(self._Owner.GetTeam())
+  0058: if !((TI != none)) goto 0x0078
+  0063: TnPawnCollisionController.SetRBCollidesWithChannel(TI.TeamCollisionChannel, true)
+  0078: return nothing
+  007a: <eos>
+
+function TnPawnCollisionController.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawnCollisionController.CollisionOff.BeginState  (script 51 bytes)
+  0000: TnPawnCollisionController.SetOwnerCollisionComponent(none)
+  0007: TnPawnCollisionController.DisableCollision(self._PawnCylinderComponent)
+  0012: TnPawnCollisionController.DisableCollision(self._RobotMeshComponent)
+  001d: TnPawnCollisionController.DisableCollision(self._VehicleMeshComponent)
+  0028: TnPawnCollisionController.SetOwnerPhysics(4)
+  0030: return nothing
+  0032: <eos>
+
+function TnPawnCollisionController.AnimatedCylinderRobotMeshHybrid.BeginState  (script 117 bytes)
+  0000: TnPawnCollisionController.SetOwnerCollisionComponent(self._PawnCylinderComponent)
+  000b: TnPawnCollisionController.EnableCollision(self._PawnCylinderComponent)
+  0016: self._PawnCylinderComponent.SetTraceBlocking(false, true)
+  002b: TnPawnCollisionController.EnableCollision(self._RobotMeshComponent)
+  0036: self._RobotMeshComponent.SetBlockRigidBody(false)
+  004a: self._RobotMeshComponent.SetActorCollision(true, false)
+  005f: TnPawnCollisionController.DisableCollision(self._VehicleMeshComponent)
+  006a: TnPawnCollisionController.SetOwnerPhysics(2)
+  0072: return nothing
+  0074: <eos>
+
+function TnPawnCollisionController.AnimatedRobotMesh.BeginState  (script 113 bytes)
+  0000: TnPawnCollisionController.SetOwnerCollisionComponent(self._PawnCylinderComponent)
+  000b: TnPawnCollisionController.EnableCollision(self._RobotMeshComponent)
+  0016: TnPawnCollisionController.DisableCollision(self._PawnCylinderComponent)
+  0021: TnPawnCollisionController.DisableCollision(self._VehicleMeshComponent)
+  002c: self._RobotMeshComponent.SetComponentRBFixed(true)
+  0040: self._RobotMeshComponent.bUpdateKinematicBonesFromAnimation = true
+  0051: self._RobotMeshComponent.UpdateRBBonesFromSpaceBases(true, true)
+  0066: TnPawnCollisionController.SetOwnerPhysics(2)
+  006e: return nothing
+  0070: <eos>
+
+function TnPawnCollisionController.AnimatedRobotMesh.EndState  (script 20 bytes)
+  0000: self._RobotMeshComponent.bUpdateKinematicBonesFromAnimation = false
+  0011: return nothing
+  0013: <eos>
+
+function TnPawnCollisionController.PhysicalRobotMesh.BeginState  (script 171 bytes)
+  0000: TnPawnCollisionController.SetOwnerCollisionComponent(self._RobotMeshComponent)
+  000b: TnPawnCollisionController.EnableCollision(self._RobotMeshComponent)
+  0016: TnPawnCollisionController.DisableCollision(self._PawnCylinderComponent)
+  0021: TnPawnCollisionController.DisableCollision(self._VehicleMeshComponent)
+  002c: self._RobotMeshComponent.SetComponentRBFixed(false)
+  0040: self._RobotMeshComponent.PhysicsWeight = 1.0
+  0054: self._RobotMeshComponent.UpdateRBBonesFromSpaceBases(true, true)
+  0069: if !((cast3a(self._Owner.WorldInfo.NetMode) != cast3a(0))) goto 0x00a0
+  008b: self._RobotMeshComponent.SetActorCollision(true, false)
+  00a0: TnPawnCollisionController.SetOwnerPhysics(10)
+  00a8: return nothing
+  00aa: <eos>
+
+function TnPawnCollisionController.PhysicalRobotMesh.EndState  (script 23 bytes)
+  0000: self._RobotMeshComponent.PhysicsWeight = 0.0
+  0014: return nothing
+  0016: <eos>
+
+function TnPawnCollisionController.PhysicalVehicleMesh.BeginState  (script 75 bytes)
+  0000: TnPawnCollisionController.SetOwnerCollisionComponent(self._VehicleMeshComponent)
+  000b: TnPawnCollisionController.EnableCollision(self._VehicleMeshComponent)
+  0016: TnPawnCollisionController.DisableCollision(self._PawnCylinderComponent)
+  0021: TnPawnCollisionController.DisableCollision(self._RobotMeshComponent)
+  002c: self._VehicleMeshComponent.SetComponentRBFixed(false)
+  0040: TnPawnCollisionController.SetOwnerPhysics(10)
+  0048: return nothing
+  004a: <eos>
+
+function TnPawnCollisionController.PhysicalVehicleMesh.EndState  (script 23 bytes)
+  0000: self._VehicleMeshComponent.SetComponentRBFixed(true)
+  0014: return nothing
+  0016: <eos>
+
+function TnPawnCollisionController.SetOwnerCollisionComponent  (script 102 bytes)
+  0000: if !((self._Owner.CollisionComponent == CollisionComponent)) goto 0x001a
+  0018: return nothing
+  001a: self._Owner.CollisionComponent = CollisionComponent
+  002e: if !((self._Owner.CollisionComponent != none)) goto 0x0054
+  0042: self._Owner.SetCollision(true, true, )
+  0051: goto 0x0063
+  0054: self._Owner.SetCollision(false, false, )
+  0063: return nothing
+  0065: <eos>
+
+function TnPawnCollisionController.EnableCollision  (script 78 bytes)
+  0000: if !((PrimComp == none)) goto 0x000d
+  000b: return nothing
+  000d: PrimComp.SetBlockRigidBody(true)
+  0021: PrimComp.SetActorCollision(true, true)
+  0036: PrimComp.SetTraceBlocking(true, true)
+  004b: return nothing
+  004d: <eos>
+
+function TnPawnCollisionController.DisableCollision  (script 78 bytes)
+  0000: if !((PrimComp == none)) goto 0x000d
+  000b: return nothing
+  000d: PrimComp.SetBlockRigidBody(false)
+  0021: PrimComp.SetActorCollision(false, false)
+  0036: PrimComp.SetTraceBlocking(false, false)
+  004b: return nothing
+  004d: <eos>
+
+function TnPawnCollisionController.UpdateCollisionState  (script 123 bytes)
+  0000: switch (self._CollisionMode)
+  0007: case 0: (next 0x001d)
+  000c: GotoState('CollisionOff', , , )
+  001a: goto 0x0078
+  001d: case 1: (next 0x0033)
+  0022: GotoState('AnimatedCylinderRobotMeshHybrid', , , )
+  0030: goto 0x0078
+  0033: case 2: (next 0x0049)
+  0038: GotoState('AnimatedRobotMesh', , , )
+  0046: goto 0x0078
+  0049: case 3: (next 0x005f)
+  004e: GotoState('PhysicalRobotMesh', , , )
+  005c: goto 0x0078
+  005f: case 4: (next 0x0075)
+  0064: GotoState('PhysicalVehicleMesh', , , )
+  0072: goto 0x0078
+  0075: default:
+  0078: return nothing
+  007a: <eos>
+
+function TnPawnCollisionController.SetOwnerPhysics  (script 54 bytes)
+  0000: if !((cast3a(self._Owner.Role) >= cast3a(2))) goto 0x0033
+  0019: self._Owner.SetPhysics(Physics, , )
+  0033: return nothing
+  0035: <eos>

@@ -1,0 +1,10 @@
+function TnStatisticsXpTable.RecordXpGained  (script 156 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: sample.Session_Id = Game.StatisticsSessionId
+  002c: sample.PlayerName = Gainer.GetHumanReadableName()
+  0050: sample.XpType = cast56(XpType)
+  0068: sample.XpGained = XpType.static.GetAwardAmount()
+  008c: self.Gained.AddItem(sample)
+  0099: return nothing
+  009b: <eos>

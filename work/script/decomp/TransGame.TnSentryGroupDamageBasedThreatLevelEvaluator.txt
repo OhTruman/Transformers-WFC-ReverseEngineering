@@ -1,0 +1,16 @@
+function TnSentryGroupDamageBasedThreatLevelEvaluator.set_ThreatLevelPerDamagePoint  (script 14 bytes)
+  0000: self._ThreatLevelPerDamagePoint = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryGroupDamageBasedThreatLevelEvaluator.OnInitialize  (script 42 bytes)
+  0000: self._SentryGroupService = TnSentryGroupService(self._Owner.GetService('TnSentryGroupService'))
+  0027: return nothing
+  0029: <eos>
+
+function TnSentryGroupDamageBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 66 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self._SentryGroupService, TnSentryGroupService(none))) goto 0x001a
+  0014: return 0.0
+  001a: return (self._SentryGroupService.FindDamageAmount(Threat) * self._ThreatLevelPerDamagePoint)
+  003b: return return
+  0041: <eos>

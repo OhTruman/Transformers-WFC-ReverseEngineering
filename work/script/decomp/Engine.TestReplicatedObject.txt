@@ -1,0 +1,36 @@
+function TestReplicatedObject.ReplicatedEvent  (script 76 bytes)
+  0000: if !((VarName == 'SomeVar')) goto 0x003e
+  0013: LogInternal(("SomeVar was changed to: " @ cast53(self.SomeVar)), , , )
+  003b: goto 0x0049
+  003e: ReplicatedObject.ReplicatedEvent(VarName)
+  0049: return nothing
+  004b: <eos>
+
+function TestReplicatedObject.ServerDisplayMessage  (script 53 bytes)
+  0000: LogInternal(("In ServerDisplayMessage. Param is " @ cast53(Param)), , , )
+  0032: return nothing
+  0034: <eos>
+
+function TestReplicatedObject.ClientDisplayMessage  (script 53 bytes)
+  0000: LogInternal(("In ClientDisplayMessage. Param is " @ cast53(Param)), , , )
+  0032: return nothing
+  0034: <eos>
+
+function TestReplicatedObject.Tick  (script 387 bytes)
+  0000: if !((cast3a(GetRole()) == cast3a(3))) goto 0x00e9
+  0015: LogInternal("TestReplicatedObject.Tick - I am the authority", , , )
+  004a: if !(true) goto 0x0088
+  004e: self.SomeVar = obj'Core.Random'.static.Rand(1000)
+  0064: LogInternal(("Changing SomeVar to " @ cast53(self.SomeVar)), , , )
+  0088: if !((obj'Core.Random'.static.Rand(100) == 0)) goto 0x00e6
+  009b: Param = obj'Core.Random'.static.Rand(100)
+  00ae: LogInternal(("Calling client function with " @ cast53(Param)), , , )
+  00db: TestReplicatedObject.ClientDisplayMessage(Param)
+  00e6: goto 0x0180
+  00e9: LogInternal("TestReplicatedObject.Tick - I am NOT the authority", , , )
+  0122: if !((obj'Core.Random'.static.Rand(100) == 0)) goto 0x0180
+  0135: Param = obj'Core.Random'.static.Rand(100)
+  0148: LogInternal(("Calling server function with " @ cast53(Param)), , , )
+  0175: TestReplicatedObject.ServerDisplayMessage(Param)
+  0180: return nothing
+  0182: <eos>

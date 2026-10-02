@@ -1,0 +1,45 @@
+function TnVectorHistory.get_NumberOfSamples  (script 14 bytes)
+  0000: return self.History.Length
+  0007: return return
+  000d: <eos>
+
+function TnVectorHistory.SetSampleTime  (script 14 bytes)
+  0000: self.SampleTime = T
+  000b: return nothing
+  000d: <eos>
+
+function TnVectorHistory.AddSample  (script 60 bytes)
+  0000: S.sample = V
+  0016: S.TimeStamp = self.CurrentTime
+  002c: self.History.AddItem(S)
+  0039: return nothing
+  003b: <eos>
+
+function TnVectorHistory.Clear  (script 11 bytes)
+  0000: self.History.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnVectorHistory.Update  (script 143 bytes)
+  0000: (self.CurrentTime += DeltaTime)
+  000c: OldTimeStamp = (self.CurrentTime - self.SampleTime)
+  001e: I = (self.History.Length - 1)
+  002d: if !((I >= 0)) goto 0x0074
+  0038: if !((I[self.History].TimeStamp < OldTimeStamp)) goto 0x006a
+  0058: self.History.Remove(0,(I + 1))
+  0067: goto 0x0074
+  006a: SubtractSubtract_PreInt(I)
+  0071: goto 0x002d
+  0074: if !((self.History.Length > 2)) goto 0x008c
+  0081: I = I
+  008c: return nothing
+  008e: <eos>
+
+function TnVectorHistory.Average  (script 63 bytes)
+  0000: foreach self.History(HistorySample,) (end 0x0027)
+  000f: (Sum += HistorySample.sample)
+  0026: iternext
+  0027: iterpop
+  0028: return (Sum / cast3f(self.History.Length))
+  0038: return return
+  003e: <eos>

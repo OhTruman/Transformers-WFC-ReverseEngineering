@@ -1,0 +1,69 @@
+function TnGameReplicationInfoGameBase.set_ObjectiveManager  (script 14 bytes)
+  0000: self._ObjectiveManager = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGameReplicationInfoGameBase.get_CampaignGameOver  (script 14 bytes)
+  0000: return self._CampaignGameOver
+  0007: return return
+  000d: <eos>
+
+function TnGameReplicationInfoGameBase.set_CampaignGameOver  (script 16 bytes)
+  0000: self._CampaignGameOver = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnGameReplicationInfoGameBase.SetupObjectiveManager  (script 152 bytes)
+  0000: WI = TnWorldInfo(self.WorldInfo)
+  0010: ObjectiveBank = WI._ObjectiveBank
+  0024: I = 0
+  002b: if !((I < ObjectiveBank.Length)) goto 0x007d
+  003b: I[ObjectiveBank] = Localize("Objectives", I[ObjectiveBank], "TransGame")
+  0073: AddAdd_PreInt(I)
+  007a: goto 0x002b
+  007d: self._ObjectiveManager.SetObjectiveBank(ObjectiveBank)
+  0095: return nothing
+  0097: <eos>
+
+function TnGameReplicationInfoGameBase.PostBeginPlay  (script 39 bytes)
+  0000: TnGameReplicationInfo.PostBeginPlay()
+  0006: RegisterReplicatedObject(self._ObjectiveManager, 'ObjectiveManager')
+  001e: TnGameReplicationInfoGameBase.SetupObjectiveManager()
+  0024: return nothing
+  0026: <eos>
+
+function TnGameReplicationInfoGameBase.Reset  (script 36 bytes)
+  0000: self._ObjectiveManager.Reset()
+  0013: self.GameOverMessage = ""
+  001b: Reset()
+  0021: return nothing
+  0023: <eos>
+
+function TnGameReplicationInfoGameBase.UpdateObjectiveManager  (script 77 bytes)
+  0000: self._ObjectiveManager.Update(ObservingHud)
+  0018: self.ActiveObjectives = self._ObjectiveManager.GetActiveObjective()
+  0031: self.CompletedObjectives = self._ObjectiveManager.GetCompletedObjectives()
+  004a: return nothing
+  004c: <eos>
+
+function TnGameReplicationInfoGameBase.SetCurrentObjective  (script 27 bytes)
+  0000: self._ObjectiveManager.SetCurrentObjective(ObjectiveDesc)
+  0018: return nothing
+  001a: <eos>
+
+function TnGameReplicationInfoGameBase.AddObjectiveMarker  (script 53 bytes)
+  0000: default=false
+  0005: return self._ObjectiveManager.AddObjectiveMarker(Description, MarkerBase, MarkerType, DoNotReplicate)
+  002e: return return
+  0034: <eos>
+
+function TnGameReplicationInfoGameBase.RemoveObjectiveMarker  (script 32 bytes)
+  0000: self._ObjectiveManager.RemoveObjectiveMarker(MarkerBase, MarkerTypeClass)
+  001d: return nothing
+  001f: <eos>
+
+function TnGameReplicationInfoGameBase.SetGameOverMessage  (script 33 bytes)
+  0000: self.GameOverMessage = NewGameOverMessage
+  000b: RefreshGameDataStore('GameOverMessage')
+  001e: return nothing
+  0020: <eos>

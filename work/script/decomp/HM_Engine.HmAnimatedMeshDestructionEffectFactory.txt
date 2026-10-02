@@ -1,0 +1,49 @@
+function HmAnimatedMeshDestructionEffectFactory.__Constructor__HmAnimatedMeshDestructionEffectFactory_0  (script 16 bytes)
+  0000: self.UpdateSkelWhenNotRendered = InUpdateSkelWhenNotRendered
+  000d: return nothing
+  000f: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.GetEffectDescription  (script 56 bytes)
+  0000: return ((self.ComponentTemplate.SkeletalMesh == none) ? "" : PathName(self.ComponentTemplate.SkeletalMesh))
+  0031: return return
+  0037: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.CalculatePrimitiveCount  (script 59 bytes)
+  0000: if !((self.ComponentTemplate.SkeletalMesh == none)) goto 0x0016
+  0014: return 0
+  0016: return self.ComponentTemplate.SkeletalMesh.GetNumSections(0)
+  0034: return return
+  003a: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.GetComponentTemplate  (script 13 bytes)
+  0000: return self.ComponentTemplate
+  0006: return return
+  000c: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.SetSequenceNode  (script 14 bytes)
+  0000: self.SequenceNode = NewSequenceNode
+  000b: return nothing
+  000d: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.DoCreateInstance  (script 130 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmAnimatedMeshDestructionEffect', nothing, AttachTreeCallback)
+  0018: Component = SkeletalMeshComponent(self.ComponentTemplate.Clone(Effect, ))
+  003c: Component.bUpdateSkelWhenNotRendered = self.UpdateSkelWhenNotRendered
+  0052: HmAnimatedMeshDestructionEffectFactory.SetDestructionAnimation(Component)
+  005d: Effect.AddMeshComponent(Component)
+  0075: return Effect
+  007b: return return
+  0081: <eos>
+
+function HmAnimatedMeshDestructionEffectFactory.SetDestructionAnimation  (script 99 bytes)
+  0000: if !((self.SequenceNode != none)) goto 0x003f
+  000b: Component.SetAnimations(AnimNodeSequence(self.SequenceNode.Clone(Component, )))
+  003c: goto 0x0060
+  003f: Component.SetAnimTreeTemplate(Component.AnimTreeTemplate)
+  0060: return nothing
+  0062: <eos>

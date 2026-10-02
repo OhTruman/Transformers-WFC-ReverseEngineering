@@ -1,0 +1,54 @@
+function TnTacticalPathNodeEvaluatorDistanceFromRange.SetScoreCurve  (script 210 bytes)
+  0000: if !(self.EvaluateAgainstFullRangeSet) goto 0x001c
+  0009: TnTacticalPathNodeEvaluatorDistanceFromRange.SetScoreCurveForFullRangeSet(Searcher, R)
+  0019: goto 0x00c7
+  001c: 0[self.ScoreCurve.Points].InVal = R.Min
+  004a: 1[self.ScoreCurve.Points].InVal = obj'Core.Math'.static.Lerp(R.Min, R.Max, 0.5)
+  0098: 2[self.ScoreCurve.Points].InVal = R.Max
+  00c7: self.ScoreCurveSet = true
+  00cf: return nothing
+  00d1: <eos>
+
+function TnTacticalPathNodeEvaluatorDistanceFromRange.SetScoreCurveForFullRangeSet  (script 732 bytes)
+  0000: self.ScoreCurve.Points.Remove(0,self.ScoreCurve.Points.Length)
+  0023: self.ScoreCurve.Points.Insert(0,7)
+  0037: RangeSetMin = 1[Searcher.RangeSet].Min
+  0058: RangeSetMax = 6[Searcher.RangeSet].Max
+  007a: 0[self.ScoreCurve.Points].InVal = RangeSetMin
+  009d: 1[self.ScoreCurve.Points].InVal = obj'Core.Math'.static.Lerp(RangeSetMin, R.Min, obj'Core.Math'.static.FClamp(self.OutsideRangeEndpointPercentageToRangeEndpoint, 0.0, 1.0))
+  00f5: 2[self.ScoreCurve.Points].InVal = R.Min
+  0124: 3[self.ScoreCurve.Points].InVal = obj'Core.Math'.static.Lerp(R.Min, R.Max, 0.5)
+  0173: 4[self.ScoreCurve.Points].InVal = R.Max
+  01a2: 5[self.ScoreCurve.Points].InVal = obj'Core.Math'.static.Lerp(R.Max, RangeSetMax, (1.0 - obj'Core.Math'.static.FClamp(self.OutsideRangeEndpointPercentageToRangeEndpoint, 0.0, 1.0)))
+  0202: 6[self.ScoreCurve.Points].InVal = RangeSetMax
+  0226: 1[self.ScoreCurve.Points].OutVal = self.OutsideRangeEndpointScoreCurveOutVal
+  0249: 2[self.ScoreCurve.Points].OutVal = self.RangeEndpointScoreCurveOutVal
+  026d: 3[self.ScoreCurve.Points].OutVal = 1.0
+  0291: 4[self.ScoreCurve.Points].OutVal = self.RangeEndpointScoreCurveOutVal
+  02b5: 5[self.ScoreCurve.Points].OutVal = self.OutsideRangeEndpointScoreCurveOutVal
+  02d9: return nothing
+  02db: <eos>
+
+function TnTacticalPathNodeEvaluatorDistanceFromRange.Score  (script 78 bytes)
+  0000: if !(!self.ScoreCurveSet) goto 0x002c
+  000b: TnTacticalPathNodeEvaluatorDistanceFromRange.SetScoreCurve(Searcher, cast3a(self.Range)[Searcher.RangeSet])
+  002c: return TnTacticalPathNodeEvaluatorDistanceFrom.Score(Tactical, Searcher, SearcherTeamNum, EnemyTeamNum)
+  0047: return return
+  004d: <eos>
+
+function TnTacticalPathNodeEvaluatorDistanceFromRange.DrawDebug  (script 321 bytes)
+  0000: switch (self.Origin)
+  0007: case 0: (next 0x0023)
+  000c: OriginActor = Searcher.Pawn
+  0020: goto 0x005e
+  0023: case 1: (next 0x003f)
+  0028: OriginActor = Searcher.Enemy
+  003c: goto 0x005e
+  003f: case 2: (next 0x005b)
+  0044: OriginActor = Searcher._Friend
+  0058: goto 0x005e
+  005b: default:
+  005e: obj'Engine.Debug'.static.DrawCylinder(OriginActor.Location, (OriginActor.Location + vect(0,0,400)), 50.0, 10, obj'Core.Colors'.static.Green(), true)
+  00b7: obj'Engine.Debug'.static.DrawDisk(OriginActor.Location, vect(0,0,1), cast3a(self.Range)[Searcher.RangeSet].Min, cast3a(self.Range)[Searcher.RangeSet].Max, 15, MakeColor(0, cast3d(255), 0, 40), true)
+  013e: return nothing
+  0140: <eos>

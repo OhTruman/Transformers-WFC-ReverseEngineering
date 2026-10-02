@@ -1,0 +1,11 @@
+function AmbientSoundSimple.CheckForErrors  (script 245 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.AmbientProperties == none)) goto 0x004c
+  0011: EmitCheckMessage(1, "Ambient sound has NULL AmbientProperties", , )
+  0049: goto 0x00af
+  004c: if !(((self.AmbientProperties.Wave == none) && (AmbientSoundNonLoop(self) == none))) goto 0x00af
+  006e: EmitCheckMessage(1, "Ambient sound's AmbientProperties has a NULL Wave", , )
+  00af: if !((self.SoundNodeInstance == none)) goto 0x00f2
+  00ba: EmitCheckMessage(1, "Ambient sound has NULL SoundNodeInstance", , )
+  00f2: return nothing
+  00f4: <eos>

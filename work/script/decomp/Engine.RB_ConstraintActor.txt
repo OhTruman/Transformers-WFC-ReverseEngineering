@@ -1,0 +1,54 @@
+function RB_ConstraintActor.CheckForErrors  (script 590 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.ConstraintSetup == none)) goto 0x006d
+  0011: EmitCheckMessage(1, "RB_ConstraintActor actor has NULL ConstraintSetup property - please delete!", 1, )
+  006d: if !((self.ConstraintInstance == none)) goto 0x00d7
+  0078: EmitCheckMessage(1, "RB_ConstraintActor actor has NULL ConstraintInstance property - please delete!", 1, )
+  00d7: if !(((self.ConstraintActor1 == none) && (self.ConstraintActor2 == none))) goto 0x0138
+  00ef: EmitCheckMessage(1, "both of RB_ConstraintActor's ConstraintActors are NULL", , )
+  0135: goto 0x024b
+  0138: if !(((self.ConstraintActor1 != none) && (self.ConstraintActor2 != none))) goto 0x01bd
+  0150: if !((self.ConstraintActor1.bStatic && self.ConstraintActor2.bStatic)) goto 0x01ba
+  0176: EmitCheckMessage(1, "RB_ConstraintActor actor connects two static actors!", , )
+  01ba: goto 0x024b
+  01bd: if !((((self.ConstraintActor1 == none) && self.ConstraintActor2.bStatic) || ((self.ConstraintActor2 == none) && self.ConstraintActor1.bStatic))) goto 0x024b
+  01fd: EmitCheckMessage(1, "RB_ConstraintActor actor is connected to a single static actor", , )
+  024b: return nothing
+  024d: <eos>
+
+function RB_ConstraintActor.ReplicatedEvent  (script 52 bytes)
+  0000: if !(((VarName == 'ConstraintDestroyed') && self.ConstraintDestroyed)) goto 0x0026
+  001e: RB_ConstraintActor.HMSOnDestroyTerminatePhysics()
+  0024: return nothing
+  0026: ReplicatedObject.ReplicatedEvent(VarName)
+  0031: return nothing
+  0033: <eos>
+
+function RB_ConstraintActor.SetDisableCollision  (script 7 bytes)
+  0000: NewDisableCollision
+  0005: nothing
+  0006: <eos>
+
+function RB_ConstraintActor.InitConstraint  (script 27 bytes)
+  0000: Actor1
+  0005: Actor2
+  000a: Actor1Bone
+  000f: Actor2Bone
+  0014: BreakThreshold
+  0019: nothing
+  001a: <eos>
+
+function RB_ConstraintActor.TermConstraint  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function RB_ConstraintActor.HMSOnDestroyTerminatePhysics  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function RB_ConstraintActor.OnDestroy  (script 28 bytes)
+  0000: RB_ConstraintActor.HMSOnDestroyTerminatePhysics()
+  0006: self.ConstraintDestroyed = true
+  000e: Actor.OnDestroy(Action)
+  0019: return nothing
+  001b: <eos>

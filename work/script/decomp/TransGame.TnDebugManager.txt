@@ -1,0 +1,988 @@
+function TnDebugManager.get_IsRunningGAIDAR  (script 16 bytes)
+  0000: return (self.ActivePlanner != none)
+  0009: return return
+  000f: <eos>
+
+function TnDebugManager.Crash  (script 8 bytes)
+  0000: assert(false)
+  0005: return nothing
+  0007: <eos>
+
+function TnDebugManager.GetLocalPlayerController  (script 57 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: return WI.GetLocalPlayerController()
+  0032: return return
+  0038: <eos>
+
+function TnDebugManager.GetLocalProfile  (script 39 bytes)
+  0000: PC = TnDebugManager.GetLocalPlayerController()
+  000c: return TnProfileSettings(PC.ProfileSettings)
+  0020: return return
+  0026: <eos>
+
+function TnDebugManager.GetLocalPlayer  (script 28 bytes)
+  0000: return TnLocalPlayer(TnDebugManager.GetLocalPlayerController().Player)
+  0015: return return
+  001b: <eos>
+
+function TnDebugManager.DebugSelect  (script 353 bytes)
+  0000: A = ((Pawn(self.DebugTarget) == none) ? none : TnAiController(Pawn(self.DebugTarget).Controller))
+  0031: if !((self.ActiveAiDebugTarget != none)) goto 0x007e
+  003c: if !((A == none)) goto 0x0055
+  0047: A = self.ActiveAiDebugTarget
+  0052: goto 0x007e
+  0055: if !((A != self.ActiveAiDebugTarget)) goto 0x007e
+  0064: self.ActiveAiDebugTarget.DisableDebugMode()
+  0077: self.ActiveAiDebugTarget = none
+  007e: if !((A == none)) goto 0x008b
+  0089: return nothing
+  008b: self.ActiveAiDebugTarget = A
+  0096: A.CycleDebugMode()
+  00a9: foreach A.LocalPlayerControllers(obj'TnPlayerController', C) (end 0x015d)
+  00c9: PlayerHud = TnHUD(C.myHUD)
+  00e2: PlayerHud.bShowDebugInfo = (cast3a(A._DebugMode) != cast3a(0))
+  0108: PlayerHud.SetVisibility((cast3a(A._DebugMode) == cast3a(0)))
+  0131: if !(PlayerHud.bShowDebugInfo) goto 0x015c
+  0143: C.SetViewTarget(A, )
+  015c: iternext
+  015d: iterpop
+  015e: return nothing
+  0160: <eos>
+
+function TnDebugManager.ProfileTacticalEvaluation  (script 112 bytes)
+  0000: obj'Core.Profiling'.static.StartNativeProfile(obj'Engine.Engine'.static.GetSystemTimeString())
+  0026: TnGame(obj'Engine.Engine'.static.GetGame())._AiTacticalEvaluationScheduler.Update(1.0)
+  005a: obj'Core.Profiling'.static.StopNativeProfile()
+  006d: return nothing
+  006f: <eos>
+
+function TnDebugManager.ToggleAIWeaponAimValidatorEnabled  (script 118 bytes)
+  0000: if !((Pawn(self.DebugTarget) == none)) goto 0x0012
+  0010: return nothing
+  0012: TransformerController = TnAiController(Pawn(self.DebugTarget).Controller)
+  0030: if !((TransformerController == none)) goto 0x003d
+  003b: return nothing
+  003d: TransformerController.WeaponShooter.set_DebugEnabled(!TransformerController.WeaponShooter._DebugEnabled)
+  0073: return nothing
+  0075: <eos>
+
+function TnDebugManager.DrawPlanner  (script 394 bytes)
+  0000: if !(((self.ActivePlanner == none) || (HudCanvas == none))) goto 0x001a
+  0018: return nothing
+  001a: self.ActivePlanner.DisplayDebug(HudCanvas)
+  0032: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0055: HudCanvas.SetPos(0.0, 0.0)
+  0072: HudCanvas.DrawTextNormal(("Goap AI Debugger and Action Renderer (GAIDAR)" @ self.ActivePlannerDebugTarget.get_TransformerPawn().get_FriendlyName()), , , )
+  00da: HudCanvas.SetPos(0.0, (HudCanvas.ClipY - cast3f(13)))
+  0106: HudCanvas.DrawTextNormal("F9 = Toggle Enabled    F5 = Continue    F10 = Step    NumPadMinus / NumPadPlus = Next/Previous in history", , , )
+  0187: return nothing
+  0189: <eos>
+
+function TnDebugManager.ToggleStepPlannerEnabled  (script 169 bytes)
+  0000: if !((self.ActivePlannerDebugTarget != none)) goto 0x003a
+  000b: self.ActivePlannerDebugTarget = none
+  0012: if !((self.ActivePlanner != none)) goto 0x0031
+  001d: self.ActivePlanner.set_DebugEnabled(false)
+  0031: self.ActivePlanner = none
+  0038: return nothing
+  003a: A = ((Pawn(self.DebugTarget) == none) ? none : TnAiController(Pawn(self.DebugTarget).Controller))
+  006b: if !((A == none)) goto 0x0078
+  0076: return nothing
+  0078: self.ActivePlannerDebugTarget = A
+  0083: GAIDAR(self.GoalToDebug)
+  0092: self.ActivePlanner.set_DebugEnabled(true)
+  00a6: return nothing
+  00a8: <eos>
+
+function TnDebugManager.ContinueActivePlanner  (script 79 bytes)
+  0000: if !(((self.ActivePlannerDebugTarget == none) || (self.ActivePlanner == none))) goto 0x001a
+  0018: return nothing
+  001a: obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled = false
+  0039: self.ActivePlanner.ContinuePlanner()
+  004c: return nothing
+  004e: <eos>
+
+function TnDebugManager.StepActivePlanner  (script 48 bytes)
+  0000: if !(((self.ActivePlannerDebugTarget == none) || (self.ActivePlanner == none))) goto 0x001a
+  0018: return nothing
+  001a: self.ActivePlanner.StepPlanner()
+  002d: return nothing
+  002f: <eos>
+
+function TnDebugManager.PreviousPlannerHistory  (script 48 bytes)
+  0000: if !(((self.ActivePlannerDebugTarget == none) || (self.ActivePlanner == none))) goto 0x001a
+  0018: return nothing
+  001a: self.ActivePlanner.PreviousStepHistory()
+  002d: return nothing
+  002f: <eos>
+
+function TnDebugManager.NextPlannerHistory  (script 48 bytes)
+  0000: if !(((self.ActivePlannerDebugTarget == none) || (self.ActivePlanner == none))) goto 0x001a
+  0018: return nothing
+  001a: self.ActivePlanner.NextStepHistory()
+  002d: return nothing
+  002f: <eos>
+
+function TnDebugManager.GAIDAR  (script 360 bytes)
+  0000: nothing
+  0001: if !((self.ActivePlannerDebugTarget == none)) goto 0x000e
+  000c: return nothing
+  000e: self.GoalToDebug = InGoalToDebug
+  0019: if !((obj'Core.Strings'.static.Len(self.GoalToDebug) != 0)) goto 0x00bb
+  002f: NewPlanner = self.ActivePlannerDebugTarget.PlanRunner.FindPlannerWithGoal(self.GoalToDebug)
+  0056: if !((NewPlanner == none)) goto 0x0063
+  0061: return nothing
+  0063: NewPlanner.set_DebugEnabled(true)
+  0077: NewPlanner.set_GoalToDebug(self.GoalToDebug)
+  008f: if !((self.ActivePlanner != none)) goto 0x00ae
+  009a: self.ActivePlanner.set_DebugEnabled(false)
+  00ae: self.ActivePlanner = NewPlanner
+  00b9: return nothing
+  00bb: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'TnPlayerController', C) (end 0x0164)
+  00e9: self.ActivePlannerDebugTarget.PlanRunner.GetGoalDescriptions(Descriptions)
+  010a: idx = 0
+  0111: if !((idx < Descriptions.Length)) goto 0x0160
+  0121: C.GetViewportClient().ViewportConsole.OutputText(idx[Descriptions])
+  0156: AddAdd_PreInt(idx)
+  015d: goto 0x0111
+  0160: iterpop
+  0161: return nothing
+  0163: iternext
+  0164: iterpop
+  0165: return nothing
+  0167: <eos>
+
+function TnDebugManager.FlushAID  (script 111 bytes)
+  0000: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().AllControllers(obj'TnAiController', C) (end 0x0042)
+  002e: C.DisableDebugMode()
+  0041: iternext
+  0042: iterpop
+  0043: FlushDebug()
+  004d: obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled = false
+  006c: return nothing
+  006e: <eos>
+
+function TnDebugManager.AICommands  (script 1409 bytes)
+  0000: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'TnPlayerController', C) (end 0x057d)
+  002e: C.GetViewportClient().ViewportConsole.OutputText("AI Commands-------------------")
+  0078: C.GetViewportClient().ViewportConsole.OutputText("TDCS - Debug camera")
+  00b7: C.GetViewportClient().ViewportConsole.OutputText("Kill AI - kills all AI")
+  00f9: C.GetViewportClient().ViewportConsole.OutputText("Kill Enemy - kills all enemies")
+  0143: C.GetViewportClient().ViewportConsole.OutputText("Show Paths - shows navigation network")
+  0194: C.GetViewportClient().ViewportConsole.OutputText("ToggleShowAIReachability - will freeze game and draw path find error for any AI that fails")
+  021a: C.GetViewportClient().ViewportConsole.OutputText("TimeStepRun - freezes game, and steps one frame")
+  0275: C.GetViewportClient().ViewportConsole.OutputText("TimeStepDisalbe - unfreezes game")
+  02c1: C.GetViewportClient().ViewportConsole.OutputText("FlushDebug - flushes persistant debug text/lines")
+  031d: C.GetViewportClient().ViewportConsole.OutputText("FlushAID - Turns AID off of all AI, clears all persistent lines/text, and unfreezes game")
+  03a1: C.GetViewportClient().ViewportConsole.OutputText("AI Commands-----Advanced------")
+  03eb: C.GetViewportClient().ViewportConsole.OutputText("ShowTacticalEvalDebug")
+  042c: C.GetViewportClient().ViewportConsole.OutputText("ShowTacticalUpdateInfo")
+  046e: C.GetViewportClient().ViewportConsole.OutputText("ShowDebugTargetAnimDebug")
+  04b2: C.GetViewportClient().ViewportConsole.OutputText("GAIDAR")
+  04e4: C.GetViewportClient().ViewportConsole.OutputText("ShowAiPlanningGraph")
+  0523: C.GetViewportClient().ViewportConsole.OutputText("SetAiPlanningThreshold - Param (threshold)")
+  0579: iterpop
+  057a: return nothing
+  057c: iternext
+  057d: iterpop
+  057e: return nothing
+  0580: <eos>
+
+function TnDebugManager.DrawTargetAssistDebug  (script 275 bytes)
+  0000: XPos = 100.0
+  000b: YPos = 150.0
+  0016: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'TnPlayerController', C) (end 0x010f)
+  0044: if !(C.PlayerTargeting.Sticker.PanAdjuster.DebugEnabled) goto 0x010e
+  0071: Can.DrawColor = MakeColor(0, cast3d(255), 0, cast3d(255))
+  0096: foreach C.PlayerTargeting.Sticker.PanAdjuster.PanStickyDebug(StringIter,) (end 0x010d)
+  00c9: Can.SetPos(XPos, YPos)
+  00e6: Can.DrawTextNormal(StringIter, , , )
+  0101: (YPos += cast3f(15))
+  010c: iternext
+  010d: iterpop
+  010e: iternext
+  010f: iterpop
+  0110: return nothing
+  0112: <eos>
+
+function TnDebugManager.DrawDebug  (script 370 bytes)
+  0000: DrawDebug(C)
+  000b: C.Font = obj'Engine.Engine'.static.GetTinyFont()
+  002d: if !(self.ShowTacticalInfo) goto 0x006a
+  0036: TnGame(obj'Engine.Engine'.static.GetGame())._TacticalSystem.DrawDebug(C)
+  006a: DrawTargetAssistDebug(C)
+  0079: TnDebugManager.DisplayDebugForAllAI(C)
+  0084: TnDebugManager.DrawPlanner(C)
+  008f: if !(self._ShowAiPlanningGraph) goto 0x00e0
+  0098: TnGame(obj'Engine.Engine'.static.GetGame())._AiPlanningScheduler.DisplayDebug(C, 20.0, 50.0, 600.0, 300.0)
+  00e0: if !(((self.ActiveAiDebugTarget != none) && (cast3a(self.ActiveAiDebugTarget._DebugMode) == cast3a(2)))) goto 0x016f
+  0106: TnGame(obj'Engine.Engine'.static.GetGame())._AiTacticalEvaluationScheduler.DisplayDebug(C, (C.ClipX - cast3f(425)), (C.ClipY - cast3f(175)), 400.0, 150.0)
+  016f: return nothing
+  0171: <eos>
+
+function TnDebugManager.DisplayDebugForAllAI  (script 86 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'TnAiController', AiC) (end 0x0052)
+  0039: AiC.DisplayAiDebug(C)
+  0051: iternext
+  0052: iterpop
+  0053: return nothing
+  0055: <eos>
+
+function TnDebugManager.ToggleTacticalPathNodeDebug  (script 39 bytes)
+  0000: self.TacticalPathNodePickerDebug = !self.TacticalPathNodePickerDebug
+  000f: if !(!self.TacticalPathNodePickerDebug) goto 0x0024
+  001a: FlushDebug()
+  0024: return nothing
+  0026: <eos>
+
+function TnDebugManager.ToggleDecalDebug  (script 39 bytes)
+  0000: self.DecalApplicatorDebug = !self.DecalApplicatorDebug
+  000f: if !(!self.DecalApplicatorDebug) goto 0x0024
+  001a: FlushDebug()
+  0024: return nothing
+  0026: <eos>
+
+function TnDebugManager.ToggleCoopSpawnDebug  (script 39 bytes)
+  0000: self.CoopSpawnDebug = !self.CoopSpawnDebug
+  000f: if !(!self.CoopSpawnDebug) goto 0x0024
+  001a: FlushDebug()
+  0024: return nothing
+  0026: <eos>
+
+function TnDebugManager.ToggleFuelDebug  (script 39 bytes)
+  0000: self.FuelDebug = !self.FuelDebug
+  000f: if !(!self.FuelDebug) goto 0x0024
+  001a: FlushDebug()
+  0024: return nothing
+  0026: <eos>
+
+function TnDebugManager.ToggleShowAIReachability  (script 48 bytes)
+  0000: self.ShowAIReachability = !self.ShowAIReachability
+  000f: if !(!self.ShowAIReachability) goto 0x002d
+  001a: obj'Engine.Debug'.static.FlushPersistentLines()
+  002d: return nothing
+  002f: <eos>
+
+function TnDebugManager.ToggleAiIcons  (script 18 bytes)
+  0000: self.UseIconsForDebugDisplay = !self.UseIconsForDebugDisplay
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.ShowAiPlanningGraph  (script 18 bytes)
+  0000: self._ShowAiPlanningGraph = !self._ShowAiPlanningGraph
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.SetAiPlanningThreshold  (script 53 bytes)
+  0000: TnGame(obj'Engine.Engine'.static.GetGame())._AiPlanningScheduler._ProfilingThresholdMs = cast3f(Milliseconds)
+  0032: return nothing
+  0034: <eos>
+
+function TnDebugManager.ToggleIgnoreInput  (script 18 bytes)
+  0000: self.IgnoreInput = !self.IgnoreInput
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.DestroySelected  (script 42 bytes)
+  0000: Selected = Actor(self.DebugTarget)
+  0010: if !((Selected != none)) goto 0x0027
+  001b: Selected.DestroyActor()
+  0027: return nothing
+  0029: <eos>
+
+function TnDebugManager.TII  (script 9 bytes)
+  0000: TnDebugManager.ToggleIgnoreInput()
+  0006: return nothing
+  0008: <eos>
+
+function TnDebugManager.ShowAnimDebugOnTarget  (script 92 bytes)
+  0000: nothing
+  0001: A = TnDebugManager.GetCameraTarget()
+  000d: if !((A == none)) goto 0x001a
+  0018: return nothing
+  001a: SMC = A.FindComponent(obj'Engine.SkeletalMeshComponent')
+  0038: if !((SMC == none)) goto 0x0045
+  0043: return nothing
+  0045: SetAnimDebug(SMC, StartingNode)
+  0059: return nothing
+  005b: <eos>
+
+function TnDebugManager.ShowWeaponAnimDebug  (script 148 bytes)
+  0000: nothing
+  0001: P = TnPawn(TnDebugManager.GetCameraTarget())
+  0012: if !((P == none)) goto 0x001f
+  001d: return nothing
+  001f: Weapon = TnWeapon(P.Weapon)
+  0038: if !((Weapon == none)) goto 0x0045
+  0043: return nothing
+  0045: SMC = Weapon.GetWeaponMesh().AnimatedMesh.Mesh
+  0070: if !((SMC == none)) goto 0x007d
+  007b: return nothing
+  007d: SetAnimDebug(SMC, StartingNode)
+  0091: return nothing
+  0093: <eos>
+
+function TnDebugManager.AddBuff  (script 103 bytes)
+  0000: nothing
+  0001: BuffService = TnBuffService(TnPlayerPawn(GetLocalPlayerPawn()).GetService('TnBuffService'))
+  0032: if !(NotEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0064
+  0046: BuffService.AddSelfBuff(BuffClass, BuffLevel)
+  0064: return nothing
+  0066: <eos>
+
+function TnDebugManager.RemoveBuff  (script 97 bytes)
+  0000: BuffService = TnBuffService(TnPlayerPawn(GetLocalPlayerPawn()).GetService('TnBuffService'))
+  0031: if !(NotEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x005e
+  0045: BuffService.RemoveBuff(BuffClass)
+  005e: return nothing
+  0060: <eos>
+
+function TnDebugManager.DebugXpEvent  (script 28 bytes)
+  0000: TnDebugManager.GetLocalPlayerController().NotifyXpEvent(XpEvent)
+  0019: return nothing
+  001b: <eos>
+
+function TnDebugManager.Killstreak  (script 57 bytes)
+  0000: LocalPawn = TnPawn(GetLocalPlayerPawn())
+  0015: LocalPawn.AbilityManager.TriggerKillstreak(Killstreak)
+  0036: return nothing
+  0038: <eos>
+
+function TnDebugManager.KillstreakReward  (script 28 bytes)
+  0000: TnDebugManager.GetLocalPlayerController().UpdateKillstreakRewards(KillCount)
+  0019: return nothing
+  001b: <eos>
+
+function TnDebugManager.TakeDamage  (script 78 bytes)
+  0000: LocalPawn = GetLocalPlayerPawn()
+  0010: LocalPawn.TakeDamage(Amount, none, LocalPawn.Location, vect(0,0,0), obj'TnDamageType', , )
+  004b: return nothing
+  004d: <eos>
+
+function TnDebugManager.AddXp  (script 47 bytes)
+  0000: nothing
+  0001: PC = TnDebugManager.GetLocalPlayerController()
+  000d: PC.NotifyChallengeXpEvent(Specialty, cast44(Amount))
+  002c: return nothing
+  002e: <eos>
+
+function TnDebugManager.ClearXp  (script 68 bytes)
+  0000: PC = TnDebugManager.GetLocalPlayerController()
+  000c: PC.get_XpManager().ClearXp()
+  002d: PC.SaveProfileSettings()
+  0041: return nothing
+  0043: <eos>
+
+function TnDebugManager.ResetCustomizationData  (script 55 bytes)
+  0000: TnDebugManager.GetLocalPlayer().ResetCustomizationData()
+  0014: PC = TnDebugManager.GetLocalPlayerController()
+  0020: PC.SaveProfileSettings()
+  0034: return nothing
+  0036: <eos>
+
+function TnDebugManager.ShowTacticalUpdateInfo  (script 18 bytes)
+  0000: self.ShowTacticalInfo = !self.ShowTacticalInfo
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.ShowTacticalEvalDebug  (script 18 bytes)
+  0000: self.TacticalEvalDebug = !self.TacticalEvalDebug
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.GetCameraTarget  (script 110 bytes)
+  0000: PC = TnDebugManager.GetLocalPlayerController()
+  000c: PC.GetPlayerViewPoint(CameraLocation, CameraRotation)
+  0029: return PC.Trace(IgnoreVector, IgnoreVector, none, (CameraLocation + (vect(100000,0,0) >> CameraRotation)), CameraLocation, true, , , , )
+  0067: return return
+  006d: <eos>
+
+function TnDebugManager.DebugUnlockChallenge  (script 67 bytes)
+  0000: Profile = TnProfileSettings(TnDebugManager.GetLocalPlayerController().ProfileSettings)
+  001a: Profile.ChallengeManager.DebugUnlockChallenge(Challenge, CompletionLevel)
+  0040: return nothing
+  0042: <eos>
+
+function TnDebugManager.DebugSurvivalZones  (script 96 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x005d
+  002d: TnGame(WI.Game).DebugGameCommand("SurvivalZones")
+  005d: return nothing
+  005f: <eos>
+
+function TnDebugManager.DebugEndSurvivalRound  (script 99 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x0060
+  002d: TnGame(WI.Game).DebugGameCommand("EndSurvivalRound")
+  0060: return nothing
+  0062: <eos>
+
+function TnDebugManager.DebugGotoSurvivalRound  (script 110 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x006b
+  002d: TnGame(WI.Game).DebugGameCommand(("GotoSurvivalRound=" $ cast53(RoundNumber)))
+  006b: return nothing
+  006d: <eos>
+
+function TnDebugManager.DebugSurvivalEnemies  (script 90 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x0057
+  002d: TnGame(WI.Game).DebugGameCommand("Enemies")
+  0057: return nothing
+  0059: <eos>
+
+function TnDebugManager.DebugAddPower  (script 91 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x0058
+  002d: TnGame(WI.Game).DebugGameCommand("AddPower")
+  0058: return nothing
+  005a: <eos>
+
+function TnDebugManager.DebugGame  (script 86 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.Game != none)) goto 0x0053
+  002d: TnGame(WI.Game).DebugGameCommand(Command)
+  0053: return nothing
+  0055: <eos>
+
+function TnDebugManager.ClearPickups  (script 74 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllActors(obj'TnDroppedPickup', A) (end 0x0046)
+  0039: A.DestroyActor()
+  0045: iternext
+  0046: iterpop
+  0047: return nothing
+  0049: <eos>
+
+function TnDebugManager.DebugGodMode  (script 79 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x004b)
+  0039: PC.bGodMode = true
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function TnDebugManager.DebugDowned  (script 32 bytes)
+  0000: TnPawn(GetLocalPlayerPawn()).TestDowned()
+  001d: return nothing
+  001f: <eos>
+
+function TnDebugManager.ToggleDebugCameraStrategy  (script 157 bytes)
+  0000: ToggleDebugCameraStrategy()
+  0006: P = TnPawn(GetLocalPlayerPawn())
+  001b: PC = TnPlayerController(P.Controller)
+  0034: if !(P.get_IsInVehicleForm()) goto 0x009a
+  004a: (PC.IsDebugCameraActive() ? P._VehicleForm.PausePhysics() : P._VehicleForm.UnpausePhysics())
+  009a: return nothing
+  009c: <eos>
+
+function TnDebugManager.GetPlayerNum  (script 37 bytes)
+  0000: return LocalPlayer(TnDebugManager.GetLocalPlayerController().Player).ControllerId
+  001e: return return
+  0024: <eos>
+
+function TnDebugManager.SendFriendInvite  (script 115 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(EqualEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0038
+  0036: return nothing
+  0038: OnlineSub.PlayerInterface.AddFriendByName(cast3d(TnDebugManager.GetPlayerNum()), FriendUsername, "Be my friend")
+  0070: return nothing
+  0072: <eos>
+
+function TnDebugManager.AcceptFriendInvites  (script 251 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(EqualEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0038
+  0036: return nothing
+  0038: OnlineSub.PlayerInterface.GetFriendMessages(cast3d(TnDebugManager.GetPlayerNum()), Messages)
+  0062: foreach Messages(Message,) (end 0x00f7)
+  0071: if !(!Message.bIsFriendInvite) goto 0x008b
+  0087: iternext
+  0088: goto 0x00f7
+  008b: LogInternal(("Accepting friend invite from " $ Message.SendingPlayerNick), , , )
+  00c1: OnlineSub.PlayerInterface.AcceptFriendInvite(cast3d(TnDebugManager.GetPlayerNum()), Message.SendingPlayerId)
+  00f6: iternext
+  00f7: iterpop
+  00f8: return nothing
+  00fa: <eos>
+
+function TnDebugManager.DenyFriendInvites  (script 249 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(EqualEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0038
+  0036: return nothing
+  0038: OnlineSub.PlayerInterface.GetFriendMessages(cast3d(TnDebugManager.GetPlayerNum()), Messages)
+  0062: foreach Messages(Message,) (end 0x00f5)
+  0071: if !(!Message.bIsFriendInvite) goto 0x008b
+  0087: iternext
+  0088: goto 0x00f5
+  008b: LogInternal(("Denying friend invite from " $ Message.SendingPlayerNick), , , )
+  00bf: OnlineSub.PlayerInterface.DenyFriendInvite(cast3d(TnDebugManager.GetPlayerNum()), Message.SendingPlayerId)
+  00f4: iternext
+  00f5: iterpop
+  00f6: return nothing
+  00f8: <eos>
+
+function TnDebugManager.SendGameInvite  (script 299 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(EqualEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0038
+  0036: return nothing
+  0038: OnlineSub.PlayerInterface.GetFriendsList(cast3d(TnDebugManager.GetPlayerNum()), Friends, , )
+  0064: foreach Friends(Friend,) (end 0x0127)
+  0073: LogInternal(("Sending game invite to " $ Friend.NickName), , , )
+  00a3: OnlineSub.PlayerInterface.SendGameInviteToFriend(cast3d(TnDebugManager.GetPlayerNum()), Friend.UniqueId, "The Title", "Join my game")
+  00f1: TnDebugManager.GetLocalPlayerController().UIController.OnGameInviteSent(cast3d(TnDebugManager.GetPlayerNum()), Friend.NickName)
+  0126: iternext
+  0127: iterpop
+  0128: return nothing
+  012a: <eos>
+
+function TnDebugManager.SGI  (script 9 bytes)
+  0000: TnDebugManager.SendGameInvite()
+  0006: return nothing
+  0008: <eos>
+
+function TnDebugManager.JoinGameInvite  (script 327 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(EqualEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0038
+  0036: return nothing
+  0038: OnlineSub.PlayerInterface.GetFriendMessages(cast3d(TnDebugManager.GetPlayerNum()), Messages)
+  0062: I = 0
+  0069: if !((I < Messages.Length)) goto 0x0144
+  0079: if !(!I[Messages].bIsGameInvite) goto 0x0098
+  0095: goto 0x013a
+  0098: LogInternal(("Accepting game invite from " $ I[Messages].SendingPlayerNick), , , )
+  00d2: OnlineSub.PlayerInterface.JoinFriendGame(cast3d(TnDebugManager.GetPlayerNum()), I[Messages].SendingPlayerId)
+  010d: OnlineSub.PlayerInterface.DeleteMessage(cast3d(TnDebugManager.GetPlayerNum()), I)
+  0137: goto 0x0144
+  013a: AddAdd_PreInt(I)
+  0141: goto 0x0069
+  0144: return nothing
+  0146: <eos>
+
+function TnDebugManager.JGI  (script 9 bytes)
+  0000: TnDebugManager.JoinGameInvite()
+  0006: return nothing
+  0008: <eos>
+
+function TnDebugManager.ModifyPostProcessSettings  (script 115 bytes)
+  0000: if !(self.DisableBloom) goto 0x001c
+  0009: Settings.bEnableBloom = false
+  001c: if !(self.DisableDOF) goto 0x0038
+  0025: Settings.bEnableDOF = false
+  0038: if !(self.DisableMotionBlur) goto 0x0054
+  0041: Settings.bEnableMotionBlur = false
+  0054: if !(self.DisableSceneEffect) goto 0x0070
+  005d: Settings.bEnableSceneEffect = false
+  0070: return nothing
+  0072: <eos>
+
+function TnDebugManager.ToggleBloom  (script 18 bytes)
+  0000: self.DisableBloom = !self.DisableBloom
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.ToggleDepthOfField  (script 18 bytes)
+  0000: self.DisableDOF = !self.DisableDOF
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.ToggleMotionBlur  (script 18 bytes)
+  0000: self.DisableMotionBlur = !self.DisableMotionBlur
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.ToggleSceneEffect  (script 18 bytes)
+  0000: self.DisableSceneEffect = !self.DisableSceneEffect
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.ToggleInvisibleToAI  (script 46 bytes)
+  0000: if !((self.InvisibleToAIPawn != none)) goto 0x0015
+  000b: self.InvisibleToAIPawn = none
+  0012: goto 0x002b
+  0015: self.InvisibleToAIPawn = GetLocalPlayerPawn()
+  0025: TnDebugManager.HidePawnFromAIEnemies()
+  002b: return nothing
+  002d: <eos>
+
+function TnDebugManager.HidePawnFromAIEnemies  (script 57 bytes)
+  0000: foreach self.InvisibleToAIPawn.WorldInfo.AllControllers(obj'TnAiController', C) (end 0x0035)
+  0029: TnDebugManager.HidePawnFromAIEnemy(C)
+  0034: iternext
+  0035: iterpop
+  0036: return nothing
+  0038: <eos>
+
+function TnDebugManager.HidePawnFromAIEnemy  (script 195 bytes)
+  0000: if !((((C == self.InvisibleToAIPawn.Controller) || (C.Pawn == none)) || C.Pawn.IsSameTeam(self.InvisibleToAIPawn))) goto 0x0056
+  0054: return nothing
+  0056: C.GetTacticalAnalyzer().UnregisterEnemy(self.InvisibleToAIPawn.Controller)
+  0085: if !((C.GetWorldStateSubject(obj'TnAiWorldStateTargetIsDead') == self.InvisibleToAIPawn)) goto 0x00c0
+  00a7: C.SetWorldStateSubject(obj'TnAiWorldStateTargetIsDead', none)
+  00c0: return nothing
+  00c2: <eos>
+
+function TnDebugManager.AutoShot  (script 24 bytes)
+  0000: nothing
+  0001: TnDebugManager.StartAutoShot(SecondsBetweenShots, 'TakeShot')
+  0015: return nothing
+  0017: <eos>
+
+function TnDebugManager.AutoShotEmpty  (script 24 bytes)
+  0000: nothing
+  0001: TnDebugManager.StartAutoShot(SecondsBetweenShots, 'TakeShotStepA')
+  0015: return nothing
+  0017: <eos>
+
+function TnDebugManager.StartAutoShot  (script 197 bytes)
+  0000: if !((SecondsBetweenShots == 0)) goto 0x0013
+  000b: SecondsBetweenShots = 30
+  0013: P = GetLocalPlayerPawn()
+  0023: if !(P.IsTimerActive(ShotFunc, self)) goto 0x0082
+  003f: LogInternal("Disabling automatic screen shots", , , )
+  0066: P.ClearTimer(ShotFunc, self)
+  007f: goto 0x00c2
+  0082: LogInternal("Enabling automatic screen shots", , , )
+  00a8: P.SetTimer(cast3f(SecondsBetweenShots), true, ShotFunc, self)
+  00c2: return nothing
+  00c4: <eos>
+
+function TnDebugManager.TakeShot  (script 75 bytes)
+  0000: P = GetLocalPlayerPawn()
+  0010: PC = TnPlayerController(P.Controller)
+  0029: PC.ConsoleCommand("shot", )
+  0048: return nothing
+  004a: <eos>
+
+function TnDebugManager.TakeShotStepA  (script 113 bytes)
+  0000: P = GetLocalPlayerPawn()
+  0010: P.SetHidden(true)
+  0024: PC = TnPlayerController(P.Controller)
+  003d: PC.OnUIEvent(12)
+  0052: P.SetTimer(0.1, false, 'TakeShotStepB', self)
+  006e: return nothing
+  0070: <eos>
+
+function TnDebugManager.TakeShotStepB  (script 53 bytes)
+  0000: P = GetLocalPlayerPawn()
+  0010: TnDebugManager.TakeShot()
+  0016: P.SetTimer(0.1, false, 'TakeShotStepC', self)
+  0032: return nothing
+  0034: <eos>
+
+function TnDebugManager.TakeShotStepC  (script 110 bytes)
+  0000: P = GetLocalPlayerPawn()
+  0010: PC = TnPlayerController(P.Controller)
+  0029: P.SetHidden(false)
+  003d: PC = TnPlayerController(P.Controller)
+  0056: PC.OnUIEvent(13)
+  006b: return nothing
+  006d: <eos>
+
+function TnDebugManager.GetStats  (script 43 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: return OnlineStatsInterfaceEx(OnlineSub)
+  0024: return return
+  002a: <eos>
+
+function TnDebugManager.IncrementGlobalCounter  (script 42 bytes)
+  0000: Stats = TnDebugManager.GetStats()
+  000c: Stats.UpdateGlobalCounter(666, 10)
+  0027: return nothing
+  0029: <eos>
+
+function TnDebugManager.GetGlobalCounterValue  (script 82 bytes)
+  0000: Stats = TnDebugManager.GetStats()
+  000c: Stats.AddReadGlobalCountersCompleteDelegate(delegate.OnCountersRead)
+  0029: CounterIds.AddItem(CounterId)
+  0036: Stats.ReadGlobalCounterValues(CounterIds)
+  004f: return nothing
+  0051: <eos>
+
+function TnDebugManager.OnCountersRead  (script 111 bytes)
+  0000: I = 0
+  0007: if !((I < CounterIds.Length)) goto 0x006c
+  0017: LogInternal(((("Global Counter " $ cast53(I[CounterIds])) $ " has value ") $ cast53(I[CounterValues])), 'DevDemonware', , )
+  0062: AddAdd_PreInt(I)
+  0069: goto 0x0007
+  006c: return nothing
+  006e: <eos>
+
+function TnDebugManager.PrintKeyArchiveValues  (script 223 bytes)
+  0000: Profile = TnDebugManager.GetLocalProfile()
+  000c: StatsInterface = TnDebugManager.GetStats()
+  0018: foreach Profile.KeySets(KeySet,) (end 0x00db)
+  0030: foreach KeySet.Stats(Prop,) (end 0x00d9)
+  0048: StatsInterface.GetKeyArchiveValue(Prop)
+  0061: IntValue = obj'Engine.Settings'.static.GetSettingsDataInt(Prop.Data)
+  008a: LogInternal((((("KeyArchive value (0x" $ ToHex(Prop.PropertyId)) $ ") = (") $ cast53(IntValue)) $ ")"), , , )
+  00d8: iternext
+  00d9: iterpop
+  00da: iternext
+  00db: iterpop
+  00dc: return nothing
+  00de: <eos>
+
+function TnDebugManager.TestNamedPawnDowned  (script 59 bytes)
+  0000: P = TnPawn(FindPawn(PawnName))
+  001a: if !((P != none)) goto 0x0038
+  0025: P.TestDowned()
+  0038: return nothing
+  003a: <eos>
+
+function TnDebugManager.TestNamedPawnRevive  (script 59 bytes)
+  0000: P = TnPawn(FindPawn(PawnName))
+  001a: if !((P != none)) goto 0x0038
+  0025: P.TestRevive()
+  0038: return nothing
+  003a: <eos>
+
+function TnDebugManager.Buffalog  (script 143 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllPawns(obj'TnPawn', P, , ) (end 0x008b)
+  003b: BuffService = TnBuffService(P.GetService('TnBuffService'))
+  0062: if !(NotEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x008a
+  0076: BuffService.ToggleDebug()
+  008a: iternext
+  008b: iterpop
+  008c: return nothing
+  008e: <eos>
+
+function TnDebugManager.AddAbilityResource  (script 66 bytes)
+  0000: default=999.0
+  0009: LocalPawn = TnPlayerPawn(GetLocalPlayerPawn())
+  001e: LocalPawn.AbilityManager.AddResource(Amount)
+  003f: return nothing
+  0041: <eos>
+
+function TnDebugManager.DebugSetDifficulty  (script 57 bytes)
+  0000: G = TnGame(obj'Engine.Engine'.static.GetGame())
+  001e: G.set_GameDifficulty(I)
+  0036: return nothing
+  0038: <eos>
+
+function TnDebugManager.LogCheckpoints  (script 156 bytes)
+  0000: Status = obj'HM_Engine.CheckpointManager'.static.GetInstance().GetCheckpointFileStatus(0)
+  0028: LogInternal(("Autobot checkpoint:" @ cast52(Status)), , , )
+  004b: Status = obj'HM_Engine.CheckpointManager'.static.GetInstance().GetCheckpointFileStatus(1)
+  0073: LogInternal(("Decepticon checkpoint:" @ cast52(Status)), , , )
+  0099: return nothing
+  009b: <eos>
+
+function TnDebugManager.DebugSaveCheckpointFile  (script 50 bytes)
+  0000: obj'HM_Engine.CheckpointManager'.static.GetInstance().SaveActiveCheckpoint(I, delegate.None)
+  002f: return nothing
+  0031: <eos>
+
+function TnDebugManager.DebugLoadCheckpointFile  (script 41 bytes)
+  0000: obj'HM_Engine.CheckpointManager'.static.GetInstance().LoadAndRestartFromCheckpoint(I)
+  0026: return nothing
+  0028: <eos>
+
+function TnDebugManager.ShowTutorial  (script 66 bytes)
+  0000: PC = TnDebugManager.GetLocalPlayerController()
+  000c: H = TnHUD(PC.myHUD)
+  0025: H.DisplayTutorialMessage(cast3d(Type))
+  003f: return nothing
+  0041: <eos>
+
+function TnDebugManager.DebugInstallGame  (script 67 bytes)
+  0000: InstallMonitor = new(nothing, nothing, obj'TnInstallerMonitor', nothing, DeltaTime)
+  0014: InstallMonitor.SetInstallingPlayer(TnDebugManager.GetLocalPlayerController())
+  002d: InstallMonitor.Install()
+  0040: return nothing
+  0042: <eos>
+
+function TnDebugManager.LogTeams  (script 622 bytes)
+  0000: Reservations = obj'Engine.GameEngine'.static.GetOnlineSubsystem().ReservationInterface.GetReservations()
+  0031: LogInternal("== Teams ==", 'DevTeams', , )
+  004b: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().AllActors(obj'Engine.TeamInfo', Team) (end 0x00d4)
+  0079: LogInternal(((((((("[" $ cast53(Team.TeamIndex)) $ "]") @ cast56(Team)) @ "'") $ Team.TeamName) $ "'") @ cast56(Team.get_Outer())), 'DevTeams', , )
+  00d3: iternext
+  00d4: iterpop
+  00d5: LogInternal("== Players ==", 'DevTeams', , )
+  00f1: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI.PRIArray(PRI,) (end 0x0250)
+  0120: logString = (((("Team" @ cast56(PRI.Team)) @ "[") $ cast53(PRI.TeamID)) $ "]")
+  015a: if !((Reservations != none)) goto 0x01f0
+  0165: AtEqual_StrStr(logString, "| Reservation")
+  0181: if !(Reservations.IsMember(PRI.UniqueId)) goto 0x01d8
+  01a5: AtEqual_StrStr(logString, cast52(Reservations.GetTeamIndexForPlayer(PRI.UniqueId)))
+  01d5: goto 0x01f0
+  01d8: AtEqual_StrStr(logString, "not found")
+  01f0: AtEqual_StrStr(logString, (((("|" @ PRI.PlayerName) @ "(") $ obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(PRI.UniqueId)) $ ")"))
+  023d: LogInternal(logString, 'DevTeams', , )
+  024f: iternext
+  0250: iterpop
+  0251: LogInternal("===========", 'DevTeams', , )
+  026b: return nothing
+  026d: <eos>
+
+function TnDebugManager.DebugLoadingMovie  (script 147 bytes)
+  0000: obj'Engine.Settings'.static.SetSettingsDataString(D1, "The Title")
+  0023: obj'Engine.Settings'.static.SetSettingsDataString(D2, "The Message")
+  0048: Data.AddItem(D1)
+  0055: Data.AddItem(D2)
+  0062: obj'Engine.HmMoviePlayer'.static.AddDeferredMethod("_global.SetLevelText", Data)
+  0090: return nothing
+  0092: <eos>
+
+function TnDebugManager.DebugNotifyConnectionError  (script 108 bytes)
+  0000: default="DebugConnectionErrorTitle"
+  001f: default="DebugConnectionErrorMessage"
+  0040: PC = TnDebugManager.GetLocalPlayerController()
+  004c: PC.NotifyConnectionError(Message, Title)
+  0069: return nothing
+  006b: <eos>
+
+function TnDebugManager.TogglePawnTransparency  (script 18 bytes)
+  0000: self.DisablePawnTransparency = !self.DisablePawnTransparency
+  000f: return nothing
+  0011: <eos>
+
+function TnDebugManager.LogControllers  (script 329 bytes)
+  0000: LP = LocalPlayer(TnDebugManager.GetLocalPlayerController().Player)
+  001a: GVC = TnGameViewportClient(LP.ViewportClient)
+  0033: PlayerInterface = obj'Engine.GameEngine'.static.GetOnlineSubsystem().PlayerInterface
+  0055: I = 0
+  005c: if !((I < 4)) goto 0x0146
+  0068: if !(((I == LP.ControllerId) && GVC._HasAssignedControllerId)) goto 0x00a5
+  0094: ActiveControllerString = "ACTIVE"
+  00a2: goto 0x00ad
+  00a5: ActiveControllerString = ""
+  00ad: LogInternal(((("[" $ cast53(I)) $ "]") @ ActiveControllerString), , , )
+  00ca: LogInternal(("    Primary Login:" @ cast52(PlayerInterface.GetLoginStatus(cast3d(I)))), , , )
+  0102: LogInternal(("    Secondary Login:" @ cast52(PlayerInterface.GetSecondaryLoginStatus(cast3d(I)))), , , )
+  013c: AddAdd_PreInt(I)
+  0143: goto 0x005c
+  0146: return nothing
+  0148: <eos>
+
+function TnDebugManager.LogStorageDevice  (script 171 bytes)
+  0000: LP = HmLocalPlayer(TnDebugManager.GetLocalPlayerController().Player)
+  001a: if !(!LP.IsStorageDeviceValid()) goto 0x003f
+  0033: NotString = "not "
+  003f: LogInternal((((((("Current storage device (" $ cast53(LP._CurrentStorageDeviceId)) $ ") for player") @ cast53(LP.ControllerId)) @ "is") @ NotString) $ "valid"), , , )
+  00a8: return nothing
+  00aa: <eos>
+
+function TnDebugManager.DebugAddNewSkills  (script 96 bytes)
+  0000: Options = new(nothing, nothing, obj'TnCustomCharacterOptions', nothing, DeltaTime)
+  0014: Options.GetSkillsForLevel(NewSkills, Specialty, NewLevel)
+  0036: TnDebugManager.GetLocalPlayerController().get_CustomCharacterData().AddNewlyUnlockedSkills(NewSkills)
+  005d: return nothing
+  005f: <eos>
+
+function TnDebugManager.SetShowStartScreen  (script 26 bytes)
+  0000: TnDebugManager.GetLocalPlayerController().DebugShouldShowStartScreen = Show
+  0017: return nothing
+  0019: <eos>
+
+function TnDebugManager.ResetDevelopmentLeaderboard  (script 76 bytes)
+  0000: default=-1
+  0009: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0022: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(LeaderboardId, LocalUserNum)
+  0049: return nothing
+  004b: <eos>
+
+function TnDebugManager.ResetDevelopmentLeaderboards  (script 468 bytes)
+  0000: default=-1
+  0009: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0022: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(5, LocalUserNum)
+  0046: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(14, LocalUserNum)
+  006a: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(6, LocalUserNum)
+  008e: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(3, LocalUserNum)
+  00b2: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(1, LocalUserNum)
+  00d5: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(28, LocalUserNum)
+  00f9: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(9, LocalUserNum)
+  011d: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(15, LocalUserNum)
+  0141: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(4, LocalUserNum)
+  0165: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(29, LocalUserNum)
+  0189: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(8, LocalUserNum)
+  01ad: OnlineSub.StatsInterface.ResetDevelopmentLeaderboard(2, LocalUserNum)
+  01d1: return nothing
+  01d3: <eos>
+
+function TnDebugManager.DebugCompleteMission  (script 85 bytes)
+  0000: default=0
+  0005: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().AllControllers(obj'TnPlayerController', PC) (end 0x0051)
+  0033: PC.ClientCompleteMission(MapId, Difficulty)
+  0050: iternext
+  0051: iterpop
+  0052: return nothing
+  0054: <eos>
+
+function TnDebugManager.DebugUnlockCharacter  (script 42 bytes)
+  0000: TnLocalPlayer(TnDebugManager.GetLocalPlayerController().Player).UnlockChassis(ChassisID)
+  0027: return nothing
+  0029: <eos>
+
+function TnDebugManager.TestAddPlayerMet  (script 141 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: PC = TnDebugManager.GetLocalPlayerController()
+  0025: ControllerId = LocalPlayer(PC.Player).ControllerId
+  0047: TempNames.AddItem(NewName)
+  0054: OnlineSub.PlayerInterface.AddPlayersToPlayerHistory(cast3d(ControllerId), TempNames, "FixMeSteven")
+  008a: return nothing
+  008c: <eos>
+
+function TnDebugManager.Spectate  (script 143 bytes)
+  0000: nothing
+  0001: if !((PlayerName != "")) goto 0x0073
+  000d: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0026: foreach WI.AllPawns(obj'Engine.Pawn', Subject, , ) (end 0x0072)
+  0048: if !((Subject.PlayerReplicationInfo.GetPlayerAlias() == PlayerName)) goto 0x0071
+  006e: goto 0x0072
+  0071: iternext
+  0072: iterpop
+  0073: TnDebugManager.GetLocalPlayerController().SpectateActorSubject(Subject)
+  008c: return nothing
+  008e: <eos>
+
+function TnDebugManager.ShowColoredString  (script 151 bytes)
+  0000: CS.StringParts.Insert(0,1)
+  0013: 0[CS.StringParts].Text = Message
+  0036: 0[CS.StringParts].TextColor = obj'TnMessageTextColors'.static.default.EnemyColor
+  0062: H = TnHUD(TnDebugManager.GetLocalPlayerController().myHUD)
+  007c: H.ColoredLocalizedMessage(CS)
+  0094: return nothing
+  0096: <eos>
+
+function TnDebugManager.LogPRIS  (script 473 bytes)
+  0000: nothing
+  0001: WI = obj'Engine.Engine'.static.GetEngine().GetCurrentWorldInfo()
+  0028: GRI = WI.GRI
+  003c: LogInternal("== PRI ==", , , )
+  004c: foreach GRI.PRIArray(PRI,) (end 0x00a0)
+  0064: if !((ShowAI || !PRI.bBot)) goto 0x009f
+  0083: LogInternal((cast56(PRI) @ PRI.PlayerName), , , )
+  009f: iternext
+  00a0: iterpop
+  00a1: LogInternal("== Controller ==", , , )
+  00b8: foreach WI.AllControllers(obj'Engine.Controller', C) (end 0x0134)
+  00d8: if !((ShowAI || !PRI.bBot)) goto 0x0133
+  00f7: LogInternal((((cast56(C) $ ":") @ cast56(C.PlayerReplicationInfo)) @ C.PlayerReplicationInfo.PlayerName), , , )
+  0133: iternext
+  0134: iterpop
+  0135: LogInternal("== Pawn ==", , , )
+  0146: foreach WI.AllPawns(obj'Engine.Pawn', P, , ) (end 0x01c4)
+  0168: if !((ShowAI || !PRI.bBot)) goto 0x01c3
+  0187: LogInternal((((cast56(P) $ ":") @ cast56(P.PlayerReplicationInfo)) @ P.PlayerReplicationInfo.PlayerName), , , )
+  01c3: iternext
+  01c4: iterpop
+  01c5: LogInternal("==========", , , )
+  01d6: return nothing
+  01d8: <eos>
+
+function TnDebugManager.ReloadCharacerUI  (script 72 bytes)
+  0000: TnDebugManager.GetLocalPlayerController().UIController.InvokeOnCurrentUI("_global.CustomizationFileReadComplete", )
+  0045: return nothing
+  0047: <eos>
+
+function TnDebugManager.DebugUnlockPrimeMode  (script 88 bytes)
+  0000: PC = TnDebugManager.GetLocalPlayerController()
+  000c: TnPlayerReplicationInfo(PC.PlayerReplicationInfo).set_PrimeMode(true)
+  002e: PC.OnPrimeModeUnlocked()
+  0041: PC.SaveProfileSettings()
+  0055: return nothing
+  0057: <eos>

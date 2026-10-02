@@ -1,0 +1,17 @@
+function HmPlayerOnlyBlockingVolume.IsActive  (script 62 bytes)
+  0000: P = Pawn(A)
+  0010: if !(((P != none) && P.IsPlayerPawn())) goto 0x0035
+  0033: return true
+  0035: return false
+  0037: return return
+  003d: <eos>
+
+function HmPlayerOnlyBlockingVolume.IgnoreBlockingBy  (script 21 bytes)
+  0000: return !HmPlayerOnlyBlockingVolume.IsActive(A)
+  000e: return return
+  0014: <eos>
+
+function HmPlayerOnlyBlockingVolume.ShouldTrace  (script 19 bytes)
+  0000: return HmPlayerOnlyBlockingVolume.IsActive(SourceActor)
+  000c: return return
+  0012: <eos>

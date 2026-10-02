@@ -1,0 +1,542 @@
+function TnCameraStrategyManager.set_Camera  (script 14 bytes)
+  0000: self._Camera = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCameraStrategyManager.set_CameraOwner  (script 52 bytes)
+  0000: if !((self._TransformerPawn == Value)) goto 0x0011
+  000f: return nothing
+  0011: self._TransformerPawn = Value
+  001c: TnCameraStrategyManager.InitializeForms()
+  0022: set_CameraStrategy(self._CameraStrategy)
+  0031: return nothing
+  0033: <eos>
+
+function TnCameraStrategyManager.get_CameraOwnerName  (script 22 bytes)
+  0000: return self._TransformerPawn.Name
+  000f: return return
+  0015: <eos>
+
+function TnCameraStrategyManager.set_CameraStrategy  (script 88 bytes)
+  0000: if !(((self.CameraStrategySet == none) || (self._Camera == none))) goto 0x001a
+  0018: return nothing
+  001a: self._CameraStrategy = Value
+  0025: self._Camera.SetActiveCameraStrategy(self.CameraStrategySet.GetStrategy(self._CameraStrategy), self._TransformerPawn)
+  0055: return nothing
+  0057: <eos>
+
+function TnCameraStrategyManager.get_CameraStrategyName  (script 22 bytes)
+  0000: return self._CameraStrategy.Name
+  000f: return return
+  0015: <eos>
+
+function TnCameraStrategyManager.InitializeForms  (script 165 bytes)
+  0000: self._TankForm = none
+  0007: self._CarForm = none
+  000e: self._PlaneForm = none
+  0015: if !((self._TransformerPawn == none)) goto 0x0022
+  0020: return nothing
+  0022: switch (self._TransformerPawn.get_VehicleType())
+  0037: case 0: (next 0x003c)
+  003c: case 1: (next 0x005d)
+  0041: self._CarForm = TnCarForm(self._TransformerPawn._VehicleForm)
+  005a: goto 0x00a2
+  005d: case 3: (next 0x007e)
+  0062: self._TankForm = TnTankForm(self._TransformerPawn._VehicleForm)
+  007b: goto 0x00a2
+  007e: case 2: (next 0x009f)
+  0083: self._PlaneForm = TnPlaneForm(self._TransformerPawn._VehicleForm)
+  009c: goto 0x00a2
+  009f: default:
+  00a2: return nothing
+  00a4: <eos>
+
+function TnCameraStrategyManager.InnerSetCamerasTemplate  (script 148 bytes)
+  0000: if !(((self._TransformerPawn != none) && self._TransformerPawn.WorldInfo.IsPlayInEditor())) goto 0x005c
+  002c: Cameras.SetupAssetChangeNotifies(true)
+  0040: Cameras.AddAssetChangedObserver(delegate.OnCamerasAssetChanged)
+  005c: self.CameraStrategySet = HmCameraStrategySet(Cameras.Clone(self, ))
+  007c: self.CameraStrategySet.InitCameras("")
+  0091: return nothing
+  0093: <eos>
+
+function TnCameraStrategyManager.SetCamerasTemplate  (script 48 bytes)
+  0000: TnCameraStrategyManager.InnerSetCamerasTemplate(Cameras)
+  000b: StartForm(StartingForm)
+  001a: self._Camera.Reset()
+  002d: return nothing
+  002f: <eos>
+
+function TnCameraStrategyManager.ResetCamerasTemplate  (script 24 bytes)
+  0000: TnCameraStrategyManager.InnerSetCamerasTemplate(Cameras)
+  000b: Restart()
+  0015: return nothing
+  0017: <eos>
+
+function TnCameraStrategyManager.UpdatePlayerCameraState  (script 76 bytes)
+  0000: if !((self._Camera == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(IsEnabled) goto 0x0031
+  0016: self._Camera.AddPlayerCameraState(PCS)
+  002e: goto 0x0049
+  0031: self._Camera.RemovePlayerCameraState(PCS)
+  0049: return nothing
+  004b: <eos>
+
+function TnCameraStrategyManager.Reset  (script 60 bytes)
+  0000: GotoState('None', , , )
+  000e: self._CameraStrategy = none
+  0015: if !((self._Camera != none)) goto 0x0039
+  0020: TnCameraStrategyManager.ClearPCS()
+  0026: self._Camera.Reset()
+  0039: return nothing
+  003b: <eos>
+
+function TnCameraStrategyManager.ClearPCS  (script 29 bytes)
+  0000: self.CurrentWeaponPCS = none
+  0007: self._Camera.ClearPlayerCameraStates()
+  001a: return nothing
+  001c: <eos>
+
+function TnCameraStrategyManager.StartForm  (script 145 bytes)
+  0000: GotoState('None', , , )
+  000e: if !((cast3a(StartingForm) == cast3a(1))) goto 0x0080
+  001e: switch (self._TransformerPawn.get_VehicleType())
+  0033: case 0: (next 0x0038)
+  0038: case 1: (next 0x004e)
+  003d: GotoState('CarFormHovering', , , )
+  004b: goto 0x007d
+  004e: case 3: (next 0x0064)
+  0053: GotoState('TankForm', , , )
+  0061: goto 0x007d
+  0064: case 2: (next 0x007a)
+  0069: GotoState('PlaneFormHovering', , , )
+  0077: goto 0x007d
+  007a: default:
+  007d: goto 0x008e
+  0080: GotoState('RobotForm', , , )
+  008e: return nothing
+  0090: <eos>
+
+function TnCameraStrategyManager.Restart  (script 34 bytes)
+  0000: StartForm(0)
+  000c: self._Camera.Reset()
+  001f: return nothing
+  0021: <eos>
+
+function TnCameraStrategyManager.OnCamerasAssetChanged  (script 19 bytes)
+  0000: TnCameraStrategyManager.ResetCamerasTemplate(HmCameraStrategySet(ChangedCameras))
+  0010: return nothing
+  0012: <eos>
+
+function TnCameraStrategyManager.Update  (script 32 bytes)
+  0000: if !((self._TransformerPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: OnUpdate()
+  0017: TnCameraStrategyManager.UpdateWeaponPCS()
+  001d: return nothing
+  001f: <eos>
+
+function TnCameraStrategyManager.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCameraStrategyManager.UpdateWeaponPCS  (script 187 bytes)
+  0000: if !((self._Camera == none)) goto 0x000d
+  000b: return nothing
+  000d: NextWeapon = TnWeapon(self._TransformerPawn.Weapon)
+  0026: if !((NextWeapon != none)) goto 0x0048
+  0031: NextWeaponPCS = NextWeapon.WeaponPCS
+  0045: goto 0x004f
+  0048: NextWeaponPCS = none
+  004f: if !((NextWeaponPCS == self.CurrentWeaponPCS)) goto 0x0060
+  005e: return nothing
+  0060: if !((self.CurrentWeaponPCS != none)) goto 0x008a
+  006b: self._Camera.RemovePlayerCameraState(self.CurrentWeaponPCS)
+  0083: self.CurrentWeaponPCS = none
+  008a: if !((NextWeaponPCS != none)) goto 0x00b8
+  0095: self._Camera.AddPlayerCameraState(NextWeaponPCS)
+  00ad: self.CurrentWeaponPCS = NextWeaponPCS
+  00b8: return nothing
+  00ba: <eos>
+
+function TnCameraStrategyManager.Downed  (script 56 bytes)
+  0000: if !(self._TransformerPawn.get_IsInRobotForm()) goto 0x0027
+  0016: GotoState('ShootingWhileDowned', , , )
+  0024: goto 0x0035
+  0027: GotoState('ShootingWhileVehicleDowned', , , )
+  0035: return nothing
+  0037: <eos>
+
+function TnCameraStrategyManager.Died  (script 17 bytes)
+  0000: GotoState('WatchingDeath', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnCameraStrategyManager.ShootingWhileDowned.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnRobotDownedCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.ShootingWhileDowned.Died  (script 17 bytes)
+  0000: GotoState('WatchingDeath', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnCameraStrategyManager.ShootingWhileVehicleDowned.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnVehicleDownedCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.ShootingWhileVehicleDowned.Died  (script 17 bytes)
+  0000: GotoState('WatchingVehicleDeath', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnCameraStrategyManager.WatchingDeath.BeginState  (script 19 bytes)
+  0000: TnCameraStrategyManager.ClearPCS()
+  0006: SetDeathCameraStrategy()
+  0010: return nothing
+  0012: <eos>
+
+function TnCameraStrategyManager.WatchingDeath.SetDeathCameraStrategy  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnDeathCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.WatchingVehicleDeath.SetDeathCameraStrategy  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnVehicleDeathCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.SpectateActorSubject  (script 140 bytes)
+  0000: if !((self.SpectateActorCameraStrategy == none)) goto 0x003e
+  000b: self.SpectateActorCameraStrategy = HmCameraStrategy(self.SpectateActorCameraStrategyAsset.Clone(self, ))
+  002b: self.SpectateActorCameraStrategy.CloneBehaviors()
+  003e: self._CameraStrategy = none
+  0045: TnCameraStrategyManager.ClearPCS()
+  004b: self._Camera.SetActiveCameraStrategy(self.SpectateActorCameraStrategy, Subject)
+  0068: self._Camera.Reset()
+  007b: GotoState('SpectateActor', , , )
+  0089: return nothing
+  008b: <eos>
+
+function TnCameraStrategyManager.EndSpectateActor  (script 32 bytes)
+  0000: GotoState('None', , , )
+  000e: StartForm(StartingForm)
+  001d: return nothing
+  001f: <eos>
+
+function TnCameraStrategyManager.SpectateActor.StartForm  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCameraStrategyManager.StartSpectating  (script 287 bytes)
+  0000: nothing
+  0001: if !(((self._Camera == none) || (self._Camera.PCOwner == none))) goto 0x0075
+  0022: LogInternal(("ERROR: StartSpectating called with null Camera or owner.  Camera:" @ cast56(self._Camera)), , , )
+  0073: return nothing
+  0075: if !((self.SpectatingCameraStrategy == none)) goto 0x00b3
+  0080: self.SpectatingCameraStrategy = HmCameraStrategy(self.SpectatingCameraStrategyAsset.Clone(self, ))
+  00a0: self.SpectatingCameraStrategy.CloneBehaviors()
+  00b3: P = TnPlayerController(self._Camera.PCOwner)._LastPawnWhoKilledMe
+  00d5: self.SpectateTargetChooser.Activate(TnPlayerController(self._Camera.PCOwner), delegate.SetNewSpectateTarget, P, ClassToSpectate)
+  010e: GotoState('Spectating', , , )
+  011c: return nothing
+  011e: <eos>
+
+function TnCameraStrategyManager.IsSpectating  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnCameraStrategyManager.SwitchSpectatingTarget  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCameraStrategyManager.SetNewSpectateTarget  (script 64 bytes)
+  0000: if !((self._Camera == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Camera.SetActiveCameraStrategy(self.SpectatingCameraStrategy, NewTarget)
+  002a: self._Camera.Reset()
+  003d: return nothing
+  003f: <eos>
+
+function TnCameraStrategyManager.Spectating.BeginState  (script 9 bytes)
+  0000: TnCameraStrategyManager.ClearPCS()
+  0006: return nothing
+  0008: <eos>
+
+function TnCameraStrategyManager.Spectating.IsSpectating  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnCameraStrategyManager.Spectating.EndState  (script 22 bytes)
+  0000: self.SpectateTargetChooser.Deactivate()
+  0013: return nothing
+  0015: <eos>
+
+function TnCameraStrategyManager.Spectating.SwitchSpectatingTarget  (script 27 bytes)
+  0000: self.SpectateTargetChooser.SwitchTarget(IncrementDirection)
+  0018: return nothing
+  001a: <eos>
+
+function TnCameraStrategyManager.EnterTurret  (script 25 bytes)
+  0000: self.IsInTurret = true
+  0008: GotoState('Turret', , , )
+  0016: return nothing
+  0018: <eos>
+
+function TnCameraStrategyManager.ExitTurret  (script 11 bytes)
+  0000: self.IsInTurret = false
+  0008: return nothing
+  000a: <eos>
+
+function TnCameraStrategyManager.Turret.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnTurretCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.StartGrabVictim  (script 17 bytes)
+  0000: GotoState('GrabVictim', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnCameraStrategyManager.GrabVictim.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnGrabVictimCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.FocusOnLookAtTarget  (script 87 bytes)
+  0000: Strategy = self.CameraStrategySet.GetStrategy(self._CameraStrategy)
+  001e: if !((Strategy != none)) goto 0x0041
+  0029: Strategy.SetLookAtTarget(Target)
+  0041: self._Camera.FocusOnLookAtTarget()
+  0054: return nothing
+  0056: <eos>
+
+function TnCameraStrategyManager.StartFocus  (script 73 bytes)
+  0000: self._Camera.AddPlayerCameraState(obj'TnPCS_FocusingOnPointOfInterest')
+  0018: self._Camera.SetFovSettings(Fov)
+  0030: if !((Target != none)) goto 0x0046
+  003b: TnCameraStrategyManager.FocusOnLookAtTarget(Target)
+  0046: return nothing
+  0048: <eos>
+
+function TnCameraStrategyManager.StopFocus  (script 59 bytes)
+  0000: if !((self._Camera == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Camera.RemovePlayerCameraState(obj'TnPCS_FocusingOnPointOfInterest')
+  0025: self._Camera.RemoveFovSettings()
+  0038: return nothing
+  003a: <eos>
+
+function TnCameraStrategyManager.StartFineAim  (script 49 bytes)
+  0000: self._Camera.AddPlayerCameraState(obj'TnPCS_FineAim')
+  0018: if !((Target != none)) goto 0x002e
+  0023: TnCameraStrategyManager.FocusOnLookAtTarget(Target)
+  002e: return nothing
+  0030: <eos>
+
+function TnCameraStrategyManager.StopFineAim  (script 27 bytes)
+  0000: self._Camera.RemovePlayerCameraState(obj'TnPCS_FineAim')
+  0018: return nothing
+  001a: <eos>
+
+function TnCameraStrategyManager.RobotForm.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnOverTheShoulderCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.RobotForm.OnUpdate  (script 329 bytes)
+  0000: MeleeService = TnMeleeService(self._TransformerPawn.GetRobotService('TnMeleeService'))
+  0027: ShieldService = TnShieldService(self._TransformerPawn.GetRobotService('TnShieldService'))
+  004e: TnCameraStrategyManager.UpdatePlayerCameraState((NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none)) && MeleeService.IsMeleeing(10)), obj'TnPCS_Meleeing')
+  0085: TnCameraStrategyManager.UpdatePlayerCameraState((NotEqual_InterfaceInterface(ShieldService, TnShieldService(none)) && ShieldService.get_IsShieldActive()), obj'TnPCS_Shielding')
+  00ba: TnCameraStrategyManager.UpdatePlayerCameraState((self._TransformerPawn.get_IsAirborne() && (cast3a(self._TransformerPawn.GetPhysics()) != cast3a(1))), obj'TnPCS_Jumping')
+  00f8: TnCameraStrategyManager.UpdatePlayerCameraState(self._TransformerPawn._RobotForm.get_IsHovering(), obj'TnPCS_Hovering')
+  011f: TnCameraStrategyManager.UpdatePlayerCameraState(self._TransformerPawn._RobotForm.get_IsDodging(), obj'TnPCS_Dodging')
+  0146: return nothing
+  0148: <eos>
+
+function TnCameraStrategyManager.VehicleForm.OnUpdate  (script 95 bytes)
+  0000: ShieldService = TnShieldService(self._TransformerPawn.GetService('TnShieldService'))
+  0027: TnCameraStrategyManager.UpdatePlayerCameraState((NotEqual_InterfaceInterface(ShieldService, TnShieldService(none)) && ShieldService.get_IsShieldActive()), obj'TnPCS_Shielding')
+  005c: return nothing
+  005e: <eos>
+
+function TnCameraStrategyManager.VehicleForm.Died  (script 17 bytes)
+  0000: GotoState('WatchingVehicleDeath', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnCameraStrategyManager.CarFormHovering.BeginState  (script 42 bytes)
+  0000: set_CameraStrategy(obj'TnHoveringCameraStrategyType')
+  000f: TnCameraStrategyManager.UpdatePlayerCameraState(false, obj'TnPCS_Jumping')
+  001b: TnCameraStrategyManager.UpdatePlayerCameraState(false, obj'TnPCS_Falling')
+  0027: return nothing
+  0029: <eos>
+
+function TnCameraStrategyManager.CarFormHovering.OnUpdate  (script 45 bytes)
+  0000: if !(self._CarForm.get_IsBoosting()) goto 0x0024
+  0016: GotoState('CarFormDriving', , , )
+  0024: OnUpdate()
+  002a: return nothing
+  002c: <eos>
+
+function TnCameraStrategyManager.CarFormHovering.Restart  (script 50 bytes)
+  0000: GotoState('None', , , )
+  000e: GotoState('CarFormHovering', , , )
+  001c: self._Camera.Reset()
+  002f: return nothing
+  0031: <eos>
+
+function TnCameraStrategyManager.CarFormDriving.BeginState  (script 42 bytes)
+  0000: set_CameraStrategy(obj'TnDrivingCameraStrategyType')
+  000f: TnCameraStrategyManager.UpdatePlayerCameraState(false, obj'TnPCS_Jumping')
+  001b: TnCameraStrategyManager.UpdatePlayerCameraState(false, obj'TnPCS_Falling')
+  0027: return nothing
+  0029: <eos>
+
+function TnCameraStrategyManager.CarFormDriving.OnUpdate  (script 47 bytes)
+  0000: if !(!self._CarForm.get_IsBoosting()) goto 0x0026
+  0018: GotoState('CarFormHovering', , , )
+  0026: OnUpdate()
+  002c: return nothing
+  002e: <eos>
+
+function TnCameraStrategyManager.CarFormDriving.Restart  (script 50 bytes)
+  0000: GotoState('None', , , )
+  000e: GotoState('CarFormDriving', , , )
+  001c: self._Camera.Reset()
+  002f: return nothing
+  0031: <eos>
+
+function TnCameraStrategyManager.TankForm.BeginState  (script 42 bytes)
+  0000: set_CameraStrategy(obj'TnDrivingCameraStrategyType')
+  000f: TnCameraStrategyManager.UpdatePlayerCameraState(false, obj'TnPCS_Jumping')
+  001b: TnCameraStrategyManager.UpdatePlayerCameraState(false, obj'TnPCS_Falling')
+  0027: return nothing
+  0029: <eos>
+
+function TnCameraStrategyManager.TankForm.OnUpdate  (script 39 bytes)
+  0000: TnCameraStrategyManager.UpdatePlayerCameraState(self._TankForm.get_IsBoosting(), obj'TnPCS_Boosting')
+  001e: OnUpdate()
+  0024: return nothing
+  0026: <eos>
+
+function TnCameraStrategyManager.TankForm.Restart  (script 50 bytes)
+  0000: GotoState('None', , , )
+  000e: GotoState('TankForm', , , )
+  001c: self._Camera.Reset()
+  002f: return nothing
+  0031: <eos>
+
+function TnCameraStrategyManager.PlaneFormHovering.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnDrivingCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.PlaneFormHovering.OnUpdate  (script 45 bytes)
+  0000: if !(self._PlaneForm.get_IsBoosting()) goto 0x0024
+  0016: GotoState('PlaneFormFlying', , , )
+  0024: OnUpdate()
+  002a: return nothing
+  002c: <eos>
+
+function TnCameraStrategyManager.PlaneFormHovering.Restart  (script 50 bytes)
+  0000: GotoState('None', , , )
+  000e: GotoState('PlaneFormHovering', , , )
+  001c: self._Camera.Reset()
+  002f: return nothing
+  0031: <eos>
+
+function TnCameraStrategyManager.PlaneFormFlying.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnFlyingCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.PlaneFormFlying.OnUpdate  (script 47 bytes)
+  0000: if !(!self._PlaneForm.get_IsBoosting()) goto 0x0026
+  0018: GotoState('PlaneFormHovering', , , )
+  0026: OnUpdate()
+  002c: return nothing
+  002e: <eos>
+
+function TnCameraStrategyManager.PlaneFormFlying.Restart  (script 50 bytes)
+  0000: GotoState('None', , , )
+  000e: GotoState('PlaneFormFlying', , , )
+  001c: self._Camera.Reset()
+  002f: return nothing
+  0031: <eos>
+
+function TnCameraStrategyManager.PlayCameraAnimation  (script 72 bytes)
+  0000: nothing
+  0001: default=0.0
+  000a: default=true
+  000f: self._Camera.PlayCameraAnimation(CamAnim, BaseActor, StartingPoint, bUseCollision)
+  0037: GotoState('CameraAnimation', , , )
+  0045: return nothing
+  0047: <eos>
+
+function TnCameraStrategyManager.StopCameraAnimation  (script 35 bytes)
+  0000: if !((self._Camera == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Camera.StopCameraAnimation()
+  0020: return nothing
+  0022: <eos>
+
+function TnCameraStrategyManager.CameraAnimation.BeginState  (script 18 bytes)
+  0000: set_CameraStrategy(obj'TnAnimatedCameraStrategyType')
+  000f: return nothing
+  0011: <eos>
+
+function TnCameraStrategyManager.CameraAnimation.OnUpdate  (script 65 bytes)
+  0000: if !(!self._Camera.IsPlayingCameraAnimation()) goto 0x003e
+  0018: if !(self.IsInTurret) goto 0x0032
+  0021: GotoState('Turret', , , )
+  002f: goto 0x003e
+  0032: StartForm(0)
+  003e: return nothing
+  0040: <eos>
+
+function TnCameraStrategyManager.FindTurnaroundCameraBehaviorInStrategy  (script 116 bytes)
+  0000: Strategy = self.CameraStrategySet.GetStrategy(StrategyType)
+  001e: if !((Strategy == none)) goto 0x002b
+  0029: return none
+  002b: foreach Strategy.Behaviors(Behavior,) (end 0x006a)
+  0043: TCB = TnTurnAroundCameraBehavior(Behavior)
+  0053: if !((TCB == none)) goto 0x0062
+  005e: iternext
+  005f: goto 0x006a
+  0062: iterpop
+  0063: return TCB
+  0069: iternext
+  006a: iterpop
+  006b: return none
+  006d: return return
+  0073: <eos>
+
+function TnCameraStrategyManager.EnableFlyingTurnaroundBehavior  (script 95 bytes)
+  0000: TCB = TnCameraStrategyManager.FindTurnaroundCameraBehaviorInStrategy(Params.Strategy)
+  001c: if !((TCB == none)) goto 0x0029
+  0027: return nothing
+  0029: TCB.EnableTurnaround(Params.Direction, Params.Blend)
+  005c: return nothing
+  005e: <eos>
+
+function TnCameraStrategyManager.DisableFlyingTurnaroundBehavior  (script 50 bytes)
+  0000: TCB = TnCameraStrategyManager.FindTurnaroundCameraBehaviorInStrategy(StrategyType)
+  0011: if !((TCB == none)) goto 0x001e
+  001c: return nothing
+  001e: TCB.Enabled = false
+  002f: return nothing
+  0031: <eos>
+
+function TnCameraStrategyManager.StartGuidedMissile  (script 76 bytes)
+  0000: GotoState('None', , , )
+  000e: self._CameraStrategy = obj'TnGuidedMissileCameraStrategyType'
+  0019: self._Camera.SetActiveCameraStrategy(self.CameraStrategySet.GetStrategy(self._CameraStrategy), GuidedMissile)
+  0049: return nothing
+  004b: <eos>

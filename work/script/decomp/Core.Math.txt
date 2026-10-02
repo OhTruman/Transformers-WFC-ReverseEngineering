@@ -1,0 +1,924 @@
+function Math.Min  (script 12 bytes, native 249)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.Max  (script 12 bytes, native 250)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.Clamp  (script 17 bytes, native 251)
+  0000: V
+  0005: A
+  000a: B
+  000f: nothing
+  0010: <eos>
+
+function Math.Abs  (script 7 bytes, native 186)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Sin  (script 7 bytes, native 187)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Asin  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Cos  (script 7 bytes, native 188)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Acos  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Tan  (script 7 bytes, native 189)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Atan  (script 12 bytes, native 190)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.Exp  (script 7 bytes, native 191)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Loge  (script 7 bytes, native 192)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Sqrt  (script 7 bytes, native 193)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Square  (script 7 bytes, native 194)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.FMin  (script 12 bytes, native 244)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.FMax  (script 12 bytes, native 245)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.FClamp  (script 17 bytes, native 246)
+  0000: V
+  0005: A
+  000a: B
+  000f: nothing
+  0010: <eos>
+
+function Math.Lerp  (script 17 bytes, native 247)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: nothing
+  0010: <eos>
+
+function Math.Round  (script 7 bytes, native 199)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.LerpFloatRange  (script 47 bytes)
+  0000: return Lerp(Range.Min, Range.Max, A)
+  0028: return return
+  002e: <eos>
+
+function Math.FClampRange  (script 47 bytes)
+  0000: return FClamp(A, Range.Min, Range.Max)
+  0028: return return
+  002e: <eos>
+
+function Math.IsFloatInRange  (script 61 bytes)
+  0000: return !((A < Range.Min) || (A > Range.Max))
+  0036: return return
+  003c: <eos>
+
+function Math.IsNaN  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.IsVectorNaN  (script 96 bytes)
+  0000: return ((IsNaN(V.X) || IsNaN(V.Y)) || IsNaN(V.Z))
+  0059: return return
+  005f: <eos>
+
+function Math.Sign  (script 35 bytes)
+  0000: return ((A >= 0.0) ? 1.0 : -1.0)
+  001c: return return
+  0022: <eos>
+
+function Math.SCurve  (script 39 bytes)
+  0000: return ((K * K) * (cast3f(3) - (cast3f(2) * K)))
+  0020: return return
+  0026: <eos>
+
+function Math.SinCurve  (script 29 bytes)
+  0000: return Sin(((InPercent * 3.1415927) * 0.5))
+  0016: return return
+  001c: <eos>
+
+function Math.CircleCurve  (script 39 bytes)
+  0000: return Sqrt((1.0 - ((InPercent - cast3f(1)) * (InPercent - cast3f(1)))))
+  0020: return return
+  0026: <eos>
+
+function Math.CalculateIIRAlpha  (script 12 bytes)
+  0000: responseTime
+  0005: dt
+  000a: nothing
+  000b: <eos>
+
+function Math.FCubicInterp  (script 27 bytes)
+  0000: P0
+  0005: T0
+  000a: P1
+  000f: T1
+  0014: A
+  0019: nothing
+  001a: <eos>
+
+function Math.FInterpEaseIn  (script 32 bytes)
+  0000: return Lerp(A, B, (Alpha ** Exp))
+  0019: return return
+  001f: <eos>
+
+function Math.FInterpEaseOut  (script 37 bytes)
+  0000: return Lerp(A, B, (Alpha ** (cast3f(1) / Exp)))
+  001e: return return
+  0024: <eos>
+
+function Math.FInterpEaseInOut  (script 22 bytes)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: Exp
+  0014: nothing
+  0015: <eos>
+
+function Math.FPctByRange  (script 34 bytes)
+  0000: return ((Value - InMin) / (InMax - InMin))
+  001b: return return
+  0021: <eos>
+
+function Math.FInterpTo  (script 22 bytes)
+  0000: Current
+  0005: Target
+  000a: DeltaTime
+  000f: InterpSpeed
+  0014: nothing
+  0015: <eos>
+
+function Math.PSize  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.VSize  (script 7 bytes, native 225)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.VSize2D  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.VSizeSq  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.VSizeSq2D  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.Normal  (script 7 bytes, native 226)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.VLerp  (script 17 bytes)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: nothing
+  0010: <eos>
+
+function Math.VSmerp  (script 17 bytes)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: nothing
+  0010: <eos>
+
+function Math.MirrorVectorByNormal  (script 12 bytes, native 300)
+  0000: InVect
+  0005: InNormal
+  000a: nothing
+  000b: <eos>
+
+function Math.ProjectOnTo  (script 12 bytes, native 1500)
+  0000: X
+  0005: Y
+  000a: nothing
+  000b: <eos>
+
+function Math.IsZero  (script 7 bytes, native 1501)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.NormalizeDot2D  (script 139 bytes)
+  0000: Mask = vect(1,1,0)
+  0013: A2D = Normal((A * Mask))
+  0028: B2D = Normal((B * Mask))
+  003d: return ((A2D.X * B2D.X) + (A2D.Y * B2D.Y))
+  0084: return return
+  008a: <eos>
+
+function Math.RadianAngleBetweenUnitVectors  (script 30 bytes)
+  0000: return Acos((A dot B))
+  0017: return return
+  001d: <eos>
+
+function Math.RadianAngleBetweenNonUnitVectors  (script 34 bytes)
+  0000: return Acos((Normal(A) dot Normal(B)))
+  001b: return return
+  0021: <eos>
+
+function Math.Line2DIntersection  (script 27 bytes)
+  0000: LineAStart
+  0005: LineAEnd
+  000a: LineBStart
+  000f: LineBEnd
+  0014: IntersectPoint
+  0019: nothing
+  001a: <eos>
+
+function Math.SolveForZ  (script 22 bytes)
+  0000: PointOnPlane
+  0005: Normal
+  000a: X
+  000f: Y
+  0014: nothing
+  0015: <eos>
+
+function Math.ClosestPointOnLineSegmentToAnchors  (script 312 bytes)
+  0000: EndToStart = (AnchorA - AnchorB)
+  0012: LineNormal = MakeVector(EndToStart.Y, -EndToStart.X, 0.0)
+  0049: LineStartDot = ((LineStart - AnchorB) dot LineNormal)
+  0062: LineEndDot = ((LineEnd - AnchorB) dot LineNormal)
+  007b: if !(((LineStartDot * LineEndDot) >= cast3f(0))) goto 0x00b1
+  008f: if !((Abs(LineStartDot) < Abs(LineEndDot))) goto 0x00ab
+  00a2: return LineStart
+  00a8: goto 0x00b1
+  00ab: return LineEnd
+  00b1: obj'Math'.static.Line2DIntersection(AnchorA, AnchorB, LineStart, LineEnd, IntersectionPoint)
+  00dd: IntersectionPoint.Z = obj'Math'.static.SolveForZ(LineStart, LinePlaneNormal, IntersectionPoint.X, IntersectionPoint.Y)
+  012b: return IntersectionPoint
+  0131: return return
+  0137: <eos>
+
+function Math.TransformRotator  (script 112 bytes)
+  0000: GetAxes(InRot, X, Y, Z)
+  0016: X = (X >> TransformRot)
+  0029: Y = (Y >> TransformRot)
+  003c: Z = (Z >> TransformRot)
+  004f: return OrthoRotation(X, Y, Z)
+  0069: return return
+  006f: <eos>
+
+function Math.TransformPoint  (script 50 bytes)
+  0000: return ((P >> Transform.Orientation) + Transform.Position)
+  002b: return return
+  0031: <eos>
+
+function Math.RotateVector  (script 32 bytes)
+  0000: return (V >> Transform.Orientation)
+  0019: return return
+  001f: <eos>
+
+function Math.ReverseTransformPoint  (script 50 bytes)
+  0000: return ((P - Transform.Position) << Transform.Orientation)
+  002b: return return
+  0031: <eos>
+
+function Math.ReverseRotateVector  (script 32 bytes)
+  0000: return (V << Transform.Orientation)
+  0019: return return
+  001f: <eos>
+
+function Math.CombineTransforms  (script 120 bytes)
+  0000: AToCTransform.Orientation = TransformRotator(AToBTransform.Orientation, BToCTransform.Orientation)
+  003b: AToCTransform.Position = TransformPoint(AToBTransform.Position, BToCTransform)
+  006b: return AToCTransform
+  0071: return return
+  0077: <eos>
+
+function Math.Invert  (script 256 bytes)
+  0000: X = (vect(1,0,0) << Transform.Orientation)
+  0026: Y = (vect(0,1,0) << Transform.Orientation)
+  004c: Z = (vect(0,0,1) << Transform.Orientation)
+  0072: Inverted.Orientation = OrthoRotation(X, Y, Z)
+  009c: Inverted.Position = -Transform.Position
+  00bf: Inverted.Position = (Inverted.Position >> Inverted.Orientation)
+  00f3: return Inverted
+  00f9: return return
+  00ff: <eos>
+
+function Math.VInterpTo  (script 22 bytes)
+  0000: Current
+  0005: Target
+  000a: DeltaTime
+  000f: InterpSpeed
+  0014: nothing
+  0015: <eos>
+
+function Math.ClampLength  (script 12 bytes)
+  0000: V
+  0005: MaxLength
+  000a: nothing
+  000b: <eos>
+
+function Math.RInterpTo  (script 22 bytes)
+  0000: Current
+  0005: Target
+  000a: DeltaTime
+  000f: InterpSpeed
+  0014: nothing
+  0015: <eos>
+
+function Math.NormalizeRotAxis  (script 7 bytes)
+  0000: Angle
+  0005: nothing
+  0006: <eos>
+
+function Math.RDiff  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.RSize  (script 148 bytes)
+  0000: PitchNorm = NormalizeRotAxis(R.Pitch)
+  0020: YawNorm = NormalizeRotAxis(R.Yaw)
+  0040: RollNorm = NormalizeRotAxis(R.Roll)
+  0060: return Sqrt(cast3f((((PitchNorm * PitchNorm) + (YawNorm * YawNorm)) + (RollNorm * RollNorm))))
+  008d: return return
+  0093: <eos>
+
+function Math.RInsideRange  (script 139 bytes)
+  0000: if !(((InAngle == Range.Max) || (InAngle == Range.Min))) goto 0x0038
+  0036: return true
+  0038: if !((Object.ClockwiseFrom_IntInt(Round(InAngle), cast44(Range.Max)) || !Object.ClockwiseFrom_IntInt(Round(InAngle), cast44(Range.Min)))) goto 0x0082
+  0080: return false
+  0082: return true
+  0084: return return
+  008a: <eos>
+
+function Math.RClampToRange  (script 195 bytes)
+  0000: if !(RInsideRange(InAngle, Range)) goto 0x0020
+  0017: return InAngle
+  001d: goto 0x00bc
+  0020: MaxBisectorRange.Min = ((Range.Max + Range.Min) / cast3f(2))
+  0059: MaxBisectorRange.Max = (MaxBisectorRange.Min + cast3f(180))
+  0080: if !(RInsideRange(InAngle, MaxBisectorRange)) goto 0x00ab
+  0097: return Range.Max
+  00a8: goto 0x00bc
+  00ab: return Range.Min
+  00bc: return return
+  00c2: <eos>
+
+function Math.ClampRotAxis  (script 112 bytes)
+  0000: ViewAxis = NormalizeRotAxis(ViewAxis)
+  0015: DesiredViewAxis = (ViewAxis + out_DeltaViewAxis)
+  0027: if !((DesiredViewAxis > MaxLimit)) goto 0x0041
+  0036: DesiredViewAxis = MaxLimit
+  0041: if !((DesiredViewAxis < MinLimit)) goto 0x005b
+  0050: DesiredViewAxis = MinLimit
+  005b: out_DeltaViewAxis = (DesiredViewAxis - ViewAxis)
+  006d: return nothing
+  006f: <eos>
+
+function Math.SClampRotAxis  (script 418 bytes)
+  0000: out_DeltaViewAxis = NormalizeRotAxis(out_DeltaViewAxis)
+  0015: ViewAxis = NormalizeRotAxis(ViewAxis)
+  002a: if !(((ViewAxis <= MaxLimit) && ((ViewAxis + out_DeltaViewAxis) >= MaxLimit))) goto 0x006e
+  0051: out_DeltaViewAxis = (MaxLimit - ViewAxis)
+  0063: bClamped = true
+  006b: goto 0x0194
+  006e: if !((ViewAxis > MaxLimit)) goto 0x00e0
+  007d: if !((out_DeltaViewAxis > 0)) goto 0x008f
+  0088: out_DeltaViewAxis = 0
+  008f: if !(((ViewAxis + out_DeltaViewAxis) > MaxLimit)) goto 0x00dd
+  00a5: out_DeltaViewAxis = cast44(((FInterpTo(cast3f(ViewAxis), cast3f(MaxLimit), DeltaTime, InterpolationSpeed) - cast3f(ViewAxis)) - cast3f(1)))
+  00dd: goto 0x0194
+  00e0: if !(((ViewAxis >= MinLimit) && ((ViewAxis + out_DeltaViewAxis) <= MinLimit))) goto 0x0124
+  0107: out_DeltaViewAxis = (MinLimit - ViewAxis)
+  0119: bClamped = true
+  0121: goto 0x0194
+  0124: if !((ViewAxis < MinLimit)) goto 0x0194
+  0133: if !((out_DeltaViewAxis < 0)) goto 0x0145
+  013e: out_DeltaViewAxis = 0
+  0145: if !(((ViewAxis + out_DeltaViewAxis) < MinLimit)) goto 0x0194
+  015b: (out_DeltaViewAxis += cast44(((FInterpTo(cast3f(ViewAxis), cast3f(MinLimit), DeltaTime, InterpolationSpeed) - cast3f(ViewAxis)) + cast3f(1))))
+  0194: return bClamped
+  019b: return return
+  01a1: <eos>
+
+function Math.FindRotatorBetween  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.GetAxes  (script 22 bytes, native 229)
+  0000: A
+  0005: X
+  000a: Y
+  000f: Z
+  0014: nothing
+  0015: <eos>
+
+function Math.GetUnAxes  (script 22 bytes, native 230)
+  0000: A
+  0005: X
+  000a: Y
+  000f: Z
+  0014: nothing
+  0015: <eos>
+
+function Math.OrthoRotation  (script 17 bytes)
+  0000: X
+  0005: Y
+  000a: Z
+  000f: nothing
+  0010: <eos>
+
+function Math.Normalize  (script 7 bytes)
+  0000: Rot
+  0005: nothing
+  0006: <eos>
+
+function Math.RLerp  (script 22 bytes)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: bShortestPath
+  0014: nothing
+  0015: <eos>
+
+function Math.RSmerp  (script 22 bytes)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: bShortestPath
+  0014: nothing
+  0015: <eos>
+
+function Math.EulerToRotator  (script 7 bytes)
+  0000: EulerAngles
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatProduct  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.QuatDot  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.QuatInvert  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatRotateVector  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.QuatFindBetween  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function Math.QuatFromAxisAndAngle  (script 12 bytes)
+  0000: Axis
+  0005: Angle
+  000a: nothing
+  000b: <eos>
+
+function Math.QuatToAxisAndAngle  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatNormalize  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatFromAxisWithAngle  (script 7 bytes)
+  0000: AxisWithAngle
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatFromRotator  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatToRotator  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Math.QuatSlerp  (script 22 bytes)
+  0000: A
+  0005: B
+  000a: Alpha
+  000f: bShortestPath
+  0014: nothing
+  0015: <eos>
+
+function Math.QuatNegate  (script 153 bytes)
+  0000: Result.X = -Q.X
+  0023: Result.Y = -Q.Y
+  0046: Result.Z = -Q.Z
+  0069: Result.W = -Q.W
+  008c: return Result
+  0092: return return
+  0098: <eos>
+
+function Math.QuatToAxisWithAngle  (script 116 bytes)
+  0000: QuatWithAxisAndAngle = QuatToAxisAndAngle(Q)
+  0015: AxisWithAngle = (MakeVector(QuatWithAxisAndAngle.X, QuatWithAxisAndAngle.Y, QuatWithAxisAndAngle.Z) * QuatWithAxisAndAngle.W)
+  0067: return AxisWithAngle
+  006d: return return
+  0073: <eos>
+
+function Math.GetRangeValueByPct  (script 67 bytes)
+  0000: return (Range.X + ((Range.Y - Range.X) * Pct))
+  003c: return return
+  0042: <eos>
+
+function Math.GetRangePctByValue  (script 67 bytes)
+  0000: return ((Value - Range.X) / (Range.Y - Range.X))
+  003c: return return
+  0042: <eos>
+
+function Math.vect2d  (script 57 bytes)
+  0000: NewVect2d.X = InX
+  0016: NewVect2d.Y = InY
+  002c: return NewVect2d
+  0032: return return
+  0038: <eos>
+
+function Math.MakeFloatRange  (script 57 bytes)
+  0000: Range.Min = Min
+  0016: Range.Max = Max
+  002c: return Range
+  0032: return return
+  0038: <eos>
+
+function Math.MakeVector  (script 79 bytes)
+  0000: V.X = X
+  0016: V.Y = Y
+  002c: V.Z = Z
+  0042: return V
+  0048: return return
+  004e: <eos>
+
+function Math.MakeVector2D  (script 57 bytes)
+  0000: V.X = X
+  0016: V.Y = Y
+  002c: return V
+  0032: return return
+  0038: <eos>
+
+function Math.MakeRotator  (script 79 bytes)
+  0000: R.Pitch = Pitch
+  0016: R.Yaw = Yaw
+  002c: R.Roll = Roll
+  0042: return R
+  0048: return return
+  004e: <eos>
+
+function Math.MakeAffineTransform  (script 57 bytes)
+  0000: Transform.Orientation = Orientation
+  0016: Transform.Position = Position
+  002c: return Transform
+  0032: return return
+  0038: <eos>
+
+function Math.MakeRotatorDeg  (script 136 bytes)
+  0000: R.Pitch = NormalizeRotAxis(cast44((Pitch * 182.0444489)))
+  0029: R.Yaw = NormalizeRotAxis(cast44((Yaw * 182.0444489)))
+  0052: R.Roll = NormalizeRotAxis(cast44((Roll * 182.0444489)))
+  007b: return R
+  0081: return return
+  0087: <eos>
+
+function Math.MakeRotatorRad  (script 136 bytes)
+  0000: R.Pitch = NormalizeRotAxis(cast44((Pitch * 10430.21875)))
+  0029: R.Yaw = NormalizeRotAxis(cast44((Yaw * 10430.21875)))
+  0052: R.Roll = NormalizeRotAxis(cast44((Roll * 10430.21875)))
+  007b: return R
+  0081: return return
+  0087: <eos>
+
+function Math.Smoothstep  (script 71 bytes)
+  0000: T = ((X - Min) / (Max - Min))
+  0020: return ((T * T) * (cast3f(3) - (cast3f(2) * T)))
+  0040: return return
+  0046: <eos>
+
+function Math.EvalCurveFloat  (script 17 bytes)
+  0000: curve
+  0005: Input
+  000a: DefaultValue
+  000f: nothing
+  0010: <eos>
+
+function Math.EvalCurveVector2D  (script 17 bytes)
+  0000: curve
+  0005: Input
+  000a: DefaultValue
+  000f: nothing
+  0010: <eos>
+
+function Math.EvalCurveVector  (script 17 bytes)
+  0000: curve
+  0005: Input
+  000a: DefaultValue
+  000f: nothing
+  0010: <eos>
+
+function Math.EvalCurveTwoVectors  (script 17 bytes)
+  0000: curve
+  0005: Input
+  000a: DefaultValue
+  000f: nothing
+  0010: <eos>
+
+function Math.EvalCurveQuat  (script 17 bytes)
+  0000: curve
+  0005: Input
+  000a: DefaultValue
+  000f: nothing
+  0010: <eos>
+
+function Math.PointDistToLine  (script 22 bytes)
+  0000: Point
+  0005: Line
+  000a: Origin
+  000f: OutClosestPoint
+  0014: nothing
+  0015: <eos>
+
+function Math.ClosestPointToLineSegment  (script 169 bytes)
+  0000: LineDir = Normal((End - Start))
+  0014: PointDistToLine(P, LineDir, Start, ClosestPointOnRay)
+  0032: LineLengthSq = VSizeSq((End - Start))
+  004e: StartToClosestPointLength = (LineDir dot (ClosestPointOnRay - Start))
+  0067: if !((StartToClosestPointLength < cast3f(0))) goto 0x007d
+  0074: return Start
+  007a: goto 0x00a2
+  007d: if !(((StartToClosestPointLength * StartToClosestPointLength) > LineLengthSq)) goto 0x009c
+  0093: return End
+  0099: goto 0x00a2
+  009c: return ClosestPointOnRay
+  00a2: return return
+  00a8: <eos>
+
+function Math.PointDistToPlane  (script 184 bytes)
+  0000: nothing
+  0001: GetAxes(Orientation, AxisX, AxisY, AxisZ)
+  0017: fPointZ = (Point dot AxisZ)
+  0029: PointNoZ = (Point - (fPointZ * AxisZ))
+  0042: OriginNoZ = (Origin - ((Origin dot AxisZ) * AxisZ))
+  0062: fProjDistToAxis = ((PointNoZ - OriginNoZ) dot AxisX)
+  007b: out_ClosestPoint = ((OriginNoZ + (fProjDistToAxis * AxisX)) + (fPointZ * AxisZ))
+  00a2: return VSize((out_ClosestPoint - Point))
+  00b1: return return
+  00b7: <eos>
+
+function Math.MakeBox  (script 57 bytes)
+  0000: BBox.Min = Min
+  0016: BBox.Max = Max
+  002c: return BBox
+  0032: return return
+  0038: <eos>
+
+function Math.AddPointToBox  (script 441 bytes)
+  0000: BBox.Min.X = FMin(BBox.Min.X, Point.X)
+  0049: BBox.Min.Y = FMin(BBox.Min.Y, Point.Y)
+  0092: BBox.Min.Z = FMin(BBox.Min.Z, Point.Z)
+  00db: BBox.Max.X = FMax(BBox.Max.X, Point.X)
+  0124: BBox.Max.Y = FMax(BBox.Max.Y, Point.Y)
+  016d: BBox.Max.Z = FMax(BBox.Max.Z, Point.Z)
+  01b6: return nothing
+  01b8: <eos>
+
+function Math.PointInBox  (script 86 bytes)
+  0000: TempBox.Min = (Location - Extent)
+  001d: TempBox.Max = (Location + Extent)
+  003a: return IsPointInBox(Point, TempBox)
+  004f: return return
+  0055: <eos>
+
+function Math.IsPointInBox  (script 305 bytes)
+  0000: if !(((Point.X >= InBox.Min.X) && (Point.X <= InBox.Max.X))) goto 0x0128
+  0062: if !(((Point.Y >= InBox.Min.Y) && (Point.Y <= InBox.Max.Y))) goto 0x0128
+  00c4: if !(((Point.Z >= InBox.Min.Z) && (Point.Z <= InBox.Max.Z))) goto 0x0128
+  0126: return true
+  0128: return false
+  012a: return return
+  0130: <eos>
+
+function Math.GetDotDistance  (script 27 bytes)
+  0000: OutDotDist
+  0005: Direction
+  000a: AxisX
+  000f: AxisY
+  0014: AxisZ
+  0019: nothing
+  001a: <eos>
+
+function Math.GetAngularDistance  (script 27 bytes)
+  0000: OutAngularDist
+  0005: Direction
+  000a: AxisX
+  000f: AxisY
+  0014: AxisZ
+  0019: nothing
+  001a: <eos>
+
+function Math.GetAngularFromDotDist  (script 12 bytes)
+  0000: OutAngDist
+  0005: DotDist
+  000a: nothing
+  000b: <eos>
+
+function Math.GetAngularDegreesFromRadians  (script 83 bytes)
+  0000: OutFOV.X = (OutFOV.X * 57.2957802)
+  0028: OutFOV.Y = (OutFOV.Y * 57.2957802)
+  0050: return nothing
+  0052: <eos>
+
+function Math.GetXYDirectionVector  (script 93 bytes)
+  0000: switch (XYDir)
+  0007: case 0: (next 0x001a)
+  000c: return vect(1,0,0)
+  001a: case 1: (next 0x002d)
+  001f: return vect(-1,0,0)
+  002d: case 2: (next 0x0040)
+  0032: return vect(0,1,0)
+  0040: case 3: (next 0x0053)
+  0045: return vect(0,-1,0)
+  0053: default:
+  0056: return return
+  005c: <eos>
+
+function Math.GetXYDirection  (script 33 bytes)
+  0000: return GetXYDirection2(Rot, Dir, XYDir2)
+  001a: return return
+  0020: <eos>
+
+function Math.GetXYDirection2  (script 270 bytes)
+  0000: GetAxes(Rot, X, Y, Z)
+  0016: Dir = Normal(Dir)
+  0023: XDot = (Dir dot X)
+  0035: YDot = (Dir dot Y)
+  0047: if !((XDot > 0.0)) goto 0x00af
+  0056: if !((XDot >= Abs(YDot))) goto 0x0086
+  0067: XYDir2 = ((YDot > cast3f(0)) ? 2 : 3)
+  0080: return 0
+  0083: goto 0x00ac
+  0086: if !((YDot > cast3f(0))) goto 0x00a1
+  0093: XYDir2 = 0
+  009b: return 2
+  009e: goto 0x00ac
+  00a1: XYDir2 = 0
+  00a9: return 3
+  00ac: goto 0x0107
+  00af: if !((Abs(XDot) >= Abs(YDot))) goto 0x00e1
+  00c2: XYDir2 = ((YDot > cast3f(0)) ? 2 : 3)
+  00db: return 1
+  00de: goto 0x0107
+  00e1: if !((YDot > cast3f(0))) goto 0x00fc
+  00ee: XYDir2 = 1
+  00f6: return 2
+  00f9: goto 0x0107
+  00fc: XYDir2 = 1
+  0104: return 3
+  0107: return return
+  010d: <eos>
+
+function Math.DegreesToUnrealUnits  (script 20 bytes)
+  0000: return (Degrees * 182.0444489)
+  000d: return return
+  0013: <eos>
+
+function Math.GetHeadingAngle  (script 95 bytes)
+  0000: Angle = Acos(FClamp(Dir.X, -1.0, 1.0))
+  002c: if !((Dir.Y < 0.0)) goto 0x0052
+  0046: (Angle *= -1.0)
+  0052: return Angle
+  0058: return return
+  005e: <eos>
+
+function Math.FindDeltaAngle  (script 116 bytes)
+  0000: Delta = (A2 - A1)
+  0012: if !((Delta > 3.1415927)) goto 0x003d
+  0021: Delta = (Delta - (3.1415927 * 2.0))
+  003a: goto 0x0067
+  003d: if !((Delta < -3.1415927)) goto 0x0067
+  004e: Delta = (Delta + (3.1415927 * 2.0))
+  0067: return Delta
+  006d: return return
+  0073: <eos>
+
+function Math.UnwindHeading  (script 89 bytes)
+  0000: if !((A > 3.1415927)) goto 0x0025
+  000f: (A -= (3.1415927 * 2.0))
+  0022: goto 0x0000
+  0025: if !((A < -3.1415927)) goto 0x004c
+  0036: (A += (3.1415927 * 2.0))
+  0049: goto 0x0025
+  004c: return A
+  0052: return return
+  0058: <eos>
+
+function Math.FloatToByte  (script 145 bytes)
+  0000: nothing
+  0001: if !(bSigned) goto 0x004f
+  000a: if !((inputFloat > 0.98)) goto 0x0021
+  0019: return cast3d(255)
+  001e: goto 0x004c
+  0021: if !((inputFloat < -0.98)) goto 0x0036
+  0030: return 0
+  0033: goto 0x004c
+  0036: return cast43(((inputFloat + 1.0) * 128.0))
+  004c: goto 0x008a
+  004f: if !((inputFloat > 0.98)) goto 0x0066
+  005e: return cast3d(255)
+  0063: goto 0x008a
+  0066: if !((inputFloat < 0.02)) goto 0x007b
+  0075: return 0
+  0078: goto 0x008a
+  007b: return cast43((inputFloat * 255.0))
+  008a: return return
+  0090: <eos>
+
+function Math.ByteToFloat  (script 57 bytes)
+  0000: nothing
+  0001: if !(bSigned) goto 0x0023
+  000a: return ((cast3c(inputByte) / 128.0) - 1.0)
+  0020: goto 0x0032
+  0023: return (cast3c(inputByte) / 255.0)
+  0032: return return
+  0038: <eos>
+
+function Math.TransformVectorByRotation  (script 17 bytes)
+  0000: SourceRotation
+  0005: SourceVector
+  000a: bInverse
+  000f: nothing
+  0010: <eos>

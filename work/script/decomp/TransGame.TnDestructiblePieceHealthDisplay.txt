@@ -1,0 +1,27 @@
+function TnDestructiblePieceHealthDisplay.Initialize  (script 25 bytes)
+  0000: self.Sentry = InSentry
+  000b: self.Piece = Piece_
+  0016: return nothing
+  0018: <eos>
+
+function TnDestructiblePieceHealthDisplay.GetDisplayType  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function TnDestructiblePieceHealthDisplay.GetHealth  (script 27 bytes)
+  0000: return self.Piece.GetHealth()
+  0014: return return
+  001a: <eos>
+
+function TnDestructiblePieceHealthDisplay.GetMaximumHealth  (script 27 bytes)
+  0000: return self.Piece.GetInitialHealth()
+  0014: return return
+  001a: <eos>
+
+function TnDestructiblePieceHealthDisplay.ShouldDisplayHealth  (script 43 bytes)
+  0000: if !((self.Sentry != none)) goto 0x001d
+  000b: return !self.Sentry._Invulnerable
+  001d: return TnHealthDisplay.ShouldDisplayHealth()
+  0024: return return
+  002a: <eos>

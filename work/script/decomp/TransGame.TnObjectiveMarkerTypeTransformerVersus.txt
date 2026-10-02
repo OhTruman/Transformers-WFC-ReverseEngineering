@@ -1,0 +1,91 @@
+function TnObjectiveMarkerTypeTransformerVersus.ShouldDisplayMarker  (script 101 bytes)
+  0000: if !((Displayer == Marker.MarkerBase)) goto 0x001c
+  001a: return false
+  001c: P = Pawn(Marker.MarkerBase)
+  0037: if !(((P == none) || P.IsDead())) goto 0x005c
+  005a: return false
+  005c: return true
+  005e: return return
+  0064: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.GetMarkerSetup  (script 309 bytes)
+  0000: MarkerPawn = TnPawn(MarkerData.MarkerBase)
+  001b: EMT = GetEMT(Displayer, MarkerData)
+  0035: switch (EMT)
+  003c: case 0: (next 0x008c)
+  0041: CreateInstances(self.AllyMarkerSetup)
+  0050: Result = self.AllyMarkerSetup
+  005b: Result.DrawWhenOffscreen = ((MarkerPawn != none) && MarkerPawn._IsDowned)
+  0089: goto 0x00fd
+  008c: case 1: (next 0x00c3)
+  0091: CreateInstances(self.EnemyMarkerSetup)
+  00a0: Result = self.EnemyMarkerSetup
+  00ab: TnObjectiveMarkerTypeTransformerVersus.SetupEnemyMarker(Displayer, MarkerPawn, Result)
+  00c0: goto 0x00fd
+  00c3: case 2: (next 0x00fa)
+  00c8: CreateInstances(self.AllyMarkerSetup)
+  00d7: Result = self.AllyMarkerSetup
+  00e2: TnObjectiveMarkerTypeTransformerVersus.SetupDisguiseMarker(Displayer, MarkerPawn, Result)
+  00f7: goto 0x00fd
+  00fa: default:
+  00fd: Result.LabelZOffsetWS = (MarkerPawn.GetCollisionHeight() * 0.5)
+  0128: return Result
+  012e: return return
+  0134: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.SetupEnemyMarker  (script 419 bytes)
+  0000: MarkerBuffService = TnBuffService(Marker.GetService('TnBuffService'))
+  0027: DisplayerBuffService = TnBuffService(Displayer.GetService('TnBuffService'))
+  004e: if !((DisplayerBuffService.HasBuff(obj'TnBuffSeeEnemyObjectiveMarkers') && !MarkerBuffService.HasDerivedBuff(obj'TnBuffWarcryBase'))) goto 0x0092
+  008a: DrawMarker = true
+  0092: if !(!DrawMarker) goto 0x0117
+  009d: BHL = MarkerBuffService.GetBuff(obj'TnBuffHardLocked')
+  00bc: if !((BHL != none)) goto 0x0117
+  00c7: if !((Displayer.OnSameTeamAs(BHL.GetInstigator()) || (Displayer == BHL.GetInstigator()))) goto 0x0117
+  010f: DrawMarker = true
+  0117: if !((!DrawMarker && MarkerBuffService.HasBuff(obj'TnBuffRevengeMarker'))) goto 0x0148
+  0140: DrawMarker = true
+  0148: if !(!DrawMarker) goto 0x015e
+  0153: TnObjectiveMarkerTypeTransformerVersus.DisableMarker(MarkerSetup)
+  015e: if !((MarkerBuffService.HasBuff(obj'TnBuffCloak') || !HasLineOfSightTo(Displayer, Marker))) goto 0x01a0
+  0195: TnObjectiveMarkerTypeTransformerVersus.DisableLabel(MarkerSetup)
+  01a0: return nothing
+  01a2: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.SetupDisguiseMarker  (script 50 bytes)
+  0000: if !(!HasLineOfSightTo(Displayer, MarkerPawn)) goto 0x002f
+  0019: TnObjectiveMarkerTypeTransformerVersus.DisableMarker(MarkerSetup)
+  0024: TnObjectiveMarkerTypeTransformerVersus.DisableLabel(MarkerSetup)
+  002f: return nothing
+  0031: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.DisableMarker  (script 47 bytes)
+  0000: MarkerSetup.FocusedMarkerSize = 0.0
+  0016: MarkerSetup.UnfocusedMarkerSize = 0.0
+  002c: return nothing
+  002e: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.DisableLabel  (script 60 bytes)
+  0000: MarkerSetup.DrawLabelWhenFocused = false
+  0013: MarkerSetup.DrawLabelWhenUnfocused = false
+  0026: MarkerSetup.DrawLabelWhenOffscreen = false
+  0039: return nothing
+  003b: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.GetLabelText  (script 163 bytes)
+  0000: if !((MarkerData.MarkerBase != none)) goto 0x008b
+  0016: BS = TnBuffService(TnPawn(MarkerData.MarkerBase).GetService('TnBuffService'))
+  004d: BD = BS.GetBuff(obj'TnBuffDisguise')
+  006c: if !((BD != none)) goto 0x008b
+  0077: return BD.GetDisguisedName()
+  008b: return TnObjectiveMarkerTypeSprite.GetLabelText(Owner, MarkerData)
+  009c: return return
+  00a2: <eos>
+
+function TnObjectiveMarkerTypeTransformerVersus.DrawLabel  (script 196 bytes)
+  0000: TnObjectiveMarkerTypeSprite.DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, LabelTransparency)
+  0029: EMT = GetEMT(Owner, MarkerData)
+  0043: if !((((cast3a(EMT) == cast3a(0)) && (MarkerData.Description != "")) && (Owner.GetSpecialty() == "Scientist"))) goto 0x00c1
+  0091: DrawTransformerHealthBar(Setup, TnPawn(MarkerData.MarkerBase), LabelLocationSS, C, 0)
+  00c1: return nothing
+  00c3: <eos>

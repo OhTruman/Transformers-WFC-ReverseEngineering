@@ -1,0 +1,10 @@
+function HmStateNotificationDestructionEffect.BeginEffect  (script 183 bytes)
+  0000: DestructibleActor = HmDestructibleActorBase(GetAttachingActor())
+  0015: if !((DestructibleActor == none)) goto 0x0022
+  0020: return nothing
+  0022: Instigator = DestructibleActor.LastHitInstigator
+  0036: PieceName = GetOwner().GetBlueprint().PieceName
+  005d: StateName = GetOwner().GetActiveState().GetBlueprint().StateName
+  0092: DestructibleActor.NotifyPieceStateChanged(Instigator, PieceName, StateName)
+  00b4: return nothing
+  00b6: <eos>

@@ -1,0 +1,194 @@
+function TnClassFormStatHelper.AddToGameStat  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnClassFormStatHelper.SetValueDumpDelegate  (script 14 bytes)
+  0000: self.__AddToGameStat__Delegate = AddValueDelegate
+  000b: return nothing
+  000d: <eos>
+
+function TnClassFormStatHelper.Update  (script 295 bytes)
+  0000: if !((P == none)) goto 0x000d
+  000b: return nothing
+  000d: CurrentPosition = P.Location
+  0021: if !(obj'Core.Math'.static.IsZero(self.LastPosition)) goto 0x0042
+  0035: self.LastPosition = CurrentPosition
+  0040: return nothing
+  0042: if !(((cast3a(self.CurrentForm) == cast3a(0)) && (P._RobotForm != none))) goto 0x008e
+  0068: IsBoosting = P._RobotForm.get_IsDodging()
+  008b: goto 0x00d1
+  008e: IsBoosting = ((TnPlayerController(P.Controller) != none) && TnPlayerController(P.Controller).get_IsBoosting())
+  00d1: if !(IsBoosting) goto 0x00fb
+  00da: (self.CurrentDistanceBoosting += obj'Core.Math'.static.VSize((CurrentPosition - self.LastPosition)))
+  00f8: goto 0x0119
+  00fb: (self.CurrentDistanceRegular += obj'Core.Math'.static.VSize((CurrentPosition - self.LastPosition)))
+  0119: self.LastPosition = CurrentPosition
+  0124: return nothing
+  0126: <eos>
+
+function TnClassFormStatHelper.DisableTracking  (script 27 bytes)
+  0000: SetClass("")
+  000c: SetForm(2)
+  0018: return nothing
+  001a: <eos>
+
+function TnClassFormStatHelper.SetClass  (script 213 bytes)
+  0000: if !((self.ClassName == NewClassName)) goto 0x0011
+  000f: return nothing
+  0011: CurrentTime = TnClassFormStatHelper.GetCurrentTime()
+  001d: if !((self.ClassName != "")) goto 0x00bc
+  0029: switch (self.ClassName)
+  0030: case "Soldier": (next 0x004a)
+  003c: ClassTimeStatId = 512
+  0047: goto 0x009a
+  004a: case "Leader": (next 0x0063)
+  0055: ClassTimeStatId = 515
+  0060: goto 0x009a
+  0063: case "Scientist": (next 0x007f)
+  0071: ClassTimeStatId = 518
+  007c: goto 0x009a
+  007f: case "Scout": (next 0x0097)
+  0089: ClassTimeStatId = 521
+  0094: goto 0x009a
+  0097: default:
+  009a: AddToGameStat((CurrentTime - self.LastClassChangeTime), ClassTimeStatId, 0)
+  00bc: self.LastClassChangeTime = CurrentTime
+  00c7: self.ClassName = NewClassName
+  00d2: return nothing
+  00d4: <eos>
+
+function TnClassFormStatHelper.SetForm  (script 523 bytes)
+  0000: if !((cast3a(self.CurrentForm) == cast3a(NewForm))) goto 0x0015
+  0013: return nothing
+  0015: CurrentTime = TnClassFormStatHelper.GetCurrentTime()
+  0021: if !((cast3a(self.CurrentForm) != cast3a(2))) goto 0x01c9
+  0031: if !((cast3a(self.CurrentForm) == cast3a(0))) goto 0x006d
+  0041: IsRobot = true
+  0049: FormTimeStatId = 256
+  0054: FormDistanceStatId = 259
+  005f: FormDistanceBoostStatId = 260
+  006a: goto 0x0136
+  006d: switch (self.ClassName)
+  0074: case "Soldier": (next 0x00a4)
+  0080: FormTimeStatId = 272
+  008b: FormDistanceStatId = 275
+  0096: FormDistanceBoostStatId = 276
+  00a1: goto 0x0136
+  00a4: case "Leader": (next 0x00d3)
+  00af: FormTimeStatId = 304
+  00ba: FormDistanceStatId = 306
+  00c5: FormDistanceBoostStatId = 307
+  00d0: goto 0x0136
+  00d3: case "Scientist": (next 0x0105)
+  00e1: FormTimeStatId = 320
+  00ec: FormDistanceStatId = 323
+  00f7: FormDistanceBoostStatId = 324
+  0102: goto 0x0136
+  0105: case "Scout": (next 0x0133)
+  010f: FormTimeStatId = 288
+  011a: FormDistanceStatId = 291
+  0125: FormDistanceBoostStatId = 292
+  0130: goto 0x0136
+  0133: default:
+  0136: if !(!IsRobot) goto 0x0163
+  0141: AddToGameStat((CurrentTime - self.LastFormChangeTime), 336, 0)
+  0163: AddToGameStat((CurrentTime - self.LastFormChangeTime), FormTimeStatId, 0)
+  0185: AddToGameStat((self.CurrentDistanceRegular / 100.0), FormDistanceStatId, 0)
+  01a7: AddToGameStat((self.CurrentDistanceBoosting / 100.0), FormDistanceBoostStatId, 0)
+  01c9: self.LastFormChangeTime = CurrentTime
+  01d4: self.LastPosition = vect(0,0,0)
+  01e7: self.CurrentDistanceRegular = 0.0
+  01f2: self.CurrentDistanceBoosting = 0.0
+  01fd: self.CurrentForm = NewForm
+  0208: return nothing
+  020a: <eos>
+
+function TnClassFormStatHelper.GetClassKillStatId  (script 288 bytes)
+  0000: if !((self.ClassName == "")) goto 0x0067
+  000c: LogInternal("ERROR:  Trying to record kill for class while class stat tracking is disabled.", , , )
+  0061: return -1
+  0067: switch (self.ClassName)
+  006e: case "Soldier": (next 0x0080)
+  007a: return 513
+  0080: case "Leader": (next 0x0091)
+  008b: return 516
+  0091: case "Scientist": (next 0x00a5)
+  009f: return 519
+  00a5: case "Scout": (next 0x00b5)
+  00af: return 528
+  00b5: default:
+  00b8: LogInternal(("ERROR: Trying to record kill for class but you are have an invalid classname:" @ self.ClassName), , , )
+  0113: return -1
+  0119: return return
+  011f: <eos>
+
+function TnClassFormStatHelper.GetClassDeathStatId  (script 290 bytes)
+  0000: if !((self.ClassName == "")) goto 0x0068
+  000c: LogInternal("ERROR:  Trying to record death for class while class stat tracking is disabled.", , , )
+  0062: return -1
+  0068: switch (self.ClassName)
+  006f: case "Soldier": (next 0x0081)
+  007b: return 514
+  0081: case "Leader": (next 0x0092)
+  008c: return 517
+  0092: case "Scientist": (next 0x00a6)
+  00a0: return 520
+  00a6: case "Scout": (next 0x00b6)
+  00b0: return 544
+  00b6: default:
+  00b9: LogInternal(("ERROR: Trying to record death for class but you are have an invalid classname:" @ self.ClassName), , , )
+  0115: return -1
+  011b: return return
+  0121: <eos>
+
+function TnClassFormStatHelper.GetFormKillStatId  (script 346 bytes)
+  0000: if !((cast3a(self.CurrentForm) == cast3a(2))) goto 0x0069
+  0010: LogInternal("ERROR:  Trying to record kill for form while form stat tracking is disabled.", , , )
+  0063: return -1
+  0069: if !((cast3a(self.CurrentForm) == cast3a(0))) goto 0x007f
+  0079: return 257
+  007f: switch (self.ClassName)
+  0086: case "Soldier": (next 0x0098)
+  0092: return 273
+  0098: case "Leader": (next 0x00a9)
+  00a3: return 308
+  00a9: case "Scientist": (next 0x00bd)
+  00b7: return 321
+  00bd: case "Scout": (next 0x00cd)
+  00c7: return 289
+  00cd: default:
+  00d0: LogInternal("ERROR: Trying to record kill for form but you are not a robot and have no known valid class to determine vehicle type.", , , )
+  014d: return -1
+  0153: return return
+  0159: <eos>
+
+function TnClassFormStatHelper.GetFormDeathStatId  (script 348 bytes)
+  0000: if !((cast3a(self.CurrentForm) == cast3a(2))) goto 0x006a
+  0010: LogInternal("ERROR:  Trying to record death for form while form stat tracking is disabled.", , , )
+  0064: return -1
+  006a: if !((cast3a(self.CurrentForm) == cast3a(0))) goto 0x0080
+  007a: return 258
+  0080: switch (self.ClassName)
+  0087: case "Soldier": (next 0x0099)
+  0093: return 274
+  0099: case "Leader": (next 0x00aa)
+  00a4: return 305
+  00aa: case "Scientist": (next 0x00be)
+  00b8: return 322
+  00be: case "Scout": (next 0x00ce)
+  00c8: return 290
+  00ce: default:
+  00d1: LogInternal("ERROR: Trying to record death for form but you are not a robot and have no known valid class to determine vehicle type.", , , )
+  014f: return -1
+  0155: return return
+  015b: <eos>
+
+function TnClassFormStatHelper.ShouldRecordVehicleKill  (script 21 bytes)
+  0000: return (cast3a(self.CurrentForm) != cast3a(0))
+  000e: return return
+  0014: <eos>
+
+function TnClassFormStatHelper.GetCurrentTime  (script 50 bytes)
+  0000: return obj'Engine.Engine'.static.GetEngine().GetCurrentWorldInfo().TimeSeconds
+  002b: return return
+  0031: <eos>

@@ -1,0 +1,38 @@
+function TnAbilityRollerSphere.ServerTriggerAbility  (script 59 bytes)
+  0000: TnAbility.ServerTriggerAbility()
+  0006: if !((self.SpawnDelay == cast3f(0))) goto 0x001c
+  0013: TnAbilityRollerSphere.SpawnMine()
+  0019: goto 0x0038
+  001c: self.OwnerPawn.SetTimer(self.SpawnDelay, false, 'SpawnMine', self)
+  0038: return nothing
+  003a: <eos>
+
+function TnAbilityRollerSphere.SpawnMine  (script 312 bytes)
+  0000: SpawnLoc = (self.OwnerPawn.Location + (self.SpawnOffset >> self.OwnerPawn.Rotation))
+  002c: MineMesh = obj'TnRollerMineAbility'.static.default.StaticMeshComponent
+  0040: Radius = ((MineMesh.StaticMesh.Bounds.SphereRadius * MineMesh.Scale) * 1.1)
+  007f: if !(self.SpawnLocationValidator.IsSafeSpawnLocation(SpawnLoc, Radius, Radius)) goto 0x0117
+  00a4: self.RollerMine = self.OwnerPawn.Spawn(obj'TnRollerMineAbility', , , SpawnLoc, self.OwnerPawn.Rotation, , , )
+  00da: if !((self.RollerMine != none)) goto 0x0117
+  00e5: self.RollerMine.SetLocalLinearVelocity(self.InitialVelocity)
+  00fd: self.OwnerPawn.AddActorToBeDestroyedOnDeath(self.RollerMine)
+  0115: return nothing
+  0117: self.OwnerPawn.SetTimer(1.0, false, 'SpawnMine', self)
+  0133: return nothing
+  0135: return nothing
+  0137: <eos>
+
+function TnAbilityRollerSphere.ForceEndAbility  (script 33 bytes)
+  0000: if !((self.RollerMine != none)) goto 0x001e
+  000b: self.RollerMine.Explode()
+  001e: return nothing
+  0020: <eos>
+
+function TnAbilityRollerSphere.ServerCanStartCooldown  (script 83 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return false
+  000d: if !(self.OwnerPawn.IsTimerActive('SpawnMine', self)) goto 0x002f
+  002d: return false
+  002f: return ((self.RollerMine == none) || self.RollerMine.bDeleteMe)
+  004c: return return
+  0052: <eos>

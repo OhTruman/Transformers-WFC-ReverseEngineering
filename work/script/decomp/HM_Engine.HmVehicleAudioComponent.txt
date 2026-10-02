@@ -1,0 +1,260 @@
+function HmVehicleAudioComponent.get_EngineLoadState  (script 13 bytes)
+  0000: return self._EngineLoadState
+  0006: return return
+  000c: <eos>
+
+function HmVehicleAudioComponent.set_EngineLoadState  (script 14 bytes)
+  0000: self._EngineLoadState = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmVehicleAudioComponent.set_IsOnGround  (script 16 bytes)
+  0000: self._IsOnGround = Value
+  000d: return nothing
+  000f: <eos>
+
+function HmVehicleAudioComponent.set_WheelSlipRatio  (script 14 bytes)
+  0000: self._WheelSlipRatio = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmVehicleAudioComponent.get_VehicleSpeed  (script 13 bytes)
+  0000: return self._VehicleSpeed
+  0006: return return
+  000c: <eos>
+
+function HmVehicleAudioComponent.set_BoosterAmount  (script 65 bytes)
+  0000: if !(((self._BoosterAudioComponent != none) && (self.BoosterParameter != none))) goto 0x003e
+  0018: self._BoosterAudioComponent.SetFloatParameter(self.BoosterParameter.Name, Value)
+  003e: return nothing
+  0040: <eos>
+
+function HmVehicleAudioComponent.Tick  (script 81 bytes)
+  0000: if !((none == self.OwnerPawn)) goto 0x000d
+  000b: return nothing
+  000d: if !((false == self.IsEntered)) goto 0x001b
+  0019: return nothing
+  001b: HmVehicleAudioComponent.UpdateVehicleSpeed()
+  0021: UpdateTireTreadSound()
+  002b: UpdateTireSquealSound()
+  0035: UpdateSpeedSound()
+  003f: UpdateBoostWheelsSound(DeltaTime)
+  004e: return nothing
+  0050: <eos>
+
+function HmVehicleAudioComponent.Attached  (script 114 bytes)
+  0000: if !((true == self.IsEntered)) goto 0x000e
+  000c: return nothing
+  000e: Index = 0
+  0015: if !((Index < self.VehicleSpeedHistoryLength)) goto 0x003f
+  0024: Index[self.VehicleSpeedHistory] = 0.0
+  0035: AddAdd_PreInt(Index)
+  003c: goto 0x0015
+  003f: self.VehicleSpeedHistoryIndex = 0
+  0046: self._VehicleSpeed = 0.0
+  0051: PlayLoopingSound(self._SpeedAudioComponent, self.SpeedSound, , )
+  0067: self.IsEntered = true
+  006f: return nothing
+  0071: <eos>
+
+function HmVehicleAudioComponent.Detached  (script 73 bytes)
+  0000: if !((false == self.IsEntered)) goto 0x000e
+  000c: return nothing
+  000e: StopLoopingSound(self._SpeedAudioComponent, )
+  001e: StopLoopingSound(self._TireTreadAudioComponent, )
+  002e: StopLoopingSound(self._TireSquealAudioComponent, )
+  003e: self.IsEntered = false
+  0046: return nothing
+  0048: <eos>
+
+function HmVehicleAudioComponent.PlayEnterSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.EnterSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayExitSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.ExitSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayHornSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.HornSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayCustomLoopingSound  (script 29 bytes)
+  0000: PlayLoopingSound(self._CustomLoopingAudioComponent, self.CustomLoopingSound, self.CustomLoopingSoundFadeInTime, )
+  001a: return nothing
+  001c: <eos>
+
+function HmVehicleAudioComponent.StopCustomLoopingSound  (script 23 bytes)
+  0000: StopLoopingSound(self._CustomLoopingAudioComponent, self.CustomLoopingSoundFadeOutTime)
+  0014: return nothing
+  0016: <eos>
+
+function HmVehicleAudioComponent.PlayBoostSound  (script 86 bytes)
+  0000: PlayLoopingSound(self._BoostAudioComponent, self.BoostSound, self.BoostFadeInTime, )
+  001a: if !((true == self._IsOnGround)) goto 0x0040
+  0026: PlayLoopingSound(self._BoostWheelsAudioComponent, self.BoostWheelsSound, self.BoostFadeInTime, )
+  0040: self.BoostWheelsTimer = 0.0
+  004b: self.IsBoosting = true
+  0053: return nothing
+  0055: <eos>
+
+function HmVehicleAudioComponent.StopBoostSound  (script 66 bytes)
+  0000: StopLoopingSound(self._BoostAudioComponent, self.BoostFadeOutTime)
+  0014: StopLoopingSound(self._BoostWheelsAudioComponent, self.BoostFadeOutTime)
+  0028: PlaySoundEvent(self.BoostStopSound)
+  0037: self.IsBoosting = false
+  003f: return nothing
+  0041: <eos>
+
+function HmVehicleAudioComponent.PlayAscendSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.AscendSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.StopAscendSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.AscendStopSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayDescendSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.DescendSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.StopDescendSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.DescendStopSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayRollSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.RollSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayBoosterSound  (script 25 bytes)
+  0000: PlayLoopingSound(self._BoosterAudioComponent, self.BoosterSound, , )
+  0016: return nothing
+  0018: <eos>
+
+function HmVehicleAudioComponent.StopBoosterSound  (script 19 bytes)
+  0000: StopLoopingSound(self._BoosterAudioComponent, )
+  0010: return nothing
+  0012: <eos>
+
+function HmVehicleAudioComponent.PlayRamSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.RamSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayOneEightySound  (script 18 bytes)
+  0000: PlaySoundEvent(self.OneEightySound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.PlayNitroSound  (script 18 bytes)
+  0000: PlaySoundEvent(self.NitroSound)
+  000f: return nothing
+  0011: <eos>
+
+function HmVehicleAudioComponent.UpdateVehicleSpeed  (script 140 bytes)
+  0000: self.VehicleSpeedHistoryIndex[self.VehicleSpeedHistory] = HmVehicleAudioComponent.ComputeSpeedMPH(self.OwnerPawn.Velocity)
+  0020: self.VehicleSpeedHistoryIndex = cast44((cast3f((self.VehicleSpeedHistoryIndex + 1)) % cast3f(self.VehicleSpeedHistory.Length)))
+  003c: self._VehicleSpeed = 0.0
+  0047: Index = 0
+  004e: if !((Index < self.VehicleSpeedHistory.Length)) goto 0x007a
+  005e: (self._VehicleSpeed += Index[self.VehicleSpeedHistory])
+  0070: AddAdd_PreInt(Index)
+  0077: goto 0x004e
+  007a: (self._VehicleSpeed /= cast3f(self.VehicleSpeedHistory.Length))
+  0089: return nothing
+  008b: <eos>
+
+function HmVehicleAudioComponent.UpdateTireTreadSound  (script 126 bytes)
+  0000: if !((true == self._IsOnGround)) goto 0x0067
+  000c: PlayLoopingSound(self._TireTreadAudioComponent, self.DefaultTireTreadSound, self.TireTreadCrossfadeTime, )
+  0026: if !(((none != self._TireTreadAudioComponent) && (none != self.SpeedSoundParameter))) goto 0x0064
+  003e: self._TireTreadAudioComponent.SetFloatParameter(self.SpeedSoundParameter.Name, self._VehicleSpeed)
+  0064: goto 0x007b
+  0067: StopLoopingSound(self._TireTreadAudioComponent, self.TireTreadCrossfadeTime)
+  007b: return nothing
+  007d: <eos>
+
+function HmVehicleAudioComponent.ComputeSpeedMPH  (script 31 bytes)
+  0000: return (obj'Core.Math'.static.VSize(InVelocity) * 0.0223694)
+  0018: return return
+  001e: <eos>
+
+function HmVehicleAudioComponent.UpdateTireSquealSound  (script 143 bytes)
+  0000: if !(((true == self._IsOnGround) && (self._VehicleSpeed >= self.TireSquealSpeedMin))) goto 0x0078
+  001d: PlayLoopingSound(self._TireSquealAudioComponent, self.DefaultTireSquealSound, self.TireSquealCrossfadeTime, )
+  0037: if !(((none != self._TireSquealAudioComponent) && (none != self.TireSquealSoundParameter))) goto 0x0075
+  004f: self._TireSquealAudioComponent.SetFloatParameter(self.TireSquealSoundParameter.Name, self._WheelSlipRatio)
+  0075: goto 0x008c
+  0078: StopLoopingSound(self._TireSquealAudioComponent, self.TireSquealCrossfadeTime)
+  008c: return nothing
+  008e: <eos>
+
+function HmVehicleAudioComponent.UpdateSpeedSound  (script 52 bytes)
+  0000: if !((none != self._SpeedAudioComponent)) goto 0x0031
+  000b: self._SpeedAudioComponent.SetFloatParameter(self.SpeedSoundParameter.Name, self._VehicleSpeed)
+  0031: return nothing
+  0033: <eos>
+
+function HmVehicleAudioComponent.UpdateBoostWheelsSound  (script 64 bytes)
+  0000: (self.BoostWheelsTimer += DeltaTime)
+  000c: if !((self.BoostWheelsTimer < self.BoostWheelsGroundCheckDelay)) goto 0x001d
+  001b: return nothing
+  001d: if !((false == self._IsOnGround)) goto 0x003d
+  0029: StopLoopingSound(self._BoostWheelsAudioComponent, self.BoostFadeOutTime)
+  003d: return nothing
+  003f: <eos>
+
+function HmVehicleAudioComponent.PlaySoundEvent  (script 60 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(HmSoundEventInterface(none), self.OwnerSoundEventInterface)) goto 0x0016
+  0014: return false
+  0016: self.OwnerSoundEventInterface.PlaySoundEvent(SoundEvent, true, , true, )
+  0033: return true
+  0035: return return
+  003b: <eos>
+
+function HmVehicleAudioComponent.GetSoundCue  (script 68 bytes)
+  0000: if !((none == SoundEvent)) goto 0x000d
+  000b: return none
+  000d: if !(EqualEqual_InterfaceInterface(HmSoundEventInterface(none), self.OwnerSoundEventInterface)) goto 0x0023
+  0021: return none
+  0023: return self.OwnerSoundEventInterface.FindSoundCue(SoundEvent)
+  003d: return return
+  0043: <eos>
+
+function HmVehicleAudioComponent.PlayLoopingSound  (script 263 bytes)
+  0000: default=0.0
+  0009: default='None'
+  0016: AudioComponentSoundCue = GetSoundCue(LoopingSoundEvent)
+  002b: if !((none != LoopingAudioComponent)) goto 0x007f
+  0036: if !(((true == LoopingAudioComponent.IsPlaying()) && (LoopingAudioComponent.SoundCue == AudioComponentSoundCue))) goto 0x006b
+  0069: return true
+  006b: StopLoopingSound(LoopingAudioComponent, FadeInTime)
+  007f: if !((none == AudioComponentSoundCue)) goto 0x008c
+  008a: return false
+  008c: LoopingAudioComponent = self.Owner.CreateAudioComponent(AudioComponentSoundCue, false, true, , , )
+  00af: if !((none == LoopingAudioComponent)) goto 0x00bc
+  00ba: return false
+  00bc: LoopingAudioComponent.bAutoPlay = true
+  00cd: LoopingAudioComponent.SocketName = SocketName
+  00e1: LoopingAudioComponent.FadeIn(FadeInTime, 1.0)
+  00fe: return true
+  0100: return return
+  0106: <eos>
+
+function HmVehicleAudioComponent.StopLoopingSound  (script 82 bytes)
+  0000: default=0.0
+  0009: if !((none != LoopingAudioComponent)) goto 0x0049
+  0014: LoopingAudioComponent.bAutoDestroy = true
+  0025: LoopingAudioComponent.FadeOut(FadeOutTime, 0.0)
+  0042: LoopingAudioComponent = none
+  0049: return true
+  004b: return return
+  0051: <eos>

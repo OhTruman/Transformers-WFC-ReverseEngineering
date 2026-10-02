@@ -1,0 +1,26 @@
+function TnStatsWrite.CopyAndWriteAllStats  (script 78 bytes)
+  0000: CopyGameStats(PRI)
+  000f: CopyExtraStats(PRI, StatsInterface)
+  0023: StatsInterface.WriteOnlineStats(PRI.SessionName, UniqId, self)
+  004b: return nothing
+  004d: <eos>
+
+function TnStatsWrite.CopyGameStats  (script 187 bytes)
+  0000: foreach self.Properties(Prop,) (end 0x00b7)
+  000f: if !(PRI.GetGameStat(Prop.PropertyId, StatValue)) goto 0x00b6
+  003a: switch (Prop.Data.Type)
+  0057: case 1: (next 0x008c)
+  005c: SetIntStat(Prop.PropertyId, obj'Core.Math'.static.Max(0, cast44(StatValue)))
+  0089: goto 0x00b6
+  008c: case 5: (next 0x00b3)
+  0091: SetFloatStat(Prop.PropertyId, StatValue)
+  00b0: goto 0x00b6
+  00b3: default:
+  00b6: iternext
+  00b7: iterpop
+  00b8: return nothing
+  00ba: <eos>
+
+function TnStatsWrite.CopyExtraStats  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

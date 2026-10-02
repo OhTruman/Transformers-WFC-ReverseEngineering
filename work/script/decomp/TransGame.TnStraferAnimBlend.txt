@@ -1,0 +1,44 @@
+function TnStraferAnimBlend.set_BlendSpeed  (script 14 bytes)
+  0000: self._BlendSpeed = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnStraferAnimBlend.Tick  (script 553 bytes)
+  0000: if !((DeltaTime <= cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: if !((self.SkelComponent == none)) goto 0x001c
+  001a: return nothing
+  001c: Owner = self.SkelComponent.Owner
+  0030: if !((Owner == none)) goto 0x003d
+  003b: return nothing
+  003d: LocalVelocity = ((Owner.Velocity << Owner.Rotation) * vect(1,1,0))
+  0072: LocalAcceleration = ((Owner.Acceleration << Owner.Rotation) * vect(1,1,0))
+  00a7: Weights = TnStraferAnimBlend.CalculateWeightsFromDirection(obj'Core.Math'.static.Normal((LocalVelocity + LocalAcceleration)))
+  00ca: 0[self.Children].Weight = obj'Core.Math'.static.Lerp(0[self.Children].Weight, obj'Core.Math'.static.FMax(0.0, Weights.X), self._BlendSpeed)
+  011f: 1[self.Children].Weight = obj'Core.Math'.static.Lerp(1[self.Children].Weight, obj'Core.Math'.static.FMax(0.0, -Weights.X), self._BlendSpeed)
+  0176: 2[self.Children].Weight = obj'Core.Math'.static.Lerp(2[self.Children].Weight, obj'Core.Math'.static.FMax(0.0, Weights.Y), self._BlendSpeed)
+  01cd: 3[self.Children].Weight = obj'Core.Math'.static.Lerp(3[self.Children].Weight, obj'Core.Math'.static.FMax(0.0, -Weights.Y), self._BlendSpeed)
+  0226: return nothing
+  0228: <eos>
+
+function TnStraferAnimBlend.SliderMove  (script 147 bytes)
+  0000: SliderIdx[self.Sliders].Position = NewValue
+  001c: Weights = TnStraferAnimBlend.CalculateWeightsFromDirection(obj'Core.Math'.static.Normal(obj'Core.Math'.static.MakeVector(((0[self.Sliders].Position * cast3f(2)) - cast3f(1)), ((1[self.Sliders].Position * cast3f(2)) - cast3f(1)), 0.0)))
+  0085: TnStraferAnimBlend.SetWeights(Weights)
+  0090: return nothing
+  0092: <eos>
+
+function TnStraferAnimBlend.SetWeights  (script 213 bytes)
+  0000: 0[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, Weights.X)
+  0033: 1[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, -Weights.X)
+  0068: 2[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, Weights.Y)
+  009c: 3[self.Children].Weight = obj'Core.Math'.static.FMax(0.0, -Weights.Y)
+  00d2: return nothing
+  00d4: <eos>
+
+function TnStraferAnimBlend.CalculateWeightsFromDirection  (script 166 bytes)
+  0000: if !((obj'Core.Math'.static.VSizeSq(Direction) < 0.1)) goto 0x0030
+  0022: return vect(1,0,0)
+  0030: return ((obj'Core.Math'.static.MakeVector(obj'Core.Math'.static.Sign(Direction.X), obj'Core.Math'.static.Sign(Direction.Y), 0.0) * Direction) * Direction)
+  009f: return return
+  00a5: <eos>

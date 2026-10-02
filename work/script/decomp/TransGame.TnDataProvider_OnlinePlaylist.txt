@@ -1,0 +1,25 @@
+function TnDataProvider_OnlinePlaylist.IsProviderDisabled  (script 35 bytes)
+  0000: if !(!self.VisibleInMenu) goto 0x000d
+  000b: return true
+  000d: if !(!TnDataProvider_OnlinePlaylist.HasRequiredContent()) goto 0x001a
+  0018: return true
+  001a: return false
+  001c: return return
+  0022: <eos>
+
+function TnDataProvider_OnlinePlaylist.HasRequiredContent  (script 241 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: foreach Providers(Provider,) (end 0x008b)
+  0028: Map = TnDataProvider_MapInfo(Provider)
+  0038: if !(!Map.HasRequiredAssets()) goto 0x0054
+  0050: iternext
+  0051: goto 0x008b
+  0054: if !((LocalContentIds.Find(Map.DlcId) == -1)) goto 0x008a
+  0074: LocalContentIds.AddItem(Map.DlcId)
+  008a: iternext
+  008b: iterpop
+  008c: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  00a5: PlaylistManager = OnlinePlaylistManager(OnlineSub.GetNamedInterface('PlaylistManager'))
+  00cc: return PlaylistManager.HasRequiredContentForPlaylist(self.PlaylistId, LocalContentIds)
+  00ea: return return
+  00f0: <eos>

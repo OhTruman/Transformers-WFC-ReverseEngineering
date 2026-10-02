@@ -1,0 +1,284 @@
+function TnDestructibleActor.set_GrabDelay  (script 14 bytes)
+  0000: self._GrabDelay = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDestructibleActor.get_Invulnerable  (script 14 bytes)
+  0000: return self._Invulnerable
+  0007: return return
+  000d: <eos>
+
+function TnDestructibleActor.set_Invulnerable  (script 16 bytes)
+  0000: self._Invulnerable = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnDestructibleActor.get_ShouldBeHighlighted  (script 14 bytes)
+  0000: return self._ShouldBeHighlighted
+  0007: return return
+  000d: <eos>
+
+function TnDestructibleActor.set_ShouldBeHighlighted  (script 16 bytes)
+  0000: self._ShouldBeHighlighted = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnDestructibleActor.get_HealthBarDisplaysTotalStateHealth  (script 14 bytes)
+  0000: return self._HealthBarDisplaysTotalStateHealth
+  0007: return return
+  000d: <eos>
+
+function TnDestructibleActor.set_HealthBarDisplaysTotalStateHealth  (script 16 bytes)
+  0000: self._HealthBarDisplaysTotalStateHealth = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnDestructibleActor.get_AttachedPawn  (script 13 bytes)
+  0000: return self._AttachedPawn
+  0006: return return
+  000c: <eos>
+
+function TnDestructibleActor.set_AttachedPawn  (script 14 bytes)
+  0000: self._AttachedPawn = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDestructibleActor.get_AttachSocketName  (script 13 bytes)
+  0000: return self._AttachSocketName
+  0006: return return
+  000c: <eos>
+
+function TnDestructibleActor.set_AttachSocketName  (script 14 bytes)
+  0000: self._AttachSocketName = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDestructibleActor.get_AttachMeshIdx  (script 13 bytes)
+  0000: return self._AttachMeshIdx
+  0006: return return
+  000c: <eos>
+
+function TnDestructibleActor.set_AttachMeshIdx  (script 14 bytes)
+  0000: self._AttachMeshIdx = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDestructibleActor.get_TargetableLocation  (script 14 bytes)
+  0000: return TnDestructibleActor.GetTargetableLocation()
+  0007: return return
+  000d: <eos>
+
+function TnDestructibleActor.ReplicatedEvent  (script 131 bytes)
+  0000: if !((((VarName == '_AttachedPawn') || (VarName == '_AttachSocketName')) || (VarName == '_AttachMeshIdx'))) goto 0x0075
+  003d: if !(((self._AttachedPawn != none) && (self._AttachMeshIdx != -1))) goto 0x0072
+  0059: AttachToPawn(self._AttachedPawn, self._AttachSocketName, self._AttachMeshIdx)
+  0072: goto 0x0080
+  0075: ReplicatedEvent(VarName)
+  0080: return nothing
+  0082: <eos>
+
+function TnDestructibleActor.ReplicatedArrayEvent  (script 76 bytes)
+  0000: if !((ArrayName == 'ReplicatedPieceAccumulatedDamage')) goto 0x0039
+  0013: self.DestructibleComponent.SetPieceAccumulatedDamageFromByteValue(Index, Index[self.ReplicatedPieceAccumulatedDamage])
+  0036: goto 0x0049
+  0039: ReplicatedArrayEvent(ArrayName, Index)
+  0049: return nothing
+  004b: <eos>
+
+function TnDestructibleActor.PostBeginPlay  (script 120 bytes)
+  0000: PostBeginPlay()
+  0006: self._Services.Add('TnLockOnVictimService', self)
+  0023: self._Services.Add('TnTargetableService', self)
+  0040: self._HealthDisplay.Initialize(self)
+  0054: self._Services.Add('TnHealthDisplayService', self._HealthDisplay)
+  0075: return nothing
+  0077: <eos>
+
+function TnDestructibleActor.GetService  (script 32 bytes)
+  0000: return self._Services.GetService(Type)
+  0019: return return
+  001f: <eos>
+
+function TnDestructibleActor.CanBeLockedOnToByAttacker  (script 43 bytes)
+  0000: return (self._LockedOn || self.DestructibleComponent.CanAcceptDamageFromTrigger(obj'TnTractorBeamDestructionTrigger'))
+  0024: return return
+  002a: <eos>
+
+function TnDestructibleActor.NotifyLockOnBegin  (script 33 bytes)
+  0000: self._LastSpawnedChunk = none
+  0007: self._LockedOn = true
+  000f: ApplyDestructionTrigger(obj'TnTractorBeamDestructionTrigger')
+  001e: return nothing
+  0020: <eos>
+
+function TnDestructibleActor.NotifyLockOnEnd  (script 11 bytes)
+  0000: self._LockedOn = false
+  0008: return nothing
+  000a: <eos>
+
+function TnDestructibleActor.OnActorSpawn  (script 70 bytes)
+  0000: OnActorSpawn(PieceHandle, SpawnedActor)
+  0010: Chunk = TnDestructibleSpawnedChunk(SpawnedActor)
+  0020: if !((Chunk == none)) goto 0x002d
+  002b: return nothing
+  002d: self._LastSpawnedChunk = Chunk
+  0038: self._TimeSinceSpawn = 0.0
+  0043: return nothing
+  0045: <eos>
+
+function TnDestructibleActor.GetGrabVictim  (script 35 bytes)
+  0000: if !((self._TimeSinceSpawn < self._GrabDelay)) goto 0x0011
+  000f: return none
+  0011: return TnServiceProvider(self._LastSpawnedChunk)
+  001c: return return
+  0022: <eos>
+
+function TnDestructibleActor.Tick  (script 43 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((self._LastSpawnedChunk != none)) goto 0x0022
+  0016: (self._TimeSinceSpawn += DeltaTime)
+  0022: TnDestructibleActor.UpdateObjectiveMarkers()
+  0028: return nothing
+  002a: <eos>
+
+function TnDestructibleActor.MapHitComponentToIndex  (script 32 bytes)
+  0000: return self.DestructibleComponent.MapHitComponentToIndex(HitComponent)
+  0019: return return
+  001f: <eos>
+
+function TnDestructibleActor.MapIndexToHitComponent  (script 32 bytes)
+  0000: return self.DestructibleComponent.MapIndexToHitComponent(Index)
+  0019: return return
+  001f: <eos>
+
+function TnDestructibleActor.TakeRadiusDamage  (script 93 bytes)
+  0000: if !((self._Invulnerable || TnDestructibleActor.ShouldIgnoreDamageFromPawnBase(InstigatedBy))) goto 0x001b
+  0019: return nothing
+  001b: TnDestructibleActor.AdjustDamage(Damage, DamageType)
+  002b: TakeRadiusDamage(InstigatedBy, Damage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser)
+  005a: return nothing
+  005c: <eos>
+
+function TnDestructibleActor.TakeDamage  (script 89 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self._Invulnerable || TnDestructibleActor.ShouldIgnoreDamageFromPawnBase(InstigatedBy))) goto 0x001d
+  001b: return nothing
+  001d: TnDestructibleActor.AdjustDamage(Damage, DamageType)
+  002d: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0056: return nothing
+  0058: <eos>
+
+function TnDestructibleActor.ShouldIgnoreDamageFromPawnBase  (script 129 bytes)
+  0000: PawnBase = Pawn(self.Base)
+  0010: if !((((InstigatedBy != none) && (PawnBase != none)) && ((InstigatedBy.Pawn == PawnBase) || self.WorldInfo.GRI.OnSameTeam(PawnBase, InstigatedBy.Pawn)))) goto 0x0078
+  0076: return true
+  0078: return false
+  007a: return return
+  0080: <eos>
+
+function TnDestructibleActor.AdjustDamage  (script 51 bytes)
+  0000: dt = class<TnDamageType>(DamageType)
+  0010: if !((dt != none)) goto 0x0030
+  001b: (inDamage *= dt.static.default.DestructibleDamageScale)
+  0030: return nothing
+  0032: <eos>
+
+function TnDestructibleActor.OnDamage  (script 79 bytes)
+  0000: if !(self._HealthBarDisplaysTotalStateHealth) goto 0x0037
+  0009: PieceHandle[self.ReplicatedPieceAccumulatedDamage] = cast43((cast3f(255) * obj'Core.Math'.static.FClamp(NormalizedAccumulatedDamage, 0.0, 1.0)))
+  0037: OnDamage(PieceHandle, NormalizedHealth, NormalizedAccumulatedDamage)
+  004c: return nothing
+  004e: <eos>
+
+function TnDestructibleActor.BaseChange  (script 44 bytes)
+  0000: PawnBase = Pawn(self.Base)
+  0010: if !((PawnBase != none)) goto 0x0023
+  001b: self.ForcePawnSeeThrough = true
+  0023: BaseChange()
+  0029: return nothing
+  002b: <eos>
+
+function TnDestructibleActor.PawnBaseDied  (script 22 bytes)
+  0000: PawnBaseDied()
+  0006: RemoveObjectiveMarker()
+  0010: DestroyActor()
+  0013: return nothing
+  0015: <eos>
+
+function TnDestructibleActor.PawnBaseDying  (script 18 bytes)
+  0000: ApplyDestructionTrigger(obj'TnPawnBaseDiedDestructionTrigger')
+  000f: return nothing
+  0011: <eos>
+
+function TnDestructibleActor.CanHighlight  (script 27 bytes)
+  0000: return (self._ShouldBeHighlighted && !self._Invulnerable)
+  0014: return return
+  001a: <eos>
+
+function TnDestructibleActor.AttachToPawn  (script 324 bytes)
+  0000: if !((((P == none) || (SocketName == 'None')) || (MeshIdx == -1))) goto 0x0033
+  0031: return nothing
+  0033: if !((cast3a(self.Role) == cast3a(3))) goto 0x0064
+  0043: self._AttachedPawn = P
+  004e: self._AttachSocketName = SocketName
+  0059: self._AttachMeshIdx = MeshIdx
+  0064: SkelMesh = P.GetSkeletalMesh(MeshIdx)
+  0082: if !((SkelMesh == none)) goto 0x00dc
+  008d: LogInternal((((("Warning!" @ cast56(self)) @ "is trying to attach to") @ cast56(P)) @ "and skelmesh is none"), , , )
+  00dc: SetBase(none, , , )
+  00ea: SetHardAttach(true)
+  00f5: SetPhysics(0, , )
+  0103: self.bCollideWorld = false
+  010b: self.bReplicateMovement = false
+  0113: SetCollision(true, false, true)
+  0119: SetBase(P, , SkelMesh, SocketName)
+  0133: SetPhysics(0, , )
+  0141: return nothing
+  0143: <eos>
+
+function TnDestructibleActor.AddObjectiveMarker  (script 80 bytes)
+  0000: if !((self.ObjectiveMarkerClass != none)) goto 0x000d
+  000b: return nothing
+  000d: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker("", self, InObjectiveMarkerClass, true)
+  0037: self.ObjectiveMarkerClass = InObjectiveMarkerClass
+  0042: self.ReplicatedObjectiveMarkerClass = InObjectiveMarkerClass
+  004d: return nothing
+  004f: <eos>
+
+function TnDestructibleActor.RemoveObjectiveMarker  (script 69 bytes)
+  0000: if !((self.ObjectiveMarkerClass == none)) goto 0x000d
+  000b: return nothing
+  000d: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, self.ObjectiveMarkerClass)
+  0034: self.ObjectiveMarkerClass = none
+  003b: self.ReplicatedObjectiveMarkerClass = none
+  0042: return nothing
+  0044: <eos>
+
+function TnDestructibleActor.GetObjectiveMarkerType  (script 13 bytes)
+  0000: return self.ObjectiveMarkerClass
+  0006: return return
+  000c: <eos>
+
+function TnDestructibleActor.UpdateObjectiveMarkers  (script 156 bytes)
+  0000: GRI = TnGameReplicationInfoGameBase(self.WorldInfo.GRI)
+  0019: if !((GRI == none)) goto 0x0026
+  0024: return nothing
+  0026: if !((!self.IsHealthBarDisplayed && (self.HealthBarDisplayClass != none))) goto 0x0062
+  003e: GRI.AddObjectiveMarker("", self, self.HealthBarDisplayClass, true)
+  005a: self.IsHealthBarDisplayed = true
+  0062: if !((cast3a(self.Role) < cast3a(3))) goto 0x0099
+  0072: if !((self.ReplicatedObjectiveMarkerClass != none)) goto 0x008f
+  007d: AddObjectiveMarker(self.ReplicatedObjectiveMarkerClass)
+  008c: goto 0x0099
+  008f: RemoveObjectiveMarker()
+  0099: return nothing
+  009b: <eos>
+
+function TnDestructibleActor.GetTargetableLocation  (script 65 bytes)
+  0000: TargetableComponent = FindComponent(obj'TnTargetableComponent')
+  0015: if !((TargetableComponent != none)) goto 0x0034
+  0020: return TargetableComponent.GetTargetLocation()
+  0034: return self.Location
+  003a: return return
+  0040: <eos>

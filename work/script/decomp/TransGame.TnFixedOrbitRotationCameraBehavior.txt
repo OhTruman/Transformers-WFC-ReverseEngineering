@@ -1,0 +1,25 @@
+function TnFixedOrbitRotationCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.OwnerActor = A
+  000b: return nothing
+  000d: <eos>
+
+function TnFixedOrbitRotationCameraBehavior.Activate  (script 25 bytes)
+  0000: self.OriginalOrbitRotation = Result.OrbitRotation
+  0016: return nothing
+  0018: <eos>
+
+function TnFixedOrbitRotationCameraBehavior.Deactivate  (script 35 bytes)
+  0000: Result.OrbitRotation = self.OriginalOrbitRotation
+  0016: return Result
+  001c: return return
+  0022: <eos>
+
+function TnFixedOrbitRotationCameraBehavior.Update  (script 131 bytes)
+  0000: if !(self.bRelativeToActor) goto 0x002b
+  0009: Result.OrbitRotation = self.OwnerActor.Rotation
+  0028: goto 0x0041
+  002b: Result.OrbitRotation = self.OriginalOrbitRotation
+  0041: (Result.OrbitRotation += obj'Core.Math'.static.MakeRotatorDeg(self.PitchDeg, self.YawDeg, 0.0))
+  0076: return Result
+  007c: return return
+  0082: <eos>

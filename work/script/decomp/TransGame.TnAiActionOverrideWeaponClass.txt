@@ -1,0 +1,25 @@
+function TnAiActionOverrideWeaponClass.PreSave  (script 57 bytes)
+  0000: if !(((self.Weapons.Length != 0) || (self.WeaponClass == none))) goto 0x0022
+  0019: self.WeaponClass = none
+  0020: return nothing
+  0022: self.Weapons.AddItem(self.WeaponClass)
+  002f: self.WeaponClass = none
+  0036: return nothing
+  0038: <eos>
+
+function TnAiActionOverrideWeaponClass.Initialize  (script 72 bytes)
+  0000: self._SelectedWeapon = (((self.WeaponClass != none) || (self.Weapons.Length == 0)) ? self.WeaponClass : obj'Core.Random'.static.RandomInt(self.Weapons.Length)[self.Weapons])
+  0045: return nothing
+  0047: <eos>
+
+function TnAiActionOverrideWeaponClass.ApplyOverrideToAction  (script 64 bytes)
+  0000: OverrideWeaponClassInterface = TnAiActionOverrideWeaponClassInterface(Action)
+  0010: if !(NotEqual_InterfaceInterface(OverrideWeaponClassInterface, TnAiActionOverrideWeaponClassInterface(none))) goto 0x003d
+  0024: OverrideWeaponClassInterface.set_WeaponClass(self._SelectedWeapon)
+  003d: return nothing
+  003f: <eos>
+
+function TnAiActionOverrideWeaponClass.IsDefined  (script 16 bytes)
+  0000: return (self.WeaponClass != none)
+  0009: return return
+  000f: <eos>

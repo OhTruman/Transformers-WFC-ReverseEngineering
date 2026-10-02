@@ -1,0 +1,192 @@
+function HmGameInfo.get_GameDifficulty  (script 30 bytes)
+  0000: if !((self._GameDifficulty < 0)) goto 0x0011
+  000b: HmGameInfo.CopyDifficultyFromProfileSettings()
+  0011: return self._GameDifficulty
+  0017: return return
+  001d: <eos>
+
+function HmGameInfo.set_GameDifficulty  (script 58 bytes)
+  0000: self._GameDifficulty = Value
+  000b: self._GameDifficulty = obj'Core.Math'.static.Clamp(self._GameDifficulty, 0, self.MaxDifficultyLevel)
+  0027: HmGameInfo.CopyDifficultyToProfileSettings()
+  002d: OnSetDifficulty()
+  0037: return nothing
+  0039: <eos>
+
+function HmGameInfo.SetPause  (script 129 bytes)
+  0000: nothing
+  0001: PauseStatePrevious = (self.WorldInfo.Pauser != none)
+  0019: bReturn = SetPause(P, CanUnpauseDelegate)
+  0030: if !(((self.WorldInfo.Pauser != none) && !PauseStatePrevious)) goto 0x0073
+  0051: HmWorldInfo(self.WorldInfo).OnGamePaused()
+  0069: OnPaused()
+  0073: return bReturn
+  007a: return return
+  0080: <eos>
+
+function HmGameInfo.ClearPause  (script 74 bytes)
+  0000: PauseStatePrevious = (self.WorldInfo.Pauser != none)
+  0018: ClearPause()
+  001e: if !(((self.WorldInfo.Pauser == none) && PauseStatePrevious)) goto 0x0047
+  003d: OnResumed()
+  0047: return nothing
+  0049: <eos>
+
+function HmGameInfo.OnPaused  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmGameInfo.OnResumed  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmGameInfo.InitGame  (script 121 bytes)
+  0000: InitGame(Options, ErrorMessage)
+  0010: self.StatisticsSessionId = CreateGuid()
+  0020: if !((self.HmDuringAsync == none)) goto 0x0047
+  002b: self.HmDuringAsync = Spawn(obj'HmDuringAsyncProcess', , , , , , , )
+  0047: self._GameDifficulty = obj'Core.Strings'.static.GetIntOption(Options, "Difficulty", self._GameDifficulty)
+  0076: return nothing
+  0078: <eos>
+
+function HmGameInfo.PostBeginPlay  (script 15 bytes)
+  0000: PostBeginPlay()
+  0006: HmGameInfo.CopyDifficultyFromProfileSettings()
+  000c: return nothing
+  000e: <eos>
+
+function HmGameInfo.CopyDifficultyToProfileSettings  (script 54 bytes)
+  0000: PS = GetLocalProfileSettings()
+  0010: if !((PS != none)) goto 0x0033
+  001b: PS.SetDifficulty(self._GameDifficulty)
+  0033: return nothing
+  0035: <eos>
+
+function HmGameInfo.CopyDifficultyFromProfileSettings  (script 55 bytes)
+  0000: PS = GetLocalProfileSettings()
+  0010: if !((PS != none)) goto 0x0034
+  001b: self._GameDifficulty = PS.GetDifficulty()
+  0034: return nothing
+  0036: <eos>
+
+function HmGameInfo.GetLocalProfileSettings  (script 77 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return none
+  0012: foreach self.WorldInfo.LocalPlayerControllers(obj'HmPlayerController', PC) (end 0x0043)
+  0032: iterpop
+  0033: return PC.ProfileSettings
+  0042: iternext
+  0043: iterpop
+  0044: return none
+  0046: return return
+  004c: <eos>
+
+function HmGameInfo.FindPlayerStart  (script 117 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(((Player != none) && (Player.StartSpot != none))) goto 0x0037
+  0023: self.LastPlayerStartSpot = Player.StartSpot
+  0037: Best = FindPlayerStart(Player, InTeam, IncomingName)
+  0052: if !((Best != none)) goto 0x0068
+  005d: self.LastStartSpot = Best
+  0068: return Best
+  006e: return return
+  0074: <eos>
+
+function HmGameInfo.RatePlayerStart  (script 668 bytes)
+  0000: if !((((P == none) || !P.bEnabled) || P.PhysicsVolume.bWaterVolume)) goto 0x0044
+  003e: return -10000000.0
+  0044: if !(P.bPrimaryStart) goto 0x0064
+  0056: Score = 10000000.0
+  0061: goto 0x006f
+  0064: Score = 5000000.0
+  006f: if !(((P == self.LastStartSpot) || (P == self.LastPlayerStartSpot))) goto 0x009e
+  008f: (Score -= 10000.0)
+  009b: goto 0x00b9
+  009e: (Score += (cast3f(3000) * obj'Core.Random'.static.FRand()))
+  00b9: foreach self.WorldInfo.AllControllers(obj'Engine.Controller', OtherPlayer) (end 0x027e)
+  00d9: if !((OtherPlayer.bIsPlayer && (OtherPlayer.Pawn != none))) goto 0x027d
+  0101: NextDist = obj'Core.Math'.static.VSize((OtherPlayer.Pawn.Location - P.Location))
+  0139: if !((NextDist < (cast3f(2) * (OtherPlayer.Pawn.CylinderComponent.CollisionRadius + OtherPlayer.Pawn.CylinderComponent.CollisionHeight)))) goto 0x019a
+  018b: (Score -= 1000000.0)
+  0197: goto 0x027d
+  019a: if !(((NextDist < cast3f(3000)) && FastTrace(P.Location, OtherPlayer.Pawn.Location, , ))) goto 0x01f0
+  01da: (Score -= (10000.0 - NextDist))
+  01ed: goto 0x027d
+  01f0: if !(((self.NumPlayers + self.NumBots) == 2)) goto 0x027d
+  0203: (Score += (cast3f(2) * obj'Core.Math'.static.VSize((OtherPlayer.Pawn.Location - P.Location))))
+  0242: if !(FastTrace(P.Location, OtherPlayer.Pawn.Location, , )) goto 0x027d
+  026f: (Score -= cast3f(10000))
+  027d: iternext
+  027e: iterpop
+  027f: return obj'Core.Math'.static.FMax(Score, 5.0)
+  0295: return return
+  029b: <eos>
+
+function HmGameInfo.StartMatchAfterRestartFromCheckpoint  (script 23 bytes)
+  0000: ClearPause()
+  000a: StartMatch()
+  0014: return nothing
+  0016: <eos>
+
+function HmGameInfo.KillAIControllers  (script 96 bytes)
+  0000: foreach DynamicActors(obj'Engine.AIController', AI) (end 0x005c)
+  0017: V = Vehicle(AI.Pawn)
+  0030: if !((V != none)) goto 0x004f
+  003b: V.DriverLeave(true)
+  004f: AI.DestroyActor()
+  005b: iternext
+  005c: iterpop
+  005d: return nothing
+  005f: <eos>
+
+function HmGameInfo.CleanupBeforeRestartFromLoadedCheckpoint  (script 292 bytes)
+  0000: HmGameInfo.KillAIControllers()
+  0006: foreach self.WorldInfo.AllControllers(obj'HmPlayerController', PC) (end 0x0103)
+  0026: PC.ClientStopForceFeedbackWaveform()
+  003a: PC.SetCinematicMode(false, false, true, true, true, true)
+  0053: LogInternal(("Calling PlayerCleanupBeforeCheckpointOrTransition for PC:" $ cast56(PC)), 'CheckpointDebug', , )
+  00a4: PC.PlayerCleanupBeforeCheckpointOrTransition()
+  00b7: if !((PC.Pawn != none)) goto 0x0102
+  00cb: PC.bPreventGameOverWhenPawnDied = true
+  00dc: PC.Pawn.DestroyActor()
+  00f1: PC.bPreventGameOverWhenPawnDied = false
+  0102: iternext
+  0103: iterpop
+  0104: obj'Engine.SeqAct_CrossFadeMusicTracks'.static.StopAllMusicManagerSounds()
+  0117: ResetLevel()
+  0121: return nothing
+  0123: <eos>
+
+function HmGameInfo.GetGoapPlanningNodeAllocator  (script 13 bytes)
+  0000: return self._GoapPlanningNodeAllocator
+  0006: return return
+  000c: <eos>
+
+function HmGameInfo.OnPieSessionEnding  (script 22 bytes)
+  0000: self._GoapPlanningNodeAllocator.Release()
+  0013: return nothing
+  0015: <eos>
+
+function HmGameInfo.Destroyed  (script 22 bytes)
+  0000: self._GoapPlanningNodeAllocator.Release()
+  0013: return nothing
+  0015: <eos>
+
+function HmGameInfo.OnSetDifficulty  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGameInfo.ShouldSaveCheckpoints  (script 223 bytes)
+  0000: foreach self.WorldInfo.LocalPlayerControllers(obj'HmPlayerController', PC) (end 0x0053)
+  0020: LP = HmLocalPlayer(PC.Player)
+  0039: LocalUserNum = PC.GetLocalUserNum()
+  0052: iternext
+  0053: iterpop
+  0054: return ((((LP != none) && LP.IsStorageDeviceValid()) && (((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) && !self.OnlineSub.PlayerInterface.IsGuestLogin(cast3d(LocalUserNum)))) && self.bShouldSaveCheckpoints)
+  00d8: return return
+  00de: <eos>
+
+function HmGameInfo.NotifyCheckpointSet  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

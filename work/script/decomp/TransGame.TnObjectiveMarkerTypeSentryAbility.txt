@@ -1,0 +1,11 @@
+function TnObjectiveMarkerTypeSentryAbility.ShouldDisplayMarker  (script 142 bytes)
+  0000: if !(((Displayer == none) || (Marker.MarkerBase == none))) goto 0x0025
+  0023: return false
+  0025: EMT = GetEMT(Displayer, Marker)
+  003f: if !((cast3a(EMT) != cast3a(0))) goto 0x0051
+  004f: return false
+  0051: if !((Displayer.GetSpecialty() != "Scientist")) goto 0x0076
+  0074: return false
+  0076: return TnObjectiveMarkerTypeTransformerHealthBar.ShouldDisplayMarker(Displayer, Marker)
+  0087: return return
+  008d: <eos>

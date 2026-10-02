@@ -1,0 +1,12 @@
+function TnAiCustomProceduralPreconditionEnemyStunned.set_EnemyStunned  (script 16 bytes)
+  0000: self._EnemyStunned = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnAiCustomProceduralPreconditionEnemyStunned.CheckProceduralPrecondition  (script 78 bytes)
+  0000: TnAiC = TnAiController(C)
+  0010: if !((TnAiC == none)) goto 0x001d
+  001b: return false
+  001d: return (TnAiC.AiWorldState.GetBoolValue(obj'TnAiWorldStateEnemyStunned') == self._EnemyStunned)
+  0047: return return
+  004d: <eos>

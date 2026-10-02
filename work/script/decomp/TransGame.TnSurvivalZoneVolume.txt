@@ -1,0 +1,181 @@
+function TnSurvivalZoneVolume.NotifyPlayerTouched  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSurvivalZoneVolume.NotifyPlayerUntouched  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSurvivalZoneVolume.NotifyZoneActivated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSurvivalZoneVolume.NotifyZoneDeactivated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSurvivalZoneVolume.PostBeginPlay  (script 27 bytes)
+  0000: PostBeginPlay()
+  0006: self.CurrentScore.Length = 5
+  000f: self.SelfModifier.Length = 5
+  0018: return nothing
+  001a: <eos>
+
+function TnSurvivalZoneVolume.Touch  (script 61 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: if !((TnPlayerPawn(Other) != none)) goto 0x003a
+  002a: NotifyPlayerTouched(self)
+  003a: return nothing
+  003c: <eos>
+
+function TnSurvivalZoneVolume.UnTouch  (script 46 bytes)
+  0000: UnTouch(Other)
+  000b: if !((TnPlayerPawn(Other) != none)) goto 0x002b
+  001b: NotifyPlayerUntouched(self)
+  002b: return nothing
+  002d: <eos>
+
+function TnSurvivalZoneVolume.AddToUniversalScore  (script 15 bytes)
+  0000: (self.UniversalScoreAdjustment += Score)
+  000c: return nothing
+  000e: <eos>
+
+function TnSurvivalZoneVolume.AddToZoneScore  (script 23 bytes)
+  0000: (cast3a(SpawnType)[self.CurrentScore] += Score)
+  0014: return nothing
+  0016: <eos>
+
+function TnSurvivalZoneVolume.GetZoneScore  (script 54 bytes)
+  0000: return ((cast3a(SpawnType)[self.CurrentScore] + self.UniversalScoreAdjustment) + cast3a(SpawnType)[self.SelfModifier].Score)
+  002f: return return
+  0035: <eos>
+
+function TnSurvivalZoneVolume.GetSpawnPoint  (script 152 bytes)
+  0000: if !((self.SpawnPointIndex >= self.PossibleSpawnPoints.Length)) goto 0x0017
+  0010: self.SpawnPointIndex = 0
+  0017: if !((self.PossibleSpawnPoints.Length == 0)) goto 0x0083
+  0023: LogInternal((("Attempting to Get Spawn Point from zone:" @ cast56(self)) $ ",but zone has no spawn points assigned"), , , )
+  0081: return none
+  0083: return AddAdd_Int(self.SpawnPointIndex)[self.PossibleSpawnPoints]
+  0091: return return
+  0097: <eos>
+
+function TnSurvivalZoneVolume.GetCentralSpawnPoint  (script 36 bytes)
+  0000: return ((self.CentralObjectiveSpawnPoint == none) ? GetSpawnPoint() : self.CentralObjectiveSpawnPoint)
+  001d: return return
+  0023: <eos>
+
+function TnSurvivalZoneVolume.OnToggle  (script 156 bytes)
+  0000: OldActive = self.Active
+  000d: switch (Action.GetActionInputType())
+  0022: case 0: (next 0x0032)
+  0027: self.Active = true
+  002f: goto 0x005c
+  0032: case 1: (next 0x0042)
+  0037: self.Active = false
+  003f: goto 0x005c
+  0042: case 2: (next 0x0059)
+  0047: self.Active = !self.Active
+  0056: goto 0x005c
+  0059: default:
+  005c: if !((OldActive != self.Active)) goto 0x0099
+  006d: if !(self.Active) goto 0x0089
+  0076: NotifyZoneActivated(self)
+  0086: goto 0x0099
+  0089: NotifyZoneDeactivated(self)
+  0099: return nothing
+  009b: <eos>
+
+function TnSurvivalZoneVolume.GetLootSpawnLocation  (script 27 bytes)
+  0000: return GetSpawnPoint().Location
+  0014: return return
+  001a: <eos>
+
+function TnSurvivalZoneVolume.PreSave  (script 24 bytes)
+  0000: if !(IsDefaultObject()) goto 0x000f
+  000d: return nothing
+  000f: TnSurvivalZoneVolume.PopulateStartLocations()
+  0015: return nothing
+  0017: <eos>
+
+function TnSurvivalZoneVolume.PopulateStartLocations  (script 238 bytes)
+  0000: foreach AllActors(obj'TnSurvivalSpawnPoint', N) (end 0x0075)
+  0017: if !(((!N.IsDefaultObject() && (N.get_Outer() == get_Outer())) && EncompassesPoint(N.Location))) goto 0x0074
+  0062: NewNodes.Length[NewNodes] = N
+  0074: iternext
+  0075: iterpop
+  0076: if !((NewNodes.Length != self.PossibleSpawnPoints.Length)) goto 0x008f
+  0087: MarkAsModified = true
+  008f: if !(!MarkAsModified) goto 0x00cd
+  009a: foreach NewNodes(N,) (end 0x00cc)
+  00a9: if !((-1 == self.PossibleSpawnPoints.Find(N))) goto 0x00cb
+  00c0: MarkAsModified = true
+  00c8: goto 0x00cc
+  00cb: iternext
+  00cc: iterpop
+  00cd: if !(MarkAsModified) goto 0x00eb
+  00d6: self.PossibleSpawnPoints = NewNodes
+  00e1: MarkModified()
+  00eb: return nothing
+  00ed: <eos>
+
+function TnSurvivalZoneVolume.DrawZoneDebug  (script 409 bytes)
+  0000: if !((self.PossibleSpawnPoints.Length > 0)) goto 0x0025
+  000c: TextLoc = 0[self.PossibleSpawnPoints].Location
+  0022: goto 0x0075
+  0025: GetComponentsBoundingBox(BoundingBox)
+  0034: TextLoc = (BoundingBox.Min + ((BoundingBox.Max - BoundingBox.Min) / 2.0))
+  0075: TextColor = MakeColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0095: obj'Engine.Debug'.static.DrawText(TextLoc, GetDebugName(), TextColor, )
+  00bd: I = 0
+  00c4: if !((I < 5)) goto 0x0196
+  00d0: SpawnType = cast3d(I)
+  00dd: Score = GetZoneScore(SpawnType)
+  00f2: if !((Score == cast3f(0))) goto 0x0102
+  00ff: goto 0x018c
+  0102: (TextLoc.Z -= cast3f(200))
+  0118: TextColor = ((Score >= cast3f(0)) ? MakeColor(0, cast3d(255), 0, cast3d(255)) : MakeColor(cast3d(255), 0, 0, cast3d(255)))
+  0159: obj'Engine.Debug'.static.DrawText(TextLoc, ((cast52(SpawnType) $ ":") @ cast55(Score)), TextColor, )
+  018c: AddAdd_PreInt(I)
+  0193: goto 0x00c4
+  0196: return nothing
+  0198: <eos>
+
+function TnSurvivalZoneVolume.CheckForErrors  (script 537 bytes)
+  0000: I = 0
+  0007: if !((I < self.ZoneChanges.Length)) goto 0x0216
+  0017: if !((I[self.ZoneChanges].ZoneToChange == none)) goto 0x0097
+  0033: EmitCheckMessage(0, ((("Survival Zone:" @ cast56(self)) $ ", has Zone change with null zone specified in index:") @ cast53(I)), , )
+  0097: if !((I[self.ZoneChanges].ScoreChanges.Length == 0)) goto 0x0118
+  00b4: EmitCheckMessage(0, ((("Survival Zone:" @ cast56(self)) $ ", has Zone with no score changes specified in index:") @ cast53(I)), , )
+  0118: J = 0
+  011f: if !((J < I[self.ZoneChanges].ScoreChanges.Length)) goto 0x020c
+  0140: if !((J[I[self.ZoneChanges].ScoreChanges].ScoreChange == cast3f(0))) goto 0x0202
+  016f: EmitCheckMessage(0, ((((("Survival Zone:" @ cast56(self)) $ ", has Zone change with zero score change specified in zone index:") @ cast53(I)) $ ", score change index:") @ cast53(J)), , )
+  0202: AddAdd_PreInt(J)
+  0209: goto 0x011f
+  020c: AddAdd_PreInt(I)
+  0213: goto 0x0007
+  0216: return nothing
+  0218: <eos>
+
+function TnSurvivalZoneVolume.PostLoad  (script 236 bytes)
+  0000: PostLoad()
+  0006: if !((self.SelfModifier.Length == 5)) goto 0x0015
+  0013: return nothing
+  0015: NewMods.Length = 5
+  001e: I = 0
+  0025: if !((I < 5)) goto 0x0059
+  0031: I[NewMods].SpawnType = cast3d(I)
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x0025
+  0059: I = 0
+  0060: if !((I < self.SelfModifier.Length)) goto 0x00de
+  0070: if !((cast3a(I[self.SelfModifier].SpawnType) >= cast3a(5))) goto 0x0094
+  0091: goto 0x00d4
+  0094: cast3a(I[self.SelfModifier].SpawnType)[NewMods].Score = I[self.SelfModifier].Score
+  00d4: AddAdd_PreInt(I)
+  00db: goto 0x0060
+  00de: self.SelfModifier = NewMods
+  00e9: return nothing
+  00eb: <eos>

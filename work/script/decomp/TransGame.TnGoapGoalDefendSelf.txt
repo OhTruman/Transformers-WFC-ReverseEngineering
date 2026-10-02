@@ -1,0 +1,24 @@
+function TnGoapGoalDefendSelf.set_IgnoreIfDefending  (script 16 bytes)
+  0000: self._IgnoreIfDefending = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnGoapGoalDefendSelf.Initialize  (script 52 bytes)
+  0000: Initialize(Blueprint)
+  000b: BP = TnGoapGoalDefendSelfBlueprint(Blueprint)
+  001b: self._IgnoreIfDefending = BP._IgnoreIfDefending
+  0031: return nothing
+  0033: <eos>
+
+function TnGoapGoalDefendSelf.PopulateGoals  (script 130 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: Threat = WorldState.GetIntValue(obj'TnAiWorldStateDamageThreat')
+  0035: if !((Threat == 0)) goto 0x0042
+  0040: return false
+  0042: Defending = WorldState.GetBoolValue(obj'TnAiWorldStateDefending')
+  0061: if !((!self._IgnoreIfDefending && Defending)) goto 0x0079
+  0077: return false
+  0079: return true
+  007b: return return
+  0081: <eos>

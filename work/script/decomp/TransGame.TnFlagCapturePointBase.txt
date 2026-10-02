@@ -1,0 +1,35 @@
+function TnFlagCapturePointBase.PostBeginPlay  (script 49 bytes)
+  0000: if !(!self.WorldInfo.Game.HasRule(obj'TnGameRules_SingleFlagCTF')) goto 0x0028
+  0026: return nothing
+  0028: TnGameObjective.PostBeginPlay()
+  002e: return nothing
+  0030: <eos>
+
+function TnFlagCapturePointBase.Touch  (script 54 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: if !(self._Active) goto 0x0033
+  0023: TnFlagCapturePointBase.CheckForScore(Pawn(Other))
+  0033: return nothing
+  0035: <eos>
+
+function TnFlagCapturePointBase.CheckForScore  (script 145 bytes)
+  0000: if !((PossibleFlagHolder == none)) goto 0x000d
+  000b: return nothing
+  000d: TouchedPRI = TnPlayerReplicationInfo(PossibleFlagHolder.PlayerReplicationInfo)
+  0026: if !((TouchedPRI == none)) goto 0x0033
+  0031: return nothing
+  0033: HeldFlag = TnWeaponFlagBase(PossibleFlagHolder.Weapon)
+  004c: if !((HeldFlag == none)) goto 0x0059
+  0057: return nothing
+  0059: self.WorldInfo.Game.ScoreObjective(TouchedPRI, 1)
+  007b: HeldFlag.OnScore()
+  008e: return nothing
+  0090: <eos>
+
+function TnFlagCapturePointBase.OnChangeActiveState  (script 99 bytes)
+  0000: if !(self._Active) goto 0x0039
+  0009: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker(self.MarkerString, self, obj'TnObjectiveMarkerTypeFlagCapturePoint', )
+  0036: goto 0x0060
+  0039: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, obj'TnObjectiveMarkerTypeFlagCapturePoint')
+  0060: return nothing
+  0062: <eos>

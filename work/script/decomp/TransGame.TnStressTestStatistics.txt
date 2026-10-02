@@ -1,0 +1,16 @@
+function TnStressTestStatistics.RecordSession  (script 27 bytes)
+  0000: self.SessionTable.RecordSession(Game)
+  0018: return nothing
+  001a: <eos>
+
+function TnStressTestStatistics.RecordSample  (script 92 bytes)
+  0000: self.SampleTable.sample(P, Game)
+  001d: if !(P.PlayerReplicationInfo.IsLocalPlayerPRI()) goto 0x0059
+  003c: self.SampleTable.sample(P, Game)
+  0059: return nothing
+  005b: <eos>
+
+function TnStressTestStatistics.RecordError  (script 42 bytes)
+  0000: self.ErrorTable.RecordError(Player, Game, ErrorString, Callstack)
+  0027: return nothing
+  0029: <eos>

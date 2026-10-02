@@ -1,0 +1,43 @@
+function TnGoapTargetFormAndDistanceCostModulator.set_DesiredForm  (script 14 bytes)
+  0000: self._DesiredForm = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapTargetFormAndDistanceCostModulator.set_DesiredDistance  (script 14 bytes)
+  0000: self._DesiredDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapTargetFormAndDistanceCostModulator.set_CurrentDistanceComparison  (script 14 bytes)
+  0000: self._CurrentDistanceComparison = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapTargetFormAndDistanceCostModulator.set_IgnoreZAxisDistance  (script 16 bytes)
+  0000: self._IgnoreZAxisDistance = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnGoapTargetFormAndDistanceCostModulator.DoCalculateAdditionalCost  (script 186 bytes)
+  0000: TransformerController = TnAiController(Controller_)
+  0010: if !(((TransformerController == none) || (TransformerController.Pawn == none))) goto 0x0037
+  0031: return 0.0
+  0037: TargetPawn = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  005f: if !((TargetPawn == none)) goto 0x0070
+  006a: return 0.0
+  0070: if !(!TargetPawn.IsInForm(self._DesiredForm)) goto 0x0093
+  008d: return 0.0
+  0093: return (TnGoapTargetFormAndDistanceCostModulator.CompareDistance(TransformerController, TargetPawn) ? self.Cost : 0.0)
+  00b3: return return
+  00b9: <eos>
+
+function TnGoapTargetFormAndDistanceCostModulator.CompareDistance  (script 169 bytes)
+  0000: TargetDirection = (TargetPawn.Location - TransformerController.Pawn.Location)
+  002d: if !(self._IgnoreZAxisDistance) goto 0x004c
+  0036: TargetDirection.Z = 0.0
+  004c: DistanceSq = obj'Core.Math'.static.VSizeSq(TargetDirection)
+  006a: if !((cast3a(self._CurrentDistanceComparison) == cast3a(0))) goto 0x008e
+  007a: return (DistanceSq > (self._DesiredDistance * self._DesiredDistance))
+  008e: return (DistanceSq < (self._DesiredDistance * self._DesiredDistance))
+  00a2: return return
+  00a8: <eos>

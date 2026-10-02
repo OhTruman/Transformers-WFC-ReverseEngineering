@@ -1,0 +1,11 @@
+function SeqCond_GetPlatformType.Activated  (script 137 bytes)
+  0000: WI = GetWorldInfo()
+  0010: if !(WI.IsConsoleBuild(1)) goto 0x0040
+  0028: 0[self.OutputLinks].bHasImpulse = true
+  003d: goto 0x0086
+  0040: if !(WI.IsConsoleBuild(2)) goto 0x0070
+  0058: 1[self.OutputLinks].bHasImpulse = true
+  006d: goto 0x0086
+  0070: 2[self.OutputLinks].bHasImpulse = true
+  0086: return nothing
+  0088: <eos>

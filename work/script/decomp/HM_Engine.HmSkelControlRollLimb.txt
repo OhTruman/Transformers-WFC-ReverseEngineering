@@ -1,0 +1,15 @@
+function HmSkelControlRollLimb.SetTargetSocket  (script 12 bytes)
+  0000: SkelMesh
+  0005: SocketName
+  000a: nothing
+  000b: <eos>
+
+function HmSkelControlRollLimb.SetTargetPawnWithSocket  (script 32 bytes)
+  0000: SetTargetSocket(attachTo.Mesh, SocketName)
+  001d: return nothing
+  001f: <eos>
+
+function HmSkelControlRollLimb.InterpolateEffectorLocation  (script 48 bytes)
+  0000: self.EffectorLocation = obj'Core.Math'.static.VInterpTo(self.EffectorLocation, self.DesiredEffectorLocation, self.EffectorLocationInterpSpeed, DeltaTime)
+  002d: return nothing
+  002f: <eos>

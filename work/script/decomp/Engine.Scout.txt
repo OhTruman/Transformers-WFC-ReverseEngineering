@@ -1,0 +1,36 @@
+function Scout.PreBeginPlay  (script 18 bytes)
+  0000: if !(self.bCollideActors) goto 0x000f
+  0009: SetCollision(false, false, )
+  000f: return nothing
+  0011: <eos>
+
+function Scout.InitForPathing  (script 142 bytes)
+  0000: WorkingMC = self._WorkingMovementCapabilities
+  000b: SetPhysics(1, , )
+  0019: WorkingMC.bCanWalk = true
+  002c: WorkingMC.bJumpCapable = true
+  003f: WorkingMC.bCanJump = true
+  0052: WorkingMC.bCanSwim = true
+  0065: self.bCanClimbLadders = true
+  006d: WorkingMC.bCanFly = false
+  0080: self._WorkingMovementCapabilities = WorkingMC
+  008b: return nothing
+  008d: <eos>
+
+function Scout.GetDefaultReachSpecClass  (script 13 bytes)
+  0000: return self.DefaultReachSpecClass
+  0006: return return
+  000c: <eos>
+
+function Scout.GetSize  (script 259 bytes)
+  0000: if !(((Desc == 'Max') && (self.PathSizes.Length > 0))) goto 0x007d
+  0021: Size.X = (self.PathSizes.Length - 1)[self.PathSizes].Radius
+  004c: Size.Y = (self.PathSizes.Length - 1)[self.PathSizes].Height
+  0077: return Size
+  007d: idx = self.PathSizes.Find('Desc',Desc)
+  0099: if !((idx != -1)) goto 0x00f6
+  00a8: Size.X = idx[self.PathSizes].Radius
+  00cf: Size.Y = idx[self.PathSizes].Height
+  00f6: return Size
+  00fc: return return
+  0102: <eos>

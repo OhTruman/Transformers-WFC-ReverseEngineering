@@ -1,0 +1,93 @@
+function HmTraceInterceptor.AddResult  (script 86 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: self.HitResults.Length[self.HitResults] = (R ? 1 : 0)
+  001d: self.HitActors.Length[self.HitActors] = A
+  002f: self.HitLocations.Length[self.HitLocations] = HL
+  0041: self.HitNormals.Length[self.HitNormals] = HN
+  0053: return nothing
+  0055: <eos>
+
+function HmTraceInterceptor.AddMultiTraceResult  (script 43 bytes)
+  0000: NewResult.Result = Result
+  0016: self.MultiTraceResults.Length[self.MultiTraceResults] = NewResult
+  0028: return nothing
+  002a: <eos>
+
+function HmTraceInterceptor.CommonTrace  (script 224 bytes)
+  0000: HitLocation = ((self.TraceCount >= self.HitLocations.Length) ? vect(0,0,0) : self.TraceCount[self.HitLocations])
+  0030: HitNormal = ((self.TraceCount >= self.HitNormals.Length) ? vect(0,0,0) : self.TraceCount[self.HitNormals])
+  0060: if !((self.TraceCount < self.HitInfos.Length)) goto 0x0081
+  0070: HitInfo = self.TraceCount[self.HitInfos]
+  0081: self.TraceCount[self.TraceStarts] = TraceStart
+  0092: self.TraceCount[self.TraceEnds] = TraceEnd
+  00a3: self.TraceCount[self.Callers] = Caller
+  00b4: self.TraceCount[self.TargetActors] = TargetActor
+  00c5: self.TraceCount[self.Extents] = Extent
+  00d6: AddAdd_Int(self.TraceCount)
+  00dd: return nothing
+  00df: <eos>
+
+function HmTraceInterceptor.Trace  (script 144 bytes)
+  0000: self.TraceCount[self.TraceTypes] = 0
+  000e: self.TraceCount[self.TraceActors] = bTraceActors
+  0020: self.TraceCount[self.TraceFlags] = TraceFlag
+  0031: ReturnActor = ((self.TraceCount >= self.HitActors.Length) ? none : self.TraceCount[self.HitActors])
+  0055: HmTraceInterceptor.CommonTrace(HitLocation, HitNormal, TraceEnd, TraceStart, Caller, TargetActor, Extent, HitInfo)
+  0083: return ReturnActor
+  0089: return return
+  008f: <eos>
+
+function HmTraceInterceptor.MultiTrace  (script 170 bytes)
+  0000: self.MultiTraceCount[self.MultiTraceEnds] = TraceEnd
+  0011: self.MultiTraceCount[self.MultiTraceStarts] = TraceStart
+  0022: self.MultiTraceCount[self.MultiTraceCallers] = Caller
+  0033: self.TraceCount[self.MultiTraceTargetActors] = TargetActor
+  0044: self.MultiTraceCount[self.MultiTraceExtents] = Extent
+  0055: self.MultiTraceCount[self.MultiTraceFlags] = TraceFlag
+  0066: if !((self.MultiTraceCount < self.MultiTraceResults.Length)) goto 0x0092
+  0076: ImpactInfos = self.MultiTraceCount[self.MultiTraceResults].Result
+  0092: AddAdd_Int(self.MultiTraceCount)
+  0099: return (ImpactInfos.Length > 0)
+  00a3: return return
+  00a9: <eos>
+
+function HmTraceInterceptor.TraceComponent  (script 127 bytes)
+  0000: ReturnVal = ((self.TraceCount >= self.HitResults.Length) ? false : (self.TraceCount[self.HitResults] != 0))
+  0028: self.TraceCount[self.TraceTypes] = 0
+  0036: self.TraceCount[self.Components] = C
+  0047: HmTraceInterceptor.CommonTrace(HitLocation, HitNormal, TraceEnd, TraceStart, Caller, none, Extent, HitInfo)
+  0071: return ReturnVal
+  0078: return return
+  007e: <eos>
+
+function HmTraceInterceptor.FastTrace  (script 126 bytes)
+  0000: self.TraceCount[self.TraceTypes] = 0
+  000e: self.TraceCount[self.Callers] = Caller
+  001f: self.TraceCount[self.TraceStarts] = TraceStart
+  0030: self.TraceCount[self.TraceEnds] = TraceEnd
+  0041: ReturnVal = ((self.TraceCount >= self.HitResults.Length) ? false : (self.TraceCount[self.HitResults] != 0))
+  0069: AddAdd_Int(self.TraceCount)
+  0070: return ReturnVal
+  0077: return return
+  007d: <eos>
+
+function HmTraceInterceptor.TraceCamera  (script 123 bytes)
+  0000: self.TraceCount[self.TraceTypes] = 1
+  000e: self.TraceCount[self.TraceActors] = bTraceActors
+  0020: ReturnActor = ((self.TraceCount >= self.HitActors.Length) ? none : self.TraceCount[self.HitActors])
+  0044: HmTraceInterceptor.CommonTrace(HitLocation, HitNormal, TraceEnd, TraceStart, Caller, none, Extent, HitInfo)
+  006e: return ReturnActor
+  0074: return return
+  007a: <eos>
+
+function HmTraceInterceptor.ClearLineOfSight  (script 147 bytes)
+  0000: self.TraceCount[self.TraceTypes] = 0
+  000e: self.TraceCount[self.TraceActors] = bTraceActors
+  0020: self.TraceCount[self.TraceFlags] = TraceFlag
+  0031: ReturnActor = ((self.TraceCount >= self.HitActors.Length) ? none : self.TraceCount[self.HitActors])
+  0055: HmTraceInterceptor.CommonTrace(HitLocation, HitNormal, TraceEnd, TraceStart, Caller, TargetActor, Extent, HitInfo)
+  0083: return (ReturnActor == none)
+  008c: return return
+  0092: <eos>

@@ -1,0 +1,22 @@
+function SeqAct_TnSetTrypticonStage.Activated  (script 144 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Trypticon = SeqAct_TnSetTrypticonStage.GetTrypticon()
+  0020: if !((Trypticon == none)) goto 0x0075
+  002b: LogInternal("ERROR: SeqAct_TnSetTrypticonStage can only be used with Trypticon", , , )
+  0073: return nothing
+  0075: Trypticon.SetStage(self.Stage)
+  008d: return nothing
+  008f: <eos>
+
+function SeqAct_TnSetTrypticonStage.GetTrypticon  (script 93 bytes)
+  0000: Trypticon = TnTrypticonPawn(0[self.Targets])
+  0012: if !((Trypticon != none)) goto 0x0023
+  001d: return Trypticon
+  0023: C = Controller(0[self.Targets])
+  0035: if !((C != none)) goto 0x0054
+  0040: return TnTrypticonPawn(C.Pawn)
+  0054: return none
+  0056: return return
+  005c: <eos>

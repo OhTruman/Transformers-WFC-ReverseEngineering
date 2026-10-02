@@ -1,0 +1,93 @@
+function TnWeaponRepair.get_IsRepairWeapon  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnWeaponRepair.UpdateData  (script 25 bytes)
+  0000: self.RepairData = TnWeaponDataRepair(self.Data)
+  0010: TnWeaponBeam.UpdateData()
+  0016: return nothing
+  0018: <eos>
+
+function TnWeaponRepair.GetTraceRange  (script 60 bytes)
+  0000: BaseRange = GetTraceRange()
+  000c: return obj'TnValueTimesProductBuffModifier'.static.ModifyFloatSingle(BaseRange, obj'TnBuffIncreaseRepairRayRange', TnPawn(self.Instigator), )
+  0035: return return
+  003b: <eos>
+
+function TnWeaponRepair.GetEndTrace  (script 108 bytes)
+  0000: AiPawn = TnAiPawn(self.Instigator)
+  0010: if !((AiPawn != none)) goto 0x0031
+  001b: return AiPawn.GetTargetLocation(, )
+  0031: RepairTarget = TnWeaponRepair.GetRepairTarget()
+  003d: if !((RepairTarget != none)) goto 0x0054
+  0048: return TnWeaponRepair.GetTargetableLocation(RepairTarget)
+  0054: return GetEndTrace(StartTrace, AimDir)
+  0065: return return
+  006b: <eos>
+
+function TnWeaponRepair.GetRepairTarget  (script 138 bytes)
+  0000: PC = TnPlayerController(self.Instigator.Controller)
+  0019: if !((PC != none)) goto 0x0038
+  0024: pt = PC.PlayerTargeting
+  0038: if !((pt != none)) goto 0x0057
+  0043: return pt.GetRepairTarget()
+  0057: Sentry = TnSentryPawn(self.Instigator)
+  0067: if !((Sentry != none)) goto 0x0081
+  0072: return Sentry._Enemy
+  0081: return none
+  0083: return return
+  0089: <eos>
+
+function TnWeaponRepair.GetTargetableLocation  (script 154 bytes)
+  0000: TargetServices = TnServiceProvider(Target)
+  0010: if !(EqualEqual_InterfaceInterface(TargetServices, TnServiceProvider(none))) goto 0x0033
+  0024: return Target.Location
+  0033: TargetableService = TnTargetableService(TargetServices.GetService('TnTargetableService'))
+  005b: if !(EqualEqual_InterfaceInterface(TargetableService, TnTargetableService(none))) goto 0x007e
+  006f: return Target.Location
+  007e: return TargetableService.get_TargetableLocation()
+  0093: return return
+  0099: <eos>
+
+function TnWeaponRepair.ProcessBeamHit  (script 469 bytes)
+  0000: HitPawn = Pawn(Impact.HitActor)
+  001b: if !(obj'TnTeamInfo'.static.AreOnSameTeam(self.Instigator, HitPawn)) goto 0x01c2
+  003b: ModifiedRepairRate = self.RepairRateModifier.ModifyFloat(self.RepairData.HealthPerSecond, TnPawn(self.Instigator), )
+  006d: RepairAmount = (ModifiedRepairRate * DeltaTime)
+  007f: if !((cast3a(self.Role) == cast3a(3))) goto 0x011c
+  008f: TnInstigator = TnPawn(self.Instigator)
+  009f: if !(((TnInstigator != none) && TnInstigator.HasSkill(obj'TnSkillDecreaseDamageWhenRepairRayHealing'))) goto 0x011c
+  00c7: BS = TnBuffService(TnInstigator.GetService('TnBuffService'))
+  00ee: if !(NotEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x011c
+  0102: BS.AddSelfBuff(obj'TnBuffDecreaseDamageWhenRepairRayHealing', 0)
+  011c: HitPawn.HealDamage(RepairAmount, self.Instigator.Controller.GetKillerController(), self.RepairData.HealType)
+  015e: HitPawn.PlayHit(RepairAmount, self.Instigator.Controller, Impact.HitLocation, self.RepairData.HealType, vect(0,0,0), Impact.HitInfo)
+  01bf: goto 0x01d2
+  01c2: TnWeaponBeam.ProcessBeamHit(Impact, DeltaTime)
+  01d2: return nothing
+  01d4: <eos>
+
+function TnWeaponRepair.OnPlayFireEffects  (script 215 bytes)
+  0000: Impact.RayDir = cast39(GetWeaponMesh().GetMuzzleRotation())
+  002b: HitPawn = Pawn(Impact.HitActor)
+  0046: if !(self.Instigator.IsSameTeam(HitPawn)) goto 0x0080
+  0061: AllWeaponMeshesStopSoundEvent(2, )
+  006e: PlayWeaponEvent(1, 0, )
+  007d: goto 0x00c4
+  0080: if !((HitPawn != none)) goto 0x00aa
+  008b: AllWeaponMeshesStopSoundEvent(1, )
+  0098: PlayWeaponEvent(2, 0, )
+  00a7: goto 0x00c4
+  00aa: AllWeaponMeshesStopSoundEvent(1, )
+  00b7: AllWeaponMeshesStopSoundEvent(2, )
+  00c4: TnWeapon.OnPlayFireEffects(FireModeNum, Impact)
+  00d4: return nothing
+  00d6: <eos>
+
+function TnWeaponRepair.StopFireEffects  (script 40 bytes)
+  0000: AllWeaponMeshesStopSoundEvent(1, )
+  000d: AllWeaponMeshesStopSoundEvent(2, )
+  001a: TnWeaponBeam.StopFireEffects(FireModeNum)
+  0025: return nothing
+  0027: <eos>

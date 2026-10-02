@@ -1,0 +1,88 @@
+function TnVectorHistoryDataSet.get_Title  (script 13 bytes)
+  0000: return self._Title
+  0006: return return
+  000c: <eos>
+
+function TnVectorHistoryDataSet.get_LineColor  (script 13 bytes)
+  0000: return self._LineColor
+  0006: return return
+  000c: <eos>
+
+function TnVectorHistoryDataSet.get_Range  (script 13 bytes)
+  0000: return self._Range
+  0006: return return
+  000c: <eos>
+
+function TnVectorHistoryDataSet.set_Center  (script 14 bytes)
+  0000: self._Center = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVectorHistoryDataSet.__Constructor__TnVectorHistoryDataSet_0  (script 91 bytes)
+  0000: self._Title = Title
+  000b: self._LineColor = LineColor
+  0016: self._Range = DataRange
+  0021: self._TimeSpan = TimeSpan
+  002c: self._ValueHistory = new(self, nothing, obj'TnVectorHistory', nothing, DeltaTime)
+  0040: self._ValueHistory.SetSampleTime(TimeSpan)
+  0058: return nothing
+  005a: <eos>
+
+function TnVectorHistoryDataSet.AddSample  (script 27 bytes)
+  0000: self._ValueHistory.AddSample(sample)
+  0018: return nothing
+  001a: <eos>
+
+function TnVectorHistoryDataSet.AddEvent  (script 105 bytes)
+  0000: E.Description = EventName
+  0016: E.Location = Location
+  002c: E.TimeStamp = obj'Engine.Engine'.static.GetCurrentWorldInfo().TimeSeconds
+  0059: self._EventHistory.AddItem(E)
+  0066: return nothing
+  0068: <eos>
+
+function TnVectorHistoryDataSet.Update  (script 37 bytes)
+  0000: self._ValueHistory.Update(DeltaTime)
+  0018: UpdateEventHistory()
+  0022: return nothing
+  0024: <eos>
+
+function TnVectorHistoryDataSet.UpdateEventHistory  (script 127 bytes)
+  0000: Cutoff = (obj'Engine.Engine'.static.GetCurrentWorldInfo().TimeSeconds - self._TimeSpan)
+  0029: I = 0
+  0030: if !((I < self._EventHistory.Length)) goto 0x0070
+  0040: if !((I[self._EventHistory].TimeStamp < Cutoff)) goto 0x0063
+  0060: goto 0x0066
+  0063: goto 0x0070
+  0066: AddAdd_PreInt(I)
+  006d: goto 0x0030
+  0070: self._EventHistory.Remove(0,I)
+  007c: return nothing
+  007e: <eos>
+
+function TnVectorHistoryDataSet.Draw  (script 980 bytes)
+  0000: if !((self._ValueHistory.History.Length < 2)) goto 0x0018
+  0016: return nothing
+  0018: RangeWidth = (self._Range.Max.Y - self._Range.Min.Y)
+  0056: RangeHeight = (self._Range.Max.X - self._Range.Min.X)
+  0094: WidthScale = (cast3f(Width) / RangeWidth)
+  00a8: HeightScale = (cast3f(Height) / RangeHeight)
+  00bc: HudCanvas.SetDrawColor(self._LineColor.R, self._LineColor.G, self._LineColor.B, cast3d(255))
+  0103: I = 0
+  010a: if !((I < self._EventHistory.Length)) goto 0x025c
+  011a: PX = (obj'Core.Math'.static.FClamp(((I[self._EventHistory].Location.Y - self._Center.Y) - self._Range.Min.Y), 0.0, RangeWidth) * WidthScale)
+  018c: PY = (obj'Core.Math'.static.FClamp(((I[self._EventHistory].Location.X - self._Center.X) - self._Range.Min.X), 0.0, RangeHeight) * HeightScale)
+  01fe: HudCanvas.SetPos(((X + PX) - cast3f(10)), ((Y + PY) - cast3f(10)))
+  0235: HudCanvas.DrawBox(20.0, 20.0)
+  0252: AddAdd_PreInt(I)
+  0259: goto 0x010a
+  025c: I = 0
+  0263: if !((I < self._ValueHistory.History.Length)) goto 0x03b4
+  027c: PX = (obj'Core.Math'.static.FClamp(((I[self._ValueHistory.History].sample.Y - self._Center.Y) - self._Range.Min.Y), 0.0, RangeWidth) * WidthScale)
+  02f7: PY = (obj'Core.Math'.static.FClamp(((I[self._ValueHistory.History].sample.X - self._Center.X) - self._Range.Min.X), 0.0, RangeHeight) * HeightScale)
+  0372: Points.AddItem(obj'Core.Math'.static.MakeVector((X + PX), (Y + PY), 0.0))
+  03aa: AddAdd_PreInt(I)
+  03b1: goto 0x0263
+  03b4: HudCanvas.DrawLineStrip(Points, self._LineColor)
+  03d1: return nothing
+  03d3: <eos>

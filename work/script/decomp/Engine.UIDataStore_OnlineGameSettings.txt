@@ -1,0 +1,88 @@
+function UIDataStore_OnlineGameSettings.CreateGame  (script 346 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0118
+  0024: GameInterface = OnlineSub.GameInterface
+  0038: if !(NotEqual_InterfaceInterface(GameInterface, OnlineGameInterface(none))) goto 0x00c3
+  004c: Game = obj'Engine'.static.GetCurrentWorldInfo().Game
+  006e: SessionName = Game.PlayerReplicationInfoClass.static.default.SessionName
+  008b: return GameInterface.CreateOnlineGame(ControllerIndex, SessionName, self.SelectedIndex[self.GameSettingsCfgList].GameSettings)
+  00c0: goto 0x0115
+  00c3: WarnInternal("OnlineSubsystem does not support the game interface. Can't create online games")
+  0115: goto 0x0151
+  0118: WarnInternal("No OnlineSubsystem present. Can't create online games")
+  0151: return false
+  0153: return return
+  0159: <eos>
+
+function UIDataStore_OnlineGameSettings.GetCurrentGameSettings  (script 30 bytes)
+  0000: return self.SelectedIndex[self.GameSettingsCfgList].GameSettings
+  0017: return return
+  001d: <eos>
+
+function UIDataStore_OnlineGameSettings.GetCurrentProvider  (script 30 bytes)
+  0000: return self.SelectedIndex[self.GameSettingsCfgList].Provider
+  0017: return return
+  001d: <eos>
+
+function UIDataStore_OnlineGameSettings.SetCurrentByIndex  (script 166 bytes)
+  0000: if !(((NewIndex > 0) && (NewIndex < self.GameSettingsCfgList.Length))) goto 0x004d
+  001d: self.SelectedIndex = NewIndex
+  0028: NotifyPropertyChanged()
+  0033: RefreshSubscribers(, true, GetCurrentProvider(), )
+  004a: goto 0x009d
+  004d: LogInternal(((("Invalid index (" $ cast53(NewIndex)) $ ") specified to SetCurrentByIndex() on ") $ cast56(self)), , , )
+  009b: return false
+  009d: return true
+  009f: return return
+  00a5: <eos>
+
+function UIDataStore_OnlineGameSettings.SetCurrentByName  (script 197 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.GameSettingsCfgList.Length)) goto 0x0070
+  0017: if !((Index[self.GameSettingsCfgList].SettingsName == SettingsName)) goto 0x0066
+  0037: self.SelectedIndex = Index
+  0042: NotifyPropertyChanged()
+  004d: RefreshSubscribers(, true, GetCurrentProvider(), )
+  0064: return true
+  0066: AddAdd_Int(Index)
+  006d: goto 0x0007
+  0070: LogInternal(((("Invalid name (" $ cast57(SettingsName)) $ ") specified to SetCurrentByName() on ") $ cast56(self)), , , )
+  00bc: return false
+  00be: return return
+  00c4: <eos>
+
+function UIDataStore_OnlineGameSettings.MoveToNext  (script 71 bytes)
+  0000: self.SelectedIndex = obj'Core.Math'.static.Min((self.SelectedIndex + 1), (self.GameSettingsCfgList.Length - 1))
+  0022: NotifyPropertyChanged()
+  002d: RefreshSubscribers(, true, GetCurrentProvider(), )
+  0044: return nothing
+  0046: <eos>
+
+function UIDataStore_OnlineGameSettings.MoveToPrevious  (script 63 bytes)
+  0000: self.SelectedIndex = obj'Core.Math'.static.Max((self.SelectedIndex - 1), 0)
+  001a: NotifyPropertyChanged()
+  0025: RefreshSubscribers(, true, GetCurrentProvider(), )
+  003c: return nothing
+  003e: <eos>
+
+function UIDataStore_OnlineGameSettings.GetSettingsClassForName  (script 70 bytes)
+  0000: foreach self.GameSettingsCfgList(SettingsCfg,) (end 0x003c)
+  000f: if !((SettingsCfg.SettingsName == SettingsName)) goto 0x003b
+  0029: iterpop
+  002a: return SettingsCfg.GameSettingsClass
+  003b: iternext
+  003c: iterpop
+  003d: return none
+  003f: return return
+  0045: <eos>
+
+function UIDataStore_OnlineGameSettings.GetSettingsForName  (script 70 bytes)
+  0000: foreach self.GameSettingsCfgList(SettingsCfg,) (end 0x003c)
+  000f: if !((SettingsCfg.SettingsName == SettingsName)) goto 0x003b
+  0029: iterpop
+  002a: return SettingsCfg.GameSettings
+  003b: iternext
+  003c: iterpop
+  003d: return none
+  003f: return return
+  0045: <eos>

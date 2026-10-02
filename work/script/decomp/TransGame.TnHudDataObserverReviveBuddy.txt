@@ -1,0 +1,16 @@
+function TnHudDataObserverReviveBuddy.CheckData  (script 222 bytes)
+  0000: P = TnPawn(PC.Pawn)
+  0019: if !((P == none)) goto 0x0026
+  0024: return nothing
+  0026: PercentDone = P._RevivePercentDone
+  003a: Buddy = P._ReviveTarget
+  004e: if !(((PercentDone >= cast3f(1)) || (Buddy == none))) goto 0x0076
+  0068: PercentDone = 0.0
+  0073: goto 0x00c2
+  0076: if !((TnPlayerPawn(Buddy) != none)) goto 0x00b7
+  0086: NewLabel = obj'Core.Strings'.static.Repl(self.label, "`p", Buddy.GetHumanReadableName(), )
+  00b4: goto 0x00c2
+  00b7: NewLabel = self.RevivingAiLabel
+  00c2: ProcessNewValue(Movie, PercentDone, NewLabel)
+  00db: return nothing
+  00dd: <eos>

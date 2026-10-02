@@ -1,0 +1,117 @@
+function TnSentryTargetTracker.set_MaxNumClaimedEnemies  (script 14 bytes)
+  0000: self._MaxNumClaimedEnemies = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSentryTargetTracker.Initialize  (script 105 bytes)
+  0000: self._Owner = Owner
+  000b: if !((self._Owner == none)) goto 0x0018
+  0016: return nothing
+  0018: ServiceProvider = TnServiceProvider(self._Owner)
+  0028: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x003e
+  003c: return nothing
+  003e: self._OwnerClaimService = TnActionTargetClaimService(ServiceProvider.GetService('TnActionTargetClaimService'))
+  0066: return nothing
+  0068: <eos>
+
+function TnSentryTargetTracker.RegisterTeammate  (script 61 bytes)
+  0000: if !((TnSentryTargetTracker.IsValidTarget(Friend, false) && (self._Friends.Find(Friend) == -1))) goto 0x003a
+  0028: self._Friends.Length[self._Friends] = Friend
+  003a: return nothing
+  003c: <eos>
+
+function TnSentryTargetTracker.UnregisterTeammate  (script 49 bytes)
+  0000: Index = self._Friends.Find(Friend)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self._Friends.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnSentryTargetTracker.RegisterEnemy  (script 61 bytes)
+  0000: if !((TnSentryTargetTracker.IsValidTarget(Enemy, false) && (self._Enemies.Find(Enemy) == -1))) goto 0x003a
+  0028: self._Enemies.Length[self._Enemies] = Enemy
+  003a: return nothing
+  003c: <eos>
+
+function TnSentryTargetTracker.UnregisterEnemy  (script 49 bytes)
+  0000: Index = self._Enemies.Find(Enemy)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self._Enemies.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnSentryTargetTracker.IsValidTarget  (script 438 bytes)
+  0000: if !((((Target == none) || Target.bDeleteMe) || Target.IsDying())) goto 0x0039
+  0037: return false
+  0039: Transformer = TnPawn(Target)
+  0049: if !(((Transformer != none) && Transformer._IsDowned)) goto 0x006a
+  0068: return false
+  006a: ServiceProvider = TnServiceProvider(Target)
+  007a: if !(NotEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x01ad
+  008e: GrabVictimService = TnGrabVictimService(ServiceProvider.GetService('TnGrabVictimService'))
+  00b6: if !((NotEqual_InterfaceInterface(GrabVictimService, TnGrabVictimService(none)) && GrabVictimService.IsBeingGrabbed())) goto 0x00e5
+  00e3: return false
+  00e5: BS = TnBuffService(ServiceProvider.GetService('TnBuffService'))
+  010d: if !((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasBuff(obj'TnBuffDisguise'))) goto 0x0141
+  013f: return false
+  0141: if !(CheckForClaims) goto 0x01ad
+  014a: ClaimService = TnActionTargetClaimService(ServiceProvider.GetService('TnActionTargetClaimService'))
+  0172: if !((NotEqual_InterfaceInterface(ClaimService, TnActionTargetClaimService(none)) && (ClaimService.GetNumActionSentryTargeters(self._OwnerClaimService) >= self._MaxNumClaimedEnemies))) goto 0x01ad
+  01ab: return false
+  01ad: return true
+  01af: return return
+  01b5: <eos>
+
+function TnSentryTargetTracker.FindBestTeammate  (script 236 bytes)
+  0000: Index = (self._Friends.Length - 1)
+  000f: if !((Index >= 0)) goto 0x00df
+  001a: Friend = Index[self._Friends]
+  002b: if !(!TnSentryTargetTracker.IsValidTarget(Friend, false)) goto 0x004b
+  003c: self._Friends.Remove(Index,1)
+  0048: goto 0x00d5
+  004b: if !(!TnSentryTargetTracker.CanOwnerSee(Friend)) goto 0x005e
+  005b: goto 0x00d5
+  005e: if !((Friend.GetHealth() >= Friend.HealthMax)) goto 0x0087
+  0084: goto 0x00d5
+  0087: if !(((LowestHealthFriend == none) || (Friend.GetHealth() < LowestHealth))) goto 0x00d5
+  00b1: LowestHealthFriend = Friend
+  00bc: LowestHealth = Friend.GetHealth()
+  00d5: SubtractSubtract_PreInt(Index)
+  00dc: goto 0x000f
+  00df: return LowestHealthFriend
+  00e5: return return
+  00eb: <eos>
+
+function TnSentryTargetTracker.FindBestEnemy  (script 222 bytes)
+  0000: Index = (self._Enemies.Length - 1)
+  000f: if !((Index >= 0)) goto 0x00d1
+  001a: Enemy = Index[self._Enemies]
+  002b: if !(!TnSentryTargetTracker.IsValidTarget(Enemy, true)) goto 0x004b
+  003c: self._Enemies.Remove(Index,1)
+  0048: goto 0x00c7
+  004b: if !(!TnSentryTargetTracker.CanOwnerSee(Enemy)) goto 0x005e
+  005b: goto 0x00c7
+  005e: DistanceSq = obj'Core.Math'.static.VSizeSq((Enemy.Location - self._Owner.Location))
+  0095: if !(((ClosestEnemy == none) || (DistanceSq < ClosestDistanceSq))) goto 0x00c7
+  00b1: ClosestEnemy = Enemy
+  00bc: ClosestDistanceSq = DistanceSq
+  00c7: SubtractSubtract_PreInt(Index)
+  00ce: goto 0x000f
+  00d1: return ClosestEnemy
+  00d7: return return
+  00dd: <eos>
+
+function TnSentryTargetTracker.CanOwnerSee  (script 174 bytes)
+  0000: TargetDir = (Target.Location - self._Owner.Location)
+  0024: if !((self._ArePitchConstraintsEnabled && !obj'Core.Math'.static.IsFloatInRange((cast3f(cast50(TargetDir).Pitch) * 0.0054932), self._PitchConstraintsInDegrees))) goto 0x0069
+  0067: return false
+  0069: LookDirDotTargetDir = (cast39(self._Owner.Rotation) dot obj'Core.Math'.static.Normal(TargetDir))
+  0091: return (LookDirDotTargetDir >= self._Owner.PeripheralVision)
+  00a7: return return
+  00ad: <eos>
+
+function TnSentryTargetTracker.EnablePitchConstraints  (script 22 bytes)
+  0000: self._ArePitchConstraintsEnabled = true
+  0008: self._PitchConstraintsInDegrees = PitchConstraintsInDegrees
+  0013: return nothing
+  0015: <eos>

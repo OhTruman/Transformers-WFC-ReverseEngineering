@@ -1,0 +1,19 @@
+function TnChallengesKeySet.Init  (script 20 bytes)
+  0000: Init(Profile)
+  000b: TnChallengesKeySet.PopulateStats()
+  0011: return nothing
+  0013: <eos>
+
+function TnChallengesKeySet.PopulateStats  (script 212 bytes)
+  0000: MenuItems = TnDataStore_MenuItems(obj'Engine.UIInteraction'.static.GetDataStoreClient().FindDataStore('TnMenuItems', ))
+  0036: Providers = MenuItems.GetProviders('Challenges')
+  0058: self.Stats.Length = 0
+  0060: foreach Providers(Provider,) (end 0x00d0)
+  006f: Challenge = TnDataProvider_Challenge(Provider)
+  007f: ChallengeProperty.PropertyId = Challenge.ChallengeId
+  009e: obj'Engine.Settings'.static.SetSettingsDataInt(ChallengeProperty.Data, 0)
+  00c2: self.Stats.AddItem(ChallengeProperty)
+  00cf: iternext
+  00d0: iterpop
+  00d1: return nothing
+  00d3: <eos>

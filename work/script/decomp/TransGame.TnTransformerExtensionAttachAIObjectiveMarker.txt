@@ -1,0 +1,12 @@
+function TnTransformerExtensionAttachAIObjectiveMarker.set_ObjectiveMarkerType  (script 14 bytes)
+  0000: self._ObjectiveMarkerType = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerExtensionAttachAIObjectiveMarker.ApplyTransformerExtension  (script 52 bytes)
+  0000: AiPawn = TnAiPawn(P)
+  0010: if !((AiPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: AiPawn._ObjectiveMarkerType = self._ObjectiveMarkerType
+  0031: return nothing
+  0033: <eos>

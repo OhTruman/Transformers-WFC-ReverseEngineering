@@ -1,0 +1,15 @@
+function HmAnimNotify_StopEffect.CheckForErrors  (script 104 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.SocketName == 'None')) goto 0x0065
+  0019: EmitCheckMessage(0, ((cast56(self) @ "does not have a socket set for particle system") @ cast56(self.ParticleSystemTemplate)), , )
+  0065: return nothing
+  0067: <eos>
+
+function HmAnimNotify_StopEffect.Notify  (script 168 bytes)
+  0000: if !(((AnimSeqInstigator.SkelComponent == none) || (AnimSeqInstigator.SkelComponent.Owner == none))) goto 0x0035
+  0033: return nothing
+  0035: PEMC = AnimSeqInstigator.SkelComponent.Owner.FindComponent(obj'HmParticleEffectManagerComponent')
+  0065: if !((PEMC != none)) goto 0x00a5
+  0070: PEMC.StopEffect(AnimSeqInstigator.SkelComponent, self.SocketName, self.ParticleSystemTemplate, self.RelativeLocation, self.RelativeRotation)
+  00a5: return nothing
+  00a7: <eos>

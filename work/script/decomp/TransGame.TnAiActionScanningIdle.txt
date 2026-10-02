@@ -1,0 +1,24 @@
+function TnAiActionScanningIdle.OnStart  (script 66 bytes)
+  0000: self._TransformerController.SetTimer(60.0, true, 'PlayIdleStationaryDialog', self)
+  001c: self._TransformerController.StopMovement()
+  002f: return OnStart(ExpectedEffects)
+  003b: return return
+  0041: <eos>
+
+function TnAiActionScanningIdle.OnUpdate  (script 77 bytes)
+  0000: self._TransformerController.OnEnemyChangeAllowed()
+  0013: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  0035: return OnUpdate(ExpectedEffects, DeltaTime)
+  0046: return return
+  004c: <eos>
+
+function TnAiActionScanningIdle.PlayIdleStationaryDialog  (script 27 bytes)
+  0000: self._TransformerController.PlayDialogEvent(obj'SoundEvents_Dialog.IdleStationaryDialog')
+  0018: return nothing
+  001a: <eos>
+
+function TnAiActionScanningIdle.OnFinish  (script 43 bytes)
+  0000: self._TransformerController.ClearTimer('PlayIdleStationaryDialog', self)
+  001d: OnFinish(CurrentState)
+  0028: return nothing
+  002a: <eos>

@@ -1,0 +1,181 @@
+function HmGoapSearchSpace.get_Length  (script 14 bytes)
+  0000: return self._Nodes.Length
+  0007: return return
+  000d: <eos>
+
+function HmGoapSearchSpace.get_NumberOfGoalsBuiltInSpace  (script 14 bytes)
+  0000: return self._Pairs.Length
+  0007: return return
+  000d: <eos>
+
+function HmGoapSearchSpace.get_Prebuilt  (script 14 bytes)
+  0000: return self._Prebuilt
+  0007: return return
+  000d: <eos>
+
+function HmGoapSearchSpace.set_Prebuilt  (script 16 bytes)
+  0000: self._Prebuilt = Value
+  000d: return nothing
+  000f: <eos>
+
+function HmGoapSearchSpace.Reset  (script 19 bytes)
+  0000: self._Nodes.Length = 0
+  0008: self._Pairs.Length = 0
+  0010: return nothing
+  0012: <eos>
+
+function HmGoapSearchSpace.AddDesiredStatePair  (script 60 bytes)
+  0000: Pair.GoalIdx = GoalIdx
+  0016: Pair.DesiredStateIdx = DesiredStateIdx
+  002c: self._Pairs.AddItem(Pair)
+  0039: return nothing
+  003b: <eos>
+
+function HmGoapSearchSpace.GetDesiredStateIdx  (script 79 bytes)
+  0000: idx = self._Pairs.Find('GoalIdx',GoalIdx)
+  001c: if !((idx == -1)) goto 0x0031
+  002b: return -1
+  0031: return idx[self._Pairs].DesiredStateIdx
+  0048: return return
+  004e: <eos>
+
+function HmGoapSearchSpace.AddPlanningState  (script 39 bytes)
+  0000: NewState.SearchSpaceIdx = self._Nodes.Length
+  0017: self._Nodes.AddItem(NewState)
+  0024: return nothing
+  0026: <eos>
+
+function HmGoapSearchSpace.GetPlanningState  (script 20 bytes)
+  0000: PlanningState = idx[self._Nodes]
+  0011: return nothing
+  0013: <eos>
+
+function HmGoapSearchSpace.UpdatePlanningState  (script 154 bytes)
+  0000: if !(((PlanningState.SearchSpaceIdx >= 0) && (PlanningState.SearchSpaceIdx < self._Nodes.Length))) goto 0x0097
+  0033: PlanningState.SearchSpaceIdx[self._Nodes].Successors = PlanningState.Successors
+  0065: PlanningState.SearchSpaceIdx[self._Nodes].ActionIdx = PlanningState.ActionIdx
+  0097: return nothing
+  0099: <eos>
+
+function HmGoapSearchSpace.SameState  (script 210 bytes)
+  0000: return ((((A.ActionIdx == B.ActionIdx) && obj'HmGoap'.static.AreSame(A.RunningConditions, B.RunningConditions)) && obj'HmGoap'.static.AreSame(A.UnsatisfiedConditions, B.UnsatisfiedConditions)) && obj'HmGoap'.static.AreSame(A.ExpectedEffects, B.ExpectedEffects))
+  00cb: return return
+  00d1: <eos>
+
+function HmGoapSearchSpace.FindState  (script 77 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._Nodes.Length)) goto 0x0040
+  0017: if !(HmGoapSearchSpace.SameState(PlanningState, idx[self._Nodes])) goto 0x0036
+  0030: return idx
+  0036: AddAdd_PreInt(idx)
+  003d: goto 0x0007
+  0040: return -1
+  0046: return return
+  004c: <eos>
+
+function HmGoapSearchSpace.BuildSuccessors  (script 513 bytes)
+  0000: if !((ParentState.Successors.Length != 0)) goto 0x0019
+  0017: return nothing
+  0019: A = 0
+  0020: if !((A < ActionSet.Actions.Length)) goto 0x01ef
+  0039: CurrentAction = A[ActionSet.Actions]
+  0053: if !(!CurrentAction.SatisfiesAnyConditions(ParentState.UnsatisfiedConditions, RemainingConditions, AchievableEffects)) goto 0x0088
+  0085: goto 0x01e5
+  0088: if !(CurrentAction.UnsatisfiesAnyConditions(RemainingConditions)) goto 0x00a6
+  00a3: goto 0x01e5
+  00a6: SuccessorState.ActionIdx = A
+  00bc: SuccessorState.UnsatisfiedConditions = RemainingConditions
+  00d2: SuccessorState.ExpectedEffects = AchievableEffects
+  00e8: SuccessorState.RunningConditions = CurrentAction._Preconditions
+  0107: if !(self._Prebuilt) goto 0x01b3
+  0110: obj'HmGoap'.static.AddMissingProperties(SuccessorState.UnsatisfiedConditions, SuccessorState.RunningConditions)
+  0143: FoundIdx = HmGoapSearchSpace.FindState(SuccessorState)
+  0154: if !((FoundIdx == -1)) goto 0x0198
+  0163: AddPlanningState(SuccessorState)
+  0172: ParentState.Successors.AddItem(SuccessorState.SearchSpaceIdx)
+  0195: goto 0x01b0
+  0198: ParentState.Successors.AddItem(FoundIdx)
+  01b0: goto 0x01e5
+  01b3: AddPlanningState(SuccessorState)
+  01c2: ParentState.Successors.AddItem(SuccessorState.SearchSpaceIdx)
+  01e5: AddAdd_PreInt(A)
+  01ec: goto 0x0020
+  01ef: UpdatePlanningState(ParentState)
+  01fe: return nothing
+  0200: <eos>
+
+function HmGoapSearchSpace.AddSuccessorsToOpenList  (script 65 bytes)
+  0000: if !(!self._Prebuilt) goto 0x001f
+  000b: BuildSuccessors(ParentState, ActionSet)
+  001f: HmGoapSearchSpace.PublishToOpenList(OpenList, ParentState, InitialState, ActionSet, Pool)
+  003e: return nothing
+  0040: <eos>
+
+function HmGoapSearchSpace.PublishToOpenList  (script 319 bytes)
+  0000: InitialOpenListLength = OpenList.Length
+  000c: OpenList.Length = (InitialOpenListLength + ParentState.Successors.Length)
+  002b: I = 0
+  0032: if !((I < ParentState.Successors.Length)) goto 0x0129
+  004d: Index = Pool.Allocate()
+  0066: (InitialOpenListLength + NumAddedSuccessors)[OpenList] = Index
+  007e: Index[Pool.States] = I[ParentState.Successors][self._Nodes]
+  00af: Index[Pool.States].PathingIdx = Index
+  00d4: if !(!HmGoapSearchSpace.InitializePlanningState(Index[Pool.States], ParentState, InitialState, ActionSet)) goto 0x0118
+  0102: Pool.FreeLastAllocated()
+  0115: goto 0x011f
+  0118: AddAdd_PreInt(NumAddedSuccessors)
+  011f: AddAdd_PreInt(I)
+  0126: goto 0x0032
+  0129: OpenList.Length = (InitialOpenListLength + NumAddedSuccessors)
+  013c: return nothing
+  013e: <eos>
+
+function HmGoapSearchSpace.InitializePlanningState  (script 499 bytes)
+  0000: Action = SuccessorState.ActionIdx[ActionSet.Actions]
+  0025: obj'HmGoap'.static.PublishSubjectsToSet(ParentState.UnsatisfiedConditions, SuccessorState.ExpectedEffects)
+  0058: obj'HmGoap'.static.PublishSubjectsToSet(ParentState.UnsatisfiedConditions, SuccessorState.UnsatisfiedConditions)
+  008b: if !(!Action.SetUpConditions(SuccessorState.ExpectedEffects, SuccessorState.RunningConditions)) goto 0x00c5
+  00c3: return false
+  00c5: if !(!self._Prebuilt) goto 0x0103
+  00d0: obj'HmGoap'.static.AddMissingProperties(SuccessorState.UnsatisfiedConditions, SuccessorState.RunningConditions)
+  0103: obj'HmGoap'.static.PublishSubjectsToSet(SuccessorState.RunningConditions, SuccessorState.UnsatisfiedConditions)
+  0136: SuccessorState.PrevIdx = ParentState.PathingIdx
+  0157: SuccessorState.CostSoFar = (Action.CalculatePlanningCost(SuccessorState.ExpectedEffects) + ParentState.CostSoFar)
+  019d: SuccessorState.QualityHeuristic = (SuccessorState.CostSoFar + cast3f(obj'HmGoap'.static.NumberOfConditionsNotMet(SuccessorState.UnsatisfiedConditions, InitialState)))
+  01ea: return true
+  01ec: return return
+  01f2: <eos>
+
+function HmGoapSearchSpace.HasSubject  (script 201 bytes)
+  0000: foreach PS.RunningConditions.Properties(Prop,) (end 0x003f)
+  0025: if !((Prop.Subject != none)) goto 0x003e
+  003b: iterpop
+  003c: return true
+  003e: iternext
+  003f: iterpop
+  0040: foreach PS.UnsatisfiedConditions.Properties(Prop,) (end 0x007f)
+  0065: if !((Prop.Subject != none)) goto 0x007e
+  007b: iterpop
+  007c: return true
+  007e: iternext
+  007f: iterpop
+  0080: foreach PS.ExpectedEffects.Properties(Prop,) (end 0x00bf)
+  00a5: if !((Prop.Subject != none)) goto 0x00be
+  00bb: iterpop
+  00bc: return true
+  00be: iternext
+  00bf: iterpop
+  00c0: return false
+  00c2: return return
+  00c8: <eos>
+
+function HmGoapSearchSpace.HasAnySubject  (script 43 bytes)
+  0000: foreach self._Nodes(CurrentState,) (end 0x0021)
+  000f: if !(HmGoapSearchSpace.HasSubject(CurrentState)) goto 0x0020
+  001d: iterpop
+  001e: return true
+  0020: iternext
+  0021: iterpop
+  0022: return false
+  0024: return return
+  002a: <eos>

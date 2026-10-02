@@ -1,0 +1,22 @@
+function CrowdAttractor.CheckForErrors  (script 337 bytes)
+  0000: CheckForErrors()
+  0006: if !(((cast3a(self.Mode) == cast3a(0)) && (self.Attraction <= cast3f(0)))) goto 0x00aa
+  0025: EmitCheckMessage(1, (((("CrowdAttractor" @ cast56(self)) @ "is set to be a move target but has negative or zero attraction") @ cast55(self.Attraction)) @ ", will be discarded"), , )
+  00aa: if !(((cast3a(self.Mode) == cast3a(1)) && (self.Attraction >= cast3f(0)))) goto 0x014e
+  00c9: EmitCheckMessage(1, (((("CrowdAttractor" @ cast56(self)) @ "is set to be a move target but has positive or zero attraction") @ cast55(self.Attraction)) @ ", will be discarded"), , )
+  014e: return nothing
+  0150: <eos>
+
+function CrowdAttractor.OnToggle  (script 173 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x002a
+  001f: self.bAttractorEnabled = true
+  0027: goto 0x0083
+  002a: if !(1[Action.InputLinks].bHasImpulse) goto 0x0054
+  0049: self.bAttractorEnabled = false
+  0051: goto 0x0083
+  0054: if !(2[Action.InputLinks].bHasImpulse) goto 0x0083
+  0074: self.bAttractorEnabled = !self.bAttractorEnabled
+  0083: ForceNetRelevant()
+  008d: SetForcedInitialReplicatedProperty(obj'CrowdAttractor.bAttractorEnabled', (self.bAttractorEnabled == default.bAttractorEnabled))
+  00aa: return nothing
+  00ac: <eos>

@@ -1,0 +1,35 @@
+function TnSeqEvent_Together.NotifyTouch  (script 35 bytes)
+  0000: Vol.SetTimer(self.AllInWaitTime, false, 'AllInWaitTimeExpired', Vol)
+  0020: return nothing
+  0022: <eos>
+
+function TnSeqEvent_Together.NotifyUnTouch  (script 35 bytes)
+  0000: Vol.SetTimer(self.AllOutWaitTime, false, 'AllOutWaitTimeExpired', Vol)
+  0020: return nothing
+  0022: <eos>
+
+function TnSeqEvent_Together.NotifyAllIn  (script 15 bytes)
+  0000: TnSeqEvent_Together.FireOutput(Vol, 0)
+  000c: return nothing
+  000e: <eos>
+
+function TnSeqEvent_Together.NotifyAllOut  (script 15 bytes)
+  0000: TnSeqEvent_Together.FireOutput(Vol, 1)
+  000c: return nothing
+  000e: <eos>
+
+function TnSeqEvent_Together.NotifyAllInExpired  (script 16 bytes)
+  0000: TnSeqEvent_Together.FireOutput(Vol, 2)
+  000d: return nothing
+  000f: <eos>
+
+function TnSeqEvent_Together.NotifyAllOutExpired  (script 16 bytes)
+  0000: TnSeqEvent_Together.FireOutput(Vol, 3)
+  000d: return nothing
+  000f: <eos>
+
+function TnSeqEvent_Together.FireOutput  (script 39 bytes)
+  0000: 0[ActivateIndices] = OutputIndex
+  000d: CheckActivate(Vol, none, false, ActivateIndices, )
+  0024: return nothing
+  0026: <eos>

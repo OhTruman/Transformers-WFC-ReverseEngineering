@@ -1,0 +1,230 @@
+=== decomp 0x82f292a8
+
+void Function_82F292A8(undefined8 param_1,undefined8 param_2,ulonglong param_3,ulonglong param_4,
+                      ulonglong param_5)
+
+{
+  uint uVar1;
+  int iVar2;
+  float fVar3;
+  ulonglong uVar4;
+  longlong lVar5;
+  bool bVar6;
+  int iVar7;
+  uint uVar8;
+  int iVar10;
+  ulonglong uVar9;
+  int iVar11;
+  ulonglong uVar12;
+  uint *puVar13;
+  double extraout_f1;
+  double dVar14;
+  double dVar15;
+  
+  uVar4 = FUN_830eacd4();
+  fVar3 = DAT_82000d40;
+  iVar2 = (int)uVar4;
+  if ((*(uint *)(iVar2 + 0x78) & 0x80000000) == 0) {
+    if ((param_5 & 0xffffffff) == 0) {
+      param_5 = uVar4;
+    }
+    bVar6 = false;
+    iVar11 = 0;
+    dVar15 = (double)DAT_82000d40;
+    if (0 < *(int *)(iVar2 + 0x70)) {
+      iVar10 = 0;
+      do {
+        if (bVar6) {
+          return;
+        }
+        iVar7 = *(int *)(iVar2 + 0x6c) + iVar10;
+        if (((ulonglong)*(uint *)(iVar7 + 4) == (param_4 & 0xffffffff)) &&
+           ((ulonglong)*(uint *)(iVar7 + 0x10) == (param_5 & 0xffffffff))) {
+          bVar6 = true;
+          if (extraout_f1 == dVar15) {
+            *(float *)(iVar7 + 8) = fVar3;
+          }
+          else {
+            *(uint *)(*(int *)(iVar2 + 0x6c) + iVar10) =
+                 (uint)((param_3 & 0xffffffff) << 0x1f) |
+                 *(uint *)(*(int *)(iVar2 + 0x6c) + iVar10) & 0x7fffffff;
+            *(float *)(*(int *)(iVar2 + 0x6c) + iVar10 + 8) = (float)extraout_f1;
+            *(float *)(*(int *)(iVar2 + 0x6c) + iVar10 + 0xc) = fVar3;
+          }
+        }
+        iVar11 = iVar11 + 1;
+        iVar10 = iVar10 + 0x14;
+      } while (iVar11 < *(int *)(iVar2 + 0x70));
+      if (bVar6) {
+        return;
+      }
+    }
+    uVar1 = *(uint *)(iVar2 + 0x70);
+    uVar12 = (ulonglong)uVar1;
+    uVar9 = uVar12 + 1;
+    iVar11 = (int)uVar9;
+    *(int *)(iVar2 + 0x70) = iVar11;
+    dVar14 = extraout_f1;
+    if (*(int *)(iVar2 + 0x74) < iVar11) {
+      uVar8 = iVar11 + (int)((uVar9 & 0xffffffff) << 1);
+      lVar5 = (longlong)((int)uVar8 >> 3) + (ulonglong)((int)uVar8 < 0 && (uVar8 & 7) != 0) + uVar9
+              + 5;
+      *(int *)(iVar2 + 0x74) = (int)lVar5;
+      Function_82EDB690(uVar4 + 0x6c,uVar12,lVar5,0x14);
+    }
+    puVar13 = (uint *)(uVar4 + 0x6c);
+    lVar5 = (uVar12 + ((ulonglong)uVar1 & 0x3fffffff) * 4 & 0x3fffffff) * 4;
+    Function_826FA658(lVar5 + (ulonglong)*puVar13,0,0x14);
+    iVar2 = (int)lVar5;
+    *(int *)(*puVar13 + iVar2 + 0x10) = (int)param_5;
+    *(int *)(*puVar13 + iVar2 + 4) = (int)param_4;
+    *(uint *)(*puVar13 + iVar2) =
+         (uint)((param_3 & 0xffffffff) << 0x1f) | *(uint *)(*puVar13 + iVar2) & 0x7fffffff;
+    *(float *)(*puVar13 + iVar2 + 8) = (float)dVar14;
+    *(float *)(*puVar13 + iVar2 + 0xc) = (float)dVar15;
+  }
+  return;
+}
+
+
+=== asm 0x82f292a8 140
+  82f292a8  mfspr r12,LR
+  82f292ac  bl 0x830eacd4 ->830eacd4
+  82f292b0  stfd f30,-0x40(r1) ->Stack[-0x40]
+  82f292b4  stfd f31,-0x38(r1) ->Stack[-0x38]
+  82f292b8  stwu r1,-0x90(r1) ->Stack[-0x90]
+  82f292bc  lwz r11,0x78(r3)
+  82f292c0  fmr f30,f1
+  82f292c4  or r29,r5,r5
+  82f292c8  rlwinm r10,r11,0x0,0x0,0x0
+  82f292cc  or r28,r6,r6
+  82f292d0  or r27,r7,r7
+  82f292d4  cmplwi cr6,r10,0x0
+  82f292d8  bne cr6,0x82f29430 ->82f29430
+  82f292dc  cmplwi cr6,r7,0x0
+  82f292e0  bne cr6,0x82f292e8 ->82f292e8
+  82f292e4  or r27,r3,r3
+  82f292e8  lis r11,-0x7e00
+  82f292ec  lwz r10,0x70(r3)
+  82f292f0  li r8,0x0
+  82f292f4  li r9,0x0
+  82f292f8  cmpwi cr6,r10,0x0
+  82f292fc  lfs f31,0xd40(r11) ->82000d40
+  82f29300  ble cr6,0x82f29388 ->82f29388
+  82f29304  li r11,0x0
+  82f29308  cmplwi cr6,r8,0x0
+  82f2930c  bne cr6,0x82f29430 ->82f29430
+  82f29310  lwz r10,0x6c(r3)
+  82f29314  add r10,r10,r11
+  82f29318  lwz r7,0x4(r10)
+  82f2931c  cmplw cr6,r7,r28
+  82f29320  bne cr6,0x82f2936c ->82f2936c
+  82f29324  lwz r7,0x10(r10)
+  82f29328  cmplw cr6,r7,r27
+  82f2932c  bne cr6,0x82f2936c ->82f2936c
+  82f29330  li r8,0x1
+  82f29334  fcmpu cr6,f30,f31
+  82f29338  bne cr6,0x82f29344 ->82f29344
+  82f2933c  stfs f31,0x8(r10)
+  82f29340  b 0x82f2936c ->82f2936c
+  82f29344  lwz r10,0x6c(r3)
+  82f29348  lwzx r7,r10,r11
+  82f2934c  rlwimi r7,r29,0x1f,0x0,0x0
+  82f29350  stwx r7,r10,r11
+  82f29354  lwz r10,0x6c(r3)
+  82f29358  add r6,r10,r11
+  82f2935c  stfs f30,0x8(r6)
+  82f29360  lwz r10,0x6c(r3)
+  82f29364  add r5,r10,r11
+  82f29368  stfs f31,0xc(r5)
+  82f2936c  lwz r10,0x70(r3)
+  82f29370  addi r9,r9,0x1
+  82f29374  addi r11,r11,0x14
+  82f29378  cmpw cr6,r9,r10
+  82f2937c  blt cr6,0x82f29308 ->82f29308
+  82f29380  cmplwi cr6,r8,0x0
+  82f29384  bne cr6,0x82f29430 ->82f29430
+  82f29388  lwz r30,0x70(r3)
+  82f2938c  addi r31,r3,0x6c
+  82f29390  lwz r10,0x74(r3)
+  82f29394  addi r11,r30,0x1
+  82f29398  stw r11,0x70(r3)
+  82f2939c  cmpw cr6,r11,r10
+  82f293a0  ble cr6,0x82f293d0 ->82f293d0
+  82f293a4  rlwinm r10,r11,0x1,0x0,0x1e
+  82f293a8  li r6,0x14
+  82f293ac  add r10,r11,r10
+  82f293b0  or r4,r30,r30
+  82f293b4  srawi r9,r10,0x3
+  82f293b8  or r3,r31,r31
+  82f293bc  addze r10,r9
+  82f293c0  add r11,r10,r11
+  82f293c4  addi r5,r11,0x5
+  82f293c8  stw r5,0x8(r31)
+  82f293cc  bl 0x82edb690 ->82edb690
+  82f293d0  rlwinm r10,r30,0x2,0x0,0x1d
+  82f293d4  lwz r11,0x0(r31)
+  82f293d8  li r5,0x14
+  82f293dc  add r10,r30,r10
+  82f293e0  li r4,0x0
+  82f293e4  rlwinm r30,r10,0x2,0x0,0x1d
+  82f293e8  add r3,r30,r11
+  82f293ec  bl 0x826fa658 ->826fa658
+  82f293f0  lwz r11,0x0(r31)
+  82f293f4  add r9,r11,r30
+  82f293f8  stw r27,0x10(r9)
+  82f293fc  lwz r11,0x0(r31)
+  82f29400  add r8,r11,r30
+  82f29404  stw r28,0x4(r8)
+  82f29408  lwz r11,0x0(r31)
+  82f2940c  lwzx r7,r11,r30
+  82f29410  rlwimi r7,r29,0x1f,0x0,0x0
+  82f29414  stwx r7,r11,r30
+  82f29418  lwz r11,0x0(r31)
+  82f2941c  add r6,r11,r30
+  82f29420  stfs f30,0x8(r6)
+  82f29424  lwz r11,0x0(r31)
+  82f29428  add r5,r11,r30
+  82f2942c  stfs f31,0xc(r5)
+  82f29430  addi r1,r1,0x90
+  82f29434  lfd f30,-0x40(r1) ->Stack[-0x40]
+  82f29438  lfd f31,-0x38(r1) ->Stack[-0x38]
+  82f2943c  b 0x830ead24 ->830ead24
+  82f29440  mfspr r12,LR
+  82f29444  bl 0x830eacd8 ->830eacd8
+  82f29448  stwu r1,-0x80(r1) ->Stack[-0x80]
+  82f2944c  lwz r11,0x0(r4)
+  82f29450  or r30,r4,r4
+  82f29454  or r29,r5,r5
+  82f29458  or r28,r6,r6
+  82f2945c  cmplwi cr6,r11,0x0
+  82f29460  bne cr6,0x82f29488 ->82f29488
+  82f29464  li r4,0x8
+  82f29468  li r3,0x20
+  82f2946c  bl 0x82b19590 ->82b19590
+  82f29470  cmplwi cr6,r3,0x0
+  82f29474  beq cr6,0x82f29480 ->82f29480
+  82f29478  bl 0x82f55640 ->82f55640
+  82f2947c  b 0x82f29484 ->82f29484
+  82f29480  li r3,0x0
+  82f29484  stw r3,0x0(r30)
+  82f29488  cmplwi cr6,r29,0x0
+  82f2948c  bne cr6,0x82f294bc ->82f294bc
+  82f29490  lis r31,-0x7c7b
+  82f29494  lwz r11,0x69c0(r31) ->838569c0
+  82f29498  cmplwi cr6,r11,0x0
+  82f2949c  bne cr6,0x82f294b8 ->82f294b8
+  82f294a0  lis r11,-0x7e00
+  82f294a4  addi r3,r11,0xc1c ->82000c1c
+  82f294a8  bl 0x82e4ac88 ->82e4ac88
+  82f294ac  stw r3,0x69c0(r31) ->838569c0
+  82f294b0  bl 0x82e25d68 ->82e25d68
+  82f294b4  lwz r11,0x69c0(r31) ->838569c0
+  82f294b8  or r29,r11,r11
+  82f294bc  lwz r30,0x0(r30)
+  82f294c0  lwz r11,0xc(r30)
+  82f294c4  cmplwi cr6,r11,0x0
+  82f294c8  bne cr6,0x82f29510 ->82f29510
+  82f294cc  lwz r31,0x10(r30)
+  82f294d0  cmplwi cr6,r31,0x0
+  82f294d4  beq cr6,0x82f294fc ->82f294fc

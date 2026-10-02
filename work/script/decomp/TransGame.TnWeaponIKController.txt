@@ -1,0 +1,92 @@
+function TnWeaponIKController.get_Enabled  (script 14 bytes)
+  0000: return self._Enabled
+  0007: return return
+  000d: <eos>
+
+function TnWeaponIKController.set_Enabled  (script 30 bytes)
+  0000: (Value ? TnWeaponIKController.EnableIK() : DisableIK())
+  001b: return nothing
+  001d: <eos>
+
+function TnWeaponIKController.get_BlendInTime  (script 13 bytes)
+  0000: return self._BlendInTime
+  0006: return return
+  000c: <eos>
+
+function TnWeaponIKController.set_BlendInTime  (script 14 bytes)
+  0000: self._BlendInTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponIKController.get_BlendOutTime  (script 13 bytes)
+  0000: return self._BlendOutTime
+  0006: return return
+  000c: <eos>
+
+function TnWeaponIKController.set_BlendOutTime  (script 14 bytes)
+  0000: self._BlendOutTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponIKController.Initialize  (script 205 bytes)
+  0000: AT = AnimTree(Mesh.Animations)
+  0019: if !(((Mesh == none) || (AT == none))) goto 0x0033
+  0031: return nothing
+  0033: self._Mesh = Mesh
+  003e: self._LeftArmIK = HmSkelControlRollLimb(AT.FindSkelControl('LArmIK'))
+  0065: if !((self._LeftArmIK != none)) goto 0x0084
+  0070: self._LeftArmIK.SetSkelControlActive(false)
+  0084: self._LeftHandBone = SkelControlSingleBone(AT.FindSkelControl('LHandBone'))
+  00ab: if !((self._LeftHandBone != none)) goto 0x00ca
+  00b6: self._LeftHandBone.SetSkelControlActive(false)
+  00ca: return nothing
+  00cc: <eos>
+
+function TnWeaponIKController.UpdateControl  (script 93 bytes)
+  0000: if !((Control == none)) goto 0x000d
+  000b: return nothing
+  000d: Control.SetSkelControlActive(self._Enabled)
+  0026: if !(self._Enabled) goto 0x0046
+  002f: Control.BlendInTime = self._BlendInTime
+  0043: goto 0x005a
+  0046: Control.BlendOutTime = self._BlendOutTime
+  005a: return nothing
+  005c: <eos>
+
+function TnWeaponIKController.EnableIK  (script 65 bytes)
+  0000: if !((self._Enabled || (self._LeftArmSocket == 'None'))) goto 0x0020
+  001e: return nothing
+  0020: self._Enabled = true
+  0028: TnWeaponIKController.UpdateControl(self._LeftArmIK)
+  0033: TnWeaponIKController.UpdateControl(self._LeftHandBone)
+  003e: return nothing
+  0040: <eos>
+
+function TnWeaponIKController.DisableIK  (script 46 bytes)
+  0000: if !(!self._Enabled) goto 0x000d
+  000b: return nothing
+  000d: self._Enabled = false
+  0015: TnWeaponIKController.UpdateControl(self._LeftArmIK)
+  0020: TnWeaponIKController.UpdateControl(self._LeftHandBone)
+  002b: return nothing
+  002d: <eos>
+
+function TnWeaponIKController.Update  (script 123 bytes)
+  0000: if !(((self._LeftArmSocket == 'None') || (self._Enabled == false))) goto 0x0023
+  0021: return nothing
+  0023: if !((self._LeftHandBone != none)) goto 0x0055
+  002e: self._LeftHandBone.BoneRotation = self._Mesh.GetSocketWorldRotation(self._LeftArmSocket)
+  0055: if !((self._LeftArmIK != none)) goto 0x0078
+  0060: self._LeftArmIK.InterpolateEffectorLocation(DeltaTime)
+  0078: return nothing
+  007a: <eos>
+
+function TnWeaponIKController.SetLeftArmSocket  (script 85 bytes)
+  0000: if !((SocketName == 'None')) goto 0x001f
+  0013: DisableIK()
+  001d: return nothing
+  001f: self._LeftArmSocket = SocketName
+  002a: if !((self._LeftArmIK != none)) goto 0x0052
+  0035: self._LeftArmIK.SetTargetSocket(self._Mesh, SocketName)
+  0052: return nothing
+  0054: <eos>

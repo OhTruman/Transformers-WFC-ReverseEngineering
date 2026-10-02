@@ -1,0 +1,42 @@
+function TnPawnHealthDisplay.get_IsEnabled  (script 14 bytes)
+  0000: return self._IsEnabled
+  0007: return return
+  000d: <eos>
+
+function TnPawnHealthDisplay.set_IsEnabled  (script 16 bytes)
+  0000: self._IsEnabled = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPawnHealthDisplay.Initialize  (script 14 bytes)
+  0000: self._Pawn = P
+  000b: return nothing
+  000d: <eos>
+
+function TnPawnHealthDisplay.GetDisplayType  (script 88 bytes)
+  0000: PC = TnWorldInfo(self._Pawn.WorldInfo).GetLocalPlayerController()
+  0027: if !(self._Pawn.IsSameTeam(PC.Pawn)) goto 0x004e
+  004b: return 0
+  004e: return 1
+  0051: return return
+  0057: <eos>
+
+function TnPawnHealthDisplay.GetHealth  (script 22 bytes)
+  0000: return self._Pawn.Health
+  000f: return return
+  0015: <eos>
+
+function TnPawnHealthDisplay.GetMaximumHealth  (script 22 bytes)
+  0000: return self._Pawn.HealthMax
+  000f: return return
+  0015: <eos>
+
+function TnPawnHealthDisplay.ShouldDisplayHealth  (script 74 bytes)
+  0000: if !(!self._IsEnabled) goto 0x000d
+  000b: return false
+  000d: AsTnPawn = TnPawn(self._Pawn)
+  001d: if !((AsTnPawn != none)) goto 0x003c
+  0028: return AsTnPawn.ShouldDisplayHealth()
+  003c: return TnHealthDisplay.ShouldDisplayHealth()
+  0043: return return
+  0049: <eos>

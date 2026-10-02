@@ -1,0 +1,25 @@
+function TnAbilityGuidedMissile.ServerTriggerAbility  (script 63 bytes)
+  0000: if !((self.Delay <= cast3f(0))) goto 0x001a
+  000d: SpawnGuidedMissile()
+  0017: goto 0x0036
+  001a: self.OwnerPawn.SetTimer(self.Delay, false, 'SpawnGuidedMissile', self)
+  0036: TnAbility.ServerTriggerAbility()
+  003c: return nothing
+  003e: <eos>
+
+function TnAbilityGuidedMissile.SpawnGuidedMissile  (script 312 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: PC = TnPlayerController(self.OwnerPawn.Controller)
+  0026: if !((PC == none)) goto 0x0033
+  0031: return nothing
+  0033: SpawnRotation = PC.Rotation
+  0047: SpawnRotation = obj'Core.Math'.static.Normalize(SpawnRotation)
+  0065: SpawnRotation.Pitch = obj'Core.Math'.static.Clamp(SpawnRotation.Pitch, self.MinimumSpawnPitch, self.MaximumSpawnPitch)
+  009b: SpawnLocation = self.OwnerPawn.Mesh.GetSocketWorldLocation(self.SpawnSocket)
+  00c2: (SpawnLocation += (self.SpawnOffset >> SpawnRotation))
+  00d6: Missile = self.OwnerPawn.Spawn(obj'TnGuidedMissile', , , SpawnLocation, SpawnRotation, , , )
+  0103: Missile.Init(cast39(SpawnRotation))
+  011d: PC.GuideMissile(Missile)
+  0135: return nothing
+  0137: <eos>

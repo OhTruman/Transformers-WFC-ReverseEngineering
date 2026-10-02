@@ -1,0 +1,13 @@
+function TnObjectiveMarkerTypeLockOn.ShouldDisplayMarker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnObjectiveMarkerTypeLockOn.AddDynamicParameters  (script 113 bytes)
+  0000: if !((Owner.Weapon != none)) goto 0x002d
+  0014: W = TnWeaponHoming(Owner.Weapon)
+  002d: if !((W != none)) goto 0x0051
+  0038: val = W.GetNormalizedLockOnTime()
+  0051: obj'TnScaleformHelpers'.static.AddFloatArgument(args, val)
+  006e: return nothing
+  0070: <eos>

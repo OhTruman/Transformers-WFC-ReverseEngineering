@@ -1,0 +1,33 @@
+function TnDistanceBasedThreatLevelEvaluator.set_MaxThreatLevel  (script 14 bytes)
+  0000: self._MaxThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDistanceBasedThreatLevelEvaluator.set_UberThreatLevel  (script 14 bytes)
+  0000: self._UberThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDistanceBasedThreatLevelEvaluator.set_UberThreatRange  (script 14 bytes)
+  0000: self._UberThreatRange = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDistanceBasedThreatLevelEvaluator.set_MinThreatRange  (script 14 bytes)
+  0000: self._MinThreatRange = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDistanceBasedThreatLevelEvaluator.set_MaxThreatRange  (script 14 bytes)
+  0000: self._MaxThreatRange = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDistanceBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 148 bytes)
+  0000: Range = obj'Core.Math'.static.VSize((Threat.Location - self._Owner.Location))
+  002f: if !((Range < self._UberThreatRange)) goto 0x0044
+  003e: return self._UberThreatLevel
+  0044: NormalizedRange = obj'Core.Math'.static.FClamp(((Range - self._MinThreatRange) / (self._MaxThreatRange - self._MinThreatRange)), 0.0, 1.0)
+  0079: return ((1.0 - NormalizedRange) * self._MaxThreatLevel)
+  008d: return return
+  0093: <eos>

@@ -1,0 +1,131 @@
+function HmDebugManager.ErrorScreenNextPage  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmDebugManager.ErrorScreenPreviousPage  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmDebugManager.ErrorScreenHide  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmDebugManager.ErrorScreenDisable  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmDebugManager.ESH  (script 13 bytes)
+  0000: ErrorScreenHide()
+  000a: return nothing
+  000c: <eos>
+
+function HmDebugManager.ESD  (script 13 bytes)
+  0000: ErrorScreenDisable()
+  000a: return nothing
+  000c: <eos>
+
+function HmDebugManager.AID  (script 18 bytes)
+  0000: self.DrawAiDebug = !self.DrawAiDebug
+  000f: return nothing
+  0011: <eos>
+
+function HmDebugManager.GetCheatManager  (script 52 bytes)
+  0000: PC = PlayerController(GetLocalPlayerPawn().Controller)
+  001e: return PC._CheatManager
+  002d: return return
+  0033: <eos>
+
+function HmDebugManager.PseudoPause  (script 145 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.TimeDilation > self.DebugOldTimeDilation)) goto 0x0061
+  0031: self.DebugOldTimeDilation = WI.TimeDilation
+  0045: HmDebugManager.GetCheatManager().SloMo(0.001)
+  005e: goto 0x008e
+  0061: self.DebugOldTimeDilation = WI.TimeDilation
+  0075: HmDebugManager.GetCheatManager().SloMo(1.0)
+  008e: return nothing
+  0090: <eos>
+
+function HmDebugManager.ShowDebugTargetAnimDebug  (script 65 bytes)
+  0000: P = Pawn(self.DebugTarget)
+  0010: if !((P == none)) goto 0x001d
+  001b: return nothing
+  001d: SetAnimDebug(P.Mesh, 'None')
+  003e: return nothing
+  0040: <eos>
+
+function HmDebugManager.SetDebugTargetFromName  (script 89 bytes)
+  0000: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().AllObjects(obj'Core.Object', Current) (end 0x0055)
+  002e: if !((Current.Name == TargetName)) goto 0x0054
+  0046: self.DebugTarget = Current
+  0051: goto 0x0055
+  0054: iternext
+  0055: iterpop
+  0056: return nothing
+  0058: <eos>
+
+function HmDebugManager.SetDebugTarget  (script 14 bytes)
+  0000: self.DebugTarget = T
+  000b: return nothing
+  000d: <eos>
+
+function HmDebugManager.ShowWeapAnimDebug  (script 233 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((PawnName != 'None')) goto 0x002d
+  0015: P = FindPawn(PawnName)
+  002a: goto 0x0071
+  002d: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x0070)
+  005b: P = PC.Pawn
+  006f: iternext
+  0070: iterpop
+  0071: if !(((P != none) && (P.Weapon != none))) goto 0x00d2
+  0092: WM = HmWeapon(P.Weapon).GetWeaponMesh()
+  00b9: SMC = WM.GetAnimatedMeshComponent()
+  00d2: SetAnimDebug(SMC, DebugStartPoint)
+  00e6: return nothing
+  00e8: <eos>
+
+function HmDebugManager.List  (script 128 bytes)
+  0000: nothing
+  0001: LogInternal((("=-=-=- Listing all actors of type" @ cast56(ActorClass)) @ "=-=-=-"), , , )
+  003c: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().AllActors(ActorClass, A) (end 0x007c)
+  006a: LogInternal(("	" @ cast56(A)), , , )
+  007b: iternext
+  007c: iterpop
+  007d: return nothing
+  007f: <eos>
+
+function HmDebugManager.LogCurrentStorageDevice  (script 314 bytes)
+  0000: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'HmPlayerController', ThePlayer) (end 0x0032)
+  002e: goto 0x0032
+  0031: iternext
+  0032: iterpop
+  0033: if !((ThePlayer.OnlineSub == none)) goto 0x0049
+  0047: return nothing
+  0049: if !(EqualEqual_InterfaceInterface(ThePlayer.OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0071
+  006f: return nothing
+  0071: if !((ThePlayer.ProfileSettings == none)) goto 0x0087
+  0085: return nothing
+  0087: DeviceID = HmLocalPlayer(ThePlayer.Player)._CurrentStorageDeviceId
+  00a9: TheLog = (("Current storage device" @ cast53(DeviceID)) @ "is")
+  00d6: if !(!ThePlayer.OnlineSub.PlayerInterfaceEx.IsDeviceValid(DeviceID, )) goto 0x0119
+  0107: AtEqual_StrStr(TheLog, "not")
+  0119: AtEqual_StrStr(TheLog, "valid")
+  012d: LogInternal(TheLog, , , )
+  0137: return nothing
+  0139: <eos>
+
+function HmDebugManager.tdcs  (script 13 bytes)
+  0000: ToggleDebugCameraStrategy()
+  000a: return nothing
+  000c: <eos>
+
+function HmDebugManager.ToggleDebugCameraStrategy  (script 190 bytes)
+  0000: PC = HmPlayerController(GetLocalPlayerPawn().Controller)
+  001e: if !((PC.PlayerCamera != none)) goto 0x0056
+  0032: HmCamera(PC.PlayerCamera).ToggleDebugStrategy()
+  0053: goto 0x00bb
+  0056: LogInternal("ERROR: Could not start debug camera because you don't have a camera. Try restarting the level.", , , )
+  00bb: return nothing
+  00bd: <eos>

@@ -1,0 +1,17 @@
+function AnimationCompressionAlgorithm_RemoveUnneededKeys.GetPresetNames  (script 81 bytes)
+  0000: I = 0
+  0007: if !((I < self.Presets.Length)) goto 0x0044
+  0017: PresetNames.Length[PresetNames] = I[self.Presets].SettingsName
+  003a: AddAdd_PreInt(I)
+  0041: goto 0x0007
+  0044: return PresetNames
+  004a: return return
+  0050: <eos>
+
+function AnimationCompressionAlgorithm_RemoveUnneededKeys.UsePreset  (script 65 bytes)
+  0000: I = self.Presets.Find('SettingsName',PresetName)
+  001c: if !((I == -1)) goto 0x002d
+  002b: return nothing
+  002d: self.Settings = I[self.Presets]
+  003e: return nothing
+  0040: <eos>

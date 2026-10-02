@@ -1,0 +1,69 @@
+function TnHitReactionAnimator.__Constructor__TnHitReactionAnimator_0  (script 64 bytes)
+  0000: self._Owner = Owner
+  000b: self._Animator = TnAnimatorService(Owner.GetRobotService('TnAdditiveAnimatorService'))
+  0032: self._Blueprint = Blueprint
+  003d: return nothing
+  003f: <eos>
+
+function TnHitReactionAnimator.Play  (script 139 bytes)
+  0000: if !(!TnHitReactionAnimator.CanPlay(HitInfo.DamageType)) goto 0x001d
+  001b: return nothing
+  001d: Type = TnHitReactionAnimator.GetType(HitInfo)
+  002e: WasHitFromFront = ((HitInfo.Momentum << self._Owner.Rotation).X > cast3f(0))
+  0066: Animation = TnHitReactionAnimator.GetAnimation(Type, WasHitFromFront)
+  007d: TnHitReactionAnimator.PlayAnimation(Animation)
+  0088: return nothing
+  008a: <eos>
+
+function TnHitReactionAnimator.CanPlay  (script 78 bytes)
+  0000: if !(!self._Owner.get_CanPlayHitReaction()) goto 0x001a
+  0018: return false
+  001a: TnDT = class<TnDamageType>(dt)
+  002a: return ((TnDT != none) && TnDT.static.default.ShouldCauseHitReaction)
+  0047: return return
+  004d: <eos>
+
+function TnHitReactionAnimator.GetType  (script 97 bytes)
+  0000: if !(HitInfo.IsBlocking) goto 0x0017
+  0014: return 1
+  0017: if !(((self._Owner.Weapon != none) && (cast3a(TnWeapon(self._Owner.Weapon).WeaponType) == cast3a(5)))) goto 0x0057
+  0054: return 2
+  0057: return 0
+  005a: return return
+  0060: <eos>
+
+function TnHitReactionAnimator.GetAnimation  (script 159 bytes)
+  0000: if !(IsFront) goto 0x0052
+  0009: switch (Type)
+  0010: case 0: (next 0x0024)
+  0015: return self._Blueprint.NormalFrontAnimation
+  0024: case 1: (next 0x0038)
+  0029: return self._Blueprint.ShieldFrontAnimation
+  0038: case 2: (next 0x004c)
+  003d: return self._Blueprint.TurretFrontAnimation
+  004c: default:
+  004f: goto 0x0098
+  0052: switch (Type)
+  0059: case 0: (next 0x006d)
+  005e: return self._Blueprint.NormalBackAnimation
+  006d: case 1: (next 0x0081)
+  0072: return self._Blueprint.ShieldBackAnimation
+  0081: case 2: (next 0x0095)
+  0086: return self._Blueprint.TurretBackAnimation
+  0095: default:
+  0098: return return
+  009e: <eos>
+
+function TnHitReactionAnimator.PlayAnimation  (script 269 bytes)
+  0000: if !((AnimationName == 'None')) goto 0x0015
+  0013: return nothing
+  0015: Params.AnimName = AnimationName
+  002b: Params.BlendInTime = self._Blueprint.BlendInTime
+  004a: Params.BlendOutTime = self._Blueprint.BlendOutTime
+  0069: Params.MaskType = 0
+  007c: Params.RootMotionMode = self._Owner.Mesh.RootMotionMode
+  00a4: Params.RootMotionRotationMode = self._Owner.Mesh.RootMotionRotationMode
+  00cc: Params.Override = 0
+  00df: self._Animator.EnqueueLocalAnimation(Params, delegate.None, delegate.None)
+  010a: return nothing
+  010c: <eos>

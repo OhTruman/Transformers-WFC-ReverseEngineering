@@ -1,0 +1,13 @@
+function TnTutorialMessageDisplayer.AddMessage  (script 149 bytes)
+  0000: Message = Localize("TutorialMessages", cast52(MessageType), "TransGame")
+  0034: Message = PC.get_InputCommandToBindingMapper().TranslateCommandsInString(PC, Message)
+  0065: TnTutorialMessageDisplayer.DisplayMessage(Movie, Message)
+  0075: PC.PlaySound(self.TutorialSound, true, , , , )
+  0092: return nothing
+  0094: <eos>
+
+function TnTutorialMessageDisplayer.DisplayMessage  (script 58 bytes)
+  0000: AddStringValue(args, 0, Message)
+  0015: Movie.Invoke(self.CallbackBindingName, args)
+  0037: return nothing
+  0039: <eos>

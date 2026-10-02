@@ -1,0 +1,11 @@
+function TnHudDataObserverWeaponClipAmmo.CheckData  (script 198 bytes)
+  0000: if !(((PC.Pawn != none) && (PC.Pawn.Weapon != none))) goto 0x0055
+  0033: W = TnWeapon(PC.Pawn.Weapon)
+  0055: if !((W != none)) goto 0x00c3
+  0060: if !(W.IsHeatBased()) goto 0x0084
+  0076: ClipValue = -2.0
+  0081: goto 0x009a
+  0084: ClipValue = cast3f(W.AmmoClipCount)
+  009a: ProcessNewValue(Movie, ClipValue, cast3f(W.GetMaxAmmoClipCount()))
+  00c3: return nothing
+  00c5: <eos>

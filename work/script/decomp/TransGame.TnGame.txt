@@ -1,0 +1,850 @@
+function TnGame.get_TacticalOctree  (script 13 bytes)
+  0000: return self._TacticalOctree
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_TacticalSystem  (script 13 bytes)
+  0000: return self._TacticalSystem
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_AiPlanningScheduler  (script 13 bytes)
+  0000: return self._AiPlanningScheduler
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_AiTacticalEvaluationScheduler  (script 13 bytes)
+  0000: return self._AiTacticalEvaluationScheduler
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_VoiceMuteHandler  (script 13 bytes)
+  0000: return self._VoiceMuteHandler
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_PickupRewardManager  (script 13 bytes)
+  0000: return self._PickupRewardManager
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_SpawnPointManager  (script 13 bytes)
+  0000: return self._SpawnPointManager
+  0006: return return
+  000c: <eos>
+
+function TnGame.get_SpectateActor  (script 13 bytes)
+  0000: return self._SpectateActor
+  0006: return return
+  000c: <eos>
+
+function TnGame.set_SpectateActor  (script 14 bytes)
+  0000: self._SpectateActor = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGame.get_AutobalanceTeams  (script 52 bytes)
+  0000: GRI = GetGRI()
+  0010: if !((GRI == none)) goto 0x001d
+  001b: return false
+  001d: return GRI.AutobalanceTeams
+  002d: return return
+  0033: <eos>
+
+function TnGame.get_TransTestingPolicy  (script 18 bytes)
+  0000: return TnAutomatedTestingPolicy(self.TestingPolicy)
+  000b: return return
+  0011: <eos>
+
+function TnGame.ReceiveErrorStatistic  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.InitGame  (script 133 bytes)
+  0000: InitGame(Options, ErrorMessage)
+  0010: if !((self.SpawnHelper != none)) goto 0x002f
+  001b: self.SpawnHelper.Initialize(self)
+  002f: if !((self.RespawnHelper != none)) goto 0x004e
+  003a: self.RespawnHelper.Initialize(self)
+  004e: self._SpawnPointManager.Initialize(self)
+  0062: if !((self.bKickLiveIdlers && IsPrivateMatch())) goto 0x0082
+  007a: self.bKickLiveIdlers = false
+  0082: return nothing
+  0084: <eos>
+
+function TnGame.InitGameReplicationInfo  (script 486 bytes)
+  0000: InitGameReplicationInfo()
+  0006: if !((self.TeamHandler != none)) goto 0x0025
+  0011: self.TeamHandler.Initialize(self)
+  0025: Options = self.WorldInfo.GetLocalURL()
+  003e: Options = obj'Core.Strings'.static.Mid(Options, obj'Core.Strings'.static.InStr(Options, "?", ), )
+  0069: GRI = GetGRI()
+  0079: NewGameTeamStatus = cast3d(obj'Core.Strings'.static.GetIntOption(Options, "GameTeamStatus", 0))
+  00aa: NewGameTeamStatus = GetGameTeamStatus(NewGameTeamStatus)
+  00bf: GRI.SetGameTeamStatus(NewGameTeamStatus)
+  00d7: GRI.SetMapId(obj'Core.Strings'.static.GetIntOption(Options, "MapId", -1))
+  010e: CurrentSettings = TnOnlineGameSettingsBase(GetOnlineGameSettings())
+  0123: if !((CurrentSettings != none)) goto 0x019b
+  012e: if !(CurrentSettings.GetStringSettingValue(1073741842, ValueIndex)) goto 0x0166
+  014e: GRI.AutobalanceTeams = (ValueIndex == 1)
+  0166: CurrentSettings.GetIntProperty(268435491, PlaylistId)
+  0183: GRI.SetPlaylistId(PlaylistId)
+  019b: GameModeTag = obj'Core.Strings'.static.ParseOption(Options, "GameModeTag")
+  01c6: GRI.PublishGameInfo(GameModeTag, CurrentSettings)
+  01e3: return nothing
+  01e5: <eos>
+
+function TnGame.GetGameTeamStatus  (script 13 bytes)
+  0000: return Current
+  0006: return return
+  000c: <eos>
+
+function TnGame.PostSeamlessTravel  (script 50 bytes)
+  0000: PostSeamlessTravel()
+  0006: GRI = GetGRI()
+  0016: GRI.NumPlayersStarted = GetNumPlayers()
+  002f: return nothing
+  0031: <eos>
+
+function TnGame.PostBeginPlay  (script 75 bytes)
+  0000: PostBeginPlay()
+  0006: self._TacticalSystem = Spawn(obj'TnTacticalSystem', , , , , , , )
+  0022: self._AiPlanningScheduler.Initialize()
+  0035: self._AiTacticalEvaluationScheduler.Initialize()
+  0048: return nothing
+  004a: <eos>
+
+function TnGame.GetPlayerNum  (script 64 bytes)
+  0000: foreach LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0036)
+  0017: iterpop
+  0018: return LocalPlayer(PC.Player).ControllerId
+  0035: iternext
+  0036: iterpop
+  0037: return 0
+  0039: return return
+  003f: <eos>
+
+function TnGame.ReturnToGameLobby  (script 137 bytes)
+  0000: GameSettings = TnOnlineGameSettingsBase(GetOnlineGameSettings())
+  0015: if !((GameSettings == none)) goto 0x0022
+  0020: return nothing
+  0022: GameSettings.BuildLobbyURL(GameLobbyURL)
+  003a: GRI = GetGRI()
+  004a: self.WorldInfo.ServerTravel(((GameLobbyURL $ "?MapId=") $ cast53(GRI.GetMapID())), true, )
+  0086: return nothing
+  0088: <eos>
+
+function TnGame.Tick  (script 198 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((self.SpawnHelper != none)) goto 0x002e
+  0016: self.SpawnHelper.Tick(DeltaTime)
+  002e: if !((self.RespawnHelper != none)) goto 0x0051
+  0039: self.RespawnHelper.Tick(DeltaTime)
+  0051: self._SpawnPointManager.Update(DeltaTime)
+  0069: self._AiPlanningScheduler.Update(DeltaTime)
+  0081: self._AiTacticalEvaluationScheduler.Update(DeltaTime)
+  0099: if !(get_IsAutomatedTesting()) goto 0x00c3
+  00a6: get_TransTestingPolicy().HandleTick(DeltaTime)
+  00c3: return nothing
+  00c5: <eos>
+
+function TnGame.GetCoopInfo  (script 27 bytes)
+  0000: return TnWorldInfo(self.WorldInfo).CoopInfo
+  0014: return return
+  001a: <eos>
+
+function TnGame.GetUniqueNetIdFromLoginOptions  (script 93 bytes)
+  0000: UniqueIdAsString = obj'Core.Strings'.static.ParseOption(LoginOptions, "UniqueId")
+  0028: if !((self.OnlineSub != none)) goto 0x0050
+  0033: self.OnlineSub.StringToUniqueNetId(UniqueIdAsString, UniqueId)
+  0050: return UniqueId
+  0056: return return
+  005c: <eos>
+
+function TnGame.SetupNewPlayerController  (script 245 bytes)
+  0000: UniqueId = TnGame.GetUniqueNetIdFromLoginOptions(LoginOptions)
+  0011: PRI = self.GameReplicationInfo.FindPlayerByUniqueNetId(UniqueId)
+  002f: if !((PRI != none)) goto 0x00a2
+  003a: PRI.SetOwner(NewPlayer)
+  004b: NewPlayer.PlayerReplicationInfo = PRI
+  005f: if !((PRI.TeamID != 255)) goto 0x009f
+  0074: GetTeam(PRI.TeamID).AddToTeam(NewPlayer)
+  009f: goto 0x00e2
+  00a2: foreach AllActors(obj'TnPlayerReplicationInfo', TnPRI) (end 0x00e1)
+  00b9: if !((TnPRI.UniqueId == UniqueId)) goto 0x00e0
+  00d4: TnPRI.DestroyActor()
+  00e0: iternext
+  00e1: iterpop
+  00e2: SetupNewPlayerController(NewPlayer, LoginOptions)
+  00f2: return nothing
+  00f4: <eos>
+
+function TnGame.SetupPC  (script 35 bytes)
+  0000: if !((PC == none)) goto 0x000d
+  000b: return nothing
+  000d: PC.InstallErrorStatisticsDelegate()
+  0020: return nothing
+  0022: <eos>
+
+function TnGame.PostLogin  (script 173 bytes)
+  0000: PC = TnPlayerController(NewPlayer)
+  0010: PostLogin(NewPlayer)
+  001b: self.SpawnHelper.Login(PC)
+  0033: SetupPC(PC)
+  0042: GRI = GetGRI()
+  0052: if !((GRI != none)) goto 0x009f
+  005d: AddAdd_PreInt(GRI.NumPlayersJoined)
+  006d: GRI.MaxPlayers = obj'Core.Math'.static.Max(GRI.MaxPlayers, GetNumPlayers())
+  009f: TnGame.SelectPieCharacter(PC)
+  00aa: return nothing
+  00ac: <eos>
+
+function TnGame.SelectPieCharacter  (script 231 bytes)
+  0000: Options = self.WorldInfo.GetLocalURL()
+  0019: Options = obj'Core.Strings'.static.Mid(Options, obj'Core.Strings'.static.InStr(Options, "?", ), )
+  0044: CharacterOption = obj'Core.Strings'.static.ParseOption(Options, "Character")
+  006d: if !((CharacterOption != "")) goto 0x00e4
+  0079: PossibleCharacters = GetGRI().GetPlayableIconicCharacterNames()
+  0097: SelectedCharacterIndex = PossibleCharacters.Find(CharacterOption)
+  00aa: PC.SelectCharacter(SelectedCharacterIndex[PossibleCharacters], 1)
+  00ca: PC.PlayerReplicationInfo.bReadyToPlay = true
+  00e4: return nothing
+  00e6: <eos>
+
+function TnGame.Logout  (script 167 bytes)
+  0000: ExitingPC = TnPlayerController(Exiting)
+  0010: self._VoiceMuteHandler.UnMutePlayer(ExitingPC)
+  0028: Logout(Exiting)
+  0033: if !((self.SpawnHelper != none)) goto 0x0056
+  003e: self.SpawnHelper.Logout(ExitingPC)
+  0056: if !((self.RespawnHelper != none)) goto 0x0079
+  0061: self.RespawnHelper.Logout(ExitingPC)
+  0079: GRI = GetGRI()
+  0089: if !((GRI != none)) goto 0x00a4
+  0094: AddAdd_PreInt(GRI.NumPlayersLeft)
+  00a4: return nothing
+  00a6: <eos>
+
+function TnGame.NotifyCheatUsed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyShotFired  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyCausedDamage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyPathFailure  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyXpGained  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.HandleSeamlessTravelPlayer  (script 69 bytes)
+  0000: HandleSeamlessTravelPlayer(C)
+  000b: PC = TnPlayerController(C)
+  001b: self.SpawnHelper.SeamlessTravel(PC)
+  0033: SetupPC(PC)
+  0042: return nothing
+  0044: <eos>
+
+function TnGame.ResetLevel  (script 16 bytes)
+  0000: ResetLevel()
+  0006: AddAdd_PreInt(self.NumResets)
+  000d: return nothing
+  000f: <eos>
+
+function TnGame.GetNumResets  (script 13 bytes)
+  0000: return self.NumResets
+  0006: return return
+  000c: <eos>
+
+function TnGame.OnQuitGame  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.GetGRI  (script 18 bytes)
+  0000: return TnGameReplicationInfo(self.GameReplicationInfo)
+  000b: return return
+  0011: <eos>
+
+function TnGame.ShouldRespawn  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGame.IsMultiplayerGame  (script 21 bytes)
+  0000: return (GetNumPlayers() > 1)
+  000e: return return
+  0014: <eos>
+
+function TnGame.ChangeTeam  (script 37 bytes)
+  0000: return self.TeamHandler.ChangeTeam(Other, N)
+  001e: return return
+  0024: <eos>
+
+function TnGame.PickTeam  (script 37 bytes)
+  0000: return self.TeamHandler.PickTeam(Current, C)
+  001e: return return
+  0024: <eos>
+
+function TnGame.GetTeam  (script 32 bytes)
+  0000: return self.TeamHandler.GetTeam(Index)
+  0019: return return
+  001f: <eos>
+
+function TnGame.GetTeamByClass  (script 32 bytes)
+  0000: return self.TeamHandler.FindTeamByClass(Faction)
+  0019: return return
+  001f: <eos>
+
+function TnGame.SendUIEventToControllers  (script 100 bytes)
+  0000: nothing
+  0001: if !((SpecificController != none)) goto 0x0027
+  000c: SpecificController.OnUIEvent(EventType)
+  0024: goto 0x0061
+  0027: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0060)
+  0047: PC.OnUIEvent(EventType)
+  005f: iternext
+  0060: iterpop
+  0061: return nothing
+  0063: <eos>
+
+function TnGame.ScoreTeamObjective  (script 70 bytes)
+  0000: LogInternal(("Warning: ScoreTeamObjective not supported for game type" @ cast56(self)), , , )
+  0043: return nothing
+  0045: <eos>
+
+function TnGame.RestartRound  (script 45 bytes)
+  0000: SoftReset()
+  000a: SendUIEventToControllers(3, )
+  0017: self.SpawnHelper.RestartingMatch()
+  002a: return nothing
+  002c: <eos>
+
+function TnGame.PlayPlaylist  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.HostOnlineGame  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyTeleported  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyReachedCheckpoint  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyCheckpointGameStart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.PickedUp  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyPlayerSpawnPointNotFound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyPlayerReadyToSpawn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyPlayerAdded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyPlayerRemoved  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifySpecialSpawnHandled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.NotifyPlayerWithinTogethernessVolume  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.FindInitialPlayerStart  (script 25 bytes)
+  0000: return FindPlayerStart(PC, , )
+  0012: return return
+  0018: <eos>
+
+function TnGame.TrySpawnPlayer  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGame.EndGame  (script 67 bytes)
+  0000: self._VoiceMuteHandler.ResetMuting()
+  0013: TnGame.HandleGameCompletionStats()
+  0019: EndGame(((Winner == none) ? GetWinningPRI() : Winner), Reason)
+  0040: return nothing
+  0042: <eos>
+
+function TnGame.HandleGameCompletionStats  (script 195 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x00bf)
+  0020: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0039: PRI.AddGameCompletion(cast3f((self.GameReplicationInfo.ElapsedTime - PRI.StartTime)), GetGameCompletionType(PRI))
+  007b: if !((PRI._ClassFormTracker != none)) goto 0x00ab
+  008f: PRI._ClassFormTracker.DisableTracking()
+  00ab: PRI.SendGameStatsToClient()
+  00be: iternext
+  00bf: iterpop
+  00c0: return nothing
+  00c2: <eos>
+
+function TnGame.GetGameCompletionType  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGame.UpdateGameplayMuteList  (script 43 bytes)
+  0000: self._VoiceMuteHandler.UpdatePlayerMuting(TnPlayerController(PC))
+  001d: UpdateGameplayMuteList(PC)
+  0028: return nothing
+  002a: <eos>
+
+function TnGame.Killed  (script 150 bytes)
+  0000: Killed(Killer, KilledPlayer, KilledPawn, DamageType)
+  001a: KilledAsPlayer = TnPlayerPawn(KilledPawn)
+  002a: if !(((KilledAsPlayer != none) && (self.RespawnHelper != none))) goto 0x005a
+  0042: self.RespawnHelper.Died(KilledPlayer)
+  005a: KillerPC = TnPlayerController(Killer)
+  006a: if !((KillerPC != none)) goto 0x0093
+  0075: CheckForKillAchievements(KillerPC, KilledPlayer, KilledPawn, DamageType)
+  0093: return nothing
+  0095: <eos>
+
+function TnGame.CheckForKillAchievements  (script 724 bytes)
+  0000: P = TnPawn(KilledPawn)
+  0010: if !((P == none)) goto 0x001d
+  001b: return nothing
+  001d: BS = TnBuffService(P.GetService('TnBuffService'))
+  0044: if !(((ClassIsChildOf(DamageType, obj'TnDamageTypeRammed') && NotEqual_InterfaceInterface(BS, TnBuffService(none))) && BS.HasBuff(obj'TnBuffFlashBang'))) goto 0x009d
+  0088: Killer.ClientUnlockAchievement(50)
+  009d: if !(((DamageType == obj'TnDamageTypeHeavyIonBlaster') || (DamageType == obj'TnDamageTypeHeavyRocketTurret'))) goto 0x00d3
+  00bd: Killer.ClientIncrementAchievement(48, 1)
+  00d3: KilledAiPawn = TnAiPawn(KilledPawn)
+  00e3: if !((KilledAiPawn != none)) goto 0x02d1
+  00ee: if !(((KilledAiPawn.get_IsInVehicleForm() && (cast3a(KilledAiPawn.get_VehicleType()) == cast3a(2))) && ClassIsChildOf(DamageType, obj'TnDamageTypeMelee'))) goto 0x014b
+  0136: Killer.ClientUnlockAchievement(34)
+  014b: KilledAiController = TnAiController(Killed)
+  015b: if !((KilledAiController != none)) goto 0x02d1
+  0166: AiCharacterType = KilledAiController.get_AiType()
+  017f: if !((cast3a(AiCharacterType) == cast3a(10))) goto 0x01a5
+  018f: Killer.ClientIncrementAchievement(33, 1)
+  01a5: if !((((cast3a(AiCharacterType) == cast3a(6)) && KilledAiPawn.get_IsInRobotForm()) && ClassIsChildOf(DamageType, obj'TnDamageTypeRobotBooster'))) goto 0x01f5
+  01df: Killer.ClientIncrementAchievement(29, 1)
+  01f5: if !(((cast3a(AiCharacterType) == cast3a(3)) && ClassIsChildOf(DamageType, obj'TnDamageTypeBruteBackpack'))) goto 0x022d
+  0217: Killer.ClientIncrementAchievement(28, 1)
+  022d: if !(((cast3a(AiCharacterType) == cast3a(4)) && TnGame.KilledByHeadShotWhileCloaked(KilledAiPawn, BS))) goto 0x0267
+  0252: Killer.ClientUnlockAchievement(30)
+  0267: if !(((cast3a(AiCharacterType) == cast3a(8)) && TnGame.UnlockSniperAchievement())) goto 0x0297
+  0282: Killer.ClientUnlockAchievement(31)
+  0297: if !(((cast3a(AiCharacterType) == cast3a(5)) && TnGame.UnlockCarSoldierAchievement(class<TnDamageType>(DamageType)))) goto 0x02d1
+  02bc: Killer.ClientUnlockAchievement(32)
+  02d1: return nothing
+  02d3: <eos>
+
+function TnGame.KilledByHeadShotWhileCloaked  (script 111 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0016
+  0014: return false
+  0016: if !(!KilledAiPawn.WasLastHitHeadshot()) goto 0x0030
+  002e: return false
+  0030: return (BuffService.HasBuff(obj'TnBuffCloakAi') || BuffService.HasBuff(obj'TnBuffDecloak'))
+  0068: return return
+  006e: <eos>
+
+function TnGame.UnlockSniperAchievement  (script 45 bytes)
+  0000: self.SniperMultiKillDetector.AddKills(1)
+  0014: return (self.SniperMultiKillDetector._MultiKillLevel > 1)
+  0026: return return
+  002c: <eos>
+
+function TnGame.UnlockCarSoldierAchievement  (script 77 bytes)
+  0000: if !((DamageType == none)) goto 0x000d
+  000b: return false
+  000d: if !(DamageType.static.default.IsProjectileDamage) goto 0x0033
+  001f: self.CarSoldierMultiKillDetector.AddKills(1)
+  0033: return (self.CarSoldierMultiKillDetector._MultiKillLevel >= 3)
+  0046: return return
+  004c: <eos>
+
+function TnGame.SetPlayerDefaults  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.SoftReset  (script 29 bytes)
+  0000: self.bSoftReset = true
+  0008: ResetLevel()
+  0012: self.bSoftReset = false
+  001a: return nothing
+  001c: <eos>
+
+function TnGame.ShouldReset  (script 75 bytes)
+  0000: if !(!self.bSoftReset) goto 0x0017
+  000b: return ShouldReset(ActorToReset)
+  0017: foreach self.SoftResetExclusionList(ExclusionClass,) (end 0x0041)
+  0026: if !(ClassIsChildOf(ActorToReset.get_Class(), ExclusionClass)) goto 0x0040
+  003d: iterpop
+  003e: return false
+  0040: iternext
+  0041: iterpop
+  0042: return true
+  0044: return return
+  004a: <eos>
+
+function TnGame.RequestRespawn  (script 38 bytes)
+  0000: if !((none != self.RespawnHelper)) goto 0x0023
+  000b: self.RespawnHelper.RequestRespawn(C)
+  0023: return nothing
+  0025: <eos>
+
+function TnGame.DisallowRespawnForTeam  (script 38 bytes)
+  0000: if !((none != self.RespawnHelper)) goto 0x0023
+  000b: self.RespawnHelper.DisallowSpawningForTeam(TI)
+  0023: return nothing
+  0025: <eos>
+
+function TnGame.RoundEnded  (script 46 bytes)
+  0000: SendUIEventToControllers(8, )
+  000d: if !((self.RespawnHelper != none)) goto 0x002b
+  0018: self.RespawnHelper.RoundEnded()
+  002b: return nothing
+  002d: <eos>
+
+function TnGame.NotifyDownedPawn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.ShouldDiscardInventoryWhileDying  (script 100 bytes)
+  0000: AsTnPawn = TnPawn(P)
+  0010: if !((AsTnPawn != none)) goto 0x0034
+  001b: W = TnWeapon(P.Weapon)
+  0034: if !((W != none)) goto 0x0051
+  003f: return !W._HoldWhileOwnerDying
+  0051: return ShouldDiscardInventoryWhileDying(P)
+  005d: return return
+  0063: <eos>
+
+function TnGame.GetLootClassificationFor  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGame.GetLootModifiers  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGame.SetLootTable  (script 23 bytes)
+  0000: self._PickupRewardManager._LootTable = NewTable
+  0014: return nothing
+  0016: <eos>
+
+function TnGame.GetWinningPRI  (script 130 bytes)
+  0000: HighestScore = cast3f(-2147483647)
+  000f: foreach self.GameReplicationInfo.PRIArray(PRI,) (end 0x0066)
+  0027: Score = PRI.GetScore()
+  0040: if !((Score > HighestScore)) goto 0x0065
+  004f: HighestScorer = PRI
+  005a: HighestScore = Score
+  0065: iternext
+  0066: iterpop
+  0067: return ((HighestScorer == none) ? none : HighestScorer)
+  007b: return return
+  0081: <eos>
+
+function TnGame.SetPause  (script 53 bytes)
+  0000: nothing
+  0001: if !(SetPause(PC, CanUnpauseDelegate)) goto 0x002c
+  0014: SendUIEventToControllers(6, TnPlayerController(PC))
+  002a: return true
+  002c: return false
+  002e: return return
+  0034: <eos>
+
+function TnGame.DebugGameCommand  (script 42 bytes)
+  0000: if !((DebugCommand == "Spawning")) goto 0x0027
+  0014: self._SpawnPointManager.ToggleDebug()
+  0027: return nothing
+  0029: <eos>
+
+function TnGame.DesiredWeaponDataType  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function TnGame.GetCurrentSkillDataIndex  (script 195 bytes)
+  0000: GI = class<TnGame>(obj'Engine.Engine'.static.GetCurrentWorldInfo().GetGameClass())
+  002c: if !((GI == none)) goto 0x00a8
+  0037: LogInternal("ERROR: Trying to ask for the current skill data index when there is no game. Returning default.", , , )
+  009d: return GetSkillDataIndex()
+  00a8: return GI.static.GetSkillDataIndex()
+  00bc: return return
+  00c2: <eos>
+
+function TnGame.GetSkillDataIndex  (script 9 bytes)
+  0000: return 1
+  0002: return return
+  0008: <eos>
+
+function TnGame.AllowDowned  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnGame.GetGameType  (script 46 bytes)
+  0000: if !((self.GameRulesModifiers != none)) goto 0x0024
+  000b: return TnGameRules(self.GameRulesModifiers).GetGameType()
+  0024: return 0
+  0027: return return
+  002d: <eos>
+
+function TnGame.SpawnDefaultPawnFor  (script 285 bytes)
+  0000: PC = TnPlayerController(NewPlayer)
+  0010: Character = obj'TnCharacterDataHelpers'.static.ResolveReplicatedCharacterData(PC.get_SelectedCharacter(), GetResolvedCharacterFaction(NewPlayer))
+  004b: DefaultPlayerClass = GetDefaultPlayerClass(NewPlayer)
+  0060: StartRotation.Yaw = StartSpot.Rotation.Yaw
+  008a: ResultPawn = Spawn(DefaultPlayerClass, , , StartSpot.Location, StartRotation, , , Character.ChassisType)
+  00c6: if !((ResultPawn == none)) goto 0x0110
+  00d1: LogInternal(((("Couldn't spawn player of type " $ cast56(DefaultPlayerClass)) $ " at ") $ cast56(StartSpot)), , , )
+  0110: return ResultPawn
+  0116: return return
+  011c: <eos>
+
+function TnGame.GetResolvedCharacterFaction  (script 27 bytes)
+  0000: return A.GetTeamNum()
+  0014: return return
+  001a: <eos>
+
+function TnGame.OpenSoloGameLobby  (script 238 bytes)
+  0000: default=-1
+  0009: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0022: if !((DataStoreManager == none)) goto 0x002f
+  002d: return nothing
+  002f: SettingsDataStore = UIDataStore_OnlineGameSettings(DataStoreManager.FindDataStore(obj'TnDataStore_GameSettings'.static.default.Tag, ))
+  005c: SettingsDataStore.SetCurrentByName('SOLO')
+  0078: GameSettings = TnOnlineGameSettingsBase(SettingsDataStore.GetCurrentGameSettings())
+  0096: GameSettings.BuildLobbyURL(GameLobbyURL)
+  00ae: if !((CurrentMapId != -1)) goto 0x00dc
+  00bd: ConcatEqual_StrStr(GameLobbyURL, ("?MapId=" $ cast53(CurrentMapId)))
+  00dc: ClientTravelToMap(GameLobbyURL)
+  00eb: return nothing
+  00ed: <eos>
+
+function TnGame.ClientTravelToMap  (script 136 bytes)
+  0000: LogInternal(("ABOUT TO ClientTravel to" @ MapURL), 'DevOnline', 0, 4368)
+  0032: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  0050: PC = WI.GetLocalPlayerController()
+  0069: PC.ClientTravel(MapURL, 0, , )
+  0085: return nothing
+  0087: <eos>
+
+function TnGame.ServerTravelToMap  (script 127 bytes)
+  0000: LogInternal(("ABOUT TO ServerTravel to" @ MapURL), 'DevOnline', 0, 4368)
+  0032: obj'TnMoviePlayer'.static.StartLoadingMovie(MapURL)
+  004a: obj'Engine.Engine'.static.GetCurrentWorldInfo().ServerTravel(MapURL, bAbsolute, bShouldSkipGameNotify)
+  007c: return nothing
+  007e: <eos>
+
+function TnGame.OpenFrontEndMap  (script 101 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: WI.ConsoleCommand("disconnect local", )
+  0049: ClientTravelToMap("UI_FrontEnd_m")
+  0062: return nothing
+  0064: <eos>
+
+function TnGame.CreatePlaceholderPRIForPlayer  (script 260 bytes)
+  0000: if !((self.GameReplicationInfo.FindPlayerByUniqueNetId(ThePlayer.NetId) == none)) goto 0x0101
+  0029: PRI = self.GameReplicationInfo.Spawn(self.PlayerReplicationInfoClass, , , , , , , )
+  004e: PRI.SetUniqueId(ThePlayer.NetId)
+  0071: PRI.SetPlayerName(ThePlayer.NickName)
+  0094: if !(ShouldPickTeamFromReservation(ThePlayer.NetId)) goto 0x00c8
+  00b1: PRI.TeamID = TeamIndex
+  00c5: goto 0x00d9
+  00c8: PRI.TeamID = 255
+  00d9: TnPlayerReplicationInfo(PRI).SetPlayerLevel(ThePlayer.Skill)
+  0101: return nothing
+  0103: <eos>
+
+function TnGame.DestroyPlaceholderPRIForPlayer  (script 297 bytes)
+  0000: PRI = self.GameReplicationInfo.FindPlayerByUniqueNetId(ThePlayer.NetId)
+  0029: if !((PRI == none)) goto 0x0036
+  0034: return nothing
+  0036: if !((PRI.Owner != none)) goto 0x011a
+  004a: LogInternal("Party beacon is requesting a placeholder PRI be destroyed, but the player is connected, most likely he's in the process of quitting.  If you see a player mismatch somewhere this could be the problem", , , )
+  0117: goto 0x0126
+  011a: PRI.DestroyActor()
+  0126: return nothing
+  0128: <eos>
+
+function TnGame.CanTargetSnap  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnGame.IsCampaignGame  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnGame.IsPrivateMatch  (script 107 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x0016
+  0014: return true
+  0016: GameSettings = TnOnlineGameSettingsBase(self.GameInterface.GetGameSettings(self.PlayerReplicationInfoClass.static.default.SessionName))
+  0043: if !((GameSettings == none)) goto 0x0050
+  004e: return true
+  0050: return GameSettings.IsPrivateGame()
+  0064: return return
+  006a: <eos>
+
+function TnGame.HandleContentAvailabilityChangeMessage  (script 32 bytes)
+  0000: PC.QuitWithError(MessageDescription, MessageTitle)
+  001d: return nothing
+  001f: <eos>
+
+function TnGame.AddTurret  (script 16 bytes)
+  0000: self._LoadedTurrets.AddItem(Turret)
+  000d: return nothing
+  000f: <eos>
+
+function TnGame.RemoveTurret  (script 16 bytes)
+  0000: self._LoadedTurrets.RemoveItem(Turret)
+  000d: return nothing
+  000f: <eos>
+
+function TnGame.ClearTurrets  (script 11 bytes)
+  0000: self._LoadedTurrets.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnGame.GetLoadedTurrets  (script 14 bytes)
+  0000: Turrets = self._LoadedTurrets
+  000b: return nothing
+  000d: <eos>
+
+function TnGame.SetHudType  (script 14 bytes)
+  0000: self.HUDType = newHUDType
+  000b: return nothing
+  000d: <eos>
+
+function TnGame.ShouldShowProgressLossMessageFor  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGame.GetQuitGameMessage  (script 92 bytes)
+  0000: Title = "$UIText.MessagePrompts.LeaveLobby"
+  0029: Message = "$UIText.MessagePrompts.LeaveLobbyConfirm"
+  0059: return nothing
+  005b: <eos>
+
+function TnGame.NotifyLoginChange  (script 480 bytes)
+  0000: PlayerInterface = obj'Engine.GameEngine'.static.GetOnlineSubsystem().PlayerInterface
+  0022: if !((cast3a(PrimaryLoginStatus) != cast3a(2))) goto 0x0087
+  0032: if !((cast3a(PlayerInterface.GetLogoutErrorCode(true)) == cast3a(1))) goto 0x006b
+  0052: Message = "MultipleLogins"
+  0068: goto 0x0084
+  006b: Message = "LogInToPlayOnline"
+  0084: goto 0x00ef
+  0087: if !((cast3a(SecondaryLoginStatus) != cast3a(2))) goto 0x00ef
+  0097: if !((cast3a(PlayerInterface.GetSecondaryLogoutErrorCode(true)) == cast3a(1))) goto 0x00d0
+  00b7: Message = "MultipleLogins"
+  00cd: goto 0x00ef
+  00d0: Message = "NotConnectedToDemonware"
+  00ef: if !((Message != "")) goto 0x01dd
+  00fb: SystemInterface = obj'Engine.GameEngine'.static.GetOnlineSubsystem().SystemInterface
+  011d: if !((SystemInterface.HasLinkConnection() && !PC.bIgnoreNetworkMessages)) goto 0x01b9
+  014a: PC.NotifyConnectionError(Localize("MessagePrompts", Message, "UIText"), Localize("Errors", "ConnectionFailed_Title", "Engine"))
+  01b6: goto 0x01dd
+  01b9: LogInternal("Ignoring login change", 'DevOnline', , )
+  01dd: return nothing
+  01df: <eos>
+
+function TnGame.LoginChangeSolo  (script 115 bytes)
+  0000: if !(PC.WorldInfo.IsConsoleBuild(1)) goto 0x0039
+  0021: TnGame.LoginChangeSoloOnXbox(PC, LoginType, PrimaryStatus)
+  0036: goto 0x0070
+  0039: if !(!PC.WorldInfo.IsConsoleBuild()) goto 0x0070
+  005b: TnGame.LoginChangeSoloOnPC(PC, PrimaryStatus, SecondaryStatus)
+  0070: return nothing
+  0072: <eos>
+
+function TnGame.LoginChangeSoloOnXbox  (script 648 bytes)
+  0000: if !((cast3a(LoginType) != cast3a(0))) goto 0x0012
+  0010: return nothing
+  0012: OPI = obj'Engine.GameEngine'.static.GetOnlineSubsystem().PlayerInterface
+  0034: ControllerId = cast3d(LocalPlayer(PC.Player).ControllerId)
+  0058: PreviousPrimaryStatus = OPI.GetPreviousLoginStatus(ControllerId)
+  0077: DidProfilesChange = OPI.DidProfilesChange(ControllerId)
+  0097: if !(((!DidProfilesChange && (cast3a(PrimaryStatus) != cast3a(0))) && (cast3a(PreviousPrimaryStatus) != cast3a(0)))) goto 0x013e
+  00c6: LogInternal((((("Login change ignored in solo campaign because status only changed locally (" $ cast52(PrimaryStatus)) $ ",") @ cast52(PreviousPrimaryStatus)) $ ")"), 'DevOnline', , )
+  013c: return nothing
+  013e: if !(PC.bIgnoreNetworkMessages) goto 0x01a4
+  0150: LogInternal("Login change ignored in solo campaign due to bIgnoreNetworkMessages", 'DevOnline', , )
+  01a2: return nothing
+  01a4: LP = LocalPlayer(PC.Player)
+  01bd: if !((LP != none)) goto 0x0206
+  01c8: GVC = TnGameViewportClient(LP.get_Outer().GameViewport)
+  01e8: if !((GVC != none)) goto 0x0206
+  01f3: GVC.ForceControllerSelection()
+  0206: PC.NotifyConnectionError(Localize("MessagePrompts", "LogInChangeCampaign", "UIText"), Localize("MessagePrompts", "GenericErrorTitle", "UIText"))
+  0285: return nothing
+  0287: <eos>
+
+function TnGame.LoginChangeSoloOnPC  (script 258 bytes)
+  0000: if !(PC.bIgnoreNetworkMessages) goto 0x0014
+  0012: return nothing
+  0014: PlayerInterface = obj'Engine.GameEngine'.static.GetOnlineSubsystem().PlayerInterface
+  0036: if !((((cast3a(PrimaryStatus) != cast3a(2)) && (cast3a(PlayerInterface.GetLogoutErrorCode(true)) == cast3a(1))) && (PC.UIController != none))) goto 0x00ff
+  007e: PC.UIController.ShowPopupUI(Localize("Errors", "ConnectionFailed_Title", "Engine"), Localize("MessagePrompts", "MultipleLogins", "UIText"), )
+  00ff: return nothing
+  0101: <eos>
+
+function TnGame.IsSafeToQuit  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGame.OverrideCharacterWeaponTypes  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.CheckForSpecialSpawn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGame.GetNumScoresRemaining  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGame.StartStressTester  (script 135 bytes)
+  0000: LogInternal("Starting stress tester", 'DevAutomatedTesting', , )
+  0025: self.StressTester = Spawn(obj'HM_Engine.HmStressTester', , , , , , , )
+  0041: self.StressTester.Initialize(600, obj'Engine.NavigationPoint', delegate.StressTestMoveProbe, delegate.StressTesterComplete)
+  0070: self.StressTester.StartCheckpoint()
+  0084: return nothing
+  0086: <eos>
+
+function TnGame.StressTesterComplete  (script 34 bytes)
+  0000: self.WorldInfo.ConsoleCommand("quit", )
+  001f: return nothing
+  0021: <eos>
+
+function TnGame.StressTestMoveProbe  (script 94 bytes)
+  0000: P = PC.Pawn
+  0014: if !(PC.bCinematicMode) goto 0x0028
+  0026: return nothing
+  0028: if !((P == none)) goto 0x0035
+  0033: return nothing
+  0035: P.Teleport(NewLocation, P.Rotation)
+  005b: return nothing
+  005d: <eos>

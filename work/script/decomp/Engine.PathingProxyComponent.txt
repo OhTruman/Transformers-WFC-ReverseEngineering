@@ -1,0 +1,83 @@
+function PathingProxyComponent.CreatePrimitives  (script 1098 bytes)
+  0000: NP = NavigationPoint(self.Owner)
+  0010: if !((NP == none)) goto 0x001d
+  001b: return nothing
+  001d: if !((NavigationCell(NP) != none)) goto 0x0040
+  002d: PathingProxyComponent.DrawNavigationCell(NavigationCell(NP))
+  003d: goto 0x004b
+  0040: PathingProxyComponent.DrawNavigationPoint(NP)
+  004b: if !((NP.StaticAnchor.Nav != none)) goto 0x00cb
+  006a: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, NP.Location, NP.StaticAnchor.Nav.Location, ColorToLinearColor(obj'Core.Colors'.static.White()))
+  00cb: idx = 0
+  00d2: if !((idx < NP.PathList.Length)) goto 0x019b
+  00eb: if !((((self.OnlyDrawGround && !idx[NP.PathList].IsFlyRequired()) || (self.OnlyDrawAir && idx[NP.PathList].IsFlyRequired())) || (!self.OnlyDrawAir && !self.OnlyDrawGround))) goto 0x0191
+  0169: obj'DebugRenderHelpers'.static.DrawReachSpec(self, idx[NP.PathList])
+  0191: AddAdd_PreInt(idx)
+  0198: goto 0x00d2
+  019b: idx = 0
+  01a2: if !((idx < NP.EditorJumpPaths.Length)) goto 0x0222
+  01bb: if !((idx[NP.EditorJumpPaths].Nav != none)) goto 0x0218
+  01e0: obj'DebugRenderHelpers'.static.DrawJumpConnection(self, NP, idx[NP.EditorJumpPaths].Nav)
+  0218: AddAdd_PreInt(idx)
+  021f: goto 0x01a2
+  0222: idx = 0
+  0229: if !((idx < NP.EditorMoverJumpPaths.Length)) goto 0x02d9
+  0242: if !((idx[NP.EditorMoverJumpPaths].Nav != none)) goto 0x02cf
+  0267: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, NP.Location, idx[NP.EditorMoverJumpPaths].Nav.Location, MakeLinearColor(1.0, 0.66, 0.0, 0.0))
+  02cf: AddAdd_PreInt(idx)
+  02d6: goto 0x0229
+  02d9: idx = 0
+  02e0: if !((idx < NP.EditorMoverFlyPaths.Length)) goto 0x0390
+  02f9: if !((idx[NP.EditorMoverFlyPaths].Nav != none)) goto 0x0386
+  031e: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, NP.Location, idx[NP.EditorMoverFlyPaths].Nav.Location, MakeLinearColor(1.0, 0.66, 0.0, 0.0))
+  0386: AddAdd_PreInt(idx)
+  038d: goto 0x02e0
+  0390: idx = 0
+  0397: if !((idx < NP.EditorMoverWalkPaths.Length)) goto 0x0447
+  03b0: if !((idx[NP.EditorMoverWalkPaths].Nav != none)) goto 0x043d
+  03d5: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, NP.Location, idx[NP.EditorMoverWalkPaths].Nav.Location, MakeLinearColor(0.0, 1.0, 0.0, 0.0))
+  043d: AddAdd_PreInt(idx)
+  0444: goto 0x0397
+  0447: return nothing
+  0449: <eos>
+
+function PathingProxyComponent.DrawNavigationPoint  (script 239 bytes)
+  0000: if !(Point.bBlocked) goto 0x004c
+  0012: AddWireSphere(Point.Location, 65.0, ColorToLinearColor(obj'Core.Colors'.static.Red()))
+  004c: if !(!Point.get_Gated()) goto 0x0066
+  0064: return nothing
+  0066: TheColor = ColorToLinearColor((Point.bGateOpen ? obj'Core.Colors'.static.Yellow() : obj'Core.Colors'.static.Red()))
+  00b0: AddWireCircle(Point.Location, 105.0, vect(1,0,0), vect(0,1,0), TheColor)
+  00ec: return nothing
+  00ee: <eos>
+
+function PathingProxyComponent.DrawNavigationCell  (script 565 bytes)
+  0000: if !(((Cell == none) || !Cell.get_HasBuiltEdges())) goto 0x0027
+  0025: return nothing
+  0027: PathingProxyComponent.DrawGatedTriangle(Cell)
+  0032: BorderColor = MakeLinearColor(1.0, 0.4, 0.0, 1.0)
+  0056: InnerColor = MakeLinearColor(0.78, 0.78, 0.78, 1.0)
+  007a: if !(Cell.bBlocked) goto 0x00c6
+  008c: AddWireSphere(Cell.Location, 65.0, ColorToLinearColor(obj'Core.Colors'.static.Red()))
+  00c6: if !(obj'WorldInfo'.static.IsInEditor()) goto 0x00de
+  00dc: return nothing
+  00de: Edge = Cell.GetEdge(0)
+  00f8: AddLine(Edge.Start, Edge.End, ((Edge.Neighbor.Nav == none) ? BorderColor : InnerColor))
+  014f: Edge = Cell.GetEdge(1)
+  0169: AddLine(Edge.Start, Edge.End, ((Edge.Neighbor.Nav == none) ? BorderColor : InnerColor))
+  01c0: Edge = Cell.GetEdge(2)
+  01db: AddLine(Edge.Start, Edge.End, ((Edge.Neighbor.Nav == none) ? BorderColor : InnerColor))
+  0232: return nothing
+  0234: <eos>
+
+function PathingProxyComponent.DrawGatedTriangle  (script 543 bytes)
+  0000: if !((!Cell.get_Gated() || (Cell.get_EditUtil()._Vertices.Length == 0))) goto 0x003f
+  003d: return nothing
+  003f: Shrink = 200.0
+  004a: Zero = ((obj'Core.Math'.static.Normal((Cell.Location - 0[Cell.get_EditUtil()._Vertices].Location)) * Shrink) + 0[Cell.get_EditUtil()._Vertices].Location)
+  00c2: One = ((obj'Core.Math'.static.Normal((Cell.Location - 1[Cell.get_EditUtil()._Vertices].Location)) * Shrink) + 1[Cell.get_EditUtil()._Vertices].Location)
+  013a: Two = ((obj'Core.Math'.static.Normal((Cell.Location - 2[Cell.get_EditUtil()._Vertices].Location)) * Shrink) + 2[Cell.get_EditUtil()._Vertices].Location)
+  01b4: TheColor = ColorToLinearColor((Cell.bGateOpen ? obj'Core.Colors'.static.Yellow() : obj'Core.Colors'.static.Red()))
+  01fe: AddWireTriangle(Zero, One, Two, TheColor)
+  021c: return nothing
+  021e: <eos>

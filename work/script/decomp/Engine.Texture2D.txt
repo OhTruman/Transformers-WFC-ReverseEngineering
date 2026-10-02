@@ -1,0 +1,25 @@
+function Texture2D.GetPixelColor  (script 12 bytes)
+  0000: X
+  0005: Y
+  000a: nothing
+  000b: <eos>
+
+function Texture2D.Clear  (script 7 bytes)
+  0000: ClearColor
+  0005: nothing
+  0006: <eos>
+
+function Texture2D.CheckForNormalMapErrors  (script 172 bytes)
+  0000: if !(((cast3a(self.CompressionSettings) != cast3a(1)) && (cast3a(self.CompressionSettings) != cast3a(3)))) goto 0x006f
+  0022: EmitCheckMessage(0, (((("Normal map" @ cast56(self)) @ "is set to") @ cast52(self.CompressionSettings)) @ "instead of Normalmap"), , )
+  006f: if !(self.SRGB) goto 0x00a9
+  0078: EmitCheckMessage(0, (("Normal map" @ cast56(self)) @ "is set to SRGB"), , )
+  00a9: return nothing
+  00ab: <eos>
+
+function Texture2D.CheckForErrors  (script 51 bytes)
+  0000: CheckForErrors()
+  0006: if !((obj'Core.Strings'.static.InStr(cast57(self.Name), "_NORM", ) != -1)) goto 0x0030
+  002a: Texture2D.CheckForNormalMapErrors()
+  0030: return nothing
+  0032: <eos>

@@ -1,0 +1,224 @@
+function TnCharacterApplier.get_EnergonColor  (script 13 bytes)
+  0000: return self._EnergonColor
+  0006: return return
+  000c: <eos>
+
+function TnCharacterApplier.ApplyCharacter  (script 584 bytes)
+  0000: TnCharacterApplier.ApplySoundEventSet(CD, P)
+  0010: P.InitializeState()
+  0023: TnCharacterApplier.SaveColors(CD, P.get_RobotMeshComponent())
+  0041: ApplyColorsToCharacter(P)
+  0050: TnCharacterApplier.ApplyOpacityToRobotMesh(CD, P)
+  0060: if !((cast3a(NetRole) >= cast3a(2))) goto 0x0080
+  0070: TnCharacterApplier.ApplyAbilities(CD, P)
+  0080: PP = TnPlayerPawn(P)
+  0090: if !((PP != none)) goto 0x00ae
+  009b: PP.ApplySpecialty()
+  00ae: PRI = TnPlayerReplicationInfo(P.PlayerReplicationInfo)
+  00c7: if !((PRI != none)) goto 0x00ea
+  00d2: PRI.set_CurrentCharacter(CD)
+  00ea: if !((cast3a(NetRole) >= cast3a(3))) goto 0x01df
+  00fa: TnCharacterApplier.ApplySkills(CD, P)
+  010a: TnCharacterApplier.ApplyWeapons(CD, P)
+  011a: PC = TnPlayerController(P.Controller)
+  0133: if !((((PP != none) && (PC != none)) && PC.HasCheckpointOverridePlayerData())) goto 0x018f
+  0163: PP.SetHealthFromCheckpoint(PC._CheckpointOverrideCharacterData.Health)
+  018f: if !(((PRI != none) && (PRI._ClassFormTracker != none))) goto 0x01dc
+  01b0: PRI._ClassFormTracker.SetClass(CD.Specialty)
+  01dc: goto 0x0245
+  01df: if !((cast3a(NetRole) == cast3a(1))) goto 0x0245
+  01ef: if !((CD.MeleeWeapon != none)) goto 0x0235
+  0205: P.InvManager.CreateInventory(CD.MeleeWeapon, true)
+  0232: goto 0x0245
+  0235: TnCharacterApplier.ApplySimulatedWeapons(CD, P)
+  0245: return nothing
+  0247: <eos>
+
+function TnCharacterApplier.ExtractColors  (script 414 bytes)
+  0000: if !((MC == none)) goto 0x000d
+  000b: return nothing
+  000d: kUseDefaultColor = MakeColor(0, 0, 0, cast3d(255))
+  0027: kUseDefaultLinearColor = MakeLinearColor(0.0, 0.0, 0.0, 1.0)
+  004b: kUseDefaultLinearColor2 = MakeLinearColor(0.0, 0.0, 0.0, 0.0)
+  006f: if !((CD.PrimaryColor != kUseDefaultColor)) goto 0x00af
+  008c: PrimaryColor = SRGBColorToLinearColor(CD.PrimaryColor)
+  00ac: goto 0x00cc
+  00af: MC.GetVectorParam(self.PrimaryColorMaterialParamName, PrimaryColor)
+  00cc: if !((CD.SecondaryColor != kUseDefaultColor)) goto 0x010c
+  00e9: SecondaryColor = SRGBColorToLinearColor(CD.SecondaryColor)
+  0109: goto 0x0129
+  010c: MC.GetVectorParam(self.SecondaryColorMaterialParamName, SecondaryColor)
+  0129: if !(((CD.EnergonColor != kUseDefaultLinearColor) && (CD.EnergonColor != kUseDefaultLinearColor2))) goto 0x017e
+  0165: EnergonColor = CD.EnergonColor
+  017b: goto 0x019b
+  017e: MC.GetVectorParam(self.EnergonColorMaterialParamName, EnergonColor)
+  019b: return nothing
+  019d: <eos>
+
+function TnCharacterApplier.SaveColors  (script 59 bytes)
+  0000: ExtractColors(CD, MC, self._PrimaryLinearColor, self._SecondaryLinearColor, self._EnergonLinearColor)
+  0023: self._EnergonColor = LinearColorToSRGBColor(self._EnergonLinearColor)
+  0038: return nothing
+  003a: <eos>
+
+function TnCharacterApplier.ApplyColorsToMesh  (script 184 bytes)
+  0000: if !((MC == none)) goto 0x000d
+  000b: return nothing
+  000d: CurrentPrimaryColor = (self.IsOverridingColors ? self._OverridePrimaryLinearColor : self._PrimaryLinearColor)
+  0028: CurrentSecondaryColor = (self.IsOverridingColors ? self._OverrideSecondaryLinearColor : self._SecondaryLinearColor)
+  0043: CurrentEnergonColor = (self.IsOverridingColors ? self._OverrideEnergonLinearColor : self._EnergonLinearColor)
+  005e: MC.SetVectorParam(self.PrimaryColorMaterialParamName, CurrentPrimaryColor)
+  007b: MC.SetVectorParam(self.SecondaryColorMaterialParamName, CurrentSecondaryColor)
+  0098: MC.SetVectorParam(self.EnergonColorMaterialParamName, CurrentEnergonColor)
+  00b5: return nothing
+  00b7: <eos>
+
+function TnCharacterApplier.ApplySecondaryColorToMesh  (script 72 bytes)
+  0000: if !((MC == none)) goto 0x000d
+  000b: return nothing
+  000d: CurrentSecondaryColor = (self.IsOverridingColors ? self._OverrideSecondaryLinearColor : self._SecondaryLinearColor)
+  0028: MC.SetVectorParam(self.SecondaryColorMaterialParamName, CurrentSecondaryColor)
+  0045: return nothing
+  0047: <eos>
+
+function TnCharacterApplier.ApplyColorsToCharacter  (script 274 bytes)
+  0000: ApplyColorsToMesh(Character.get_RobotMeshComponent())
+  001d: ApplyColorsToMesh(Character.get_VehicleMeshComponent())
+  003a: if !(((Character._RobotForm != none) && (Character._RobotForm._Arm != none))) goto 0x009c
+  006d: ApplyColorsToMesh(Character._RobotForm._Arm.get_Mesh())
+  009c: if !((HmWeapon(Character.Weapon) != none)) goto 0x010f
+  00b5: WeaponMesh = HmWeapon(Character.Weapon).GetWeaponMesh()
+  00dc: if !((WeaponMesh != none)) goto 0x0100
+  00e7: WeaponMC = WeaponMesh.GetAnimatedMeshComponent()
+  0100: ApplyColorsToMesh(WeaponMC)
+  010f: return nothing
+  0111: <eos>
+
+function TnCharacterApplier.ApplyOpacityToRobotMesh  (script 68 bytes)
+  0000: if !(CD.bEnableOpacity) goto 0x0041
+  0014: P.get_RobotMeshComponent().SemiTransparentRenderingOpacity = CD.Opacity
+  0041: return nothing
+  0043: <eos>
+
+function TnCharacterApplier.DebugGiveAbility  (script 19 bytes)
+  0000: TnCharacterApplier.GiveAbility(AbilityClass, P)
+  0010: return nothing
+  0012: <eos>
+
+function TnCharacterApplier.GiveAbility  (script 36 bytes)
+  0000: P.AbilityManager.AddAbility(AbilityClass)
+  0021: return nothing
+  0023: <eos>
+
+function TnCharacterApplier.ApplyAbilities  (script 160 bytes)
+  0000: foreach CD.Abilities(Ability,) (end 0x002b)
+  001a: TnCharacterApplier.GiveAbility(Ability, P)
+  002a: iternext
+  002b: iterpop
+  002c: PC = TnPlayerController(P.Controller)
+  0045: if !(((PC != none) && PC.HasCheckpointOverridePlayerData())) goto 0x009d
+  0068: P.AbilityManager.SetResource(PC._CheckpointOverrideCharacterData.AbilityResource)
+  009d: return nothing
+  009f: <eos>
+
+function TnCharacterApplier.DebugGiveSkill  (script 24 bytes)
+  0000: TnCharacterApplier.GiveSkill(SkillClass, Level, P)
+  0015: return nothing
+  0017: <eos>
+
+function TnCharacterApplier.GiveSkill  (script 46 bytes)
+  0000: SkillClass.static.ApplySkill(TnPlayerController(P.Controller), Level)
+  002b: return nothing
+  002d: <eos>
+
+function TnCharacterApplier.ApplySkills  (script 104 bytes)
+  0000: I = 0
+  0007: if !((I < CD.Skills.Length)) goto 0x0065
+  0022: TnCharacterApplier.GiveSkill(I[CD.Skills], cast3a(I[CD.SkillLevels]), P)
+  005b: AddAdd_PreInt(I)
+  0062: goto 0x0007
+  0065: return nothing
+  0067: <eos>
+
+function TnCharacterApplier.ApplyWeapons  (script 530 bytes)
+  0000: P.ClientForcePawnReplicationChannel()
+  0013: if !((P.Weapon != none)) goto 0x0048
+  0027: HmWeapon(P.Weapon).UnEquipInstantly()
+  0048: P.InvManager.DestroyInventory()
+  0064: PC = TnPlayerController(P.Controller)
+  007d: if !((PC != none)) goto 0x00a2
+  0088: FromOverride = PC.HasCheckpointOverridePlayerData()
+  00a2: if !(FromOverride) goto 0x00ec
+  00ab: RobotWeaponClasses = PC._CheckpointOverrideCharacterData.WeaponTypes
+  00ca: VehicleWeaponClasses = PC._CheckpointOverrideCharacterData.VehicleWeaponTypes
+  00e9: goto 0x0118
+  00ec: RobotWeaponClasses = CD.WeaponTypes
+  0102: VehicleWeaponClasses = CD.VehicleWeapons
+  0118: TnCharacterApplier.CreateWeapons(P, RobotWeaponClasses, RobotWeapons, (cast3a(CD.StartingForm) == cast3a(0)))
+  0145: if !(FromOverride) goto 0x0172
+  014e: TnCharacterApplier.ApplyReserveAmmos(RobotWeapons, PC._CheckpointOverrideCharacterData.WeaponReserveAmmos)
+  0172: TnCharacterApplier.CreateWeapons(P, VehicleWeaponClasses, VehicleWeapons, (cast3a(CD.StartingForm) == cast3a(1)))
+  019f: if !(FromOverride) goto 0x01cc
+  01a8: TnCharacterApplier.ApplyReserveAmmos(VehicleWeapons, PC._CheckpointOverrideCharacterData.VehicleWeaponReserveAmmos)
+  01cc: if !((CD.MeleeWeapon != none)) goto 0x020f
+  01e2: P.InvManager.CreateInventory(CD.MeleeWeapon, true)
+  020f: return nothing
+  0211: <eos>
+
+function TnCharacterApplier.CreateWeapons  (script 126 bytes)
+  0000: I = 0
+  0007: if !((I < WeaponClasses.Length)) goto 0x007b
+  0017: WeaponClass = I[WeaponClasses]
+  0028: if !((WeaponClass != none)) goto 0x0071
+  0033: Weapons.AddItem(TnWeapon(P.InvManager.CreateInventory(WeaponClass, !ActivateFirstWeapon)))
+  0069: ActivateFirstWeapon = false
+  0071: AddAdd_PreInt(I)
+  0078: goto 0x0007
+  007b: return nothing
+  007d: <eos>
+
+function TnCharacterApplier.ApplyReserveAmmos  (script 253 bytes)
+  0000: if !((WeaponList.Length != ReserveAmmos.Length)) goto 0x0071
+  0011: LogInternal((((("ERROR: Reserve ammo count (" $ cast53(ReserveAmmos.Length)) $ ") does not match weapon count (") $ cast53(WeaponList.Length)) $ ")"), , , )
+  006f: return nothing
+  0071: I = 0
+  0078: if !((I < WeaponList.Length)) goto 0x00fa
+  0088: I[WeaponList].ReserveAmmoCount = I[ReserveAmmos]
+  00a8: I[WeaponList].AmmoClipCount = 0
+  00be: I[WeaponList].InstantReload()
+  00d7: I[WeaponList].SyncAmmoToClient()
+  00f0: AddAdd_PreInt(I)
+  00f7: goto 0x0078
+  00fa: return nothing
+  00fc: <eos>
+
+function TnCharacterApplier.ApplySimulatedWeapons  (script 81 bytes)
+  0000: foreach CD.WeaponTypes(WeaponClass,) (end 0x004d)
+  001a: if !((class<TnMeleeWeapon>(WeaponClass) != none)) goto 0x004c
+  002a: P.InvManager.CreateInventory(WeaponClass, true)
+  004c: iternext
+  004d: iterpop
+  004e: return nothing
+  0050: <eos>
+
+function TnCharacterApplier.ApplySoundEventSet  (script 116 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: if !((none == WI)) goto 0x002b
+  0029: return nothing
+  002b: S = WI._SoundEventSetInfo.GetCharacterSoundEvetSet(CD.ChassisType)
+  005d: P._CharacterSoundEventSet = S
+  0071: return nothing
+  0073: <eos>
+
+function TnCharacterApplier.SetColorOverride  (script 44 bytes)
+  0000: self.IsOverridingColors = true
+  0008: self._OverridePrimaryLinearColor = NewPrimaryColorOverride
+  0013: self._OverrideSecondaryLinearColor = NewSecondaryColorOverride
+  001e: self._OverrideEnergonLinearColor = NewEnergonColorOverride
+  0029: return nothing
+  002b: <eos>
+
+function TnCharacterApplier.ClearColorOverride  (script 11 bytes)
+  0000: self.IsOverridingColors = false
+  0008: return nothing
+  000a: <eos>

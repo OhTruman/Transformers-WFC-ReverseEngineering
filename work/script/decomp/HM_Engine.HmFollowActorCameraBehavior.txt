@@ -1,0 +1,22 @@
+function HmFollowActorCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.ActorToFollow = A
+  000b: return nothing
+  000d: <eos>
+
+function HmFollowActorCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmFollowActorCameraBehavior.Activate  (script 50 bytes)
+  0000: self.LastTetherPosition = (self.AnchorPoint.Location + (-cast39(self.ActorToFollow.Rotation) * self.TetherDistance))
+  002f: return nothing
+  0031: <eos>
+
+function HmFollowActorCameraBehavior.Update  (script 164 bytes)
+  0000: NormalFromAnchor = obj'Core.Math'.static.Normal((self.LastTetherPosition - self.AnchorPoint.Location))
+  0026: Result.Location = (self.AnchorPoint.Location + (NormalFromAnchor * (self.FollowDistance + (obj'Core.Math'.static.VSize(self.ActorToFollow.Velocity) * self.FollowDistanceVelocityModifier))))
+  0075: self.LastTetherPosition = (self.AnchorPoint.Location + (NormalFromAnchor * self.TetherDistance))
+  0097: return Result
+  009d: return return
+  00a3: <eos>

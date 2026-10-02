@@ -1,0 +1,40 @@
+function TnHudDataObserverCurrentWeaponAndAim.CheckData  (script 152 bytes)
+  0000: if !((PC == none)) goto 0x000d
+  000b: return nothing
+  000d: AimType = TnHudDataObserverCurrentWeaponAndAim.GetAimType(PC)
+  001e: if !((cast3a(AimType) != cast3a(self.SavedAimType))) goto 0x0044
+  0031: self.SavedAimType = AimType
+  003c: ShouldUpdate = true
+  0044: WeaponClass = TnHudDataObserverCurrentWeaponAndAim.GetWeaponClass(PC)
+  0055: if !((WeaponClass != self.SavedWeaponClass)) goto 0x0077
+  0064: self.SavedWeaponClass = WeaponClass
+  006f: ShouldUpdate = true
+  0077: if !(ShouldUpdate) goto 0x0095
+  0080: TnHudDataObserverCurrentWeaponAndAim.Update(Movie, WeaponClass, AimType)
+  0095: return nothing
+  0097: <eos>
+
+function TnHudDataObserverCurrentWeaponAndAim.GetWeaponClass  (script 91 bytes)
+  0000: if !((PC.Pawn == none)) goto 0x0016
+  0014: return none
+  0016: if !((PC.Pawn.Weapon == none)) goto 0x0035
+  0033: return none
+  0035: return PC.Pawn.Weapon.get_Class()
+  0054: return return
+  005a: <eos>
+
+function TnHudDataObserverCurrentWeaponAndAim.GetAimType  (script 80 bytes)
+  0000: C = TnCamera(PC.PlayerCamera)
+  0019: if !((C == none)) goto 0x0027
+  0024: return 0
+  0027: return (C.HasPlayerCameraState(obj'TnPCS_FineAim') ? 1 : 0)
+  0049: return return
+  004f: <eos>
+
+function TnHudDataObserverCurrentWeaponAndAim.Update  (script 173 bytes)
+  0000: AddStringValue(WeaponArgs, 0, cast56(WeaponClass))
+  0017: Movie.Invoke("_global.NotifyCurrentWeaponChanged", WeaponArgs)
+  0058: AddNumberValue(AimArgs, 0, cast3c(AimType))
+  006f: Movie.Invoke("_global.NotifyFineAimChanged", AimArgs)
+  00aa: return nothing
+  00ac: <eos>

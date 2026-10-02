@@ -1,0 +1,31 @@
+function TnOvershieldMaterialOverrider.StartOverride  (script 104 bytes)
+  0000: TnCharacterMaterialOverrider.StartOverride(MeshMaterialOverride)
+  000b: self.RampTimeRemaining = 0.0
+  0016: self.CharacterApplier.ApplyColorsToMesh(MeshMaterialOverride.Mesh)
+  0039: MeshMaterialOverride.Mesh.SetVectorParam('Overshield_Color', self.MaterialColor)
+  0065: return nothing
+  0067: <eos>
+
+function TnOvershieldMaterialOverrider.OnTakeDamage  (script 57 bytes)
+  0000: if !((!IsActive() || (self.TakeDamageRampTime <= cast3f(0)))) goto 0x0020
+  001e: return nothing
+  0020: TnOvershieldMaterialOverrider.SetScalarParameter(1.0)
+  002b: self.RampTimeRemaining = self.TakeDamageRampTime
+  0036: return nothing
+  0038: <eos>
+
+function TnOvershieldMaterialOverrider.OnTick  (script 46 bytes)
+  0000: (self.RampTimeRemaining -= DeltaTime)
+  000c: if !((self.RampTimeRemaining > cast3f(0))) goto 0x002b
+  0019: TnOvershieldMaterialOverrider.SetScalarParameter((self.RampTimeRemaining / self.TakeDamageRampTime))
+  002b: return nothing
+  002d: <eos>
+
+function TnOvershieldMaterialOverrider.SetScalarParameter  (script 75 bytes)
+  0000: Mesh = Mesh
+  000b: foreach self.Overrides(Mesh,) (end 0x0047)
+  001a: Mesh.Mesh.SetScalarParam('Overshield_PowerUp', Value)
+  0046: iternext
+  0047: iterpop
+  0048: return nothing
+  004a: <eos>

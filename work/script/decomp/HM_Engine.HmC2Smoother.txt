@@ -1,0 +1,32 @@
+function HmC2Smoother.Reset  (script 14 bytes)
+  0000: self.CurrentSpeed = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function HmC2Smoother.SetVelocity  (script 14 bytes)
+  0000: self.CurrentSpeed = Speed
+  000b: return nothing
+  000d: <eos>
+
+function HmC2Smoother.GetVelocity  (script 13 bytes)
+  0000: return self.CurrentSpeed
+  0006: return return
+  000c: <eos>
+
+function HmC2Smoother.Smooth  (script 304 bytes)
+  0000: SmoothingTime = (SmoothingTimeIn / 2.0)
+  0012: if !((SmoothingTime < 0.001)) goto 0x0031
+  0021: Reset()
+  002b: return To
+  0031: if !((DeltaTime <= cast3f(0))) goto 0x004e
+  003e: Reset()
+  0048: return From
+  004e: Omega = (2.0 / SmoothingTime)
+  0060: X = (Omega * DeltaTime)
+  0072: Exp = (1.0 / (((1.0 + X) + ((0.48 * X) * X)) + (((0.235 * X) * X) * X)))
+  00bc: Change = (From - To)
+  00ce: Temp = ((self.CurrentSpeed + (Omega * Change)) * DeltaTime)
+  00ee: self.CurrentSpeed = ((self.CurrentSpeed - (Omega * Temp)) * Exp)
+  010e: return (To + ((Change + Temp) * Exp))
+  0129: return return
+  012f: <eos>

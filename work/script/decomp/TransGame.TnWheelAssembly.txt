@@ -1,0 +1,149 @@
+function TnWheelAssembly.get_Suspension  (script 13 bytes)
+  0000: return self._Suspension
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.get_Tire  (script 13 bytes)
+  0000: return self._Tire
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.get_Blueprint  (script 13 bytes)
+  0000: return self._Blueprint
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.get_SteeringAngle  (script 13 bytes)
+  0000: return self._SteeringAngle
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.get_WheelRadius  (script 22 bytes)
+  0000: return self._Blueprint.WheelRadius
+  000f: return return
+  0015: <eos>
+
+function TnWheelAssembly.get_LocalPosition  (script 29 bytes)
+  0000: return (self._Blueprint.LocalPosition - self._ChassisOffset)
+  0016: return return
+  001c: <eos>
+
+function TnWheelAssembly.get_LocalSpaceVelocity  (script 13 bytes)
+  0000: return self._LocalSpaceVelocity
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.get_Transform  (script 13 bytes)
+  0000: return self._LocalToWorldTransform
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.get_IsTouchingTheGround  (script 48 bytes)
+  0000: return (self._Suspension.get_Length() < self._Suspension.get_RestingLength())
+  0029: return return
+  002f: <eos>
+
+function TnWheelAssembly.get_HitActor  (script 22 bytes)
+  0000: return self._Suspension._HitActor
+  000f: return return
+  0015: <eos>
+
+function TnWheelAssembly.get_MassShare  (script 13 bytes)
+  0000: return self._MassShare
+  0006: return return
+  000c: <eos>
+
+function TnWheelAssembly.Initialize  (script 118 bytes)
+  0000: if !((NewBlueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Blueprint = NewBlueprint
+  0018: self._Owner = NewOwner
+  0023: self._RigidBody = RigidBody
+  002e: self._MassShare = NewMassShare
+  0039: self._ChassisOffset = obj'Core.Math'.static.MakeVector(0.0, 0.0, ChassisOffset)
+  0061: TnWheelAssembly.InitializeSuspension()
+  0067: TnWheelAssembly.InitializeTire()
+  006d: TnWheelAssembly.AddBlueprintObservers()
+  0073: return nothing
+  0075: <eos>
+
+function TnWheelAssembly.Shutdown  (script 9 bytes)
+  0000: TnWheelAssembly.RemoveBlueprintObservers()
+  0006: return nothing
+  0008: <eos>
+
+function TnWheelAssembly.Update  (script 93 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: TnWheelAssembly.UpdateTransform()
+  0013: TnWheelAssembly.UpdateSuspension(DeltaTime)
+  001e: TnWheelAssembly.UpdateSteering(Steering)
+  0029: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0049
+  0047: return nothing
+  0049: TnWheelAssembly.UpdateTire(DeltaTime, Drifting)
+  005a: return nothing
+  005c: <eos>
+
+function TnWheelAssembly.UpdateTransform  (script 269 bytes)
+  0000: Location = self._RigidBody.get_Location()
+  001a: Rotation = self._RigidBody.get_Rotation()
+  0034: self._LocalToWorldTransform.Orientation = obj'Core.Math'.static.TransformRotator(obj'Core.Math'.static.MakeRotator(0, cast44((self._SteeringAngle * 10430.21875)), 0), Rotation)
+  0080: self._LocalToWorldTransform.Position = ((get_LocalPosition() >> Rotation) + Location)
+  00aa: self._WorldToLocalTransform = obj'Core.Math'.static.Invert(self._LocalToWorldTransform)
+  00c8: self._LocalSpaceVelocity = obj'Core.Math'.static.RotateVector(self._RigidBody.CalculatePointVelocity(self._LocalToWorldTransform.Position), self._WorldToLocalTransform)
+  010a: return nothing
+  010c: <eos>
+
+function TnWheelAssembly.UpdateSuspension  (script 168 bytes)
+  0000: self._Suspension.Update(DeltaTime, get_Transform().Position, obj'Core.Math'.static.RotateVector(vect(0,0,-1), get_Transform()))
+  0057: self._RigidBody.ApplyLocalForce(obj'Core.Math'.static.MakeVector(0.0, 0.0, self._Suspension.get_Force()), get_LocalPosition())
+  00a5: return nothing
+  00a7: <eos>
+
+function TnWheelAssembly.UpdateTire  (script 248 bytes)
+  0000: self._Tire._LateralForceScale = (Drifting ? self._Blueprint.DriftFrictionScale : 1.0)
+  002d: self._Tire.Update(DeltaTime, self._LocalSpaceVelocity.Y, obj'Core.Math'.static.FMax(0.0, self._Suspension.get_Force()))
+  0078: self._RigidBody.ApplyLocalForce(obj'Core.Math'.static.MakeVector(0.0, self._Tire._LateralForce, 0.0), (get_LocalPosition() + obj'Core.Math'.static.MakeVector(0.0, 0.0, -self._Suspension.get_Length())))
+  00f5: return nothing
+  00f7: <eos>
+
+function TnWheelAssembly.UpdateSteering  (script 37 bytes)
+  0000: self._SteeringAngle = ((Steering * self._Blueprint.MaxSteeringAngle) * 0.0174533)
+  0022: return nothing
+  0024: <eos>
+
+function TnWheelAssembly.AddBlueprintObservers  (script 81 bytes)
+  0000: if !((obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor() == false)) goto 0x0029
+  0027: return nothing
+  0029: self._Blueprint.SuspensionBlueprint.AddAssetChangedObserver(delegate.OnSuspensionBlueprintChanged)
+  004e: return nothing
+  0050: <eos>
+
+function TnWheelAssembly.RemoveBlueprintObservers  (script 116 bytes)
+  0000: if !((obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor() == false)) goto 0x0029
+  0027: return nothing
+  0029: if !(((self._Blueprint == none) || (self._Blueprint.SuspensionBlueprint == none))) goto 0x004c
+  004a: return nothing
+  004c: self._Blueprint.SuspensionBlueprint.RemoveAssetChangedObserver(delegate.OnSuspensionBlueprintChanged)
+  0071: return nothing
+  0073: <eos>
+
+function TnWheelAssembly.OnSuspensionBlueprintChanged  (script 9 bytes)
+  0000: TnWheelAssembly.InitializeSuspension()
+  0006: return nothing
+  0008: <eos>
+
+function TnWheelAssembly.OnTireBlueprintChanged  (script 9 bytes)
+  0000: TnWheelAssembly.InitializeTire()
+  0006: return nothing
+  0008: <eos>
+
+function TnWheelAssembly.InitializeSuspension  (script 60 bytes)
+  0000: self._Suspension.Initialize(self._Owner, self._Blueprint.SuspensionBlueprint, self._Blueprint.WheelRadius, self._MassShare)
+  0039: return nothing
+  003b: <eos>
+
+function TnWheelAssembly.InitializeTire  (script 70 bytes)
+  0000: self._Tire.Initialize(self._Blueprint.TireFrictionCoefficient, ((self._MassShare * -self._Owner.GetGravityZ()) * cast3f(2)))
+  0043: return nothing
+  0045: <eos>

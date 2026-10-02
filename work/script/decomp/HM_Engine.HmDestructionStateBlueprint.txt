@@ -1,0 +1,31 @@
+function HmDestructionStateBlueprint.CheckForErrors  (script 81 bytes)
+  0000: CheckForErrors()
+  0006: foreach self.LinkBlueprints(LinkBlueprint,) (end 0x0029)
+  0015: LinkBlueprint.CheckForErrors()
+  0028: iternext
+  0029: iterpop
+  002a: foreach self.EffectFactories(EffectFactory,) (end 0x004d)
+  0039: EffectFactory.CheckForErrors()
+  004c: iternext
+  004d: iterpop
+  004e: return nothing
+  0050: <eos>
+
+function HmDestructionStateBlueprint.AddCookingOptions  (script 44 bytes)
+  0000: foreach self.EffectFactories(EffectFactory,) (end 0x0028)
+  000f: EffectFactory.AddCookingOptions(Options)
+  0027: iternext
+  0028: iterpop
+  0029: return nothing
+  002b: <eos>
+
+function HmDestructionStateBlueprint.PostLoad  (script 73 bytes)
+  0000: PostLoad()
+  0006: I = 0
+  000d: if !((I < self.EffectFactories.Length)) goto 0x0046
+  001d: if !((I[self.EffectFactories] == none)) goto 0x003c
+  002e: self.EffectFactories.Remove(SubtractSubtract_Int(I),1)
+  003c: AddAdd_PreInt(I)
+  0043: goto 0x000d
+  0046: return nothing
+  0048: <eos>

@@ -1,0 +1,72 @@
+function TnAiActionStampede.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionStampedeBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionStampede.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._MeleeService = TnMeleeService(GetService('TnMeleeService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionStampede.OnSetUpConditions  (script 151 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((cast3a(cast3d(get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateTargetIsDead'))) < cast3a(self._Blueprint.MinRange))) goto 0x0060
+  005e: return false
+  0060: if !(!self._TransformerController.ActorReachable(Target)) goto 0x007f
+  007d: return false
+  007f: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0090: return return
+  0096: <eos>
+
+function TnAiActionStampede.OnStart  (script 199 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: self._TransformerController.MoveTowardActor(self._Target, none, delegate.FailCallback, delegate.FailCallback)
+  0069: self._TransformerController.get_TransformerPawn().SetSpeedMultiplier(self._Blueprint.SpeedMultiplier, self)
+  0099: SetCharacterState(0)
+  00a4: self._IsLockedOn = false
+  00ac: self._HasAttacked = false
+  00b4: return OnStart(ExpectedEffects)
+  00c0: return return
+  00c6: <eos>
+
+function TnAiActionStampede.OnUpdate  (script 207 bytes)
+  0000: DistanceToTargetSq = obj'Core.Math'.static.VSizeSq((self._Target.Location - self._TransformerPawn.Location))
+  0037: if !((DistanceToTargetSq < (self._Blueprint.LockOnDistance * self._Blueprint.LockOnDistance))) goto 0x00b7
+  005f: if !(self._IsLockedOn) goto 0x0071
+  0068: TnAiActionStampede.AttemptAttack()
+  006e: goto 0x00b7
+  0071: self._IsLockedOn = true
+  0079: self._TargetLocation = self._Target.Location
+  008d: self._TransformerController.MoveToPosition(self._TargetLocation, delegate.FailCallback, delegate.StartAttack)
+  00b7: return OnUpdate(ExpectedEffects, DeltaTime)
+  00c8: return return
+  00ce: <eos>
+
+function TnAiActionStampede.OnFinish  (script 79 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._TransformerController.get_TransformerPawn().RemoveSpeedMultiplier(self)
+  002d: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTaunted', false, )
+  004c: return nothing
+  004e: <eos>
+
+function TnAiActionStampede.AttemptAttack  (script 101 bytes)
+  0000: DistanceToTargetSq = obj'Core.Math'.static.VSizeSq((self._TargetLocation - self._TransformerPawn.Location))
+  002e: if !((DistanceToTargetSq > (self._Blueprint.AttackTargetDistance * self._Blueprint.AttackTargetDistance))) goto 0x0058
+  0056: return nothing
+  0058: StartAttack()
+  0062: return nothing
+  0064: <eos>
+
+function TnAiActionStampede.StartAttack  (script 125 bytes)
+  0000: if !(self._HasAttacked) goto 0x000b
+  0009: return nothing
+  000b: AttackActor = TnPawn(self._TransformerPawn.Trace(HitLocation, HitNormal, none, self._TargetLocation, , , , , , ))
+  0038: AttackType = ((AttackActor == none) ? 7 : 6)
+  004f: self._MeleeService.StartMeleeAttack(AttackType, none, delegate.FailCallback)
+  0072: self._HasAttacked = true
+  007a: return nothing
+  007c: <eos>

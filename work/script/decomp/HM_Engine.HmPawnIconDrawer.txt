@@ -1,0 +1,117 @@
+function HmPawnIconDrawer.set_IconSize  (script 14 bytes)
+  0000: self._IconSize = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmPawnIconDrawer.Initialize  (script 14 bytes)
+  0000: self._OwnerPawn = OwnerPawn
+  000b: return nothing
+  000d: <eos>
+
+function HmPawnIconDrawer.Reset  (script 11 bytes)
+  0000: self._IconRows.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmPawnIconDrawer.AddIcon  (script 160 bytes)
+  0000: default=0
+  0006: if !((IconTexture == none)) goto 0x0013
+  0011: return nothing
+  0013: Description.IconTexture = IconTexture
+  0029: Description.Alpha = cast3d(((cast3a(IconDrawMode) == cast3a(0)) ? 255 : 100))
+  0052: Index = HmPawnIconDrawer.FindRowIndex(RowIndex)
+  0063: Row = Index[self._IconRows]
+  0074: Row.IconDescriptions.AddItem(Description)
+  008c: Index[self._IconRows] = Row
+  009d: return nothing
+  009f: <eos>
+
+function HmPawnIconDrawer.AddPersistentIcon  (script 178 bytes)
+  0000: if !((IconTexture == none)) goto 0x000d
+  000b: return nothing
+  000d: Index = self._PersistentIcons.IconDescriptions.Find('IconTexture',IconTexture)
+  0034: if !((Index == -1)) goto 0x0089
+  0043: Description.IconTexture = IconTexture
+  0059: Description.Alpha = cast3d(255)
+  006e: self._PersistentIcons.IconDescriptions.AddItem(Description)
+  0086: goto 0x00af
+  0089: Index[self._PersistentIcons.IconDescriptions].Alpha = cast3d(255)
+  00af: return nothing
+  00b1: <eos>
+
+function HmPawnIconDrawer.DrawToCanvas  (script 540 bytes)
+  0000: if !((self._OwnerPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: ProjectedLocation = HudCanvas.Project((self._OwnerPawn.Location + (vect(0,0,1.5) * self._OwnerPawn.CylinderComponent.CollisionHeight)))
+  005c: if !((ProjectedLocation.Z < cast3f(0))) goto 0x0076
+  0074: return nothing
+  0076: Width = HmPawnIconDrawer.CalculateWidth()
+  0082: Height = HmPawnIconDrawer.CalculateHeight()
+  008e: ProjectedLocation.X = (ProjectedLocation.X - (cast3f(Width) * 0.5))
+  00bf: ProjectedLocation.Y = (ProjectedLocation.Y - cast3f(Height))
+  00e9: HudCanvas.SetPos((ProjectedLocation.X - cast3f(4)), (ProjectedLocation.Y - cast3f(4)))
+  0128: HudCanvas.SetDrawColor(0, 0, 0, 128)
+  0143: if !(((self._IconRows.Length > 0) || (self._PersistentIcons.IconDescriptions.Length > 0))) goto 0x019a
+  0168: HudCanvas.DrawRect(cast3f((Width + (4 * 2))), cast3f((Height + (4 * 2))), )
+  019a: if !((self._PersistentIcons.IconDescriptions.Length > 0)) goto 0x01d2
+  01b1: RowOffset = 1
+  01b8: HmPawnIconDrawer.DrawRowToCanvas(HudCanvas, self._PersistentIcons, ProjectedLocation, RowOffset)
+  01d2: I = 0
+  01d9: if !((I < self._IconRows.Length)) goto 0x0213
+  01e9: HmPawnIconDrawer.DrawRowToCanvas(HudCanvas, I[self._IconRows], ProjectedLocation, RowOffset)
+  0209: AddAdd_PreInt(I)
+  0210: goto 0x01d9
+  0213: HmPawnIconDrawer.FadePersistentIcons()
+  0219: return nothing
+  021b: <eos>
+
+function HmPawnIconDrawer.DrawRowToCanvas  (script 310 bytes)
+  0000: J = 0
+  0007: if !((J < Row.IconDescriptions.Length)) goto 0x0133
+  0022: Description = J[Row.IconDescriptions]
+  003e: HudCanvas.DrawColor = MakeColor(cast3d(255), cast3d(255), cast3d(255), Description.Alpha)
+  0073: HudCanvas.SetPos((Location.X + (cast3f(J) * (self._IconSize + cast3f(4)))), (Location.Y + (cast3f((Row.Index + RowOffset)) * (self._IconSize + cast3f(4)))))
+  00e4: HudCanvas.DrawTexture(Description.IconTexture, (self._IconSize / cast3f(Description.IconTexture.SizeX)))
+  0129: AddAdd_PreInt(J)
+  0130: goto 0x0007
+  0133: return nothing
+  0135: <eos>
+
+function HmPawnIconDrawer.FindRowIndex  (script 101 bytes)
+  0000: Index = self._IconRows.Find('Index',RowIndex)
+  001c: if !((Index != -1)) goto 0x0031
+  002b: return Index
+  0031: IconRow.Index = RowIndex
+  0047: self._IconRows.AddItem(IconRow)
+  0054: return (self._IconRows.Length - 1)
+  005e: return return
+  0064: <eos>
+
+function HmPawnIconDrawer.CalculateHeight  (script 81 bytes)
+  0000: NumRows = (((self._PersistentIcons.IconDescriptions.Length > 0) ? 1 : 0) + self._IconRows.Length)
+  0029: return cast44(((cast3f(NumRows) * self._IconSize) + cast3f(((NumRows - 1) * 4))))
+  004a: return return
+  0050: <eos>
+
+function HmPawnIconDrawer.CalculateWidth  (script 141 bytes)
+  0000: WidestIconCount = self._PersistentIcons.IconDescriptions.Length
+  0017: I = 0
+  001e: if !((I < self._IconRows.Length)) goto 0x0065
+  002e: WidestIconCount = obj'Core.Math'.static.Max(WidestIconCount, I[self._IconRows].IconDescriptions.Length)
+  005b: AddAdd_PreInt(I)
+  0062: goto 0x001e
+  0065: return cast44(((cast3f(WidestIconCount) * self._IconSize) + cast3f(((WidestIconCount - 1) * 4))))
+  0086: return return
+  008c: <eos>
+
+function HmPawnIconDrawer.FadePersistentIcons  (script 241 bytes)
+  0000: if !((J < self._PersistentIcons.IconDescriptions.Length)) goto 0x00ee
+  001b: Alpha = J[self._PersistentIcons.IconDescriptions].Alpha
+  0042: if !((cast3a(Alpha) == 0)) goto 0x0069
+  004f: self._PersistentIcons.IconDescriptions.Remove(J,1)
+  0066: goto 0x00eb
+  0069: J[self._PersistentIcons.IconDescriptions].Alpha = cast43(obj'Core.Math'.static.FMax(0.0, (cast3c(J[self._PersistentIcons.IconDescriptions].Alpha) - (obj'Engine.Engine'.static.GetCurrentWorldInfo().DeltaSeconds * cast3f(255)))))
+  00e4: AddAdd_PreInt(J)
+  00eb: goto 0x0000
+  00ee: return nothing
+  00f0: <eos>

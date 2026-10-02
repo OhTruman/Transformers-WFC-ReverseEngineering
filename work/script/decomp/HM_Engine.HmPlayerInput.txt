@@ -1,0 +1,266 @@
+function HmPlayerInput.get_CameraYaw  (script 13 bytes)
+  0000: return self._CameraYaw
+  0006: return return
+  000c: <eos>
+
+function HmPlayerInput.set_CameraYaw  (script 14 bytes)
+  0000: self._CameraYaw = self._CameraYaw
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.get_CameraPitch  (script 13 bytes)
+  0000: return self._CameraPitch
+  0006: return return
+  000c: <eos>
+
+function HmPlayerInput.set_CameraPitch  (script 14 bytes)
+  0000: self._CameraPitch = self._CameraPitch
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.get_CameraForward  (script 13 bytes)
+  0000: return self._CameraForward
+  0006: return return
+  000c: <eos>
+
+function HmPlayerInput.set_CameraForward  (script 14 bytes)
+  0000: self._CameraForward = self._CameraForward
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.get_CameraStrafe  (script 13 bytes)
+  0000: return self._CameraStrafe
+  0006: return return
+  000c: <eos>
+
+function HmPlayerInput.set_CameraStrafe  (script 14 bytes)
+  0000: self._CameraStrafe = self._CameraStrafe
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.set_MouseX  (script 14 bytes)
+  0000: self.aMouseX = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.set_MouseY  (script 14 bytes)
+  0000: self.aMouseY = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.set_InputGenerator  (script 14 bytes)
+  0000: self._InputGenerator = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.get_IsGeneratingInput  (script 16 bytes)
+  0000: return (self._InputGenerator != none)
+  0009: return return
+  000f: <eos>
+
+function HmPlayerInput.Initialized  (script 16 bytes)
+  0000: Initialized()
+  0006: self.KeyDownCount = 0
+  000d: return nothing
+  000f: <eos>
+
+function HmPlayerInput.ShouldDisableTargetStickiness  (script 29 bytes)
+  0000: return (self.DisableTargetStickinessUnderMouseControl && IsUnderMouseAndKeyboardControl())
+  0016: return return
+  001c: <eos>
+
+function HmPlayerInput.IsUnderMouseAndKeyboardControl  (script 59 bytes)
+  0000: return (self._MouseMoving || (HmPlayerInput.IsKeyDown() && ((self.RawJoyLookUp == 0.0) && (self.RawJoyLookRight == 0.0))))
+  0034: return return
+  003a: <eos>
+
+function HmPlayerInput.TransformFromCameraToPawnSpace  (script 156 bytes)
+  0000: camSpace.X = self.aBaseY
+  0016: camSpace.Y = self.aStrafe
+  002c: camSpace.Z = 0.0
+  0042: pawnSpace = TransformFromCameraToPawnSpace2D(camSpace)
+  0057: self.aBaseY = pawnSpace.X
+  006d: self.aStrafe = pawnSpace.Y
+  0083: self.aBaseX = 0.0
+  008e: self.aForward = 0.0
+  0099: return nothing
+  009b: <eos>
+
+function HmPlayerInput.TransformFromCameraToPawnSpace2D  (script 149 bytes)
+  0000: if !((get_Outer().Pawn == none)) goto 0x0018
+  0012: return cameraSpace
+  0018: ControlRotation = self.CurrentControlRotation
+  0023: ControlRotation.Pitch = 0
+  0035: ControlRotation.Roll = 0
+  0047: Result = ((cameraSpace >> ControlRotation) << get_Outer().Pawn.Rotation)
+  0072: Result.Z = 0.0
+  0088: return Result
+  008e: return return
+  0094: <eos>
+
+function HmPlayerInput.GetRawJoyInPawnSpace  (script 89 bytes)
+  0000: camSpace.X = self.RawJoyUp
+  0016: camSpace.Y = self.RawJoyRight
+  002c: camSpace.Z = 0.0
+  0042: return TransformFromCameraToPawnSpace2D(camSpace)
+  0052: return return
+  0058: <eos>
+
+function HmPlayerInput.GetRawJoyLook  (script 79 bytes)
+  0000: rawJoyLook.X = self.RawJoyLookUp
+  0016: rawJoyLook.Y = self.RawJoyLookRight
+  002c: rawJoyLook.Z = 0.0
+  0042: return rawJoyLook
+  0048: return return
+  004e: <eos>
+
+function HmPlayerInput.ApplyDeadZone  (script 248 bytes)
+  0000: InputVector = obj'Core.Math'.static.MakeVector(Right, Up, 0.0)
+  0028: InputVectorMag = obj'Core.Math'.static.VSize(InputVector)
+  003e: if !((InputVectorMag < self.DeadZone)) goto 0x007c
+  004d: InputVector.X = 0.0
+  0063: InputVector.Y = 0.0
+  0079: goto 0x00c9
+  007c: InputDirection = obj'Core.Math'.static.Normal(InputVector)
+  0092: InputVector = ((InputDirection * (obj'Core.Math'.static.FMin(1.0, InputVectorMag) - self.DeadZone)) / (1.0 - self.DeadZone))
+  00c9: Right = InputVector.X
+  00df: Up = InputVector.Y
+  00f5: return nothing
+  00f7: <eos>
+
+function HmPlayerInput.ApplySpazDamp  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerInput.UpdateControlRotation  (script 14 bytes)
+  0000: self.CurrentControlRotation = CamRot
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerInput.CalculateCameraRotation  (script 192 bytes)
+  0000: MouseVector.X = MouseX
+  0016: MouseVector.Y = MouseY
+  002c: MouseMagnitudeSq = obj'Core.Math'.static.VSizeSq2D(MouseVector)
+  004a: if !((MouseMagnitudeSq > 0.0)) goto 0x009e
+  0059: self._MouseMoving = true
+  0061: self._CameraYaw = (self.MouseCameraSensitivityX * MouseVector.X)
+  007e: self._CameraPitch = (self.MouseCameraSensitivityY * MouseVector.Y)
+  009b: goto 0x00a6
+  009e: self._MouseMoving = false
+  00a6: if !(self.bInvertMouse) goto 0x00bd
+  00af: (self._CameraPitch *= cast3f(-1))
+  00bd: return nothing
+  00bf: <eos>
+
+function HmPlayerInput.PreProcessInput  (script 595 bytes)
+  0000: if !((self._InputGenerator != none)) goto 0x0024
+  000b: self._InputGenerator.Update(DeltaTime, self)
+  0024: HmPlayerInput.ApplyDeadZone(self.aStrafe, self.aBaseY)
+  0034: HmPlayerInput.ApplyDeadZone(self.aTurn, self.aLookUp)
+  0044: ApplySpazDamp(DeltaTime)
+  0058: self._CameraForward = self.aBaseY
+  0063: self._CameraStrafe = self.aStrafe
+  006e: self._CameraYaw = self.aTurn
+  0079: self._CameraPitch = -self.aLookUp
+  0086: if !(get_Outer().IsMoveInputIgnored()) goto 0x00b0
+  009a: self.aBaseY = 0.0
+  00a5: self.aStrafe = 0.0
+  00b0: if !(get_Outer().IsLookInputIgnored()) goto 0x00da
+  00c4: self.aTurn = 0.0
+  00cf: self.aLookUp = 0.0
+  00da: self.RawJoyUp = self.aBaseY
+  00e5: self.RawJoyRight = self.aStrafe
+  00f0: self.RawJoyLookRight = self.aTurn
+  00fb: self.RawJoyLookUp = self.aLookUp
+  0106: HmPlayerInput.CalculateCameraRotation(self.aMouseX, self.aMouseY)
+  0116: if !((get_Outer().Pawn != none)) goto 0x0148
+  0128: PC = PlayerController(get_Outer().Pawn.Controller)
+  0148: if !(((PC != none) && (get_Outer().PlayerCamera != none))) goto 0x01dd
+  0167: HmPlayerController(PC).GetRampedLookRates(DeltaTime, self.RawJoyLookRight, self.RawJoyLookUp, self.LookRightScale, self.LookUpScale)
+  0198: get_Outer().PlayerCamera.GetCameraViewPoint(tmp, CamRotation)
+  01bc: UpdateControlRotation(CamRotation, DeltaTime)
+  01d0: TransformFromCameraToPawnSpace()
+  01da: goto 0x0205
+  01dd: self.LookUpScale = obj'HmPlayerInput'.static.default.LookUpScale
+  01f1: self.LookRightScale = obj'HmPlayerInput'.static.default.LookRightScale
+  0205: if !((((HmPlayerController(PC) != none) && !HmPlayerController(PC).ShouldStrafe()) && (DeltaTime > 0.0))) goto 0x0250
+  0245: self.aTurn = self.aStrafe
+  0250: return nothing
+  0252: <eos>
+
+function HmPlayerInput.GetNormalizedTurn  (script 41 bytes)
+  0000: return obj'Core.Math'.static.FClamp((self.aTurn / self.LookRightScale), -1.0, 1.0)
+  0022: return return
+  0028: <eos>
+
+function HmPlayerInput.GetNormalizedLookUp  (script 41 bytes)
+  0000: return obj'Core.Math'.static.FClamp((self.aLookUp / self.LookUpScale), -1.0, 1.0)
+  0022: return return
+  0028: <eos>
+
+function HmPlayerInput.SetCinematicButtonsDisabled  (script 16 bytes)
+  0000: self.CinematicButtonsDisabled = DisableButtons
+  000d: return nothing
+  000f: <eos>
+
+function HmPlayerInput.AllowKeyCommand  (script 34 bytes)
+  0000: if !(self.CinematicButtonsDisabled) goto 0x0019
+  0009: if !(HmPlayerInput.IsInputBlockedInCinematicMode(Command)) goto 0x0019
+  0017: return false
+  0019: return true
+  001b: return return
+  0021: <eos>
+
+function HmPlayerInput.IsInputBlockedInCinematicMode  (script 78 bytes)
+  0000: I = 0
+  0007: if !((I < self.CommandsAllowedInCinematicMode.Length)) goto 0x0045
+  0017: if !((obj'Core.Strings'.static.InStr(Command, I[self.CommandsAllowedInCinematicMode], ) >= 0)) goto 0x003b
+  0039: return false
+  003b: AddAdd_PreInt(I)
+  0042: goto 0x0007
+  0045: return true
+  0047: return return
+  004d: <eos>
+
+function HmPlayerInput.IsKeyDown  (script 16 bytes)
+  0000: return (self.KeyDownCount > 0)
+  0009: return return
+  000f: <eos>
+
+function HmPlayerInput.InputKey  (script 139 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: if !((bGamepad == true)) goto 0x0020
+  0016: self.KeyDownCount = 0
+  001d: goto 0x0063
+  0020: if !((cast3a(EventType) == cast3a(0))) goto 0x003a
+  0030: AddAdd_Int(self.KeyDownCount)
+  0037: goto 0x0063
+  003a: if !((cast3a(EventType) == cast3a(1))) goto 0x0063
+  004a: SubtractSubtract_Int(self.KeyDownCount)
+  0051: if !((self.KeyDownCount < 0)) goto 0x0063
+  005c: self.KeyDownCount = 0
+  0063: return InputKey(ControllerId, Key, EventType, AmountDepressed, bGamepad)
+  0084: return return
+  008a: <eos>
+
+function HmPlayerInput.DisplayDebug  (script 587 bytes)
+  0000: HUD.Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  002c: (out_YPos += out_YL)
+  0038: (out_YPos += out_YL)
+  0044: HUD.Canvas.DrawTextNormal(("MouseSmoothing:" @ cast54(self.bEnableMouseSmoothing)), , , )
+  007e: (out_YPos += out_YL)
+  008a: HUD.Canvas.DrawTextNormal(("MouseSensitivity:" @ cast55(self.MouseSensitivity)), , , )
+  00c5: (out_YPos += out_YL)
+  00d1: HUD.Canvas.DrawTextNormal(("MouseCameraSensitivityX:" @ cast55(self.MouseCameraSensitivityX)), , , )
+  0113: (out_YPos += out_YL)
+  011f: HUD.Canvas.DrawTextNormal(("MouseCameraSensitivityY:" @ cast55(self.MouseCameraSensitivityY)), , , )
+  0161: (out_YPos += out_YL)
+  016d: HUD.Canvas.DrawTextNormal(("CameraYaw:" @ cast55(self._CameraYaw)), , , )
+  01a1: (out_YPos += out_YL)
+  01ad: HUD.Canvas.DrawTextNormal(("CameraPitch:" @ cast55(self._CameraPitch)), , , )
+  01e3: (out_YPos += out_YL)
+  01ef: HUD.Canvas.DrawTextNormal(("ShouldDisableTargetStickiness:" @ cast54(ShouldDisableTargetStickiness())), , , )
+  023c: (out_YPos += out_YL)
+  0248: return nothing
+  024a: <eos>

@@ -1,0 +1,11 @@
+function TnBuffFastAbilityCooldown.Apply  (script 57 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: self.OwnerPawn.AbilityManager.SetCooldownMultiplier(self.CooldownMultiplier)
+  0036: return nothing
+  0038: <eos>
+
+function TnBuffFastAbilityCooldown.Unapply  (script 42 bytes)
+  0000: TnBuff.Unapply()
+  0006: self.OwnerPawn.AbilityManager.SetCooldownMultiplier(1.0)
+  0027: return nothing
+  0029: <eos>

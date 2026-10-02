@@ -1,0 +1,38 @@
+function TnAiHealthMonitorMovementModifier.get_Blueprint  (script 18 bytes)
+  0000: return TnAiHealthMonitorMovementModifierBlueprint(self._Blueprint)
+  000b: return return
+  0011: <eos>
+
+function TnAiHealthMonitorMovementModifier.SetMovementCapabilites  (script 153 bytes)
+  0000: MC = self._OwningPawn._PrimaryMovementCapabilities
+  0014: MC.bDisabled = Modifier.PrimaryDisable
+  0037: self._OwningPawn._PrimaryMovementCapabilities = MC
+  004b: MC = self._OwningPawn._SecondaryMovementCapabilities
+  005f: MC.bDisabled = Modifier.SecondaryDisable
+  0082: self._OwningPawn._SecondaryMovementCapabilities = MC
+  0096: return nothing
+  0098: <eos>
+
+function TnAiHealthMonitorMovementModifier.OnInitialize  (script 148 bytes)
+  0000: CurrentStatus = cast3d(self._OwningController.AiWorldState.GetIntValue(obj'TnAiWorldStateHealthStatus'))
+  0029: self._PrevStatus = CurrentStatus
+  0034: FoundIdx = TnAiHealthMonitorMovementModifier.get_Blueprint().Modifiers.Find('Status',CurrentStatus)
+  005a: if !((FoundIdx == -1)) goto 0x006b
+  0069: return nothing
+  006b: Modifier = FoundIdx[TnAiHealthMonitorMovementModifier.get_Blueprint().Modifiers]
+  0086: TnAiHealthMonitorMovementModifier.SetMovementCapabilites(Modifier)
+  0091: return nothing
+  0093: <eos>
+
+function TnAiHealthMonitorMovementModifier.OnUpdate  (script 169 bytes)
+  0000: CurrentStatus = cast3d(self._OwningController.AiWorldState.GetIntValue(obj'TnAiWorldStateHealthStatus'))
+  0029: if !((cast3a(self._PrevStatus) == cast3a(CurrentStatus))) goto 0x003e
+  003c: return nothing
+  003e: self._PrevStatus = CurrentStatus
+  0049: FoundIdx = TnAiHealthMonitorMovementModifier.get_Blueprint().Modifiers.Find('Status',CurrentStatus)
+  006f: if !((FoundIdx == -1)) goto 0x0080
+  007e: return nothing
+  0080: Modifier = FoundIdx[TnAiHealthMonitorMovementModifier.get_Blueprint().Modifiers]
+  009b: TnAiHealthMonitorMovementModifier.SetMovementCapabilites(Modifier)
+  00a6: return nothing
+  00a8: <eos>

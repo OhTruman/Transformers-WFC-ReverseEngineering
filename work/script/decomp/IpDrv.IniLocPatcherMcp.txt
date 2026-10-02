@@ -1,0 +1,62 @@
+function IniLocPatcherMcp.Init  (script 122 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0077
+  0024: self.Downloader = OnlineTitleFileDownloadMcp(OnlineSub.GetNamedInterface(self.McpDownloaderName))
+  0047: if !((self.Downloader != none)) goto 0x0071
+  0052: self.Downloader.AddReadTitleFileCompleteDelegate(delegate.OnReadFileComplete)
+  006e: goto 0x0077
+  0071: Init()
+  0077: return nothing
+  0079: <eos>
+
+function IniLocPatcherMcp.DownloadFiles  (script 186 bytes)
+  0000: if !((self.Downloader != none)) goto 0x00b1
+  000b: Index = 0
+  0012: if !((Index < self.Files.Length)) goto 0x00ae
+  0022: if !((cast3a(Index[self.Files].ReadState) == cast3a(0))) goto 0x00a4
+  0043: if !(self.Downloader.ReadTitleFile(Index[self.Files].Filename)) goto 0x008b
+  006f: Index[self.Files].ReadState = 1
+  0088: goto 0x00a4
+  008b: Index[self.Files].ReadState = 3
+  00a4: AddAdd_Int(Index)
+  00ab: goto 0x0012
+  00ae: goto 0x00b7
+  00b1: DownloadFiles()
+  00b7: return nothing
+  00b9: <eos>
+
+function IniLocPatcherMcp.OnReadFileComplete  (script 302 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.Files.Length)) goto 0x012b
+  0017: if !((Index[self.Files].Filename == Filename)) goto 0x0121
+  0037: if !((cast3a(Result) == cast3a(1))) goto 0x00b3
+  0047: Index[self.Files].ReadState = 2
+  0060: if !(self.Downloader.GetTitleFileContents(Filename, FileData)) goto 0x0097
+  0080: ProcessIniLocFile(Filename, FileData)
+  0094: goto 0x00b0
+  0097: Index[self.Files].ReadState = 3
+  00b0: goto 0x0121
+  00b3: LogInternal((("Failed to download the file (" $ Index[self.Files].Filename) $ ") from MCP downloader"), , , )
+  0108: Index[self.Files].ReadState = 3
+  0121: AddAdd_Int(Index)
+  0128: goto 0x0007
+  012b: return nothing
+  012d: <eos>
+
+function IniLocPatcherMcp.AddReadFileDelegate  (script 63 bytes)
+  0000: if !((self.Downloader != none)) goto 0x0031
+  000b: if !((ReadTitleFileCompleteDelegate != emptydelegate)) goto 0x002e
+  0015: <endparms>
+  0016: self.Downloader.AddReadTitleFileCompleteDelegate(ReadTitleFileCompleteDelegate)
+  002e: goto 0x003c
+  0031: AddReadFileDelegate(ReadTitleFileCompleteDelegate)
+  003c: return nothing
+  003e: <eos>
+
+function IniLocPatcherMcp.ClearReadFileDelegate  (script 52 bytes)
+  0000: if !((self.Downloader != none)) goto 0x0026
+  000b: self.Downloader.ClearReadTitleFileCompleteDelegate(ReadTitleFileCompleteDelegate)
+  0023: goto 0x0031
+  0026: ClearReadFileDelegate(ReadTitleFileCompleteDelegate)
+  0031: return nothing
+  0033: <eos>

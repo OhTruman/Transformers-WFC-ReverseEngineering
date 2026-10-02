@@ -1,0 +1,33 @@
+function TnSeqAct_ToggleHealthDisplay.Activated  (script 275 bytes)
+  0000: Activated()
+  0006: foreach self.Targets(Target,) (end 0x010f)
+  0015: ServiceProvider = TnServiceProvider(Target)
+  0025: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x0048
+  0039: TnSeqAct_ToggleHealthDisplay.ThrowHealthServiceError(Target)
+  0044: iternext
+  0045: goto 0x010f
+  0048: HealthDisplayService = TnHealthDisplayService(ServiceProvider.GetService('TnHealthDisplayService'))
+  0070: if !(EqualEqual_InterfaceInterface(HealthDisplayService, TnHealthDisplayService(none))) goto 0x0093
+  0084: TnSeqAct_ToggleHealthDisplay.ThrowHealthServiceError(Target)
+  008f: iternext
+  0090: goto 0x010f
+  0093: switch (GetActionInputType())
+  009f: case 0: (next 0x00bc)
+  00a4: HealthDisplayService.set_IsEnabled(true)
+  00b9: goto 0x010e
+  00bc: case 1: (next 0x00d9)
+  00c1: HealthDisplayService.set_IsEnabled(false)
+  00d6: goto 0x010e
+  00d9: case 2: (next 0x010b)
+  00de: HealthDisplayService.set_IsEnabled(!HealthDisplayService.get_IsEnabled())
+  0108: goto 0x010e
+  010b: default:
+  010e: iternext
+  010f: iterpop
+  0110: return nothing
+  0112: <eos>
+
+function TnSeqAct_ToggleHealthDisplay.ThrowHealthServiceError  (script 79 bytes)
+  0000: LogInternal(((("ERROR: " @ cast56(Target)) @ " does not have a health display service for ") @ cast56(self)), , , )
+  004c: return nothing
+  004e: <eos>

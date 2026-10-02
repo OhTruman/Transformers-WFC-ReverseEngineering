@@ -1,0 +1,20 @@
+function TnMultiKillDetector.get_MultiKillLevel  (script 13 bytes)
+  0000: return self._MultiKillLevel
+  0006: return return
+  000c: <eos>
+
+function TnMultiKillDetector.AddKills  (script 87 bytes)
+  0000: WorldTime = obj'Engine.Engine'.static.GetWorldTime()
+  0019: if !(((WorldTime - self.LastKillTime) <= self.TimeBetweenMultiKills)) goto 0x003e
+  002f: (self._MultiKillLevel += Amount)
+  003b: goto 0x0049
+  003e: self._MultiKillLevel = Amount
+  0049: self.LastKillTime = WorldTime
+  0054: return nothing
+  0056: <eos>
+
+function TnMultiKillDetector.Reset  (script 21 bytes)
+  0000: self._MultiKillLevel = 0
+  0007: self.LastKillTime = 0.0
+  0012: return nothing
+  0014: <eos>

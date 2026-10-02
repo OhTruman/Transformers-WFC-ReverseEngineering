@@ -1,0 +1,56 @@
+function TnSeqAct_SpecialSpawnLogic.Activated  (script 419 bytes)
+  0000: if !(0[self.InputLinks].bHasImpulse) goto 0x0033
+  0016: if !((cast3a(self.ActionState) == cast3a(0))) goto 0x002e
+  0026: self.ActionState = 1
+  002e: return nothing
+  0030: goto 0x01a0
+  0033: if !(1[self.InputLinks].bHasImpulse) goto 0x00fe
+  0049: if !((cast3a(self.ActionState) == cast3a(2))) goto 0x00f1
+  0059: LogInternal((("ERROR:" @ cast56(self)) @ "Attempting to deactivate a Special Spawn Logic action while it is responsible for handling a spawned pawn.  Completing Spawn"), , , )
+  00eb: TnSeqAct_SpecialSpawnLogic.OnSpawnHandled()
+  00f1: self.ActionState = 0
+  00f9: return nothing
+  00fb: goto 0x01a0
+  00fe: if !(2[self.InputLinks].bHasImpulse) goto 0x01a0
+  0115: if !((cast3a(self.ActionState) != cast3a(2))) goto 0x019a
+  0125: LogInternal(((("ERRROR:" @ cast56(self)) @ "Handling spawn when no spawn has happened to be handled.  State is:") @ cast52(self.ActionState)), , , )
+  0188: if !((cast3a(self.ActionState) == cast3a(0))) goto 0x019a
+  0198: return nothing
+  019a: TnSeqAct_SpecialSpawnLogic.OnSpawnHandled()
+  01a0: return nothing
+  01a2: <eos>
+
+function TnSeqAct_SpecialSpawnLogic.IsComplete  (script 16 bytes)
+  0000: return (self.SpawningDude != none)
+  0009: return return
+  000f: <eos>
+
+function TnSeqAct_SpecialSpawnLogic.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSeqAct_SpecialSpawnLogic.UseThisLogicForPlayer  (script 58 bytes)
+  0000: return ((cast3a(self.ActionState) == cast3a(1)) && (self.Character.AiCharacterDataResolved.CharacterName == PlayerCharacterName))
+  0033: return return
+  0039: <eos>
+
+function TnSeqAct_SpecialSpawnLogic.NotifySpawned  (script 88 bytes)
+  0000: if !((cast3a(self.ActionState) != cast3a(1))) goto 0x0012
+  0010: return nothing
+  0012: self.IsAiSpawn = ((PlayerController(C) == none) ? true : false)
+  002d: PopulateLinkedVariableValues()
+  0037: self.SpawningDude = C
+  0042: self.ActionState = 2
+  004a: ActivateOutputLink(0)
+  0055: return nothing
+  0057: <eos>
+
+function TnSeqAct_SpecialSpawnLogic.OnSpawnHandled  (script 96 bytes)
+  0000: PC = TnPlayerController(self.SpawningDude)
+  0010: if !((PC != none)) goto 0x0046
+  001b: TnGame(GetWorldInfo().Game).NotifySpecialSpawnHandled(PC)
+  0046: self.SpawningDude = none
+  004d: self.IsAiSpawn = false
+  0055: self.ActionState = 1
+  005d: return nothing
+  005f: <eos>

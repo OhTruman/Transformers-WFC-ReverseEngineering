@@ -1,0 +1,219 @@
+function Inventory.get_InstigatorController  (script 13 bytes)
+  0000: return self._InstigatorController
+  0006: return return
+  000c: <eos>
+
+function Inventory.RenderOverlays  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Inventory.ActiveRenderOverlays  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Inventory.GetHumanReadableName  (script 13 bytes)
+  0000: return default.ItemName
+  0006: return return
+  000c: <eos>
+
+function Inventory.StaticGetHumanReadableName  (script 13 bytes)
+  0000: return default.ItemName
+  0006: return return
+  000c: <eos>
+
+function Inventory.Destroyed  (script 80 bytes)
+  0000: if !(((Pawn(self.Owner) != none) && (Pawn(self.Owner).InvManager != none))) goto 0x004d
+  002b: Pawn(self.Owner).InvManager.RemoveFromInventory(self)
+  004d: return nothing
+  004f: <eos>
+
+function Inventory.BotDesireability  (script 84 bytes)
+  0000: desire = default.MaxDesireability
+  000b: if !((default.RespawnTime < cast3f(10))) goto 0x0047
+  0019: AlreadyHas = P.FindInventoryType(get_Class(), )
+  0036: if !((AlreadyHas != none)) goto 0x0047
+  0041: return -1.0
+  0047: return desire
+  004d: return return
+  0053: <eos>
+
+function Inventory.DetourWeight  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function Inventory.GiveTo  (script 66 bytes)
+  0000: if !(((Other != none) && (Other.InvManager != none))) goto 0x003f
+  0021: Other.InvManager.AddInventory(self, )
+  003f: return nothing
+  0041: <eos>
+
+function Inventory.AnnouncePickup  (script 63 bytes)
+  0000: Other.HandlePickup(self)
+  0014: if !((self.PickupSound != none)) goto 0x003c
+  001f: Other.PlaySound(self.PickupSound, , , , , )
+  003c: return nothing
+  003e: <eos>
+
+function Inventory.GivenTo  (script 64 bytes)
+  0000: nothing
+  0001: self.Instigator = ThisPawn
+  000c: self._InstigatorController = ThisPawn.Controller
+  0020: ClientGivenTo(ThisPawn, (ThisPawn == none), bDoNotActivate)
+  003d: return nothing
+  003f: <eos>
+
+function Inventory.RequestResendClientGivenTo  (script 32 bytes)
+  0000: ClientGivenTo(self.Instigator, (self.Instigator == none), bDoNotActivate)
+  001d: return nothing
+  001f: <eos>
+
+function Inventory.ClientGivenTo  (script 218 bytes)
+  0000: if !(((NewOwner == none) && !PawnIsNone)) goto 0x0072
+  0018: LogInternal("Error:  ClientGivenTo NewOwner is none and shouldn't be, rerequesting", , , )
+  0064: Inventory.RequestResendClientGivenTo(bDoNotActivate)
+  0070: return nothing
+  0072: SetOwner(NewOwner)
+  007a: self.Instigator = NewOwner
+  0085: if !(((NewOwner != none) && (NewOwner.Controller != none))) goto 0x00d7
+  00a6: self._InstigatorController = NewOwner.Controller
+  00ba: NewOwner.Controller.NotifyAddInventory(self)
+  00d7: return nothing
+  00d9: <eos>
+
+function Inventory.ItemRemovedFromInvManager  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Inventory.DenyPickupQuery  (script 24 bytes)
+  0000: if !((ItemClass == get_Class())) goto 0x000f
+  000d: return true
+  000f: return false
+  0011: return return
+  0017: <eos>
+
+function Inventory.GetCurrentLocationAndRotation  (script 25 bytes)
+  0000: CurrentLocation = self.Location
+  000b: CurrentRotation = self.Rotation
+  0016: return nothing
+  0018: <eos>
+
+function Inventory.TryDroppedPickupBackupSpawn  (script 11 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return none
+  0004: return return
+  000a: <eos>
+
+function Inventory.GetOverrideType  (script 11 bytes)
+  0000: return get_Class()
+  0004: return return
+  000a: <eos>
+
+function Inventory.ShouldOverrideType  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Inventory.ShouldDestroyOnDrop  (script 42 bytes)
+  0000: return ((self.DroppedPickupClass == none) || ((self.DroppedPickupMesh == none) && (self.DroppedPickupParticles == none)))
+  0023: return return
+  0029: <eos>
+
+function Inventory.TryDroppedPickupFirstSpawn  (script 38 bytes)
+  0000: return Spawn(SpawnedPickupClass, , , StartLocation, StartRotation, , , )
+  001f: return return
+  0025: <eos>
+
+function Inventory.DropFrom  (script 567 bytes)
+  0000: nothing
+  0001: if !(((self.Instigator != none) && (self.Instigator.InvManager != none))) goto 0x003f
+  0022: self.Instigator.InvManager.RemoveFromInventory(self)
+  003f: if !(ShouldDestroyOnDrop()) goto 0x0051
+  004c: DestroyActor()
+  004f: return none
+  0051: if !(self.bUseAccurateDropLocationAndRotation) goto 0x0073
+  005a: GetCurrentLocationAndRotation(self.Instigator, StartLocation, StartRotation)
+  0073: ContainingLevel = GetLevelAtLocation(StartLocation)
+  0088: if !((ContainingLevel == none)) goto 0x0113
+  0093: LogInternal((((("Warn: Could not find level for dropped pickup class:" @ cast56(self.DroppedPickupClass)) @ " at location:") @ cast58(StartLocation)) @ " Pickup will not be spawned."), , , )
+  0111: return none
+  0113: P = TryDroppedPickupFirstSpawn(self.DroppedPickupClass, StartLocation, StartRotation)
+  0132: if !((P == none)) goto 0x016c
+  013d: P = TryDroppedPickupBackupSpawn(self.DroppedPickupClass, StartLocation, StartRotation)
+  015c: if !((P == none)) goto 0x016c
+  0167: DestroyActor()
+  016a: return none
+  016c: P.SetPhysics(2, , )
+  0183: P.Inventory = self
+  0193: P.InventoryClass = get_Class()
+  01a5: P.Velocity = StartVelocity
+  01b9: P.Instigator = self.Instigator
+  01cd: P.SetPickupMesh(self.DroppedPickupMesh)
+  01e5: P.SetPickupParticles(self.DroppedPickupParticles)
+  01fd: P.AssociatePickupWithLevel(ContainingLevel)
+  0215: GotoState('None', , , )
+  0223: self.Instigator = none
+  022a: return P
+  0230: return return
+  0236: <eos>
+
+function Inventory.SpawnDroppedPickup  (script 148 bytes)
+  0000: Pickup = Spawner.Spawn(default.DroppedPickupClass, , , SpawnLocation, , , , )
+  0029: Pickup.InventoryClass = get_Class()
+  003b: Pickup.Inventory = Spawner.Spawn(get_Class(), Pickup, , SpawnLocation, , , , )
+  006f: Pickup.SetPickupMesh(default.DroppedPickupMesh)
+  0087: return Pickup
+  008d: return return
+  0093: <eos>
+
+function Inventory.GetLevelAtLocation  (script 85 bytes)
+  0000: HitActor = Trace(HitLoc, HitNorm, none, (TestLocation + self.FindLevelEndOffset), (TestLocation + self.FindLevelStartOffset), false, , , , )
+  0031: if !((HitActor == none)) goto 0x0041
+  003c: return none
+  003e: goto 0x004e
+  0041: return HitActor.get_Outer()
+  004e: return return
+  0054: <eos>
+
+function Inventory.GetLocalString  (script 16 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: return default.PickupMessage
+  0009: return return
+  000f: <eos>
+
+function Inventory.OwnerEvent  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Inventory.InitializeForDrop  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Inventory.PickupWhenTouched  (script 51 bytes)
+  0000: return (default.bPickupWhenTouched && (!default.bPlayerPickupOnly || P.IsHumanControlled()))
+  002c: return return
+  0032: <eos>
+
+function Inventory.GetPickupRating  (script 13 bytes)
+  0000: return default.PickupRating
+  0006: return return
+  000c: <eos>
+
+function Inventory.PickupAllowed  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Inventory.CreatePickupFactoryMesh  (script 50 bytes)
+  0000: if !((default.PickupFactoryMesh == none)) goto 0x000d
+  000b: return none
+  000d: return new(PF, nothing, default.PickupFactoryMesh.get_Class(), default.PickupFactoryMesh, GetRemoteRole)
+  002b: return return
+  0031: <eos>
+
+function Inventory.PostInstantiateFromPickupFactory  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

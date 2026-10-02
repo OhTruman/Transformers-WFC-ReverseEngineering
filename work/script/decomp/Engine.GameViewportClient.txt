@@ -1,0 +1,506 @@
+function GameViewportClient.ResizeViewport  (script 17 bytes)
+  0000: Width
+  0005: Height
+  000a: Fullscreen
+  000f: nothing
+  0010: <eos>
+
+function GameViewportClient.HandleInputKey  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function GameViewportClient.HandleInputAxis  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function GameViewportClient.HandleInputChar  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function GameViewportClient.ConsoleCommand  (script 7 bytes)
+  0000: Command
+  0005: nothing
+  0006: <eos>
+
+function GameViewportClient.GetViewportSize  (script 7 bytes)
+  0000: out_ViewportSize
+  0005: nothing
+  0006: <eos>
+
+function GameViewportClient.IsFullScreenViewport  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GameViewportClient.CreatePlayer  (script 436 bytes)
+  0000: LogInternal(("Creating new player with ControllerId" @ cast53(ControllerId)), 'PlayerManagement', , )
+  003d: assert((get_Outer().LocalPlayerClass != none))
+  0050: NewPlayer = new(get_Outer(), nothing, get_Outer().LocalPlayerClass, nothing, GetRemoteRole)
+  006d: NewPlayer.ViewportClient = self
+  007d: NewPlayer.ControllerId = ControllerId
+  0091: GameViewportClient.AddLocalPlayer(NewPlayer)
+  009c: if !(bSpawnActor) goto 0x0111
+  00a5: if !((cast3a(get_Outer().GetCurrentWorldInfo().NetMode) != cast3a(3))) goto 0x00fe
+  00ca: if !(!NewPlayer.SpawnPlayActor("", OutError)) goto 0x00fb
+  00e9: GameViewportClient.RemoveLocalPlayer(NewPlayer)
+  00f4: NewPlayer = none
+  00fb: goto 0x0111
+  00fe: NewPlayer.SendSplitJoin()
+  0111: if !((OutError != "")) goto 0x0150
+  011d: LogInternal(("Player creation failed with error:" @ OutError), , , )
+  014d: goto 0x01a7
+  0150: LogInternal(((("Successfully created new player with ControllerId" @ cast53(ControllerId)) $ ":") @ cast56(NewPlayer)), 'PlayerManagement', , )
+  01a7: return NewPlayer
+  01ad: return return
+  01b3: <eos>
+
+function GameViewportClient.RemovePlayer  (script 526 bytes)
+  0000: if !((cast3a(ExPlayer.Actor.Role) == cast3a(3))) goto 0x014e
+  0022: LogInternal(((("Removing player" @ cast56(ExPlayer)) @ " with ControllerId") @ cast53(ExPlayer.ControllerId)), 'PlayerManagement', , )
+  0071: ExPlayer.ViewportClient = none
+  0081: if !((ExPlayer.Actor != none)) goto 0x00e5
+  0095: if !((ExPlayer.Actor.Pawn != none)) goto 0x00d0
+  00b2: ExPlayer.Actor.Pawn.DestroyActor()
+  00d0: ExPlayer.Actor.DestroyActor()
+  00e5: GameViewportClient.RemoveLocalPlayer(ExPlayer)
+  00f0: LogInternal(((("Finished removing player " @ cast56(ExPlayer)) @ " with ControllerId") @ cast53(ExPlayer.ControllerId)), 'PlayerManagement', , )
+  0149: return true
+  014b: goto 0x0207
+  014e: LogInternal((((((("Not removing player" @ cast56(ExPlayer)) @ " with ControllerId") @ cast53(ExPlayer.ControllerId)) @ "because player does not have appropriate role (") $ cast57(GetEnum(obj'ReplicatedObject.ENetRole', cast3a(ExPlayer.Actor.Role)))) $ ")"), 'PlayerManagement', , )
+  0205: return false
+  0207: return return
+  020d: <eos>
+
+function GameViewportClient.FindPlayerByControllerId  (script 105 bytes)
+  0000: PlayerIndex = 0
+  0007: if !((PlayerIndex < get_Outer().GamePlayers.Length)) goto 0x0060
+  001e: if !((PlayerIndex[get_Outer().GamePlayers].ControllerId == ControllerId)) goto 0x0056
+  0043: return PlayerIndex[get_Outer().GamePlayers]
+  0056: AddAdd_Int(PlayerIndex)
+  005d: goto 0x0007
+  0060: return none
+  0062: return return
+  0068: <eos>
+
+function GameViewportClient.DebugCreatePlayer  (script 24 bytes)
+  0000: CreatePlayer(ControllerId, Error, true)
+  0015: return nothing
+  0017: <eos>
+
+function GameViewportClient.SSSwapControllers  (script 177 bytes)
+  0000: TmpControllerID = 0[get_Outer().GamePlayers].ControllerId
+  001d: idx = 0
+  0024: if !((idx < (get_Outer().GamePlayers.Length - 1))) goto 0x0082
+  003e: idx[get_Outer().GamePlayers].ControllerId = (idx + 1)[get_Outer().GamePlayers].ControllerId
+  0078: AddAdd_PreInt(idx)
+  007f: goto 0x0024
+  0082: (get_Outer().GamePlayers.Length - 1)[get_Outer().GamePlayers].ControllerId = TmpControllerID
+  00ae: return nothing
+  00b0: <eos>
+
+function GameViewportClient.DebugRemovePlayer  (script 50 bytes)
+  0000: ExPlayer = FindPlayerByControllerId(ControllerId)
+  0015: if !((ExPlayer != none)) goto 0x002f
+  0020: RemovePlayer(ExPlayer)
+  002f: return nothing
+  0031: <eos>
+
+function GameViewportClient.SetSplit  (script 16 bytes)
+  0000: GameViewportClient.SetSplitscreenConfiguration(cast3d(Mode))
+  000d: return nothing
+  000f: <eos>
+
+function GameViewportClient.ShowTitleSafeArea  (script 18 bytes)
+  0000: self.bShowTitleSafeZone = !self.bShowTitleSafeZone
+  000f: return nothing
+  0011: <eos>
+
+function GameViewportClient.SetConsoleTarget  (script 91 bytes)
+  0000: if !(((PlayerIndex >= 0) && (PlayerIndex < get_Outer().GamePlayers.Length))) goto 0x0048
+  0024: self.ViewportConsole.ConsoleTargetPlayer = PlayerIndex[get_Outer().GamePlayers]
+  0045: goto 0x0058
+  0048: self.ViewportConsole.ConsoleTargetPlayer = none
+  0058: return nothing
+  005a: <eos>
+
+function GameViewportClient.Init  (script 423 bytes)
+  0000: assert((get_Outer().ConsoleClass != none))
+  0013: self.ViewportConsole = new(self, nothing, get_Outer().ConsoleClass, nothing, GetRemoteRole)
+  002e: if !((InsertInteraction(self.ViewportConsole, ) == -1)) goto 0x0091
+  0048: OutError = ("Failed to add interaction to GlobalInteractions array:" @ cast56(self.ViewportConsole))
+  008f: return false
+  0091: assert((self.UIControllerClass != none))
+  009d: self.UIController = new(self, nothing, self.UIControllerClass, nothing, GetRemoteRole)
+  00b1: if !((InsertInteraction(self.UIController, ) == -1)) goto 0x0114
+  00cb: OutError = ("Failed to add interaction to GlobalInteractions array:" @ cast56(self.UIController))
+  0112: return false
+  0114: PlayerInteraction = new(self, nothing, obj'PlayerManagerInteraction', nothing, GetRemoteRole)
+  0128: if !((InsertInteraction(PlayerInteraction, ) == -1)) goto 0x018b
+  0142: OutError = ("Failed to add interaction to GlobalInteractions array:" @ cast56(PlayerInteraction))
+  0189: return false
+  018b: return (CreatePlayer(0, OutError, false) != none)
+  01a0: return return
+  01a6: <eos>
+
+function GameViewportClient.InsertInteraction  (script 209 bytes)
+  0000: default=-1
+  0009: Result = -1
+  0014: if !((NewInteraction != none)) goto 0x00c4
+  001f: if !((InIndex == -1)) goto 0x003a
+  002e: InIndex = self.GlobalInteractions.Length
+  003a: if !((InIndex >= 0)) goto 0x0095
+  0045: Result = obj'Core.Math'.static.Clamp(InIndex, 0, self.GlobalInteractions.Length)
+  0062: self.GlobalInteractions.Insert(Result,1)
+  006e: Result[self.GlobalInteractions] = NewInteraction
+  007f: NewInteraction.Init()
+  0092: goto 0x00c4
+  0095: WarnInternal(("Invalid insertion index specified:" @ cast53(InIndex)))
+  00c4: return Result
+  00ca: return return
+  00d0: <eos>
+
+function GameViewportClient.GameSessionEnded  (script 133 bytes)
+  0000: I = 0
+  0007: if !((I < self.GlobalInteractions.Length)) goto 0x003a
+  0017: I[self.GlobalInteractions].NotifyGameSessionEnded()
+  0030: AddAdd_Int(I)
+  0037: goto 0x0007
+  003a: I = 0
+  0041: if !((I < get_Outer().GamePlayers.Length)) goto 0x0082
+  0058: I[get_Outer().GamePlayers].NotifyGameSessionEnded()
+  0078: AddAdd_Int(I)
+  007f: goto 0x0041
+  0082: return nothing
+  0084: <eos>
+
+function GameViewportClient.SetSplitscreenConfiguration  (script 537 bytes)
+  0000: self.SplitscreenType = SplitType
+  000b: switch (get_Outer().GamePlayers.Length)
+  001a: case 0: (next 0x001e)
+  001e: case 1: (next 0x002d)
+  0022: self.SplitscreenType = 0
+  002a: goto 0x00a2
+  002d: case 2: (next 0x0062)
+  0032: if !(((cast3a(self.SplitscreenType) != cast3a(1)) && (cast3a(self.SplitscreenType) != cast3a(2)))) goto 0x005f
+  0054: self.SplitscreenType = self.Default2PSplitType
+  005f: goto 0x00a2
+  0062: case 3: (next 0x0097)
+  0067: if !(((cast3a(self.SplitscreenType) != cast3a(3)) && (cast3a(self.SplitscreenType) != cast3a(4)))) goto 0x0094
+  0089: self.SplitscreenType = self.Default3PSplitType
+  0094: goto 0x00a2
+  0097: default:
+  009a: self.SplitscreenType = 5
+  00a2: idx = 0
+  00a9: if !((idx < cast3a(self.SplitscreenType)[self.SplitscreenInfo].PlayerData.Length)) goto 0x0216
+  00cc: idx[get_Outer().GamePlayers].Size.X = idx[cast3a(self.SplitscreenType)[self.SplitscreenInfo].PlayerData].SizeX
+  011c: idx[get_Outer().GamePlayers].Size.Y = idx[cast3a(self.SplitscreenType)[self.SplitscreenInfo].PlayerData].SizeY
+  016c: idx[get_Outer().GamePlayers].Origin.X = idx[cast3a(self.SplitscreenType)[self.SplitscreenInfo].PlayerData].OriginX
+  01bc: idx[get_Outer().GamePlayers].Origin.Y = idx[cast3a(self.SplitscreenType)[self.SplitscreenInfo].PlayerData].OriginY
+  020c: AddAdd_Int(idx)
+  0213: goto 0x00a9
+  0216: return nothing
+  0218: <eos>
+
+function GameViewportClient.LayoutPlayers  (script 14 bytes)
+  0000: GameViewportClient.SetSplitscreenConfiguration(self.SplitscreenType)
+  000b: return nothing
+  000d: <eos>
+
+function GameViewportClient.ConvertLocalPlayerToGamePlayerIndex  (script 28 bytes)
+  0000: return get_Outer().GamePlayers.Find(LPlayer)
+  0015: return return
+  001b: <eos>
+
+function GameViewportClient.HasTopSafeZone  (script 84 bytes)
+  0000: switch (self.SplitscreenType)
+  0007: case 0: (next 0x000c)
+  000c: case 2: (next 0x0013)
+  0011: return true
+  0013: case 1: (next 0x0018)
+  0018: case 3: (next 0x002d)
+  001d: return ((LocalPlayerIndex == 0) ? true : false)
+  002d: case 4: (next 0x0032)
+  0032: case 5: (next 0x0048)
+  0037: return ((LocalPlayerIndex < 2) ? true : false)
+  0048: default:
+  004b: return false
+  004d: return return
+  0053: <eos>
+
+function GameViewportClient.HasBottomSafeZone  (script 83 bytes)
+  0000: switch (self.SplitscreenType)
+  0007: case 0: (next 0x000c)
+  000c: case 2: (next 0x0013)
+  0011: return true
+  0013: case 1: (next 0x0018)
+  0018: case 3: (next 0x002d)
+  001d: return ((LocalPlayerIndex == 0) ? false : true)
+  002d: case 4: (next 0x0032)
+  0032: case 5: (next 0x0047)
+  0037: return ((LocalPlayerIndex > 1) ? true : false)
+  0047: default:
+  004a: return false
+  004c: return return
+  0052: <eos>
+
+function GameViewportClient.HasLeftSafeZone  (script 114 bytes)
+  0000: switch (self.SplitscreenType)
+  0007: case 0: (next 0x000c)
+  000c: case 1: (next 0x0013)
+  0011: return true
+  0013: case 2: (next 0x0028)
+  0018: return ((LocalPlayerIndex == 0) ? true : false)
+  0028: case 3: (next 0x003e)
+  002d: return ((LocalPlayerIndex < 2) ? true : false)
+  003e: case 4: (next 0x0043)
+  0043: case 5: (next 0x0066)
+  0048: return (((LocalPlayerIndex == 0) || (LocalPlayerIndex == 2)) ? true : false)
+  0066: default:
+  0069: return false
+  006b: return return
+  0071: <eos>
+
+function GameViewportClient.HasRightSafeZone  (script 113 bytes)
+  0000: switch (self.SplitscreenType)
+  0007: case 0: (next 0x000c)
+  000c: case 1: (next 0x0013)
+  0011: return true
+  0013: case 2: (next 0x0018)
+  0018: case 4: (next 0x002d)
+  001d: return ((LocalPlayerIndex > 0) ? true : false)
+  002d: case 3: (next 0x0042)
+  0032: return ((LocalPlayerIndex == 1) ? false : true)
+  0042: case 5: (next 0x0065)
+  0047: return (((LocalPlayerIndex == 0) || (LocalPlayerIndex == 2)) ? false : true)
+  0065: default:
+  0068: return false
+  006a: return return
+  0070: <eos>
+
+function GameViewportClient.GetPixelSizeOfScreen  (script 412 bytes)
+  0000: switch (self.SplitscreenType)
+  0007: case 0: (next 0x0036)
+  000c: out_Width = Canvas.ClipX
+  0020: out_Height = Canvas.ClipY
+  0034: return nothing
+  0036: case 1: (next 0x006b)
+  003b: out_Width = Canvas.ClipX
+  004f: out_Height = (Canvas.ClipY * cast3f(2))
+  0069: return nothing
+  006b: case 2: (next 0x00a0)
+  0070: out_Width = (Canvas.ClipX * cast3f(2))
+  008a: out_Height = Canvas.ClipY
+  009e: return nothing
+  00a0: case 3: (next 0x00fd)
+  00a5: if !((LocalPlayerIndex == 0)) goto 0x00c7
+  00b0: out_Width = Canvas.ClipX
+  00c4: goto 0x00e1
+  00c7: out_Width = (Canvas.ClipX * cast3f(2))
+  00e1: out_Height = (Canvas.ClipY * cast3f(2))
+  00fb: return nothing
+  00fd: case 4: (next 0x015b)
+  0102: if !((LocalPlayerIndex == 2)) goto 0x0125
+  010e: out_Width = Canvas.ClipX
+  0122: goto 0x013f
+  0125: out_Width = (Canvas.ClipX * cast3f(2))
+  013f: out_Height = (Canvas.ClipY * cast3f(2))
+  0159: return nothing
+  015b: case 5: (next 0x0196)
+  0160: out_Width = (Canvas.ClipX * cast3f(2))
+  017a: out_Height = (Canvas.ClipY * cast3f(2))
+  0194: return nothing
+  0196: default:
+  0199: return nothing
+  019b: <eos>
+
+function GameViewportClient.CalculateSafeZoneValues  (script 191 bytes)
+  0000: XSafeZoneToUse = (bUseMaxPercent ? self.TitleSafeZone.MaxPercentX : self.TitleSafeZone.RecommendedPercentX)
+  0031: YSafeZoneToUse = (bUseMaxPercent ? self.TitleSafeZone.MaxPercentY : self.TitleSafeZone.RecommendedPercentY)
+  0062: GetPixelSizeOfScreen(ScreenWidth, ScreenHeight, Canvas, LocalPlayerIndex)
+  0080: out_Horizontal = ((ScreenWidth * (cast3f(1) - XSafeZoneToUse)) / 2.0)
+  009e: out_Vertical = ((ScreenHeight * (cast3f(1) - YSafeZoneToUse)) / 2.0)
+  00bc: return nothing
+  00be: <eos>
+
+function GameViewportClient.CalculateDeadZone  (script 285 bytes)
+  0000: nothing
+  0001: if !((LPlayer != none)) goto 0x0110
+  000c: LocalPlayerIndex = ConvertLocalPlayerToGamePlayerIndex(LPlayer)
+  0021: if !((LocalPlayerIndex != -1)) goto 0x0110
+  0030: switch (SZType)
+  0037: case 0: (next 0x0055)
+  003c: bHasSafeZone = HasTopSafeZone(LocalPlayerIndex)
+  0052: goto 0x00b2
+  0055: case 1: (next 0x0073)
+  005a: bHasSafeZone = HasBottomSafeZone(LocalPlayerIndex)
+  0070: goto 0x00b2
+  0073: case 2: (next 0x0091)
+  0078: bHasSafeZone = HasLeftSafeZone(LocalPlayerIndex)
+  008e: goto 0x00b2
+  0091: case 3: (next 0x00af)
+  0096: bHasSafeZone = HasRightSafeZone(LocalPlayerIndex)
+  00ac: goto 0x00b2
+  00af: default:
+  00b2: if !(bHasSafeZone) goto 0x0110
+  00bb: CalculateSafeZoneValues(HorizSafeZoneValue, VertSafeZoneValue, Canvas, LocalPlayerIndex, bUseMaxPercent)
+  00df: if !(((cast3a(SZType) == cast3a(0)) || (cast3a(SZType) == cast3a(1)))) goto 0x010a
+  0101: return VertSafeZoneValue
+  0107: goto 0x0110
+  010a: return HorizSafeZoneValue
+  0110: return 0.0
+  0116: return return
+  011c: <eos>
+
+function GameViewportClient.CalculatePixelCenter  (script 609 bytes)
+  0000: nothing
+  0001: out_CenterX = (Canvas.ClipX / 2.0)
+  001c: out_CenterY = (Canvas.ClipY / 2.0)
+  0037: if !((LPlayer != none)) goto 0x025e
+  0042: LocalPlayerIndex = ConvertLocalPlayerToGamePlayerIndex(LPlayer)
+  0057: if !((LocalPlayerIndex != -1)) goto 0x025e
+  0066: CalculateSafeZoneValues(HorizSafeZoneValue, VertSafeZoneValue, Canvas, LocalPlayerIndex, bUseMaxPercent)
+  008a: switch (self.SplitscreenType)
+  0091: case 0: (next 0x0098)
+  0096: return nothing
+  0098: case 1: (next 0x00d1)
+  009d: if !((LocalPlayerIndex == 0)) goto 0x00bd
+  00a8: (out_CenterY += (VertSafeZoneValue / cast3f(2)))
+  00ba: goto 0x00cf
+  00bd: (out_CenterY -= (VertSafeZoneValue / cast3f(2)))
+  00cf: return nothing
+  00d1: case 2: (next 0x010a)
+  00d6: if !((LocalPlayerIndex == 0)) goto 0x00f6
+  00e1: (out_CenterX += (HorizSafeZoneValue / cast3f(2)))
+  00f3: goto 0x0108
+  00f6: (out_CenterX -= (HorizSafeZoneValue / cast3f(2)))
+  0108: return nothing
+  010a: case 3: (next 0x0175)
+  010f: if !((LocalPlayerIndex == 0)) goto 0x012f
+  011a: (out_CenterY += (VertSafeZoneValue / cast3f(2)))
+  012c: goto 0x0173
+  012f: (out_CenterY -= (VertSafeZoneValue / cast3f(2)))
+  0141: if !((LocalPlayerIndex == 1)) goto 0x0161
+  014c: (out_CenterX += (HorizSafeZoneValue / cast3f(2)))
+  015e: goto 0x0173
+  0161: (out_CenterX -= (HorizSafeZoneValue / cast3f(2)))
+  0173: return nothing
+  0175: case 4: (next 0x01e1)
+  017a: if !((LocalPlayerIndex == 2)) goto 0x019b
+  0186: (out_CenterY -= (VertSafeZoneValue / cast3f(2)))
+  0198: goto 0x01df
+  019b: (out_CenterY += (VertSafeZoneValue / cast3f(2)))
+  01ad: if !((LocalPlayerIndex == 0)) goto 0x01cd
+  01b8: (out_CenterX += (HorizSafeZoneValue / cast3f(2)))
+  01ca: goto 0x01df
+  01cd: (out_CenterX -= (HorizSafeZoneValue / cast3f(2)))
+  01df: return nothing
+  01e1: case 5: (next 0x025b)
+  01e6: if !((LocalPlayerIndex < 2)) goto 0x0207
+  01f2: (out_CenterY += (VertSafeZoneValue / cast3f(2)))
+  0204: goto 0x0219
+  0207: (out_CenterY -= (VertSafeZoneValue / cast3f(2)))
+  0219: if !(((LocalPlayerIndex == 0) || (LocalPlayerIndex == 2))) goto 0x0247
+  0232: (out_CenterX += (HorizSafeZoneValue / cast3f(2)))
+  0244: goto 0x0259
+  0247: (out_CenterX -= (HorizSafeZoneValue / cast3f(2)))
+  0259: return nothing
+  025b: default:
+  025e: return nothing
+  0260: <eos>
+
+function GameViewportClient.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameViewportClient.DrawTitleSafeArea  (script 447 bytes)
+  0000: Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  001f: Canvas.SetPos(((Canvas.ClipX * (cast3f(1) - self.TitleSafeZone.MaxPercentX)) / 2.0), ((Canvas.ClipY * (cast3f(1) - self.TitleSafeZone.MaxPercentY)) / 2.0))
+  008a: Canvas.DrawBox((Canvas.ClipX * self.TitleSafeZone.MaxPercentX), (Canvas.ClipY * self.TitleSafeZone.MaxPercentY))
+  00dd: Canvas.SetDrawColor(cast3d(255), cast3d(255), 0, cast3d(255))
+  00fe: Canvas.SetPos(((Canvas.ClipX * (cast3f(1) - self.TitleSafeZone.RecommendedPercentX)) / 2.0), ((Canvas.ClipY * (cast3f(1) - self.TitleSafeZone.RecommendedPercentY)) / 2.0))
+  0169: Canvas.DrawBox((Canvas.ClipX * self.TitleSafeZone.RecommendedPercentX), (Canvas.ClipY * self.TitleSafeZone.RecommendedPercentY))
+  01bc: return nothing
+  01be: <eos>
+
+function GameViewportClient.PostRender  (script 62 bytes)
+  0000: if !(self.bShowTitleSafeZone) goto 0x0014
+  0009: GameViewportClient.DrawTitleSafeArea(Canvas)
+  0014: self.ViewportConsole.PostRender_Console(Canvas)
+  002c: DrawTransition(Canvas)
+  003b: return nothing
+  003d: <eos>
+
+function GameViewportClient.DrawTransition  (script 140 bytes)
+  0000: switch (get_Outer().TransitionType)
+  000e: case 2: (next 0x0026)
+  0013: GameViewportClient.DrawTransitionMessage(Canvas, self.LoadingMessage)
+  0023: goto 0x0089
+  0026: case 3: (next 0x003e)
+  002b: GameViewportClient.DrawTransitionMessage(Canvas, self.SavingMessage)
+  003b: goto 0x0089
+  003e: case 4: (next 0x0056)
+  0043: GameViewportClient.DrawTransitionMessage(Canvas, self.ConnectingMessage)
+  0053: goto 0x0089
+  0056: case 5: (next 0x006e)
+  005b: GameViewportClient.DrawTransitionMessage(Canvas, self.PrecachingMessage)
+  006b: goto 0x0089
+  006e: case 1: (next 0x0086)
+  0073: GameViewportClient.DrawTransitionMessage(Canvas, self.PausedMessage)
+  0083: goto 0x0089
+  0086: default:
+  0089: return nothing
+  008b: <eos>
+
+function GameViewportClient.DrawTransitionMessage  (script 376 bytes)
+  0000: Canvas.Font = obj'Engine'.static.GetLargeFont()
+  0022: Canvas.bCenter = false
+  0033: Canvas.StrLen(Message, XL, YL)
+  0055: Canvas.SetPos(((0.5 * (Canvas.ClipX - XL)) + cast3f(1)), (((0.66 * Canvas.ClipY) - (YL * 0.5)) + cast3f(1)))
+  00b1: Canvas.SetDrawColor(0, 0, 0, cast3d(255))
+  00ce: Canvas.DrawTextNormal(Message, false, , )
+  00e9: Canvas.SetPos((0.5 * (Canvas.ClipX - XL)), ((0.66 * Canvas.ClipY) - (YL * 0.5)))
+  013b: Canvas.SetDrawColor(0, 0, cast3d(255), cast3d(255))
+  015a: Canvas.DrawTextNormal(Message, false, , )
+  0175: return nothing
+  0177: <eos>
+
+function GameViewportClient.NotifyPlayerAdded  (script 88 bytes)
+  0000: InteractionIndex = 0
+  0007: if !((InteractionIndex < self.GlobalInteractions.Length)) goto 0x0055
+  0017: if !((InteractionIndex[self.GlobalInteractions] != none)) goto 0x004b
+  0028: InteractionIndex[self.GlobalInteractions].NotifyPlayerAdded(PlayerIndex, AddedPlayer)
+  004b: AddAdd_Int(InteractionIndex)
+  0052: goto 0x0007
+  0055: return nothing
+  0057: <eos>
+
+function GameViewportClient.NotifyPlayerRemoved  (script 91 bytes)
+  0000: InteractionIndex = (self.GlobalInteractions.Length - 1)
+  000f: if !((InteractionIndex >= 0)) goto 0x0058
+  001a: if !((InteractionIndex[self.GlobalInteractions] != none)) goto 0x004e
+  002b: InteractionIndex[self.GlobalInteractions].NotifyPlayerRemoved(PlayerIndex, RemovedPlayer)
+  004e: SubtractSubtract_Int(InteractionIndex)
+  0055: goto 0x000f
+  0058: return nothing
+  005a: <eos>
+
+function GameViewportClient.AddLocalPlayer  (script 62 bytes)
+  0000: InsertIndex = get_Outer().GamePlayers.Length
+  0013: InsertIndex[get_Outer().GamePlayers] = NewPlayer
+  002b: GameViewportClient.NotifyPlayerAdded(InsertIndex, NewPlayer)
+  003b: return nothing
+  003d: <eos>
+
+function GameViewportClient.RemoveLocalPlayer  (script 79 bytes)
+  0000: Index = get_Outer().GamePlayers.Find(ExistingPlayer)
+  001a: if !((Index != -1)) goto 0x004c
+  0029: get_Outer().GamePlayers.Remove(Index,1)
+  003c: GameViewportClient.NotifyPlayerRemoved(Index, ExistingPlayer)
+  004c: return nothing
+  004e: <eos>
+
+function GameViewportClient.MapInputKey  (script 13 bytes)
+  0000: return InName
+  0006: return return
+  000c: <eos>

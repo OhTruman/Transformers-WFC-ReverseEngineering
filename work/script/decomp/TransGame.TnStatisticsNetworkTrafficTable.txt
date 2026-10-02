@@ -1,0 +1,13 @@
+function TnStatisticsNetworkTrafficTable.FindOrCreateNetworkTrafficRecord  (script 255 bytes)
+  0000: Key = (cast57(OwnerClassName) $ cast57(PropertyName_))
+  0016: !! unknown token 0x4f at 0x19 ; raw 0700314f0100008de4000a0000008de60000008de8040000
+
+function TnStatisticsNetworkTrafficTable.RecordNetTraffic  (script 112 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(!Game.IsInState('InProgress', )) goto 0x002a
+  0028: return nothing
+  002a: Index = TnStatisticsNetworkTrafficTable.FindOrCreateNetworkTrafficRecord(PropertyName_, TrafficType, OwnerClassName, Size, NetInitial, Game)
+  0055: AddAdd_PreInt(Index[self.NetworkTraffic].Count)
+  006d: return nothing
+  006f: <eos>

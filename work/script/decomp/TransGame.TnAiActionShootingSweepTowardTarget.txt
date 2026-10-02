@@ -1,0 +1,97 @@
+function TnAiActionShootingSweepTowardTarget.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionShootingSweepTowardTarget.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnBind  (script 44 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionShootingSweepTowardTargetBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnSetUpConditions  (script 186 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !((self._TransformerController.IsDangerous(Target) == false)) goto 0x0055
+  0053: return false
+  0055: self._SweepLocationPicker.Initialize(self._TransformerPawn, Target, self._Blueprint.SideAimOffset)
+  0080: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateFacingActor', self._SweepLocationPicker)
+  00a2: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00b3: return return
+  00b9: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnPlanStart  (script 33 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._SweepLocationPicker.ResetLocation()
+  001e: return nothing
+  0020: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnStart  (script 213 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: self._TimeRemaining = self._Blueprint.Duration
+  0052: self._End = (self._SweepLocationPicker.GetFocalPoint() + ((obj'Core.Math'.static.Normal((self._Target.Location - self._SweepLocationPicker.GetFocalPoint())) * self._Blueprint.SideAimOffset) * cast3f(2)))
+  00b1: SetCharacterState(0)
+  00bc: TnAiActionShootingSweepTowardTarget.ActivateShooting()
+  00c2: return OnStart(ExpectedEffects)
+  00ce: return return
+  00d4: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnUpdate  (script 279 bytes)
+  0000: (self._TimeRemaining -= DeltaTime)
+  000c: if !((self._TimeRemaining < cast3f(0))) goto 0x004d
+  0019: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0042
+  0037: return Succeed()
+  0042: return Fail()
+  004d: if !(((get_WeaponShooter().get_ActiveWeapon() == none) || get_WeaponShooter().get_ActiveWeapon().IsOverheating())) goto 0x00a1
+  0096: return Fail()
+  00a1: get_WeaponAimer().AimAtLocation(obj'Core.Math'.static.VLerp(self._End, self._SweepLocationPicker.GetFocalPoint(), (self._TimeRemaining / self._Blueprint.Duration)))
+  00f9: TnAiActionShootingSweepTowardTarget.UpdateFiring()
+  00ff: return OnUpdate(ExpectedEffects, DeltaTime)
+  0110: return return
+  0116: <eos>
+
+function TnAiActionShootingSweepTowardTarget.OnFinish  (script 131 bytes)
+  0000: OnFinish(CurrentState)
+  000b: TnAiActionShootingSweepTowardTarget.DeactivateShooting()
+  0011: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateFacingActor', false, none)
+  0030: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTaunted', false, )
+  004f: if !((cast3a(CurrentState) != cast3a(3))) goto 0x0061
+  005f: return nothing
+  0061: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  0080: return nothing
+  0082: <eos>
+
+function TnAiActionShootingSweepTowardTarget.ActivateShooting  (script 96 bytes)
+  0000: self._TransformerController.Enemy = Pawn(self._Target)
+  0019: self._TransformerController.Focus = IFocusible(self._Target)
+  0032: get_WeaponShooter().Activate(get_WeaponClass(), delegate.FailCallback)
+  005d: return nothing
+  005f: <eos>
+
+function TnAiActionShootingSweepTowardTarget.DeactivateShooting  (script 51 bytes)
+  0000: get_WeaponAimer().Reset()
+  0018: get_WeaponShooter().Deactivate()
+  0030: return nothing
+  0032: <eos>
+
+function TnAiActionShootingSweepTowardTarget.UpdateFiring  (script 167 bytes)
+  0000: if !((get_WeaponAimer().get_OwnerIsAiming() && !get_WeaponShooter().IsFiring())) goto 0x0052
+  003a: get_WeaponShooter().StartFire()
+  0052: if !((!get_WeaponAimer().get_OwnerIsAiming() && get_WeaponShooter().IsFiring())) goto 0x00a4
+  008c: get_WeaponShooter().StopFire()
+  00a4: return nothing
+  00a6: <eos>

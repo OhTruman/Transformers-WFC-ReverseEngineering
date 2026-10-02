@@ -1,0 +1,50 @@
+function TnBuffDecoyTrap.Apply  (script 385 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: if !(self.OwnerPawn.get_IsInRobotForm()) goto 0x0036
+  002b: TnBuffDecoyTrap.PlayAnimation(self.IntroLoopAnimation)
+  0036: TnBuffDecoyTrap.IgnoreInput(true)
+  003d: self.OwnerPawn.Velocity = vect(0,0,0)
+  0059: self.OwnerPawn.Acceleration = vect(0,0,0)
+  0075: self.ApplierPawn = TnPawn(Applier)
+  0085: if !((cast3a(BuffOwner.Role) == cast3a(3))) goto 0x0121
+  009e: if !(((self.ApplierPawn != none) && self.ApplierPawn.HasSkill(obj'TnSkillDecoyDot'))) goto 0x010c
+  00c6: BS = TnBuffService(BuffOwner.GetService('TnBuffService'))
+  00ed: BS.AddBuff(obj'TnBuffDotFromDecoy', 0, Applier)
+  010c: BuffOwner.ExposeSelf(, )
+  0121: if !(((self.ApplierPawn != none) && self.ApplierPawn.IsLocallyControlled())) goto 0x017e
+  0144: TnGameReplicationInfoGameBase(self.ApplierPawn.WorldInfo.GRI).AddObjectiveMarker(self.MarkerDescription, self.OwnerPawn, obj'TnObjectiveMarkerTypeDecoyTrap', true)
+  017e: return nothing
+  0180: <eos>
+
+function TnBuffDecoyTrap.Unapply  (script 42 bytes)
+  0000: TnBuff.Unapply()
+  0006: if !(self.OwnerPawn.get_IsInRobotForm()) goto 0x0027
+  001c: TnBuffDecoyTrap.PlayAnimation(self.OutroAnimation)
+  0027: return nothing
+  0029: <eos>
+
+function TnBuffDecoyTrap.OnUnapplyOrOwnerDied  (script 103 bytes)
+  0000: TnBuff.OnUnapplyOrOwnerDied()
+  0006: TnBuffDecoyTrap.IgnoreInput(false)
+  000d: if !(((self.ApplierPawn != none) && self.ApplierPawn.IsLocallyControlled())) goto 0x0064
+  0030: TnGameReplicationInfoGameBase(self.ApplierPawn.WorldInfo.GRI).RemoveObjectiveMarker(self.OwnerPawn, obj'TnObjectiveMarkerTypeDecoyTrap')
+  0064: return nothing
+  0066: <eos>
+
+function TnBuffDecoyTrap.IgnoreInput  (script 98 bytes)
+  0000: if !((cast3a(self.OwnerPawn.Role) < cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: PC = TnPlayerController(self.OwnerPawn.Controller)
+  0034: if !((PC == none)) goto 0x0041
+  003f: return nothing
+  0041: PC.SetCinematicMode(ShouldIgnore, false, false, true, true, true)
+  005f: return nothing
+  0061: <eos>
+
+function TnBuffDecoyTrap.PlayAnimation  (script 107 bytes)
+  0000: Animator = TnAnimatorService(self.OwnerPawn.GetService('TnAnimatorService'))
+  0027: if !(EqualEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x003d
+  003b: return nothing
+  003d: Animator.EnqueueLocalAnimation(Animation, delegate.None, delegate.None)
+  0068: return nothing
+  006a: <eos>

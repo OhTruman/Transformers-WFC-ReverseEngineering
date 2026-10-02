@@ -1,0 +1,40 @@
+function TnTire.get_LateralForceScale  (script 13 bytes)
+  0000: return self._LateralForceScale
+  0006: return return
+  000c: <eos>
+
+function TnTire.set_LateralForceScale  (script 14 bytes)
+  0000: self._LateralForceScale = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTire.get_LateralForce  (script 13 bytes)
+  0000: return self._LateralForce
+  0006: return return
+  000c: <eos>
+
+function TnTire.Initialize  (script 124 bytes)
+  0000: self._LateralFrictionCoefficient = LateralFrictionCoefficient
+  000b: self._MaxForce = MaxForce
+  0016: self._ForceGraph.AddDataSet("Tire force (N)", MakeColor(150, 150, cast3d(255), ), obj'Core.Math'.static.MakeFloatRange((-MaxForce * 0.01), (MaxForce * 0.01)))
+  0079: return nothing
+  007b: <eos>
+
+function TnTire.Update  (script 95 bytes)
+  0000: if !((DeltaTime == cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: TnTire.UpdateLateralForce(DeltaTime, LateralCarSpeed, Load)
+  0024: self._ForceGraph.AddSample(0, (self._LateralForce * 0.01))
+  0044: self._ForceGraph.Update(DeltaTime)
+  005c: return nothing
+  005e: <eos>
+
+function TnTire.UpdateLateralForce  (script 60 bytes)
+  0000: self._LateralForce = obj'Core.Math'.static.FClamp((((-LateralCarSpeed * self._LateralFrictionCoefficient) * self._LateralForceScale) * Load), -self._MaxForce, self._MaxForce)
+  0039: return nothing
+  003b: <eos>
+
+function TnTire.DisplayDebug  (script 51 bytes)
+  0000: self._ForceGraph.Draw(HudCanvas, X, Y, cast44(Width), cast44(Height))
+  0030: return nothing
+  0032: <eos>

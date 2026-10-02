@@ -1,0 +1,14 @@
+function TnObjectiveMarkerTypeAmmoBeacon.GetMarkerSetup  (script 28 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: return self.MarkerSetup
+  0015: return return
+  001b: <eos>
+
+function TnObjectiveMarkerTypeAmmoBeacon.DrawLabel  (script 170 bytes)
+  0000: TnObjectiveMarkerTypeSprite.DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, LabelTransparency)
+  0029: Bacon = TnDroppedPickupAmmoBeacon(MarkerData.MarkerBase)
+  0044: GiftProgress = Bacon.GetNormalizedGiftProgress()
+  005d: if !(((GiftProgress < 1.0) && (GiftProgress > 0.0))) goto 0x00a7
+  007d: DrawHealthBar(Setup, GiftProgress, LabelLocationSS, self.HealthBarOffsetFromLabel, self.HealthBarSize, 0, C)
+  00a7: return nothing
+  00a9: <eos>

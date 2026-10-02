@@ -1,0 +1,20 @@
+function HmOrbitUpdateLocationRotationCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitUpdateLocationRotationCameraBehavior.Update  (script 198 bytes)
+  0000: CombinedRotation = GetCombinedRotation(Result)
+  0015: CombinedRotation.Roll = obj'Core.Math'.static.Clamp(CombinedRotation.Roll, cast44((-self.MaxRoll * 182.0444489)), cast44((self.MaxRoll * 182.0444489)))
+  005f: LocationOffset = (Result.OrbitLocationOffset >> CombinedRotation)
+  007d: Result.Location = (self.AnchorPoint.Location + LocationOffset)
+  00a3: Result.Rotation = CombinedRotation
+  00b9: return Result
+  00bf: return return
+  00c5: <eos>
+
+function HmOrbitUpdateLocationRotationCameraBehavior.GetCombinedRotation  (script 54 bytes)
+  0000: CombinedRotation = (Result.OrbitRotation + Result.OrbitRotationAdjustment)
+  0029: return CombinedRotation
+  002f: return return
+  0035: <eos>

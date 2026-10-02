@@ -1,0 +1,46 @@
+function TnHealthDisplay.GetHealth  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function TnHealthDisplay.GetMaximumHealth  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function TnHealthDisplay.GetDisplayType  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function TnHealthDisplay.get_DisplayType  (script 18 bytes)
+  0000: return GetDisplayType()
+  000b: return return
+  0011: <eos>
+
+function TnHealthDisplay.get_CurrentHealth  (script 44 bytes)
+  0000: return obj'Core.Math'.static.FClamp(GetHealth(), 0.0, GetMaximumHealth())
+  0025: return return
+  002b: <eos>
+
+function TnHealthDisplay.get_NormalizedHealth  (script 83 bytes)
+  0000: MaxHealth = GetMaximumHealth()
+  0010: if !((MaxHealth <= 0.0)) goto 0x0025
+  001f: return 0.0
+  0025: return obj'Core.Math'.static.FClamp((GetHealth() / MaxHealth), 0.0, 1.0)
+  004c: return return
+  0052: <eos>
+
+function TnHealthDisplay.get_IsEnabled  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnHealthDisplay.set_IsEnabled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnHealthDisplay.ShouldDisplayHealth  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

@@ -1,0 +1,345 @@
+function HmCamera.PostBeginPlay  (script 236 bytes)
+  0000: assert((self.CameraState == none))
+  000c: self.CameraState = new(self, nothing, self.CameraStateClass, nothing, AttachTreeCallback)
+  0020: self.DebugCameraState = new(self, nothing, self.CameraStateClass, nothing, AttachTreeCallback)
+  0034: self.DebugCameraStrategy = new(self, nothing, obj'HmDebugCameraStrategy', nothing, AttachTreeCallback)
+  0048: self.DebugCameraStrategy.Initialize("")
+  005d: self.TargetingData = new(self, nothing, self.TargetingDataClass, nothing, AttachTreeCallback)
+  0071: if !((self.ScreenShake == none)) goto 0x0092
+  007c: self.ScreenShake = new(get_Outer(), nothing, obj'HmCameraModifierScreenShake', nothing, AttachTreeCallback)
+  0092: self.ScreenShake.Init()
+  00a5: self.ScreenShake.AddCameraModifier(self)
+  00b9: self.TransitionCurve.Build(self.TransitionCurvePoints)
+  00d1: self.TransitionSmoother.__PercentRemapper__Delegate = delegate.GetPointOnTransitionCurve
+  00e9: return nothing
+  00eb: <eos>
+
+function HmCamera.GetPointOnTransitionCurve  (script 33 bytes)
+  0000: return self.TransitionCurve.Evaluate(InPercent, )
+  001a: return return
+  0020: <eos>
+
+function HmCamera.IsFirstPerson  (script 36 bytes)
+  0000: if !((self.ActiveCameraStrategy == none)) goto 0x000d
+  000b: return false
+  000d: return self.ActiveCameraStrategy.bIsPOVView
+  001d: return return
+  0023: <eos>
+
+function HmCamera.SetStrategyTransitionTime  (script 27 bytes)
+  0000: self.TransitionSmoother.SetTransitionTime(T)
+  0018: return nothing
+  001a: <eos>
+
+function HmCamera.ToggleDebugStrategy  (script 158 bytes)
+  0000: self.UseDebugStrategy = !self.UseDebugStrategy
+  000f: if !(self.UseDebugStrategy) goto 0x0056
+  0018: self.DebugCameraState.CameraStrategyResult = self.CameraState.CameraStrategyResult
+  0035: self.DebugCameraStrategy.Activate(self.DebugCameraState, self, self.Owner)
+  0053: goto 0x0069
+  0056: self.DebugCameraStrategy.Deactivate()
+  0069: self.PCOwner.IgnoreMoveInput(self.UseDebugStrategy)
+  0082: self.PCOwner.IgnoreLookInput(self.UseDebugStrategy)
+  009b: return nothing
+  009d: <eos>
+
+function HmCamera.IsDebugStrategyActive  (script 14 bytes)
+  0000: return self.UseDebugStrategy
+  0007: return return
+  000d: <eos>
+
+function HmCamera.SetActiveCameraStrategy  (script 691 bytes)
+  0000: if !(((CameraStrategy == self.ActiveCameraStrategy) && (Parent == self.Owner))) goto 0x0022
+  0020: return nothing
+  0022: self.PreviousStrategy = self.ActiveCameraStrategy
+  002d: if !((self.ActiveCameraStrategy != none)) goto 0x00c8
+  0038: self.ActiveCameraStrategy.Deactivate()
+  004b: self.TransitionSmoother.Reset()
+  005e: self.TransitionLocation = (self.CurrentStrategyResult.Location + self.CurrentStrategyResult.LocationAdjustment)
+  0086: self.TransitionRotation = (self.CurrentStrategyResult.Rotation + self.CurrentStrategyResult.RotationAdjustment)
+  00af: self.TransitionFOV = self.CurrentStrategyResult.Fov
+  00c5: goto 0x00d0
+  00c8: ShouldReset = true
+  00d0: SetOwner(Parent)
+  00d8: self.ActiveCameraStrategy = CameraStrategy
+  00e3: if !((self.ActiveCameraStrategy != none)) goto 0x029d
+  00ee: self.CameraState.CameraStrategyResult.AutoMovedHint = false
+  010a: self.CameraState.CameraStrategyResult.Recentering = false
+  0126: self.ActiveCameraStrategy.SetTargetingData(self.TargetingData)
+  013e: self.ActiveCameraStrategy.Activate(self.CameraState, self, self.Owner)
+  015c: if !(self.CameraState.CameraStrategyResult.Teleport) goto 0x0194
+  0179: self.TransitionSmoother.SetTransitionTime(0.0)
+  0191: goto 0x01e9
+  0194: PreviousStrategyGroup = ((self.PreviousStrategy != none) ? self.PreviousStrategy.TransitionGroup : 'None')
+  01be: self.TransitionSmoother.SetTransitionTime(self.ActiveCameraStrategy.GetTransitionTime(PreviousStrategyGroup))
+  01e9: Result = self.ActiveCameraStrategy.UpdateCamera(0.0, HmCamera.ReadInput())
+  020d: self.TransitionLocation = (self.TransitionLocation - (Result.Location + Result.LocationAdjustment))
+  023c: self.TransitionRotation = obj'Core.Math'.static.Normalize((self.TransitionRotation - (Result.Rotation + Result.RotationAdjustment)))
+  0280: self.TransitionFOV = (self.TransitionFOV - Result.Fov)
+  029d: if !(ShouldReset) goto 0x02b0
+  02a6: Reset()
+  02b0: return nothing
+  02b2: <eos>
+
+function HmCamera.Reset  (script 101 bytes)
+  0000: Reset()
+  0006: if !((self.ActiveCameraStrategy != none)) goto 0x0024
+  0011: self.ActiveCameraStrategy.Reset()
+  0024: self.CameraState.CameraStrategyResult.Teleport = true
+  0040: SetStrategyTransitionTime(0.0)
+  004f: self.ScreenShake.StopAll()
+  0062: return nothing
+  0064: <eos>
+
+function HmCamera.SetDebugCameraStrategy  (script 14 bytes)
+  0000: self.DebugCameraStrategy = CameraStrategy
+  000b: return nothing
+  000d: <eos>
+
+function HmCamera.GetDebugCameraStrategy  (script 13 bytes)
+  0000: return self.DebugCameraStrategy
+  0006: return return
+  000c: <eos>
+
+function HmCamera.ReadInput  (script 290 bytes)
+  0000: if !(((self.PCOwner != none) && (self.PCOwner.PlayerInput != none))) goto 0x0115
+  0021: CI.RightStickInputX = HmPlayerInput(self.PCOwner.PlayerInput)._CameraYaw
+  004e: CI.RightStickInputY = HmPlayerInput(self.PCOwner.PlayerInput)._CameraPitch
+  007b: CI.LeftStickInputX = HmPlayerInput(self.PCOwner.PlayerInput)._CameraStrafe
+  00a8: CI.LeftStickInputY = HmPlayerInput(self.PCOwner.PlayerInput)._CameraForward
+  00d5: CI.PressedKeys = self.PCOwner.PlayerInput.PressedKeys
+  00fd: CI.ResetCamera = self.RecenterCamera
+  0115: return CI
+  011b: return return
+  0121: <eos>
+
+function HmCamera.IsSpectatorModeActive  (script 24 bytes)
+  0000: return (self.CameraStyle == 'None')
+  0011: return return
+  0017: <eos>
+
+function HmCamera.GetBlendPercent  (script 27 bytes)
+  0000: return self.TransitionSmoother.GetPercentElapsed()
+  0014: return return
+  001a: <eos>
+
+function HmCamera.TransitionComplete  (script 25 bytes)
+  0000: return (GetBlendPercent() >= 1.0)
+  0012: return return
+  0018: <eos>
+
+function HmCamera.UpdateTransition  (script 287 bytes)
+  0000: if !((self.PreviousStrategy != none)) goto 0x0112
+  000b: if !(!TransitionComplete()) goto 0x0112
+  001a: if !(self.bEditingTransitionCurve) goto 0x003b
+  0023: self.TransitionCurve.Build(self.TransitionCurvePoints)
+  003b: self.TransitionSmoother.Update(DeltaTime)
+  0053: TransitionPercent = self.TransitionSmoother.GetPercentElapsed()
+  006c: (Result.LocationAdjustment += obj'Core.Math'.static.VLerp(self.TransitionLocation, vect(0,0,0), TransitionPercent))
+  00a8: (Result.RotationAdjustment += obj'Core.Math'.static.RLerp(self.TransitionRotation, rot(0,0,0), TransitionPercent, ))
+  00e6: (Result.Fov += obj'Core.Math'.static.Lerp(self.TransitionFOV, 0.0, TransitionPercent))
+  0112: return Result
+  0118: return return
+  011e: <eos>
+
+function HmCamera.UpdateViewTarget  (script 893 bytes)
+  0000: self.CamAudioSettings.SoundCue = none
+  0012: self.CamAudioSettings.MixerPreset = 'None'
+  002c: self.CamAudioSettings.AllowPlayerPOVSounds = false
+  003f: CI = HmCamera.ReadInput()
+  004b: if !(self.UseDebugStrategy) goto 0x0094
+  0054: DeltaTime = self.WorldInfo.CameraTimeStepSeconds
+  0068: self.DebugCameraState.CameraStrategyResult = self.DebugCameraStrategy.UpdateCamera(DeltaTime, CI)
+  0094: if !((IsMatineeCameraActive() && (CameraActor(OutVT.Target) != none))) goto 0x00d1
+  00be: UpdateViewTarget(OutVT, DeltaTime)
+  00ce: goto 0x037a
+  00d1: if !(((self.ActiveCameraStrategy != none) && (self.Owner != none))) goto 0x016c
+  00e9: Result = self.ActiveCameraStrategy.UpdateCamera(DeltaTime, CI)
+  010c: self.RecenterCamera = false
+  0114: self.CurrentStrategyResult = UpdateTransition(DeltaTime, Result)
+  012e: self.bCamOverridePostProcess = self.ActiveCameraStrategy.bCamOverridePostProcess
+  0144: self.CamPostProcessSettings = self.ActiveCameraStrategy.CamPostProcessSettings
+  0158: self.CamAudioSettings = self.ActiveCameraStrategy.CamAudioSettings
+  016c: if !(self.UseDebugStrategy) goto 0x0250
+  0175: OutVT.POV.Location = (self.DebugCameraState.CameraStrategyResult.Location + self.DebugCameraState.CameraStrategyResult.LocationAdjustment)
+  01c5: OutVT.POV.Rotation = self.DebugCameraState.CameraStrategyResult.Rotation
+  01fa: OutVT.POV.Fov = self.DebugCameraState.CameraStrategyResult.Fov
+  022f: SetLocation(OutVT.POV.Location)
+  024d: goto 0x0317
+  0250: OutVT.POV.Location = (self.CurrentStrategyResult.Location + self.CurrentStrategyResult.LocationAdjustment)
+  028e: OutVT.POV.Rotation = (self.CurrentStrategyResult.Rotation + self.CurrentStrategyResult.RotationAdjustment)
+  02cd: OutVT.POV.Fov = self.CurrentStrategyResult.Fov
+  02f9: SetLocation(OutVT.POV.Location)
+  0317: if !((OutVT.POV.Fov == cast3f(0))) goto 0x035b
+  033a: OutVT.POV.Fov = self.DefaultFOV
+  035b: ApplyCameraModifiers(DeltaTime, OutVT.POV)
+  037a: return nothing
+  037c: <eos>
+
+function HmCamera.UpdateCamera  (script 93 bytes)
+  0000: if !(!self.AnimPlayer.IsFinished()) goto 0x0030
+  0018: self.AnimPlayer.AdvanceAnimation(DeltaTime)
+  0030: UpdateCamera(DeltaTime)
+  003b: OnUpdateCamera(self.CameraCache.POV)
+  005a: return nothing
+  005c: <eos>
+
+function HmCamera.OnUpdateCamera  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmCamera.HasCameraStrategy  (script 16 bytes)
+  0000: return (self.ActiveCameraStrategy != none)
+  0009: return return
+  000f: <eos>
+
+function HmCamera.HasDebugCameraStrategy  (script 16 bytes)
+  0000: return (self.DebugCameraStrategy != none)
+  0009: return return
+  000f: <eos>
+
+function HmCamera.IsActiveStrategy  (script 20 bytes)
+  0000: return (self.ActiveCameraStrategy == Strategy)
+  000d: return return
+  0013: <eos>
+
+function HmCamera.IsDebugStrategy  (script 20 bytes)
+  0000: return (self.DebugCameraStrategy == Strategy)
+  000d: return return
+  0013: <eos>
+
+function HmCamera.GetActiveStrategy  (script 13 bytes)
+  0000: return self.ActiveCameraStrategy
+  0006: return return
+  000c: <eos>
+
+function HmCamera.GetCurrentStrategyResult  (script 13 bytes)
+  0000: return self.CurrentStrategyResult
+  0006: return return
+  000c: <eos>
+
+function HmCamera.GetPreviousStrategy  (script 13 bytes)
+  0000: return self.PreviousStrategy
+  0006: return return
+  000c: <eos>
+
+function HmCamera.UpdateTargetingData  (script 63 bytes)
+  0000: self.TargetingData.Location = TargetLocation
+  0014: self.TargetingData.TargetStickiness = Stickiness
+  0028: self.TargetingData.TargetActor = TargetActor
+  003c: return nothing
+  003e: <eos>
+
+function HmCamera.GetCollisionExtents  (script 133 bytes)
+  0000: CylinderComp = CylinderComponent(self.CollisionComponent)
+  0010: if !((CylinderComp != none)) goto 0x0078
+  001b: Extents.X = CylinderComp.CollisionRadius
+  003a: Extents.Y = CylinderComp.CollisionRadius
+  0059: Extents.Z = CylinderComp.CollisionHeight
+  0078: return Extents
+  007e: return return
+  0084: <eos>
+
+function HmCamera.FocusOnLookAtTarget  (script 33 bytes)
+  0000: if !((self.ActiveCameraStrategy != none)) goto 0x001e
+  000b: self.ActiveCameraStrategy.FocusOnLookAtTarget()
+  001e: return nothing
+  0020: <eos>
+
+function HmCamera.ModifyPostProcessSettings  (script 38 bytes)
+  0000: if !((self.ActiveCameraStrategy != none)) goto 0x0023
+  000b: self.ActiveCameraStrategy.ModifyPostProcessSettings(Settings)
+  0023: return nothing
+  0025: <eos>
+
+function HmCamera.SetCameraSensitivity  (script 14 bytes)
+  0000: self.CameraSensitivity = Sensitivity
+  000b: return nothing
+  000d: <eos>
+
+function HmCamera.GetCameraSensitivity  (script 13 bytes)
+  0000: return self.CameraSensitivity
+  0006: return return
+  000c: <eos>
+
+function HmCamera.SetCameraSensitivityModifier  (script 14 bytes)
+  0000: self.CameraSensitivityModifier = Modifier
+  000b: return nothing
+  000d: <eos>
+
+function HmCamera.GetCameraSensitivityModifier  (script 13 bytes)
+  0000: return self.CameraSensitivityModifier
+  0006: return return
+  000c: <eos>
+
+function HmCamera.PlayCameraAnimation  (script 95 bytes)
+  0000: default=true
+  0005: self.AnimationBaseActor = BaseActor
+  0010: self.bUseAnimatedCameraCollision = bUseCollision
+  001d: self.AnimPlayer.PlayCameraAnimation(CamAnim)
+  0035: if !((StartingPoint > 0.0)) goto 0x005c
+  0044: self.AnimPlayer.AdvanceAnimation(StartingPoint)
+  005c: return nothing
+  005e: <eos>
+
+function HmCamera.StopCameraAnimation  (script 23 bytes)
+  0000: self.AnimPlayer.PlayCameraAnimation(none)
+  0014: return nothing
+  0016: <eos>
+
+function HmCamera.SetPauseOnCameraAnimation  (script 25 bytes)
+  0000: self.AnimPlayer._Paused = Pause
+  0016: return nothing
+  0018: <eos>
+
+function HmCamera.GetCurrentAnimFrame  (script 27 bytes)
+  0000: return self.AnimPlayer.GetCurrentAnimFrame()
+  0014: return return
+  001a: <eos>
+
+function HmCamera.GetAnimationBaseActor  (script 13 bytes)
+  0000: return self.AnimationBaseActor
+  0006: return return
+  000c: <eos>
+
+function HmCamera.IsPlayingCameraAnimation  (script 29 bytes)
+  0000: return !self.AnimPlayer.IsFinished()
+  0016: return return
+  001c: <eos>
+
+function HmCamera.ShouldUseAnimatedCameraCollision  (script 14 bytes)
+  0000: return self.bUseAnimatedCameraCollision
+  0007: return return
+  000d: <eos>
+
+function HmCamera.DisplayDebug  (script 69 bytes)
+  0000: if !((self.ActiveCameraStrategy != none)) goto 0x002d
+  000b: self.ActiveCameraStrategy.DisplayDebug(HUD, out_YL, out_YPos)
+  002d: DisplayDebug(HUD, out_YL, out_YPos)
+  0042: return nothing
+  0044: <eos>
+
+function HmCamera.GetCameraLocation  (script 35 bytes)
+  0000: return self.CameraCache.POV.Location
+  001c: return return
+  0022: <eos>
+
+function HmCamera.SetCameraLocation  (script 36 bytes)
+  0000: self.CameraCache.POV.Location = NewLocation
+  0021: return nothing
+  0023: <eos>
+
+function HmCamera.GetCameraRotation  (script 35 bytes)
+  0000: return self.CameraCache.POV.Rotation
+  001c: return return
+  0022: <eos>
+
+function HmCamera.MatineeCameraActive  (script 18 bytes)
+  0000: return IsMatineeCameraActive()
+  000b: return return
+  0011: <eos>
+
+function HmCamera.OutsideWorldBounds  (script 48 bytes)
+  0000: LogInternal("Warning: HmCamera outside world bounds", , , )
+  002d: return nothing
+  002f: <eos>

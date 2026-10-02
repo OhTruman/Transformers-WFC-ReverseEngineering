@@ -1,0 +1,12 @@
+function SeqEvent_HmDestructibleStateNotification.Notify  (script 147 bytes)
+  0000: if !(CheckActivate(self.Originator, InInstigator, false, , )) goto 0x0090
+  001a: foreach LinkedVariables(obj'Engine.SeqVar_String', StringVar, "Piece Name") (end 0x0054)
+  003d: StringVar.StrValue = cast57(inPieceName)
+  0053: iternext
+  0054: iterpop
+  0055: foreach LinkedVariables(obj'Engine.SeqVar_String', StringVar, "State Name") (end 0x008f)
+  0078: StringVar.StrValue = cast57(inStateName)
+  008e: iternext
+  008f: iterpop
+  0090: return nothing
+  0092: <eos>

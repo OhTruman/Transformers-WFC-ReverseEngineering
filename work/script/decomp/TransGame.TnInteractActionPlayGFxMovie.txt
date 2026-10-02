@@ -1,0 +1,21 @@
+function TnInteractActionPlayGFxMovie.TriggerAction  (script 139 bytes)
+  0000: TnLatentInteractAction.TriggerAction(Interact)
+  000b: if !(self.PlayMovie) goto 0x0075
+  0014: MovieInstance = self.MovieHandle.Open(self.Movie)
+  0032: if !(self.BlockingAction) goto 0x0072
+  003b: ScriptBinding = TnInteractScriptBinding(MovieInstance.AddExternalInterface(self.ScriptBindingClass))
+  005e: ScriptBinding.SetOwningAction(self)
+  0072: goto 0x0088
+  0075: self.MovieHandle.Close()
+  0088: return nothing
+  008a: <eos>
+
+function TnInteractActionPlayGFxMovie.OnMovieEnded  (script 13 bytes)
+  0000: ActionComplete()
+  000a: return nothing
+  000c: <eos>
+
+function TnInteractActionPlayGFxMovie.Cleanup  (script 22 bytes)
+  0000: self.MovieHandle.Close()
+  0013: return nothing
+  0015: <eos>

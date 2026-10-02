@@ -1,0 +1,178 @@
+function TnAiActionLockOnTarget.OnInitialize  (script 95 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionLockOnTargetBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._Blueprint.WeaponClass, , , ))
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionLockOnTarget.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionLockOnTarget.DoCalculateAdditionalCost  (script 73 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 0) ? 1.0 : 0.0))
+  0042: return return
+  0048: <eos>
+
+function TnAiActionLockOnTarget.OnSetUpConditions  (script 130 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateLockedOnTarget', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !((TnAiActionLockOnTarget.CanAimAtTarget(Target) == false)) goto 0x0048
+  0046: return false
+  0048: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Target)
+  006a: return OnSetUpConditions(ExpectedEffects, Conditions)
+  007b: return return
+  0081: <eos>
+
+function TnAiActionLockOnTarget.OnStart  (script 312 bytes)
+  0000: self._LockOnTimeRemaining = self._Blueprint.LockOnTime
+  0014: self._AimTimeRemaining = self._Blueprint.AimTime
+  0028: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateLockedOnTarget', ExpectedEffects))
+  0050: if !((self._Target == none)) goto 0x0066
+  005b: return Fail()
+  0066: SetCharacterState(0)
+  0071: TnAiActionLockOnTarget.SetTargetLockOnThreat()
+  0077: self._TransformerController.Focus = IFocusible(self._Target)
+  0090: self._TransformerPawn.set_IkTarget(self._Target)
+  00a8: self._TransformerPawn.EnableIkTracking(self._Blueprint.BodyPartForTracking)
+  00c9: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  00eb: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.None, delegate.None)
+  011f: TnAiActionLockOnTarget.TriggerKismetEvent()
+  0125: return OnStart(ExpectedEffects)
+  0131: return return
+  0137: <eos>
+
+function TnAiActionLockOnTarget.OnUpdate  (script 249 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Fail()
+  0029: LineOfSight = TnAiActionLockOnTarget.HasLineOfSight()
+  0036: FacingTarget = TnAiActionLockOnTarget.IsFacingTarget()
+  0043: if !((LineOfSight && FacingTarget)) goto 0x007e
+  0057: (self._LockOnTimeRemaining -= DeltaTime)
+  0063: if !((self._LockOnTimeRemaining <= cast3f(0))) goto 0x007b
+  0070: return Succeed()
+  007b: goto 0x0092
+  007e: self._LockOnTimeRemaining = self._Blueprint.LockOnTime
+  0092: (self._AimTimeRemaining -= DeltaTime)
+  009e: if !((self._AimTimeRemaining < self._LockOnTimeRemaining)) goto 0x00cf
+  00ad: if !(TnAiActionLockOnTarget.LockOnDestructible()) goto 0x00c4
+  00b6: return Succeed()
+  00c1: goto 0x00cf
+  00c4: return Fail()
+  00cf: TnAiActionLockOnTarget.UpdateCurrentThreatLevel(LineOfSight, FacingTarget)
+  00e1: return OnUpdate(ExpectedEffects, DeltaTime)
+  00f2: return return
+  00f8: <eos>
+
+function TnAiActionLockOnTarget.OnFinish  (script 114 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: get_WeaponAimer().Reset()
+  0039: TnAiActionLockOnTarget.ClearLockOnThreatLevel()
+  003f: if !((cast3a(CurrentState) != cast3a(3))) goto 0x0051
+  004f: return nothing
+  0051: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateLockedOnTarget', true, self._Target)
+  006f: return nothing
+  0071: <eos>
+
+function TnAiActionLockOnTarget.HasLineOfSight  (script 110 bytes)
+  0000: if !(!self._Blueprint.RequiresLineOfSight) goto 0x0016
+  0014: return true
+  0016: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x003a
+  0038: return false
+  003a: if !(((self._Blueprint.SecondLineOfSightSocket != 'None') && !TnAiActionLockOnTarget.HasLineOfSightFromSecondLocation())) goto 0x0065
+  0063: return false
+  0065: return true
+  0067: return return
+  006d: <eos>
+
+function TnAiActionLockOnTarget.SetTargetLockOnThreat  (script 55 bytes)
+  0000: P = Pawn(self._Target)
+  0010: if !((P != none)) goto 0x0034
+  001b: self._LockOnThreat = TnLockOnThreatInterface(P.Controller)
+  0034: return nothing
+  0036: <eos>
+
+function TnAiActionLockOnTarget.TriggerKismetEvent  (script 82 bytes)
+  0000: P = TnPawn(self._Target)
+  0010: if !(((P != none) && self._Blueprint.DisplayLockOnThreatLevel)) goto 0x004f
+  002f: self._TransformerController.TriggerEventClass(obj'TnSeqEvent_OmegaStatus', self._TransformerController, 8, )
+  004f: return nothing
+  0051: <eos>
+
+function TnAiActionLockOnTarget.HasLineOfSightFromSecondLocation  (script 167 bytes)
+  0000: TargetPawn = Pawn(self._Target)
+  0010: if !((TargetPawn == none)) goto 0x001d
+  001b: return true
+  001d: HitActor = self._TransformerPawn.TraceSight(HitLocation, HitNormal, TargetPawn, TargetPawn.GetPawnViewLocation(), self._TransformerPawn.Mesh.GetSocketWorldLocation(self._Blueprint.SecondLineOfSightSocket), true, , , )
+  0086: return ((HitActor == TargetPawn) || (HitActor == none))
+  00a0: return return
+  00a6: <eos>
+
+function TnAiActionLockOnTarget.IsFacingTarget  (script 191 bytes)
+  0000: if !(((self._TransformerController == none) || (self._TransformerController.Pawn == none))) goto 0x0023
+  0021: return false
+  0023: PawnDir = cast39(self._TransformerController.Pawn.Rotation)
+  0042: PawnToTarget = (self._Target.Location - self._TransformerController.Pawn.Location)
+  006f: PawnToTarget.Z = 0.0
+  0085: PawnToTarget = obj'Core.Math'.static.Normal(PawnToTarget)
+  009b: return ((PawnDir dot PawnToTarget) >= self._Blueprint.AimedAtTargetThreshold)
+  00b8: return return
+  00be: <eos>
+
+function TnAiActionLockOnTarget.CanAimAtTarget  (script 149 bytes)
+  0000: PawnToTarget = (Target.Location - self._TransformerController.Pawn.Location)
+  002d: SinThetaSquared = ((PawnToTarget.Z * PawnToTarget.Z) / (PawnToTarget dot PawnToTarget))
+  0063: return ((cast3f(1) - SinThetaSquared) >= (self._Blueprint.AimedAtTargetThreshold * self._Blueprint.AimedAtTargetThreshold))
+  008e: return return
+  0094: <eos>
+
+function TnAiActionLockOnTarget.LockOnDestructible  (script 362 bytes)
+  0000: if !((self._Blueprint.RequiresLineOfSight == false)) goto 0x0017
+  0015: return false
+  0017: TargetableService = TnAiActionLockOnTarget.GetTargetableService(self._Target)
+  0028: if !(NotEqual_InterfaceInterface(TargetableService, TnTargetableService(none))) goto 0x0056
+  003c: TraceEnd = TargetableService.get_TargetableLocation()
+  0056: if !((self._Blueprint.SecondLineOfSightSocket != 'None')) goto 0x00ce
+  0072: HitDestructible = TnDestructibleActor(self._TransformerPawn.TraceSight(HitLocation, HitNormal, none, TraceEnd, self._TransformerPawn.Mesh.GetSocketWorldLocation(self._Blueprint.SecondLineOfSightSocket), true, , , ))
+  00ce: if !((HitDestructible == none)) goto 0x0129
+  00d9: TraceStart = self._TransformerPawn.GetPawnViewLocation()
+  00f2: HitDestructible = TnDestructibleActor(self._TransformerPawn.TraceSight(HitLocation, HitNormal, none, TraceEnd, TraceStart, true, , , ))
+  0129: if !(((HitDestructible == none) || (HitDestructible.CanBeLockedOnToByAttacker(self._TransformerPawn) == false))) goto 0x0156
+  0154: return false
+  0156: self._Target = HitDestructible
+  0161: return true
+  0163: return return
+  0169: <eos>
+
+function TnAiActionLockOnTarget.GetTargetableService  (script 70 bytes)
+  0000: TargetPawn = TnPawn(TargetActor)
+  0010: if !((TargetPawn == none)) goto 0x001d
+  001b: return none
+  001d: return TnTargetableService(TargetPawn.GetService('TnTargetableService'))
+  003f: return return
+  0045: <eos>
+
+function TnAiActionLockOnTarget.UpdateCurrentThreatLevel  (script 163 bytes)
+  0000: if !((EqualEqual_InterfaceInterface(self._LockOnThreat, TnLockOnThreatInterface(none)) || !self._Blueprint.DisplayLockOnThreatLevel)) goto 0x002c
+  002a: return nothing
+  002c: if !((HasLineOfSight && FacingTarget)) goto 0x008a
+  0040: if !((self._LockOnTimeRemaining < self._Blueprint.HighThreatWarningTime)) goto 0x0071
+  0058: self._LockOnThreat.SetLockOnThreatLevel(3)
+  006e: goto 0x0087
+  0071: self._LockOnThreat.SetLockOnThreatLevel(2)
+  0087: goto 0x00a0
+  008a: self._LockOnThreat.SetLockOnThreatLevel(1)
+  00a0: return nothing
+  00a2: <eos>
+
+function TnAiActionLockOnTarget.ClearLockOnThreatLevel  (script 52 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self._LockOnThreat, TnLockOnThreatInterface(none))) goto 0x0016
+  0014: return nothing
+  0016: self._LockOnThreat.ClearLockOnThreatLevel()
+  002a: self._LockOnThreat = none
+  0031: return nothing
+  0033: <eos>

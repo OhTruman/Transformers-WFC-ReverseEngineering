@@ -1,0 +1,29 @@
+function HmRotatorLerper.Initialize  (script 36 bytes)
+  0000: self.StartRotator = Start
+  000b: self.EndRotator = End
+  0016: self.CurTime = 0.0
+  0021: return nothing
+  0023: <eos>
+
+function HmRotatorLerper.GetValue  (script 69 bytes)
+  0000: if !((self.RampTime == cast3f(0))) goto 0x0013
+  000d: return self.StartRotator
+  0013: return obj'Core.Math'.static.RLerp(self.StartRotator, self.EndRotator, (self.CurTime / self.RampTime), true)
+  003e: return return
+  0044: <eos>
+
+function HmRotatorLerper.Update  (script 47 bytes)
+  0000: (self.CurTime += DeltaTime)
+  000c: self.CurTime = obj'Core.Math'.static.FClamp(self.CurTime, 0.0, self.RampTime)
+  002c: return nothing
+  002e: <eos>
+
+function HmRotatorLerper.SetTime  (script 14 bytes)
+  0000: self.CurTime = Time
+  000b: return nothing
+  000d: <eos>
+
+function HmRotatorLerper.IsDoneLerping  (script 20 bytes)
+  0000: return (self.CurTime >= self.RampTime)
+  000d: return return
+  0013: <eos>

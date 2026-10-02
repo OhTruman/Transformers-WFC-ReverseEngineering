@@ -1,0 +1,88 @@
+function HmDialogEmitter.get_DialogComponent  (script 13 bytes)
+  0000: return self.DialogComp
+  0006: return return
+  000c: <eos>
+
+function HmDialogEmitter.Destroyed  (script 21 bytes)
+  0000: StopDialog(false, false)
+  000c: Destroyed()
+  0012: return nothing
+  0014: <eos>
+
+function HmDialogEmitter.PlayDialog  (script 91 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: self.DialogComp.Play(SoundCue, Replicate, Type, Deactivate, DialogCallback)
+  0058: return nothing
+  005a: <eos>
+
+function HmDialogEmitter.PlayDialogEvent  (script 92 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: PlayDialog(FindSoundCue(SoundEvent), Replicate, Type, Deactivate, DialogCallback)
+  0059: return nothing
+  005b: <eos>
+
+function HmDialogEmitter.StopDialog  (script 57 bytes)
+  0000: default=false
+  0005: default=true
+  000a: if !((none == self.DialogComp)) goto 0x0017
+  0015: return nothing
+  0017: self.DialogComp.Stop(ConversationOnly, Replicate)
+  0036: return nothing
+  0038: <eos>
+
+function HmDialogEmitter.GetIsDialogPlaying  (script 45 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return self.DialogComp.GetIsPlaying(SoundCueTarget)
+  0026: return return
+  002c: <eos>
+
+function HmDialogEmitter.GetIsDialogPlayingEvent  (script 46 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return GetIsDialogPlaying(FindSoundCue(SoundEvent))
+  0027: return return
+  002d: <eos>
+
+function HmDialogEmitter.SetDialogCharacter  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_DialogCharacter(_DialogCharacter)
+  0023: return nothing
+  0025: <eos>
+
+function HmDialogEmitter.SetDialogSocketName  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_SocketName(_SocketName)
+  0023: return nothing
+  0025: <eos>
+
+function HmDialogEmitter.FindSoundCue  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function HmDialogEmitter.PlaySoundEvent  (script 7 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: return nothing
+  0006: <eos>
+
+function HmDialogEmitter.GetDialogCharacters  (script 38 bytes)
+  0000: DialogCharacters.Length = 0
+  0008: if !((none != self.DialogCharacter)) goto 0x0023
+  0013: DialogCharacters.AddItem(self.DialogCharacter)
+  0020: goto 0x0023
+  0023: return nothing
+  0025: <eos>

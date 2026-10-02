@@ -1,0 +1,24 @@
+function TnAiActionTransformToRoboWoundedReaction.OnStart  (script 147 bytes)
+  0000: if !(self._TransformerPawn.get_IsInRobotForm()) goto 0x0021
+  0016: return Succeed()
+  0021: if !(self._TransformerPawn.get_IsTransforming()) goto 0x0042
+  0037: return Fail()
+  0042: self._TransformerPawn.DesiredRotation = self._TransformerPawn.Rotation
+  005f: SetCharacterState(1)
+  006a: self._TransformerController.Transform(0, )
+  0080: return OnStart(ExpectedEffects)
+  008c: return return
+  0092: <eos>
+
+function TnAiActionTransformToRoboWoundedReaction.OnUpdate  (script 59 bytes)
+  0000: if !(!self._TransformerPawn.get_IsTransforming()) goto 0x0023
+  0018: return Succeed()
+  0023: return OnUpdate(ExpectedEffects, DeltaTime)
+  0034: return return
+  003a: <eos>
+
+function TnAiActionTransformToRoboWoundedReaction.OnFinish  (script 41 bytes)
+  0000: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateReaction', 9, none)
+  001b: OnFinish(CurrentState)
+  0026: return nothing
+  0028: <eos>

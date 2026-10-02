@@ -1,0 +1,45 @@
+function TnPlayerControllerPartyLobby.IsInPartyLobby  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlayerControllerPartyLobby.OnPlayerAccepted  (script 113 bytes)
+  0000: OnPlayerAccepted(UniqueId, bWasInvited)
+  0011: if !((self.OnlineSub.GameInterface.GetGameSettings('Party') != none)) goto 0x006e
+  003d: self.OnlineSub.GameInterface.RegisterPlayer('Party', UniqueId, bWasInvited)
+  006e: return nothing
+  0070: <eos>
+
+function TnPlayerControllerPartyLobby.ClientPartyDisbanded  (script 78 bytes)
+  0000: SessionNames.AddItem('Party')
+  0011: self.OnlineSub.ReservationInterface.CancelReservations(SessionNames)
+  0033: DisconnectFromSessions(SessionNames, delegate.OnDisconnectFromPartyCompleteInformPartyLobby)
+  004b: return nothing
+  004d: <eos>
+
+function TnPlayerControllerPartyLobby.OnDisconnectFromPartyCompleteInformPartyLobby  (script 84 bytes)
+  0000: self.OnlineDisconnector.ClearDisconnectFromSessionsCompleteDelegate(delegate.OnDisconnectFromPartyCompleteInformPartyLobby)
+  001c: if !((self.WorldInfo.Game != none)) goto 0x0051
+  0030: TnLobbyGameBase(self.WorldInfo.Game).TransitionToPartyLeader()
+  0051: return nothing
+  0053: <eos>
+
+function TnPlayerControllerPartyLobby.RegisterOnlineDelegates  (script 58 bytes)
+  0000: TnPlayerController.RegisterOnlineDelegates()
+  0006: if !((self.OnlineSub != none)) goto 0x0037
+  0011: self.OnlineSub.ReservationInterface.AddHostHasCancelledReservationDelegate(delegate.OnPartyHostHasCancelledReservation)
+  0037: return nothing
+  0039: <eos>
+
+function TnPlayerControllerPartyLobby.ClearOnlineDelegates  (script 58 bytes)
+  0000: TnPlayerController.ClearOnlineDelegates()
+  0006: if !((self.OnlineSub != none)) goto 0x0037
+  0011: self.OnlineSub.ReservationInterface.ClearHostHasCancelledReservationDelegate(delegate.OnPartyHostHasCancelledReservation)
+  0037: return nothing
+  0039: <eos>
+
+function TnPlayerControllerPartyLobby.OnPartyHostHasCancelledReservation  (script 32 bytes)
+  0000: if !((SessionName == 'Party')) goto 0x0013
+  0013: ClientPartyDisbanded()
+  001d: return nothing
+  001f: <eos>

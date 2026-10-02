@@ -1,0 +1,1626 @@
+function OnlineSubsystemDemonware.LogoutIfLoggedIn  (script 26 bytes)
+  0000: self.AccountService.Logout(0, 0)
+  0017: return nothing
+  0019: <eos>
+
+function OnlineSubsystemDemonware.ClearPlayerInfo  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.Init  (script 778 bytes)
+  0000: CommonImplInitialized = Init()
+  000d: if !(!CommonImplInitialized) goto 0x0057
+  0018: LogInternal("ERROR: Common implementation did not initialize.", 'DevDemonware', , )
+  0057: DemonwareLibraryInitialized = OnlineSubsystemDemonware.InitializeDemonwareLibrary()
+  0064: if !(!DemonwareLibraryInitialized) goto 0x00aa
+  006f: LogInternal("ERROR: DemonWare library did not initialize.", 'DevDemonware', , )
+  00aa: InterfacesSetCorrectly = true
+  00b2: if !((obj'Engine.WorldInfo'.static.IsConsoleBuild(0) == false)) goto 0x00df
+  00cd: InterfacesSetCorrectly = SetAccountInterface(self)
+  00df: InterfacesSetCorrectly = (InterfacesSetCorrectly && SetPlayerInterface(self))
+  00fc: InterfacesSetCorrectly = (InterfacesSetCorrectly && SetSystemInterface(self))
+  0119: InterfacesSetCorrectly = (InterfacesSetCorrectly && SetStatsInterface(self))
+  0136: if !(!InterfacesSetCorrectly) goto 0x0188
+  0141: LogInternal("ERROR: DemonWare subsystem interfaces not set correctly.", 'DevDemonware', , )
+  0188: OnlineSubsystemDemonware.NativeInit()
+  018e: self.TaskList.Init(self)
+  01a2: self.AccountService.Init(self)
+  01b6: AdvertiserClass = class<DemonwareSessionAdvertiser>(FindObject(self.SessionAdvertiserClassName, obj'Core.Class'))
+  01d5: assert((AdvertiserClass != none))
+  01e1: self.SessionAdvertiser = new(nothing, nothing, AdvertiserClass, nothing, LSGAddressStringCert)
+  01f5: self.SessionAdvertiser.Init(self, self.AccountService)
+  020e: self.StatsReaderWriter.Init(self, self.AccountService)
+  0227: self.KeyReaderWriter.Init(self, self.AccountService)
+  0240: self.GlobalCounterReaderWriter.Init(self, self.AccountService)
+  0259: self.EventRecorder.Init(self, self.AccountService)
+  0272: self.StorageReaderWriter.Init(self, self.AccountService)
+  028b: self.GroupReaderWriter.Init(self, self.AccountService)
+  02a4: self.ChatService.Init(self, self.AccountService)
+  02bd: self.AccountService.SignInLocally(cast3d(255))
+  02d4: OnlineSubsystemDemonware.CreateSearchResults()
+  02da: OnlineSubsystemDemonware.RegisterEventHandler()
+  02e0: if !(((CommonImplInitialized && DemonwareLibraryInitialized) && InterfacesSetCorrectly)) goto 0x0301
+  02ff: return true
+  0301: return false
+  0303: return return
+  0309: <eos>
+
+function OnlineSubsystemDemonware.NativeInit  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.RegisterEventHandler  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.CreateSearchResults  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.HandlePostLogin  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.Shutdown  (script 80 bytes)
+  0000: StatusFromDemonware = OnlineSubsystemDemonware.ShutDownDemonwareLibrary()
+  000d: if !(!StatusFromDemonware) goto 0x0042
+  0018: LogInternal("DemonWare library did not shutdown.", , , )
+  0042: return StatusFromDemonware
+  0049: return return
+  004f: <eos>
+
+function OnlineSubsystemDemonware.InitializeDemonwareLibrary  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.ShutDownDemonwareLibrary  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.GetPlayerNicknameFromIndex  (script 25 bytes)
+  0000: return GetPlayerNickname(cast3d(UserIndex))
+  0012: return return
+  0018: <eos>
+
+function OnlineSubsystemDemonware.GetPlayerUniqueNetIdFromIndex  (script 35 bytes)
+  0000: GetUniquePlayerId(cast3d(UserIndex), UniqueId)
+  0016: return UniqueId
+  001c: return return
+  0022: <eos>
+
+function OnlineSubsystemDemonware.CreateOnlineAccount  (script 48 bytes)
+  0000: nothing
+  0001: return self.AccountService.CreateOnlineAccount(UserName, Password, EmailAddress, ProductKey)
+  0029: return return
+  002f: <eos>
+
+function OnlineSubsystemDemonware.OnCreateOnlineAccountCompleted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddCreateOnlineAccountCompletedDelegate  (script 27 bytes)
+  0000: self.AccountService.AddCreateOnlineAccountCompletedDelegate(AccountCreateDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearCreateOnlineAccountCompletedDelegate  (script 27 bytes)
+  0000: self.AccountService.ClearCreateOnlineAccountCompletedDelegate(AccountCreateDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.GetProductKeyAccountNames  (script 27 bytes)
+  0000: self.AccountService.GetProductKeyAccountNames(Accounts)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ReadProductKeyAccountNames  (script 33 bytes)
+  0000: nothing
+  0001: return self.AccountService.ReadProductKeyAccountNames(ProductKey)
+  001a: return return
+  0020: <eos>
+
+function OnlineSubsystemDemonware.OnReadProductKeyAccountNamesComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadProductKeyAccountNamesCompletedDelegate  (script 27 bytes)
+  0000: self.AccountService.AddReadProductKeyAccountNamesCompletedDelegate(ReadProductKeyAccountNamesDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadProductKeyAccountNamesCompletedDelegate  (script 27 bytes)
+  0000: self.AccountService.ClearReadProductKeyAccountNamesCompletedDelegate(ReadProductKeyAccountNamesDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.DeleteOnlineAccount  (script 38 bytes)
+  0000: nothing
+  0001: return self.AccountService.DeleteOnlineAccount(UserName, ProductKey)
+  001f: return return
+  0025: <eos>
+
+function OnlineSubsystemDemonware.OnDeleteOnlineAccountComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddDeleteOnlineAccountCompletedDelegate  (script 27 bytes)
+  0000: self.AccountService.AddDeleteOnlineAccountCompletedDelegate(DeleteOnlineAccountDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearDeleteOnlineAccountCompletedDelegate  (script 27 bytes)
+  0000: self.AccountService.ClearDeleteOnlineAccountCompletedDelegate(DeleteOnlineAccountDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.GetCurrentAccountUserName  (script 27 bytes)
+  0000: return self.AccountService.GetAccountUserName()
+  0014: return return
+  001a: <eos>
+
+function OnlineSubsystemDemonware.RenameLocalAccount  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function OnlineSubsystemDemonware.DeleteLocalAccount  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function OnlineSubsystemDemonware.GetLocalAccountNames  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.CreateLocalAccount  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function OnlineSubsystemDemonware.OnLoginChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.OnMutingChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.OnFriendsChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ShowLoginUI  (script 7 bytes)
+  0000: bShowOnlineOnly
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.Login  (script 49 bytes)
+  0000: nothing
+  0001: return self.AccountService.Login(LocalUserNum, LoginName, Password, bWantsLocalOnly)
+  002a: return return
+  0030: <eos>
+
+function OnlineSubsystemDemonware.LoginToOnlineService  (script 35 bytes)
+  0000: return self.AccountService.Login(LocalUserNum, , , )
+  001c: return return
+  0022: <eos>
+
+function OnlineSubsystemDemonware.LogoutOfOnlineService  (script 34 bytes)
+  0000: return self.AccountService.Logout(LocalUserNum, 0)
+  001b: return return
+  0021: <eos>
+
+function OnlineSubsystemDemonware.AutoLogin  (script 27 bytes)
+  0000: return self.AccountService.AutoLogin()
+  0014: return return
+  001a: <eos>
+
+function OnlineSubsystemDemonware.OnLoginFailed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddLoginFailedDelegate  (script 32 bytes)
+  0000: self.AccountService.AddLoginFailedDelegate(LocalUserNum, LoginDelegate)
+  001d: return nothing
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ClearLoginFailedDelegate  (script 32 bytes)
+  0000: self.AccountService.ClearLoginFailedDelegate(LocalUserNum, LoginDelegate)
+  001d: return nothing
+  001f: <eos>
+
+function OnlineSubsystemDemonware.Logout  (script 34 bytes)
+  0000: return self.AccountService.Logout(LocalUserNum, 0)
+  001b: return return
+  0021: <eos>
+
+function OnlineSubsystemDemonware.OnLogoutCompleted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddLogoutCompletedDelegate  (script 32 bytes)
+  0000: self.AccountService.AddLogoutCompletedDelegate(LocalUserNum, LogoutDelegate)
+  001d: return nothing
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ClearLogoutCompletedDelegate  (script 32 bytes)
+  0000: self.AccountService.ClearLogoutCompletedDelegate(LocalUserNum, LogoutDelegate)
+  001d: return nothing
+  001f: <eos>
+
+function OnlineSubsystemDemonware.GetLoginStatus  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.GetPreviousLoginStatus  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.DidProfilesChange  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.GetLogoutErrorCode  (script 33 bytes)
+  0000: return self.AccountService.GetLogoutErrorCode(bShouldReset)
+  001a: return return
+  0020: <eos>
+
+function OnlineSubsystemDemonware.GetSecondaryLoginStatus  (script 32 bytes)
+  0000: return self.AccountService.GetLoginStatus(LocalUserNum)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.GetSecondaryLogoutErrorCode  (script 33 bytes)
+  0000: return self.AccountService.GetLogoutErrorCode(bShouldReset)
+  001a: return return
+  0020: <eos>
+
+function OnlineSubsystemDemonware.GetUniquePlayerId  (script 37 bytes)
+  0000: return self.AccountService.GetUniquePlayerId(LocalUserNum, PlayerID)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.GetPlayerNickname  (script 32 bytes)
+  0000: return self.AccountService.GetPlayerNickname(LocalUserNum)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.IsGuestLogin  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.IsLocalLogin  (script 32 bytes)
+  0000: return self.AccountService.IsLocalLogin(LocalUserNum)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.CanPlayOnline  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.CanCommunicate  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.CanDownloadUserContent  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.CanPurchaseContent  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.CanViewPlayerProfiles  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.CanShowPresenceInformation  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.IsFriend  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.AreAnyFriends  (script 12 bytes)
+  0000: LocalUserNum
+  0005: Query
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.IsMuted  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.ShowFriendsUI  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.AddLoginChangeDelegate  (script 27 bytes)
+  0000: self.AccountService.AddLoginChangeDelegate(LoginDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearLoginChangeDelegate  (script 27 bytes)
+  0000: self.AccountService.ClearLoginChangeDelegate(LoginDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.OnLoginStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddLoginStatusChangeDelegate  (script 32 bytes)
+  0000: self.AccountService.AddLoginStatusChangeDelegate(LoginStatusDelegate, LocalUserNum)
+  001d: return nothing
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ClearLoginStatusChangeDelegate  (script 32 bytes)
+  0000: self.AccountService.ClearLoginStatusChangeDelegate(LoginStatusDelegate, LocalUserNum)
+  001d: return nothing
+  001f: <eos>
+
+function OnlineSubsystemDemonware.AddMutingChangeDelegate  (script 39 bytes)
+  0000: if !((self.MutingChangeDelegates.Find(MutingDelegate) == -1)) goto 0x0024
+  0017: self.MutingChangeDelegates.AddItem(MutingDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemDemonware.ClearMutingChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.MutingChangeDelegates.Find(MutingDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.MutingChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.AddFriendsChangeDelegate  (script 39 bytes)
+  0000: if !((self.FriendsChangeDelegates.Find(FriendsDelegate) == -1)) goto 0x0024
+  0017: self.FriendsChangeDelegates.AddItem(FriendsDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemDemonware.ClearFriendsChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.FriendsChangeDelegates.Find(FriendsDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.FriendsChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.CreateChatChannel  (script 27 bytes)
+  0000: return self.ChatService.CreateChatChannel()
+  0014: return return
+  001a: <eos>
+
+function OnlineSubsystemDemonware.AddChatCreateDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatCreateDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearChatCreateDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatCreateDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.SubscribeToChatChannel  (script 32 bytes)
+  0000: return self.ChatService.SubscribeToChatChannel(ChannelId)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.AddChatSubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatSubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearChatSubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatSubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.UnsubscribeFromChatChannel  (script 32 bytes)
+  0000: return self.ChatService.UnsubscribeFromChatChannel(ChannelId)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.AddChatUnsubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatUnsubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearChatUnsubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatUnsubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.SendChatMessage  (script 42 bytes)
+  0000: return self.ChatService.SendChatMessage(ChannelId, Message, MessageSize)
+  0023: return return
+  0029: <eos>
+
+function OnlineSubsystemDemonware.SendChatWhisperMessage  (script 47 bytes)
+  0000: return self.ChatService.SendChatWhisperMessage(ChannelId, UserId, Message, MessageSize)
+  0028: return return
+  002e: <eos>
+
+function OnlineSubsystemDemonware.AddChatSendCompleteDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatSendCompleteDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearChatSendCompleteDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatSendCompleteDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.AddChatChangeDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatChangeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearChatChangeDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatChangeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.AddChatMessageDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatMessageDelegate(ChatMessageDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearChatMessageDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatMessageDelegate(ChatMessageDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ReadProfileSettings  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ProfileSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnReadProfileSettingsBegin  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadProfileSettingsBeginDelegate  (script 39 bytes)
+  0000: if !((self.ReadProfileSettingsBeginDelegates.Find(ReadProfileSettingsBeginDelegate) == -1)) goto 0x0024
+  0017: self.ReadProfileSettingsBeginDelegates.AddItem(ReadProfileSettingsBeginDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemDemonware.ClearReadProfileSettingsBeginDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadProfileSettingsBeginDelegates.Find(ReadProfileSettingsBeginDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadProfileSettingsBeginDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.OnReadProfileSettingsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadProfileSettingsCompleteDelegate  (script 39 bytes)
+  0000: if !((self.ReadProfileSettingsCompleteDelegates.Find(ReadProfileSettingsCompleteDelegate) == -1)) goto 0x0024
+  0017: self.ReadProfileSettingsCompleteDelegates.AddItem(ReadProfileSettingsCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemDemonware.ClearReadProfileSettingsCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadProfileSettingsCompleteDelegates.Find(ReadProfileSettingsCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadProfileSettingsCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.GetProfileSettings  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.WriteProfileSettings  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ProfileSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnWriteProfileSettingsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddWriteProfileSettingsCompleteDelegate  (script 39 bytes)
+  0000: if !((self.WriteProfileSettingsCompleteDelegates.Find(WriteProfileSettingsCompleteDelegate) == -1)) goto 0x0024
+  0017: self.WriteProfileSettingsCompleteDelegates.AddItem(WriteProfileSettingsCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemDemonware.ClearWriteProfileSettingsCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.WriteProfileSettingsCompleteDelegates.Find(WriteProfileSettingsCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.WriteProfileSettingsCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.ReadFriendsList  (script 17 bytes)
+  0000: LocalUserNum
+  0005: Count
+  000a: StartingAt
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.OnReadFriendsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadFriendsCompleteDelegate  (script 39 bytes)
+  0000: if !((self.ReadFriendsCompleteDelegates.Find(ReadFriendsCompleteDelegate) == -1)) goto 0x0024
+  0017: self.ReadFriendsCompleteDelegates.AddItem(ReadFriendsCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemDemonware.ClearReadFriendsCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadFriendsCompleteDelegates.Find(ReadFriendsCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadFriendsCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.GetFriendsList  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Friends
+  000a: Count
+  000f: StartingAt
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemDemonware.SetOnlineStatus  (script 22 bytes)
+  0000: LocalUserNum
+  0005: StatusId
+  000a: LocalizedStringSettings
+  000f: Properties
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemDemonware.AddFriend  (script 17 bytes)
+  0000: LocalUserNum
+  0005: NewFriend
+  000a: Message
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.AddFriendByName  (script 17 bytes)
+  0000: LocalUserNum
+  0005: FriendName
+  000a: Message
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.OnAddFriendByNameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddAddFriendByNameCompleteDelegate  (script 72 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x0045
+  001c: if !((self.AddFriendByNameCompleteDelegates.Find(FriendDelegate) == -1)) goto 0x0045
+  0033: self.AddFriendByNameCompleteDelegates.Length[self.AddFriendByNameCompleteDelegates] = FriendDelegate
+  0045: return nothing
+  0047: <eos>
+
+function OnlineSubsystemDemonware.ClearAddFriendByNameCompleteDelegate  (script 77 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x004a
+  001c: RemoveIndex = self.AddFriendByNameCompleteDelegates.Find(FriendDelegate)
+  002f: if !((RemoveIndex != -1)) goto 0x004a
+  003e: self.AddFriendByNameCompleteDelegates.Remove(RemoveIndex,1)
+  004a: return nothing
+  004c: <eos>
+
+function OnlineSubsystemDemonware.AcceptFriendInvite  (script 12 bytes)
+  0000: LocalUserNum
+  0005: RequestingPlayer
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.CleanupFriendInviteMessages  (script 164 bytes)
+  0000: if !((self.UE3FriendsList.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: MessageIndex = 0
+  0015: if !((MessageIndex < self.CachedFriendMessages.Length)) goto 0x00a1
+  0025: if !(!MessageIndex[self.CachedFriendMessages].bIsFriendInvite) goto 0x0044
+  0041: goto 0x0097
+  0044: FriendIndex = self.UE3FriendsList.Find('UniqueId',MessageIndex[self.CachedFriendMessages].SendingPlayerId)
+  0071: if !((FriendIndex == -1)) goto 0x0083
+  0080: goto 0x0097
+  0083: DeleteMessage(LocalUserNum, MessageIndex)
+  0097: AddAdd_PreInt(MessageIndex)
+  009e: goto 0x0015
+  00a1: return nothing
+  00a3: <eos>
+
+function OnlineSubsystemDemonware.PlayerControllerSetOnlineStatus  (script 95 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x003d)
+  0039: goto 0x003d
+  003c: iternext
+  003d: iterpop
+  003e: if !((PC != none)) goto 0x005c
+  0049: PC.ClientSetOnlineStatus()
+  005c: return nothing
+  005e: <eos>
+
+function OnlineSubsystemDemonware.DenyFriendInvite  (script 12 bytes)
+  0000: LocalUserNum
+  0005: RequestingPlayer
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.RemoveFriend  (script 12 bytes)
+  0000: LocalUserNum
+  0005: FormerFriend
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnFriendInviteReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddFriendInviteReceivedDelegate  (script 72 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x0045
+  001c: if !((self.FriendInviteReceivedDelegates.Find(InviteDelegate) == -1)) goto 0x0045
+  0033: self.FriendInviteReceivedDelegates.Length[self.FriendInviteReceivedDelegates] = InviteDelegate
+  0045: return nothing
+  0047: <eos>
+
+function OnlineSubsystemDemonware.ClearFriendInviteReceivedDelegate  (script 77 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x004a
+  001c: RemoveIndex = self.FriendInviteReceivedDelegates.Find(InviteDelegate)
+  002f: if !((RemoveIndex != -1)) goto 0x004a
+  003e: self.FriendInviteReceivedDelegates.Remove(RemoveIndex,1)
+  004a: return nothing
+  004c: <eos>
+
+function OnlineSubsystemDemonware.SendMessageToFriend  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.SendGameInviteToFriend  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Friend
+  000a: Title
+  000f: Text
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemDemonware.SendGameInviteToFriends  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Friends
+  000a: Title
+  000f: Text
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemDemonware.OnReceivedGameInvite  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReceivedGameInviteDelegate  (script 72 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x0045
+  001c: if !((self.ReceivedGameInviteDelegates.Find(ReceivedGameInviteDelegate) == -1)) goto 0x0045
+  0033: self.ReceivedGameInviteDelegates.Length[self.ReceivedGameInviteDelegates] = ReceivedGameInviteDelegate
+  0045: return nothing
+  0047: <eos>
+
+function OnlineSubsystemDemonware.ClearReceivedGameInviteDelegate  (script 77 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x004a
+  001c: RemoveIndex = self.ReceivedGameInviteDelegates.Find(ReceivedGameInviteDelegate)
+  002f: if !((RemoveIndex != -1)) goto 0x004a
+  003e: self.ReceivedGameInviteDelegates.Remove(RemoveIndex,1)
+  004a: return nothing
+  004c: <eos>
+
+function OnlineSubsystemDemonware.OnQOSProbeComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddQOSProbeCompleteDelegate  (script 44 bytes)
+  0000: if !((self.QOSProbeCompleteDelegates.Find(QOSProbeCompleteDelegate) == -1)) goto 0x0029
+  0017: self.QOSProbeCompleteDelegates.Length[self.QOSProbeCompleteDelegates] = QOSProbeCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.JoinFriendGame  (script 12 bytes)
+  0000: LocalUserNum
+  0005: Friend
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnJoinFriendGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddJoinFriendGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.JoinFriendGameCompleteDelegates.Find(JoinFriendGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.JoinFriendGameCompleteDelegates.Length[self.JoinFriendGameCompleteDelegates] = JoinFriendGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearJoinFriendGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.JoinFriendGameCompleteDelegates.Find(JoinFriendGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.JoinFriendGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.GetFriendMessages  (script 27 bytes)
+  0000: if !((cast3a(LocalUserNum) == 0)) goto 0x0018
+  000d: FriendMessages = self.CachedFriendMessages
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.OnFriendMessageReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddFriendMessageReceivedDelegate  (script 72 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x0045
+  001c: if !((self.FriendMessageReceivedDelegates.Find(MessageDelegate) == -1)) goto 0x0045
+  0033: self.FriendMessageReceivedDelegates.Length[self.FriendMessageReceivedDelegates] = MessageDelegate
+  0045: return nothing
+  0047: <eos>
+
+function OnlineSubsystemDemonware.ClearFriendMessageReceivedDelegate  (script 77 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x004a
+  001c: RemoveIndex = self.FriendMessageReceivedDelegates.Find(MessageDelegate)
+  002f: if !((RemoveIndex != -1)) goto 0x004a
+  003e: self.FriendMessageReceivedDelegates.Remove(RemoveIndex,1)
+  004a: return nothing
+  004c: <eos>
+
+function OnlineSubsystemDemonware.DeleteMessage  (script 91 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x0052
+  001c: if !(((MessageIndex >= 0) && (MessageIndex < self.CachedFriendMessages.Length))) goto 0x0052
+  0039: self.CachedFriendMessages.Remove(MessageIndex,1)
+  0045: OnlineSubsystemDemonware.TriggerMessageChangedDelegates(LocalUserNum)
+  0050: return true
+  0052: return false
+  0054: return return
+  005a: <eos>
+
+function OnlineSubsystemDemonware.TriggerMessageChangedDelegates  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.OnFriendMessageChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddFriendMessageChangedDelegate  (script 67 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x0040
+  001c: if !((self.FriendMessageChangedDelegates.Find(MessageDelegate) == -1)) goto 0x0040
+  0033: self.FriendMessageChangedDelegates.AddItem(MessageDelegate)
+  0040: return nothing
+  0042: <eos>
+
+function OnlineSubsystemDemonware.ClearFriendMessageChangedDelegate  (script 77 bytes)
+  0000: if !((cast3a(LocalUserNum) == cast3a(self.AccountService.LoggedInPlayerNum))) goto 0x004a
+  001c: RemoveIndex = self.FriendMessageChangedDelegates.Find(MessageDelegate)
+  002f: if !((RemoveIndex != -1)) goto 0x004a
+  003e: self.FriendMessageChangedDelegates.Remove(RemoveIndex,1)
+  004a: return nothing
+  004c: <eos>
+
+function OnlineSubsystemDemonware.ShowKeyboardUI  (script 37 bytes)
+  0000: LocalUserNum
+  0005: TitleText
+  000a: DescriptionText
+  000f: bIsPassword
+  0014: bShouldValidate
+  0019: DefaultText
+  001e: MaxResultLength
+  0023: nothing
+  0024: <eos>
+
+function OnlineSubsystemDemonware.OnKeyboardInputComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddKeyboardInputDoneDelegate  (script 44 bytes)
+  0000: if !((self.KeyboardInputDelegates.Find(InputDelegate) == -1)) goto 0x0029
+  0017: self.KeyboardInputDelegates.Length[self.KeyboardInputDelegates] = InputDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearKeyboardInputDoneDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.KeyboardInputDelegates.Find(InputDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.KeyboardInputDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.GetKeyboardInputResults  (script 129 bytes)
+  0000: bWasCanceled = self.bWasKeyboardInputCanceled
+  000b: CleanString = self.KeyboardResultsString
+  0016: foreach self.UnsupportedUnicodeCharacters(Unicode,) (end 0x0058)
+  0025: CleanString = obj'Core.Strings'.static.Repl(CleanString, obj'Core.Strings'.static.Chr(Unicode), cast57('_'), )
+  0057: iternext
+  0058: iterpop
+  0059: bContainsUnsupportedCharacters = cast3d(((CleanString != self.KeyboardResultsString) ? 1 : 0))
+  0074: return CleanString
+  007a: return return
+  0080: <eos>
+
+function OnlineSubsystemDemonware.OnLoginCancelled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddLoginCancelledDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ClearLoginCancelledDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ReadOnlineStats  (script 37 bytes)
+  0000: return self.StatsReaderWriter.ReadOnlineStats(Players, StatsRead)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.ReadOnlineStatsForFriends  (script 37 bytes)
+  0000: return self.StatsReaderWriter.ReadOnlineStatsForFriends(StatsRead, self.UE3FriendsList)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.ReadOnlineStatsByRank  (script 53 bytes)
+  0000: default=1
+  0005: default=100
+  000b: return self.StatsReaderWriter.ReadOnlineStatsByRank(StatsRead, StartIndex, NumToRead)
+  002e: return return
+  0034: <eos>
+
+function OnlineSubsystemDemonware.ReadOnlineStatsByRankAroundPlayer  (script 43 bytes)
+  0000: default=10
+  0006: return self.StatsReaderWriter.ReadOnlineStatsByRankAroundPlayer(StatsRead, NumRows)
+  0024: return return
+  002a: <eos>
+
+function OnlineSubsystemDemonware.OnReadOnlineStatsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadOnlineStatsCompleteDelegate  (script 27 bytes)
+  0000: self.StatsReaderWriter.AddReadCompleteDelegate(ReadOnlineStatsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadOnlineStatsCompleteDelegate  (script 27 bytes)
+  0000: self.StatsReaderWriter.ClearReadCompleteDelegate(ReadOnlineStatsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.FreeStats  (script 20 bytes)
+  0000: StatsRead.Rows.Length = 0
+  0011: return nothing
+  0013: <eos>
+
+function OnlineSubsystemDemonware.WriteOnlineStats  (script 37 bytes)
+  0000: return self.StatsReaderWriter.WriteOnlineStats(Player, StatsWrite)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.FlushOnlineStats  (script 32 bytes)
+  0000: return self.StatsReaderWriter.FlushOnlineStats(SessionName)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.OnFlushOnlineStatsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddFlushOnlineStatsCompleteDelegate  (script 27 bytes)
+  0000: self.StatsReaderWriter.AddFlushCompleteDelegate(FlushOnlineStatsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearFlushOnlineStatsCompleteDelegate  (script 27 bytes)
+  0000: self.StatsReaderWriter.ClearFlushCompleteDelegate(FlushOnlineStatsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ResetDevelopmentLeaderboard  (script 124 bytes)
+  0000: LogInternal("Error: ResetDevelopmentLeaderboard does not work on Demonware, you must manually reset the leaderboards on DevZone", , , )
+  0079: return nothing
+  007b: <eos>
+
+function OnlineSubsystemDemonware.ReadGlobalCountersCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadGlobalCountersCompleteDelegate  (script 27 bytes)
+  0000: self.GlobalCounterReaderWriter.AddReadCompleteDelegate(ReadGlobalCountersCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadGlobalCountersCompleteDelegate  (script 27 bytes)
+  0000: self.GlobalCounterReaderWriter.ClearReadCompleteDelegate(ReadGlobalCountersCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.UpdateGlobalCounter  (script 37 bytes)
+  0000: return self.GlobalCounterReaderWriter.UpdateCounter(CounterId, Delta)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.ReadGlobalCounterValues  (script 32 bytes)
+  0000: return self.GlobalCounterReaderWriter.GetCounterValues(CounterIds)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.RecordEvent  (script 45 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return self.EventRecorder.RecordEvent(Contents, Category, Compress)
+  0026: return return
+  002c: <eos>
+
+function OnlineSubsystemDemonware.ReadKeyArchive  (script 32 bytes)
+  0000: return self.KeyReaderWriter.ReadValues(self.CachedProfile)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ReadKeyArchiveCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadKeyArchiveCompleteDelegate  (script 27 bytes)
+  0000: self.KeyReaderWriter.AddReadCompleteDelegate(ReadKeyArchiveCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadKeyArchiveCompleteDelegate  (script 27 bytes)
+  0000: self.KeyReaderWriter.ClearReadCompleteDelegate(ReadKeyArchiveCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.HasReadKeyArchiveFor  (script 32 bytes)
+  0000: return self.KeyReaderWriter.HasReadKeyArchiveFor(OwnerId)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.PublishKeyArchive  (script 32 bytes)
+  0000: return self.KeyReaderWriter.Publish(self.CachedProfile)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ClearDeferredKeyArchiveWrites  (script 22 bytes)
+  0000: self.KeyReaderWriter.ClearDeferredKeyArchiveWrites()
+  0013: return nothing
+  0015: <eos>
+
+function OnlineSubsystemDemonware.SetKeyArchiveValue  (script 39 bytes)
+  0000: nothing
+  0001: return self.KeyReaderWriter.SetValue(Value, DeferredWrite)
+  0020: return return
+  0026: <eos>
+
+function OnlineSubsystemDemonware.GetKeyArchiveValue  (script 32 bytes)
+  0000: return self.KeyReaderWriter.GetValue(Value)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.SetGroups  (script 32 bytes)
+  0000: return self.GroupReaderWriter.SetGroups(Groups)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ReadGroupCounts  (script 32 bytes)
+  0000: return self.GroupReaderWriter.ReadGroupCounts(Groups)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.OnReadGroupCountsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadGroupCountsCompleteDelegate  (script 27 bytes)
+  0000: self.GroupReaderWriter.AddReadCompleteDelegate(ReadGroupCountsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadGroupCountsCompleteDelegate  (script 27 bytes)
+  0000: self.GroupReaderWriter.ClearReadCompleteDelegate(ReadGroupCountsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.WriteOnlinePlayerScores  (script 17 bytes)
+  0000: SessionName
+  0005: LeaderboardId
+  000a: PlayerScores
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.GetHostStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.RegisterHostStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.OnRegisterHostStatGuidComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddRegisterHostStatGuidCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ClearRegisterHostStatGuidCompleteDelegateDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.GetClientStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.RegisterStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.HasLinkConnection  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.NatDiscoverySucceeded  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.OnLinkStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddLinkStatusChangeDelegate  (script 44 bytes)
+  0000: if !((self.LinkStatusDelegates.Find(LinkStatusDelegate) == -1)) goto 0x0029
+  0017: self.LinkStatusDelegates.Length[self.LinkStatusDelegates] = LinkStatusDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearLinkStatusChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LinkStatusDelegates.Find(LinkStatusDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LinkStatusDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.OnExternalUIChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddExternalUIChangeDelegate  (script 71 bytes)
+  0000: if !((self.ExternalUIChangeDelegates.Find(ExternalUIDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.ExternalUIChangeDelegates.Length
+  0023: self.ExternalUIChangeDelegates.Length = (self.ExternalUIChangeDelegates.Length + 1)
+  0033: AddIndex[self.ExternalUIChangeDelegates] = ExternalUIDelegate
+  0044: return nothing
+  0046: <eos>
+
+function OnlineSubsystemDemonware.ClearExternalUIChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ExternalUIChangeDelegates.Find(ExternalUIDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ExternalUIChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.GetNetworkNotificationPosition  (script 10 bytes)
+  0000: return 7
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.SetNetworkNotificationPosition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.OnControllerChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddControllerChangeDelegate  (script 58 bytes)
+  0000: if !((self.ControllerChangeDelegates.Find(ControllerChangeDelegate) == -1)) goto 0x0037
+  0017: self.ControllerChangeDelegates.Length[self.ControllerChangeDelegates] = ControllerChangeDelegate
+  0029: self.ControllerChangeDelegateStatus.Length[self.ControllerChangeDelegateStatus] = false
+  0037: return nothing
+  0039: <eos>
+
+function OnlineSubsystemDemonware.ClearControllerChangeDelegate  (script 61 bytes)
+  0000: RemoveIndex = self.ControllerChangeDelegates.Find(ControllerChangeDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x003a
+  0022: self.ControllerChangeDelegates.Remove(RemoveIndex,1)
+  002e: self.ControllerChangeDelegateStatus.Remove(RemoveIndex,1)
+  003a: return nothing
+  003c: <eos>
+
+function OnlineSubsystemDemonware.IsControllerConnected  (script 7 bytes)
+  0000: ControllerId
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.OnConnectionStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddConnectionStatusChangeDelegate  (script 44 bytes)
+  0000: if !((self.ConnectionStatusChangeDelegates.Find(ConnectionStatusDelegate) == -1)) goto 0x0029
+  0017: self.ConnectionStatusChangeDelegates.Length[self.ConnectionStatusChangeDelegates] = ConnectionStatusDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearConnectionStatusChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ConnectionStatusChangeDelegates.Find(ConnectionStatusDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ConnectionStatusChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.GetNATType  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.GetHardwareDetails  (script 7 bytes)
+  0000: Details
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.OnFileIOComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ReadTitleFile  (script 32 bytes)
+  0000: return self.StorageReaderWriter.ReadTitleFile(FileToRead)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.AddReadTitleFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.AddCompleteDelegate(ReadTitleFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadTitleFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.ClearCompleteDelegate(ReadTitleFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.GetTitleFileContents  (script 37 bytes)
+  0000: return self.StorageReaderWriter.GetTitleFileContents(Filename, FileContents)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.GetTitleFileState  (script 32 bytes)
+  0000: return self.StorageReaderWriter.GetTitleFileState(Filename)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.ReadUserFile  (script 32 bytes)
+  0000: return self.StorageReaderWriter.ReadUserFile(FileToRead)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.AddReadUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.AddReadUserFileCompleteDelegate(ReadUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearReadUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.ClearReadUserFileCompleteDelegate(ReadUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.GetUserFileContents  (script 37 bytes)
+  0000: return self.StorageReaderWriter.GetUserFileContents(Filename, FileContents)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.WriteUserFile  (script 37 bytes)
+  0000: return self.StorageReaderWriter.WriteUserFile(FileToWrite, FileContents)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemDemonware.AddWriteUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.AddWriteUserFileCompleteDelegate(WriteUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.ClearWriteUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.ClearWriteUserFileCompleteDelegate(WriteUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemDemonware.GetUserFileState  (script 32 bytes)
+  0000: return self.StorageReaderWriter.GetUserFileState(Filename)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemDemonware.UIStartupComplete  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.OnInstallEnd  (script 11 bytes)
+  0000: self.bIsInstalled = true
+  0008: return nothing
+  000a: <eos>
+
+function OnlineSubsystemDemonware.HasInstalledGame  (script 14 bytes)
+  0000: return self.bIsInstalled
+  0007: return return
+  000d: <eos>
+
+function OnlineSubsystemDemonware.OnStorageDeviceChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddStorageDeviceChangeDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ClearStorageDeviceChangeDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.MuteAll  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.UnmuteAll  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.RegisterLocalTalker  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.UnregisterLocalTalker  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.RegisterRemoteTalker  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.UnregisterRemoteTalker  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.IsLocalPlayerTalking  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.IsRemotePlayerTalking  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.IsHeadsetPresent  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.SetRemoteTalkerPriority  (script 17 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: Priority
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.MuteRemoteTalker  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.UnmuteRemoteTalker  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnPlayerTalking  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddPlayerTalkingDelegate  (script 44 bytes)
+  0000: if !((self.PlayerTalkingDelegates.Find(TalkerDelegate) == -1)) goto 0x0029
+  0017: self.PlayerTalkingDelegates.Length[self.PlayerTalkingDelegates] = TalkerDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearPlayerTalkingDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.PlayerTalkingDelegates.Find(TalkerDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.PlayerTalkingDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.StartNetworkedVoice  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.StopNetworkedVoice  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.StartSpeechRecognition  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.StopSpeechRecognition  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.GetRecognitionResults  (script 12 bytes)
+  0000: LocalUserNum
+  0005: Words
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnRecognitionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddRecognitionCompleteDelegate  (script 44 bytes)
+  0000: if !((self.SpeechRecognitionCompleteDelegates.Find(RecognitionDelegate) == -1)) goto 0x0029
+  0017: self.SpeechRecognitionCompleteDelegates.Length[self.SpeechRecognitionCompleteDelegates] = RecognitionDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearRecognitionCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.SpeechRecognitionCompleteDelegates.Find(RecognitionDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.SpeechRecognitionCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.SelectVocabulary  (script 12 bytes)
+  0000: LocalUserNum
+  0005: VocabularyId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.SetSpeechRecognitionObject  (script 12 bytes)
+  0000: LocalUserNum
+  0005: SpeechRecogObj
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.ShowFeedbackUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.ShowGamerCardUI  (script 17 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: PlayerName
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.ShowMessagesUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.ShowAchievementsUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.ShowInviteUI  (script 10 bytes)
+  0000: nothing
+  0001: return false
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.IsInPartyChatSession  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.ShowPartyChatSessionsUI  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.SendGameInviteToPartyChatMembers  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemDemonware.ShowContentMarketplaceUI  (script 19 bytes)
+  0000: default=-1
+  0009: nothing
+  000a: return false
+  000c: return return
+  0012: <eos>
+
+function OnlineSubsystemDemonware.ShowMembershipMarketplaceUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.ShowDeviceSelectionUI  (script 11 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return false
+  0004: return return
+  000a: <eos>
+
+function OnlineSubsystemDemonware.OnDeviceSelectionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddDeviceSelectionDoneDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ClearDeviceSelectionDoneDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.GetDeviceSelectionResults  (script 9 bytes)
+  0000: return 0
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.IsDeviceValid  (script 10 bytes)
+  0000: nothing
+  0001: return false
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemDemonware.UnlockAchievement  (script 12 bytes)
+  0000: LocalUserNum
+  0005: AchievementId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemDemonware.OnUnlockAchievementComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddUnlockAchievementCompleteDelegate  (script 44 bytes)
+  0000: if !((self.UnlockAchievementCompleteDelegates.Find(UnlockAchievementCompleteDelegate) == -1)) goto 0x0029
+  0017: self.UnlockAchievementCompleteDelegates.Length[self.UnlockAchievementCompleteDelegates] = UnlockAchievementCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemDemonware.ClearUnlockAchievementCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.UnlockAchievementCompleteDelegates.Find(UnlockAchievementCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.UnlockAchievementCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemDemonware.IsAchievementUnlocked  (script 7 bytes)
+  0000: AchievementId
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.ReadAchievements  (script 24 bytes)
+  0000: default=0
+  0005: default=true
+  000a: default=false
+  000f: return false
+  0011: return return
+  0017: <eos>
+
+function OnlineSubsystemDemonware.OnReadAchievementsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddReadAchievementsCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ClearReadAchievementsCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.GetAchievements  (script 15 bytes)
+  0000: default=0
+  0005: return 3
+  0008: return return
+  000e: <eos>
+
+function OnlineSubsystemDemonware.UnlockGamerPicture  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.UnlockAvatarAsset  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.OnProfileDataChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.AddProfileDataChangedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ClearProfileDataChangedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemDemonware.ShowFriendsInviteUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.ShowCustomPlayersUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.AddPlayersToPlayerHistory  (script 17 bytes)
+  0000: LocalUserNum
+  0005: Players
+  000a: PlayersMetDescription
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemDemonware.ShowPlayersUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.IsPlayerInSystemParty  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.ShowSystemPartyUI  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemDemonware.AddAsyncTask  (script 7 bytes)
+  0000: NewTask
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemDemonware.CancelAllLobbyTasks  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemDemonware.PrintAsyncTasks  (script 22 bytes)
+  0000: self.TaskList.PrintActiveTasks()
+  0013: return nothing
+  0015: <eos>
+
+function OnlineSubsystemDemonware.HasAsyncTasks  (script 27 bytes)
+  0000: return self.TaskList.HasAsyncTasks()
+  0014: return return
+  001a: <eos>
+
+function OnlineSubsystemDemonware.GetDeferredGameInviteControllerId  (script 29 bytes)
+  0000: return (self.DeferredGameInviteAccepted ? -2 : -1)
+  0016: return return
+  001c: <eos>

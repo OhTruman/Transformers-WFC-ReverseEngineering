@@ -1,0 +1,47 @@
+function TnSeqAct_SetTargetableByAi.Activated  (script 145 bytes)
+  0000: Activated()
+  0006: foreach self.Targets(Target,) (end 0x008d)
+  0015: P = TnSeqAct_SetTargetableByAi.GetAiPawn(Target)
+  0026: if !((P != none)) goto 0x004b
+  0031: P._TargetableByAi = self.IsTargetableByAi
+  0047: iternext
+  0048: goto 0x008d
+  004b: SentryPawn = TnSeqAct_SetTargetableByAi.GetSentryPawn(Target)
+  005c: if !((SentryPawn != none)) goto 0x0081
+  0067: SentryPawn._TargetableByAi = self.IsTargetableByAi
+  007d: iternext
+  007e: goto 0x008d
+  0081: TnSeqAct_SetTargetableByAi.LogBadTarget(Target)
+  008c: iternext
+  008d: iterpop
+  008e: return nothing
+  0090: <eos>
+
+function TnSeqAct_SetTargetableByAi.LogBadTarget  (script 120 bytes)
+  0000: if !(((Controller(Target) == none) || (Controller(Target).Pawn == none))) goto 0x002d
+  002b: return nothing
+  002d: LogInternal(("ERROR: TnSeqAct_SetTargetableByAi used on invalid target" @ cast56(Target)), , , )
+  0075: return nothing
+  0077: <eos>
+
+function TnSeqAct_SetTargetableByAi.GetAiPawn  (script 89 bytes)
+  0000: P = TnAiPawn(Target)
+  0010: if !((P != none)) goto 0x0021
+  001b: return P
+  0021: C = Controller(Target)
+  0031: if !((C != none)) goto 0x0050
+  003c: return TnAiPawn(C.Pawn)
+  0050: return none
+  0052: return return
+  0058: <eos>
+
+function TnSeqAct_SetTargetableByAi.GetSentryPawn  (script 89 bytes)
+  0000: P = TnSentryPawn(Target)
+  0010: if !((P != none)) goto 0x0021
+  001b: return P
+  0021: C = Controller(Target)
+  0031: if !((C != none)) goto 0x0050
+  003c: return TnSentryPawn(C.Pawn)
+  0050: return none
+  0052: return return
+  0058: <eos>

@@ -1,0 +1,10 @@
+function TnGameRules_ScoreFlags.ScoreObjective  (script 112 bytes)
+  0000: TnGameRules_ScoreObjectives.ScoreObjective(Scorer, Score)
+  0010: if !((Scorer == none)) goto 0x001d
+  001b: return nothing
+  001d: PC = TnPlayerController(Scorer.Owner)
+  0036: if !((PC != none)) goto 0x006d
+  0041: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  005a: PRI.AddFlagScore()
+  006d: return nothing
+  006f: <eos>

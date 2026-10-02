@@ -1,0 +1,24 @@
+function TnKillstreakActivatedMessage.GetColoredString  (script 332 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: StringReplacements = StringReplacements
+  0010: if !((LocalPlayerPRI == RelatedPRI_1)) goto 0x0038
+  001f: UnparsedMsg = default.SelfAnnouncementMessage
+  002a: EventSound = default.SelfAnnouncementSound
+  0035: goto 0x0087
+  0038: if !(obj'TnMessageHelpers'.static.OnSameTeam(LocalPlayerPRI, RelatedPRI_1)) goto 0x0071
+  0058: UnparsedMsg = default.FriendlyAnnouncementMessage
+  0063: EventSound = default.FriendlyAnnouncementSound
+  006e: goto 0x0087
+  0071: UnparsedMsg = default.EnemyAnnouncementMessage
+  007c: EventSound = default.EnemyAnnouncementSound
+  0087: if !((((EventSound == none) && (default.FactionAnnouncementSound.Length > 0)) && (cast3a(RelatedPRI_1.GetTeamNum()) != 255))) goto 0x00df
+  00be: EventSound = cast3a(RelatedPRI_1.GetTeamNum())[default.FactionAnnouncementSound]
+  00df: TnWorldInfo(LocalPlayerPRI.WorldInfo)._Announcer.PlayEvent(EventSound)
+  010e: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  013f: return CS
+  0145: return return
+  014b: <eos>

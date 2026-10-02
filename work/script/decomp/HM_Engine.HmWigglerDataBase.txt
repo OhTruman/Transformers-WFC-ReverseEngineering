@@ -1,0 +1,11 @@
+function HmWigglerDataBase.Initialize  (script 27 bytes)
+  0000: self.SmoothingCurve.Build(self.SmoothingCurvePoints)
+  0018: return nothing
+  001a: <eos>
+
+function HmWigglerDataBase.CurveRemapper  (script 66 bytes)
+  0000: if !(self.bEditingSmoothingCurve) goto 0x0021
+  0009: self.SmoothingCurve.Build(self.SmoothingCurvePoints)
+  0021: return self.SmoothingCurve.Evaluate(InPercent, )
+  003b: return return
+  0041: <eos>

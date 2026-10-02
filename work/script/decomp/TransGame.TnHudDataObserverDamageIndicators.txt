@@ -1,0 +1,13 @@
+function TnHudDataObserverDamageIndicators.CheckData  (script 237 bytes)
+  0000: if !((PC.Pawn != none)) goto 0x004e
+  0014: ProcessNewValue(Movie, (cast3f(PC.Pawn.Rotation.Yaw) * 9.59e-05))
+  004e: foreach PC.PendingDamageIndicators(DI,) (end 0x00d8)
+  0066: args.Length = 0
+  006e: AddNumberValue(args, 0, (DI.WorldSpaceYawRotation * 9.59e-05))
+  0095: AddNumberValue(args, 1, DI.DamageAmount)
+  00b5: Movie.Invoke(self.AddDamageIndicatorBindingName, args)
+  00d7: iternext
+  00d8: iterpop
+  00d9: PC.PendingDamageIndicators.Length = 0
+  00ea: return nothing
+  00ec: <eos>

@@ -1,0 +1,37 @@
+function TnAiActionStopAndAnimateCooldownWeapon.OnSetUpConditions  (script 91 bytes)
+  0000: if !((self._Blueprint.Params.AnimName == 'None')) goto 0x0029
+  0027: return false
+  0029: if !(!self._TransformerPawn.get_IsInRobotForm()) goto 0x0043
+  0041: return false
+  0043: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0054: return return
+  005a: <eos>
+
+function TnAiActionStopAndAnimateCooldownWeapon.CanInterruptNow  (script 52 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateReaction') == 5)) goto 0x0026
+  0024: return true
+  0026: return CanInterruptNow()
+  002d: return return
+  0033: <eos>
+
+function TnAiActionStopAndAnimateCooldownWeapon.OnStart  (script 34 bytes)
+  0000: PlayDialog(obj'SoundEvents_Dialog.CooldownWeaponBeginDialog')
+  000f: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  001b: return return
+  0021: <eos>
+
+function TnAiActionStopAndAnimateCooldownWeapon.OnAnimationComplete  (script 58 bytes)
+  0000: if !(get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateWeaponOverheated')) goto 0x002d
+  0020: Fail()
+  002a: goto 0x0037
+  002d: Succeed()
+  0037: return nothing
+  0039: <eos>
+
+function TnAiActionStopAndAnimateCooldownWeapon.OnFinish  (script 47 bytes)
+  0000: TnAiActionPlayAnimation.OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: PlayDialog(obj'SoundEvents_Dialog.CooldownWeaponCompleteDialog')
+  002c: return nothing
+  002e: <eos>

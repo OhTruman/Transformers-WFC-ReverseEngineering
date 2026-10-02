@@ -1,0 +1,52 @@
+function TnAiActionExposeHeart.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionExposeHeartBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionExposeHeart.OnBind  (script 57 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._Omega = TnOmegaSupremePawn(self._TransformerPawn)
+  0016: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0036: return nothing
+  0038: <eos>
+
+function TnAiActionExposeHeart.OnSetUpConditions  (script 86 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 2)) goto 0x0026
+  0024: return false
+  0026: if !(self._Omega.IsHeartArmorDestroyed()) goto 0x003e
+  003c: return false
+  003e: return OnSetUpConditions(ExpectedEffects, Conditions)
+  004f: return return
+  0055: <eos>
+
+function TnAiActionExposeHeart.OnStart  (script 163 bytes)
+  0000: SetCharacterState((8 | 1))
+  000f: TnAiActionExposeHeart.KillSentries()
+  0015: self._TransformerController.StopMovement()
+  0028: self._ExposeHeartTimer.Start(self._Omega.delegate.ExposeHeart, self._Blueprint.ExposeHeartDelay, )
+  005c: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.SucceedCallback, delegate.FailCallback)
+  0090: return OnStart(ExpectedEffects)
+  009c: return return
+  00a2: <eos>
+
+function TnAiActionExposeHeart.OnUpdate  (script 48 bytes)
+  0000: self._ExposeHeartTimer.Tick(DeltaTime)
+  0018: return OnUpdate(ExpectedEffects, DeltaTime)
+  0029: return return
+  002f: <eos>
+
+function TnAiActionExposeHeart.OnFinish  (script 81 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: self._ExposeHeartTimer.Clear()
+  0034: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateEmote', false, )
+  004e: return nothing
+  0050: <eos>
+
+function TnAiActionExposeHeart.KillSentries  (script 82 bytes)
+  0000: Sentries = TnSentryGroupService(self._TransformerPawn.GetService('TnSentryGroupService'))
+  0027: if !(NotEqual_InterfaceInterface(Sentries, TnSentryGroupService(none))) goto 0x004f
+  003b: Sentries.Kill()
+  004f: return nothing
+  0051: <eos>

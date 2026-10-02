@@ -1,0 +1,10 @@
+function TnTacticalPathNodeEvaluatorKeepInRange.Score  (script 315 bytes)
+  0000: Origin = (self.UseFriend ? Searcher._Friend : Searcher.Enemy)
+  002d: if !((Origin == none)) goto 0x003e
+  0038: return 0.0
+  003e: MinDistance = ((cast3a(self.InclusiveMinimum) == cast3a(0)) ? 0.0 : cast3a(self.InclusiveMinimum)[Searcher.RangeSet].Min)
+  007c: MaxDistance = ((cast3a(self.InclusiveMaximum) == cast3a(0)) ? 3.4028234663852886e+38 : cast3a(self.InclusiveMaximum)[Searcher.RangeSet].Max)
+  00ba: DistanceFromOriginSquared = obj'Core.Math'.static.VSizeSq((Tactical._Location - Origin.Location))
+  00f1: return (((DistanceFromOriginSquared < obj'Core.Math'.static.Square(MinDistance)) || (DistanceFromOriginSquared > obj'Core.Math'.static.Square(MaxDistance))) ? -1.0 : 1.0)
+  0134: return return
+  013a: <eos>

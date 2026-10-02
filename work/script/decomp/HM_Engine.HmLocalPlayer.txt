@@ -1,0 +1,26 @@
+function HmLocalPlayer.IsStorageDeviceDesired  (script 53 bytes)
+  0000: if !(!self.Actor.WorldInfo.IsConsoleBuild(1)) goto 0x0025
+  0023: return true
+  0025: return (self._CurrentStorageDeviceId > 0)
+  002e: return return
+  0034: <eos>
+
+function HmLocalPlayer.IsStorageDeviceValid  (script 149 bytes)
+  0000: default=0
+  0005: if !(!obj'Engine.WorldInfo'.static.IsConsoleBuild(1)) goto 0x0021
+  001f: return true
+  0021: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  003a: if !((OnlineSub == none)) goto 0x0047
+  0045: return false
+  0047: if !(EqualEqual_InterfaceInterface(OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0066
+  0064: return false
+  0066: return OnlineSub.PlayerInterfaceEx.IsDeviceValid(self._CurrentStorageDeviceId, SizeRequired)
+  008e: return return
+  0094: <eos>
+
+function HmLocalPlayer.HasSelectedStorageDevice  (script 44 bytes)
+  0000: if !(!obj'Engine.WorldInfo'.static.IsConsoleBuild(1)) goto 0x001c
+  001a: return true
+  001c: return (self._CurrentStorageDeviceId >= 0)
+  0025: return return
+  002b: <eos>

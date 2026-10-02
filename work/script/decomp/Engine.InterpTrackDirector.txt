@@ -1,0 +1,64 @@
+function InterpTrackDirector.GetNumKeyframes  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function InterpTrackDirector.GetTimeRange  (script 12 bytes)
+  0000: StartTime
+  0005: EndTime
+  000a: nothing
+  000b: <eos>
+
+function InterpTrackDirector.GetKeyframeTime  (script 7 bytes)
+  0000: KeyIndex
+  0005: nothing
+  0006: <eos>
+
+function InterpTrackDirector.AddKeyframe  (script 17 bytes)
+  0000: Time
+  0005: TrInst
+  000a: InitInterpMode
+  000f: nothing
+  0010: <eos>
+
+function InterpTrackDirector.SetKeyframeTime  (script 17 bytes)
+  0000: KeyIndex
+  0005: NewKeyTime
+  000a: bUpdateOrder
+  000f: nothing
+  0010: <eos>
+
+function InterpTrackDirector.RemoveKeyframe  (script 7 bytes)
+  0000: KeyIndex
+  0005: nothing
+  0006: <eos>
+
+function InterpTrackDirector.DuplicateKeyframe  (script 12 bytes)
+  0000: KeyIndex
+  0005: NewKeyTime
+  000a: nothing
+  000b: <eos>
+
+function InterpTrackDirector.GetClosestSnapPosition  (script 17 bytes)
+  0000: InPosition
+  0005: IgnoreKeys
+  000a: OutPosition
+  000f: nothing
+  0010: <eos>
+
+function InterpTrackDirector.UpdateTrack  (script 17 bytes)
+  0000: NewPosition
+  0005: TrInst
+  000a: bJump
+  000f: nothing
+  0010: <eos>
+
+function InterpTrackDirector.DrawTrack  (script 37 bytes)
+  0000: Canvas
+  0005: TrackIndex
+  000a: TrackWidth
+  000f: TrackHeight
+  0014: StartTime
+  0019: PixelsPerSec
+  001e: SelectedKeys
+  0023: nothing
+  0024: <eos>

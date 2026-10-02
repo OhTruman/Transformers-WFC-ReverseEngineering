@@ -1,0 +1,104 @@
+function SkeletalMeshActorMAT.MAT_BeginAnimControl  (script 7 bytes)
+  0000: InAnimSets
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActorMAT.MAT_SetAnimPosition  (script 32 bytes)
+  0000: SlotName
+  0005: ChannelIndex
+  000a: InAnimSeqName
+  000f: InPosition
+  0014: bFireNotifies
+  0019: bLooping
+  001e: nothing
+  001f: <eos>
+
+function SkeletalMeshActorMAT.MAT_SetAnimWeights  (script 7 bytes)
+  0000: SlotInfos
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActorMAT.MAT_FinishAnimControl  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshActorMAT.MAT_SetMorphWeight  (script 12 bytes)
+  0000: MorphNodeName
+  0005: MorphWeight
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshActorMAT.MAT_SetSkelControlScale  (script 12 bytes)
+  0000: SkelControlName
+  0005: Scale
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshActorMAT.PostBeginPlay  (script 16 bytes)
+  0000: SkeletalMeshActor.PostBeginPlay()
+  0006: self.PlayingCount = 0
+  000d: return nothing
+  000f: <eos>
+
+function SkeletalMeshActorMAT.BeginAnimControl  (script 56 bytes)
+  0000: AddAdd_Int(self.PlayingCount)
+  0007: if !((self.PlayingCount > 1)) goto 0x0018
+  0012: SkeletalMeshActorMAT.MAT_FinishAnimControl()
+  0018: self.MatineeAnimator.BeginAnimControl(InAnimSets, self.SkeletalMeshComponent)
+  0035: return nothing
+  0037: <eos>
+
+function SkeletalMeshActorMAT.SetAnimPosition  (script 54 bytes)
+  0000: self.MatineeAnimator.SetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bFireNotifies, bLooping)
+  0033: return nothing
+  0035: <eos>
+
+function SkeletalMeshActorMAT.SetAnimWeights  (script 27 bytes)
+  0000: self.MatineeAnimator.SetAnimWeights(SlotInfos)
+  0018: return nothing
+  001a: <eos>
+
+function SkeletalMeshActorMAT.FinishAnimControl  (script 27 bytes)
+  0000: SubtractSubtract_Int(self.PlayingCount)
+  0007: if !((self.PlayingCount == 0)) goto 0x0018
+  0012: SkeletalMeshActorMAT.MAT_FinishAnimControl()
+  0018: return nothing
+  001a: <eos>
+
+function SkeletalMeshActorMAT.SetMorphWeight  (script 19 bytes)
+  0000: SkeletalMeshActorMAT.MAT_SetMorphWeight(MorphNodeName, MorphWeight)
+  0010: return nothing
+  0012: <eos>
+
+function SkeletalMeshActorMAT.SetSkelControlScale  (script 19 bytes)
+  0000: SkeletalMeshActorMAT.MAT_SetSkelControlScale(SkelControlName, Scale)
+  0010: return nothing
+  0012: <eos>
+
+function SkeletalMeshActorMAT.GetAnimControlSlotDesc  (script 7 bytes)
+  0000: OutSlotDescs
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActorMAT.PreviewBeginAnimControl  (script 7 bytes)
+  0000: InAnimSets
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActorMAT.PreviewSetAnimPosition  (script 27 bytes)
+  0000: SlotName
+  0005: ChannelIndex
+  000a: InAnimSeqName
+  000f: InPosition
+  0014: bLooping
+  0019: nothing
+  001a: <eos>
+
+function SkeletalMeshActorMAT.PreviewSetAnimWeights  (script 7 bytes)
+  0000: SlotInfos
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActorMAT.PreviewFinishAnimControl  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

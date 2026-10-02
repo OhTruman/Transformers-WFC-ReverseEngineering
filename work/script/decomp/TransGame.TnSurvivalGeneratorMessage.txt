@@ -1,0 +1,14 @@
+function TnSurvivalGeneratorMessage.ClientReceive  (script 207 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: Generator = TnSurvivalGeneratorBase(OptionalObject)
+  0014: if !((Switch == 100)) goto 0x002e
+  0020: FinalMessage = default.FullPowerLevelMsg
+  002b: goto 0x0050
+  002e: FinalMessage = obj'Core.Strings'.static.Repl(default.NewPowerLevelMsg, "`n", cast53(Switch), )
+  0050: FinalMessage = obj'Core.Strings'.static.Repl(FinalMessage, "`g", Localize("SurvivalGeneratorNames", Generator.LocalizedGeneratorNameKey, "TransGame"), )
+  00a6: TnHUD(P.myHUD).LocalizedGameAnnouncement(FinalMessage)
+  00cc: return nothing
+  00ce: <eos>

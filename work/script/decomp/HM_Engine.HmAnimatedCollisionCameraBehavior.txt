@@ -1,0 +1,15 @@
+function HmAnimatedCollisionCameraBehavior.Update  (script 59 bytes)
+  0000: if !(!self.CameraActor.ShouldUseAnimatedCameraCollision()) goto 0x001e
+  0018: return Result
+  001e: return HmLineCollisionBaseCameraBehavior.Update(DeltaTime, Result, CI)
+  0034: return return
+  003a: <eos>
+
+function HmAnimatedCollisionCameraBehavior.GetTraceStartLocation  (script 143 bytes)
+  0000: BaseActor = self.CameraActor.GetAnimationBaseActor()
+  0019: if !((BaseActor == none)) goto 0x002f
+  0024: BaseActor = self.OwningActor
+  002f: CameraFacingDirection = cast39(Result.Rotation)
+  0047: return (Result.Location + (CameraFacingDirection * (CameraFacingDirection dot (BaseActor.Location - Result.Location))))
+  0088: return return
+  008e: <eos>

@@ -1,0 +1,22 @@
+function HmDefaultAllocator.get_OuterObject  (script 13 bytes)
+  0000: return self._OuterObject
+  0006: return return
+  000c: <eos>
+
+function HmDefaultAllocator.set_OuterObject  (script 14 bytes)
+  0000: self._OuterObject = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmDefaultAllocator.Allocate  (script 26 bytes)
+  0000: return new(self._OuterObject, nothing, self._ObjectClass, nothing, AttachTreeCallback)
+  0013: return return
+  0019: <eos>
+
+function HmDefaultAllocator.Reset  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDefaultAllocator.Release  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

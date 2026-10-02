@@ -1,0 +1,66 @@
+function TnPreferredWeaponPickerSensor.set_PreferFarTimeThreshold  (script 14 bytes)
+  0000: self._PreferFarTimeThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPreferredWeaponPickerSensor.set_PreferCloseTimeThreshold  (script 14 bytes)
+  0000: self._PreferCloseTimeThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPreferredWeaponPickerSensor.set_PreferFarWeaponRangeThreshold  (script 14 bytes)
+  0000: self._PreferFarWeaponRangeThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPreferredWeaponPickerSensor.set_PreferCloseWeaponRangeThreshold  (script 14 bytes)
+  0000: self._PreferCloseWeaponRangeThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPreferredWeaponPickerSensor.get_CloseWeaponClass  (script 13 bytes)
+  0000: return self._CloseWeaponClass
+  0006: return return
+  000c: <eos>
+
+function TnPreferredWeaponPickerSensor.get_FarWeaponClass  (script 13 bytes)
+  0000: return self._FarWeaponClass
+  0006: return return
+  000c: <eos>
+
+function TnPreferredWeaponPickerSensor.SetWeaponClasses  (script 296 bytes)
+  0000: foreach self._OwnerPawn.InvManager.InventoryActors(obj'TnWeapon', W) (end 0x00ea)
+  0029: if !(((CloseWeapon == none) || (FarWeapon == none))) goto 0x005b
+  0041: CloseWeapon = W
+  004c: FarWeapon = W
+  0057: iternext
+  0058: goto 0x00ea
+  005b: if !(((CloseWeapon != none) && (cast3a(W.GetDesiredFiringRange()) < cast3a(CloseWeapon.GetDesiredFiringRange())))) goto 0x00a2
+  0097: CloseWeapon = W
+  00a2: if !(((FarWeapon != none) && (cast3a(W.GetDesiredFiringRange()) > cast3a(FarWeapon.GetDesiredFiringRange())))) goto 0x00e9
+  00de: FarWeapon = W
+  00e9: iternext
+  00ea: iterpop
+  00eb: if !((CloseWeapon != none)) goto 0x0108
+  00f6: self._CloseWeaponClass = CloseWeapon.get_Class()
+  0108: if !((FarWeapon != none)) goto 0x0125
+  0113: self._FarWeaponClass = FarWeapon.get_Class()
+  0125: return nothing
+  0127: <eos>
+
+function TnPreferredWeaponPickerSensor.OnUpdate  (script 240 bytes)
+  0000: Range = self._OwnerController.GetEnemyCenterPointRange()
+  0019: if !((cast3a(Range) >= cast3a(self._PreferFarWeaponRangeThreshold))) goto 0x003b
+  002c: (self.TimeFar += DeltaTime)
+  0038: goto 0x0046
+  003b: self.TimeFar = 0.0
+  0046: if !((cast3a(Range) <= cast3a(self._PreferCloseWeaponRangeThreshold))) goto 0x0068
+  0059: (self.TimeClose += DeltaTime)
+  0065: goto 0x0073
+  0068: self.TimeClose = 0.0
+  0073: if !(((self.TimeFar > self._PreferFarTimeThreshold) && (self._OwnerController._PreferredWeaponClass != self._FarWeaponClass))) goto 0x00b0
+  009c: self._OwnerController._PreferredWeaponClass = self._FarWeaponClass
+  00b0: if !(((self.TimeClose > self._PreferCloseTimeThreshold) && (self._OwnerController._PreferredWeaponClass != self._CloseWeaponClass))) goto 0x00ed
+  00d9: self._OwnerController._PreferredWeaponClass = self._CloseWeaponClass
+  00ed: return nothing
+  00ef: <eos>

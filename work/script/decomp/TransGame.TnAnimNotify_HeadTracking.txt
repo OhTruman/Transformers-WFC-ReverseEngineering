@@ -1,0 +1,12 @@
+function TnAnimNotify_HeadTracking.Notify  (script 126 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: TransformerPawn = TnPawn(AnimSeqInstigator.SkelComponent.Owner)
+  0038: if !((TransformerPawn == none)) goto 0x0045
+  0043: return nothing
+  0045: if !(self.Enable) goto 0x0066
+  004e: TransformerPawn.EnableIkTracking(0)
+  0063: goto 0x007b
+  0066: TransformerPawn.DisableIkTracking(0)
+  007b: return nothing
+  007d: <eos>

@@ -1,0 +1,125 @@
+function AnimNodeSequence.OnBecomeRelevant  (script 43 bytes)
+  0000: AnimNode.OnBecomeRelevant()
+  0006: if !((self.ChooserName != 'None')) goto 0x0028
+  0019: SetAnim(self.ChooserName)
+  0028: return nothing
+  002a: <eos>
+
+function AnimNodeSequence.OnCeaseRelevant  (script 15 bytes)
+  0000: AnimNode.OnCeaseRelevant()
+  0006: AnimNodeSequence.OnAnimStopped()
+  000c: return nothing
+  000e: <eos>
+
+function AnimNodeSequence.OnAnimStopped  (script 104 bytes)
+  0000: NotifyEvent = NotifyEvent
+  000b: if !((none != self.AnimSeq)) goto 0x005d
+  0016: foreach self.AnimSeq.Notifies(NotifyEvent,) (end 0x005c)
+  002e: NotifyEvent.Notify.OnAnimSequenceStopped(self.SkelComponent.Owner, self)
+  005b: iternext
+  005c: iterpop
+  005d: self.HasLooped = false
+  0065: return nothing
+  0067: <eos>
+
+function AnimNodeSequence.SetAnim  (script 7 bytes)
+  0000: Sequence
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSequence.PlayAnim  (script 17 bytes)
+  0000: bLoop
+  0005: InRate
+  000a: StartTime
+  000f: nothing
+  0010: <eos>
+
+function AnimNodeSequence.StopAnim  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSequence.SetPosition  (script 12 bytes)
+  0000: NewTime
+  0005: bFireNotifies
+  000a: nothing
+  000b: <eos>
+
+function AnimNodeSequence.ScrubNotifies  (script 110 bytes)
+  0000: I = 0
+  0007: if !((I < self.AnimSeq.Notifies.Length)) goto 0x006b
+  0020: I[self.AnimSeq.Notifies].Notify.ScrubTo(self.SkelComponent.Owner, self, NewTime)
+  0061: AddAdd_PreInt(I)
+  0068: goto 0x0007
+  006b: return nothing
+  006d: <eos>
+
+function AnimNodeSequence.GetNormalizedPosition  (script 7 bytes)
+  0000: importantSequenceLength
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSequence.FindNormalizedPositionFromGroupRelativePosition  (script 7 bytes)
+  0000: GroupRelativePosition
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSequence.SetNormalizedPosition  (script 7 bytes)
+  0000: NewPosition
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSequence.GetGlobalPlayRate  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSequence.GetAnimPlaybackLength  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSequence.GetUnscaledAnimPlaybackLength  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSequence.GetTimeLeft  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimNodeSequence.AnimEnded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function AnimNodeSequence.OnAnimEnd  (script 24 bytes)
+  0000: AnimNodeSequence.OnAnimStopped()
+  0006: AnimEnded()
+  0015: return nothing
+  0017: <eos>
+
+function AnimNodeSequence.TimeOf  (script 114 bytes)
+  0000: if !((self.AnimSeq == none)) goto 0x0011
+  000b: return 0.0
+  0011: Index = self.AnimSeq.Notifies.Find('Notify',Notify)
+  0036: if !((Index == -1)) goto 0x004b
+  0045: return 0.0
+  004b: return Index[self.AnimSeq.Notifies].Time
+  006b: return return
+  0071: <eos>
+
+function AnimNodeSequence.IssueNotifies  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
+
+function AnimNodeSequence.ShouldFireNotify  (script 32 bytes)
+  0000: Notify
+  0005: BridgedLoopPoint
+  000a: DeltaTime
+  000f: NotificationTime
+  0014: BeginTime
+  0019: EndTime
+  001e: nothing
+  001f: <eos>
+
+function AnimNodeSequence.FireNotify  (script 7 bytes)
+  0000: Notify
+  0005: nothing
+  0006: <eos>

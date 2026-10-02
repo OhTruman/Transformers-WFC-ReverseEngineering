@@ -1,0 +1,45 @@
+function HmTargetableManager.AddTargetableComponent  (script 37 bytes)
+  0000: if !(HmTargetableManager.IsTargetableComponentManaged(TC)) goto 0x0010
+  000e: return nothing
+  0010: self.Components.Length[self.Components] = TC
+  0022: return nothing
+  0024: <eos>
+
+function HmTargetableManager.RemoveTargetableComponent  (script 45 bytes)
+  0000: I = self.Components.Find(TC)
+  0013: if !((I >= 0)) goto 0x002a
+  001e: self.Components.Remove(I,1)
+  002a: return nothing
+  002c: <eos>
+
+function HmTargetableManager.GetTargetableComponents  (script 19 bytes)
+  0000: HmTargetableManager.PruneTargetableComponents()
+  0006: return self.Components
+  000c: return return
+  0012: <eos>
+
+function HmTargetableManager.PruneTargetableComponents  (script 89 bytes)
+  0000: if !((I < self.Components.Length)) goto 0x0056
+  0010: if !(((I[self.Components] == none) || (I[self.Components].Owner == none))) goto 0x004c
+  003d: self.Components.Remove(I,1)
+  0049: goto 0x0053
+  004c: AddAdd_PreInt(I)
+  0053: goto 0x0000
+  0056: return nothing
+  0058: <eos>
+
+function HmTargetableManager.IsTargetableComponentManaged  (script 44 bytes)
+  0000: foreach self.Components(TargetableComp,) (end 0x0022)
+  000f: if !((TargetableComp == TC)) goto 0x0021
+  001e: iterpop
+  001f: return true
+  0021: iternext
+  0022: iterpop
+  0023: return false
+  0025: return return
+  002b: <eos>
+
+function HmTargetableManager.NullTargetableComponent  (script 16 bytes)
+  0000: idx[self.Components] = none
+  000d: return nothing
+  000f: <eos>

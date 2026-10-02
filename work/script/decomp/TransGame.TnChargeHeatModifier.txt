@@ -1,0 +1,23 @@
+function TnChargeHeatModifier.OnHeatEvent  (script 137 bytes)
+  0000: nothing
+  0001: switch (Type)
+  0008: case 7: (next 0x0018)
+  000d: self.IsCharging = true
+  0015: goto 0x007c
+  0018: case 1: (next 0x0028)
+  001d: self.IsCharging = false
+  0025: goto 0x007c
+  0028: case 4: (next 0x0059)
+  002d: if !((self.IsCharging && !self.IsOverheated)) goto 0x0056
+  0043: (Heat += (self.GainRate * DeltaTime))
+  0056: goto 0x007c
+  0059: case 5: (next 0x0069)
+  005e: self.IsOverheated = true
+  0066: goto 0x007c
+  0069: case 6: (next 0x0079)
+  006e: self.IsOverheated = false
+  0076: goto 0x007c
+  0079: default:
+  007c: return Heat
+  0082: return return
+  0088: <eos>

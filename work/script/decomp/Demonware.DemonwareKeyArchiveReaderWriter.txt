@@ -1,0 +1,121 @@
+function DemonwareKeyArchiveReaderWriter.HasReadKeyArchiveFor  (script 45 bytes)
+  0000: return (self.KeyArchiveOwnerId.Uid == Id.Uid)
+  0026: return return
+  002c: <eos>
+
+function DemonwareKeyArchiveReaderWriter.ReadValues  (script 7 bytes)
+  0000: Profile
+  0005: nothing
+  0006: <eos>
+
+function DemonwareKeyArchiveReaderWriter.OnReadValuesComplete  (script 218 bytes)
+  0000: if !(!bWasSuccessful) goto 0x003b
+  000b: LogInternal("ERROR: Failed to read key archive", 'DevDemonware', , )
+  003b: if !((Profile != self.ProfileToWriteTo)) goto 0x0095
+  004a: LogInternal("ERROR: Finished reading key archive but profile has changed.", 'DevDemonware', , )
+  0095: if !(bWasSuccessful) goto 0x00be
+  009e: self.KeyArchiveOwnerId = GetPlayerId(cast3a(self.LobbyService.LoggedInPlayerNum))
+  00be: Profile.OnKeyArchiveReadComplete(bWasSuccessful)
+  00d7: return nothing
+  00d9: <eos>
+
+function DemonwareKeyArchiveReaderWriter.Publish  (script 289 bytes)
+  0000: DemonwareProfile = OnlineProfileSettingsDemonware(Profile)
+  0010: if !((self.KeyArchiveOwnerId.Uid == NoOwner.Uid)) goto 0x00a7
+  0038: LogInternal("ERROR: Skipping key archive write before they been initial read.  Failsafe to avoid data loss.", 'DevDemonware', , )
+  00a5: return false
+  00a7: foreach DemonwareProfile.KeySets(KeySet,) (end 0x00d8)
+  00bf: KeySet.RefreshValues(Profile)
+  00d7: iternext
+  00d8: iterpop
+  00d9: I = 0
+  00e0: if !((I < self.DeferredKeyArchiveWrites.Length)) goto 0x010b
+  00f0: DemonwareKeyArchiveReaderWriter.SetValueInternal(I[self.DeferredKeyArchiveWrites])
+  0101: AddAdd_PreInt(I)
+  0108: goto 0x00e0
+  010b: self.DeferredKeyArchiveWrites.Length = 0
+  0113: return DemonwareKeyArchiveReaderWriter.WriteValues()
+  011a: return return
+  0120: <eos>
+
+function DemonwareKeyArchiveReaderWriter.ClearDeferredKeyArchiveWrites  (script 11 bytes)
+  0000: self.DeferredKeyArchiveWrites.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function DemonwareKeyArchiveReaderWriter.OnProfileSet  (script 94 bytes)
+  0000: if !(self.ReadKeyArchivesOnProfileSet) goto 0x005b
+  0009: LogInternal("Reading key archives because profile was set", 'DevDemonware', , )
+  0044: ReadValues(Profile)
+  0053: self.ReadKeyArchivesOnProfileSet = false
+  005b: return nothing
+  005d: <eos>
+
+function DemonwareKeyArchiveReaderWriter.SetValue  (script 116 bytes)
+  0000: nothing
+  0001: if !(!DeferredWrite) goto 0x0018
+  000c: return DemonwareKeyArchiveReaderWriter.SetValueInternal(Value)
+  0018: I = self.DeferredKeyArchiveWrites.Find('PropertyId',Value.PropertyId)
+  003f: if !((I == -1)) goto 0x005a
+  004e: I = self.DeferredKeyArchiveWrites.Length
+  005a: I[self.DeferredKeyArchiveWrites] = Value
+  006b: return true
+  006d: return return
+  0073: <eos>
+
+function DemonwareKeyArchiveReaderWriter.SetValueInternal  (script 7 bytes)
+  0000: Value
+  0005: nothing
+  0006: <eos>
+
+function DemonwareKeyArchiveReaderWriter.WriteValues  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareKeyArchiveReaderWriter.OnWriteComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareKeyArchiveReaderWriter.AddWriteCompleteDelegate  (script 39 bytes)
+  0000: if !((self.WriteCompleteDelegates.Find(WriteCompleteDelegate) == -1)) goto 0x0024
+  0017: self.WriteCompleteDelegates.AddItem(WriteCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareKeyArchiveReaderWriter.ClearWriteCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.WriteCompleteDelegates.Find(WriteCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.WriteCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareKeyArchiveReaderWriter.OnReadComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareKeyArchiveReaderWriter.AddReadCompleteDelegate  (script 39 bytes)
+  0000: if !((self.ReadCompleteDelegates.Find(ReadCompleteDelegate) == -1)) goto 0x0024
+  0017: self.ReadCompleteDelegates.AddItem(ReadCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareKeyArchiveReaderWriter.ClearReadCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadCompleteDelegates.Find(ReadCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareKeyArchiveReaderWriter.GetValue  (script 96 bytes)
+  0000: I = self.DeferredKeyArchiveWrites.Find('PropertyId',Value.PropertyId)
+  0027: if !((I == -1)) goto 0x0046
+  0036: return GetValueInternal(Value)
+  0046: Value = I[self.DeferredKeyArchiveWrites]
+  0057: return true
+  0059: return return
+  005f: <eos>
+
+function DemonwareKeyArchiveReaderWriter.GetValueInternal  (script 7 bytes)
+  0000: Value
+  0005: nothing
+  0006: <eos>

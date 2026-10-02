@@ -1,0 +1,37 @@
+function HmAnimNodeMonitor.Initialize  (script 168 bytes)
+  0000: I = 0
+  0007: if !((I < NodeNames.Length)) goto 0x00a5
+  0017: Node = Animations.FindAnimNode(I[NodeNames])
+  003b: if !((Node == none)) goto 0x008a
+  0046: LogInternal((("ERROR:" @ "Could not find anim node:") @ cast57(I[NodeNames])), 'HmAnimNodeMonitor', , )
+  0087: goto 0x009b
+  008a: I[self.Nodes] = Node
+  009b: AddAdd_PreInt(I)
+  00a2: goto 0x0007
+  00a5: return nothing
+  00a7: <eos>
+
+function HmAnimNodeMonitor.IsRelevant  (script 87 bytes)
+  0000: I = 0
+  0007: if !((I < self.Nodes.Length)) goto 0x004e
+  0017: if !(((I[self.Nodes] != none) && I[self.Nodes].bRelevant)) goto 0x0044
+  0042: return true
+  0044: AddAdd_PreInt(I)
+  004b: goto 0x0007
+  004e: return false
+  0050: return return
+  0056: <eos>
+
+function HmAnimNodeMonitor.ProgressedPastThreshold  (script 124 bytes)
+  0000: I = 0
+  0007: if !((I < self.Nodes.Length)) goto 0x006c
+  0017: if !(!I[self.Nodes].bRelevant) goto 0x0034
+  0031: goto 0x0062
+  0034: AnyRelevant = true
+  003c: if !((I[self.Nodes].GetNormalizedPosition() > Threshold)) goto 0x0062
+  0060: return true
+  0062: AddAdd_PreInt(I)
+  0069: goto 0x0007
+  006c: return !AnyRelevant
+  0075: return return
+  007b: <eos>

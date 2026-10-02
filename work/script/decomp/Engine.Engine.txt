@@ -1,0 +1,107 @@
+function Engine.OnNewError  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Engine.GetEngine  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetSystemTimeString  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetWorldTime  (script 27 bytes)
+  0000: return GetCurrentWorldInfo().TimeSeconds
+  0014: return return
+  001a: <eos>
+
+function Engine.GetGame  (script 27 bytes)
+  0000: return GetCurrentWorldInfo().Game
+  0014: return return
+  001a: <eos>
+
+function Engine.GetCurrentWorldInfo  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetTinyFont  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetSmallFont  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetMediumFont  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetLargeFont  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetAdditionalFont  (script 7 bytes)
+  0000: AdditionalFontIndex
+  0005: nothing
+  0006: <eos>
+
+function Engine.GetCheckpointManager  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetDeferredTraceExecuter  (script 13 bytes)
+  0000: return self.DeferredTraceExecuter
+  0006: return return
+  000c: <eos>
+
+function Engine.IsSplitScreen  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.GetAudioDevice  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Engine.ScriptExec  (script 193 bytes)
+  0000: if !((0 == obj'Core.Strings'.static.InStr(Command, "trace ", ))) goto 0x0063
+  001f: tokens = obj'Core.Strings'.static.Split(Command, " ")
+  0040: obj'Core.Profiling'.static.ScriptTrace((1[tokens] != "0"), , )
+  0061: return true
+  0063: if !((0 == obj'Core.Strings'.static.InStr(Command, "disassemble ", ))) goto 0x00b8
+  0088: tokens = obj'Core.Strings'.static.Split(Command, " ")
+  00a9: Engine.DisassembleFunction(1[tokens])
+  00b6: return true
+  00b8: return false
+  00ba: return return
+  00c0: <eos>
+
+function Engine.DisassembleFunction  (script 34 bytes)
+  0000: Result = Disassemble(functionName)
+  0015: LogInternal(Result, , , )
+  001f: return nothing
+  0021: <eos>
+
+function Engine.BeginMovieMode  (script 69 bytes)
+  0000: if !((self.GamePlayers.Length < 1)) goto 0x000e
+  000c: return nothing
+  000e: PC = 0[self.GamePlayers].Actor
+  0024: if !((PC != none)) goto 0x0042
+  002f: PC.BeginMovieMode()
+  0042: return nothing
+  0044: <eos>
+
+function Engine.EndMovieMode  (script 69 bytes)
+  0000: if !((self.GamePlayers.Length < 1)) goto 0x000e
+  000c: return nothing
+  000e: PC = 0[self.GamePlayers].Actor
+  0024: if !((PC != none)) goto 0x0042
+  002f: PC.EndMovieMode()
+  0042: return nothing
+  0044: <eos>
+
+function Engine.SetProgress  (script 17 bytes)
+  0000: MessageType
+  0005: Title
+  000a: Message
+  000f: nothing
+  0010: <eos>

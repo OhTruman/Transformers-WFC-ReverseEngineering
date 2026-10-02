@@ -1,0 +1,24 @@
+function TnStatisticsTable.GetFormName  (script 57 bytes)
+  0000: TransformerPawn = TnPawn(P)
+  0010: if !((TransformerPawn != none)) goto 0x002f
+  001b: return TransformerPawn.get_FriendlyName()
+  002f: return ""
+  0032: return return
+  0038: <eos>
+
+function TnStatisticsTable.GetTransformerName  (script 86 bytes)
+  0000: if !((C == none)) goto 0x000e
+  000b: return ""
+  000e: AsTnPawn = TnPawn(C.Pawn)
+  0027: if !((AsTnPawn == none)) goto 0x0035
+  0032: return ""
+  0035: return AsTnPawn._CurrentCharacter.CharacterName
+  004f: return return
+  0055: <eos>
+
+function TnStatisticsTable.GetActiveCheckpoint  (script 108 bytes)
+  0000: CM = CheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  002c: CP = CM.GetActiveCheckpoint()
+  0045: return ((CP == none) ? "" : cast57(CP.Tag))
+  0065: return return
+  006b: <eos>

@@ -1,0 +1,12 @@
+function TnPlayerControllerCampaign.Restart  (script 52 bytes)
+  0000: TnPlayerController.Restart(bVehicleTransition)
+  000c: if !(IsLocalPlayerController()) goto 0x0031
+  0019: TnCamera(self.PlayerCamera).ActivateAutoFadeIn()
+  0031: return nothing
+  0033: <eos>
+
+function TnPlayerControllerCampaign.ClientRestart  (script 38 bytes)
+  0000: TnPlayerController.ClientRestart(NewPawn)
+  000b: TnCamera(self.PlayerCamera).ActivateAutoFadeIn()
+  0023: return nothing
+  0025: <eos>

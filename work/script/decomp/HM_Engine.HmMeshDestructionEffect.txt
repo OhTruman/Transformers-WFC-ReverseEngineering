@@ -1,0 +1,58 @@
+function HmMeshDestructionEffect.AddMeshComponent  (script 16 bytes)
+  0000: self.MeshComponents.AddItem(NewMeshComponent)
+  000d: return nothing
+  000f: <eos>
+
+function HmMeshDestructionEffect.BeginEffect  (script 295 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: if !((AttachingActor == none)) goto 0x001d
+  001b: return nothing
+  001d: EffectToActorTransform = GetEffectToActorTransform()
+  002d: BasePawn = Pawn(AttachingActor.Base)
+  0046: foreach self.MeshComponents(CurrentMeshComponent,) (end 0x0119)
+  0055: if !(!CurrentMeshComponent.bAttached) goto 0x00c7
+  0069: CurrentMeshComponent.SetRotation(EffectToActorTransform.Orientation)
+  008c: CurrentMeshComponent.SetTranslation(EffectToActorTransform.Position)
+  00af: AttachingActor.AttachComponent(CurrentMeshComponent)
+  00c7: OnComponentMadeVisible(CurrentMeshComponent)
+  00d6: if !(((BasePawn != none) && (BasePawn.Mesh != none))) goto 0x0118
+  00f7: BasePawn.Mesh.DisableCollisionWith(CurrentMeshComponent)
+  0118: iternext
+  0119: iterpop
+  011a: OnMadeVisible()
+  0124: return nothing
+  0126: <eos>
+
+function HmMeshDestructionEffect.EndEffect  (script 98 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: if !((AttachingActor == none)) goto 0x001d
+  001b: return nothing
+  001d: OnMadeInvisible()
+  0027: foreach self.MeshComponents(CurrentMeshComponent,) (end 0x005e)
+  0036: AttachingActor.DetachComponent(CurrentMeshComponent)
+  004e: OnComponentMadeInvisible(CurrentMeshComponent)
+  005d: iternext
+  005e: iterpop
+  005f: return nothing
+  0061: <eos>
+
+function HmMeshDestructionEffect.GetMeshComponents  (script 13 bytes)
+  0000: return self.MeshComponents
+  0006: return return
+  000c: <eos>
+
+function HmMeshDestructionEffect.OnComponentMadeVisible  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmMeshDestructionEffect.OnComponentMadeInvisible  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmMeshDestructionEffect.OnMadeVisible  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmMeshDestructionEffect.OnMadeInvisible  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

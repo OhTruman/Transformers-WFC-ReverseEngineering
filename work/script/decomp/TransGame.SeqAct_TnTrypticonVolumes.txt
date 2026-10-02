@@ -1,0 +1,28 @@
+function SeqAct_TnTrypticonVolumes.Activated  (script 149 bytes)
+  0000: Activated()
+  0006: Trypticon = SeqAct_TnTrypticonVolumes.GetTrypticon()
+  0012: if !((Trypticon == none)) goto 0x001f
+  001d: return nothing
+  001f: SeqAct_TnTrypticonVolumes.AddVolume(Trypticon, 0, self.LeftSmashTrigger, self.LeftSmashDamage)
+  0036: SeqAct_TnTrypticonVolumes.AddVolume(Trypticon, 1, self.RightSmashTrigger, self.RightSmashDamage)
+  004d: SeqAct_TnTrypticonVolumes.AddVolume(Trypticon, 2, self.LeftStrikeTrigger, self.LeftStrikeDamage)
+  0064: SeqAct_TnTrypticonVolumes.AddVolume(Trypticon, 3, self.ForwardStrikeTrigger, self.ForwardStrikeDamage)
+  007b: SeqAct_TnTrypticonVolumes.AddVolume(Trypticon, 4, self.RightStrikeTrigger, self.RightStrikeDamage)
+  0092: return nothing
+  0094: <eos>
+
+function SeqAct_TnTrypticonVolumes.GetTrypticon  (script 58 bytes)
+  0000: C = Controller(0[self.Targets])
+  0012: if !((C == none)) goto 0x001f
+  001d: return none
+  001f: return TnTrypticonPawn(C.Pawn)
+  0033: return return
+  0039: <eos>
+
+function SeqAct_TnTrypticonVolumes.AddVolume  (script 140 bytes)
+  0000: if !(((TriggerVolume.Length == 1) && (DamageVolume.Length == 1))) goto 0x0043
+  001a: Trypticon.SetVolume(TV, 0[TriggerVolume], 0[DamageVolume])
+  0040: goto 0x0089
+  0043: LogInternal(("ERROR: Trypticon Volumes - Only hook up one volume for" @ cast52(TV)), , , )
+  0089: return nothing
+  008b: <eos>

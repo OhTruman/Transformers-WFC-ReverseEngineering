@@ -1,0 +1,35 @@
+function SeqAct_TnAiSentrySetDormant.GetControllerFromObject  (script 197 bytes)
+  0000: C = TnAiSentryController(Target)
+  0010: if !((C == none)) goto 0x004f
+  001b: P = TnSentryPawn(Target)
+  002b: if !((P != none)) goto 0x004f
+  0036: C = TnAiSentryController(P.Controller)
+  004f: if !((C == none)) goto 0x0094
+  005a: LogInternal(((("Error:" @ cast56(self)) @ "non sentry in sentries list") @ cast56(Target)), , , )
+  0094: return (((C != none) && (C.Pawn != none)) ? C : none)
+  00be: return return
+  00c4: <eos>
+
+function SeqAct_TnAiSentrySetDormant.SetDormant  (script 95 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x005c
+  0017: C = SeqAct_TnAiSentrySetDormant.GetControllerFromObject(I[self.Targets])
+  002e: if !((C != none)) goto 0x0052
+  0039: C.SetDormant(Dormant)
+  0052: AddAdd_Int(I)
+  0059: goto 0x0007
+  005c: return nothing
+  005e: <eos>
+
+function SeqAct_TnAiSentrySetDormant.Activated  (script 95 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: if !(0[self.InputLinks].bHasImpulse) goto 0x0038
+  002a: SeqAct_TnAiSentrySetDormant.SetDormant(self.Targets, true)
+  0036: return nothing
+  0038: if !(1[self.InputLinks].bHasImpulse) goto 0x005c
+  004e: SeqAct_TnAiSentrySetDormant.SetDormant(self.Targets, false)
+  005a: return nothing
+  005c: return nothing
+  005e: <eos>

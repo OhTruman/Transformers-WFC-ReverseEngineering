@@ -1,0 +1,25 @@
+function HmParticleSystemParameterCollection.PostLoad  (script 124 bytes)
+  0000: I = 0
+  0007: if !((I < self.Parameters.Length)) goto 0x0079
+  0017: if !((I[self.Parameters] == none)) goto 0x002b
+  0028: goto 0x006f
+  002b: if !((I[self.Parameters].get_Outer() != self)) goto 0x006f
+  0043: I[self.Parameters] = HmParticleSystemParameter(I[self.Parameters].Clone(self, ))
+  006f: AddAdd_PreInt(I)
+  0076: goto 0x0007
+  0079: return nothing
+  007b: <eos>
+
+function HmParticleSystemParameterCollection.Apply  (script 60 bytes)
+  0000: foreach self.Parameters(PSP,) (end 0x0038)
+  000f: if !((PSP != none)) goto 0x0037
+  001a: PSP.Apply(PSC, Owner)
+  0037: iternext
+  0038: iterpop
+  0039: return nothing
+  003b: <eos>
+
+function HmParticleSystemParameterCollection.AddParameter  (script 67 bytes)
+  0000: self.Parameters.Length[self.Parameters] = ((PSP.get_Outer() != self) ? HmParticleSystemParameter(PSP.Clone(self, )) : PSP)
+  0040: return nothing
+  0042: <eos>

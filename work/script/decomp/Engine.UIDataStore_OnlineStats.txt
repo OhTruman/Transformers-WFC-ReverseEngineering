@@ -1,0 +1,84 @@
+function UIDataStore_OnlineStats.Init  (script 108 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0069
+  0024: self.StatsInterface = OnlineSub.StatsInterface
+  0038: self.PlayerInterface = OnlineSub.PlayerInterface
+  004c: self.StatsInterface.AddReadOnlineStatsCompleteDelegate(delegate.OnReadComplete)
+  0069: return nothing
+  006b: <eos>
+
+function UIDataStore_OnlineStats.SetStatsReadInfo  (script 24 bytes)
+  0000: self.StatsRead = 0[self.StatsReadObjects]
+  000d: self.CurrentReadType = 1
+  0015: return nothing
+  0017: <eos>
+
+function UIDataStore_OnlineStats.RefreshStats  (script 450 bytes)
+  0000: SetStatsReadInfo()
+  000a: self.StatsInterface.FreeStats(self.StatsRead)
+  0023: switch (self.CurrentReadType)
+  002a: case 0: (next 0x0057)
+  002f: self.StatsRead.ReadLocalStats()
+  0042: UIDataStore_OnlineStats.SortResultsByRank()
+  0048: OnReadComplete(true, none)
+  0054: goto 0x01b9
+  0057: case 1: (next 0x00ca)
+  005c: self.PlayerInterface.GetUniquePlayerId(ControllerIndex, PlayerID)
+  007a: 0[Players] = PlayerID
+  0087: if !((self.StatsInterface.ReadOnlineStats(Players, self.StatsRead) == false)) goto 0x00c8
+  00ab: WarnInternal("Querying Player failed.")
+  00c6: return false
+  00c8: return true
+  00ca: case 2: (next 0x011e)
+  00cf: if !((self.StatsInterface.ReadOnlineStatsByRankAroundPlayer(ControllerIndex, self.StatsRead, 10) == false)) goto 0x011c
+  00f5: WarnInternal("Querying CenteredOnPlayer failed.")
+  011a: return false
+  011c: return true
+  011e: case 3: (next 0x0167)
+  0123: if !((self.StatsInterface.ReadOnlineStatsForFriends(ControllerIndex, self.StatsRead) == false)) goto 0x0165
+  0147: WarnInternal("Querying Friends failed.")
+  0163: return false
+  0165: return true
+  0167: case 4: (next 0x01b6)
+  016c: if !((self.StatsInterface.ReadOnlineStatsByRank(self.StatsRead, 1, 20) == false)) goto 0x01b4
+  018e: LogInternal("Querying Top Rankings failed.", , , )
+  01b2: return false
+  01b4: return true
+  01b6: default:
+  01b9: return false
+  01bb: return return
+  01c1: <eos>
+
+function UIDataStore_OnlineStats.ShowGamercard  (script 466 bytes)
+  0000: if !(((ListIndex >= 0) && (ListIndex < self.StatsRead.Rows.Length))) goto 0x0175
+  0026: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  003f: if !((OnlineSub != none)) goto 0x013e
+  004a: PlayerExt = OnlineSub.PlayerInterfaceEx
+  005e: if !(NotEqual_InterfaceInterface(PlayerExt, OnlinePlayerInterfaceEx(none))) goto 0x00e3
+  0072: PlayerID = ListIndex[self.StatsRead.Rows].PlayerID
+  0097: PlayerNickName = ListIndex[self.StatsRead.Rows].NickName
+  00bc: return PlayerExt.ShowGamerCardUI(ConrollerIndex, PlayerID, PlayerNickName)
+  00e0: goto 0x013b
+  00e3: WarnInternal("OnlineSubsystem does not support the extended player interface. Can't show gamercard")
+  013b: goto 0x0172
+  013e: WarnInternal("No OnlineSubsystem present. Can't show gamercard")
+  0172: goto 0x01c9
+  0175: WarnInternal((("Invalid index (" $ cast53(ListIndex)) $ ") specified for online game to show the gamercard of"))
+  01c9: return false
+  01cb: return return
+  01d1: <eos>
+
+function UIDataStore_OnlineStats.OnReadComplete  (script 189 bytes)
+  0000: if !(((CompletedStatsRead != none) && (self.StatsReadObjects.Find(CompletedStatsRead) == -1))) goto 0x0026
+  0024: return nothing
+  0026: LogInternal((((((("Read for " $ cast56(self.StatsRead.get_Class())) $ " completed with: ") $ cast54(bWasSuccessful)) $ " and ") $ cast53(self.StatsRead.Rows.Length)) $ " rows"), 'DevOnline', , )
+  0092: if !(bWasSuccessful) goto 0x00a1
+  009b: UIDataStore_OnlineStats.SortResultsByRank()
+  00a1: NotifyPropertyChanged()
+  00ac: RefreshSubscribers(, , , )
+  00ba: return nothing
+  00bc: <eos>
+
+function UIDataStore_OnlineStats.SortResultsByRank  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

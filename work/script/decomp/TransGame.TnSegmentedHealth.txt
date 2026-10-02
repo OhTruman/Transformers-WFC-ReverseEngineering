@@ -1,0 +1,151 @@
+function TnSegmentedHealth.get_ActiveSegment  (script 80 bytes)
+  0000: if !((self.Owner == none)) goto 0x0011
+  000b: return -1
+  0011: if !((cast3a(self.Owner.Role) == cast3a(3))) goto 0x0030
+  002a: return self.ServerActiveSegment
+  0030: return GetActiveSegment(self.Owner.Health)
+  0049: return return
+  004f: <eos>
+
+function TnSegmentedHealth.get_SegmentHealth  (script 72 bytes)
+  0000: if !((self.Owner == none)) goto 0x0011
+  000b: return 0.0
+  0011: return ((self.Owner.Health - get_OverShieldHealth()) - TnSegmentedHealth.GetHealthSubtotal((get_ActiveSegment() - 1)))
+  0041: return return
+  0047: <eos>
+
+function TnSegmentedHealth.get_NormalizedSegmentHealth  (script 67 bytes)
+  0000: if !((get_ActiveSegment() < 0)) goto 0x0016
+  0010: return 0.0
+  0016: return (get_SegmentHealth() / get_ActiveSegment()[self.Blueprint.Segments])
+  003c: return return
+  0042: <eos>
+
+function TnSegmentedHealth.get_OverShieldHealth  (script 85 bytes)
+  0000: if !((self.Owner == none)) goto 0x0011
+  000b: return 0.0
+  0011: return obj'Core.Math'.static.FClamp((self.Owner.Health - self.Owner.HealthMax), 0.0, self.Blueprint.Overshield)
+  004e: return return
+  0054: <eos>
+
+function TnSegmentedHealth.get_NormalizedOverShieldHealth  (script 34 bytes)
+  0000: return (get_OverShieldHealth() / self.Blueprint.Overshield)
+  001b: return return
+  0021: <eos>
+
+function TnSegmentedHealth.get_MaxSegments  (script 23 bytes)
+  0000: return self.Blueprint.Segments.Length
+  0010: return return
+  0016: <eos>
+
+function TnSegmentedHealth.Initialize  (script 161 bytes)
+  0000: self.Owner = Owner_
+  000b: if !((Blueprint_ == none)) goto 0x0018
+  0016: return nothing
+  0018: self.Blueprint = Blueprint_
+  0023: self.Owner.HealthMax = TnSegmentedHealth.GetHealthSubtotal((self.Blueprint.Segments.Length - 1))
+  004a: if !((cast3a(self.Owner.Role) == cast3a(3))) goto 0x009e
+  0063: self.Owner.Health = self.Owner.HealthMax
+  0080: self.ServerActiveSegment = GetActiveSegment(self.Owner.Health)
+  009e: return nothing
+  00a0: <eos>
+
+function TnSegmentedHealth.GetBlueprint  (script 13 bytes)
+  0000: return self.Blueprint
+  0006: return return
+  000c: <eos>
+
+function TnSegmentedHealth.HealDamage  (script 201 bytes)
+  0000: HealType = class<TnHealType>(Type)
+  0010: if !((HealType == none)) goto 0x0063
+  001b: LogInternal((("ERROR: Healing with damage type" @ cast56(Type)) @ "is not allowed."), , , )
+  005d: return Amount
+  0063: switch (HealType.static.default.SegmentedHealType)
+  0073: case 1: (next 0x0084)
+  0078: return TnSegmentedHealth.AddHealthToSegment(Amount)
+  0084: case 0: (next 0x0095)
+  0089: return TnSegmentedHealth.AddHealthToAll(Amount)
+  0095: case 2: (next 0x00a1)
+  009a: return TnSegmentedHealth.AddSegment()
+  00a1: case 3: (next 0x00ad)
+  00a6: return TnSegmentedHealth.AddAllSegments()
+  00ad: case 4: (next 0x00b9)
+  00b2: return TnSegmentedHealth.AddOverShield()
+  00b9: default:
+  00bc: return Amount
+  00c2: return return
+  00c8: <eos>
+
+function TnSegmentedHealth.AddHealthToAll  (script 102 bytes)
+  0000: ActualAmount = obj'Core.Math'.static.FMin(Amount, (self.Owner.HealthMax - self.Owner.Health))
+  0034: self.ServerActiveSegment = GetActiveSegment((self.Owner.Health + ActualAmount))
+  0059: return ActualAmount
+  005f: return return
+  0065: <eos>
+
+function TnSegmentedHealth.AddHealthToSegment  (script 62 bytes)
+  0000: ActualAmount = obj'Core.Math'.static.FMin(Amount, (TnSegmentedHealth.GetHealthSubtotal(self.ServerActiveSegment) - self.Owner.Health))
+  0031: return ActualAmount
+  0037: return return
+  003d: <eos>
+
+function TnSegmentedHealth.AddSegment  (script 89 bytes)
+  0000: self.ServerActiveSegment = obj'Core.Math'.static.Min((self.ServerActiveSegment + 1), (self.Blueprint.Segments.Length - 1))
+  002b: ActualAmount = (TnSegmentedHealth.GetHealthSubtotal(self.ServerActiveSegment) - self.Owner.Health)
+  004c: return ActualAmount
+  0052: return return
+  0058: <eos>
+
+function TnSegmentedHealth.AddAllSegments  (script 91 bytes)
+  0000: self.Owner.Health = obj'Core.Math'.static.FMax(self.Owner.Health, self.Owner.HealthMax)
+  0036: self.ServerActiveSegment = (self.Blueprint.Segments.Length - 1)
+  004e: return 0.0
+  0054: return return
+  005a: <eos>
+
+function TnSegmentedHealth.AddOverShield  (script 82 bytes)
+  0000: self.Owner.Health = (self.Owner.HealthMax + self.Blueprint.Overshield)
+  002d: self.ServerActiveSegment = (self.Blueprint.Segments.Length - 1)
+  0045: return 0.0
+  004b: return return
+  0051: <eos>
+
+function TnSegmentedHealth.AdjustDamage  (script 60 bytes)
+  0000: if !((get_OverShieldHealth() <= 0.0)) goto 0x001a
+  0014: return Amount
+  001a: (self.Owner.Health -= Amount)
+  002f: return 0.0
+  0035: return return
+  003b: <eos>
+
+function TnSegmentedHealth.ResetActiveSegment  (script 33 bytes)
+  0000: self.ServerActiveSegment = GetActiveSegment(self.Owner.Health)
+  001e: return nothing
+  0020: <eos>
+
+function TnSegmentedHealth.GetActiveSegment  (script 100 bytes)
+  0000: Segment = 0
+  0007: if !(((Health > cast3f(0)) && (Segment < self.Blueprint.Segments.Length))) goto 0x0054
+  002f: (Health -= Segment[self.Blueprint.Segments])
+  004a: AddAdd_PreInt(Segment)
+  0051: goto 0x0007
+  0054: return (Segment - 1)
+  005d: return return
+  0063: <eos>
+
+function TnSegmentedHealth.GetHealthSubtotal  (script 72 bytes)
+  0000: Segment = Segment
+  000b: if !((Segment >= 0)) goto 0x003b
+  0016: (CurrentMax += Segment[self.Blueprint.Segments])
+  0031: SubtractSubtract_PreInt(Segment)
+  0038: goto 0x000b
+  003b: return CurrentMax
+  0041: return return
+  0047: <eos>
+
+function TnSegmentedHealth.GetSingleSegmentHealth  (script 64 bytes)
+  0000: if !(((self.Blueprint != none) && (self.Blueprint.Segments.Length > 0))) goto 0x0033
+  0022: return 0[self.Blueprint.Segments]
+  0033: return -1.0
+  0039: return return
+  003f: <eos>

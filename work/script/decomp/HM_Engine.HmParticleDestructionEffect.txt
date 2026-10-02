@@ -1,0 +1,44 @@
+function HmParticleDestructionEffect.BeginEffect  (script 170 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: if !((AttachingActor == none)) goto 0x001d
+  001b: return nothing
+  001d: EffectToWorldTransform = GetEffectToWorldTransform()
+  002d: self.ActiveEmitter = self.ParticleEffectsManager.PlayEffect(AttachingActor, self.Template, EffectToWorldTransform.Position, EffectToWorldTransform.Orientation)
+  0070: if !((self.ActiveEmitter == none)) goto 0x007d
+  007b: return nothing
+  007d: self.ActiveEmitter.SetBase(AttachingActor, , , )
+  0098: SendActorSpawnEvent(self.ActiveEmitter)
+  00a7: return nothing
+  00a9: <eos>
+
+function HmParticleDestructionEffect.EndEffect  (script 82 bytes)
+  0000: if !((((self.ActiveEmitter != none) && (self.ActiveEmitter.ParticleSystemComponent != none)) && self.TerminateEffectOnExitState)) goto 0x004f
+  002c: self.ActiveEmitter.ParticleSystemComponent.DeactivateSystem()
+  0048: self.ActiveEmitter = none
+  004f: return nothing
+  0051: <eos>
+
+function HmParticleDestructionEffect.SetParticleSystemTemplate  (script 14 bytes)
+  0000: self.Template = Template_
+  000b: return nothing
+  000d: <eos>
+
+function HmParticleDestructionEffect.GetParticleSystemTemplate  (script 13 bytes)
+  0000: return self.Template
+  0006: return return
+  000c: <eos>
+
+function HmParticleDestructionEffect.SetTerminateEffectOnExitState  (script 16 bytes)
+  0000: self.TerminateEffectOnExitState = TerminateEffectOnExitState_
+  000d: return nothing
+  000f: <eos>
+
+function HmParticleDestructionEffect.GetTerminateEffectOnExitState  (script 14 bytes)
+  0000: return self.TerminateEffectOnExitState
+  0007: return return
+  000d: <eos>
+
+function HmParticleDestructionEffect.GetParticleEffectsManager  (script 13 bytes)
+  0000: return self.ParticleEffectsManager
+  0006: return return
+  000c: <eos>

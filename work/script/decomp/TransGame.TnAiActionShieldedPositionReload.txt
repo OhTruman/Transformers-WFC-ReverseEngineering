@@ -1,0 +1,21 @@
+function TnAiActionShieldedPositionReload.OnSetUpConditions  (script 96 bytes)
+  0000: Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: if !((Interact == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateShieldedPosition', Interact)
+  0057: return true
+  0059: return return
+  005f: <eos>
+
+function TnAiActionShieldedPositionReload.OnStart  (script 65 bytes)
+  0000: if !((get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateWeaponOverheated') == false)) goto 0x002e
+  0023: return Succeed()
+  002e: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  003a: return return
+  0040: <eos>
+
+function TnAiActionShieldedPositionReload.OnFinish  (script 45 bytes)
+  0000: TnAiActionPlayAnimation.OnFinish(CurrentState)
+  000b: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateWeaponOverheated', false, )
+  002a: return nothing
+  002c: <eos>

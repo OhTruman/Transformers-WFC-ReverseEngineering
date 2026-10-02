@@ -1,0 +1,136 @@
+=== decomp 0x83035480
+
+void Function_83035480(void)
+
+{
+  int iVar2;
+  int iVar3;
+  ulonglong uVar1;
+  int iVar4;
+  int iVar5;
+  undefined4 *puVar6;
+  int *piVar7;
+  int iVar8;
+  double dVar9;
+  uint local_80;
+  int local_7c;
+  undefined4 local_78;
+  undefined4 local_70;
+  char local_6c;
+  undefined4 local_68;
+  undefined4 local_64;
+  undefined4 local_60;
+  undefined4 local_5c;
+  undefined4 local_58;
+  undefined4 local_54;
+  undefined4 local_50;
+  
+  iVar2 = FUN_830eaccc();
+  iVar8 = *(int *)(iVar2 + 0x144);
+  if ((iVar8 != 0) && (*(int *)(iVar8 + 0x34) != 0)) {
+    if (*(char *)(iVar8 + 0x30) == '\x01') {
+      if (*(int *)(iVar2 + 0x1a4) == 0) {
+        iVar4 = 0;
+        if (0 < *(int *)(*(int *)(iVar2 + 0x14) + 0x1b8)) {
+          piVar7 = *(int **)(*(int *)(iVar2 + 0x14) + 0x1b4);
+          do {
+            iVar3 = *piVar7;
+            if ((iVar3 != 0) && (*(int *)(*(int *)(iVar3 + 0x10) + 0x28) == *(int *)(iVar8 + 0x34)))
+            {
+              *(int *)(iVar2 + 0x1a4) = iVar3;
+              return;
+            }
+            iVar4 = iVar4 + 1;
+            piVar7 = piVar7 + 1;
+          } while (iVar4 < *(int *)(*(int *)(iVar2 + 0x14) + 0x1b8));
+        }
+      }
+    }
+    else if ((*(char *)(iVar8 + 0x30) == '\x02') && (*(int *)(iVar2 + 0x1a0) == 0)) {
+      iVar4 = *(int *)(iVar2 + 0x14);
+      iVar3 = 0;
+      if (0 < *(int *)(iVar4 + 500)) {
+        iVar5 = 0;
+        do {
+          piVar7 = (int *)(*(int *)(iVar4 + 0x1f0) + iVar5);
+          if (*piVar7 == *(int *)(iVar8 + 0x34)) {
+            *(int *)(iVar2 + 0x1a0) = piVar7[7];
+            break;
+          }
+          iVar3 = iVar3 + 1;
+          iVar5 = iVar5 + 0x24;
+        } while (iVar3 < *(int *)(*(int *)(iVar2 + 0x14) + 500));
+      }
+      if ((0 < *(int *)(iVar8 + 0x50)) && (iVar8 = 0, 0 < *(int *)(iVar4 + 500))) {
+        iVar4 = 0;
+        dVar9 = (double)DAT_82000d40;
+        do {
+          puVar6 = (undefined4 *)(*(int *)(*(int *)(iVar2 + 0x14) + 0x1f0) + iVar4);
+          local_70 = *puVar6;
+          local_6c = *(char *)(puVar6 + 1);
+          local_68 = puVar6[2];
+          local_64 = puVar6[3];
+          local_60 = puVar6[4];
+          local_5c = puVar6[5];
+          local_58 = puVar6[6];
+          local_54 = puVar6[7];
+          local_50 = puVar6[8];
+          Function_82B919E8(&local_80,&local_70);
+          uVar1 = (ulonglong)local_80;
+          if (local_7c == 0) {
+            uVar1 = 0xffffffff820019bc;
+          }
+          iVar3 = FUN_830ed2c8(uVar1,0xffffffff82335e88);
+          if (iVar3 != 0) {
+            uVar1 = FUN_830ed340();
+            iVar3 = (int)uVar1;
+            if (-1 < iVar3) {
+              if (local_6c == '\x02') {
+                if ((ulonglong)*(uint *)(iVar2 + 0x158) <= (uVar1 & 0xffffffff)) {
+                  Function_83019270(iVar2,(uVar1 - *(uint *)(iVar2 + 0x158)) + 1);
+                }
+                iVar3 = iVar3 * 0x3c + iVar2;
+                *(undefined4 *)(iVar3 + 0x174) = local_64;
+                *(undefined4 *)(iVar3 + 0x178) = local_60;
+                *(undefined4 *)(iVar3 + 0x17c) = local_5c;
+              }
+              else if (local_6c == '\x01') {
+                if ((ulonglong)*(uint *)(iVar2 + 0x158) <= (uVar1 & 0xffffffff)) {
+                  Function_83019270(iVar2,(uVar1 - *(uint *)(iVar2 + 0x158)) + 1);
+                }
+                iVar3 = iVar3 * 0x3c + iVar2;
+                *(undefined4 *)(iVar3 + 0x174) = local_68;
+                *(float *)(iVar3 + 0x178) = (float)dVar9;
+                *(float *)(iVar3 + 0x17c) = (float)dVar9;
+              }
+            }
+          }
+          local_78 = 0;
+          local_7c = 0;
+          if (local_80 != 0) {
+            Function_82B19638();
+            local_80 = 0;
+          }
+          iVar8 = iVar8 + 1;
+          iVar4 = iVar4 + 0x24;
+        } while (iVar8 < *(int *)(*(int *)(iVar2 + 0x14) + 500));
+      }
+    }
+  }
+  return;
+}
+
+
+=== func 0x83035480
+  Function_83035480 entry=83035480 body=[[83035480, 8303576f]]
+  caller Function_83040D78@83040d78
+  caller Function_83048180@83048180
+  callee Function_82B19638@82b19638
+  callee FUN_830eaccc@830eaccc
+  callee Function_82B919E8@82b919e8
+  callee Function_83019270@83019270
+  callee FUN_830ed2c8@830ed2c8
+  callee FUN_830ed340@830ed340
+  ref 83035480 UNCONDITIONAL_CALL from 83040eb8 in Function_83040D78@83040d78
+  ref 83035480 UNCONDITIONAL_CALL from 83040fd0 in Function_83040D78@83040d78
+  ref 83035480 UNCONDITIONAL_CALL from 830481fc in Function_83048180@83048180

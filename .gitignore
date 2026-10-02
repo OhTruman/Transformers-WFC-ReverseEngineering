@@ -1,16 +1,34 @@
-# Proprietary / derived-from-proprietary or large artifacts: never commit
-work/
-*.xex
-*.xxx
-*.bin
-*.pkl
-*.gpr
-*.rep/
-*.lock
-*.lock~
-*.db
+# Local / generated files
+*.log
+*.tmp
+*.bak
 __pycache__/
 *.pyc
-# Game Dump / ExtractedAssets live outside this repo; never copy them in
+
+# Proprietary game binaries / dumps
+*.xex
+default.xex
 Game Dump/
-ExtractedAssets/
+
+# Large Ghidra project/database artifacts
+*.gpr
+*.gzf
+.rep/
+.cache/
+cache/
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+
+# Large generated RE caches / snapshots
+work/ghidra-snapshot/
+*.pkl
+
+# Ghidra databases
+*.gpr
+*.gzf
+*.gbf
+*.db
+.rep/
+

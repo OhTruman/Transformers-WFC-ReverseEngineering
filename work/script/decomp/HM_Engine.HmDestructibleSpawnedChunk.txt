@@ -1,0 +1,103 @@
+function HmDestructibleSpawnedChunk.Destroyed  (script 58 bytes)
+  0000: if !((!self.WorldInfo.IsInEditor() && (self.AttachedEmitter != none))) goto 0x0031
+  0025: self.AttachedEmitter.DestroyActor()
+  0031: Destroyed()
+  0037: return nothing
+  0039: <eos>
+
+function HmDestructibleSpawnedChunk.Tick  (script 90 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((self.CollisionLifeSpan != cast3f(-1))) goto 0x0057
+  001c: if !((self.CollisionLifeSpan > cast3f(0))) goto 0x0035
+  0029: (self.CollisionLifeSpan -= DeltaTime)
+  0035: if !((self.CollisionLifeSpan <= cast3f(0))) goto 0x0057
+  0042: DisableCollision()
+  004c: self.CollisionLifeSpan = -1.0
+  0057: return nothing
+  0059: <eos>
+
+function HmDestructibleSpawnedChunk.SetLinearVelocity  (script 38 bytes)
+  0000: self.LastSetLinearVelocity = Velocity_
+  000b: self.StaticMeshComponent.SetLinearVelocity(Velocity_)
+  0023: return nothing
+  0025: <eos>
+
+function HmDestructibleSpawnedChunk.SetAngularVelocity  (script 38 bytes)
+  0000: self.LastSetAngularVelocity = Velocity_
+  000b: self.StaticMeshComponent.SetAngularVelocity(Velocity_)
+  0023: return nothing
+  0025: <eos>
+
+function HmDestructibleSpawnedChunk.DestroyMyself  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>
+
+function HmDestructibleSpawnedChunk.Reset  (script 19 bytes)
+  0000: Reset()
+  0006: DestroyMyself()
+  0010: return nothing
+  0012: <eos>
+
+function HmDestructibleSpawnedChunk.SetLifeSpan  (script 14 bytes)
+  0000: self.LifeSpan = Span
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructibleSpawnedChunk.TryToDestroy  (script 41 bytes)
+  0000: if !(CanBeSafelyDeleted()) goto 0x0013
+  000d: DestroyActor()
+  0010: goto 0x0026
+  0013: SetTimer(self.DestroyCheckInterval, false, 'TryToDestroy', )
+  0026: return nothing
+  0028: <eos>
+
+function HmDestructibleSpawnedChunk.FindLocalPlayerController  (script 49 bytes)
+  0000: foreach LocalPlayerControllers(obj'Engine.PlayerController', _PC) (end 0x0023)
+  0017: PC = _PC
+  0022: iternext
+  0023: iterpop
+  0024: return PC
+  002a: return return
+  0030: <eos>
+
+function HmDestructibleSpawnedChunk.CanBeSafelyDeleted  (script 14 bytes)
+  0000: return self.CanBeDeleted
+  0007: return return
+  000d: <eos>
+
+function HmDestructibleSpawnedChunk.IsLifeSpanDestructionAllowed  (script 62 bytes)
+  0000: if !(((self.WorldInfo.TimeSeconds - self.StaticMeshComponent.LastRenderTime) > 0.5)) goto 0x002a
+  0028: return true
+  002a: return (self.LifeSpan <= 0.0001)
+  0037: return return
+  003d: <eos>
+
+function HmDestructibleSpawnedChunk.AttachEmitter  (script 37 bytes)
+  0000: self.AttachedEmitter = EmitterToAttach
+  000b: EmitterToAttach.SetBase(self, , , )
+  0022: return nothing
+  0024: <eos>
+
+function HmDestructibleSpawnedChunk.InitializeCollision  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDestructibleSpawnedChunk.DisableCollision  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDestructibleSpawnedChunk.EnablePawnCollision  (script 24 bytes)
+  0000: self.StaticMeshComponent.SetRBChannel(5)
+  0015: return nothing
+  0017: <eos>
+
+function HmDestructibleSpawnedChunk.SetCollisionLifeSpan  (script 36 bytes)
+  0000: self.CollisionLifeSpan = ((Span < 0.0) ? -1.0 : Span)
+  0021: return nothing
+  0023: <eos>
+
+function HmDestructibleSpawnedChunk.GetCollisionLifeSpan  (script 13 bytes)
+  0000: return self.CollisionLifeSpan
+  0006: return return
+  000c: <eos>

@@ -1,0 +1,46 @@
+function TnRobotBlockController.OnStartBlock  (script 309 bytes)
+  0000: TnBlockController.OnStartBlock()
+  0006: TransPawn = TnPawn(self.OwnerPawn)
+  0016: RobotBCD = TnRobotBlockControllerData(self.BCD)
+  0026: if !((RobotBCD.BlockingAnim != 'None')) goto 0x0110
+  0042: TransPawn = TnPawn(self.OwnerPawn)
+  0052: AnimParams.MaskType = 1
+  0065: AnimParams.Priority = 1
+  0078: AnimParams.AnimName = RobotBCD.BlockingAnim
+  0097: AnimParams.Looping = true
+  00aa: AnimatorService = TnAnimatorService(TransPawn.GetRobotService('TnAnimatorService'))
+  00d1: if !(NotEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x0110
+  00e5: AnimatorService.EnqueueReplicatedAnimation(AnimParams, delegate.None, delegate.None)
+  0110: TransPawn.SetSpeedMultiplier(RobotBCD.BlockGroundSpeedMultiplier, self)
+  0132: return nothing
+  0134: <eos>
+
+function TnRobotBlockController.OnStopBlock  (script 255 bytes)
+  0000: TnBlockController.OnStopBlock()
+  0006: TransPawn = TnPawn(self.OwnerPawn)
+  0016: RobotBCD = TnRobotBlockControllerData(self.BCD)
+  0026: if !((RobotBCD.BlockingAnim != 'None')) goto 0x00e8
+  0042: AnimParams.MaskType = 1
+  0055: AnimParams.Priority = 1
+  0068: AnimParams.AnimName = 'None'
+  0082: AnimatorService = TnAnimatorService(TransPawn.GetRobotService('TnAnimatorService'))
+  00a9: if !(NotEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x00e8
+  00bd: AnimatorService.EnqueueReplicatedAnimation(AnimParams, delegate.None, delegate.None)
+  00e8: TransPawn.RemoveSpeedMultiplier(self)
+  00fc: return nothing
+  00fe: <eos>
+
+function TnRobotBlockController.OnShieldDestroyed  (script 264 bytes)
+  0000: TnBlockController.OnShieldDestroyed()
+  0006: RobotBCD = TnRobotBlockControllerData(self.BCD)
+  0016: if !((RobotBCD.KnockoutOfBlockAnimArray.Length == 0)) goto 0x002d
+  002b: return nothing
+  002d: AnimParams.AnimName = obj'Core.Random'.static.RandomInt(RobotBCD.KnockoutOfBlockAnimArray.Length)[RobotBCD.KnockoutOfBlockAnimArray]
+  006f: if !((AnimParams.AnimName == 'None')) goto 0x008f
+  008d: return nothing
+  008f: TransPawn = TnPawn(self.OwnerPawn)
+  009f: AnimatorService = TnAnimatorService(TransPawn.GetRobotService('TnAnimatorService'))
+  00c6: if !(NotEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x0105
+  00da: AnimatorService.EnqueueLocalAnimation(AnimParams, delegate.None, delegate.None)
+  0105: return nothing
+  0107: <eos>

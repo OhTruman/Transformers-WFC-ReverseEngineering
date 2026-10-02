@@ -1,0 +1,24 @@
+function UIDataProvider_OnlineClanMates.OnRegister  (script 446 bytes)
+  0000: if !((InPlayer == none)) goto 0x007e
+  000b: WarnInternal((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "No player available (probably running in editor). Cannot register data provider."))
+  007c: return nothing
+  007e: UIDataProvider_OnlinePlayerDataBase.OnRegister(InPlayer)
+  0089: if !((self.Player != none)) goto 0x01bb
+  0094: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  00ad: if !((OnlineSub != none)) goto 0x015e
+  00b8: PlayerInterface = OnlineSub.PlayerInterface
+  00cc: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00e3
+  00e0: goto 0x015b
+  00e3: WarnInternal((("OnlineSubsystem does not support the player interface. Can't retrieve clan mates for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  015b: goto 0x01bb
+  015e: WarnInternal((("No OnlineSubsystem present. Can't retrieve clan mates for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  01bb: return nothing
+  01bd: <eos>
+
+function UIDataProvider_OnlineClanMates.OnClanMatesReadComplete  (script 79 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x004c
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x004c
+  004c: return nothing
+  004e: <eos>

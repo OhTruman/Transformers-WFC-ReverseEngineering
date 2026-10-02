@@ -1,0 +1,515 @@
+function HmGoapPlanner.get_DebugEnabled  (script 14 bytes)
+  0000: return self._DebugEnabled
+  0007: return return
+  000d: <eos>
+
+function HmGoapPlanner.set_DebugEnabled  (script 24 bytes)
+  0000: self._DebugEnabled = Value
+  000d: self._DebugState = 0
+  0015: return nothing
+  0017: <eos>
+
+function HmGoapPlanner.get_DebugState  (script 13 bytes)
+  0000: return self._DebugState
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanner.get_GoalToDebug  (script 13 bytes)
+  0000: return self._GoalToDebug
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanner.set_GoalToDebug  (script 24 bytes)
+  0000: self._GoalToDebug = Value
+  000b: ContinuePlanner()
+  0015: return nothing
+  0017: <eos>
+
+function HmGoapPlanner.set_BuiltSearchSpace  (script 14 bytes)
+  0000: self._BuiltSearchSpace = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapPlanner.get_ActiveState  (script 28 bytes)
+  0000: return self._ActiveState[self._Pool.States]
+  0015: return return
+  001b: <eos>
+
+function HmGoapPlanner.Initialize  (script 24 bytes)
+  0000: self._Pool.set_Capacity(200)
+  0015: return nothing
+  0017: <eos>
+
+function HmGoapPlanner.Plan  (script 636 bytes)
+  0000: nothing
+  0001: if !((self._DebugEnabled && (obj'Core.Strings'.static.Locs(Goal.Description) != obj'Core.Strings'.static.Locs(self._GoalToDebug)))) goto 0x003c
+  003a: return none
+  003c: self._Pool.Reset()
+  004f: self._Pool.Allocate()
+  0062: if !(((Goal._DesiredStateIdx != -1) && (self._BuiltSearchSpace != none))) goto 0x00c6
+  0087: self._ActiveSearchSpace = self._BuiltSearchSpace
+  0092: self._ActiveSearchSpace.GetPlanningState(0[self._Pool.States], Goal._DesiredStateIdx)
+  00c3: goto 0x0147
+  00c6: 0[self._Pool.States] = self._EmptyState
+  00dc: 0[self._Pool.States].UnsatisfiedConditions = Goal.Goals
+  0106: self._ActiveSearchSpace = self._DynamicSearchSpace
+  0111: self._ActiveSearchSpace.Reset()
+  0124: self._ActiveSearchSpace.AddPlanningState(0[self._Pool.States])
+  0147: 0[self._Pool.States].PathingIdx = 0
+  0164: if !(!Goal.PopulateGoals(InitialState, 0[self._Pool.States].UnsatisfiedConditions)) goto 0x019e
+  019c: return none
+  019e: if !(!Goal.ConditionsMet(InitialState, )) goto 0x01be
+  01bc: return none
+  01be: self._InitialState = InitialState
+  01c9: self._ActiveActionSet = ActionSet
+  01d4: self._ActiveGoal = Goal
+  01df: 0[self._Pool.States].QualityHeuristic = HmGoapPlanner.CalculateHeuristic(0.0, 0[self._Pool.States].UnsatisfiedConditions)
+  0221: if !((HmGoapPlanner.FindPath() == false)) goto 0x022f
+  022d: return none
+  022f: if !(((CostToBeat > cast3f(0)) && (self._ActiveState[self._Pool.States].CostSoFar >= CostToBeat))) goto 0x0269
+  0267: return none
+  0269: return HmGoapPlanner.MakePlan(Goal)
+  0275: return return
+  027b: <eos>
+
+function HmGoapPlanner.FindPath  (script 121 bytes)
+  0000: self._OpenStates.Length = 0
+  0008: self._ClosedStates.Length = 0
+  0010: self._ActiveState = 0
+  0017: self._OpenStates.AddItem(0)
+  0020: if !(self._DebugEnabled) goto 0x0031
+  0029: HmGoapPlanner.BreakPlanner()
+  002f: return false
+  0031: if !((self._OpenStates.Length != 0)) goto 0x0070
+  003d: Result = HmGoapPlanner.ExecutePlanningIteration()
+  0049: if !((cast3a(Result) == cast3a(0))) goto 0x005b
+  0059: return false
+  005b: if !((cast3a(Result) == cast3a(1))) goto 0x006d
+  006b: return true
+  006d: goto 0x0031
+  0070: return false
+  0072: return return
+  0078: <eos>
+
+function HmGoapPlanner.BreakPlanner  (script 59 bytes)
+  0000: self._DebugHistoryIndex = 0
+  0007: self._DebugState = 1
+  000f: obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled = true
+  002e: StepPlanner()
+  0038: return nothing
+  003a: <eos>
+
+function HmGoapPlanner.StepPlanner  (script 95 bytes)
+  0000: if !((!self._DebugEnabled || (cast3a(self._DebugState) == cast3a(2)))) goto 0x001f
+  001d: return nothing
+  001f: self._DebugHistoryIndex = 0
+  0026: Result = HmGoapPlanner.ExecutePlanningIteration()
+  0032: if !(((cast3a(Result) == cast3a(1)) || (cast3a(Result) == cast3a(0)))) goto 0x005c
+  0054: self._DebugState = 2
+  005c: return nothing
+  005e: <eos>
+
+function HmGoapPlanner.ContinuePlanner  (script 42 bytes)
+  0000: self._DebugState = 0
+  0008: obj'Engine.Engine'.static.GetCurrentWorldInfo().bTimeStepEnabled = false
+  0027: return nothing
+  0029: <eos>
+
+function HmGoapPlanner.ExecutePlanningIteration  (script 164 bytes)
+  0000: if !(((self._OpenStates.Length == 0) || self._Pool.get_IsFull())) goto 0x0027
+  0024: return 0
+  0027: HmGoapPlanner.PopPath()
+  002d: if !(HmGoapPlanner.IsClosed(self._ActiveState)) goto 0x003e
+  003b: return 2
+  003e: self._ClosedStates.AddItem(self._ActiveState)
+  004b: if !((obj'HmGoap'.static.ConditionsMet(self._ActiveState[self._Pool.States].UnsatisfiedConditions, self._InitialState, ) && HmGoapPlanner.ValidateFoundPlan())) goto 0x0094
+  0091: return 1
+  0094: HmGoapPlanner.AddNextStatesToOpenList()
+  009a: return 3
+  009d: return return
+  00a3: <eos>
+
+function HmGoapPlanner.ValidateFoundPlan  (script 236 bytes)
+  0000: CurrentStateIndex = self._ActiveState
+  000b: if !((CurrentStateIndex[self._Pool.States].ActionIdx != -1)) goto 0x00e3
+  0034: Action = CurrentStateIndex[self._Pool.States].ActionIdx[self._ActiveActionSet.Actions]
+  0068: if !(!Action.ValidateForFoundPlan(CurrentStateIndex[self._Pool.States].ExpectedEffects)) goto 0x00a1
+  009f: return false
+  00a1: CurrentStateIndex = CurrentStateIndex[self._Pool.States].PrevIdx
+  00c6: if !((CurrentStateIndex == -1)) goto 0x00e0
+  00d5: HmGoapPlanner.LogValidateFoundPlan()
+  00db: assert(false)
+  00e0: goto 0x000b
+  00e3: return true
+  00e5: return return
+  00eb: <eos>
+
+function HmGoapPlanner.LogValidateFoundPlan  (script 393 bytes)
+  0000: LogInternal(("Error: ValidateFoundPlan -----------Pool Size" @ cast53(self._Pool._Size)), , , )
+  0046: CurrentStateIndex = self._ActiveState
+  0051: LogInternal(("ActiveState: " @ cast53(self._ActiveState)), , , )
+  006e: if !((CurrentStateIndex[self._Pool.States].ActionIdx != -1)) goto 0x0186
+  0097: Action = CurrentStateIndex[self._Pool.States].ActionIdx[self._ActiveActionSet.Actions]
+  00cb: LogInternal(((("Action" @ cast56(Action)) @ "StateIdx") @ cast53(CurrentStateIndex)), , , )
+  00f6: if !(!Action.ValidateForFoundPlan(CurrentStateIndex[self._Pool.States].ExpectedEffects)) goto 0x012f
+  012d: return nothing
+  012f: CurrentStateIndex = CurrentStateIndex[self._Pool.States].PrevIdx
+  0154: if !((CurrentStateIndex == -1)) goto 0x0183
+  0163: LogInternal("CurrentStateIndex is -1", , , )
+  0181: return nothing
+  0183: goto 0x006e
+  0186: return nothing
+  0188: <eos>
+
+function HmGoapPlanner.PlanValidated  (script 214 bytes)
+  0000: CurrentStateIndex = self._ActiveState
+  000b: if !((CurrentStateIndex[self._Pool.States].ActionIdx != -1)) goto 0x00d3
+  0034: Action = CurrentStateIndex[self._Pool.States].ActionIdx[self._ActiveActionSet.Actions]
+  0068: Action.PlanValidated(CurrentStateIndex[self._Pool.States].ExpectedEffects)
+  009a: CurrentStateIndex = CurrentStateIndex[self._Pool.States].PrevIdx
+  00bf: if !((CurrentStateIndex == -1)) goto 0x00d0
+  00ce: return nothing
+  00d0: goto 0x000b
+  00d3: return nothing
+  00d5: <eos>
+
+function HmGoapPlanner.MakePlan  (script 535 bytes)
+  0000: HmGoapPlanner.PlanValidated()
+  0006: Plan = obj'Engine.Allocation'.static.CreateObject(obj'HmGoapPlan', self)
+  0025: CurrentStateIndex = self._ActiveState
+  0030: if !((CurrentStateIndex[self._Pool.States].ActionIdx != -1)) goto 0x019e
+  0059: Action = CurrentStateIndex[self._Pool.States].ActionIdx[self._ActiveActionSet.Actions]
+  008d: Plan.Actions.Insert(Plan.Actions.Length,1)
+  00ac: (Plan.Actions.Length - 1)[Plan.Actions].Action = Action
+  00de: (Plan.Actions.Length - 1)[Plan.Actions].ExpectedEffects = CurrentStateIndex[self._Pool.States].ExpectedEffects
+  012a: (Plan.Actions.Length - 1)[Plan.Actions].RunningConditions = CurrentStateIndex[self._Pool.States].RunningConditions
+  0176: CurrentStateIndex = CurrentStateIndex[self._Pool.States].PrevIdx
+  019b: goto 0x0030
+  019e: if !((Plan.Actions.Length == 0)) goto 0x01b5
+  01b3: return none
+  01b5: Plan.GoalToSatisfy = Goal
+  01c9: Plan.DesiredEffects = CurrentStateIndex[self._Pool.States].UnsatisfiedConditions
+  01f7: Plan.PlanMade()
+  020a: return Plan
+  0210: return return
+  0216: <eos>
+
+function HmGoapPlanner.IsClosed  (script 50 bytes)
+  0000: return (self._ActiveSearchSpace._Prebuilt ? HmGoapPlanner.IsClosedFast(Index) : HmGoapPlanner.IsClosedSlow(Index))
+  002b: return return
+  0031: <eos>
+
+function HmGoapPlanner.IsClosedFast  (script 117 bytes)
+  0000: I = 0
+  0007: if !((I < self._ClosedStates.Length)) goto 0x006c
+  0017: if !((Index[self._Pool.States].SearchSpaceIdx == I[self._ClosedStates][self._Pool.States].SearchSpaceIdx)) goto 0x0062
+  0060: return true
+  0062: AddAdd_PreInt(I)
+  0069: goto 0x0007
+  006c: return false
+  006e: return return
+  0074: <eos>
+
+function HmGoapPlanner.IsClosedSlow  (script 134 bytes)
+  0000: I = 0
+  0007: if !((I < self._ClosedStates.Length)) goto 0x007d
+  0017: if !(obj'HmGoap'.static.AreSame(Index[self._Pool.States].UnsatisfiedConditions, I[self._ClosedStates][self._Pool.States].UnsatisfiedConditions)) goto 0x0073
+  0071: return true
+  0073: AddAdd_PreInt(I)
+  007a: goto 0x0007
+  007d: return false
+  007f: return return
+  0085: <eos>
+
+function HmGoapPlanner.PopPath  (script 156 bytes)
+  0000: BestHeuristic = 3.4028234663852886e+38
+  000b: I = 0
+  0012: if !((I < self._OpenStates.Length)) goto 0x007c
+  0022: CurrentHeuristic = I[self._OpenStates][self._Pool.States].QualityHeuristic
+  004d: if !((CurrentHeuristic < BestHeuristic)) goto 0x0072
+  005c: BestIndex = I
+  0067: BestHeuristic = CurrentHeuristic
+  0072: AddAdd_PreInt(I)
+  0079: goto 0x0012
+  007c: self._ActiveState = BestIndex[self._OpenStates]
+  008d: self._OpenStates.Remove(BestIndex,1)
+  0099: return nothing
+  009b: <eos>
+
+function HmGoapPlanner.CalculateHeuristic  (script 46 bytes)
+  0000: return (CurrentCost + cast3f(obj'HmGoap'.static.NumberOfConditionsNotMet(UnsatisfiedConditions, self._InitialState)))
+  0027: return return
+  002d: <eos>
+
+function HmGoapPlanner.AddNextStatesToOpenList  (script 73 bytes)
+  0000: ParentState = self._ActiveState[self._Pool.States]
+  001a: self._ActiveSearchSpace.AddSuccessorsToOpenList(self._OpenStates, ParentState, self._InitialState, self._ActiveActionSet, self._Pool)
+  0046: return nothing
+  0048: <eos>
+
+function HmGoapPlanner.ComparePathCost  (script 95 bytes)
+  0000: return ((A[self._OpenStates][self._Pool.States].QualityHeuristic < B[self._OpenStates][self._Pool.States].QualityHeuristic) ? -1 : 1)
+  0058: return return
+  005e: <eos>
+
+function HmGoapPlanner.Shutdown  (script 22 bytes)
+  0000: self._DynamicSearchSpace.Reset()
+  0013: return nothing
+  0015: <eos>
+
+function HmGoapPlanner.OnPieSessionEnding  (script 13 bytes)
+  0000: Shutdown()
+  000a: return nothing
+  000c: <eos>
+
+function HmGoapPlanner.NextStepHistory  (script 28 bytes)
+  0000: self._DebugHistoryIndex = obj'Core.Math'.static.Max(0, SubtractSubtract_PreInt(self._DebugHistoryIndex))
+  0019: return nothing
+  001b: <eos>
+
+function HmGoapPlanner.PreviousStepHistory  (script 36 bytes)
+  0000: self._DebugHistoryIndex = obj'Core.Math'.static.Min((self._ClosedStates.Length - 1), AddAdd_PreInt(self._DebugHistoryIndex))
+  0021: return nothing
+  0023: <eos>
+
+function HmGoapPlanner.DisplayDebug  (script 1408 bytes)
+  0000: if !(!self._DebugEnabled) goto 0x000d
+  000b: return nothing
+  000d: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0030: if !((cast3a(self._DebugState) == cast3a(0))) goto 0x00ab
+  0040: HudCanvas.SetPos((HudCanvas.ClipX * 0.5), (HudCanvas.ClipY * 0.5))
+  007d: HudCanvas.DrawTextCentered(("Waiting for goal" @ self._GoalToDebug))
+  00a9: return nothing
+  00ab: CurrentState = ((self._ClosedStates.Length - 1) - self._DebugHistoryIndex)[self._ClosedStates][self._Pool.States]
+  00d6: PlanSucceeded = obj'HmGoap'.static.ConditionsMet(CurrentState.UnsatisfiedConditions, self._InitialState, )
+  0106: Width1 = 380.0
+  0111: Width2 = 500.0
+  011c: Width3 = 230.0
+  0127: PosX = (((((HudCanvas.ClipX - Width1) - Width2) - Width3) - cast3f((10 * 2))) * 0.5)
+  0161: PosY = 50.0
+  016c: HudCanvas.SetDrawColor(64, 64, 64, 240)
+  0187: HudCanvas.SetPos(0.0, 0.0)
+  01a4: HudCanvas.DrawRect(HudCanvas.ClipX, HudCanvas.ClipY, )
+  01d4: PosY = HmGoapPlanner.DrawWorldState(HudCanvas, PosX, PosY, Width1, ((("Desired State" @ "[") $ self._ActiveGoal.Description) $ "]"), obj'Core.Colors'.static.DarkBlue(), 0[self._Pool.States].UnsatisfiedConditions.Properties)
+  0256: PosY = HmGoapPlanner.DrawWorldState(HudCanvas, PosX, PosY, Width1, "Initial State", obj'Core.Colors'.static.DarkBlue(), self._InitialState.Properties)
+  02a6: PosY = 50.0
+  02b1: (PosX += (Width1 + cast3f(10)))
+  02c3: PosY = HmGoapPlanner.DrawDetailedWorldState(HudCanvas, PosX, PosY, Width2, "Satisifed By Action", obj'Core.Colors'.static.DarkCyan(), CurrentState.ExpectedEffects.Properties)
+  0326: PosY = HmGoapPlanner.DrawDetailedWorldState(HudCanvas, PosX, PosY, Width2, "Required By Action", obj'Core.Colors'.static.DarkCyan(), CurrentState.RunningConditions.Properties)
+  0388: PosY = HmGoapPlanner.DrawDetailedWorldState(HudCanvas, PosX, PosY, Width2, "Required By Plan", obj'Core.Colors'.static.DarkCyan(), CurrentState.UnsatisfiedConditions.Properties)
+  03e8: PosY = HmGoapPlanner.DrawCandidates(HudCanvas, CurrentState, obj'Core.Colors'.static.DarkCyan(), PosX, PosY, Width2)
+  0420: PosY = 50.0
+  042b: (PosX += (Width2 + cast3f(10)))
+  043d: SortedOpenList = HmGoapPlanner.BuildSortedOpenList()
+  0449: PosY = HmGoapPlanner.DrawPlan(HudCanvas, CurrentState, ((cast3a(self._DebugState) == cast3a(1)) ? obj'Core.Colors'.static.DarkYellow() : (PlanSucceeded ? obj'Core.Colors'.static.Green() : obj'Core.Colors'.static.Red())), PosX, PosY, Width3)
+  04c4: PosY = HmGoapPlanner.DrawState(HudCanvas, CurrentState, obj'Core.Colors'.static.DarkYellow(), PosX, PosY, Width3)
+  04fc: PosY = HmGoapPlanner.DrawList(HudCanvas, self._ClosedStates, true, "History", obj'Core.Colors'.static.DarkYellow(), PosX, PosY, Width3)
+  053e: PosY = HmGoapPlanner.DrawList(HudCanvas, SortedOpenList, false, "Open", obj'Core.Colors'.static.DarkYellow(), PosX, PosY, Width3)
+  057d: return nothing
+  057f: <eos>
+
+function HmGoapPlanner.BuildSortedOpenList  (script 209 bytes)
+  0000: Sorter = new(self, nothing, obj'Engine.HmArraySorter', nothing, AttachTreeCallback)
+  0014: Sorter.__Compare__Delegate = delegate.ComparePathCost
+  002c: Sorter.SortArray(self._OpenStates.Length)
+  0045: sortedList.Length = self._OpenStates.Length
+  0052: Offset = ((sortedList.Length == Sorter.SortedIndices.Length) ? 0 : 1)
+  0076: I = 0
+  007d: if !((I < sortedList.Length)) goto 0x00c4
+  008d: I[sortedList] = (I + Offset)[Sorter.SortedIndices][self._OpenStates]
+  00ba: AddAdd_PreInt(I)
+  00c1: goto 0x007d
+  00c4: return sortedList
+  00ca: return return
+  00d0: <eos>
+
+function HmGoapPlanner.DrawDetailedWorldState  (script 802 bytes)
+  0000: DataColumns.Length = 4
+  0009: 0[DataColumns].Title = Title
+  0021: 1[DataColumns].Title = "Value"
+  003b: 1[DataColumns].Left = (Width * 0.25)
+  005a: 2[DataColumns].Title = "Subject"
+  0077: 2[DataColumns].Left = (Width * 0.5)
+  0097: 3[DataColumns].Title = "Satisfied"
+  00b6: 3[DataColumns].Left = (Width * 0.88)
+  00d6: I = 0
+  00dd: if !((I < WorldStates.Length)) goto 0x02d2
+  00ed: if !((I[WorldStates].Type == none)) goto 0x010c
+  0109: goto 0x02c8
+  010c: HmGoapPlanner.AppendData(0[DataColumns], obj'Core.Strings'.static.Right(cast56(I[WorldStates].Type), (obj'Core.Strings'.static.Len(cast56(I[WorldStates].Type)) - 14)))
+  0163: if !(I[WorldStates].Value.BoolVal) goto 0x019e
+  0188: HmGoapPlanner.AppendData(1[DataColumns], "True")
+  019b: goto 0x0268
+  019e: if !((I[WorldStates].Value.IntVal != 0)) goto 0x01f8
+  01c5: HmGoapPlanner.AppendData(1[DataColumns], cast53(I[WorldStates].Value.IntVal))
+  01f5: goto 0x0268
+  01f8: if !((I[WorldStates].Value.ClassVal != none)) goto 0x0252
+  021f: HmGoapPlanner.AppendData(1[DataColumns], cast56(I[WorldStates].Value.ClassVal))
+  024f: goto 0x0268
+  0252: HmGoapPlanner.AppendData(1[DataColumns], "0/False")
+  0268: HmGoapPlanner.AppendData(2[DataColumns], cast56(I[WorldStates].Subject))
+  028e: HmGoapPlanner.AppendData(3[DataColumns], (self._InitialState.ConditionMet(I[WorldStates]) ? "Yes" : "No"))
+  02c8: AddAdd_PreInt(I)
+  02cf: goto 0x00dd
+  02d2: if !((WorldStates.Length == 0)) goto 0x02f6
+  02de: HmGoapPlanner.AppendData(0[DataColumns], "* EMPTY *")
+  02f6: return HmGoapPlanner.DrawDebugWindow(HudCanvas, TitleColor, PosX, PosY, Width, DataColumns)
+  031b: return return
+  0321: <eos>
+
+function HmGoapPlanner.DrawWorldState  (script 703 bytes)
+  0000: DataColumns.Length = 3
+  0009: 0[DataColumns].Title = Title
+  0021: 1[DataColumns].Title = "Value"
+  003b: 1[DataColumns].Left = (Width * 0.34)
+  005a: 2[DataColumns].Title = "Satisfied"
+  0079: 2[DataColumns].Left = (Width * 0.8)
+  0099: I = 0
+  00a0: if !((I < WorldStates.Length)) goto 0x026f
+  00b0: if !((I[WorldStates].Type == none)) goto 0x00cf
+  00cc: goto 0x0265
+  00cf: HmGoapPlanner.AppendData(0[DataColumns], obj'Core.Strings'.static.Right(cast56(I[WorldStates].Type), (obj'Core.Strings'.static.Len(cast56(I[WorldStates].Type)) - 14)))
+  0126: if !(I[WorldStates].Value.BoolVal) goto 0x0161
+  014b: HmGoapPlanner.AppendData(1[DataColumns], "True")
+  015e: goto 0x022b
+  0161: if !((I[WorldStates].Value.IntVal != 0)) goto 0x01bb
+  0188: HmGoapPlanner.AppendData(1[DataColumns], cast53(I[WorldStates].Value.IntVal))
+  01b8: goto 0x022b
+  01bb: if !((I[WorldStates].Value.ClassVal != none)) goto 0x0215
+  01e2: HmGoapPlanner.AppendData(1[DataColumns], cast56(I[WorldStates].Value.ClassVal))
+  0212: goto 0x022b
+  0215: HmGoapPlanner.AppendData(1[DataColumns], "0/False")
+  022b: HmGoapPlanner.AppendData(2[DataColumns], (self._InitialState.ConditionMet(I[WorldStates]) ? "Yes" : "No"))
+  0265: AddAdd_PreInt(I)
+  026c: goto 0x00a0
+  026f: if !((WorldStates.Length == 0)) goto 0x0293
+  027b: HmGoapPlanner.AppendData(0[DataColumns], "* EMPTY *")
+  0293: return HmGoapPlanner.DrawDebugWindow(HudCanvas, TitleColor, PosX, PosY, Width, DataColumns)
+  02b8: return return
+  02be: <eos>
+
+function HmGoapPlanner.DrawPlan  (script 292 bytes)
+  0000: DataColumns.Length = 1
+  0008: 0[DataColumns].Title = "Plan"
+  0021: StateIndex = CurrentState.PathingIdx
+  0037: if !((StateIndex != -1)) goto 0x00f8
+  0046: ActionIndex = StateIndex[self._Pool.States].ActionIdx
+  006b: if !((ActionIndex != -1)) goto 0x00ae
+  007a: HmGoapPlanner.AppendData(0[DataColumns], ActionIndex[self._ActiveActionSet.Actions]._Description)
+  00a4: AddAdd_Int(PathLength)
+  00ab: goto 0x00d0
+  00ae: if !((PathLength == 0)) goto 0x00d0
+  00b9: HmGoapPlanner.AppendData(0[DataColumns], "* NONE *")
+  00d0: StateIndex = StateIndex[self._Pool.States].PrevIdx
+  00f5: goto 0x0037
+  00f8: return HmGoapPlanner.DrawDebugWindow(HudCanvas, TitleColor, PosX, PosY, Width, DataColumns)
+  011d: return return
+  0123: <eos>
+
+function HmGoapPlanner.DrawList  (script 456 bytes)
+  0000: DataColumns.Length = 2
+  0009: 0[DataColumns].Title = Title
+  0021: 1[DataColumns].Title = "Cost"
+  003a: 1[DataColumns].Left = (Width * 0.7)
+  0059: I = 0
+  0060: if !((I < List.Length)) goto 0x019c
+  0070: StateIndex = (Reverse ? ((List.Length - 1) - I) : I)
+  0096: ActionIndex = StateIndex[List][self._Pool.States].ActionIdx
+  00c1: if !((ActionIndex == -1)) goto 0x0110
+  00d0: HmGoapPlanner.AppendData(0[DataColumns], (((Reverse && (I == self._DebugHistoryIndex)) ? "> " : "") $ "GOAL STATE"))
+  010d: goto 0x0192
+  0110: HmGoapPlanner.AppendData(0[DataColumns], (((Reverse && (I == self._DebugHistoryIndex)) ? "> " : "") $ ActionIndex[self._ActiveActionSet.Actions]._Description))
+  015e: HmGoapPlanner.AppendData(1[DataColumns], cast55(StateIndex[List][self._Pool.States].QualityHeuristic))
+  0192: AddAdd_PreInt(I)
+  0199: goto 0x0060
+  019c: return HmGoapPlanner.DrawDebugWindow(HudCanvas, TitleColor, PosX, PosY, Width, DataColumns)
+  01c1: return return
+  01c7: <eos>
+
+function HmGoapPlanner.DrawState  (script 459 bytes)
+  0000: DataColumns.Length = 2
+  0009: 0[DataColumns].Title = "Planning State"
+  002c: 1[DataColumns].Left = (Width * 0.3)
+  004b: if !((CurrentState.ActionIdx != -1)) goto 0x0186
+  0065: Action = CurrentState.ActionIdx[self._ActiveActionSet.Actions]
+  008a: HmGoapPlanner.AppendData(0[DataColumns], "Action")
+  009f: HmGoapPlanner.AppendData(1[DataColumns], Action._Description)
+  00ba: HmGoapPlanner.AppendData(0[DataColumns], "Action Cost")
+  00d4: HmGoapPlanner.AppendData(1[DataColumns], cast55(Action.CalculatePlanningCost(self._ActiveState[self._Pool.States].ExpectedEffects)))
+  0115: HmGoapPlanner.AppendData(0[DataColumns], "Path Cost")
+  012d: HmGoapPlanner.AppendData(1[DataColumns], cast55(CurrentState.CostSoFar))
+  014c: HmGoapPlanner.AppendData(0[DataColumns], "Heuristic")
+  0164: HmGoapPlanner.AppendData(1[DataColumns], cast55(CurrentState.QualityHeuristic))
+  0183: goto 0x019f
+  0186: HmGoapPlanner.AppendData(0[DataColumns], "GOAL STATE")
+  019f: return HmGoapPlanner.DrawDebugWindow(HudCanvas, TitleColor, PosX, PosY, Width, DataColumns)
+  01c4: return return
+  01ca: <eos>
+
+function HmGoapPlanner.DrawCandidates  (script 874 bytes)
+  0000: Col1Width = 150
+  0008: RemainingColWidth = cast44(((Width - cast3f(Col1Width)) / cast3f(4)))
+  0024: DataColumns.Length = 5
+  002d: 0[DataColumns].Title = "Candidate"
+  004b: 1[DataColumns].Title = "Compatible"
+  006a: 1[DataColumns].Left = cast3f(Col1Width)
+  0084: 2[DataColumns].Title = "Available"
+  00a3: 2[DataColumns].Left = cast3f((Col1Width + (RemainingColWidth * 1)))
+  00c8: 3[DataColumns].Title = "Conditions"
+  00e8: 3[DataColumns].Left = cast3f((Col1Width + (RemainingColWidth * 2)))
+  010e: 4[DataColumns].Title = "Effects Met"
+  012f: 4[DataColumns].Left = cast3f((Col1Width + (RemainingColWidth * 3)))
+  0155: I = 0
+  015c: if !((I < self._ActiveActionSet.Actions.Length)) goto 0x031c
+  0175: Action = I[self._ActiveActionSet.Actions]
+  018f: if !(!Action.SatisfiesAnyConditions(CurrentState.UnsatisfiedConditions, RemainingConditions, ExpectedEffects)) goto 0x01c4
+  01c1: goto 0x0312
+  01c4: HmGoapPlanner.AppendData(0[DataColumns], Action._Description)
+  01df: HmGoapPlanner.AppendData(1[DataColumns], (Action.UnsatisfiesAnyConditions(RemainingConditions) ? "No" : "Yes"))
+  0212: RunningConditions = Action._Preconditions
+  0226: obj'HmGoap'.static.PublishSubjectsToSet(CurrentState.UnsatisfiedConditions, ExpectedEffects)
+  024e: HmGoapPlanner.AppendData(2[DataColumns], (Action.get_IsUsable() ? "Yes" : "No"))
+  027d: HmGoapPlanner.AppendData(3[DataColumns], (Action.SetUpConditions(ExpectedEffects, RunningConditions) ? "Passed" : "Failed"))
+  02bd: HmGoapPlanner.AppendData(4[DataColumns], ((cast53(obj'HmGoap'.static.NumberOfConditionsMet(ExpectedEffects, self._InitialState)) $ "/") $ cast53(obj'HmGoap'.static.NumberOfConditionsSet(ExpectedEffects))))
+  030b: AddAdd_Int(NumCandidates)
+  0312: AddAdd_PreInt(I)
+  0319: goto 0x015c
+  031c: if !((NumCandidates == 0)) goto 0x033e
+  0327: HmGoapPlanner.AppendData(0[DataColumns], "* NONE *")
+  033e: return HmGoapPlanner.DrawDebugWindow(HudCanvas, TitleColor, PosX, PosY, Width, DataColumns)
+  0363: return return
+  0369: <eos>
+
+function HmGoapPlanner.AppendData  (script 48 bytes)
+  0000: Column.Data = ((Column.Data $ Text) $ "
+")
+  002d: return nothing
+  002f: <eos>
+
+function HmGoapPlanner.DrawDebugWindow  (script 711 bytes)
+  0000: HudCanvas.StrLen(0[DataColumns].Data, TextWidth, TextHeight)
+  002f: Height = (((5.0 * cast3f(2)) + cast3f(20)) + TextHeight)
+  004d: Bottom = (PosY + Height)
+  005f: HudCanvas.SetDrawColor(0, 0, 0, 200)
+  007a: HudCanvas.SetPos(PosX, PosY)
+  0097: HudCanvas.DrawRect(Width, Height, )
+  00b5: HudCanvas.SetDrawColor(TitleColor.R, TitleColor.G, TitleColor.B, 200)
+  00fa: HudCanvas.SetPos(PosX, PosY)
+  0117: HudCanvas.DrawRect(Width, 20.0, )
+  0135: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0158: HudCanvas.SetPos(PosX, PosY)
+  0175: HudCanvas.DrawBox(Width, Height)
+  0192: (PosX += cast3f(5))
+  019d: (PosY += cast3f(5))
+  01a8: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  01cb: I = 0
+  01d2: if !((I < DataColumns.Length)) goto 0x02b4
+  01e2: HudCanvas.SetPos((PosX + I[DataColumns].Left), PosY)
+  0217: HudCanvas.DrawTextNormal(I[DataColumns].Title, , , )
+  0243: HudCanvas.SetPos((PosX + I[DataColumns].Left), (PosY + cast3f(20)))
+  027e: HudCanvas.DrawTextClipped(I[DataColumns].Data, , , )
+  02aa: AddAdd_PreInt(I)
+  02b1: goto 0x01d2
+  02b4: return (Bottom + cast3f(10))
+  02c0: return return
+  02c6: <eos>

@@ -1,0 +1,36 @@
+function HmInputGenerator.Update  (script 621 bytes)
+  0000: LP = LocalPlayer(PlayerIn.get_Outer().Player)
+  0020: if !((LP == none)) goto 0x002d
+  002b: return nothing
+  002d: ControllerId = LP.ControllerId
+  0041: I = 0
+  0048: if !((I < self.Keys.Length)) goto 0x0163
+  0058: if !(!I[self.Keys].bIsDown) goto 0x00e8
+  0074: if !((obj'Core.Random'.static.FRand() <= I[self.Keys].DownProbability)) goto 0x00e5
+  009a: I[self.Keys].bIsDown = true
+  00b3: PlayerIn.ForceInputKey(ControllerId, I[self.Keys].KeyName, 0, , )
+  00e5: goto 0x0159
+  00e8: if !((obj'Core.Random'.static.FRand() <= I[self.Keys].UpProbability)) goto 0x0159
+  010e: I[self.Keys].bIsDown = false
+  0127: PlayerIn.ForceInputKey(ControllerId, I[self.Keys].KeyName, 1, , )
+  0159: AddAdd_PreInt(I)
+  0160: goto 0x0048
+  0163: I = 0
+  016a: if !((I < self.Axes.Length)) goto 0x026a
+  017a: if !((obj'Core.Random'.static.FRand() <= I[self.Axes].ChangeOfDirectionProbability)) goto 0x0214
+  01a0: switch (obj'Core.Random'.static.Rand(3))
+  01af: case 0: (next 0x01ce)
+  01b3: I[self.Axes].CurrentDelta = 0
+  01cb: goto 0x0214
+  01ce: case 1: (next 0x01f1)
+  01d2: I[self.Axes].CurrentDelta = -1
+  01ee: goto 0x0214
+  01f1: case 2: (next 0x0211)
+  01f6: I[self.Axes].CurrentDelta = 1
+  020e: goto 0x0214
+  0211: default:
+  0214: PlayerIn.ForceInputAxis(ControllerId, I[self.Axes].AxisName, cast3f(I[self.Axes].CurrentDelta), DeltaTime, )
+  0260: AddAdd_PreInt(I)
+  0267: goto 0x016a
+  026a: return nothing
+  026c: <eos>

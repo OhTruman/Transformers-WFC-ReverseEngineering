@@ -1,0 +1,22 @@
+function HmJoystickMultiFlickDetector.GetNumFlicks  (script 13 bytes)
+  0000: return self.NumFlicks
+  0006: return return
+  000c: <eos>
+
+function HmJoystickMultiFlickDetector.Update  (script 91 bytes)
+  0000: self.FlickDetector.Update(DeltaTime, JoystickInputX, JoystickInputY)
+  0022: if !(self.FlickDetector.WasFlicked()) goto 0x0058
+  0038: self.LastFlickDirection = self.FlickDetector.GetFlickDirection()
+  0051: AddAdd_Int(self.NumFlicks)
+  0058: return nothing
+  005a: <eos>
+
+function HmJoystickMultiFlickDetector.GetFlickDirection  (script 13 bytes)
+  0000: return self.LastFlickDirection
+  0006: return return
+  000c: <eos>
+
+function HmJoystickMultiFlickDetector.Reset  (script 10 bytes)
+  0000: self.NumFlicks = 0
+  0007: return nothing
+  0009: <eos>

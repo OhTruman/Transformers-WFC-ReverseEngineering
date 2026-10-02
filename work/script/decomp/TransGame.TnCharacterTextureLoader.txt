@@ -1,0 +1,59 @@
+function TnCharacterTextureLoader.set_CharacterOptions  (script 14 bytes)
+  0000: self._CharacterOptions = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCharacterTextureLoader.LoadAll  (script 10 bytes)
+  0000: TnCharacterTextureLoader.UpdateAllCharacters(true)
+  0007: return nothing
+  0009: <eos>
+
+function TnCharacterTextureLoader.ResetAll  (script 10 bytes)
+  0000: TnCharacterTextureLoader.UpdateAllCharacters(false)
+  0007: return nothing
+  0009: <eos>
+
+function TnCharacterTextureLoader.UpdateAllCharacters  (script 66 bytes)
+  0000: Transformers = self._CharacterOptions.FindAllChassis()
+  0019: foreach Transformers(Transformer,) (end 0x003e)
+  0028: UpdateTransformer(Transformer, Enable)
+  003d: iternext
+  003e: iterpop
+  003f: return nothing
+  0041: <eos>
+
+function TnCharacterTextureLoader.UpdateTransformer  (script 84 bytes)
+  0000: TnCharacterTextureLoader.UpdateMaterialsInSkeletalMesh(Transformer.SkelMesh, Enable)
+  001a: if !((Transformer.TransformerVehicle != none)) goto 0x0051
+  002e: TnCharacterTextureLoader.UpdateMaterialsInSkeletalMesh(Transformer.TransformerVehicle.SkeletalMesh, Enable)
+  0051: return nothing
+  0053: <eos>
+
+function TnCharacterTextureLoader.UpdateMaterialsInSkeletalMesh  (script 121 bytes)
+  0000: if !((SM == none)) goto 0x000d
+  000b: return nothing
+  000d: foreach SM.Materials(MI,) (end 0x0075)
+  0025: if !((MI == none)) goto 0x0034
+  0030: iternext
+  0031: goto 0x0075
+  0034: Textures = MI.GetReferencedTextures()
+  004d: foreach Textures(Tex,) (end 0x0073)
+  005c: TnCharacterTextureLoader.UpdateTexture(Texture2D(Tex), Enable)
+  0072: iternext
+  0073: iterpop
+  0074: iternext
+  0075: iterpop
+  0076: return nothing
+  0078: <eos>
+
+function TnCharacterTextureLoader.UpdateTexture  (script 94 bytes)
+  0000: if !((Tex2D == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(Enable) goto 0x003a
+  0016: Tex2D.bForceMiplevelsToBeResident = true
+  0027: Tex2D.ForcedMipLevelsLODBias = 1
+  0037: goto 0x005b
+  003a: Tex2D.bForceMiplevelsToBeResident = false
+  004b: Tex2D.ForcedMipLevelsLODBias = 0
+  005b: return nothing
+  005d: <eos>

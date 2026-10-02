@@ -1,0 +1,44 @@
+function LightComponent.UpdateTransform  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function LightComponent.SetEnabled  (script 7 bytes)
+  0000: bSetEnabled
+  0005: nothing
+  0006: <eos>
+
+function LightComponent.SetLightPropertiesInternal  (script 17 bytes)
+  0000: NewBrightness
+  0005: NewLightColor
+  000a: NewLightFunction
+  000f: nothing
+  0010: <eos>
+
+function LightComponent.SetLightProperties  (script 51 bytes)
+  0000: default=self.Brightness
+  0009: default=self.LightColor
+  0012: default=self.Function
+  001b: LightComponent.SetLightPropertiesInternal(NewBrightness, NewLightColor, NewLightFunction)
+  0030: return nothing
+  0032: <eos>
+
+function LightComponent.UpdateColorAndBrightness  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function LightComponent.OnUpdatePropertyLightColor  (script 9 bytes)
+  0000: LightComponent.UpdateColorAndBrightness()
+  0006: return nothing
+  0008: <eos>
+
+function LightComponent.OnUpdatePropertyBrightness  (script 9 bytes)
+  0000: LightComponent.UpdateColorAndBrightness()
+  0006: return nothing
+  0008: <eos>
+
+function LightComponent.CheckForErrors  (script 99 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.Brightness < cast3f(0))) goto 0x0060
+  0013: self.Owner.EmitCheckMessage(0, "Light has negative brightness, which is unsupported.", , )
+  0060: return nothing
+  0062: <eos>

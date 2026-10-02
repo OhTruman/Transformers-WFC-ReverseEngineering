@@ -1,0 +1,315 @@
+function TnKingOfTheHillZoneBase.get_DialogComponents  (script 13 bytes)
+  0000: return self._DialogComponents
+  0006: return return
+  000c: <eos>
+
+function TnKingOfTheHillZoneBase.get_IsActive  (script 14 bytes)
+  0000: return self.ZoneActive
+  0007: return return
+  000d: <eos>
+
+function TnKingOfTheHillZoneBase.ReplicatedEvent  (script 76 bytes)
+  0000: if !((VarName == 'ZoneActive')) goto 0x003e
+  0013: if !(self.ZoneActive) goto 0x002d
+  001c: GotoState('Active', , , )
+  002a: goto 0x003b
+  002d: GotoState('Inactive', , , )
+  003b: goto 0x0049
+  003e: TnGameObjective.ReplicatedEvent(VarName)
+  0049: return nothing
+  004b: <eos>
+
+function TnKingOfTheHillZoneBase.MatchStarting  (script 148 bytes)
+  0000: MatchStarting()
+  0006: if !(self.Initialized) goto 0x0011
+  000f: return nothing
+  0011: InitialZoneIndex = obj'Core.Random'.static.RandRangeInt(-1, self.AllOtherZones.Length)
+  0035: SetupInitialZone((InitialZoneIndex == -1))
+  004b: I = 0
+  0052: if !((I < self.AllOtherZones.Length)) goto 0x0091
+  0062: I[self.AllOtherZones].SetupInitialZone((InitialZoneIndex == I))
+  0087: AddAdd_PreInt(I)
+  008e: goto 0x0052
+  0091: return nothing
+  0093: <eos>
+
+function TnKingOfTheHillZoneBase.SetupInitialZone  (script 54 bytes)
+  0000: self.Initialized = true
+  0008: TnKingOfTheHillZoneBase.StartIgnoringAnnouncer(self.AnnouncerMatchStartHysteresisTime)
+  0013: if !(SetActive) goto 0x0029
+  001c: Activate()
+  0026: goto 0x0033
+  0029: Deactivate()
+  0033: return nothing
+  0035: <eos>
+
+function TnKingOfTheHillZoneBase.PostBeginPlay  (script 255 bytes)
+  0000: TnGameObjective.PostBeginPlay()
+  0006: if !(self.WorldInfo.Game.HasRule(obj'TnGameRules_ScoreKingOfTheHill')) goto 0x0039
+  002a: self.InitialState = 'Inactive'
+  0039: self.AllOtherZones = self.WorldInfo.GetAllNavigationPoints(obj'TnKingOfTheHillZoneBase')
+  0057: self.AllOtherZones.RemoveItem(self)
+  0060: if !((self.AllOtherZones.Length <= 0)) goto 0x00fc
+  006c: LogInternal((("ERROR:  KOTH Zone:," @ cast56(self)) @ "was unable to find any other zones in the level.  You likely need to build paths on ALL layers in this level."), , , )
+  00fc: return nothing
+  00fe: <eos>
+
+function TnKingOfTheHillZoneBase.Touch  (script 68 bytes)
+  0000: AsPawn = TnPawn(Other)
+  0010: if !(((AsPawn != none) && (self.PawnsInZone.Find(AsPawn) == -1))) goto 0x0041
+  0034: self.PawnsInZone.AddItem(AsPawn)
+  0041: return nothing
+  0043: <eos>
+
+function TnKingOfTheHillZoneBase.UnTouch  (script 43 bytes)
+  0000: AsPawn = TnPawn(Other)
+  0010: if !((AsPawn != none)) goto 0x0028
+  001b: self.PawnsInZone.RemoveItem(AsPawn)
+  0028: return nothing
+  002a: <eos>
+
+function TnKingOfTheHillZoneBase.Activate  (script 39 bytes)
+  0000: self.ActiveTimeLeft = self.ZoneActiveTime
+  000b: self.PeriodTimeLeft = self.ScoreInterval
+  0016: GotoState('Active', , , )
+  0024: return nothing
+  0026: <eos>
+
+function TnKingOfTheHillZoneBase.Deactivate  (script 28 bytes)
+  0000: self.ActiveTimeLeft = 0.0
+  000b: GotoState('Inactive', , , )
+  0019: return nothing
+  001b: <eos>
+
+function TnKingOfTheHillZoneBase.Inactive.BeginState  (script 92 bytes)
+  0000: self.ZoneActive = false
+  0008: SetHidden(true)
+  0013: if !((cast3a(self.Role) == cast3a(3))) goto 0x0059
+  0023: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, obj'TnObjectiveMarkerTypeKingOfTheHill')
+  004a: DetachComponent(self.SpawnModifier)
+  0059: return nothing
+  005b: <eos>
+
+function TnKingOfTheHillZoneBase.Active.BeginState  (script 160 bytes)
+  0000: self.IgnoringTeamChangeAnnouncement = true
+  0008: self.ZoneActive = true
+  0010: self.HasBeenActive = true
+  0018: SetHidden(false)
+  0023: TnKingOfTheHillZoneBase.PlayAnnouncerDialog(self.ZoneChangeSound)
+  002e: if !((cast3a(self.Role) == cast3a(3))) goto 0x0095
+  003e: UpdateClaim(true)
+  0045: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker(self.MarkerString, self, obj'TnObjectiveMarkerTypeKingOfTheHill', )
+  0072: BroadcastLocalizedMessage(self.MessageClass, 3, , , )
+  0086: AttachComponent(self.SpawnModifier)
+  0095: self.IgnoringTeamChangeAnnouncement = false
+  009d: return nothing
+  009f: <eos>
+
+function TnKingOfTheHillZoneBase.Active.EndState  (script 135 bytes)
+  0000: I = 0
+  0007: if !((I < self.ScoringPlayers.Length)) goto 0x007c
+  0017: if !((I[self.ScoringPlayers].PRI != none)) goto 0x0072
+  0033: TnPlayerReplicationInfo(I[self.ScoringPlayers].PRI).AddZoneScore(I[self.ScoringPlayers].Score)
+  0072: AddAdd_PreInt(I)
+  0079: goto 0x0007
+  007c: self.ScoringPlayers.Length = 0
+  0084: return nothing
+  0086: <eos>
+
+function TnKingOfTheHillZoneBase.Active.Tick  (script 83 bytes)
+  0000: (self.ActiveTimeLeft -= DeltaTime)
+  000c: (self.PeriodTimeLeft -= DeltaTime)
+  0018: UpdateClaim(false)
+  001f: if !((self.PeriodTimeLeft <= cast3f(0))) goto 0x003d
+  002c: self.PeriodTimeLeft = self.ScoreInterval
+  0037: ScoreZone()
+  003d: if !((self.ActiveTimeLeft <= cast3f(0))) goto 0x0050
+  004a: TnKingOfTheHillZoneBase.ActivateNewZone()
+  0050: return nothing
+  0052: <eos>
+
+function TnKingOfTheHillZoneBase.Active.UpdateClaim  (script 190 bytes)
+  0000: ClaimingTeam = cast3d(255)
+  000a: foreach self.PawnsInZone(P,) (end 0x0084)
+  0019: if !(!TnKingOfTheHillZoneBase.IsEligibleForScoring(P)) goto 0x002d
+  0029: iternext
+  002a: goto 0x0084
+  002d: if !((cast3a(ClaimingTeam) == 255)) goto 0x0057
+  003b: ClaimingTeam = P.GetTeamNum()
+  0054: goto 0x0083
+  0057: if !((cast3a(ClaimingTeam) != cast3a(P.GetTeamNum()))) goto 0x0083
+  0078: ClaimingTeam = 254
+  0080: goto 0x0084
+  0083: iternext
+  0084: iterpop
+  0085: if !((ForceTeamUpdate && (cast3a(ClaimingTeam) == cast3a(self.DefenderTeamIndex)))) goto 0x00aa
+  00a3: AddAdd_PreByte(self.DefenderTeamIndex)
+  00aa: SetTeam(cast3a(ClaimingTeam))
+  00bb: return nothing
+  00bd: <eos>
+
+function TnKingOfTheHillZoneBase.Active.ScoreZone  (script 143 bytes)
+  0000: if !(((cast3a(self.DefenderTeamIndex) == 255) || (cast3a(self.DefenderTeamIndex) == 254))) goto 0x0020
+  001e: return nothing
+  0020: foreach self.PawnsInZone(P,) (end 0x008b)
+  002f: if !(!TnKingOfTheHillZoneBase.IsEligibleForScoring(P)) goto 0x0043
+  003f: iternext
+  0040: goto 0x008b
+  0043: PRI = P.PlayerReplicationInfo
+  0057: self.WorldInfo.Game.ScoreObjective(PRI, cast44(self.PointsPerInterval))
+  007f: AddScoreToPlayer(PRI)
+  008a: iternext
+  008b: iterpop
+  008c: return nothing
+  008e: <eos>
+
+function TnKingOfTheHillZoneBase.Active.AddScoreToPlayer  (script 122 bytes)
+  0000: I = self.ScoringPlayers.Find('PRI',PRI)
+  001c: if !((I == -1)) goto 0x005f
+  002b: I = self.ScoringPlayers.Length
+  0037: self.ScoringPlayers.Insert(I,1)
+  0043: I[self.ScoringPlayers].PRI = PRI
+  005f: AddAdd_Int(I[self.ScoringPlayers].Score)
+  0077: return nothing
+  0079: <eos>
+
+function TnKingOfTheHillZoneBase.ActivateNewZone  (script 210 bytes)
+  0000: foreach self.AllOtherZones(Zone,) (end 0x0031)
+  000f: if !(!Zone.HasBeenActive) goto 0x0030
+  0023: PossibleZones.AddItem(Zone)
+  0030: iternext
+  0031: iterpop
+  0032: Deactivate()
+  003c: if !((PossibleZones.Length == 0)) goto 0x00a2
+  0048: self.HasBeenActive = false
+  0050: foreach self.AllOtherZones(Zone,) (end 0x0071)
+  005f: Zone.HasBeenActive = false
+  0070: iternext
+  0071: iterpop
+  0072: obj'Core.Random'.static.RandomInt(self.AllOtherZones.Length)[self.AllOtherZones].Activate()
+  009f: goto 0x00cf
+  00a2: obj'Core.Random'.static.RandomInt(PossibleZones.Length)[PossibleZones].Activate()
+  00cf: return nothing
+  00d1: <eos>
+
+function TnKingOfTheHillZoneBase.IsEligibleForScoring  (script 33 bytes)
+  0000: if !(P.IsDead()) goto 0x0018
+  0016: return false
+  0018: return true
+  001a: return return
+  0020: <eos>
+
+function TnKingOfTheHillZoneBase.DefendingTeamChanged  (script 306 bytes)
+  0000: messageID = 4
+  0008: switch (self.DefenderTeamIndex)
+  000f: case 0: (next 0x0014)
+  0014: case 1: (next 0x0067)
+  0019: EventSound = ((cast3a(self.DefenderTeamIndex) == 0) ? self.CapturedSoundAutobotSound : self.CapturedSoundDecepticonSound)
+  0038: MeshColor = cast3a(self.DefenderTeamIndex)[self.CaptureColor]
+  004b: messageID = ((cast3a(self.DefenderTeamIndex) == 0) ? 0 : 1)
+  0064: goto 0x00b0
+  0067: case 254: (next 0x008d)
+  006c: EventSound = self.ContestedSound
+  0077: MeshColor = self.NeutralColor
+  0082: messageID = 2
+  008a: goto 0x00b0
+  008d: case cast3d(255): (next 0x00ad)
+  0094: EventSound = self.NeutralSound
+  009f: MeshColor = self.NeutralColor
+  00aa: goto 0x00b0
+  00ad: default:
+  00b0: if !(!self.IgnoringTeamChangeAnnouncement) goto 0x00c6
+  00bb: TnKingOfTheHillZoneBase.PlayAnnouncerDialog(EventSound)
+  00c6: foreach self.MaterialParamNames(ParamName,) (end 0x00f3)
+  00d5: self.ActiveMesh.SetVectorParam(ParamName, MeshColor)
+  00f2: iternext
+  00f3: iterpop
+  00f4: if !(((cast3a(self.Role) == cast3a(3)) && (cast3a(messageID) != cast3a(4)))) goto 0x012f
+  0116: BroadcastLocalizedMessage(self.MessageClass, cast3a(messageID), , , )
+  012f: return nothing
+  0131: <eos>
+
+function TnKingOfTheHillZoneBase.StartIgnoringAnnouncer  (script 30 bytes)
+  0000: self.IgnoringAnnouncer = true
+  0008: SetTimer(HowLong, , 'StopIgnoringAnnouncer', )
+  001b: return nothing
+  001d: <eos>
+
+function TnKingOfTheHillZoneBase.StopIgnoringAnnouncer  (script 11 bytes)
+  0000: self.IgnoringAnnouncer = false
+  0008: return nothing
+  000a: <eos>
+
+function TnKingOfTheHillZoneBase.PlayAnnouncerDialog  (script 105 bytes)
+  0000: if !(((!self.IgnoringAnnouncer && (self.WorldInfo.GRI != none)) && !self.WorldInfo.GRI.bMatchIsOver)) goto 0x0066
+  0040: TnWorldInfo(self.WorldInfo)._Announcer.PlayEvent(Dialog)
+  0066: return nothing
+  0068: <eos>
+
+function TnKingOfTheHillZoneBase.IgnoreAll.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKingOfTheHillZoneBase.IgnoreAll.Touch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKingOfTheHillZoneBase.IgnoreAll.UnTouch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKingOfTheHillZoneBase.IgnoreAll.MatchStarting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKingOfTheHillZoneBase.PlayDialog  (script 95 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == 0[self._DialogComponents])) goto 0x002c
+  002a: return nothing
+  002c: 0[self._DialogComponents].Play(SoundCue, Replicate, Type, Deactivate, DialogCallback)
+  005c: return nothing
+  005e: <eos>
+
+function TnKingOfTheHillZoneBase.PlayDialogEvent  (script 32 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: return nothing
+  001f: <eos>
+
+function TnKingOfTheHillZoneBase.StopDialog  (script 61 bytes)
+  0000: default=false
+  0005: default=true
+  000a: if !((none == 0[self._DialogComponents])) goto 0x0019
+  0017: return nothing
+  0019: 0[self._DialogComponents].Stop(ConversationOnly, Replicate)
+  003a: return nothing
+  003c: <eos>
+
+function TnKingOfTheHillZoneBase.GetIsDialogPlaying  (script 49 bytes)
+  0000: if !((none == 0[self._DialogComponents])) goto 0x000f
+  000d: return false
+  000f: return 0[self._DialogComponents].GetIsPlaying(SoundCueTarget)
+  002a: return return
+  0030: <eos>
+
+function TnKingOfTheHillZoneBase.GetIsDialogPlayingEvent  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnKingOfTheHillZoneBase.SetDialogCharacter  (script 42 bytes)
+  0000: if !((0[self._DialogComponents] != none)) goto 0x0027
+  000d: 0[self._DialogComponents].set_DialogCharacter(DialogCharacter)
+  0027: return nothing
+  0029: <eos>
+
+function TnKingOfTheHillZoneBase.SetDialogSocketName  (script 42 bytes)
+  0000: if !((0[self._DialogComponents] != none)) goto 0x0027
+  000d: 0[self._DialogComponents].set_SocketName(_SocketName)
+  0027: return nothing
+  0029: <eos>

@@ -1,0 +1,25 @@
+function DemonwareProfileKeySet.Init  (script 148 bytes)
+  0000: DemonwareKeyArchiveKeySet.Init(Profile)
+  000b: self.Stats.Length = 0
+  0013: I = 0
+  001a: if !((I < Profile.ProfileSettings.Length)) goto 0x0091
+  0033: if !((cast3a(I[Profile.ProfileSettings].Owner) != cast3a(3))) goto 0x0060
+  005d: goto 0x0087
+  0060: self.Stats.AddItem(I[Profile.ProfileSettings].ProfileSetting)
+  0087: AddAdd_PreInt(I)
+  008e: goto 0x001a
+  0091: return nothing
+  0093: <eos>
+
+function DemonwareProfileKeySet.RefreshValues  (script 168 bytes)
+  0000: StatsInterface = GetStatsInterface()
+  0010: I = 0
+  0017: if !((I < Profile.ProfileSettings.Length)) goto 0x009f
+  0030: if !((cast3a(I[Profile.ProfileSettings].Owner) == cast3a(3))) goto 0x0095
+  005a: if !(!StatsInterface.SetKeyArchiveValue(I[Profile.ProfileSettings].ProfileSetting, )) goto 0x0095
+  0093: return false
+  0095: AddAdd_PreInt(I)
+  009c: goto 0x0017
+  009f: return true
+  00a1: return return
+  00a7: <eos>

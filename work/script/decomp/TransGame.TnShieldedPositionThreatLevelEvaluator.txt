@@ -1,0 +1,18 @@
+function TnShieldedPositionThreatLevelEvaluator.__Constructor__TnShieldedPositionThreatLevelEvaluator_0  (script 14 bytes)
+  0000: self._ThreatScale = ThreatScale
+  000b: return nothing
+  000d: <eos>
+
+function TnShieldedPositionThreatLevelEvaluator.OnInitialize  (script 28 bytes)
+  0000: self._OwningController = TnAiController(self._Owner.Controller)
+  0019: return nothing
+  001b: <eos>
+
+function TnShieldedPositionThreatLevelEvaluator.OnCalculateThreatLevel  (script 171 bytes)
+  0000: if !((self._OwningController.get_ShieldInteract() == none)) goto 0x001f
+  0019: return 1.0
+  001f: ShieldPathNode = self._OwningController.get_ShieldInteract().HotSpotPathNode
+  0041: ThreatScore = obj'Core.Math'.static.FClamp((cast39(ShieldPathNode.Rotation) dot obj'Core.Math'.static.Normal((Threat.Location - ShieldPathNode.Location))), 0.0, 1.0)
+  0097: return (ThreatScore * self._ThreatScale)
+  00a4: return return
+  00aa: <eos>

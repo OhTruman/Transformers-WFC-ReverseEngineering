@@ -1,0 +1,64 @@
+function TnLocationOffsetCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.Player = TnPlayerPawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnLocationOffsetCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.Camera = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnLocationOffsetCameraBehavior.Activate  (script 77 bytes)
+  0000: self.TransitionSmoother.SetPercentRemapper(self.Camera.delegate.GetPointOnTransitionCurve)
+  0025: self.TransitionSmoother.EndTransition()
+  0038: TnLocationOffsetCameraBehavior.UpdateTransition()
+  003e: self.CurrentOrbitDistance = TnLocationOffsetCameraBehavior.GetTargetOrbitDistance()
+  004a: return nothing
+  004c: <eos>
+
+function TnLocationOffsetCameraBehavior.GetTargetOrbitDistance  (script 51 bytes)
+  0000: if !((self.CurrentOrbitDistanceIndex != -1)) goto 0x0026
+  000f: return self.CurrentOrbitDistanceIndex[self.OrbitDistancesByPCS].OrbitDistance
+  0026: return self.DefaultOrbitDistance
+  002c: return return
+  0032: <eos>
+
+function TnLocationOffsetCameraBehavior.UpdateTransition  (script 106 bytes)
+  0000: NextOrbitDistanceIndex = TnLocationOffsetCameraBehavior.GetOrbitDistanceIndex()
+  000c: if !((self.CurrentOrbitDistanceIndex != NextOrbitDistanceIndex)) goto 0x0067
+  001b: self.CurrentOrbitDistanceIndex = NextOrbitDistanceIndex
+  0026: self.TransitionSmoother.SetTransitionTime(((NextOrbitDistanceIndex == -1) ? self.PCSTransitionOutTime : self.PCSTransitionInTime))
+  0054: self.TransitionSmoother.Reset()
+  0067: return nothing
+  0069: <eos>
+
+function TnLocationOffsetCameraBehavior.GetOrbitDistanceIndex  (script 96 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.OrbitDistancesByPCS.Length)) goto 0x0053
+  0017: if !(self.Camera.HasAllPlayerCameraStates(Index[self.OrbitDistancesByPCS].PlayerCameraStates)) goto 0x0049
+  0043: return Index
+  0049: AddAdd_PreInt(Index)
+  0050: goto 0x0007
+  0053: return -1
+  0059: return return
+  005f: <eos>
+
+function TnLocationOffsetCameraBehavior.Update  (script 172 bytes)
+  0000: TnLocationOffsetCameraBehavior.UpdateTransition()
+  0006: self.CurrentOrbitDistance = obj'Core.Math'.static.Lerp(self.CurrentOrbitDistance, TnLocationOffsetCameraBehavior.GetTargetOrbitDistance(), self.TransitionSmoother.Update(DeltaTime))
+  003a: Result.OrbitLocationOffset.X = -self.CurrentOrbitDistance
+  005d: Result.OrbitLocationOffset.Y = self.HorizontalOffset
+  007e: Result.OrbitLocationOffset.Z = self.VerticalOffset
+  009f: return Result
+  00a5: return return
+  00ab: <eos>
+
+function TnLocationOffsetCameraBehavior.DisplayDebug  (script 230 bytes)
+  0000: if !((self.CurrentOrbitDistanceIndex == -1)) goto 0x0056
+  000f: HUD.Canvas.DrawTextNormal(("Orbit Distance [Default] =" @ cast55(self.DefaultOrbitDistance)), , , )
+  0053: goto 0x00b1
+  0056: HUD.Canvas.DrawTextNormal(((("Orbit Distance [" $ cast53(self.CurrentOrbitDistanceIndex)) $ "] =") @ cast55(self.CurrentOrbitDistanceIndex[self.OrbitDistancesByPCS].OrbitDistance)), , , )
+  00b1: (out_YPos += out_YL)
+  00bd: HUD.Canvas.SetPos(16.0, out_YPos)
+  00e3: return nothing
+  00e5: <eos>

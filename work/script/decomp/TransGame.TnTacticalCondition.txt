@@ -1,0 +1,21 @@
+function TnTacticalCondition.__Constructor__TnTacticalCondition_0  (script 25 bytes)
+  0000: self._DiscardCondition = DiscardCondition
+  000b: self._Evaluator = Evaluator
+  0016: return nothing
+  0018: <eos>
+
+function TnTacticalCondition.CheckForDiscard  (script 136 bytes)
+  0000: Evaluation = self._Evaluator.Evaluate(Tactical, Searcher, SearcherTeamNum, EnemyTeamNum)
+  002d: switch (self._DiscardCondition)
+  0034: case 1: (next 0x0046)
+  0039: return (Evaluation == 0.0)
+  0046: case 2: (next 0x0058)
+  004b: return (Evaluation == 1.0)
+  0058: case 3: (next 0x006a)
+  005d: return (Evaluation != 0.0)
+  006a: case 4: (next 0x007c)
+  006f: return (Evaluation != 1.0)
+  007c: default:
+  007f: return false
+  0081: return return
+  0087: <eos>

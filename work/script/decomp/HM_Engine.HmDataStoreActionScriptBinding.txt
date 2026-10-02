@@ -1,0 +1,168 @@
+function HmDataStoreActionScriptBinding.Shutdown  (script 78 bytes)
+  0000: I = 0
+  0007: if !((I < self.ValueChangedCallbacks.Length)) goto 0x004b
+  0017: I[self.ValueChangedCallbacks].ResolvedDataStore.SubscriberDetached(UIDataStoreSubscriber(self))
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return nothing
+  004d: <eos>
+
+function HmDataStoreActionScriptBinding.GetFieldValue  (script 7 bytes)
+  0000: DataFieldMarkupString
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.ReadValue  (script 7 bytes)
+  0000: DataFieldMarkupString
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.WriteValue  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: arg
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.ReadBoolValue  (script 53 bytes)
+  0000: V = ReadValue(DataFieldMarkupString)
+  0015: return (V.S == "True")
+  002e: return return
+  0034: <eos>
+
+function HmDataStoreActionScriptBinding.GetDataStoreFields  (script 7 bytes)
+  0000: DataStoreTag
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.GetCollectionColumnCount  (script 7 bytes)
+  0000: DataFieldMarkupString
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.GetCollectionRowCount  (script 7 bytes)
+  0000: DataFieldMarkupString
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.GetCollectionColumnTag  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: Index
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.GetCollectionColumnHeader  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: Index
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.GetCollectionColumnHeaderByTag  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: columnTag
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.ReadCollectionValue  (script 17 bytes)
+  0000: DataFieldMarkupString
+  0005: columnTag
+  000a: RowIndex
+  000f: nothing
+  0010: <eos>
+
+function HmDataStoreActionScriptBinding.IsCollectionValueEnabled  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: RowIndex
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.ReadCollectionBoolValue  (script 63 bytes)
+  0000: V = ReadCollectionValue(DataFieldMarkupString, columnTag, RowIndex)
+  001f: return (V.S == "True")
+  0038: return return
+  003e: <eos>
+
+function HmDataStoreActionScriptBinding.RegisterValueChangedCallback  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: CallbackFunctionName
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.UnregisterValueChangedCallback  (script 12 bytes)
+  0000: DataFieldMarkupString
+  0005: CallbackFunctionName
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.TryResolveValueChangedCallback  (script 17 bytes)
+  0000: DataFieldMarkupString
+  0005: CallbackFunctionName
+  000a: refreshSubscriberIfResolved
+  000f: nothing
+  0010: <eos>
+
+function HmDataStoreActionScriptBinding.RegisterPendingValueChangedCallback  (script 60 bytes)
+  0000: PendingCB.DataFieldMarkupString = DataFieldMarkupString
+  0016: PendingCB.CallbackFunctionName = CallbackFunctionName
+  002c: self.PendingValueChangedCallbacks.AddItem(PendingCB)
+  0039: return nothing
+  003b: <eos>
+
+function HmDataStoreActionScriptBinding.UnregisterPendingValueChangedCallback  (script 82 bytes)
+  0000: I = 0
+  0007: if !((I < self.PendingValueChangedCallbacks.Length)) goto 0x004f
+  0017: if !((I[self.PendingValueChangedCallbacks].DataFieldMarkupString == DataFieldMarkupString)) goto 0x0045
+  0037: self.PendingValueChangedCallbacks.Remove(I,1)
+  0043: return nothing
+  0045: AddAdd_PreInt(I)
+  004c: goto 0x0007
+  004f: return nothing
+  0051: <eos>
+
+function HmDataStoreActionScriptBinding.TryRegisteringPendingValueChangedCallbacks  (script 105 bytes)
+  0000: I = (self.PendingValueChangedCallbacks.Length - 1)
+  000f: if !((I >= 0)) goto 0x0066
+  001a: if !(HmDataStoreActionScriptBinding.TryResolveValueChangedCallback(I[self.PendingValueChangedCallbacks].DataFieldMarkupString, I[self.PendingValueChangedCallbacks].CallbackFunctionName, true)) goto 0x005c
+  0050: self.PendingValueChangedCallbacks.Remove(I,1)
+  005c: SubtractSubtract_PreInt(I)
+  0063: goto 0x000f
+  0066: return nothing
+  0068: <eos>
+
+function HmDataStoreActionScriptBinding.Tick  (script 9 bytes)
+  0000: HmDataStoreActionScriptBinding.TryRegisteringPendingValueChangedCallbacks()
+  0006: return nothing
+  0008: <eos>
+
+function HmDataStoreActionScriptBinding.SetDataStoreBinding  (script 12 bytes)
+  0000: MarkupText
+  0005: BindingIndex
+  000a: nothing
+  000b: <eos>
+
+function HmDataStoreActionScriptBinding.GetDataStoreBinding  (script 7 bytes)
+  0000: BindingIndex
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.RefreshSubscriberValue  (script 7 bytes)
+  0000: BindingIndex
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.NotifyDataStoreValueUpdated  (script 27 bytes)
+  0000: SourceDataStore
+  0005: bValuesInvalidated
+  000a: PropertyTag
+  000f: SourceProvider
+  0014: ArrayIndex
+  0019: nothing
+  001a: <eos>
+
+function HmDataStoreActionScriptBinding.GetBoundDataStores  (script 7 bytes)
+  0000: out_BoundDataStores
+  0005: nothing
+  0006: <eos>
+
+function HmDataStoreActionScriptBinding.ClearBoundDataStores  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

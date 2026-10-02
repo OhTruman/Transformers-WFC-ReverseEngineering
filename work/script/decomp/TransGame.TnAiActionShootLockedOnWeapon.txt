@@ -1,0 +1,40 @@
+function TnAiActionShootLockedOnWeapon.OnInitialize  (script 84 bytes)
+  0000: TnAiActionPlayAnimation.OnInitialize(Blueprint)
+  000b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', TnAiActionShootLockedOnWeaponBlueprint(Blueprint).WeaponClass, , , ))
+  0051: return nothing
+  0053: <eos>
+
+function TnAiActionShootLockedOnWeapon.OnSetUpConditions  (script 111 bytes)
+  0000: Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateLockedOnTarget', Target)
+  0057: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0068: return return
+  006e: <eos>
+
+function TnAiActionShootLockedOnWeapon.OnStart  (script 103 bytes)
+  0000: CurrentTarget = Pawn(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTargetIsDead'))
+  0028: if !((CurrentTarget == none)) goto 0x003e
+  0033: return Fail()
+  003e: AS = TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  004f: SetCharacterState(0)
+  005a: return AS
+  0060: return return
+  0066: <eos>
+
+function TnAiActionShootLockedOnWeapon.OnUpdate  (script 135 bytes)
+  0000: CurrentTarget = Pawn(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTargetIsDead'))
+  0028: if !((CurrentTarget == none)) goto 0x003e
+  0033: return Fail()
+  003e: self._TransformerController.Focus = IFocusible(CurrentTarget)
+  0057: self._TransformerPawn.set_IkTarget(CurrentTarget)
+  006f: return OnUpdate(ExpectedEffects, DeltaTime)
+  0080: return return
+  0086: <eos>
+
+function TnAiActionShootLockedOnWeapon.OnFinish  (script 40 bytes)
+  0000: TnAiActionPlayAnimation.OnFinish(CurrentState)
+  000b: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateLockedOnTarget', false, )
+  0025: return nothing
+  0027: <eos>

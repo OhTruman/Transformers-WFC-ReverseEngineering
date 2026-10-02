@@ -1,0 +1,85 @@
+function TnGrenadeBag.get_GrenadeType  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function TnGrenadeBag.ReplicatedEvent  (script 67 bytes)
+  0000: if !(((VarName == 'Instigator') && (self.Instigator != none))) goto 0x0035
+  0020: TnGrenadeBag.Equip(self.Instigator)
+  002b: SetupInitialAmmo()
+  0035: TnWeapon.ReplicatedEvent(VarName)
+  0040: return nothing
+  0042: <eos>
+
+function TnGrenadeBag.GivenTo  (script 32 bytes)
+  0000: nothing
+  0001: TnWeapon.GivenTo(NewOwner, bDoNotActivate)
+  0012: TnGrenadeBag.Equip(NewOwner)
+  001d: return nothing
+  001f: <eos>
+
+function TnGrenadeBag.Equip  (script 171 bytes)
+  0000: if !((self.WeaponMeshTemplate == none)) goto 0x000d
+  000b: return nothing
+  000d: self.GrenadeBagMesh = TnWeaponMesh(self.WeaponMeshTemplate.Clone(self, ))
+  002d: self.GrenadeBagMesh.SetWeaponOwner(GrenadeOwner)
+  0045: SetPickupMeshes(self.GrenadeBagMesh)
+  0054: self.GrenadeThrower.Initialize(TnPawn(GrenadeOwner), self.GrenadeBagData)
+  0076: if !((self.CustomTossAnimation != 'None')) goto 0x00a8
+  0089: self.GrenadeThrower.TossAnimation.AnimName = self.CustomTossAnimation
+  00a8: return nothing
+  00aa: <eos>
+
+function TnGrenadeBag.GetInitialReserveAmmoCount  (script 18 bytes)
+  0000: return GetMaxAmmoCount()
+  000b: return return
+  0011: <eos>
+
+function TnGrenadeBag.UpdateData  (script 25 bytes)
+  0000: TnWeapon.UpdateData()
+  0006: self.GrenadeBagData = TnWeaponDataGrenadeBag(self.Data)
+  0016: return nothing
+  0018: <eos>
+
+function TnGrenadeBag.TossGrenade  (script 31 bytes)
+  0000: if !(TnGrenadeBag.CanToss()) goto 0x0012
+  0009: TnGrenadeBag.PerformToss()
+  000f: goto 0x001c
+  0012: PlayDryFireSound()
+  001c: return nothing
+  001e: <eos>
+
+function TnGrenadeBag.CanToss  (script 40 bytes)
+  0000: return (HasAmmo(0, ) && !IsTimerActive(, ))
+  0021: return return
+  0027: <eos>
+
+function TnGrenadeBag.PerformToss  (script 115 bytes)
+  0000: TargetLocation = self.GrenadeThrower.LocalToss()
+  0019: if !((cast3a(self.Instigator.Role) == cast3a(2))) goto 0x003e
+  0032: ConsumeAmmo(0)
+  003e: self.GrenadeBagMesh.PlaySoundEvent(1)
+  0053: SetTimer(GetFireInterval(0), , , )
+  0065: TnGrenadeBag.ServerTossGrenade(TargetLocation)
+  0070: return nothing
+  0072: <eos>
+
+function TnGrenadeBag.ServerTossGrenade  (script 210 bytes)
+  0000: P = TnPawn(self.Instigator)
+  0010: if !(((P == none) || (cast3a(P.Role) != cast3a(3)))) goto 0x0038
+  0036: return nothing
+  0038: ConsumeAmmo(0)
+  0044: self.GrenadeThrower.ServerToss(TargetLocation)
+  005c: if !((cast3a(self.ThrowDialogNotify) != cast3a(19))) goto 0x0080
+  006c: PlayDialogNotify(self.ThrowDialogNotify, P)
+  0080: if !((P.PlayerReplicationInfo != none)) goto 0x00ba
+  0094: TnPlayerReplicationInfo(P.PlayerReplicationInfo).AddShotFired(self.ShotStatId)
+  00ba: P.ExposeSelf(, )
+  00cf: return nothing
+  00d1: <eos>
+
+function TnGrenadeBag.PlayDryFireSound  (script 35 bytes)
+  0000: if !((self.GrenadeBagMesh != none)) goto 0x0020
+  000b: self.GrenadeBagMesh.PlaySoundEvent(22)
+  0020: return nothing
+  0022: <eos>

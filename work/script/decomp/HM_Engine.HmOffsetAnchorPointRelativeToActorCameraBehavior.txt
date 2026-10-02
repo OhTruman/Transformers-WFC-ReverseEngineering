@@ -1,0 +1,12 @@
+function HmOffsetAnchorPointRelativeToActorCameraBehavior.SetAnchorPointOffset  (script 14 bytes)
+  0000: self.Offset = Offset_
+  000b: return nothing
+  000d: <eos>
+
+function HmOffsetAnchorPointRelativeToActorCameraBehavior.GetDesiredOffset  (script 68 bytes)
+  0000: Result = self.Offset
+  000b: if !(self.InvertY) goto 0x0037
+  0014: Result.Y = -Result.Y
+  0037: return Result
+  003d: return return
+  0043: <eos>

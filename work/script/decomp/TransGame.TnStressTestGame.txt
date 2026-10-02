@@ -1,0 +1,94 @@
+function TnStressTestGame.InitGame  (script 233 bytes)
+  0000: TnGame.InitGame(Options, ErrorMessage)
+  0010: PlayableIconicCharacterNames = TnWorldInfo(self.WorldInfo).GetPlayableIconicCharacterNames()
+  002e: self.StressTestCharacterType = 0[PlayableIconicCharacterNames]
+  003b: self.SecondsToRun = obj'Core.Strings'.static.GetIntOption(Options, "SecondsToRun", self.SecondsToRun)
+  006c: self.StressTester = Spawn(obj'TnStressTester', , , , , , , )
+  0088: self.StressTester.Initialize(self.SecondsToRun, self.VisitActorClass, delegate.MoveProbe, delegate.StressTestCompleted)
+  00b7: SetTimer(self.StatisticsSampleInterval, true, 'OnSampleStatistics', )
+  00ca: self.Statistics.SampleTable.TurnOnCycleCounters()
+  00e6: return nothing
+  00e8: <eos>
+
+function TnStressTestGame.StartHumans  (script 33 bytes)
+  0000: StartHumans()
+  0006: self.StressTester.StartCheckpoint(obj'TnInputGenerator')
+  001e: return nothing
+  0020: <eos>
+
+function TnStressTestGame.SetPlayerDefaults  (script 157 bytes)
+  0000: TnGame.SetPlayerDefaults(PlayerPawn)
+  000b: PC = TnPlayerController(PlayerPawn.Controller)
+  0024: PC.SelectCharacter(self.StressTestCharacterType, 1)
+  003e: Character = obj'TnCharacterDataHelpers'.static.ResolveReplicatedCharacterData(PC.get_SelectedCharacter(), PlayerPawn.GetTeamNum())
+  007d: TnPlayerPawn(PlayerPawn).ApplyCharacter(Character)
+  009a: return nothing
+  009c: <eos>
+
+function TnStressTestGame.SpawnDefaultPawnFor  (script 402 bytes)
+  0000: PC = TnPlayerController(NewPlayer)
+  0010: PC.SelectCharacter(self.StressTestCharacterType, 1)
+  002a: Character = PC.get_CurrentCharacter()
+  0043: DefaultPlayerClass = GetDefaultPlayerClass(NewPlayer)
+  0058: StartRotation.Yaw = StartSpot.Rotation.Yaw
+  0082: ResultPawn = Spawn(DefaultPlayerClass, , , StartSpot.Location, StartRotation, , , Character.ChassisType)
+  00be: if !((ResultPawn == none)) goto 0x010b
+  00c9: LogInternal(((("Couldn't spawn player of type " $ cast56(DefaultPlayerClass)) $ " at ") $ cast56(StartSpot)), , , )
+  0108: goto 0x0185
+  010b: self.StressTester.ResetExcludedVisitTypes()
+  011e: self.StressTester.ExcludeVisitTypes(obj'Engine.PathNode')
+  0136: if !(!ResultPawn._WorkingMovementCapabilities.bCanFly) goto 0x0185
+  0155: self.StressTester.ExcludeVisitTypes(obj'Engine.AirPathNode')
+  016d: self.StressTester.ExcludeVisitTypes(obj'TnTacticalAirPathNode')
+  0185: return ResultPawn
+  018b: return return
+  0191: <eos>
+
+function TnStressTestGame.StartMatch  (script 23 bytes)
+  0000: GotoState('None', , , )
+  000e: StartMatch()
+  0014: return nothing
+  0016: <eos>
+
+function TnStressTestGame.Tick  (script 33 bytes)
+  0000: TnGame.Tick(DeltaTime)
+  000b: self.StressTester.Update()
+  001e: return nothing
+  0020: <eos>
+
+function TnStressTestGame.PostLogin  (script 38 bytes)
+  0000: TnGame.PostLogin(NewPlayer)
+  000b: TnPlayerController(NewPlayer).InstallErrorStatisticsDelegate()
+  0023: return nothing
+  0025: <eos>
+
+function TnStressTestGame.MoveProbe  (script 74 bytes)
+  0000: P = PC.Pawn
+  0014: if !((P == none)) goto 0x0021
+  001f: return nothing
+  0021: P.Teleport(NewLocation, P.Rotation)
+  0047: return nothing
+  0049: <eos>
+
+function TnStressTestGame.ReceiveErrorStatistic  (script 38 bytes)
+  0000: self.Statistics.RecordError(PC, self, ErrorString, Callstack)
+  0023: return nothing
+  0025: <eos>
+
+function TnStressTestGame.StressTestCompleted  (script 75 bytes)
+  0000: self.Statistics.RecordSession(self)
+  0014: self.Statistics.StartWrite(1)
+  0029: self.WorldInfo.ConsoleCommand("quit", )
+  0048: return nothing
+  004a: <eos>
+
+function TnStressTestGame.OnSampleStatistics  (script 94 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Engine.PlayerController', PC) (end 0x005a)
+  0020: if !((PC.Pawn == none)) goto 0x0037
+  0034: iterpop
+  0035: return nothing
+  0037: self.Statistics.RecordSample(PC.Pawn, self)
+  0059: iternext
+  005a: iterpop
+  005b: return nothing
+  005d: <eos>

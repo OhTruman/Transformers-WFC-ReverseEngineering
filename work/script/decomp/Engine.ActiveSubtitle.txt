@@ -1,0 +1,11 @@
+function ActiveSubtitle.Advance  (script 69 bytes)
+  0000: if !(((self.Index < (self.Subtitles.Length - 1)) && ((self.Index + 1)[self.Subtitles].Time < CurrentTime))) goto 0x0042
+  0038: AddAdd_PreInt(self.Index)
+  003f: goto 0x0000
+  0042: return nothing
+  0044: <eos>
+
+function ActiveSubtitle.IsExpired  (script 24 bytes)
+  0000: return (self.Index >= (self.Subtitles.Length - 1))
+  0011: return return
+  0017: <eos>

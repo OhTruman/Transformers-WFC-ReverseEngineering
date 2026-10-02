@@ -1,0 +1,95 @@
+function TnProjectileGrenadeBase.set_ShouldTriggerGrenadeReaction  (script 16 bytes)
+  0000: self._ShouldTriggerGrenadeReaction = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnProjectileGrenadeBase.UpdateData  (script 127 bytes)
+  0000: UpdateData()
+  0006: self.GrenadeData = TnProjectileDataGrenadeLauncher(self.Data)
+  0016: if !((self.GrenadeData.ShowMarker && (self.WorldInfo.GRI != none))) goto 0x0068
+  003e: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker("", self, obj'TnObjectiveMarkerTypeGrenade', true)
+  0068: self.RotationRate = self.GrenadeData.RotationRate
+  007c: return nothing
+  007e: <eos>
+
+function TnProjectileGrenadeBase.Init  (script 223 bytes)
+  0000: Init(Direction)
+  000b: if !((self.GrenadeData == none)) goto 0x0018
+  0016: return nothing
+  0018: DirectionAsRot = cast50(Direction)
+  0025: PitchAimDeg = (cast3f(DirectionAsRot.Pitch) * 0.0054932)
+  0044: LerpVal = obj'Core.Math'.static.FPctByRange(PitchAimDeg, self.GrenadeData.MinPitch, self.GrenadeData.maxPitch)
+  007e: LerpVal = obj'Core.Math'.static.FClamp(LerpVal, 0.0, 1.0)
+  009e: SpeedScale = obj'Core.Math'.static.Lerp(self.GrenadeData.SpeedScaleAtMinPitch, self.GrenadeData.SpeedScaleAtMaxPitch, LerpVal)
+  00d0: (self.Velocity *= SpeedScale)
+  00dc: return nothing
+  00de: <eos>
+
+function TnProjectileGrenadeBase.Tick  (script 95 bytes)
+  0000: if !((obj'Core.Math'.static.RSize(self.RotationRate) > cast3f(0))) goto 0x0051
+  0020: self.MeshComp.SetRotation((self.MeshComp.Rotation + (self.RotationRate * DeltaTime)))
+  0051: Tick(DeltaTime)
+  005c: return nothing
+  005e: <eos>
+
+function TnProjectileGrenadeBase.Explode  (script 78 bytes)
+  0000: if !((self.WorldInfo.GRI != none)) goto 0x003b
+  0014: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, obj'TnObjectiveMarkerTypeGrenade')
+  003b: Explode(HitLocation, HitNormal)
+  004b: return nothing
+  004d: <eos>
+
+function TnProjectileGrenadeBase.HitThing  (script 195 bytes)
+  0000: if !(ShouldExplodeOnHit(HitActor)) goto 0x0028
+  0012: Explode(HitLocation, HitNormal)
+  0026: return nothing
+  0028: if !((self.LifeSpan == cast3f(0))) goto 0x00a7
+  0035: FuseTime = GetFuseTime()
+  0045: self.LifeSpan = obj'Core.Random'.static.RandomInRange(FuseTime)
+  0063: if !(self._ShouldTriggerGrenadeReaction) goto 0x0085
+  006c: TriggerStimulus(self.StimulusTypeClass, self.Location, self.InstigatorController)
+  0085: PlaySound(HmProjectileMesh(self.Mesh).FuseSound, true, , , , )
+  00a7: OnHitThing(HitActor, HitNormal, HitLocation)
+  00c0: return nothing
+  00c2: <eos>
+
+function TnProjectileGrenadeBase.OnHitThing  (script 166 bytes)
+  0000: self.Velocity = (GetBounceDampening() * (self.Velocity - ((2.0 * HitNormal) * (self.Velocity dot HitNormal))))
+  0033: if !((obj'Core.Math'.static.VSizeSq(self.Velocity) < self.LowSpeedThreshold)) goto 0x0081
+  0055: self.ImpactedActor = HitActor
+  0060: SetPhysics(0, , )
+  006e: self.RotationRate = rot(0,0,0)
+  0081: PlaySound(HmProjectileMesh(self.Mesh).BounceSound, true, , , , )
+  00a3: return nothing
+  00a5: <eos>
+
+function TnProjectileGrenadeBase.ShouldExplodeOnHit  (script 54 bytes)
+  0000: return (((self.GrenadeData != none) && self.GrenadeData.ExplodeWhenHittingPawn) && (Pawn(HitActor) != none))
+  002f: return return
+  0035: <eos>
+
+function TnProjectileGrenadeBase.HitWall  (script 24 bytes)
+  0000: TnProjectileGrenadeBase.HitThing(Wall, HitNormal, self.Location)
+  0015: return nothing
+  0017: <eos>
+
+function TnProjectileGrenadeBase.Bump  (script 24 bytes)
+  0000: TnProjectileGrenadeBase.HitThing(Other, HitNormal, self.Location)
+  0015: return nothing
+  0017: <eos>
+
+function TnProjectileGrenadeBase.ProcessTouch  (script 35 bytes)
+  0000: if !((self.GrenadeData != none)) goto 0x0020
+  000b: TnProjectileGrenadeBase.HitThing(Other, HitNormal, HitLocation)
+  0020: return nothing
+  0022: <eos>
+
+function TnProjectileGrenadeBase.GetBounceDampening  (script 22 bytes)
+  0000: return self.GrenadeData.BounceDampening
+  000f: return return
+  0015: <eos>
+
+function TnProjectileGrenadeBase.GetFuseTime  (script 22 bytes)
+  0000: return self.GrenadeData.FuseTime
+  000f: return return
+  0015: <eos>

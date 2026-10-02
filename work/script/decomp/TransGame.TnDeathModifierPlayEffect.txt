@@ -1,0 +1,32 @@
+function TnDeathModifierPlayEffect.OnStart  (script 41 bytes)
+  0000: switch (self.PlayType)
+  0007: case 0: (next 0x0015)
+  000c: TnDeathModifierPlayEffect.PlayAll()
+  0012: goto 0x0026
+  0015: case 1: (next 0x0023)
+  001a: TnDeathModifierPlayEffect.PlayRandom()
+  0020: goto 0x0026
+  0023: default:
+  0026: return nothing
+  0028: <eos>
+
+function TnDeathModifierPlayEffect.PlayAll  (script 31 bytes)
+  0000: foreach self.Effects(Effect,) (end 0x001b)
+  000f: TnDeathModifierPlayEffect.Play(Effect)
+  001a: iternext
+  001b: iterpop
+  001c: return nothing
+  001e: <eos>
+
+function TnDeathModifierPlayEffect.PlayRandom  (script 40 bytes)
+  0000: TnDeathModifierPlayEffect.Play(obj'Core.Random'.static.RandomInt(self.Effects.Length)[self.Effects])
+  0025: return nothing
+  0027: <eos>
+
+function TnDeathModifierPlayEffect.Play  (script 142 bytes)
+  0000: PSC = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmParticleSystemComponent', self._Owner)
+  0023: PSC.SetTemplate(Effect.Template)
+  0046: PSC.ActivateSystem()
+  005a: self._Owner.Mesh.AttachComponentToSocket(PSC, Effect.SocketName)
+  008b: return nothing
+  008d: <eos>

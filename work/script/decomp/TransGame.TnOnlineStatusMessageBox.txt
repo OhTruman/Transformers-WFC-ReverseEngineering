@@ -1,0 +1,95 @@
+function TnOnlineStatusMessageBox._OnReadyToGo  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnOnlineStatusMessageBox.Initialize  (script 85 bytes)
+  0000: Initialize(NewOwnerMovie)
+  000b: self._OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0024: self._PlayerInterface = self._OnlineSub.PlayerInterface
+  0038: self._SystemInterface = self._OnlineSub.SystemInterface
+  004c: TnOnlineStatusMessageBox.UpdateStatus()
+  0052: return nothing
+  0054: <eos>
+
+function TnOnlineStatusMessageBox.SetReadyToGoNotify  (script 25 bytes)
+  0000: self._LobbyGTS = NewLobbyGTS
+  000b: self.___OnReadyToGo__Delegate = OnReadyToGo
+  0016: return nothing
+  0018: <eos>
+
+function TnOnlineStatusMessageBox.Tick  (script 66 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(TnOnlineStatusMessageBox.UpdateStatus()) goto 0x0035
+  0014: Close()
+  001e: _OnReadyToGo(self._LobbyGTS)
+  0032: goto 0x003f
+  0035: UpdateText()
+  003f: return nothing
+  0041: <eos>
+
+function TnOnlineStatusMessageBox.GetPlayerController  (script 75 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0041)
+  0039: iterpop
+  003a: return PC
+  0040: iternext
+  0041: iterpop
+  0042: return none
+  0044: return return
+  004a: <eos>
+
+function TnOnlineStatusMessageBox.GetPlayerNum  (script 62 bytes)
+  0000: PC = TnOnlineStatusMessageBox.GetPlayerController()
+  000c: if !((PC == none)) goto 0x001a
+  0017: return 255
+  001a: return LocalPlayer(PC.Player).ControllerId
+  0037: return return
+  003d: <eos>
+
+function TnOnlineStatusMessageBox.UpdateStatus  (script 1794 bytes)
+  0000: SetAButton("", , , )
+  000f: SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  0048: if !(!self._SystemInterface.HasLinkConnection()) goto 0x00f9
+  0061: LogInternal("UI: Waiting for link connection...", 'DevOnline', , )
+  0092: SetText("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.NoLinkConnectionMessage", )
+  00f7: return false
+  00f9: if !((!self._SystemInterface.NatDiscoverySucceeded() && !obj'Engine.WorldInfo'.static.IsConsoleBuild(1))) goto 0x01c6
+  012e: LogInternal("UI: Waiting for NAT discovery...", 'DevOnline', , )
+  015d: SetText("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.ServiceUnavailableMessage", )
+  01c4: return false
+  01c6: if !(((cast3a(self._PlayerInterface.GetLoginStatus(cast3d(TnOnlineStatusMessageBox.GetPlayerNum()))) == cast3a(0)) || self._PlayerInterface.IsGuestLogin(cast3d(TnOnlineStatusMessageBox.GetPlayerNum())))) goto 0x0310
+  020e: LogInternal("UI: Waiting for primary login...", 'DevOnline', , )
+  023d: SetText("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.LogInToPlayOnline", false)
+  029c: SetAButton("$UIText.MessagePrompts.LogInButton", delegate.ShowLoginUI, , )
+  02d5: SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  030e: return false
+  0310: if !((cast3a(self._PlayerInterface.GetLoginStatus(cast3d(TnOnlineStatusMessageBox.GetPlayerNum()))) == cast3a(1))) goto 0x044f
+  0337: LogInternal("UI: Waiting for primary online login...", 'DevOnline', , )
+  036d: SetText("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.LogInToOnlineServiceToPlayOnline", false)
+  03db: SetAButton("$UIText.MessagePrompts.LogInButton", delegate.ShowLoginUI, , )
+  0414: SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  044d: return false
+  044f: if !((cast3a(self._PlayerInterface.CanPlayOnline(cast3d(TnOnlineStatusMessageBox.GetPlayerNum()))) == cast3a(0))) goto 0x051a
+  0476: LogInternal("UI: Waiting for online play authorization...", 'DevOnline', , )
+  04b1: SetText("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.NotAuthorizedToPlayOnline", )
+  0518: return false
+  051a: if !((cast3a(self._PlayerInterface.GetSecondaryLoginStatus(cast3d(TnOnlineStatusMessageBox.GetPlayerNum()))) != cast3a(2))) goto 0x05d9
+  0541: LogInternal("UI: Waiting for secondary login...", 'DevOnline', , )
+  0572: SetText("$UIText.MessagePrompts.GenericErrorTitle", "$UIText.MessagePrompts.NotConnectedToDemonware", )
+  05d7: return false
+  05d9: PC = TnOnlineStatusMessageBox.GetPlayerController()
+  05e5: StatsInterface = OnlineStatsInterfaceEx(cast36(self._OnlineSub.StatsInterface))
+  0600: if !((((PC == none) || (PC.PlayerReplicationInfo == none)) || !StatsInterface.HasReadKeyArchiveFor(PC.PlayerReplicationInfo.UniqueId))) goto 0x06f9
+  0653: LogInternal("UI: Waiting for idle online subsystem...", 'DevOnline', , )
+  068a: SetIconType(1, )
+  0697: SetText("$UIText.MessagePrompts.Connecting", "$UIText.MessagePrompts.ConnectingToOnlineService", )
+  06f7: return false
+  06f9: return true
+  06fb: return return
+  0701: <eos>
+
+function TnOnlineStatusMessageBox.ShowLoginUI  (script 43 bytes)
+  0000: PC = TnOnlineStatusMessageBox.GetPlayerController()
+  000c: PC.UIController.ShowLoginUI()
+  0028: return nothing
+  002a: <eos>

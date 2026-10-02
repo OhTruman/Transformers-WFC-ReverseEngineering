@@ -1,0 +1,27 @@
+function AnimNotify_PlayFaceFXAnim.Notify  (script 413 bytes)
+  0000: if !((self.PlayFrequency < 1.0)) goto 0x0029
+  000f: if !((obj'Core.Random'.static.FRand() > self.PlayFrequency)) goto 0x0026
+  0024: return nothing
+  0026: goto 0x0113
+  0029: if !((self.PlayFrequency > 1.0)) goto 0x0113
+  0038: LogInternal(((((((("Play FaceFX animation from notify" @ cast57(AnimSeqInstigator.AnimSeqName)) @ "for") @ cast56(AnimSeqInstigator.SkelComponent.Owner)) @ "GroupName:") @ self.GroupName) @ "AnimName:") @ self.AnimName), , , )
+  00bd: LogInternal(" PlayFrequency > 1.0 is useless. Chance to play valid range is from 0.0 to 1.0.", , , )
+  0113: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0129
+  0127: return nothing
+  0129: OwnerActor = AnimSeqInstigator.SkelComponent.Owner
+  0146: if !((OwnerActor == none)) goto 0x0153
+  0151: return nothing
+  0153: if !((!self.bOverridePlayingAnim && OwnerActor.IsActorPlayingFaceFXAnim())) goto 0x0178
+  0176: return nothing
+  0178: OwnerActor.PlayActorFaceFXAnim(self.FaceFXAnimSetRef, self.GroupName, self.AnimName)
+  019a: return nothing
+  019c: <eos>
+
+function AnimNotify_PlayFaceFXAnim.ScrubTo  (script 109 bytes)
+  0000: AnimNotify.ScrubTo(Owner, NodeSeq, Position)
+  0015: NotifyStart = NodeSeq.TimeOf(self)
+  002f: if !((Position < NotifyStart)) goto 0x0040
+  003e: return nothing
+  0040: Owner.PreviewUpdateFaceFX(true, self.GroupName, self.AnimName, (Position - NotifyStart))
+  006a: return nothing
+  006c: <eos>

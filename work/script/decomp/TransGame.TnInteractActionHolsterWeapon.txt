@@ -1,0 +1,13 @@
+function TnInteractActionHolsterWeapon.TriggerAction  (script 189 bytes)
+  0000: if !((Interact == none)) goto 0x0062
+  000b: LogInternal("Error:  TnInteractActionHolsterWeapon::TriggerAction called with non Interact?", , , )
+  0060: return nothing
+  0062: User = Interact.GetCurrentUser()
+  007b: if !((User == none)) goto 0x0088
+  0086: return nothing
+  0088: if !(self.HolsterWeapon) goto 0x00a7
+  0091: User.HolsterWeapon()
+  00a4: goto 0x00ba
+  00a7: User.UnholsterWeapon()
+  00ba: return nothing
+  00bc: <eos>

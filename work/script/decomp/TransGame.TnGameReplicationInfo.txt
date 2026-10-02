@@ -1,0 +1,424 @@
+function TnGameReplicationInfo.get_bIconicMode  (script 14 bytes)
+  0000: return self._bIconicMode
+  0007: return return
+  000d: <eos>
+
+function TnGameReplicationInfo.get_IsPrivateGame  (script 78 bytes)
+  0000: if !((self.GameClass == none)) goto 0x000d
+  000b: return false
+  000d: GameSettings = self.GameClass.static.GetOnlineGameSettings()
+  0026: if !((GameSettings == none)) goto 0x0033
+  0031: return false
+  0033: return GameSettings.IsPrivateGame()
+  0047: return return
+  004d: <eos>
+
+function TnGameReplicationInfo.set_ActiveCheckpoint  (script 33 bytes)
+  0000: self.ActiveCheckpointName = Value
+  000b: RefreshGameDataStore('ActiveCheckpointName')
+  001e: return nothing
+  0020: <eos>
+
+function TnGameReplicationInfo.get_CompetitiveScoring  (script 14 bytes)
+  0000: return self.CompetitiveScoreEnabled
+  0007: return return
+  000d: <eos>
+
+function TnGameReplicationInfo.set_CompetitiveScoring  (script 30 bytes)
+  0000: self.CompetitiveScoreEnabled = true
+  0008: RefreshGameDataStore('CompetitiveScoreEnabled')
+  001b: return nothing
+  001d: <eos>
+
+function TnGameReplicationInfo.ReplicatedEvent  (script 212 bytes)
+  0000: if !((VarName == 'ActiveGameRule')) goto 0x0020
+  0013: ApplyActiveGameRule()
+  001d: goto 0x00b7
+  0020: if !((VarName == 'CurrentCountdown')) goto 0x003c
+  0033: TnGameReplicationInfo.OnCountdownChange()
+  0039: goto 0x00b7
+  003c: if !(((VarName == 'SelectedPlaylistID') || (VarName == 'SelectedMapID'))) goto 0x006d
+  0064: TnGameReplicationInfo.SetOnlineStatusForLocalPlayers()
+  006a: goto 0x00b7
+  006d: if !((VarName == 'GameTeamStatus')) goto 0x0089
+  0080: TnGameReplicationInfo.UpdateIconicModeFromTeamStatus()
+  0086: goto 0x00b7
+  0089: if !(((VarName == 'GameModeTag') || (VarName == 'GameModeParams'))) goto 0x00b7
+  00b1: TnGameReplicationInfo.UpdateGameModeFriendlyText()
+  00b7: ReplicatedEvent(VarName)
+  00c2: RefreshGameDataStore(VarName)
+  00d1: return nothing
+  00d3: <eos>
+
+function TnGameReplicationInfo.PostBeginPlay  (script 102 bytes)
+  0000: PostBeginPlay()
+  0006: PC = TnWorldInfo(self.WorldInfo).GetLocalPlayerController()
+  0024: if !(((PC != none) && (PC.UIController != none))) goto 0x0063
+  0045: PC.UIController.OnUIEvent(15)
+  0063: return nothing
+  0065: <eos>
+
+function TnGameReplicationInfo.ShouldPlayJoinAndLeaveSound  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnGameReplicationInfo.AddPRI  (script 87 bytes)
+  0000: AddPRI(PRI)
+  000b: ApplyActiveGameRule()
+  0015: if !(!PRI.bBot) goto 0x0054
+  0029: if !(ShouldPlayJoinAndLeaveSound()) goto 0x004a
+  0036: PlaySound(self.PlayerJoinedSound, true, , , , )
+  004a: RefreshClaimedCharacters()
+  0054: return nothing
+  0056: <eos>
+
+function TnGameReplicationInfo.RemovePRI  (script 47 bytes)
+  0000: RemovePRI(PRI)
+  000b: if !(ShouldPlayJoinAndLeaveSound()) goto 0x002c
+  0018: PlaySound(self.PlayerLeftSound, true, , , , )
+  002c: return nothing
+  002e: <eos>
+
+function TnGameReplicationInfo.SetProgressMessage  (script 36 bytes)
+  0000: self.ProgressStatusTitle = Title
+  000b: self.ProgressStatusMessage = Message
+  0016: RefreshGameDataStore()
+  0021: return nothing
+  0023: <eos>
+
+function TnGameReplicationInfo.SetNumOnlinePlayers  (script 72 bytes)
+  0000: self.NumOnlinePlayers = Players
+  000b: LogInternal((cast53(self.NumOnlinePlayers) $ " players online"), 'DevOnline', , )
+  0032: RefreshGameDataStore('NumOnlinePlayers')
+  0045: return nothing
+  0047: <eos>
+
+function TnGameReplicationInfo.UsesPlayerDataProvider  (script 25 bytes)
+  0000: return !PRI.bBot
+  0012: return return
+  0018: <eos>
+
+function TnGameReplicationInfo.EndGame  (script 66 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0039
+  0010: foreach self.PRIArray(PRI,) (end 0x0038)
+  001f: TnPlayerReplicationInfo(PRI).MatchOver()
+  0037: iternext
+  0038: iterpop
+  0039: EndGame()
+  003f: return nothing
+  0041: <eos>
+
+function TnGameReplicationInfo.SetGameStatus  (script 41 bytes)
+  0000: self.GameStatus = NewGameStatus
+  000b: self.bForceNetUpdate = true
+  0013: RefreshGameDataStore('GameStatus')
+  0026: return nothing
+  0028: <eos>
+
+function TnGameReplicationInfo.UpdateIconicModeFromTeamStatus  (script 41 bytes)
+  0000: self._bIconicMode = ((cast3a(self.GameTeamStatus) == cast3a(2)) || (cast3a(self.GameTeamStatus) == cast3a(4)))
+  0026: return nothing
+  0028: <eos>
+
+function TnGameReplicationInfo.SetGameTeamStatus  (script 55 bytes)
+  0000: self.GameTeamStatus = NewGameTeamStatus
+  000b: TnGameReplicationInfo.UpdateIconicModeFromTeamStatus()
+  0011: self.bForceNetUpdate = true
+  0019: self.bNetDirty = true
+  0021: RefreshGameDataStore('GameTeamStatus')
+  0034: return nothing
+  0036: <eos>
+
+function TnGameReplicationInfo.GetGameTeamStatus  (script 13 bytes)
+  0000: return self.GameTeamStatus
+  0006: return return
+  000c: <eos>
+
+function TnGameReplicationInfo.PublishGameInfo  (script 90 bytes)
+  0000: self.GameModeTag = NewTag
+  000b: self.MapCompatibilityTag = NewTag
+  0016: self.GameModeParams = ((GameSettings != none) ? GameSettings.BuildInfoURL() : "")
+  003e: self.bForceNetUpdate = true
+  0046: TnGameReplicationInfo.UpdateGameModeFriendlyText()
+  004c: RefreshGameDataStore()
+  0057: return nothing
+  0059: <eos>
+
+function TnGameReplicationInfo.GetGameModeProperty  (script 32 bytes)
+  0000: return obj'TnOnlineGameSettingsBase'.static.GameModeTagToProperty(self.GameModeTag)
+  0019: return return
+  001f: <eos>
+
+function TnGameReplicationInfo.UpdateGameModeFriendlyText  (script 288 bytes)
+  0000: self.GameModeFriendlyName = ""
+  0008: self.GameModeFriendlyDescription = ""
+  0010: self.GameModeFriendlyRules = ""
+  0018: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0031: if !((DataStoreManager == none)) goto 0x003e
+  003c: return nothing
+  003e: SettingsDataStore = UIDataStore_OnlineGameSettings(DataStoreManager.FindDataStore(obj'TnDataStore_GameSettings'.static.default.Tag, ))
+  006b: GameSettingsType = SettingsDataStore.GetSettingsClassForName(cast60(self.GameModeTag))
+  008b: if !((GameSettingsType == none)) goto 0x0098
+  0096: return nothing
+  0098: GameSettings = TnOnlineGameSettingsBase(new(nothing, nothing, GameSettingsType, nothing, DeltaTime))
+  00b1: GameSettings.UpdateFromURL(self.GameModeParams)
+  00c9: self.GameModeFriendlyName = GameSettings.FriendlyName
+  00dd: self.GameModeFriendlyDescription = GameSettings.Description
+  00f1: self.GameModeFriendlyRules = GameSettings.FormatedRules()
+  010a: self.bForceNetUpdate = true
+  0112: RefreshGameDataStore()
+  011d: return nothing
+  011f: <eos>
+
+function TnGameReplicationInfo.SetOnlineStatusForLocalPlayers  (script 47 bytes)
+  0000: foreach LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x002b)
+  0017: PC.ClientSetOnlineStatus()
+  002a: iternext
+  002b: iterpop
+  002c: return nothing
+  002e: <eos>
+
+function TnGameReplicationInfo.SetMapId  (script 41 bytes)
+  0000: self.SelectedMapID = NewMapId
+  000b: self.bForceNetUpdate = true
+  0013: RefreshGameDataStore('SelectedMapID')
+  0026: return nothing
+  0028: <eos>
+
+function TnGameReplicationInfo.GetMapID  (script 13 bytes)
+  0000: return self.SelectedMapID
+  0006: return return
+  000c: <eos>
+
+function TnGameReplicationInfo.SetPlaylistId  (script 22 bytes)
+  0000: self.SelectedPlaylistID = NewPlaylistId
+  000b: self.bForceNetUpdate = true
+  0013: return nothing
+  0015: <eos>
+
+function TnGameReplicationInfo.AddOnlineGroups  (script 73 bytes)
+  0000: if !((self.SelectedMapID != -1)) goto 0x0023
+  000f: GroupIds.AddItem((self.SelectedMapID + 1000))
+  0023: if !((self.SelectedPlaylistID != -1)) goto 0x0046
+  0032: GroupIds.AddItem((self.SelectedPlaylistID + 2000))
+  0046: return nothing
+  0048: <eos>
+
+function TnGameReplicationInfo.GetGameStatus  (script 13 bytes)
+  0000: return self.GameStatus
+  0006: return return
+  000c: <eos>
+
+function TnGameReplicationInfo.IsCampaignGame  (script 21 bytes)
+  0000: return (cast3a(self.GameTeamStatus) == cast3a(4))
+  000e: return return
+  0014: <eos>
+
+function TnGameReplicationInfo.ResetCountdown  (script 144 bytes)
+  0000: nothing
+  0001: if !(((self.CountdownLockObject != none) && (self.CountdownLockObject != ObjectLock))) goto 0x001f
+  001d: return nothing
+  001f: self.IsCountingDown = IsActive
+  002c: self.CurrentCountdown = Value
+  0037: TnGameReplicationInfo.OnCountdownChange()
+  003d: if !(IsActive) goto 0x0067
+  0046: SetTimer(1.0, true, 'DecrementCountdown', )
+  0059: self.CountdownLockObject = ObjectLock
+  0064: goto 0x0082
+  0067: ClearTimer('DecrementCountdown', )
+  007b: self.CountdownLockObject = none
+  0082: RefreshGameDataStore()
+  008d: return nothing
+  008f: <eos>
+
+function TnGameReplicationInfo.DecrementCountdown  (script 36 bytes)
+  0000: (self.CurrentCountdown -= 1)
+  0008: RefreshGameDataStore('CurrentCountdown')
+  001b: TnGameReplicationInfo.OnCountdownChange()
+  0021: return nothing
+  0023: <eos>
+
+function TnGameReplicationInfo.GetCurrentCountdown  (script 13 bytes)
+  0000: return self.CurrentCountdown
+  0006: return return
+  000c: <eos>
+
+function TnGameReplicationInfo.IsCountdownBelowThreshold  (script 44 bytes)
+  0000: return ((self.IsCountingDown && (self.CurrentCountdown <= self.LowCountdownTickThreshold)) && (self.CurrentCountdown >= 0))
+  0025: return return
+  002b: <eos>
+
+function TnGameReplicationInfo.OnCountdownChange  (script 44 bytes)
+  0000: self.bForceNetUpdate = true
+  0008: if !(IsCountdownBelowThreshold()) goto 0x0029
+  0015: PlaySound(self.LowCountdownTickSound, true, , , , )
+  0029: return nothing
+  002b: <eos>
+
+function TnGameReplicationInfo.IsCountdownActive  (script 28 bytes)
+  0000: return IsTimerActive('DecrementCountdown', )
+  0015: return return
+  001b: <eos>
+
+function TnGameReplicationInfo.HasCountdownExpired  (script 16 bytes)
+  0000: return (self.CurrentCountdown <= 0)
+  0009: return return
+  000f: <eos>
+
+function TnGameReplicationInfo.ResetPlayerStats  (script 44 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x0028)
+  000f: TnPlayerReplicationInfo(PRI).ResetStats()
+  0027: iternext
+  0028: iterpop
+  0029: return nothing
+  002b: <eos>
+
+function TnGameReplicationInfo.GetPRIHeal  (script 32 bytes)
+  0000: return TnPlayerReplicationInfo(PRI).GetHealedDamage()
+  0019: return return
+  001f: <eos>
+
+function TnGameReplicationInfo.GetPRIAssists  (script 34 bytes)
+  0000: return cast3f(TnPlayerReplicationInfo(PRI).GetAssists())
+  001b: return return
+  0021: <eos>
+
+function TnGameReplicationInfo.ShouldOverrideCustomColors  (script 21 bytes)
+  0000: return (cast3a(self.GameTeamStatus) == cast3a(3))
+  000e: return return
+  0014: <eos>
+
+function TnGameReplicationInfo.IsHost  (script 55 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: return (cast3a(WI.NetMode) < cast3a(3))
+  0030: return return
+  0036: <eos>
+
+function TnGameReplicationInfo.UseIconicCharacters  (script 131 bytes)
+  0000: if !(self._bIconicMode) goto 0x000b
+  0009: return true
+  000b: CoopInfo = TnWorldInfo(self.WorldInfo).CoopInfo
+  0024: if !(((CoopInfo != none) && CoopInfo.HasPlayableCharacters())) goto 0x0049
+  0047: return true
+  0049: if !((TnGameReplicationInfo.IsHost() && TnGame(self.WorldInfo.Game).IsCampaignGame())) goto 0x007a
+  0078: return true
+  007a: return false
+  007c: return return
+  0082: <eos>
+
+function TnGameReplicationInfo.GetPlayableIconicCharacterNames  (script 43 bytes)
+  0000: PlayableCharacters = TnWorldInfo(self.WorldInfo).GetPlayableIconicCharacterNames()
+  001e: return PlayableCharacters
+  0024: return return
+  002a: <eos>
+
+function TnGameReplicationInfo.ValidateCharacterSelection  (script 160 bytes)
+  0000: if !(!self._bIconicMode) goto 0x000d
+  000b: return true
+  000d: PlayableCharacters = GetPlayableIconicCharacterNames()
+  001d: if !((PlayableCharacters.Find(CharacterName) == -1)) goto 0x0036
+  0034: return false
+  0036: foreach self.PRIArray(OtherPRI,) (end 0x0096)
+  0045: OtherTnPRI = TnPlayerReplicationInfo(OtherPRI)
+  0055: if !(((OtherTnPRI == PRI) || (OtherTnPRI == none))) goto 0x0075
+  0071: iternext
+  0072: goto 0x0096
+  0075: if !((OtherTnPRI.GetCharacterName() == CharacterName)) goto 0x0095
+  0092: iterpop
+  0093: return false
+  0095: iternext
+  0096: iterpop
+  0097: return true
+  0099: return return
+  009f: <eos>
+
+function TnGameReplicationInfo.RefreshClaimedCharacters  (script 174 bytes)
+  0000: if !(!self._bIconicMode) goto 0x000d
+  000b: return nothing
+  000d: self.ClaimedIconicCharacters = ""
+  0015: foreach self.PRIArray(PRI,) (end 0x0097)
+  0024: TnPRI = TnPlayerReplicationInfo(PRI)
+  0034: if !((TnPRI == none)) goto 0x0043
+  003f: iternext
+  0040: goto 0x0097
+  0043: CharacterName = TnPRI.GetCharacterName()
+  005c: if !((CharacterName != "")) goto 0x0096
+  0068: if !((self.ClaimedIconicCharacters != "")) goto 0x0084
+  0074: self.ClaimedIconicCharacters = (self.ClaimedIconicCharacters $ ",")
+  0084: self.ClaimedIconicCharacters = (self.ClaimedIconicCharacters $ CharacterName)
+  0096: iternext
+  0097: iterpop
+  0098: RefreshGameDataStore('ClaimedIconicCharacters')
+  00ab: return nothing
+  00ad: <eos>
+
+function TnGameReplicationInfo.ReplacingPRI  (script 76 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x0048)
+  000f: TnPRI = TnPlayerReplicationInfo(PRI)
+  001f: if !((TnPRI != none)) goto 0x0047
+  002a: TnPRI.ReplacingPRI(OldPRI, NewPRI)
+  0047: iternext
+  0048: iterpop
+  0049: return nothing
+  004b: <eos>
+
+function TnGameReplicationInfo.ApplyActiveGameRule  (script 74 bytes)
+  0000: if !((self.ActiveGameRule == none)) goto 0x000d
+  000b: return nothing
+  000d: foreach self.WorldInfo.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0046)
+  002d: self.ActiveGameRule.static.SetupGameOnClient(PC)
+  0045: iternext
+  0046: iterpop
+  0047: return nothing
+  0049: <eos>
+
+function TnGameReplicationInfo.SetActiveGameRule  (script 24 bytes)
+  0000: self.ActiveGameRule = Rule
+  000b: ApplyActiveGameRule()
+  0015: return nothing
+  0017: <eos>
+
+function TnGameReplicationInfo.IsMultiplayerGame  (script 52 bytes)
+  0000: return ((class<TnGame>(self.GameClass) != none) && !class<TnGame>(self.GameClass).static.IsCampaignGame())
+  002d: return return
+  0033: <eos>
+
+function TnGameReplicationInfo.CanTargetSnap  (script 50 bytes)
+  0000: return ((class<TnGame>(self.GameClass) != none) && class<TnGame>(self.GameClass).static.CanTargetSnap())
+  002b: return return
+  0031: <eos>
+
+function TnGameReplicationInfo.OnRemainingTimeUpdated  (script 93 bytes)
+  0000: ResetCountdown(true, self.RemainingTime, )
+  0011: if !((((cast3a(self.Role) == cast3a(3)) && !self.bStopCountDown) && (self.RemainingTime <= 0))) goto 0x005a
+  003b: self.WorldInfo.Game.EndGame(none, "")
+  005a: return nothing
+  005c: <eos>
+
+function TnGameReplicationInfo.GetStatsInterface  (script 67 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return none
+  0026: return OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  003c: return return
+  0042: <eos>
+
+function TnGameReplicationInfo.UpdateGroupCounts  (script 71 bytes)
+  0000: StatsInterface = TnGameReplicationInfo.GetStatsInterface()
+  000c: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0022
+  0020: return nothing
+  0022: GroupIds.AddItem(1)
+  002b: StatsInterface.ReadGroupCounts(GroupIds)
+  0044: return nothing
+  0046: <eos>
+
+function TnGameReplicationInfo.CanGainXp  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnGameReplicationInfo.ShowXpEvents  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>

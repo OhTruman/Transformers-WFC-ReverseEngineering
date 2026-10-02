@@ -1,0 +1,197 @@
+function TnPlayerFileHandler.Initialize  (script 47 bytes)
+  0000: self.OwningPlayer = LP
+  000b: 0[self.FileInfo].FileObject = LP._CustomCharacterData
+  002c: return nothing
+  002e: <eos>
+
+function TnPlayerFileHandler.ReadInFile  (script 123 bytes)
+  0000: InsertIndex = self.FileReadJobs.Length
+  000c: self.FileReadJobs.Insert(InsertIndex,1)
+  0018: InsertIndex[self.FileReadJobs].FileType = File
+  0034: InsertIndex[self.FileReadJobs].ReadComplete = FileReadComplete
+  0050: if !((InsertIndex == 0)) goto 0x0078
+  005b: if !(RestoreFromOnline) goto 0x0072
+  0064: TnPlayerFileHandler.StartRestoreFromOnlineService(File)
+  006f: goto 0x0078
+  0072: TnPlayerFileHandler.StartNextJob()
+  0078: return nothing
+  007a: <eos>
+
+function TnPlayerFileHandler.GetWorldInfo  (script 32 bytes)
+  0000: return HmWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  0019: return return
+  001f: <eos>
+
+function TnPlayerFileHandler.WriteOutFile  (script 324 bytes)
+  0000: if !(((self.OwningPlayer == none) || (GetObject(File) == none))) goto 0x0024
+  0022: return nothing
+  0024: if !(GetObject(File)._IsCorrupt) goto 0x0083
+  0040: LogInternal("Customization Data failed to write because file is corrupt", , , )
+  0081: return nothing
+  0083: if !(!self.OwningPlayer.IsStorageDeviceValid()) goto 0x00ef
+  009c: LogInternal("Customization Data failed to write because the storage device is not valid", , , )
+  00ed: return nothing
+  00ef: GetObject(File).UpdateVersion()
+  010c: TnPlayerFileHandler.GetWorldInfo().OnBeginFileSave()
+  0120: self.SavingFile = File
+  012b: TnPlayerFileHandler.WriteFileToProfile(File)
+  0136: TnPlayerFileHandler.UploadFile(File)
+  0141: return nothing
+  0143: <eos>
+
+function TnPlayerFileHandler.WriteFileToProfile  (script 88 bytes)
+  0000: self.WriteToProfileComplete = false
+  0008: TnPlayerFileHandler.GetObjectWriter().WriteObjectToFile(GetObject(File), TnPlayerFileHandler.GetFilename(File), TnPlayerFileHandler.GetDescription(File), delegate.OnWriteDataToProfileComplete, TnPlayerFileHandler.GetIconName(File))
+  0055: return nothing
+  0057: <eos>
+
+function TnPlayerFileHandler.OnWriteDataToProfileComplete  (script 17 bytes)
+  0000: self.WriteToProfileComplete = true
+  0008: TnPlayerFileHandler.CheckForSaveCompletion()
+  000e: return nothing
+  0010: <eos>
+
+function TnPlayerFileHandler.UploadFile  (script 189 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: self.UploadComplete = false
+  0021: if !((OnlineSub != none)) goto 0x00b2
+  002c: self.UploadComplete = false
+  0034: OnlineSub.SystemInterface.AddWriteUserFileCompleteDelegate(delegate.OnUploadFileComplete)
+  005a: TnPlayerFileHandler.GetObjectWriter().WriteObjectToFileContents(GetObject(File), FileContents)
+  0082: OnlineSub.SystemInterface.WriteUserFile(TnPlayerFileHandler.GetFilename(File), FileContents)
+  00af: goto 0x00ba
+  00b2: self.UploadComplete = true
+  00ba: return nothing
+  00bc: <eos>
+
+function TnPlayerFileHandler.OnUploadFileComplete  (script 116 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((cast3a(self.SavingFile)[self.FileInfo].Filename != Filename)) goto 0x003d
+  003b: return nothing
+  003d: OnlineSub.SystemInterface.ClearWriteUserFileCompleteDelegate(delegate.OnUploadFileComplete)
+  0063: self.UploadComplete = true
+  006b: TnPlayerFileHandler.CheckForSaveCompletion()
+  0071: return nothing
+  0073: <eos>
+
+function TnPlayerFileHandler.CheckForSaveCompletion  (script 49 bytes)
+  0000: if !(!self.WriteToProfileComplete) goto 0x000d
+  000b: return nothing
+  000d: if !(!self.UploadComplete) goto 0x001a
+  0018: return nothing
+  001a: TnPlayerFileHandler.GetWorldInfo().OnEndFileSave()
+  002e: return nothing
+  0030: <eos>
+
+function TnPlayerFileHandler.StartNextJob  (script 101 bytes)
+  0000: if !(self.OwningPlayer.IsStorageDeviceValid()) goto 0x005a
+  0017: File = 0[self.FileReadJobs].FileType
+  002f: TnPlayerFileHandler.GetObjectWriter().LoadData(TnPlayerFileHandler.GetFilename(File), delegate.OnReadFileComplete)
+  0057: goto 0x0062
+  005a: TnPlayerFileHandler.EndReadJob(3)
+  0062: return nothing
+  0064: <eos>
+
+function TnPlayerFileHandler.OnReadFileComplete  (script 256 bytes)
+  0000: if !((self.FileReadJobs.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: switch (ReadFileStatus)
+  0015: case 0: (next 0x0095)
+  001a: File = 0[self.FileReadJobs].FileType
+  0032: TnPlayerFileHandler.GetObjectWriter().ReadObjectFromFileContents(GetObject(File), Data)
+  005a: GetObject(File)._IsCorrupt = false
+  0075: GetObject(File).CheckVersion()
+  0092: goto 0x00f2
+  0095: case 2: (next 0x00d0)
+  009a: File = 0[self.FileReadJobs].FileType
+  00b2: GetObject(File)._IsCorrupt = true
+  00cd: goto 0x00f2
+  00d0: case 1: (next 0x00ef)
+  00d5: TnPlayerFileHandler.StartRestoreFromOnlineService(0[self.FileReadJobs].FileType)
+  00ed: return nothing
+  00ef: default:
+  00f2: TnPlayerFileHandler.EndReadJob(ReadFileStatus)
+  00fd: return nothing
+  00ff: <eos>
+
+function TnPlayerFileHandler.EndReadJob  (script 87 bytes)
+  0000: if !((self.FileReadJobs.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: self.__FileReadCompleteDelegate__Delegate = 0[self.FileReadJobs].ReadComplete
+  0026: FileReadCompleteDelegate(ExistenceStatus)
+  003a: self.FileReadJobs.Remove(0,1)
+  0042: if !((self.FileReadJobs.Length != 0)) goto 0x0054
+  004e: TnPlayerFileHandler.StartNextJob()
+  0054: return nothing
+  0056: <eos>
+
+function TnPlayerFileHandler.StartRestoreFromOnlineService  (script 127 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x002e
+  0024: TnPlayerFileHandler.EndReadJob(1)
+  002c: return nothing
+  002e: OnlineSub.SystemInterface.AddReadUserFileCompleteDelegate(delegate.OnDownloadUserFileComplete)
+  0054: OnlineSub.SystemInterface.ReadUserFile(TnPlayerFileHandler.GetFilename(FileType))
+  007c: return nothing
+  007e: <eos>
+
+function TnPlayerFileHandler.OnDownloadUserFileComplete  (script 337 bytes)
+  0000: if !((self.FileReadJobs.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: if !((TnPlayerFileHandler.GetFilename(0[self.FileReadJobs].FileType) != Filename)) goto 0x0032
+  0030: return nothing
+  0032: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  004b: OnlineSub.SystemInterface.ClearReadUserFileCompleteDelegate(delegate.OnDownloadUserFileComplete)
+  0071: if !((cast3a(Result) != cast3a(1))) goto 0x009f
+  0081: TnPlayerFileHandler.EndReadJob(((cast3a(Result) == cast3a(0)) ? 3 : 1))
+  009d: return nothing
+  009f: OnlineSub.SystemInterface.GetUserFileContents(Filename, FileContents)
+  00c6: PlayerData = GetObject(0[self.FileReadJobs].FileType)
+  00e8: TnPlayerFileHandler.GetObjectWriter().ReadObjectFromFileContents(PlayerData, FileContents)
+  0106: PlayerData._IsCorrupt = false
+  0117: PlayerData.CheckVersion()
+  012a: WriteOutFile(0[self.FileReadJobs].FileType)
+  0146: TnPlayerFileHandler.EndReadJob(0)
+  014e: return nothing
+  0150: <eos>
+
+function TnPlayerFileHandler.GetObject  (script 32 bytes)
+  0000: return cast3a(File)[self.FileInfo].FileObject
+  0019: return return
+  001f: <eos>
+
+function TnPlayerFileHandler.GetFilename  (script 32 bytes)
+  0000: return cast3a(File)[self.FileInfo].Filename
+  0019: return return
+  001f: <eos>
+
+function TnPlayerFileHandler.GetDescription  (script 21 bytes)
+  0000: return cast3a(File)[self.FileDescriptions]
+  000e: return return
+  0014: <eos>
+
+function TnPlayerFileHandler.GetIconName  (script 32 bytes)
+  0000: return cast3a(File)[self.FileInfo].IconName
+  0019: return return
+  001f: <eos>
+
+function TnPlayerFileHandler.GetObjectWriter  (script 44 bytes)
+  0000: if !((self.ObjectWriter == none)) goto 0x001f
+  000b: self.ObjectWriter = new(nothing, nothing, obj'HM_Engine.HmQueuedObjectDataReaderWriter', nothing, DeltaTime)
+  001f: return self.ObjectWriter
+  0025: return return
+  002b: <eos>
+
+function TnPlayerFileHandler.Cleanup  (script 108 bytes)
+  0000: if !((self.FileReadJobs.Length <= 0)) goto 0x000e
+  000c: return nothing
+  000e: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0027: OnlineSub.SystemInterface.ClearReadUserFileCompleteDelegate(delegate.OnDownloadUserFileComplete)
+  004d: TnPlayerFileHandler.GetObjectWriter().DeleteAllJobs()
+  0061: self.FileReadJobs.Length = 0
+  0069: return nothing
+  006b: <eos>
+
+function TnPlayerFileHandler.FileReadCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

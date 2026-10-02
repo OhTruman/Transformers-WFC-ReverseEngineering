@@ -1,0 +1,249 @@
+function HmCameraStrategy.AddTransitionOverride  (script 21 bytes)
+  0000: self.TransitionOverrides.Length[self.TransitionOverrides] = Pair
+  0012: return nothing
+  0014: <eos>
+
+function HmCameraStrategy.SetTargetingData  (script 66 bytes)
+  0000: I = 0
+  0007: if !((I != self.Behaviors.Length)) goto 0x003f
+  0017: I[self.Behaviors].SetTargetingData(TargetingData)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return nothing
+  0041: <eos>
+
+function HmCameraStrategy.AddBehavior  (script 21 bytes)
+  0000: self.Behaviors.Length[self.Behaviors] = Behavior
+  0012: return nothing
+  0014: <eos>
+
+function HmCameraStrategy.CreateBehaviors  (script 243 bytes)
+  0000: if !((self.AnchorPoint == none)) goto 0x001f
+  000b: self.AnchorPoint = new(self, nothing, obj'HmCameraAnchorPoint', nothing, AttachTreeCallback)
+  001f: I = 0
+  0026: if !((I != Types.Length)) goto 0x00f0
+  0036: if !((I[Types].Name == "")) goto 0x0081
+  0053: I[self.Behaviors] = new(self, nothing, I[Types].Type, nothing, AttachTreeCallback)
+  007e: goto 0x00c8
+  0081: I[self.Behaviors] = new(self, (Prefix $ I[Types].Name), I[Types].Type, nothing, AttachTreeCallback)
+  00c8: I[self.Behaviors].SetAnchorPoint(self.AnchorPoint)
+  00e6: AddAdd_PreInt(I)
+  00ed: goto 0x0026
+  00f0: return nothing
+  00f2: <eos>
+
+function HmCameraStrategy.CloneBehaviors  (script 141 bytes)
+  0000: if !((self.AnchorPoint == none)) goto 0x001f
+  000b: self.AnchorPoint = new(self, nothing, obj'HmCameraAnchorPoint', nothing, AttachTreeCallback)
+  001f: I = 0
+  0026: if !((I != self.Behaviors.Length)) goto 0x008a
+  0036: I[self.Behaviors] = HmCameraBehavior(I[self.Behaviors].Clone(self, ))
+  0062: I[self.Behaviors].SetAnchorPoint(self.AnchorPoint)
+  0080: AddAdd_PreInt(I)
+  0087: goto 0x0026
+  008a: return nothing
+  008c: <eos>
+
+function HmCameraStrategy.FindBehavior  (script 79 bytes)
+  0000: I = 0
+  0007: if !((I < self.Behaviors.Length)) goto 0x0046
+  0017: if !(I[self.Behaviors].IsA(BehaviorClassName)) goto 0x003c
+  0030: return I[self.Behaviors]
+  003c: AddAdd_PreInt(I)
+  0043: goto 0x0007
+  0046: return none
+  0048: return return
+  004e: <eos>
+
+function HmCameraStrategy.Initialize  (script 23 bytes)
+  0000: CreateBehaviors(self.BehaviorTypes, Prefix)
+  0014: return nothing
+  0016: <eos>
+
+function HmCameraStrategy.Reset  (script 150 bytes)
+  0000: Result = self.CameraState.CameraStrategyResult
+  0014: I = 0
+  001b: if !((I != self.Behaviors.Length)) goto 0x0074
+  002b: if !(I[self.Behaviors].DebugDisabled) goto 0x0046
+  0043: goto 0x006a
+  0046: Result = I[self.Behaviors].Reset(Result)
+  006a: AddAdd_PreInt(I)
+  0071: goto 0x001b
+  0074: self.CameraState.CameraStrategyResult = Result
+  0088: self.TimeSinceStrategyActivation = self.TransitionTime
+  0093: return nothing
+  0095: <eos>
+
+function HmCameraStrategy.SetRotation  (script 34 bytes)
+  0000: self.CameraState.CameraStrategyResult.Rotation = Rotation
+  001f: return nothing
+  0021: <eos>
+
+function HmCameraStrategy.Activate  (script 248 bytes)
+  0000: self.CameraState = CamState
+  000b: if !((CameraActor != none)) goto 0x002c
+  0016: CameraActor.bCollideWorld = self.bCollideWorld
+  002c: Result = self.CameraState.CameraStrategyResult
+  0040: I = 0
+  0047: if !((I != self.Behaviors.Length)) goto 0x00d6
+  0057: if !(I[self.Behaviors].DebugDisabled) goto 0x0072
+  006f: goto 0x00cc
+  0072: I[self.Behaviors].SetActor(FollowActor)
+  0090: I[self.Behaviors].SetCameraActor(CameraActor)
+  00ae: I[self.Behaviors].Activate(Result)
+  00cc: AddAdd_PreInt(I)
+  00d3: goto 0x0047
+  00d6: self.CameraState.CameraStrategyResult = Result
+  00ea: self.TimeSinceStrategyActivation = 0.0
+  00f5: return nothing
+  00f7: <eos>
+
+function HmCameraStrategy.Deactivate  (script 146 bytes)
+  0000: Result = self.CameraState.CameraStrategyResult
+  0014: I = 0
+  001b: if !((I != self.Behaviors.Length)) goto 0x0074
+  002b: if !(I[self.Behaviors].DebugDisabled) goto 0x0046
+  0043: goto 0x006a
+  0046: Result = I[self.Behaviors].Deactivate(Result)
+  006a: AddAdd_PreInt(I)
+  0071: goto 0x001b
+  0074: self.CameraState.CameraStrategyResult = Result
+  0088: self.CameraState = none
+  008f: return nothing
+  0091: <eos>
+
+function HmCameraStrategy.GetTransitionTime  (script 101 bytes)
+  0000: I = 0
+  0007: if !((I < self.TransitionOverrides.Length)) goto 0x0058
+  0017: if !((I[self.TransitionOverrides].PreviousStrategy == PreviousStrategy)) goto 0x004e
+  0037: return I[self.TransitionOverrides].TransitionTime
+  004e: AddAdd_PreInt(I)
+  0055: goto 0x0007
+  0058: return self.TransitionTime
+  005e: return return
+  0064: <eos>
+
+function HmCameraStrategy.GetTimeSinceStrategyActivation  (script 13 bytes)
+  0000: return self.TimeSinceStrategyActivation
+  0006: return return
+  000c: <eos>
+
+function HmCameraStrategy.GetCameraLocationIfTargetingThisLocation  (script 212 bytes)
+  0000: CameraRotation = self.CameraState.CameraStrategyResult.Rotation
+  001f: AnchorLocation = GetAnchorLocation()
+  002f: OrbitLocationOffset = self.CameraState.CameraStrategyResult.OrbitLocationOffset
+  004e: (OrbitLocationOffset += (self.CameraState.CameraStrategyResult.LocationAdjustment << CameraRotation))
+  0076: RotationToTarget = cast50((TargetLocation - AnchorLocation))
+  008a: AdjustedTargetLocation = (TargetLocation - (OrbitLocationOffset >> RotationToTarget))
+  00a4: RotationToTarget = cast50((AdjustedTargetLocation - AnchorLocation))
+  00b8: return (AnchorLocation + (OrbitLocationOffset >> RotationToTarget))
+  00cd: return return
+  00d3: <eos>
+
+function HmCameraStrategy.UpdateBehaviorsPass  (script 611 bytes)
+  0000: Result = self.CameraState.CameraStrategyResult
+  0014: Result.LocationAdjustment = vect(0,0,0)
+  0032: Result.RotationAdjustment = rot(0,0,0)
+  0050: I = 0
+  0057: if !((I != self.Behaviors.Length)) goto 0x00d3
+  0067: if !((I[self.Behaviors].Enabled && !I[self.Behaviors].DebugDisabled)) goto 0x00c9
+  009b: Result = I[self.Behaviors].Update(DeltaTime, Result, CI)
+  00c9: AddAdd_PreInt(I)
+  00d0: goto 0x0057
+  00d3: self.CameraState.CameraStrategyResult.Fov = Result.Fov
+  00fd: self.CameraState.CameraStrategyResult.Location = Result.Location
+  0127: self.CameraState.CameraStrategyResult.Rotation = Result.Rotation
+  0151: self.CameraState.CameraStrategyResult.AutoMovedHint = Result.AutoMovedHint
+  017d: self.CameraState.CameraStrategyResult.Recentering = Result.Recentering
+  01a9: self.CameraState.CameraStrategyResult.OrbitRotation = Result.OrbitRotation
+  01d3: self.CameraState.CameraStrategyResult.OrbitLocationOffset = Result.OrbitLocationOffset
+  01fd: self.CameraState.CameraStrategyResult.LocationAdjustment = Result.LocationAdjustment
+  0227: self.CameraState.CameraStrategyResult.Teleport = false
+  0243: Result.Teleport = false
+  0256: return Result
+  025c: return return
+  0262: <eos>
+
+function HmCameraStrategy.UpdateCamera  (script 47 bytes)
+  0000: (self.TimeSinceStrategyActivation += fDeltaTime)
+  000c: Result = HmCameraStrategy.UpdateBehaviorsPass(fDeltaTime, CI)
+  0022: return Result
+  0028: return return
+  002e: <eos>
+
+function HmCameraStrategy.GetAnchorLocation  (script 22 bytes)
+  0000: return self.AnchorPoint.Location
+  000f: return return
+  0015: <eos>
+
+function HmCameraStrategy.SetTransitionTime  (script 14 bytes)
+  0000: self.TransitionTime = T
+  000b: return nothing
+  000d: <eos>
+
+function HmCameraStrategy.SetTimeSinceStrategyActivation  (script 14 bytes)
+  0000: self.TimeSinceStrategyActivation = T
+  000b: return nothing
+  000d: <eos>
+
+function HmCameraStrategy.SetLookAtTarget  (script 66 bytes)
+  0000: I = 0
+  0007: if !((I != self.Behaviors.Length)) goto 0x003f
+  0017: I[self.Behaviors].SetLookAtTarget(LookAtTarget)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return nothing
+  0041: <eos>
+
+function HmCameraStrategy.FocusOnLookAtTarget  (script 112 bytes)
+  0000: Result = self.CameraState.CameraStrategyResult
+  0014: I = 0
+  001b: if !((I != self.Behaviors.Length)) goto 0x0059
+  002b: Result = I[self.Behaviors].FocusOnLookAtTarget(Result)
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x001b
+  0059: self.CameraState.CameraStrategyResult = Result
+  006d: return nothing
+  006f: <eos>
+
+function HmCameraStrategy.ModifyPostProcessSettings  (script 306 bytes)
+  0000: if !(self.CamPostProcessSettings.bEnableMotionBlur) goto 0x012f
+  0014: Settings.bEnableMotionBlur = true
+  0027: Settings.MotionBlur_CurveExponent = self.CamPostProcessSettings.MotionBlur_CurveExponent
+  0048: Settings.MotionBlur_MaxVelocity = self.CamPostProcessSettings.MotionBlur_MaxVelocity
+  0069: Settings.MotionBlur_Amount = self.CamPostProcessSettings.MotionBlur_Amount
+  008a: Settings.MotionBlur_InnerRadius = self.CamPostProcessSettings.MotionBlur_InnerRadius
+  00ab: Settings.MotionBlur_OuterRadius = self.CamPostProcessSettings.MotionBlur_OuterRadius
+  00cc: Settings.MotionBlur_RadialBlurExponent = self.CamPostProcessSettings.MotionBlur_RadialBlurExponent
+  00ed: Settings.MotionBlur_RadialStretch = self.CamPostProcessSettings.MotionBlur_RadialStretch
+  010e: Settings.MotionBlur_NumSamples = self.CamPostProcessSettings.MotionBlur_NumSamples
+  012f: return nothing
+  0131: <eos>
+
+function HmCameraStrategy.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = AP
+  000b: return nothing
+  000d: <eos>
+
+function HmCameraStrategy.DisplayDebug  (script 181 bytes)
+  0000: if !(HUD.ShouldDisplayDebug('camerabehaviors')) goto 0x00b2
+  001f: HUD.Canvas.SetPos(16.0, out_YPos)
+  0045: foreach self.Behaviors(Behavior,) (end 0x008b)
+  0054: if !(!Behavior.DebugDisabled) goto 0x008a
+  0068: Behavior.DisplayDebug(HUD, out_YL, out_YPos)
+  008a: iternext
+  008b: iterpop
+  008c: HUD.Canvas.SetPos(4.0, out_YPos)
+  00b2: return nothing
+  00b4: <eos>
+
+function HmCameraStrategy.CheckForErrors  (script 133 bytes)
+  0000: CheckForErrors()
+  0006: I = 0
+  000d: if !((I < self.Behaviors.Length)) goto 0x0082
+  001d: if !(I[self.Behaviors].DebugDisabled) goto 0x0078
+  0035: EmitCheckMessage(1, (("Behavior" @ cast53(I)) @ "is disabled. Please delete it."), , )
+  0078: AddAdd_PreInt(I)
+  007f: goto 0x000d
+  0082: return nothing
+  0084: <eos>

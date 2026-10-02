@@ -1,0 +1,10 @@
+function SeqAct_GetLoginStatus.GetLoginStatus  (script 130 bytes)
+  0000: Result = 0
+  0008: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0021: if !((OnlineSub != none)) goto 0x0075
+  002c: PlayerInterface = OnlineSub.PlayerInterface
+  0040: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0075
+  0054: Result = PlayerInterface.GetLoginStatus(cast3d(ControllerId))
+  0075: return Result
+  007b: return return
+  0081: <eos>

@@ -1,0 +1,21 @@
+function HmTargetableDestructionEffect.SetTargetable  (script 14 bytes)
+  0000: self.Targetable = NewTargetable
+  000b: return nothing
+  000d: <eos>
+
+function HmTargetableDestructionEffect.GetTargetable  (script 13 bytes)
+  0000: return self.Targetable
+  0006: return return
+  000c: <eos>
+
+function HmTargetableDestructionEffect.BeginEffect  (script 43 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: AttachingActor.AttachComponent(self.Targetable)
+  0028: return nothing
+  002a: <eos>
+
+function HmTargetableDestructionEffect.EndEffect  (script 43 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: AttachingActor.DetachComponent(self.Targetable)
+  0028: return nothing
+  002a: <eos>

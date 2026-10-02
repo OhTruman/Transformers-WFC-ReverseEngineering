@@ -1,0 +1,189 @@
+=== decomp 0x82d8e718
+
+void Function_82D8E718(void)
+
+{
+  uint uVar1;
+  int iVar2;
+  int *piVar3;
+  undefined4 *puVar4;
+  int iVar5;
+  uint uVar6;
+  int iVar7;
+  int iVar8;
+  int *piVar9;
+  ulonglong uVar10;
+  longlong lVar11;
+  double dVar12;
+  double dVar13;
+  double dVar14;
+  ulonglong local_70;
+  longlong local_60 [12];
+  
+  piVar3 = (int *)FUN_830eaccc();
+  local_70 = local_70 & 0xffffffff00000000;
+  piVar3[0x4b] = 0;
+  *(ulonglong *)(piVar3 + 0x48) = local_70;
+  if (piVar3[0xb1] == 0) {
+    if (*(double *)(piVar3[0x13] + 0x48) - *(double *)(piVar3 + 0x40) <=
+        (double)*(float *)(piVar3[0x13] + 0x58)) goto LAB_82d8ec94;
+    Function_82D70B20(piVar3,0);
+  }
+  FUN_82b25c78(piVar3 + 0x8c,1);
+  uVar1 = piVar3[0xb1];
+  while ((uVar1 & 7) != 0) {
+    FUN_82b25c78(piVar3 + 0x8c,0);
+    uVar1 = piVar3[0xb1];
+  }
+  if (piVar3[0x13e1] == 0) {
+    if (piVar3[0x13e3] == 0) {
+      dVar12 = (double)DAT_820ce234;
+      dVar13 = (double)DAT_8209ccfc;
+      if (piVar3[0x13e0] != 0) {
+        iVar5 = Function_830ED890();
+        local_60[0] = (longlong)iVar5;
+        if ((float)((double)(float)((double)local_60[0] * dVar13) * dVar12) <
+            (float)(longlong)piVar3[0x13e0]) goto LAB_82d8ebbc;
+      }
+      (**(code **)(*piVar3 + 0x138))(piVar3,piVar3[0xae],piVar3[0xb1] + 7 >> 3);
+      if (piVar3[0x13e2] != 0) {
+        iVar5 = Function_830ED890();
+        local_60[0] = (longlong)piVar3[0x13e2];
+        if ((float)((double)(float)((double)(longlong)iVar5 * dVar13) * dVar12) < (float)local_60[0]
+           ) {
+          (**(code **)(*piVar3 + 0x138))(piVar3,piVar3[0xae],piVar3[0xb1] + 7 >> 3);
+        }
+      }
+    }
+    else {
+      dVar12 = (double)DAT_8209ccfc;
+      if (piVar3[0x13e0] != 0) {
+        iVar5 = Function_830ED890();
+        local_60[0] = (longlong)piVar3[0x13e0];
+        if ((float)((double)(longlong)iVar5 * dVar12) * DAT_820ce234 <= (float)local_60[0])
+        goto LAB_82d8ebbc;
+      }
+      puVar4 = (undefined4 *)Function_82E05838(0x14,piVar3 + 0x13e5);
+      if (puVar4 == (undefined4 *)0x0) {
+        puVar4 = (undefined4 *)0x0;
+      }
+      else {
+        *puVar4 = 0;
+        puVar4[1] = 0;
+        puVar4[2] = 0;
+      }
+      Function_8279F568(puVar4,piVar3[0xb1] + 7 >> 3);
+      uVar1 = piVar3[0xb1] + 7 >> 3;
+      if (((int)uVar1 < 0x10000) && ((uVar1 & 0xfff) != 0)) {
+        Function_826FA360();
+      }
+      else {
+        Function_826FA2D8(*puVar4,piVar3[0xae]);
+      }
+      FUN_826fa800(local_60);
+      dVar13 = (double)local_60[0] * DAT_83772400 + DAT_82000b30;
+      iVar5 = Function_830ED890();
+      local_60[0] = (longlong)piVar3[0x13e4];
+      *(double *)(puVar4 + 3) =
+           ((double)(((float)((double)(longlong)iVar5 * dVar12) - DAT_8209dd8c) * DAT_82034160) *
+            (double)local_60[0] + (double)(longlong)piVar3[0x13e3]) * DAT_822da2f8 + dVar13;
+    }
+  }
+  else {
+    piVar9 = piVar3 + 0x13e5;
+    puVar4 = (undefined4 *)Function_82E05838(0x14,piVar9);
+    if (puVar4 == (undefined4 *)0x0) {
+      puVar4 = (undefined4 *)0x0;
+    }
+    else {
+      *puVar4 = 0;
+      puVar4[1] = 0;
+      puVar4[2] = 0;
+    }
+    Function_8279F568(puVar4,piVar3[0xb1] + 7 >> 3);
+    uVar1 = piVar3[0xb1] + 7 >> 3;
+    if (((int)uVar1 < 0x10000) && ((uVar1 & 0xfff) != 0)) {
+      Function_826FA360();
+    }
+    else {
+      Function_826FA2D8(*puVar4,piVar3[0xae]);
+    }
+    uVar10 = (ulonglong)(uint)piVar3[0x13e6] - 1;
+    if (-1 < (longlong)uVar10) {
+      lVar11 = (uVar10 + (uVar10 & 0x3fffffff) * 4 & 0x3fffffff) << 2;
+      dVar13 = (double)DAT_8209dd8c;
+      dVar14 = (double)DAT_8209ccfc;
+      dVar12 = (double)DAT_820ce234;
+      do {
+        iVar5 = Function_830ED890();
+        if (dVar13 < (double)(float)((double)(longlong)iVar5 * dVar14)) {
+          if (piVar3[0x13e0] == 0) {
+LAB_82d8e904:
+            puVar4 = (undefined4 *)((int)lVar11 + *piVar9);
+            (**(code **)(*piVar3 + 0x138))(piVar3,*puVar4,puVar4[1]);
+          }
+          else {
+            iVar5 = Function_830ED890();
+            local_60[0] = (longlong)piVar3[0x13e0];
+            if ((float)local_60[0] <
+                (float)((double)(float)((double)(longlong)iVar5 * dVar14) * dVar12))
+            goto LAB_82d8e904;
+          }
+          Function_82DB0B20(piVar9,uVar10,1);
+        }
+        uVar10 = uVar10 - 1;
+        lVar11 = lVar11 + -0x14;
+      } while (-1 < (longlong)uVar10);
+    }
+  }
+LAB_82d8ebbc:
+  uVar1 = piVar3[0x3b4];
+  piVar3[(uVar1 & 0xff) + 0x2b3] = uVar1;
+  iVar5 = *(int *)(piVar3[0x13] + 0x4c);
+  (piVar3 + (uVar1 & 0xff) * 2)[0xb3] = *(int *)(piVar3[0x13] + 0x48);
+  (piVar3 + (uVar1 & 0xff) * 2)[0xb4] = iVar5;
+  piVar3[0x3b4] = piVar3[0x3b4] + 1;
+  *(int *)(piVar3[0x13] + 0xac) = *(int *)(piVar3[0x13] + 0xac) + 1;
+  iVar5 = piVar3[0x13];
+  iVar8 = *(int *)(iVar5 + 0x48);
+  iVar7 = piVar3[0xb1] + 7 >> 3;
+  iVar2 = *(int *)(iVar5 + 0x4c);
+  piVar3[0x44] = piVar3[0x44] + piVar3[0x2b] + iVar7;
+  piVar3[0x41] = iVar2;
+  piVar3[0x40] = iVar8;
+  *(int *)(iVar5 + 0xa4) = *(int *)(iVar5 + 0xa4) + piVar3[0x2b] + iVar7;
+  (**(code **)(*piVar3 + 0x13c))(piVar3);
+LAB_82d8ec94:
+  iVar5 = 0;
+  if (0 < piVar3[0x13b3]) {
+    iVar8 = 0;
+    do {
+      uVar1 = piVar3[0x13b6];
+      uVar10 = (ulonglong)uVar1 + 1;
+      iVar2 = piVar3[0x13b2];
+      iVar7 = (int)uVar10;
+      piVar3[0x13b6] = iVar7;
+      if (piVar3[0x13b7] < iVar7) {
+        uVar6 = iVar7 + (int)((uVar10 & 0xffffffff) << 1);
+        lVar11 = (longlong)((int)uVar6 >> 3) + (ulonglong)((int)uVar6 < 0 && (uVar6 & 7) != 0) +
+                 uVar10 + 5;
+        piVar3[0x13b7] = (int)lVar11;
+        Function_82EDB690(piVar3 + 0x13b5,(ulonglong)uVar1,lVar11,4);
+      }
+      puVar4 = (undefined4 *)(uVar1 * 4 + piVar3[0x13b5]);
+      if (puVar4 != (undefined4 *)0x0) {
+        *puVar4 = *(undefined4 *)(iVar8 + iVar2);
+      }
+      iVar5 = iVar5 + 1;
+      iVar8 = iVar8 + 4;
+    } while (iVar5 < piVar3[0x13b3]);
+  }
+  piVar3[0x13b3] = 0;
+  if (piVar3[0x13b4] != 0x20) {
+    piVar3[0x13b4] = 0x20;
+    Function_82EDB690(piVar3 + 0x13b2,0,0x20,4);
+  }
+  return;
+}
+
+

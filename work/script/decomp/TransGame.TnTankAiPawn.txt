@@ -1,0 +1,221 @@
+function TnTankAiPawn.set_AttachedFuelCells  (script 14 bytes)
+  0000: self._AttachedFuelCells = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankAiPawn.set_FuelCellAttachSocketName  (script 14 bytes)
+  0000: self._FuelCellAttachSocketName = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankAiPawn.set_FuelCellPieceName  (script 14 bytes)
+  0000: self._FuelCellPieceName = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankAiPawn.get_TargetableLocation  (script 18 bytes)
+  0000: return GetTargetableLocation()
+  000b: return return
+  0011: <eos>
+
+function TnTankAiPawn.set_Content  (script 14 bytes)
+  0000: self._Content = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankAiPawn.PostBeginPlay  (script 38 bytes)
+  0000: TnAiPawn.PostBeginPlay()
+  0006: self._Services.Add('TnTargetableService', self)
+  0023: return nothing
+  0025: <eos>
+
+function TnTankAiPawn.PossessedBy  (script 51 bytes)
+  0000: TnAiPawn.PossessedBy(C, bVehicleTransition)
+  0011: if !((self._BoundController != none)) goto 0x0030
+  001c: self._BoundController.set_Invulnerable(true)
+  0030: return nothing
+  0032: <eos>
+
+function TnTankAiPawn.ApplyCharacter  (script 72 bytes)
+  0000: TnAiPawn.ApplyCharacter(CD)
+  000b: if !((cast3a(CD.StartingForm) == cast3a(1))) goto 0x002f
+  0026: TnTankAiPawn.CreateFuelCell()
+  002c: goto 0x003f
+  002f: TnTankAiPawn.FuelCellDestroyed()
+  0035: CreateArmor()
+  003f: TnTankAiPawn.InitializeMovementCapabilities()
+  0045: return nothing
+  0047: <eos>
+
+function TnTankAiPawn.CreateFuelCell  (script 257 bytes)
+  0000: FuelCellIndex = self._AttachedFuelCells.Find('Faction',GetTeamNum())
+  0021: if !((FuelCellIndex == -1)) goto 0x0032
+  0030: return nothing
+  0032: self.FuelCellDestructibleActor = obj'Engine.Allocation'.static.SpawnActor(obj'TnSpawnableDestructibleActor', self, self, self.Mesh.GetSocketWorldLocation(self._FuelCellAttachSocketName), , true)
+  006c: self.FuelCellDestructibleActor.AttachToPawn(self, self._FuelCellAttachSocketName, 1)
+  0086: self.FuelCellDestructibleActor.SetDestructibleBlueprint(FuelCellIndex[self._AttachedFuelCells].DestructibleBlueprint)
+  00af: self.FuelCellDestructibleActor._ShouldBeHighlighted = true
+  00c0: self.FuelCellDestructibleActor.AddObjectiveMarker(obj'TnObjectiveMarkerTypeFuelCell')
+  00d8: self._FuelCellDestructiblePiece = self.FuelCellDestructibleActor.GetPiece(self._FuelCellPieceName)
+  00f6: self._FuelCellDestroyed = false
+  00fe: return nothing
+  0100: <eos>
+
+function TnTankAiPawn.CreateArmor  (script 76 bytes)
+  0000: if !((self._Content == none)) goto 0x000d
+  000b: return nothing
+  000d: TnTankAiPawn.CreateArmorPiece(self._Content.ChestArmor1)
+  0021: TnTankAiPawn.CreateArmorPiece(self._Content.ChestArmor2)
+  0035: TnTankAiPawn.CreateArmorPiece(self._Content.BackArmor)
+  0049: return nothing
+  004b: <eos>
+
+function TnTankAiPawn.CreateArmorPiece  (script 243 bytes)
+  0000: if !(((AttachedDestructible.DestructibleBlueprint == none) || (AttachedDestructible.AttachSocketName == 'None'))) goto 0x0038
+  0036: return nothing
+  0038: DestructibleActor = obj'Engine.Allocation'.static.SpawnActor(obj'TnSpawnableDestructibleActor', self, self, self.Mesh.GetSocketWorldLocation(AttachedDestructible.AttachSocketName), , true)
+  007d: if !((DestructibleActor == none)) goto 0x008a
+  0088: return nothing
+  008a: DestructibleActor.AttachToPawn(self, AttachedDestructible.AttachSocketName, 0)
+  00af: DestructibleActor.SetDestructibleBlueprint(AttachedDestructible.DestructibleBlueprint)
+  00d2: DestructibleActor._ShouldBeHighlighted = false
+  00e3: self.SpawnedDestructibles.AddItem(DestructibleActor)
+  00f0: return nothing
+  00f2: <eos>
+
+function TnTankAiPawn.Destroyed  (script 51 bytes)
+  0000: foreach self.SpawnedDestructibles(DestructibleActor,) (end 0x0027)
+  000f: if !((DestructibleActor != none)) goto 0x0026
+  001a: DestructibleActor.DestroyActor()
+  0026: iternext
+  0027: iterpop
+  0028: self.SpawnedDestructibles.Length = 0
+  0030: return nothing
+  0032: <eos>
+
+function TnTankAiPawn.InitializeMovementCapabilities  (script 168 bytes)
+  0000: if !((self._VehicleForm == none)) goto 0x000d
+  000b: return nothing
+  000d: MC = self._VehicleForm.get_FormMovementCapabilities()
+  0026: MC.CylinderHeight = 850.0
+  003c: MC.CylinderRadius = 1210.0
+  0052: self._VehicleForm.set_FormMovementCapabilities(MC)
+  006a: self._SecondaryMovementCapabilities = MC
+  0075: if !((cast3a(self._CurrentCharacter.StartingForm) == cast3a(1))) goto 0x00a5
+  0090: SetMovementCapabilities(MC)
+  009f: TnTankAiPawn.DisableRobotMovementCapabilities()
+  00a5: return nothing
+  00a7: <eos>
+
+function TnTankAiPawn.DisableRobotMovementCapabilities  (script 71 bytes)
+  0000: MC = self._RobotForm.get_FormMovementCapabilities()
+  0019: MC.bDisabled = true
+  002c: self._RobotForm.set_FormMovementCapabilities(MC)
+  0044: return nothing
+  0046: <eos>
+
+function TnTankAiPawn.Tick  (script 65 bytes)
+  0000: if !(((self._BoundController != none) && !self._BoundController.get_IsInitialized())) goto 0x0027
+  0025: return nothing
+  0027: TnAiPawn.Tick(DeltaTime)
+  0032: TnTankAiPawn.CheckForFuelCellDamage()
+  0038: TnTankAiPawn.CheckForFuelCellDestruction()
+  003e: return nothing
+  0040: <eos>
+
+function TnTankAiPawn.CheckForFuelCellDamage  (script 76 bytes)
+  0000: if !((self._FuelCellDamaged || (self._FuelCellDestructiblePiece == none))) goto 0x0018
+  0016: return nothing
+  0018: if !((self._FuelCellDestructiblePiece.GetActiveStateName() == 'HeavilyDamaged')) goto 0x0049
+  0039: self._FuelCellDamaged = true
+  0041: TnTankAiPawn.TriggerKismetEvent(0)
+  0049: return nothing
+  004b: <eos>
+
+function TnTankAiPawn.CheckForFuelCellDestruction  (script 55 bytes)
+  0000: if !((self._FuelCellDestroyed || (self._FuelCellDestructiblePiece == none))) goto 0x0018
+  0016: return nothing
+  0018: if !(self._FuelCellDestructiblePiece.IsInFinalState()) goto 0x0034
+  002e: TnTankAiPawn.FuelCellDestroyed()
+  0034: return nothing
+  0036: <eos>
+
+function TnTankAiPawn.FuelCellDestroyed  (script 189 bytes)
+  0000: self._FuelCellDestroyed = true
+  0008: self._BoundController.set_Invulnerable(false)
+  001c: self._BoundController.AiWorldState.SetIntValue(obj'TnAiWorldStateReaction', 3, )
+  0040: self._BoundController.AiWorldState.SetIntValue(obj'TnAiWorldStateHealthStatus', 1, )
+  0063: TnTankAiPawn.TriggerKismetEvent(1)
+  006b: self._BoundController.TriggerEventClass(obj'TnSeqEvent_HealthStatus', self._BoundController, 1, )
+  008a: TnTankAiPawn.SetWoundedMovementCapabilities()
+  0090: if !((self.FuelCellDestructibleActor != none)) goto 0x00ba
+  009b: self.FuelCellDestructibleActor.RemoveObjectiveMarker()
+  00ae: self.FuelCellDestructibleActor.DestroyActor()
+  00ba: return nothing
+  00bc: <eos>
+
+function TnTankAiPawn.SetWoundedMovementCapabilities  (script 150 bytes)
+  0000: MC = self._RobotForm.get_FormMovementCapabilities()
+  0019: MC.bDisabled = false
+  002c: self._RobotForm.set_FormMovementCapabilities(MC)
+  0044: if !((self._VehicleForm != none)) goto 0x0093
+  004f: MC = self._VehicleForm.get_FormMovementCapabilities()
+  0068: MC.bDisabled = true
+  007b: self._VehicleForm.set_FormMovementCapabilities(MC)
+  0093: return nothing
+  0095: <eos>
+
+function TnTankAiPawn.GetTargetableLocation  (script 117 bytes)
+  0000: if !((!self._FuelCellDestroyed && (self.FuelCellDestructibleActor != none))) goto 0x0067
+  0018: TargetableComponent = self.FuelCellDestructibleActor.FindComponent(obj'TnTargetableComponent')
+  0036: if !((TargetableComponent != none)) goto 0x0058
+  0041: return TargetableComponent.GetTargetLocation()
+  0055: goto 0x0067
+  0058: return self.FuelCellDestructibleActor.Location
+  0067: return TnAiPawn.GetTargetableLocation()
+  006e: return return
+  0074: <eos>
+
+function TnTankAiPawn.TriggerKismetEvent  (script 40 bytes)
+  0000: self._BoundController.TriggerEventClass(obj'TnSeqEvent_TankStatus', self._BoundController, cast3a(Status), )
+  0025: return nothing
+  0027: <eos>
+
+function TnTankAiPawn.GetLocation  (script 60 bytes)
+  0000: if !((get_IsInVehicleForm() && (self.Mesh != none))) goto 0x002e
+  001a: return self.Mesh.GetRBPosition()
+  002e: return GetLocation()
+  0035: return return
+  003b: <eos>
+
+function TnTankAiPawn.GetMaxTankRobotPathingRadius  (script 13 bytes)
+  0000: return 750.0
+  0006: return return
+  000c: <eos>
+
+function TnTankAiPawn.GetMaxTankRobotPathingHeight  (script 13 bytes)
+  0000: return 800.0
+  0006: return return
+  000c: <eos>
+
+function TnTankAiPawn.GetMaxTankVehiclePathingRadius  (script 13 bytes)
+  0000: return 1210.0
+  0006: return return
+  000c: <eos>
+
+function TnTankAiPawn.GetMaxTankVehiclePathingHeight  (script 13 bytes)
+  0000: return 850.0
+  0006: return return
+  000c: <eos>
+
+function TnTankAiPawn.TransformingToRobot.BeginState  (script 58 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !((cast3a(self.Role) == cast3a(3))) goto 0x0037
+  001b: SetTimer(self._Content.AttachArmorTime, , 'CreateArmor', )
+  0037: return nothing
+  0039: <eos>
+
+function TnTankAiPawn.ShouldDoSafeLocationCheck  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>

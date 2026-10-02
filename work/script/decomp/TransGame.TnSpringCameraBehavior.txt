@@ -1,0 +1,61 @@
+function TnSpringCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.OwnerPawn = Pawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnSpringCameraBehavior.Activate  (script 47 bytes)
+  0000: self.LastOwnerVelocity = self.OwnerPawn.Velocity
+  0014: self.AccelerationHistory.SetSampleTime(self.SampleTime)
+  002c: return nothing
+  002e: <eos>
+
+function TnSpringCameraBehavior.Reset  (script 90 bytes)
+  0000: self.AccelerationHistory.Clear()
+  0013: self.SpringVelocity = vect(0,0,0)
+  0026: self.SpringDisplacement = vect(0,0,0)
+  0039: self.LastOwnerVelocity = self.OwnerPawn.Velocity
+  004d: return Result
+  0053: return return
+  0059: <eos>
+
+function TnSpringCameraBehavior.Update  (script 519 bytes)
+  0000: if !((DeltaTime == 0.0)) goto 0x0015
+  000f: return Result
+  0015: self.AccelerationHistory.Update(DeltaTime)
+  002d: Acceleration = ((self.OwnerPawn.Velocity - self.LastOwnerVelocity) / DeltaTime)
+  004f: self.LastOwnerVelocity = self.OwnerPawn.Velocity
+  0063: Acceleration = (Acceleration << self.OwnerPawn.Rotation)
+  007f: (Acceleration *= self.AccelerationScale)
+  008c: self.AccelerationHistory.AddSample(Acceleration)
+  00a4: Numerator = (self.SpringVelocity - (((self.Stiffness * self.SpringDisplacement) - self.AccelerationHistory.Average()) * DeltaTime))
+  00da: Denominator = ((vect(1,1,1) + (self.Damping * DeltaTime)) + ((self.Stiffness * DeltaTime) * DeltaTime))
+  0110: self.SpringVelocity.X = (Numerator.X / Denominator.X)
+  0143: self.SpringVelocity.Y = (Numerator.Y / Denominator.Y)
+  0176: self.SpringVelocity.Z = (Numerator.Z / Denominator.Z)
+  01a9: TnSpringCameraBehavior.ClampSpringVelocity(self.SpringVelocity)
+  01b4: (self.SpringDisplacement += (self.SpringVelocity * DeltaTime))
+  01c7: TnSpringCameraBehavior.ClampSpringDisplacement(self.SpringDisplacement)
+  01d2: (Result.Location += (self.SpringDisplacement >> self.OwnerPawn.Rotation))
+  01fa: return Result
+  0200: return return
+  0206: <eos>
+
+function TnSpringCameraBehavior.ClampSpringVelocity  (script 309 bytes)
+  0000: if !((self.MaxSpringVelocity.X > cast3f(0))) goto 0x0066
+  0018: Velocity.X = obj'Core.Math'.static.FClamp(Velocity.X, -self.MaxSpringVelocity.X, self.MaxSpringVelocity.X)
+  0066: if !((self.MaxSpringVelocity.Y > cast3f(0))) goto 0x00cc
+  007e: Velocity.Y = obj'Core.Math'.static.FClamp(Velocity.Y, -self.MaxSpringVelocity.Y, self.MaxSpringVelocity.Y)
+  00cc: if !((self.MaxSpringVelocity.Z > cast3f(0))) goto 0x0132
+  00e4: Velocity.Z = obj'Core.Math'.static.FClamp(Velocity.Z, -self.MaxSpringVelocity.Z, self.MaxSpringVelocity.Z)
+  0132: return nothing
+  0134: <eos>
+
+function TnSpringCameraBehavior.ClampSpringDisplacement  (script 309 bytes)
+  0000: if !((self.MaxSpringDisplacement.X > cast3f(0))) goto 0x0066
+  0018: Displacement.X = obj'Core.Math'.static.FClamp(Displacement.X, -self.MaxSpringDisplacement.X, self.MaxSpringDisplacement.X)
+  0066: if !((self.MaxSpringDisplacement.Y > cast3f(0))) goto 0x00cc
+  007e: Displacement.Y = obj'Core.Math'.static.FClamp(Displacement.Y, -self.MaxSpringDisplacement.Y, self.MaxSpringDisplacement.Y)
+  00cc: if !((self.MaxSpringDisplacement.Z > cast3f(0))) goto 0x0132
+  00e4: Displacement.Z = obj'Core.Math'.static.FClamp(Displacement.Z, -self.MaxSpringDisplacement.Z, self.MaxSpringDisplacement.Z)
+  0132: return nothing
+  0134: <eos>

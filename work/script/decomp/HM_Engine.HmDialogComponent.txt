@@ -1,0 +1,61 @@
+function HmDialogComponent.get_DialogCharacter  (script 22 bytes)
+  0000: return self.Impl.DialogCharacter
+  000f: return return
+  0015: <eos>
+
+function HmDialogComponent.set_DialogCharacter  (script 23 bytes)
+  0000: self.Impl.DialogCharacter = Value
+  0014: return nothing
+  0016: <eos>
+
+function HmDialogComponent.get_SocketName  (script 22 bytes)
+  0000: return self.Impl.SocketName
+  000f: return return
+  0015: <eos>
+
+function HmDialogComponent.set_SocketName  (script 23 bytes)
+  0000: self.Impl.SocketName = Value
+  0014: return nothing
+  0016: <eos>
+
+function HmDialogComponent.DialogEventCallback  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDialogComponent.Detached  (script 24 bytes)
+  0000: self.Impl.StopInternal(false, false)
+  0015: return nothing
+  0017: <eos>
+
+function HmDialogComponent.Tick  (script 22 bytes)
+  0000: self.Impl.TickInternal()
+  0013: return nothing
+  0015: <eos>
+
+function HmDialogComponent.Play  (script 91 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.Owner)) goto 0x002a
+  0028: return nothing
+  002a: self.Impl.PlayInternal(_SoundCue, Replicate, Type, Deactivate, DialogCallback)
+  0058: return nothing
+  005a: <eos>
+
+function HmDialogComponent.Stop  (script 39 bytes)
+  0000: default=true
+  0005: self.Impl.StopInternal(ConversationOnly, Replicate)
+  0024: return nothing
+  0026: <eos>
+
+function HmDialogComponent.GetIsPlaying  (script 37 bytes)
+  0000: default=none
+  0005: return self.Impl.GetIsPlaying(_SoundCue)
+  001e: return return
+  0024: <eos>
+
+function HmDialogComponent.Deactivate  (script 22 bytes)
+  0000: self.Impl.DeactivateInternal()
+  0013: return nothing
+  0015: <eos>

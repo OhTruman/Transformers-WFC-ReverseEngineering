@@ -1,0 +1,25 @@
+function TnAbilityShockwave.GetBP  (script 64 bytes)
+  0000: DataIndex = obj'Core.Math'.static.Min((self.Blueprints.Length - 1), obj'TnGame'.static.GetCurrentSkillDataIndex())
+  002d: return DataIndex[self.Blueprints]
+  0039: return return
+  003f: <eos>
+
+function TnAbilityShockwave.ServerTriggerAbility  (script 63 bytes)
+  0000: if !((self.Delay <= cast3f(0))) goto 0x001a
+  000d: Shockwave()
+  0017: goto 0x0036
+  001a: self.OwnerPawn.SetTimer(self.Delay, false, 'Shockwave', self)
+  0036: TnAbility.ServerTriggerAbility()
+  003c: return nothing
+  003e: <eos>
+
+function TnAbilityShockwave.Shockwave  (script 266 bytes)
+  0000: if !(IsOwnerDead()) goto 0x000f
+  000d: return nothing
+  000f: BP = TnAbilityShockwave.GetBP()
+  001b: actualDamage = (self.OwnerPawn.HasSkill(obj'TnSkillIncreaseShockwaveDamage') ? BP.IncreasedDamage : BP.Damage)
+  005e: ActualRadius = (self.OwnerPawn.HasSkill(obj'TnSkillIncreaseShockwaveRadius') ? BP.IncreasedRadius : BP.Radius)
+  00a1: Location = self.OwnerPawn.Mesh.GetSocketWorldLocation(self.SocketName)
+  00c8: self.OwnerPawn.HurtRadius(actualDamage, ActualRadius, -1.0, obj'TnDamageTypeShockwave', BP.Momentum, Location, , , true)
+  0107: return nothing
+  0109: <eos>

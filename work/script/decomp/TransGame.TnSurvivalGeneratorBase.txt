@@ -1,0 +1,186 @@
+function TnSurvivalGeneratorBase.get_NeededPower  (script 15 bytes)
+  0000: return 0[self.PowerLevels]
+  0008: return return
+  000e: <eos>
+
+function TnSurvivalGeneratorBase.set_Draining  (script 16 bytes)
+  0000: self._Draining = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnSurvivalGeneratorBase.ReplicatedArrayEvent  (script 159 bytes)
+  0000: if !((ArrayName == 'ReplicatedDrainingPawns')) goto 0x008c
+  0013: if !(((Index[self.ReplicatedDrainingPawns] == none) && (Index[self.SavedDrainingPawns] != none))) goto 0x004f
+  0037: OnEndDrain(Index[self.SavedDrainingPawns])
+  004c: goto 0x0075
+  004f: if !((Index[self.ReplicatedDrainingPawns] != none)) goto 0x0075
+  0060: OnBeginDrain(Index[self.ReplicatedDrainingPawns])
+  0075: Index[self.SavedDrainingPawns] = Index[self.ReplicatedDrainingPawns]
+  008c: ReplicatedArrayEvent(ArrayName, Index)
+  009c: return nothing
+  009e: <eos>
+
+function TnSurvivalGeneratorBase.PostBeginPlay  (script 118 bytes)
+  0000: PostBeginPlay()
+  0006: self.DrainingAudioComponent.SetSoundCue(self.DrainingSound)
+  001e: AnimNodeSequence(self.Mesh.Animations).SetAnim(self.FillAnimName)
+  0044: if !((cast3a(self.Role) == cast3a(3))) goto 0x0073
+  0054: if !((self.ActivationVolume != none)) goto 0x0073
+  005f: self.ActivationVolume.SetAssociatedActor(self)
+  0073: return nothing
+  0075: <eos>
+
+function TnSurvivalGeneratorBase.Tick  (script 398 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(TnSurvivalGeneratorBase.AtMaxPowerLevel()) goto 0x0016
+  0014: return nothing
+  0016: if !((cast3a(self.Role) == cast3a(3))) goto 0x0144
+  0026: if !((self.AreaTracker.GetNumOccupyingActors() > 0)) goto 0x0144
+  003f: OccupyingActors = self.AreaTracker.GetOccupyingActors()
+  0058: foreach OccupyingActors(A,) (end 0x0143)
+  0067: if !(TnSurvivalGeneratorBase.AtMaxPowerLevel()) goto 0x0073
+  0070: goto 0x0143
+  0073: P = TnPawn(A)
+  0083: AmountToDrain = cast44(obj'Core.Math'.static.FMax(1.0, (DeltaTime * self.DrainRate)))
+  00a7: AmountToDrain = cast44(obj'Core.Math'.static.FMin(cast3f(AmountToDrain), cast3f((self.CurrentPowerLevel[self.PowerLevels] - self.CurrentPower))))
+  00d5: AmountDrained = DrainPowerFrom(P, AmountToDrain)
+  00ef: (self.CurrentPower += AmountDrained)
+  00fb: if !((AmountDrained > 0)) goto 0x011a
+  0106: TnSurvivalGeneratorBase.StartDraining(P)
+  0111: TnSurvivalGeneratorBase.CheckPower()
+  0117: goto 0x0142
+  011a: if !(self._Draining) goto 0x0137
+  0123: PlaySound(self.DrainingFailedSound, , , , , )
+  0137: TnSurvivalGeneratorBase.StopDraining(P)
+  0142: iternext
+  0143: iterpop
+  0144: AnimNodeSequence(self.Mesh.Animations).SetNormalizedPosition((TnSurvivalGeneratorBase.AtMaxPowerLevel() ? 1.0 : (cast3f(self.CurrentPower) / cast3f(self.CurrentPowerLevel[self.PowerLevels]))))
+  018b: return nothing
+  018d: <eos>
+
+function TnSurvivalGeneratorBase.DrainPowerFrom  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnSurvivalGeneratorBase.NotifyGeneratorUseable  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSurvivalGeneratorBase.NotifyGeneratorUnusable  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSurvivalGeneratorBase.OnPowerLevelChange  (script 100 bytes)
+  0000: if !(PositiveChange) goto 0x001d
+  0009: PlaySound(self.FullSound, , , , , )
+  001d: foreach self.GeneratedEvents(SeqEvent,) (end 0x0060)
+  002c: GeneratorEvent = TnSeqEvent_SurvivalGenerator(SeqEvent)
+  003c: if !((GeneratorEvent != none)) goto 0x005f
+  0047: GeneratorEvent.ActivateEvent(self.CurrentPowerLevel)
+  005f: iternext
+  0060: iterpop
+  0061: return nothing
+  0063: <eos>
+
+function TnSurvivalGeneratorBase.CheckPower  (script 166 bytes)
+  0000: if !((!TnSurvivalGeneratorBase.AtMaxPowerLevel() && (self.CurrentPower >= self.CurrentPowerLevel[self.PowerLevels]))) goto 0x005e
+  0022: (self.CurrentPower -= self.CurrentPowerLevel[self.PowerLevels])
+  0034: AddAdd_PreInt(self.CurrentPowerLevel)
+  003b: TnSurvivalGeneratorBase.OnPowerLevelChange(true)
+  0042: if !(TnSurvivalGeneratorBase.AtMaxPowerLevel()) goto 0x0055
+  004b: self.CurrentPower = 0
+  0052: goto 0x005b
+  0055: TnSurvivalGeneratorBase.CheckPower()
+  005b: goto 0x00a3
+  005e: if !((self.CurrentPower < 0)) goto 0x00a3
+  0069: if !((self.CurrentPowerLevel == 0)) goto 0x007d
+  0074: self.CurrentPower = 0
+  007b: return nothing
+  007d: SubtractSubtract_PreInt(self.CurrentPowerLevel)
+  0084: (self.CurrentPower += self.CurrentPowerLevel[self.PowerLevels])
+  0096: TnSurvivalGeneratorBase.OnPowerLevelChange(false)
+  009d: TnSurvivalGeneratorBase.CheckPower()
+  00a3: return nothing
+  00a5: <eos>
+
+function TnSurvivalGeneratorBase.AtMaxPowerLevel  (script 21 bytes)
+  0000: return (self.CurrentPowerLevel >= self.PowerLevels.Length)
+  000e: return return
+  0014: <eos>
+
+function TnSurvivalGeneratorBase.Touch  (script 95 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: self.AreaTracker.OnTouch(Other)
+  0032: P = TnPlayerPawn(Other)
+  0042: if !((P != none)) goto 0x005c
+  004d: NotifyGeneratorUseable(P)
+  005c: return nothing
+  005e: <eos>
+
+function TnSurvivalGeneratorBase.UnTouch  (script 91 bytes)
+  0000: UnTouch(Other)
+  000b: self.AreaTracker.OnUntouch(Other)
+  0023: P = TnPlayerPawn(Other)
+  0033: if !((P != none)) goto 0x0058
+  003e: TnSurvivalGeneratorBase.StopDraining(P)
+  0049: NotifyGeneratorUnusable(P)
+  0058: return nothing
+  005a: <eos>
+
+function TnSurvivalGeneratorBase.StartDraining  (script 126 bytes)
+  0000: EmptySpot = -1
+  000b: I = 0
+  0012: if !((I < 4)) goto 0x005b
+  001e: if !((I[self.ReplicatedDrainingPawns] == P)) goto 0x0035
+  0033: return nothing
+  0035: if !((I[self.ReplicatedDrainingPawns] == none)) goto 0x0051
+  0046: EmptySpot = I
+  0051: AddAdd_PreInt(I)
+  0058: goto 0x0012
+  005b: OnBeginDrain(P)
+  006a: EmptySpot[self.ReplicatedDrainingPawns] = P
+  007b: return nothing
+  007d: <eos>
+
+function TnSurvivalGeneratorBase.StopDraining  (script 91 bytes)
+  0000: self._Draining = false
+  0008: I = 0
+  000f: if !((I < 4)) goto 0x0058
+  001b: if !((I[self.ReplicatedDrainingPawns] == P)) goto 0x004e
+  0030: OnEndDrain(P)
+  003f: I[self.ReplicatedDrainingPawns] = none
+  004c: return nothing
+  004e: AddAdd_PreInt(I)
+  0055: goto 0x000f
+  0058: return nothing
+  005a: <eos>
+
+function TnSurvivalGeneratorBase.OnBeginDrain  (script 291 bytes)
+  0000: PEM = P.FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  001e: if !((PEM == none)) goto 0x002b
+  0029: return nothing
+  002b: if !(!self.DrainingAudioComponent.IsPlaying()) goto 0x0056
+  0043: self.DrainingAudioComponent.Play()
+  0056: SocketLocation = self.Mesh.GetSocketWorldLocation(self.EffectSocketName)
+  0074: PSC = PEM.PlayEffect(P.get_RobotMeshComponent(), 'PositionSocket', self.DrainEffect, , , , )
+  00b2: PSC.SetTracerEndPoint(SocketLocation)
+  00ca: PSC = PEM.PlayEffect(P.get_VehicleMeshComponent(), 'PositionSocket', self.DrainEffect, , , , )
+  0108: PSC.SetTracerEndPoint(SocketLocation)
+  0120: return nothing
+  0122: <eos>
+
+function TnSurvivalGeneratorBase.OnEndDrain  (script 173 bytes)
+  0000: PEM = P.FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  001e: if !((PEM == none)) goto 0x002b
+  0029: return nothing
+  002b: self.DrainingAudioComponent.Stop()
+  003e: PEM.StopEffect(P.get_RobotMeshComponent(), 'PositionSocket', self.DrainEffect, , )
+  0074: PEM.StopEffect(P.get_VehicleMeshComponent(), 'PositionSocket', self.DrainEffect, , )
+  00aa: return nothing
+  00ac: <eos>
+
+function TnSurvivalGeneratorBase.OnModifySurvivalGeneratorPower  (script 32 bytes)
+  0000: (self.CurrentPower += cast44(Action.PowerToAdd))
+  0017: TnSurvivalGeneratorBase.CheckPower()
+  001d: return nothing
+  001f: <eos>

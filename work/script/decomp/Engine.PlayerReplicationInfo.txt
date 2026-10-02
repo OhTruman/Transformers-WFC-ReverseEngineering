@@ -1,0 +1,333 @@
+function PlayerReplicationInfo.AreUniqueNetIdsEqual  (script 7 bytes)
+  0000: OtherPRI
+  0005: nothing
+  0006: <eos>
+
+function PlayerReplicationInfo.GetPlayerAlias  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerReplicationInfo.PostBeginPlay  (script 123 bytes)
+  0000: if !((AIController(self.Owner) != none)) goto 0x0018
+  0010: self.bBot = true
+  0018: if !((self.WorldInfo.GRI != none)) goto 0x0049
+  002c: self.WorldInfo.GRI.AddPRI(self)
+  0049: if !((cast3a(self.Role) < cast3a(3))) goto 0x005b
+  0059: return nothing
+  005b: self.StartTime = self.WorldInfo.GRI.ElapsedTime
+  0078: return nothing
+  007a: <eos>
+
+function PlayerReplicationInfo.ClientInitialize  (script 96 bytes)
+  0000: SetOwner(C)
+  0008: if !((PlayerController(C) != none)) goto 0x005d
+  0018: BindPlayerOwnerDataProvider()
+  0022: if !((self.Team != default.Team)) goto 0x005d
+  0031: foreach AllActors(obj'Actor', A) (end 0x005c)
+  0048: A.NotifyLocalPlayerTeamReceived()
+  005b: iternext
+  005c: iterpop
+  005d: return nothing
+  005f: <eos>
+
+function PlayerReplicationInfo.ReplicatedEvent  (script 567 bytes)
+  0000: if !((VarName == 'Team')) goto 0x00b5
+  0013: foreach DynamicActors(obj'Pawn', P) (end 0x0055)
+  002a: if !((P.PlayerReplicationInfo == self)) goto 0x0054
+  003e: P.NotifyTeamChanged()
+  0051: goto 0x0055
+  0054: iternext
+  0055: iterpop
+  0056: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x00b1)
+  006d: if !((PC.PlayerReplicationInfo == self)) goto 0x00b0
+  0081: foreach AllActors(obj'Actor', A) (end 0x00ac)
+  0098: A.NotifyLocalPlayerTeamReceived()
+  00ab: iternext
+  00ac: iterpop
+  00ad: goto 0x00b1
+  00b0: iternext
+  00b1: iterpop
+  00b2: goto 0x0234
+  00b5: if !((VarName == 'PlayerName')) goto 0x01c7
+  00c8: if !(PlayerReplicationInfo.IsInvalidName()) goto 0x00d3
+  00d1: return nothing
+  00d3: if !((self.WorldInfo.TimeSeconds < cast3f(2))) goto 0x00ff
+  00ea: self.bHasBeenWelcomed = true
+  00f2: self.OldName = self.PlayerName
+  00fd: return nothing
+  00ff: if !(self.bHasBeenWelcomed) goto 0x014f
+  0108: if !(ShouldBroadCastWelcomeMessage()) goto 0x014c
+  0116: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x014b)
+  012d: PC.ReceiveLocalizedMessage(self.GameMessageClass, 2, self, , )
+  014a: iternext
+  014b: iterpop
+  014c: goto 0x01b9
+  014f: if !(self.bOnlySpectator) goto 0x0163
+  0158: WelcomeMessageNum = 16
+  0160: goto 0x016a
+  0163: WelcomeMessageNum = 1
+  016a: self.bHasBeenWelcomed = true
+  0172: if !(ShouldBroadCastWelcomeMessage()) goto 0x01b9
+  0180: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x01b8)
+  0197: PC.ReceiveLocalizedMessage(self.GameMessageClass, WelcomeMessageNum, self, , )
+  01b7: iternext
+  01b8: iterpop
+  01b9: self.OldName = self.PlayerName
+  01c4: goto 0x0234
+  01c7: if !((VarName == 'UniqueId')) goto 0x01e7
+  01da: RegisterPlayerWithSession()
+  01e4: goto 0x0234
+  01e7: if !((VarName == 'bIsInactive')) goto 0x0234
+  01fa: self.WorldInfo.GRI.RemovePRI(self)
+  0217: self.WorldInfo.GRI.AddPRI(self)
+  0234: return nothing
+  0236: <eos>
+
+function PlayerReplicationInfo.UpdatePing  (script 7 bytes)
+  0000: TimeStamp
+  0005: nothing
+  0006: <eos>
+
+function PlayerReplicationInfo.ShouldBroadCastWelcomeMessage  (script 44 bytes)
+  0000: nothing
+  0001: return (!self.bIsInactive && (cast3a(self.WorldInfo.NetMode) != cast3a(0)))
+  0025: return return
+  002b: <eos>
+
+function PlayerReplicationInfo.Destroyed  (script 136 bytes)
+  0000: if !((self.WorldInfo.GRI != none)) goto 0x0031
+  0014: self.WorldInfo.GRI.RemovePRI(self)
+  0031: if !(ShouldBroadCastWelcomeMessage(true)) goto 0x0075
+  003f: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x0074)
+  0056: PC.ReceiveLocalizedMessage(self.GameMessageClass, 4, self, , )
+  0073: iternext
+  0074: iterpop
+  0075: UnregisterPlayerFromSession()
+  007f: Actor.Destroyed()
+  0085: return nothing
+  0087: <eos>
+
+function PlayerReplicationInfo.Reset  (script 75 bytes)
+  0000: Actor.Reset()
+  0006: if !(ShouldResetScore()) goto 0x0030
+  0013: self.Score = 0.0
+  001e: self.Kills = 0
+  0025: self.Deaths = 0.0
+  0030: self.bReadyToPlay = false
+  0038: self.bOutOfLives = false
+  0040: self.bForceNetUpdate = true
+  0048: return nothing
+  004a: <eos>
+
+function PlayerReplicationInfo.ShouldResetScore  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PlayerReplicationInfo.AddScore  (script 80 bytes)
+  0000: default=0
+  0005: (self.Score += cast3f(Amount))
+  0013: self.bForceNetUpdate = true
+  001b: if !(((TeamAmount > 0) && (self.Team != none))) goto 0x004d
+  0033: self.Team.AddScore(cast3f(TeamAmount))
+  004d: return nothing
+  004f: <eos>
+
+function PlayerReplicationInfo.GetScore  (script 13 bytes)
+  0000: return self.Score
+  0006: return return
+  000c: <eos>
+
+function PlayerReplicationInfo.SetScore  (script 14 bytes)
+  0000: self.Score = Amount
+  000b: return nothing
+  000d: <eos>
+
+function PlayerReplicationInfo.AddKills  (script 15 bytes)
+  0000: (self.Kills += Amount)
+  000c: return nothing
+  000e: <eos>
+
+function PlayerReplicationInfo.AddDeaths  (script 17 bytes)
+  0000: (self.Deaths += cast3f(Amount))
+  000e: return nothing
+  0010: <eos>
+
+function PlayerReplicationInfo.GetDeaths  (script 13 bytes)
+  0000: return self.Deaths
+  0006: return return
+  000c: <eos>
+
+function PlayerReplicationInfo.GetHumanReadableName  (script 13 bytes)
+  0000: return self.PlayerName
+  0006: return return
+  000c: <eos>
+
+function PlayerReplicationInfo.DisplayDebug  (script 911 bytes)
+  0000: if !((self.Team == none)) goto 0x0038
+  000b: HUD.Canvas.SetDrawColor(cast3d(255), cast3d(255), 0, cast3d(255))
+  0035: goto 0x009f
+  0038: if !((self.Team.TeamIndex == 0)) goto 0x0077
+  004c: HUD.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  0074: goto 0x009f
+  0077: HUD.Canvas.SetDrawColor(64, 64, cast3d(255), cast3d(255))
+  009f: HUD.Canvas.SetPos(4.0, YPos)
+  00c5: HUD.Canvas.Font = obj'Engine'.static.GetSmallFont()
+  00f0: HUD.Canvas.StrLen((((self.PlayerName @ "[") $ GetPlayerAlias()) $ "]"), XS, YS)
+  0131: HUD.Canvas.DrawTextNormal((((self.PlayerName @ "[") $ GetPlayerAlias()) $ "]"), , , )
+  016b: HUD.Canvas.SetPos((4.0 + XS), YPos)
+  0198: HUD.Canvas.Font = obj'Engine'.static.GetTinyFont()
+  01c3: HUD.Canvas.SetDrawColor(cast3d(255), cast3d(255), 0, cast3d(255))
+  01ed: if !(self.bHasFlag) goto 0x0223
+  01f6: HUD.Canvas.DrawTextNormal("   has flag ", , , )
+  0223: (YPos += YS)
+  022f: HUD.Canvas.SetPos(4.0, YPos)
+  0255: if !((!self.bBot && (PlayerController(HUD.Owner).ViewTarget != PlayerController(HUD.Owner).Pawn))) goto 0x038c
+  029f: HUD.Canvas.SetDrawColor(128, 128, cast3d(255), cast3d(255))
+  02c7: HUD.Canvas.DrawTextNormal(((((((((("      bIsSpec:" @ cast54(self.bIsSpectator)) @ "OnlySpec:") $ cast54(self.bOnlySpectator)) @ "Waiting:") $ cast54(self.bWaitingPlayer)) @ "Ready:") $ cast54(self.bReadyToPlay)) @ "OutOfLives:") $ cast54(self.bOutOfLives)), , , )
+  035a: (YPos += YL)
+  0366: HUD.Canvas.SetPos(4.0, YPos)
+  038c: return nothing
+  038e: <eos>
+
+function PlayerReplicationInfo.SetPlayerName  (script 128 bytes)
+  0000: self.PlayerName = S
+  000b: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(0)) || (cast3a(self.WorldInfo.NetMode) == cast3a(2)))) goto 0x006a
+  003f: if !((self.PlayerName != obj'GameInfo'.static.default.DefaultPlayerName)) goto 0x006a
+  0057: ReplicatedEvent('PlayerName')
+  006a: self.OldName = self.PlayerName
+  0075: self.bForceNetUpdate = true
+  007d: return nothing
+  007f: <eos>
+
+function PlayerReplicationInfo.SetWaitingPlayer  (script 37 bytes)
+  0000: self.bIsSpectator = B
+  000d: self.bWaitingPlayer = B
+  001a: self.bForceNetUpdate = true
+  0022: return nothing
+  0024: <eos>
+
+function PlayerReplicationInfo.Duplicate  (script 54 bytes)
+  0000: NewPRI = Spawn(get_Class(), , , , , , , )
+  001a: CopyPropertiesTo(NewPRI)
+  0029: return NewPRI
+  002f: return return
+  0035: <eos>
+
+function PlayerReplicationInfo.OverrideWith  (script 164 bytes)
+  0000: self.bIsSpectator = PRI.bIsSpectator
+  0016: self.bOnlySpectator = PRI.bOnlySpectator
+  002c: self.bWaitingPlayer = PRI.bWaitingPlayer
+  0042: self.bReadyToPlay = PRI.bReadyToPlay
+  0058: self.bOutOfLives = (PRI.bOutOfLives || self.bOutOfLives)
+  0079: self.Team = PRI.Team
+  008d: self.TeamID = PRI.TeamID
+  00a1: return nothing
+  00a3: <eos>
+
+function PlayerReplicationInfo.CopyPropertiesTo  (script 267 bytes)
+  0000: PRI.Score = self.Score
+  0014: PRI.Deaths = self.Deaths
+  0028: PRI.Ping = self.Ping
+  003c: PRI.PlayerName = self.PlayerName
+  0050: PRI.PlayerID = self.PlayerID
+  0064: PRI.StartTime = self.StartTime
+  0078: PRI.Kills = self.Kills
+  008c: PRI.bOutOfLives = self.bOutOfLives
+  00a2: PRI.SavedNetworkAddress = self.SavedNetworkAddress
+  00b6: PRI.Team = self.Team
+  00ca: PRI.TeamID = self.TeamID
+  00de: PRI.UniqueId = self.UniqueId
+  00f2: PRI.bControllerVibrationAllowed = self.bControllerVibrationAllowed
+  0108: return nothing
+  010a: <eos>
+
+function PlayerReplicationInfo.SeamlessTravelTo  (script 40 bytes)
+  0000: CopyPropertiesTo(NewPRI)
+  000f: NewPRI.bOnlySpectator = self.bOnlySpectator
+  0025: return nothing
+  0027: <eos>
+
+function PlayerReplicationInfo.BindPlayerOwnerDataProvider  (script 638 bytes)
+  0000: LogInternal((((((">>" @ cast56(self)) $ "::BindPlayerOwnerDataProvider") @ "(") $ self.PlayerName) $ ")"), 'DevDataStore', , )
+  0048: PlayerOwner = PlayerController(self.Owner)
+  0058: if !((PlayerOwner != none)) goto 0x020d
+  0063: LP = LocalPlayer(PlayerOwner.Player)
+  007c: if !((LP != none)) goto 0x01d8
+  0087: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  00a0: if !((DataStoreManager != none)) goto 0x01a9
+  00ab: CurrentGameData = CurrentGameDataStore(DataStoreManager.FindDataStore('CurrentGame', ))
+  00d3: if !((CurrentGameData != none)) goto 0x0174
+  00de: DataProvider = CurrentGameData.GetPlayerDataProvider(self)
+  00f8: if !((DataProvider != none)) goto 0x011e
+  0103: PlayerOwner.SetPlayerDataProvider(DataProvider)
+  011b: goto 0x0171
+  011e: LogInternal((((("No player data provider registered for player " $ cast56(self)) @ "(") $ self.PlayerName) $ ")"), 'DevDataStore', , )
+  0171: goto 0x01a6
+  0174: LogInternal("'CurrentGame' data store not found!", 'DevDataStore', , )
+  01a6: goto 0x01d5
+  01a9: LogInternal("Data store manager not found!", 'DevDataStore', , )
+  01d5: goto 0x020a
+  01d8: LogInternal(("Non local player:" @ cast56(PlayerOwner.Player)), 'DevDataStore', , )
+  020a: goto 0x0233
+  020d: LogInternal(("Invalid owner:" @ cast56(self.Owner)), 'DevDataStore', , )
+  0233: LogInternal(((((("<<" @ cast56(self)) $ "::BindPlayerOwnerDataProvider") @ "(") $ self.PlayerName) $ ")"), 'DevDataStore', , )
+  027b: return nothing
+  027d: <eos>
+
+function PlayerReplicationInfo.IsLocalPlayerPRI  (script 70 bytes)
+  0000: PC = PlayerController(self.Owner)
+  0010: if !((PC != none)) goto 0x003d
+  001b: LP = LocalPlayer(PC.Player)
+  0034: return (LP != none)
+  003d: return false
+  003f: return return
+  0045: <eos>
+
+function PlayerReplicationInfo.SetUniqueId  (script 14 bytes)
+  0000: self.UniqueId = PlayerUniqueId
+  000b: return nothing
+  000d: <eos>
+
+function PlayerReplicationInfo.GetTeamNum  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PlayerReplicationInfo.IsInvalidName  (script 318 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0135
+  0024: PC = PlayerController(self.Owner)
+  0034: if !((PC != none)) goto 0x0135
+  003f: LocPlayer = LocalPlayer(PC.Player)
+  0058: if !((((LocPlayer != none) && NotEqual_InterfaceInterface(OnlineSub.GameInterface, OnlineGameInterface(none))) && NotEqual_InterfaceInterface(OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x0135
+  00a1: if !((cast3a(OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LocPlayer.ControllerId))) == cast3a(2))) goto 0x0135
+  00d9: ProfileName = OnlineSub.PlayerInterface.GetPlayerNickname(cast3d(LocPlayer.ControllerId))
+  010c: if !((ProfileName != self.PlayerName)) goto 0x0135
+  011b: PC.SetName(ProfileName)
+  0133: return true
+  0135: return false
+  0137: return return
+  013d: <eos>
+
+function PlayerReplicationInfo.SetPlayerAlias  (script 14 bytes)
+  0000: self.PlayerAlias = NewAlias
+  000b: return nothing
+  000d: <eos>
+
+function PlayerReplicationInfo.RegisterPlayerWithSession  (script 258 bytes)
+  0000: Online = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((((Online != none) && NotEqual_InterfaceInterface(Online.GameInterface, OnlineGameInterface(none))) && (self.SessionName != 'None')) && (Online.GameInterface.GetGameSettings(self.SessionName) != none))) goto 0x00ff
+  0082: Online.GameInterface.RegisterPlayer(self.SessionName, self.UniqueId, false)
+  00aa: if !(!self.bNetOwner) goto 0x00ff
+  00b5: PlayersList = OnlineRecentPlayersList(Online.GetNamedInterface('RecentPlayersList'))
+  00dc: if !((PlayersList != none)) goto 0x00ff
+  00e7: PlayersList.AddPlayerToRecentPlayers(self.UniqueId)
+  00ff: return nothing
+  0101: <eos>
+
+function PlayerReplicationInfo.UnregisterPlayerFromSession  (script 219 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(((((((self.SessionName != 'None') && (cast3a(self.WorldInfo.NetMode) == cast3a(3))) && (OnlineSub != none)) && NotEqual_InterfaceInterface(OnlineSub.GameInterface, OnlineGameInterface(none))) && (OnlineSub.GameInterface.GetGameSettings(self.SessionName) != none)) && (self.UniqueId != ZeroId))) goto 0x00d8
+  00b1: OnlineSub.GameInterface.UnregisterPlayer(self.SessionName, self.UniqueId)
+  00d8: return nothing
+  00da: <eos>

@@ -1,0 +1,133 @@
+function TnVehiclePlaneAiControlStrategy.set_EnemyFlyingThreshold  (script 14 bytes)
+  0000: self._EnemyFlyingThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehiclePlaneAiControlStrategy.OnInitialize  (script 66 bytes)
+  0000: if !((self._TransformerPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: self._PlaneForm = TnPlaneForm(self._TransformerPawn._VehicleForm)
+  0026: self._Blueprint = self._PlaneForm.get_PlaneFormBlueprint()
+  003f: return nothing
+  0041: <eos>
+
+function TnVehiclePlaneAiControlStrategy.OnUpdate  (script 289 bytes)
+  0000: if !((cast3a(self._TransformerPawn.Role) == cast3a(1))) goto 0x001b
+  0019: return nothing
+  001b: self._PlaneForm.UpdateAi(DeltaTime, CalculateFinalDesiredLocation(self._PlaneForm._RigidBody), self._DesiredRotation, ((cast3a(self._IsAvoiding) == cast3a(0)) && self._PathFollower.get_OnFinalSegmentInPath()))
+  0075: self._IsAvoiding = 0
+  007d: if !((!self._PlaneForm.get_IsBoosting() && self._BoundController.bRotateTowardFocus)) goto 0x011e
+  00a9: if !(NotEqual_InterfaceInterface(self._BoundController.Focus, IFocusible(none))) goto 0x010c
+  00c6: self._DesiredRotation = cast50((self._BoundController.Focus.GetFocalPoint() - self._TransformerPawn.Mesh.GetRBPosition()))
+  0109: goto 0x011e
+  010c: self._DesiredRotation.Pitch = 0
+  011e: return nothing
+  0120: <eos>
+
+function TnVehiclePlaneAiControlStrategy.IsActorAirborne  (script 56 bytes)
+  0000: P = TnPawn(A)
+  0010: if !((P != none)) goto 0x002f
+  001b: return P.get_IsAirborne()
+  002f: return false
+  0031: return return
+  0037: <eos>
+
+function TnVehiclePlaneAiControlStrategy.CanFlyToLocation  (script 204 bytes)
+  0000: if !((self._PathFollower._PathIsValid && (self._PathFollower._PathDistance < cast3f(100)))) goto 0x002d
+  002b: return false
+  002d: Distance = obj'Core.Math'.static.VSize((Location - self._TransformerPawn.Location))
+  0053: if !((!self._PathFollower._PathIsValid && (Distance < cast3f(100)))) goto 0x0079
+  0077: return false
+  0079: PawnToDesired = (Location - self._TransformerPawn.Location)
+  0094: Direction = (PawnToDesired / Distance)
+  00a6: return ((cast39(self._TransformerPawn.Rotation) dot Direction) > 0.5)
+  00c5: return return
+  00cb: <eos>
+
+function TnVehiclePlaneAiControlStrategy.CanFlyToGoal  (script 236 bytes)
+  0000: if !(self._BoostOverride) goto 0x0028
+  0009: return TnVehiclePlaneAiControlStrategy.CanFlyToLocation(GoalActor.GetDestination(self._BoundController))
+  0028: if !(((AirPathNode(GoalActor) == none) && (Pawn(GoalActor) == none))) goto 0x004c
+  004a: return false
+  004c: if !(((NotEqual_InterfaceInterface(self._BoundController.Focus, IFocusible(none)) && (NavigationPoint(cast36(self._BoundController.Focus)) == none)) && (FocusLocation(cast36(self._BoundController.Focus)) == none))) goto 0x00a5
+  00a3: return false
+  00a5: if !(((self._BoundController.Enemy != none) && TnVehiclePlaneAiControlStrategy.WithinEnemyTolerance())) goto 0x00c6
+  00c4: return false
+  00c6: return TnVehiclePlaneAiControlStrategy.CanFlyToLocation(GoalActor.GetDestination(self._BoundController))
+  00e5: return return
+  00eb: <eos>
+
+function TnVehiclePlaneAiControlStrategy.WithinEnemyTolerance  (script 80 bytes)
+  0000: return (obj'Core.Math'.static.VSizeSq((self._TransformerPawn.Location - self._BoundController.Enemy.Location)) <= (self._EnemyFlyingThreshold * self._EnemyFlyingThreshold))
+  0049: return return
+  004f: <eos>
+
+function TnVehiclePlaneAiControlStrategy.GetTargetOffset  (script 268 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x0011
+  000b: return 0.0
+  0011: if !(!self._PlaneForm.get_IsBoosting()) goto 0x0097
+  0029: return obj'Core.Math'.static.Lerp(self._Blueprint.PathingHoverMinTargetOffset, self._Blueprint.PathingHoverMaxTargetOffset, obj'Core.Math'.static.FClamp((TnPlaneForm(self._TransformerPawn._VehicleForm).get_Speed() / self._Blueprint.PathingHoverMaxSpeed), 0.0, 1.0))
+  0097: return obj'Core.Math'.static.Lerp(self._Blueprint.PathingFlyingMinTargetOffset, self._Blueprint.PathingFlyingMaxTargetOffset, obj'Core.Math'.static.FClamp((TnPlaneForm(self._TransformerPawn._VehicleForm).get_Speed() / self._Blueprint.PathingFlyingMaxSpeed), 0.0, 1.0))
+  0105: return return
+  010b: <eos>
+
+function TnVehiclePlaneAiControlStrategy.OnMoveTowardPoint  (script 20 bytes)
+  0000: TnVehiclePlaneAiControlStrategy.SetBoosting(TnVehiclePlaneAiControlStrategy.CanFlyToLocation(Dest))
+  0011: return nothing
+  0013: <eos>
+
+function TnVehiclePlaneAiControlStrategy.OnMoveTowardPath  (script 149 bytes)
+  0000: TnVehiclePlaneAiControlStrategy.SetBoosting(TnVehiclePlaneAiControlStrategy.CanFlyToGoal(GoalActor))
+  0011: if !(self._PlaneForm.get_IsBoosting()) goto 0x0044
+  0027: self._DesiredRotation = cast50((self._LookAtLocation - self._TransformerPawn.Location))
+  0044: SetWorldStateVehicleMode((((AirPathNode(self._PathFollower.get_Predecessor()) != none) || (AirPathNode(self._PathFollower.get_Successor()) != none)) ? 2 : 1))
+  0092: return nothing
+  0094: <eos>
+
+function TnVehiclePlaneAiControlStrategy.OnMoveTowardActor  (script 68 bytes)
+  0000: SetWorldStateVehicleMode((((AirPathNode(GoalActor) != none) || TnVehiclePlaneAiControlStrategy.IsActorAirborne(GoalActor)) ? 2 : 1))
+  0030: TnVehiclePlaneAiControlStrategy.SetBoosting(TnVehiclePlaneAiControlStrategy.CanFlyToGoal(GoalActor))
+  0041: return nothing
+  0043: <eos>
+
+function TnVehiclePlaneAiControlStrategy.IsStuckInMoveToward  (script 106 bytes)
+  0000: if !((self._PlaneForm.get_LinearSpeed() <= 5.0)) goto 0x0057
+  001d: IncrementStuckTime()
+  0027: if !(IsStuckTimedOut()) goto 0x0054
+  0034: return !obj'TnObstacleAvoidance'.static.IsPathClearToLocation(self._TransformerPawn, self._DesiredLocation)
+  0054: goto 0x0061
+  0057: ClearStuckTime()
+  0061: return false
+  0063: return return
+  0069: <eos>
+
+function TnVehiclePlaneAiControlStrategy.OnPostMoveToward  (script 322 bytes)
+  0000: Dest = DestTemp
+  000b: if !(!self._TransformerPawn._IsAvoidanceDisabledInVehicleForm) goto 0x013f
+  001f: self._IsAvoiding = self._TransformerPawn._ObstacleAvoidanceManager.ShouldAvoid(Dest, GoalActor, 2000.0, 20.0, false, SafeLocation)
+  005b: if !((cast3a(self._IsAvoiding) == cast3a(1))) goto 0x013f
+  006b: VectToSafeLocation = (SafeLocation - self._TransformerPawn.Location)
+  0086: MagToSafeLocation = obj'Core.Math'.static.VSize(VectToSafeLocation)
+  009c: MaxMagToSafeLocation = GetTargetOffset()
+  00ac: if !((MagToSafeLocation > MaxMagToSafeLocation)) goto 0x00f2
+  00bb: DirToSafeLocation = (VectToSafeLocation / MagToSafeLocation)
+  00cd: self._DesiredLocation = (self._TransformerPawn.Location + (DirToSafeLocation * MaxMagToSafeLocation))
+  00ef: goto 0x00fd
+  00f2: self._DesiredLocation = SafeLocation
+  00fd: if !(((self._BoundController != none) && (cast3a(self._BoundController._DebugMode) == cast3a(3)))) goto 0x013f
+  0123: self._TransformerPawn._ObstacleAvoidanceManager.DisplayDebug()
+  013f: return nothing
+  0141: <eos>
+
+function TnVehiclePlaneAiControlStrategy.SetBoosting  (script 28 bytes)
+  0000: self._PlaneForm.set_BoostingInput(ShouldBoost)
+  0019: return nothing
+  001b: <eos>
+
+function TnVehiclePlaneAiControlStrategy.AdjustLookAtTargetLocation  (script 145 bytes)
+  0000: Focus = IFocusible(cast36(self._BoundController.Focus))
+  001b: if !(((NotEqual_InterfaceInterface(Focus, IFocusible(none)) && self._BoundController.bRotateTowardFocus) && EqualEqual_InterfaceInterface(IFocusible(self._BoundController.Enemy), Focus))) goto 0x007e
+  0066: return self._BoundController.Enemy.Location
+  007e: return TnVehicleAiControlStrategy.AdjustLookAtTargetLocation(TargetLocation)
+  008a: return return
+  0090: <eos>

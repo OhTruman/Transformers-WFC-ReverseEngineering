@@ -1,0 +1,56 @@
+function HmTransitionSmoother.PercentRemapper  (script 13 bytes)
+  0000: return InPercent
+  0006: return return
+  000c: <eos>
+
+function HmTransitionSmoother.SetPercentRemapper  (script 14 bytes)
+  0000: self.__PercentRemapper__Delegate = Remapper
+  000b: return nothing
+  000d: <eos>
+
+function HmTransitionSmoother.Reset  (script 25 bytes)
+  0000: self.PercentElapsed = 0.0
+  000b: self.RemappedPercentElapsed = 0.0
+  0016: return nothing
+  0018: <eos>
+
+function HmTransitionSmoother.EndTransition  (script 25 bytes)
+  0000: self.PercentElapsed = 1.0
+  000b: self.RemappedPercentElapsed = 1.0
+  0016: return nothing
+  0018: <eos>
+
+function HmTransitionSmoother.SetTransitionTime  (script 14 bytes)
+  0000: self.TransitionTime = Time
+  000b: return nothing
+  000d: <eos>
+
+function HmTransitionSmoother.GetPercentElapsed  (script 13 bytes)
+  0000: return self.RemappedPercentElapsed
+  0006: return return
+  000c: <eos>
+
+function HmTransitionSmoother.IsTransitioning  (script 20 bytes)
+  0000: return (self.RemappedPercentElapsed < 1.0)
+  000d: return return
+  0013: <eos>
+
+function HmTransitionSmoother.GetTimeRemaining  (script 27 bytes)
+  0000: return ((1.0 - self.PercentElapsed) * self.TransitionTime)
+  0014: return return
+  001a: <eos>
+
+function HmTransitionSmoother.Update  (script 235 bytes)
+  0000: if !(((self.TransitionTime <= 0.0) || (self.PercentElapsed >= 1.0))) goto 0x0031
+  0020: self.RemappedPercentElapsed = 1.0
+  002b: return 1.0
+  0031: self.PercentElapsed = obj'Core.Math'.static.FClamp((self.PercentElapsed + (DeltaTime / self.TransitionTime)), 0.0, 1.0)
+  005f: RemappedPercentLeft = (1.0 - self.RemappedPercentElapsed)
+  0071: RemappedPercentAfterDt = obj'Core.Math'.static.FClamp(PercentRemapper(self.PercentElapsed), 0.0, 1.0)
+  00a0: RemappedPercentDifferenceThisFrame = (RemappedPercentAfterDt - self.RemappedPercentElapsed)
+  00b2: self.RemappedPercentElapsed = RemappedPercentAfterDt
+  00bd: if !((self.RemappedPercentElapsed >= 1.0)) goto 0x00d7
+  00cc: self.PercentElapsed = 1.0
+  00d7: return (RemappedPercentDifferenceThisFrame / RemappedPercentLeft)
+  00e4: return return
+  00ea: <eos>

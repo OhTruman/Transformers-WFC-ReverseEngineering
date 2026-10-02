@@ -1,0 +1,129 @@
+function HmInputHistory.SetSampleTime  (script 14 bytes)
+  0000: self.SampleTime = T
+  000b: return nothing
+  000d: <eos>
+
+function HmInputHistory.GetSampleTime  (script 13 bytes)
+  0000: return self.SampleTime
+  0006: return return
+  000c: <eos>
+
+function HmInputHistory.ClearHistory  (script 30 bytes)
+  0000: if !((self.History.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: self.History.Remove(0,self.History.Length)
+  001b: return nothing
+  001d: <eos>
+
+function HmInputHistory.AddSample  (script 86 bytes)
+  0000: if !((DeltaTime == cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: sample.stickPosition = stickPosition
+  0025: sample.DeltaTime = DeltaTime
+  003b: self.History.Length[self.History] = sample
+  004d: HmInputHistory.PruneHistory()
+  0053: return nothing
+  0055: <eos>
+
+function HmInputHistory.GetSampleCount  (script 14 bytes)
+  0000: return self.History.Length
+  0007: return return
+  000d: <eos>
+
+function HmInputHistory.GetSample  (script 30 bytes)
+  0000: return Index[self.History].stickPosition
+  0017: return return
+  001d: <eos>
+
+function HmInputHistory.GetCurrentSample  (script 61 bytes)
+  0000: return ((self.History.Length == 0) ? vect(0,0,0) : (self.History.Length - 1)[self.History].stickPosition)
+  0036: return return
+  003c: <eos>
+
+function HmInputHistory.GetMagnitudeDelta  (script 126 bytes)
+  0000: if !((self.History.Length < 2)) goto 0x0013
+  000d: return 0.0
+  0013: NewSize = obj'Core.Math'.static.VSize((self.History.Length - 1)[self.History].stickPosition)
+  003e: OldSize = obj'Core.Math'.static.VSize((self.History.Length - 2)[self.History].stickPosition)
+  006a: return (NewSize - OldSize)
+  0077: return return
+  007d: <eos>
+
+function HmInputHistory.GetMajorVerticalMotion  (script 358 bytes)
+  0000: if !((self.History.Length == 0)) goto 0x0012
+  000c: return 0.0
+  0012: minPosX = 0[self.History].stickPosition.X
+  0035: maxPosX = 0[self.History].stickPosition.X
+  0058: I = 1
+  005f: if !((I < self.History.Length)) goto 0x0133
+  006f: if !((I[self.History].stickPosition.X < minPosX)) goto 0x00cc
+  009a: minPosX = I[self.History].stickPosition.X
+  00c1: minIndex = I
+  00cc: if !((I[self.History].stickPosition.X > maxPosX)) goto 0x0129
+  00f7: maxPosX = I[self.History].stickPosition.X
+  011e: maxIndex = I
+  0129: AddAdd_PreInt(I)
+  0130: goto 0x005f
+  0133: if !((minIndex < maxIndex)) goto 0x0152
+  0142: return (maxPosX - minPosX)
+  014f: goto 0x015f
+  0152: return (minPosX - maxPosX)
+  015f: return return
+  0165: <eos>
+
+function HmInputHistory.GetMajorHorizontalMotion  (script 358 bytes)
+  0000: if !((self.History.Length == 0)) goto 0x0012
+  000c: return 0.0
+  0012: minPosY = 0[self.History].stickPosition.Y
+  0035: maxPosY = 0[self.History].stickPosition.Y
+  0058: I = 1
+  005f: if !((I < self.History.Length)) goto 0x0133
+  006f: if !((I[self.History].stickPosition.Y < minPosY)) goto 0x00cc
+  009a: minPosY = I[self.History].stickPosition.Y
+  00c1: minIndex = I
+  00cc: if !((I[self.History].stickPosition.Y > maxPosY)) goto 0x0129
+  00f7: maxPosY = I[self.History].stickPosition.Y
+  011e: maxIndex = I
+  0129: AddAdd_PreInt(I)
+  0130: goto 0x005f
+  0133: if !((minIndex < maxIndex)) goto 0x0152
+  0142: return (maxPosY - minPosY)
+  014f: goto 0x015f
+  0152: return (minPosY - maxPosY)
+  015f: return return
+  0165: <eos>
+
+function HmInputHistory.PruneHistory  (script 141 bytes)
+  0000: indexOfDropStart = -1
+  000b: I = (self.History.Length - 1)
+  001a: if !((I >= 1)) goto 0x006c
+  0025: (historyTimeSum += I[self.History].DeltaTime)
+  0042: if !((historyTimeSum >= self.SampleTime)) goto 0x0062
+  0051: indexOfDropStart = (I - 1)
+  005f: goto 0x006c
+  0062: SubtractSubtract_PreInt(I)
+  0069: goto 0x001a
+  006c: if !((indexOfDropStart != -1)) goto 0x008a
+  007b: self.History.Remove(0,(indexOfDropStart + 1))
+  008a: return nothing
+  008c: <eos>
+
+function HmInputHistory.AllSamplesWithinRing  (script 259 bytes)
+  0000: if !((self.History.Length == 0)) goto 0x000e
+  000c: return false
+  000e: minRadiusSqr = obj'Core.Math'.static.VSizeSq(0[self.History].stickPosition)
+  0039: maxRadiusSqr = minRadiusSqr
+  0044: I = 1
+  004b: if !((I < self.History.Length)) goto 0x00ca
+  005b: curRadiusSqr = obj'Core.Math'.static.VSizeSq(I[self.History].stickPosition)
+  008a: minRadiusSqr = obj'Core.Math'.static.FMin(minRadiusSqr, curRadiusSqr)
+  00a5: maxRadiusSqr = obj'Core.Math'.static.FMax(maxRadiusSqr, curRadiusSqr)
+  00c0: AddAdd_PreInt(I)
+  00c7: goto 0x004b
+  00ca: if !((minRadiusSqr < (InnerRadius * InnerRadius))) goto 0x00e2
+  00e0: return false
+  00e2: if !((maxRadiusSqr > (OuterRadius * OuterRadius))) goto 0x00fa
+  00f8: return false
+  00fa: return true
+  00fc: return return
+  0102: <eos>

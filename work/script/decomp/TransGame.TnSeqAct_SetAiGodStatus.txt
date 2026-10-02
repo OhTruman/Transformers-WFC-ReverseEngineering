@@ -1,0 +1,28 @@
+function TnSeqAct_SetAiGodStatus.Activated  (script 53 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x0032
+  0017: TnSeqAct_SetAiGodStatus.ProcessGodStatus(I[self.Targets])
+  0028: AddAdd_PreInt(I)
+  002f: goto 0x0007
+  0032: return nothing
+  0034: <eos>
+
+function TnSeqAct_SetAiGodStatus.ProcessGodStatus  (script 140 bytes)
+  0000: TargetController = TnAiController(TargetObject)
+  0010: if !((TargetController == none)) goto 0x005e
+  001b: TargetPawn = TnPawn(TargetObject)
+  002b: if !((TargetPawn == none)) goto 0x0038
+  0036: return nothing
+  0038: TargetController = TnAiController(TargetPawn.Controller)
+  0051: if !((TargetController == none)) goto 0x005e
+  005c: return nothing
+  005e: TnSeqAct_SetAiGodStatus.SetGodStatus(TargetController)
+  0069: TargetController.SetWorldStateInt(obj'TnAiWorldStateGodStatus', cast3a(self.GodStatus), )
+  0089: return nothing
+  008b: <eos>
+
+function TnSeqAct_SetAiGodStatus.SetGodStatus  (script 61 bytes)
+  0000: TargetController.bGodMode = (cast3a(self.GodStatus) == cast3a(1))
+  001d: TargetController.bPseudoGodMode = (cast3a(self.GodStatus) == cast3a(2))
+  003a: return nothing
+  003c: <eos>

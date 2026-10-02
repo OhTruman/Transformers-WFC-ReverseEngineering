@@ -1,0 +1,96 @@
+function EmitterPool.OnParticleSystemFinished  (script 52 bytes)
+  0000: I = self.ActiveComponents.Find(PSC)
+  0013: if !((I != -1)) goto 0x0031
+  0022: ReturnToPool(I)
+  0031: return nothing
+  0033: <eos>
+
+function EmitterPool.ReturnToPool  (script 7 bytes)
+  0000: ActiveComponentsIndex
+  0005: nothing
+  0006: <eos>
+
+function EmitterPool.FreeStaticMeshComponent  (script 7 bytes)
+  0000: SMC
+  0005: nothing
+  0006: <eos>
+
+function EmitterPool.RemoveFromBuckets  (script 7 bytes)
+  0000: PSC
+  0005: nothing
+  0006: <eos>
+
+function EmitterPool.GetFreeStaticMeshComponent  (script 7 bytes)
+  0000: bCreateNewObject
+  0005: nothing
+  0006: <eos>
+
+function EmitterPool.FreeMaterialInstanceConstants  (script 7 bytes)
+  0000: SMC
+  0005: nothing
+  0006: <eos>
+
+function EmitterPool.GetFreeMatInstConsts  (script 7 bytes)
+  0000: bCreateNewObject
+  0005: nothing
+  0006: <eos>
+
+function EmitterPool.GetPooledComponent  (script 17 bytes)
+  0000: EmitterTemplate
+  0005: BucketGuid
+  000a: BucketMaxComponents
+  000f: nothing
+  0010: <eos>
+
+function EmitterPool.SpawnEmitter  (script 436 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !((EmitterTemplate != none)) goto 0x0181
+  000f: if !(((AttachToActor != none) && (AttachToActor.bStatic || !AttachToActor.bMovable))) goto 0x004b
+  0044: AttachToActor = none
+  004b: Result = GetPooledComponent(EmitterTemplate, BucketGuid, BucketMaxComponents)
+  006a: if !((AttachToActor != none)) goto 0x0121
+  0075: I = self.RelativePSCs.Length
+  0081: self.RelativePSCs.Length = (I + 1)
+  0090: I[self.RelativePSCs].PSC = Result
+  00ac: I[self.RelativePSCs].Base = AttachToActor
+  00c8: I[self.RelativePSCs].RelativeLocation = (SpawnLocation - AttachToActor.Location)
+  00f4: I[self.RelativePSCs].RelativeRotation = (SpawnRotation - AttachToActor.Rotation)
+  0121: Result.SetTranslation(SpawnLocation)
+  0139: Result.SetRotation(SpawnRotation)
+  0151: AttachComponent(Result)
+  0160: Result.__OnSystemFinished__Delegate = delegate.OnParticleSystemFinished
+  0178: return Result
+  017e: goto 0x01ad
+  0181: WarnInternal("No EmitterTemplate!")
+  0198: obj'Core.Profiling'.static.PrintScriptBacktrace()
+  01ab: return none
+  01ad: return return
+  01b3: <eos>
+
+function EmitterPool.SpawnEmitterAttachedToSkeletalMesh  (script 258 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((EmitterTemplate != none)) goto 0x00cf
+  000d: Result = GetPooledComponent(EmitterTemplate, BucketGuid, BucketMaxComponents)
+  002c: Result.SetTranslation(SpawnLocation)
+  0044: Result.SetRotation(SpawnRotation)
+  005c: if !(((none != SkelMeshComponent) && ('None' != BoneName))) goto 0x009f
+  007c: SkelMeshComponent.AttachComponent(Result, BoneName, , , )
+  009c: goto 0x00ae
+  009f: AttachComponent(Result)
+  00ae: Result.__OnSystemFinished__Delegate = delegate.OnParticleSystemFinished
+  00c6: return Result
+  00cc: goto 0x00fb
+  00cf: WarnInternal("No EmitterTemplate!")
+  00e6: obj'Core.Profiling'.static.PrintScriptBacktrace()
+  00f9: return none
+  00fb: return return
+  0101: <eos>
+
+function EmitterPool.SpawnEmitterCustomLifetime  (script 25 bytes)
+  0000: return GetPooledComponent(EmitterTemplate, , )
+  0012: return return
+  0018: <eos>

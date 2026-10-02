@@ -1,0 +1,27 @@
+function TnSpawnModifierComponent.ScoreCluster  (script 140 bytes)
+  0000: if !((self.Owner == none)) goto 0x0045
+  000b: TnGame(Cluster.WorldInfo.Game)._SpawnPointManager.UnregisterSpawnModifier(self)
+  003f: return 0.0
+  0045: foreach self.Rules(Rule,) (end 0x007e)
+  0054: (Total += Rule.ScoreCluster(Cluster, self.Owner, Faction))
+  007d: iternext
+  007e: iterpop
+  007f: return Total
+  0085: return return
+  008b: <eos>
+
+function TnSpawnModifierComponent.Attached  (script 105 bytes)
+  0000: Attached()
+  0006: Game = TnGame(self.Owner.WorldInfo.Game)
+  0028: if !(((Game != none) && (Game._SpawnPointManager != none))) goto 0x0066
+  0049: Game._SpawnPointManager.RegisterSpawnModifier(self)
+  0066: return nothing
+  0068: <eos>
+
+function TnSpawnModifierComponent.Detached  (script 111 bytes)
+  0000: Detached(bWillReattach)
+  000c: Game = TnGame(self.Owner.WorldInfo.Game)
+  002e: if !(((Game != none) && (Game._SpawnPointManager != none))) goto 0x006c
+  004f: Game._SpawnPointManager.UnregisterSpawnModifier(self)
+  006c: return nothing
+  006e: <eos>

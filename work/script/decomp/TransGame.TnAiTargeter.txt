@@ -1,0 +1,89 @@
+function TnAiTargeter.get_TargetLocation  (script 13 bytes)
+  0000: return self._TargetLocation
+  0006: return return
+  000c: <eos>
+
+function TnAiTargeter.set_TargetLocation  (script 14 bytes)
+  0000: self._TargetLocation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiTargeter.Initialize  (script 14 bytes)
+  0000: self.Owner = OwningPawn
+  000b: return nothing
+  000d: <eos>
+
+function TnAiTargeter.Target  (script 158 bytes)
+  0000: TargetableService = TnAiTargeter.GetTargetableService(TargetActor)
+  0011: if !(NotEqual_InterfaceInterface(TargetableService, TnTargetableService(none))) goto 0x0042
+  0025: self._TargetLocation = TargetableService.get_TargetableLocation()
+  003f: goto 0x0090
+  0042: if !((TargetActor != none)) goto 0x0064
+  004d: self._TargetLocation = TargetActor.Location
+  0061: goto 0x0090
+  0064: self._TargetLocation = (self.Owner.Location + (self.DefaultTargetLocationOffset >> self.Owner.Rotation))
+  0090: TnAiTargeter.AdjustTargetLocation(TargetActor)
+  009b: return nothing
+  009d: <eos>
+
+function TnAiTargeter.AdjustTargetLocation  (script 131 bytes)
+  0000: if !((TargetActor == none)) goto 0x000d
+  000b: return nothing
+  000d: W = TnWeapon(self.Owner.Weapon)
+  0026: if !((W == none)) goto 0x0033
+  0031: return nothing
+  0033: if !(W._ShouldLeadTarget) goto 0x005e
+  0045: TnAiTargeter.LeadTarget(W, TargetActor.Velocity)
+  005e: if !(W._ShouldAimBelowTarget) goto 0x0080
+  0070: TnAiTargeter.AimBelowTarget(TargetActor, W)
+  0080: return nothing
+  0082: <eos>
+
+function TnAiTargeter.GetTargetableService  (script 70 bytes)
+  0000: TargetPawn = TnPawn(TargetActor)
+  0010: if !((TargetPawn == none)) goto 0x001d
+  001b: return none
+  001d: return TnTargetableService(TargetPawn.GetService('TnTargetableService'))
+  003f: return return
+  0045: <eos>
+
+function TnAiTargeter.LeadTarget  (script 375 bytes)
+  0000: ProjectileSpeed = W.GetAiProjectileInitialSpeed()
+  0019: if !((ProjectileSpeed <= cast3f(0))) goto 0x0028
+  0026: return nothing
+  0028: Denominator = ((TargetVelocity dot TargetVelocity) - (ProjectileSpeed * ProjectileSpeed))
+  0048: if !((Denominator == cast3f(0))) goto 0x0057
+  0055: return nothing
+  0057: TargetDirection = (self._TargetLocation - W.GetMuzzleLoc())
+  0077: TargetDistance = obj'Core.Math'.static.VSize(TargetDirection)
+  008d: if !((TargetDistance == cast3f(0))) goto 0x009c
+  009a: return nothing
+  009c: Discriminant = (obj'Core.Math'.static.Square(((TargetDirection dot TargetVelocity) / TargetDistance)) - Denominator)
+  00c7: if !((Discriminant <= cast3f(0))) goto 0x00d6
+  00d4: return nothing
+  00d6: HitTime = TnAiTargeter.GetBestHitTime(((TargetDistance * ((-(TargetDirection dot TargetVelocity) / TargetDistance) + obj'Core.Math'.static.Sqrt(Discriminant))) / Denominator), ((TargetDistance * ((-(TargetDirection dot TargetVelocity) / TargetDistance) - obj'Core.Math'.static.Sqrt(Discriminant))) / Denominator))
+  014c: if !((HitTime <= cast3f(0))) goto 0x015b
+  0159: return nothing
+  015b: self._TargetLocation = (self._TargetLocation + (HitTime * TargetVelocity))
+  0174: return nothing
+  0176: <eos>
+
+function TnAiTargeter.GetBestHitTime  (script 69 bytes)
+  0000: if !(((HitTime1 <= cast3f(0)) && (HitTime2 <= cast3f(0)))) goto 0x0025
+  001c: return 0.0
+  0022: goto 0x0038
+  0025: if !((HitTime1 <= cast3f(0))) goto 0x0038
+  0032: return HitTime2
+  0038: return HitTime1
+  003e: return return
+  0044: <eos>
+
+function TnAiTargeter.AimBelowTarget  (script 193 bytes)
+  0000: TargetPawn = TnPawn(TargetActor)
+  0010: if !(((TargetPawn == none) || TargetPawn.get_IsAirborne())) goto 0x0035
+  0033: return nothing
+  0035: if !((obj'Core.Math'.static.Abs((W.GetMuzzleLoc().Z - TargetPawn.Location.Z)) > cast3f(700))) goto 0x0087
+  0085: return nothing
+  0087: (self._TargetLocation -= obj'Core.Math'.static.MakeVector(0.0, 0.0, TargetPawn.GetCollisionHeight()))
+  00be: return nothing
+  00c0: <eos>

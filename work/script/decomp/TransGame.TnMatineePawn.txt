@@ -1,0 +1,127 @@
+function TnMatineePawn.set_FactionTeam  (script 14 bytes)
+  0000: self._FactionTeam = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnMatineePawn.get_DisplayType  (script 27 bytes)
+  0000: return self._HealthDisplay.get_DisplayType()
+  0014: return return
+  001a: <eos>
+
+function TnMatineePawn.get_CurrentHealth  (script 27 bytes)
+  0000: return self._HealthDisplay.get_CurrentHealth()
+  0014: return return
+  001a: <eos>
+
+function TnMatineePawn.get_NormalizedHealth  (script 27 bytes)
+  0000: return self._HealthDisplay.get_NormalizedHealth()
+  0014: return return
+  001a: <eos>
+
+function TnMatineePawn.get_IsEnabled  (script 27 bytes)
+  0000: return self._HealthDisplay.get_IsEnabled()
+  0014: return return
+  001a: <eos>
+
+function TnMatineePawn.set_IsEnabled  (script 41 bytes)
+  0000: self.HealthDisplayIsEnabled = Value
+  000d: self._HealthDisplay.set_IsEnabled(self.HealthDisplayIsEnabled)
+  0026: return nothing
+  0028: <eos>
+
+function TnMatineePawn.ReplicatedEvent  (script 51 bytes)
+  0000: if !((VarName == 'HealthDisplayIsEnabled')) goto 0x0025
+  0013: set_IsEnabled(self.HealthDisplayIsEnabled)
+  0023: return nothing
+  0025: ReplicatedEvent(VarName)
+  0030: return nothing
+  0032: <eos>
+
+function TnMatineePawn.EncroachedBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnMatineePawn.PostBeginPlay  (script 69 bytes)
+  0000: PostBeginPlay()
+  0006: self._HealthDisplay.Initialize(self)
+  001a: self._Services.Add('TnHealthDisplayService', self)
+  0037: TnMatineePawn.SetAITeam(self._FactionTeam)
+  0042: return nothing
+  0044: <eos>
+
+function TnMatineePawn.GetService  (script 32 bytes)
+  0000: return self._Services.GetService(Type)
+  0019: return return
+  001f: <eos>
+
+function TnMatineePawn.SetupMarker  (script 104 bytes)
+  0000: if !((((self.ObjectiveMarkerClass == none) || self.ObjectiveMarkerInitialized) || (TnGameReplicationInfoGameBase(self.WorldInfo.GRI) == none))) goto 0x0033
+  0031: return nothing
+  0033: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker("", self, self.ObjectiveMarkerClass, true)
+  005d: self.ObjectiveMarkerInitialized = true
+  0065: return nothing
+  0067: <eos>
+
+function TnMatineePawn.ShouldDisplayHealth  (script 27 bytes)
+  0000: return self._HealthDisplay.ShouldDisplayHealth()
+  0014: return return
+  001a: <eos>
+
+function TnMatineePawn.Tick  (script 20 bytes)
+  0000: TnMatineePawn.SetupMarker()
+  0006: Tick(DeltaTime)
+  0011: return nothing
+  0013: <eos>
+
+function TnMatineePawn.BeginAnimControl  (script 70 bytes)
+  0000: self.Acceleration = vect(0,0,0)
+  0013: self.Velocity = vect(0,0,0)
+  0026: self._MatineeAnimator.BeginAnimControl(InAnimSets, self.Mesh)
+  0043: return nothing
+  0045: <eos>
+
+function TnMatineePawn.SetAnimPosition  (script 54 bytes)
+  0000: self._MatineeAnimator.SetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bFireNotifies, bLooping)
+  0033: return nothing
+  0035: <eos>
+
+function TnMatineePawn.SetAnimWeights  (script 27 bytes)
+  0000: self._MatineeAnimator.SetAnimWeights(SlotInfos)
+  0018: return nothing
+  001a: <eos>
+
+function TnMatineePawn.FinishAnimControl  (script 22 bytes)
+  0000: self._MatineeAnimator.FinishAnimControl()
+  0013: return nothing
+  0015: <eos>
+
+function TnMatineePawn.AllowDamageType  (script 16 bytes)
+  0000: self._AllowedDamageTypes.AddItem(DamageType)
+  000d: return nothing
+  000f: <eos>
+
+function TnMatineePawn.TakeDamage  (script 85 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(((self._AllowedDamageTypes.Length > 0) && (self._AllowedDamageTypes.Find(DamageType) == -1))) goto 0x0029
+  0027: return nothing
+  0029: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0052: return nothing
+  0054: <eos>
+
+function TnMatineePawn.SetAITeam  (script 47 bytes)
+  0000: self.AITeam = TnGame(self.WorldInfo.Game).GetTeamByClass(Faction)
+  002c: return nothing
+  002e: <eos>
+
+function TnMatineePawn.GetTeam  (script 13 bytes)
+  0000: return self.AITeam
+  0006: return return
+  000c: <eos>
+
+function TnMatineePawn.PlayDying  (script 91 bytes)
+  0000: if !(((self.ObjectiveMarkerClass != none) && (self.WorldInfo.GRI != none))) goto 0x0048
+  0021: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, self.ObjectiveMarkerClass)
+  0048: PlayDying(DamageType, HitLoc)
+  0058: return nothing
+  005a: <eos>

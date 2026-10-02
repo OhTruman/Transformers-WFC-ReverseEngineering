@@ -1,0 +1,64 @@
+function HmProjectileBag.AddAmmo  (script 48 bytes)
+  0000: self.AmmoCount = obj'Core.Math'.static.Clamp((self.AmmoCount + Amount), 0, self.MaxAmmoCount)
+  0023: return self.AmmoCount
+  0029: return return
+  002f: <eos>
+
+function HmProjectileBag.AmmoMaxed  (script 20 bytes)
+  0000: return (self.AmmoCount >= self.MaxAmmoCount)
+  000d: return return
+  0013: <eos>
+
+function HmProjectileBag.HasAmmo  (script 25 bytes)
+  0000: default=1
+  0005: return (self.AmmoCount >= Amount)
+  0012: return return
+  0018: <eos>
+
+function HmProjectileBag.CanThrow  (script 30 bytes)
+  0000: return (self.bReadyToThrow && HasAmmo())
+  0017: return return
+  001d: <eos>
+
+function HmProjectileBag.GetAmmoCount  (script 13 bytes)
+  0000: return self.AmmoCount
+  0006: return return
+  000c: <eos>
+
+function HmProjectileBag.Loaded  (script 38 bytes)
+  0000: nothing
+  0001: if !(bUseMax) goto 0x0018
+  000a: self.AmmoCount = self.MaxAmmoCount
+  0015: goto 0x0023
+  0018: self.AmmoCount = 999
+  0023: return nothing
+  0025: <eos>
+
+function HmProjectileBag.DenyPickupQuery  (script 33 bytes)
+  0000: if !((ItemClass == get_Class())) goto 0x0018
+  000d: return AmmoMaxed()
+  0018: return false
+  001a: return return
+  0020: <eos>
+
+function HmProjectileBag.ConsumeAmmo  (script 50 bytes)
+  0000: if !((self.MinTimeBetweenEachProjectile > cast3f(0))) goto 0x0028
+  000d: self.bReadyToThrow = false
+  0015: SetTimer(self.MinTimeBetweenEachProjectile, false, 'ReadyToThrowAgain', )
+  0028: SubtractSubtract_PreInt(self.AmmoCount)
+  002f: return nothing
+  0031: <eos>
+
+function HmProjectileBag.CreateProjectile  (script 78 bytes)
+  0000: nothing
+  0001: if !(!CanThrow()) goto 0x0012
+  0010: return none
+  0012: ConsumeAmmo()
+  001c: return Spawn((UseSecondaryProjectilClass ? self.SecondaryProjectileClass : self.ProjectileClass), , , InitialLocation, , , , )
+  0047: return return
+  004d: <eos>
+
+function HmProjectileBag.ReadyToThrowAgain  (script 11 bytes)
+  0000: self.bReadyToThrow = true
+  0008: return nothing
+  000a: <eos>

@@ -1,0 +1,22 @@
+function TnSeqAct_SetSniperSearchLocations.__Constructor__TnSeqAct_SetSniperSearchLocations_0  (script 14 bytes)
+  0000: self.SnipeSearchLocations = InSnipeSearchLocations
+  000b: return nothing
+  000d: <eos>
+
+function TnSeqAct_SetSniperSearchLocations.Activated  (script 178 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Index = 0
+  001b: if !((Index < self.Targets.Length)) goto 0x00af
+  002b: C = TnAiController(Index[self.Targets])
+  0041: if !((C == none)) goto 0x0086
+  004c: P = Pawn(Index[self.Targets])
+  0062: if !((P != none)) goto 0x0086
+  006d: C = TnAiController(P.Controller)
+  0086: if !((C != none)) goto 0x00a5
+  0091: C._SnipeSearchLocations = self.SnipeSearchLocations
+  00a5: AddAdd_PreInt(Index)
+  00ac: goto 0x001b
+  00af: return nothing
+  00b1: <eos>

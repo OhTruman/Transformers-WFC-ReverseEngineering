@@ -1,0 +1,29 @@
+function TnDialogManagerPlayer.InitializeWithPlayerPawn  (script 29 bytes)
+  0000: Initialize(_OwnerPawn)
+  000f: self.OwnerPlayerPawn = _OwnerPawn
+  001a: return nothing
+  001c: <eos>
+
+function TnDialogManagerPlayer.DialogNotify  (script 131 bytes)
+  0000: switch (NotifyType)
+  0007: case 5: (next 0x0029)
+  000c: PlayDialog(self.FiredGrenadeDialog)
+  001b: DialogBroadcastNotifyToEnemies(5)
+  0027: return nothing
+  0029: case 7: (next 0x004b)
+  002e: DialogBroadcastNotifyToEnemies(7)
+  003a: PlayDialog(self.FiredHomingRocketDialog)
+  0049: return nothing
+  004b: case 8: (next 0x006d)
+  0050: PlayDialog(self.FiredKamikazeMineDialog)
+  005f: DialogBroadcastNotifyToEnemies(8)
+  006b: return nothing
+  006d: default:
+  0070: TnDialogManager.DialogNotify(NotifyType, EnemyPawn)
+  0080: return nothing
+  0082: <eos>
+
+function TnDialogManagerPlayer.DialogNotifyFromTeammate  (script 19 bytes)
+  0000: TnDialogManager.DialogNotifyFromTeammate(NotifyType, TeammatePawn)
+  0010: return nothing
+  0012: <eos>

@@ -1,0 +1,46 @@
+function TnMessageHelpers.OnSameTeam  (script 84 bytes)
+  0000: GRI = obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI
+  0022: if !((GRI != none)) goto 0x004b
+  002d: return GRI.OnSameTeam(LocalPlayerPRI, RelatedPRI)
+  004b: return false
+  004d: return return
+  0053: <eos>
+
+function TnMessageHelpers.GetColorForPRI  (script 93 bytes)
+  0000: if !((RelatedPRI == LocalPlayerPRI)) goto 0x0021
+  000f: return obj'TnMessageTextColors'.static.default.PlayerColor
+  001e: goto 0x0047
+  0021: if !(OnSameTeam(LocalPlayerPRI, RelatedPRI)) goto 0x0047
+  0038: return obj'TnMessageTextColors'.static.default.FriendlyColor
+  0047: return obj'TnMessageTextColors'.static.default.EnemyColor
+  0056: return return
+  005c: <eos>
+
+function TnMessageHelpers.ParseMessageIntoColoredString  (script 583 bytes)
+  0000: obj'Core.Strings'.static.ParseStringIntoArray(UnparsedMessage, SplitMessage, " ", true)
+  0021: I = 0
+  0028: if !((I < SplitMessage.Length)) goto 0x01fb
+  0038: FoundReplacement = false
+  0040: J = 0
+  0047: if !((J < Replacements.Length)) goto 0x019d
+  0057: if !((obj'Core.Strings'.static.InStr(I[SplitMessage], J[Replacements].SourceString, ) != -1)) goto 0x0193
+  008e: if !((CSP.Text != "")) goto 0x00cd
+  00a5: CS.StringParts.Length[CS.StringParts] = CSP
+  00cd: CSP.Text = (obj'Core.Strings'.static.Repl(I[SplitMessage], J[Replacements].SourceString, J[Replacements].DestString, ) $ " ")
+  0126: CSP.TextColor = J[Replacements].DestStringColor
+  014d: CS.StringParts.Length[CS.StringParts] = CSP
+  0175: CSP.Text = ""
+  0188: FoundReplacement = true
+  0190: goto 0x019d
+  0193: AddAdd_PreInt(J)
+  019a: goto 0x0047
+  019d: if !(!FoundReplacement) goto 0x01f1
+  01a8: CSP.Text = ((CSP.Text $ I[SplitMessage]) $ " ")
+  01db: CSP.TextColor = DefaultColor
+  01f1: AddAdd_PreInt(I)
+  01f8: goto 0x0028
+  01fb: if !((CSP.Text != "")) goto 0x023a
+  0212: CS.StringParts.Length[CS.StringParts] = CSP
+  023a: return CS
+  0240: return return
+  0246: <eos>

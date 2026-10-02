@@ -1,0 +1,14 @@
+function TnPlayerControllerMultiplayer.CanBeKicked  (script 120 bytes)
+  0000: PRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  0010: if !(((((self.WorldInfo.GRI != none) && self.WorldInfo.GRI.bMatchHasBegun) && (PRI != none)) && !PRI.HasSelectedCharacter())) goto 0x006a
+  0068: return true
+  006a: return CanBeKicked()
+  0071: return return
+  0077: <eos>
+
+function TnPlayerControllerMultiplayer.SpawnPlayerCamera  (script 37 bytes)
+  0000: TnPlayerController.SpawnPlayerCamera()
+  0006: if !(IsLocalPlayerController()) goto 0x0022
+  0013: ActivatePostProcessModification(self.GameCountdownPostProcess)
+  0022: return nothing
+  0024: <eos>

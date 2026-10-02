@@ -1,0 +1,111 @@
+function HmAnimatedBoneVelocityTracker.IsInitialized  (script 16 bytes)
+  0000: return (self._SkeletalMeshComponent != none)
+  0009: return return
+  000f: <eos>
+
+function HmAnimatedBoneVelocityTracker.Initialize  (script 124 bytes)
+  0000: self._SkeletalMeshComponent = _SkeletalMeshComponent_
+  000b: self.LastBoneLocations.Remove(0,self.LastBoneLocations.Length)
+  0018: self.BoneVelocities.Remove(0,self.BoneVelocities.Length)
+  0025: if !((self._SkeletalMeshComponent.PhysicsAsset == none)) goto 0x003b
+  0039: return nothing
+  003b: self.LastBoneLocations.Insert(0,self._SkeletalMeshComponent.PhysicsAsset.BodySetup.Length)
+  005a: self.BoneVelocities.Insert(0,self._SkeletalMeshComponent.PhysicsAsset.BodySetup.Length)
+  0079: return nothing
+  007b: <eos>
+
+function HmAnimatedBoneVelocityTracker.Tick  (script 242 bytes)
+  0000: if !((DeltaTime < 0.0001)) goto 0x0011
+  000f: return nothing
+  0011: if !((self._SkeletalMeshComponent.PhysicsAsset == none)) goto 0x0027
+  0025: return nothing
+  0027: if !(!self.Active) goto 0x0034
+  0032: return nothing
+  0034: I = 0
+  003b: if !((I < self._SkeletalMeshComponent.PhysicsAsset.BodySetup.Length)) goto 0x00dd
+  005d: CurrBoneLoc = self._SkeletalMeshComponent.GetBoneLocation(I[self._SkeletalMeshComponent.PhysicsAsset.BodySetup].BoneName, )
+  009d: I[self.BoneVelocities] = ((CurrBoneLoc - I[self.LastBoneLocations]) / DeltaTime)
+  00c2: I[self.LastBoneLocations] = CurrBoneLoc
+  00d3: AddAdd_PreInt(I)
+  00da: goto 0x003b
+  00dd: AddAdd_PreInt(self.NumSnapshots)
+  00e4: self.DebugLastDeltaTime = DeltaTime
+  00ef: return nothing
+  00f1: <eos>
+
+function HmAnimatedBoneVelocityTracker.GetBoneVelocityByName  (script 152 bytes)
+  0000: if !((self._SkeletalMeshComponent.PhysicsAsset != none)) goto 0x0083
+  0014: I = 0
+  001b: if !((I < self._SkeletalMeshComponent.PhysicsAsset.BodySetup.Length)) goto 0x0083
+  003d: if !((I[self._SkeletalMeshComponent.PhysicsAsset.BodySetup].BoneName == BoneName)) goto 0x0079
+  006d: return I[self.BoneVelocities]
+  0079: AddAdd_PreInt(I)
+  0080: goto 0x001b
+  0083: return vect(0,0,0)
+  0091: return return
+  0097: <eos>
+
+function HmAnimatedBoneVelocityTracker.CopyVelocitiesToRagdoll  (script 143 bytes)
+  0000: if !(!HmAnimatedBoneVelocityTracker.CanCopyVelocities()) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self._SkeletalMeshComponent.PhysicsAssetInstance.Bodies.Length)) goto 0x007d
+  0036: I[self._SkeletalMeshComponent.PhysicsAssetInstance.Bodies].SetLinearVelocity((I[self.BoneVelocities] * self.RagdollScale))
+  0073: AddAdd_PreInt(I)
+  007a: goto 0x0014
+  007d: if !(self.DrawDebugFlag) goto 0x008c
+  0086: HmAnimatedBoneVelocityTracker.DrawFinalDebug()
+  008c: return nothing
+  008e: <eos>
+
+function HmAnimatedBoneVelocityTracker.CanCopyVelocities  (script 296 bytes)
+  0000: if !(!self.Active) goto 0x000d
+  000b: return false
+  000d: if !((self.NumSnapshots < 2)) goto 0x0066
+  0019: LogInternal("ERROR: HmAnimatedBoneVelocityTracker requires two or more snap shots", , , )
+  0064: return false
+  0066: if !((self._SkeletalMeshComponent.PhysicsAssetInstance == none)) goto 0x00cd
+  007a: LogInternal("ERROR: HmAnimatedBoneVelocityTracker requires mesh to have a physics asset", , , )
+  00cb: return false
+  00cd: if !(HmAnimatedBoneVelocityTracker.AreAllBoneVelocitiesZero()) goto 0x011f
+  00d6: LogInternal("ERROR: HmAnimatedBoneVelocityTracker has invalid bone velocities", , , )
+  011d: return false
+  011f: return true
+  0121: return return
+  0127: <eos>
+
+function HmAnimatedBoneVelocityTracker.AreAllBoneVelocitiesZero  (script 55 bytes)
+  0000: foreach self.BoneVelocities(Velocity,) (end 0x002d)
+  000f: if !((obj'Core.Math'.static.VSize(Velocity) > 0.1)) goto 0x002c
+  0029: iterpop
+  002a: return false
+  002c: iternext
+  002d: iterpop
+  002e: return true
+  0030: return return
+  0036: <eos>
+
+function HmAnimatedBoneVelocityTracker.Activate  (script 11 bytes)
+  0000: self.Active = true
+  0008: return nothing
+  000a: <eos>
+
+function HmAnimatedBoneVelocityTracker.Deactivate  (script 11 bytes)
+  0000: self.Active = false
+  0008: return nothing
+  000a: <eos>
+
+function HmAnimatedBoneVelocityTracker.DrawDebug  (script 11 bytes)
+  0000: self.DrawDebugFlag = true
+  0008: return nothing
+  000a: <eos>
+
+function HmAnimatedBoneVelocityTracker.DrawFinalDebug  (script 174 bytes)
+  0000: I = 0
+  0007: if !((I < self.LastBoneLocations.Length)) goto 0x00ab
+  0017: obj'Engine.Debug'.static.DrawSphere(I[self.LastBoneLocations], 3.0, 4, MakeColor(cast3d(255), 0, 0, ), true)
+  0050: obj'Engine.Debug'.static.DrawLine(I[self.LastBoneLocations], (I[self.LastBoneLocations] + (I[self.BoneVelocities] * self.DebugLastDeltaTime)), MakeColor(0, cast3d(255), 0, ), true)
+  00a1: AddAdd_PreInt(I)
+  00a8: goto 0x0007
+  00ab: return nothing
+  00ad: <eos>

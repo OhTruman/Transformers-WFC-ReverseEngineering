@@ -1,0 +1,34 @@
+function HmCheckpointDataStore.OnRegister  (script 156 bytes)
+  0000: self.Player = InPlayer
+  000b: if !((InPlayer == none)) goto 0x0018
+  0016: return nothing
+  0018: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0031: if !((OnlineSub != none)) goto 0x0081
+  003c: PlayerInterface = OnlineSub.PlayerInterface
+  0050: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0081
+  0064: PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChange)
+  0081: HmCheckpointDataStore.OnLoginChange(cast3d(InPlayer.ControllerId), 0)
+  0099: return nothing
+  009b: <eos>
+
+function HmCheckpointDataStore.OnUnregister  (script 108 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0069
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0069
+  004c: PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChange)
+  0069: return nothing
+  006b: <eos>
+
+function HmCheckpointDataStore.OnLoginChange  (script 93 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x005a
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x005a
+  004c: RefreshSubscribers(, , , )
+  005a: return nothing
+  005c: <eos>
+
+function HmCheckpointDataStore.RefreshCheckpointFilenames  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

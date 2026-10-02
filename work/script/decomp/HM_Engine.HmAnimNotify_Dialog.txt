@@ -1,0 +1,21 @@
+function HmAnimNotify_Dialog.Notify  (script 369 bytes)
+  0000: if !(((AnimSeqInstigator.SkelComponent == none) || (AnimSeqInstigator.SkelComponent.Owner == none))) goto 0x0035
+  0033: return nothing
+  0035: if !((AnimSeqInstigator.NodeTotalWeight < self.MinWeight)) goto 0x004f
+  004d: return nothing
+  004f: DialogInterface = HmDialogInterface(AnimSeqInstigator.SkelComponent.Owner)
+  0071: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0087
+  0085: return nothing
+  0087: if !((self.SocketName != 'None')) goto 0x00b3
+  009a: DialogInterface.SetDialogSocketName(self.SocketName)
+  00b3: if !((none != self.SoundEvent)) goto 0x0151
+  00be: P = HmPawn(AnimSeqInstigator.SkelComponent.Owner)
+  00e0: if !((none != P)) goto 0x0131
+  00eb: WI = HmWorldInfo(P.WorldInfo)
+  0104: WI._DialogEventManager.Play(P, self.SoundEvent, , , , )
+  012e: goto 0x014e
+  0131: DialogInterface.PlayDialogEvent(self.SoundEvent, false, , , )
+  014e: goto 0x016e
+  0151: DialogInterface.PlayDialog(self.SoundCue, false, , , )
+  016e: return nothing
+  0170: <eos>

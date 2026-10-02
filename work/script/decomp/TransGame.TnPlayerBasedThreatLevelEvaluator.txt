@@ -1,0 +1,14 @@
+function TnPlayerBasedThreatLevelEvaluator.set_PlayerThreatLevel  (script 14 bytes)
+  0000: self._PlayerThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerBasedThreatLevelEvaluator.set_AiThreatLevel  (script 14 bytes)
+  0000: self._AiThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 36 bytes)
+  0000: return ((TnPlayerPawn(Threat) != none) ? self._PlayerThreatLevel : self._AiThreatLevel)
+  001d: return return
+  0023: <eos>

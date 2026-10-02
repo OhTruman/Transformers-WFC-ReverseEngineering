@@ -1,0 +1,121 @@
+function TnDialogManagerAi.InitializeWithAiPawn  (script 29 bytes)
+  0000: Initialize(_OwnerPawn)
+  000f: self.OwnerAiPawn = _OwnerPawn
+  001a: return nothing
+  001c: <eos>
+
+function TnDialogManagerAi.DialogNotify  (script 257 bytes)
+  0000: EnemyDNI = GetDNI(EnemyPawn)
+  0015: switch (NotifyType)
+  001c: case 5: (next 0x0061)
+  0021: if !(NotEqual_InterfaceInterface(EnemyDNI, TnDialogNotificationService(none))) goto 0x0050
+  0035: EnemyDNI.DialogNotifyFromEnemy(5, self.OwnerAiPawn)
+  0050: PlayDialog(self.FiredGrenadeDialog)
+  005f: return nothing
+  0061: case 7: (next 0x00a6)
+  0066: if !(NotEqual_InterfaceInterface(EnemyDNI, TnDialogNotificationService(none))) goto 0x0095
+  007a: EnemyDNI.DialogNotifyFromEnemy(7, self.OwnerAiPawn)
+  0095: PlayDialog(self.FiredHomingRocketDialog)
+  00a4: return nothing
+  00a6: case 8: (next 0x00eb)
+  00ab: if !(NotEqual_InterfaceInterface(EnemyDNI, TnDialogNotificationService(none))) goto 0x00da
+  00bf: EnemyDNI.DialogNotifyFromEnemy(8, self.OwnerAiPawn)
+  00da: PlayDialog(self.FiredKamikazeMineDialog)
+  00e9: return nothing
+  00eb: default:
+  00ee: TnDialogManager.DialogNotify(NotifyType, EnemyPawn)
+  00fe: return nothing
+  0100: <eos>
+
+function TnDialogManagerAi.DialogNotifyFromEnemy  (script 117 bytes)
+  0000: switch (NotifyType)
+  0007: case 2: (next 0x001d)
+  000c: PlayDialog(self.TargetDownedDialog)
+  001b: return nothing
+  001d: case 5: (next 0x0033)
+  0022: PlayDialog(self.TargetFiredGrenadeDialog)
+  0031: return nothing
+  0033: case 7: (next 0x0049)
+  0038: PlayDialog(self.TargetFiredHomingRocketDialog)
+  0047: return nothing
+  0049: case 8: (next 0x005f)
+  004e: PlayDialog(self.TargetFiredKamikazeMineDialog)
+  005d: return nothing
+  005f: default:
+  0062: TnDialogManager.DialogNotifyFromEnemy(NotifyType, EnemyPawn)
+  0072: return nothing
+  0074: <eos>
+
+function TnDialogManagerAi.DialogNotifyFromTeammate  (script 402 bytes)
+  0000: TeammateAiPawn = TnAiPawn(TeammatePawn)
+  0010: switch (NotifyType)
+  0017: case 2: (next 0x002d)
+  001c: PlayDialog(self.TeammateDownedDialog)
+  002b: return nothing
+  002d: case 14: (next 0x0070)
+  0032: if !(self.OwnerAiPawn.HasSameKillTarget(TeammateAiPawn)) goto 0x005f
+  004d: PlayDialog(self.TeammateKilledMyTargetDialog)
+  005c: goto 0x006e
+  005f: PlayDialog(self.TeammateKilledTargetByHeadshotDialog)
+  006e: return nothing
+  0070: case 15: (next 0x00b3)
+  0075: if !(self.OwnerAiPawn.HasSameKillTarget(TeammateAiPawn)) goto 0x00a2
+  0090: PlayDialog(self.TeammateKilledMyTargetDialog)
+  009f: goto 0x00b1
+  00a2: PlayDialog(self.TeammateKilledTargetByGunDialog)
+  00b1: return nothing
+  00b3: case 16: (next 0x00f6)
+  00b8: if !(self.OwnerAiPawn.HasSameKillTarget(TeammateAiPawn)) goto 0x00e5
+  00d3: PlayDialog(self.TeammateKilledMyTargetDialog)
+  00e2: goto 0x00f4
+  00e5: PlayDialog(self.TeammateKilledTargetByRocketDialog)
+  00f4: return nothing
+  00f6: case 17: (next 0x0139)
+  00fb: if !(self.OwnerAiPawn.HasSameKillTarget(TeammateAiPawn)) goto 0x0128
+  0116: PlayDialog(self.TeammateKilledMyTargetDialog)
+  0125: goto 0x0137
+  0128: PlayDialog(self.TeammateKilledTargetByMeleeDialog)
+  0137: return nothing
+  0139: case 18: (next 0x017c)
+  013e: if !(self.OwnerAiPawn.HasSameKillTarget(TeammateAiPawn)) goto 0x016b
+  0159: PlayDialog(self.TeammateKilledMyTargetDialog)
+  0168: goto 0x017a
+  016b: PlayDialog(self.TeammateKilledTargetByExplosiveDialog)
+  017a: return nothing
+  017c: default:
+  017f: TnDialogManager.DialogNotifyFromTeammate(NotifyType, self.OwnerAiPawn)
+  018f: return nothing
+  0191: <eos>
+
+function TnDialogManagerAi.PlayEnemyEncounteredDialog  (script 216 bytes)
+  0000: SentryPawn = TnSentryPawn(Enemy)
+  0010: if !((SentryPawn != none)) goto 0x002c
+  001b: PlayDialog(self.EnemyEncounterSentryDialog)
+  002a: return nothing
+  002c: EnemyTransPawn = TnPawn(Enemy)
+  003c: if !((EnemyTransPawn == none)) goto 0x0049
+  0047: return nothing
+  0049: switch (EnemyTransPawn._CurrentCharacter.CharacterType)
+  0064: case 3: (next 0x007a)
+  0069: PlayDialog(self.EnemyEncounterBruteDialog)
+  0078: return nothing
+  007a: case 4: (next 0x0090)
+  007f: PlayDialog(self.EnemyEncounterCQCSpecialistDialog)
+  008e: return nothing
+  0090: case 5: (next 0x00a6)
+  0095: PlayDialog(self.EnemyEncounterSoldierCarDialog)
+  00a4: return nothing
+  00a6: case 6: (next 0x00bc)
+  00ab: PlayDialog(self.EnemyEncounterSoldierJetDialog)
+  00ba: return nothing
+  00bc: case 7: (next 0x00d2)
+  00c1: PlayDialog(self.EnemyEncounterSoldierTankDialog)
+  00d0: return nothing
+  00d2: default:
+  00d5: return nothing
+  00d7: <eos>
+
+function TnDialogManagerAi.PlayAwareOfEnemyDialog  (script 18 bytes)
+  0000: PlayDialog(self.AwareOfEnemyDialog)
+  000f: return nothing
+  0011: <eos>

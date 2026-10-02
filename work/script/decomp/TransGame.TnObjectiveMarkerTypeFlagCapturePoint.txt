@@ -1,0 +1,19 @@
+function TnObjectiveMarkerTypeFlagCapturePoint.ShouldDisplayMarker  (script 30 bytes)
+  0000: return (TnWeaponFlagBase(Owner.Weapon) != none)
+  0017: return return
+  001d: <eos>
+
+function TnObjectiveMarkerTypeFlagCapturePoint.GetMarkerSetup  (script 48 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: SetupParameters(Owner, MarkerData)
+  0023: return self.MarkerSetup
+  0029: return return
+  002f: <eos>
+
+function TnObjectiveMarkerTypeFlagCapturePoint.SetupParameters  (script 115 bytes)
+  0000: NeutralValue = 0.0
+  000b: FlashingValue = 1.0
+  0016: self.MarkerSetup.MatInst.SetScalarParameterValue('Neutral', NeutralValue, )
+  0043: self.MarkerSetup.MatInst.SetScalarParameterValue('Flashing', FlashingValue, )
+  0070: return nothing
+  0072: <eos>

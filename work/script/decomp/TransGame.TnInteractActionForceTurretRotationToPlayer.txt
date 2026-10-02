@@ -1,0 +1,13 @@
+function TnInteractActionForceTurretRotationToPlayer.TriggerAction  (script 71 bytes)
+  0000: TnInteractActionForceTurretRotation.TriggerAction(Interact)
+  000b: if !((TnAiPawn(Interact.GetCurrentUser()) != none)) goto 0x0035
+  0029: ActionComplete()
+  0033: return nothing
+  0035: ForceRotation(Interact)
+  0044: return nothing
+  0046: <eos>
+
+function TnInteractActionForceTurretRotationToPlayer.GetDesiredRotationTS  (script 79 bytes)
+  0000: return ((User == none) ? obj'Core.Math'.static.MakeRotator(0, 0, 0) : (User.GetBaseAimRotation() - Turret.Rotation))
+  0048: return return
+  004e: <eos>

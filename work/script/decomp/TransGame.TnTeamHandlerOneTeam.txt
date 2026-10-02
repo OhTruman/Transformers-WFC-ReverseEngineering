@@ -1,0 +1,45 @@
+function TnTeamHandlerOneTeam.Initialize  (script 39 bytes)
+  0000: TnTeamHandler.Initialize(NewGame)
+  000b: self.CoopInfo = self.Game.GetCoopInfo()
+  0024: return nothing
+  0026: <eos>
+
+function TnTeamHandlerOneTeam.SpawnTeams  (script 145 bytes)
+  0000: GetChildClasses(obj'TnFactionTeam', FactionTeamTypes, false, false)
+  0016: self.Teams.Length = FactionTeamTypes.Length
+  0023: I = 0
+  002a: if !((I < FactionTeamTypes.Length)) goto 0x008e
+  003a: FactionTeamType = class<TnFactionTeam>(I[FactionTeamTypes])
+  0050: FactionTeamType.static.default.TeamIndex[self.Teams] = self.Game.Spawn(FactionTeamType, , , , , , , )
+  0084: AddAdd_PreInt(I)
+  008b: goto 0x002a
+  008e: return nothing
+  0090: <eos>
+
+function TnTeamHandlerOneTeam.ChangeTeam  (script 75 bytes)
+  0000: if !(((TnPlayerController(Other) != none) && (NewTeamIndex != cast3a(PickTeam(cast3d(255), Other))))) goto 0x0033
+  0031: return false
+  0033: return TnTeamHandler.ChangeTeam(Other, NewTeamIndex)
+  0044: return return
+  004a: <eos>
+
+function TnTeamHandlerOneTeam.PickTeam  (script 47 bytes)
+  0000: return cast3d(((self.CoopInfo == none) ? 0 : self.CoopInfo.Faction.static.default.TeamIndex))
+  0028: return return
+  002e: <eos>
+
+function TnTeamHandlerOneTeam.AssignTeams  (script 211 bytes)
+  0000: GRI = self.Game.GameReplicationInfo
+  0014: I = 0
+  001b: if !((I < GRI.PRIArray.Length)) goto 0x00d0
+  0034: PRI = TnPlayerReplicationInfo(I[GRI.PRIArray])
+  0053: if !((PRI == none)) goto 0x0061
+  005e: goto 0x00c6
+  0061: if !((PRI.Owner == none)) goto 0x0078
+  0075: goto 0x00c6
+  0078: NewTeam = cast3a(PickTeam(cast3d(-1), Controller(PRI.Owner)))
+  00a4: ChangeTeam(Controller(PRI.Owner), NewTeam)
+  00c6: AddAdd_PreInt(I)
+  00cd: goto 0x001b
+  00d0: return nothing
+  00d2: <eos>

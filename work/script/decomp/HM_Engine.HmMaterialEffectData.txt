@@ -1,0 +1,95 @@
+function HmMaterialEffectData.Initialize  (script 129 bytes)
+  0000: self.PC = PController
+  000b: self.MaterialInstance = self.Material.CreateMaterialInstance(get_Outer())
+  0027: self.Effect = new(self, nothing, obj'Engine.MaterialEffect', nothing, AttachTreeCallback)
+  003b: self.Effect.bUseWorldSettings = false
+  004c: self.Effect.Material = self.MaterialInstance
+  0060: self.bEnabled = false
+  0068: self.DeactivationTimer = 0.0
+  0073: self.FadeOutTime = 0.0
+  007e: return nothing
+  0080: <eos>
+
+function HmMaterialEffectData.Update  (script 91 bytes)
+  0000: if !((self.DeactivationTimer > 0.0)) goto 0x0058
+  000f: (self.DeactivationTimer -= DeltaTime)
+  001b: if !((self.DeactivationTimer <= 0.0)) goto 0x0037
+  002a: DisableEffect()
+  0034: goto 0x0058
+  0037: if !((self.DeactivationTimer < self.FadeOutTime)) goto 0x0058
+  0046: HmMaterialEffectData.SetEffectTransparency((self.DeactivationTimer / self.FadeOutTime))
+  0058: return nothing
+  005a: <eos>
+
+function HmMaterialEffectData.EnableEffect  (script 128 bytes)
+  0000: default=0.0
+  0009: default=0.0
+  0012: if !(((self.PC != none) && (self.Effect != none))) goto 0x007d
+  002a: if !(!self.bEnabled) goto 0x004d
+  0035: self.PC.AddPostProcessEffectToFront(self.Effect)
+  004d: HmMaterialEffectData.SetEffectTransparency(1.0)
+  0058: self.bEnabled = true
+  0060: self.DeactivationTimer = (Duration + FadeTime)
+  0072: self.FadeOutTime = FadeTime
+  007d: return nothing
+  007f: <eos>
+
+function HmMaterialEffectData.DisableEffect  (script 70 bytes)
+  0000: if !((((self.PC != none) && (self.Effect != none)) && self.bEnabled)) goto 0x0043
+  0023: self.PC.RemovePostProcessEffect(self.Effect)
+  003b: self.bEnabled = false
+  0043: return nothing
+  0045: <eos>
+
+function HmMaterialEffectData.DisableEffectAfterFadeOut  (script 66 bytes)
+  0000: if !(!self.bEnabled) goto 0x000d
+  000b: return nothing
+  000d: if !((FadeTime <= 0.0)) goto 0x0029
+  001c: DisableEffect()
+  0026: goto 0x003f
+  0029: self.DeactivationTimer = FadeTime
+  0034: self.FadeOutTime = FadeTime
+  003f: return nothing
+  0041: <eos>
+
+function HmMaterialEffectData.AddEffect  (script 49 bytes)
+  0000: if !(((self.Effect != none) && self.bEnabled)) goto 0x002e
+  0016: self.PC.AddPostProcessEffectToFront(self.Effect)
+  002e: return nothing
+  0030: <eos>
+
+function HmMaterialEffectData.RemoveEffect  (script 49 bytes)
+  0000: if !(((self.Effect != none) && self.bEnabled)) goto 0x002e
+  0016: self.PC.RemovePostProcessEffect(self.Effect)
+  002e: return nothing
+  0030: <eos>
+
+function HmMaterialEffectData.SetEffectTransparency  (script 33 bytes)
+  0000: self.MaterialInstance.SetScalarParameterValue(self.TransparencyParameterName, Transparency, )
+  001e: return nothing
+  0020: <eos>
+
+function HmMaterialEffectData.IsEnabled  (script 14 bytes)
+  0000: return self.bEnabled
+  0007: return return
+  000d: <eos>
+
+function HmMaterialEffectData.GetMaterialEffect  (script 13 bytes)
+  0000: return self.Effect
+  0006: return return
+  000c: <eos>
+
+function HmMaterialEffectData.GetMaterialInstance  (script 13 bytes)
+  0000: return self.MaterialInstance
+  0006: return return
+  000c: <eos>
+
+function HmMaterialEffectData.SetMaterial  (script 14 bytes)
+  0000: self.Material = Mat
+  000b: return nothing
+  000d: <eos>
+
+function HmMaterialEffectData.GetTransparencyParameterName  (script 13 bytes)
+  0000: return self.TransparencyParameterName
+  0006: return return
+  000c: <eos>

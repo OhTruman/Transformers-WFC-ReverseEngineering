@@ -1,0 +1,72 @@
+function StaticMeshComponent.CheckForErrors  (script 210 bytes)
+  0000: MeshComponent.CheckForErrors()
+  0006: if !((self.Owner == none)) goto 0x0013
+  0011: return nothing
+  0013: if !((self.StaticMesh == none)) goto 0x0020
+  001e: return nothing
+  0020: if !(!self.Owner.bStatic) goto 0x00cf
+  0034: if !((!self.BlockRigidBody || self.bDisableAllRigidBody)) goto 0x004c
+  004a: return nothing
+  004c: if !(self.StaticMesh.UsesPerPolygonRBCollision()) goto 0x00cf
+  0062: self.Owner.EmitCheckMessage(0, (("Dynamic actor with per-polygon collision on" @ cast56(self.StaticMesh)) @ "= major performance problem."), , )
+  00cf: return nothing
+  00d1: <eos>
+
+function StaticMeshComponent.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMeshComponent.SetStaticMesh  (script 7 bytes)
+  0000: NewMesh
+  0005: nothing
+  0006: <eos>
+
+function StaticMeshComponent.DisableRBCollisionWithSMC  (script 12 bytes)
+  0000: OtherSMC
+  0005: bDisabled
+  000a: nothing
+  000b: <eos>
+
+function StaticMeshComponent.GetMaterialForLOD  (script 12 bytes)
+  0000: MaterialIndex
+  0005: LOD
+  000a: nothing
+  000b: <eos>
+
+function StaticMeshComponent.GetDefaultMaterialCount  (script 35 bytes)
+  0000: if !((self.StaticMesh != none)) goto 0x0015
+  000b: return StaticMeshComponent.GetNumStaticMeshMaterials()
+  0012: goto 0x001c
+  0015: return MeshComponent.GetDefaultMaterialCount()
+  001c: return return
+  0022: <eos>
+
+function StaticMeshComponent.GetNumStaticMeshMaterials  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMeshComponent.CreateBodyInstance  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMeshComponent.DestroyBodyInstance  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMeshComponent.ResetBodyInstance  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMeshComponent.GetPhysicsCookingOptions  (script 77 bytes)
+  0000: Option.Mesh = self.StaticMesh
+  0016: Option.Scale = (self.Scale3D * self.Scale)
+  0033: Options.AddItem(Option)
+  0040: return Options
+  0046: return return
+  004c: <eos>
+
+function StaticMeshComponent.IsMaterialOverridden  (script 12 bytes)
+  0000: MaterialIndex
+  0005: Mat
+  000a: nothing
+  000b: <eos>

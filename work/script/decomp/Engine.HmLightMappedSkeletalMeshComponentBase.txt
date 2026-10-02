@@ -1,0 +1,22 @@
+function HmLightMappedSkeletalMeshComponentBase.GetSequenceNode  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmLightMappedSkeletalMeshComponentBase.CheckForErrors  (script 377 bytes)
+  0000: SkeletalMeshComponent.CheckForErrors()
+  0006: MaterialCount = GetDefaultMaterialCount()
+  0016: I = 0
+  001d: if !((I < MaterialCount)) goto 0x0176
+  002c: MI = GetMaterial(I)
+  0041: if !((MI == none)) goto 0x004f
+  004c: goto 0x016c
+  004f: if !((self.LightMapCapturePercentages.Length >= 2)) goto 0x00ec
+  005c: if !(!MI.GetUsageByFlag(8)) goto 0x00e9
+  0076: EmitCheckMessage(0, (((cast56(self) @ "uses material") @ cast56(MI)) @ "which doesn't have `Used With Static Interpolated Lighting` checked."), , )
+  00e9: goto 0x016c
+  00ec: if !(!MI.GetUsageByFlag(7)) goto 0x016c
+  0106: EmitCheckMessage(0, (((cast56(self) @ "uses material") @ cast56(MI)) @ "which doesn't have `Used With Static Lighting` checked."), , )
+  016c: AddAdd_PreInt(I)
+  0173: goto 0x001d
+  0176: return nothing
+  0178: <eos>

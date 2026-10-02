@@ -1,0 +1,15 @@
+function TnSeqAct_LootPickupFactoryModifier.Activated  (script 142 bytes)
+  0000: foreach self.Targets(O,) (end 0x008a)
+  000f: PF = TnLootClassificationPickupFactory(O)
+  001f: if !((PF == none)) goto 0x002e
+  002a: iternext
+  002b: goto 0x008a
+  002e: if !(0[self.InputLinks].bHasImpulse) goto 0x005f
+  0044: PF.SetLootClassification(self.LootClassification)
+  005c: goto 0x0089
+  005f: if !(1[self.InputLinks].bHasImpulse) goto 0x0089
+  0075: PF.RespawnTime = self.RespawnTime
+  0089: iternext
+  008a: iterpop
+  008b: return nothing
+  008d: <eos>

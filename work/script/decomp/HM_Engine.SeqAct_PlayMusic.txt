@@ -1,0 +1,10 @@
+function SeqAct_PlayMusic.Activated  (script 124 bytes)
+  0000: if !(self.UseCurrentTrackFadeOutTimeOverride) goto 0x0017
+  0009: FadeTime = self.CurrentTrackFadeOutTimeOverride
+  0014: goto 0x0022
+  0017: FadeTime = -1.0
+  0022: MusicPlayer = HmWorldInfo(GetWorldInfo())._MusicPlayer
+  0040: MusicPlayer.PlayMusic(self.MusicTrack, true, self.IgnoreSpazTimer, FadeTime)
+  0064: 0[self.OutputLinks].bHasImpulse = true
+  0079: return nothing
+  007b: <eos>

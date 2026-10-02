@@ -1,0 +1,55 @@
+function TnAiActionPlayHoverAttackAnimation.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionPlayHoverAttackAnimationBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionPlayHoverAttackAnimation.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionPlayHoverAttackAnimation.OnStart  (script 144 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: SetCharacterState(0)
+  0049: self._TransformerController.Focus = IFocusible(self._Target)
+  0062: self._TransformerController.StopMovement()
+  0075: self._IsPlayingAnimation = false
+  007d: return OnStart(ExpectedEffects)
+  0089: return return
+  008f: <eos>
+
+function TnAiActionPlayHoverAttackAnimation.OnUpdate  (script 187 bytes)
+  0000: if !((!self._IsPlayingAnimation && TnAiActionPlayHoverAttackAnimation.IsAimed())) goto 0x0052
+  0016: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAttackAnimComplete, delegate.FailCallback)
+  004a: self._IsPlayingAnimation = true
+  0052: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(8))) goto 0x00a3
+  0071: return (self._TransformerController.IsDangerous(self._Target) ? Fail() : Succeed())
+  00a3: return OnUpdate(ExpectedEffects, DeltaTime)
+  00b4: return return
+  00ba: <eos>
+
+function TnAiActionPlayHoverAttackAnimation.OnAttackAnimComplete  (script 23 bytes)
+  0000: self._AcrobaticsService.Fall()
+  0014: return nothing
+  0016: <eos>
+
+function TnAiActionPlayHoverAttackAnimation.OnFinish  (script 113 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(3))) goto 0x0054
+  0040: self._AcrobaticsService.Fall()
+  0054: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateHover', false, )
+  006e: return nothing
+  0070: <eos>
+
+function TnAiActionPlayHoverAttackAnimation.IsAimed  (script 139 bytes)
+  0000: FlatPawnToEnemy = obj'Core.Math'.static.Normal(((self._Target.Location - self._TransformerPawn.Location) * vect(1,1,0)))
+  003f: FlatFacing = obj'Core.Math'.static.Normal((cast39(self._TransformerPawn.Rotation) * vect(1,1,0)))
+  0070: return ((FlatPawnToEnemy dot FlatFacing) > 0.866)
+  0084: return return
+  008a: <eos>

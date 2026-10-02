@@ -1,0 +1,64 @@
+function TnGoapGoalMoveTo.Initialize  (script 90 bytes)
+  0000: Initialize(Blueprint)
+  000b: BP = TnGoapGoalMoveToBlueprint(Blueprint)
+  001b: self.WorldStateClass = BP.WorldStateClass
+  002f: self.RangeSensorClass = BP.RangeSensorClass
+  0043: self.IgnoreGoalIfActive_WorldStateClass = BP.IgnoreGoalIfActive_WorldStateClass
+  0057: return nothing
+  0059: <eos>
+
+function TnGoapGoalMoveTo.Bind  (script 203 bytes)
+  0000: Bind(InAiController)
+  000b: self.MoveToRangeSensor = TnAiMoveToRangeSensor(self.SensorFactory.CreateObject(self.RangeSensorClass, ))
+  002f: if !((self.MoveToRangeSensor == none)) goto 0x006f
+  003a: LogInternal("Error: Could not create Move to Range Sensor", , , )
+  006d: return nothing
+  006f: self.MoveToRangeSensor.set_MoveType(self.WorldStateClass)
+  0087: self.TransformerController = TnAiController(self.BoundController)
+  0097: if !((self.TransformerController != none)) goto 0x00c8
+  00a2: self.TransformerController.GetTacticalAnalyzer().AddSensor(self.MoveToRangeSensor)
+  00c8: return nothing
+  00ca: <eos>
+
+function TnGoapGoalMoveTo.Unbind  (script 58 bytes)
+  0000: if !((self.TransformerController != none)) goto 0x0031
+  000b: self.TransformerController.GetTacticalAnalyzer().RemoveSensor(self.MoveToRangeSensor)
+  0031: Unbind()
+  0037: return nothing
+  0039: <eos>
+
+function TnGoapGoalMoveTo.PopulateGoals  (script 154 bytes)
+  0000: if !((PopulateGoals(WorldState, out_PopulatedGoals) == false)) goto 0x0018
+  0016: return false
+  0018: if !((TnGoapGoalMoveTo.ApplyDirtyHackToAllowAiToWaitAtObjectives(WorldState) == true)) goto 0x002b
+  0029: return false
+  002b: Subject = TnGoapGoalMoveTo.ApplyDirtyHackToMakeSureWorldStateSubjectIsSet()
+  0037: if !((TnGoapGoalMoveTo.IsWorldStatePropertyActive(WorldState) == false)) goto 0x004a
+  0048: return false
+  004a: obj'HM_Engine.HmGoap'.static.SetProperty(out_PopulatedGoals, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateAtActor', cast3a(self.MoveToRangeSensor._Range), Subject, , ))
+  0091: return true
+  0093: return return
+  0099: <eos>
+
+function TnGoapGoalMoveTo.VerifyRunningDesiredEffects  (script 68 bytes)
+  0000: return (obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateAtActor', RunningDesiredEffects) == TnAiController(self.BoundController).GetWorldStateSubject(self.WorldStateClass))
+  003d: return return
+  0043: <eos>
+
+function TnGoapGoalMoveTo.IsWorldStatePropertyActive  (script 93 bytes)
+  0000: WorldStateProperty = WorldState.GetState(self.WorldStateClass)
+  001e: return ((WorldStateProperty.Subject != none) && (WorldStateProperty.Value.BoolVal == false))
+  0056: return return
+  005c: <eos>
+
+function TnGoapGoalMoveTo.ApplyDirtyHackToAllowAiToWaitAtObjectives  (script 59 bytes)
+  0000: if !((self.IgnoreGoalIfActive_WorldStateClass == none)) goto 0x000d
+  000b: return false
+  000d: return (WorldState.GetState(self.IgnoreGoalIfActive_WorldStateClass).Subject != none)
+  0034: return return
+  003a: <eos>
+
+function TnGoapGoalMoveTo.ApplyDirtyHackToMakeSureWorldStateSubjectIsSet  (script 27 bytes)
+  0000: return self.MoveToRangeSensor.get_Subject()
+  0014: return return
+  001a: <eos>

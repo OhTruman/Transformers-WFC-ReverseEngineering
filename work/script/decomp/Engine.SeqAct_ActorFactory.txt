@@ -1,0 +1,23 @@
+function SeqAct_ActorFactory.HaveAllPawnsDied  (script 142 bytes)
+  0000: I = 0
+  0007: if !((I < self.WatchList.Length)) goto 0x007d
+  0017: if !((((I[self.WatchList] == none) || (I[self.WatchList].Health <= cast3f(0))) || I[self.WatchList].bDeleteMe)) goto 0x0073
+  0060: self.WatchList.Remove(I,1)
+  006c: SubtractSubtract_Int(I)
+  0073: AddAdd_PreInt(I)
+  007a: goto 0x0007
+  007d: return (self.WatchList.Length == 0)
+  0087: return return
+  008d: <eos>
+
+function SeqAct_ActorFactory.CheckForErrors  (script 39 bytes)
+  0000: if !((self.Factory != none)) goto 0x001e
+  000b: self.Factory.CheckForErrors()
+  001e: CheckForErrors()
+  0024: return nothing
+  0026: <eos>
+
+function SeqAct_ActorFactory.AdjustSpawnLocation  (script 22 bytes)
+  0000: return SpawnPoint.Location
+  000f: return return
+  0015: <eos>

@@ -1,0 +1,32 @@
+function SeqAct_MoviePlayer.PlayMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_MoviePlayer.StopMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_MoviePlayer.Activated  (script 46 bytes)
+  0000: if !((!self.bIsPlaying && 0[self.InputLinks].bHasImpulse)) goto 0x002b
+  0023: self.bIsRequestingPlaying = true
+  002b: return nothing
+  002d: <eos>
+
+function SeqAct_MoviePlayer.OnPlayMovie  (script 166 bytes)
+  0000: MI = HmMovieInterface(GetWorldInfo().Game)
+  001e: if !(NotEqual_InterfaceInterface(MI, HmMovieInterface(none))) goto 0x00a3
+  0032: Parameters.MovieFileName = self.MovieName
+  0048: Parameters.bRenderLastFrameAtEnd = self.bRenderLastFrameAtEnd
+  0060: Parameters.bBlendWithGameRendering = self.bBlendWithGameRendering
+  0078: Parameters.StartTimeInMilliseconds = 0
+  008a: MI.set_MovieParameters(Parameters)
+  00a3: return nothing
+  00a5: <eos>
+
+function SeqAct_MoviePlayer.OnStopMovie  (script 97 bytes)
+  0000: MI = HmMovieInterface(GetWorldInfo().Game)
+  001e: if !(NotEqual_InterfaceInterface(MI, HmMovieInterface(none))) goto 0x005e
+  0032: Parameters.MovieFileName = ""
+  0045: MI.set_MovieParameters(Parameters)
+  005e: return nothing
+  0060: <eos>

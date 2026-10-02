@@ -1,0 +1,13 @@
+function HmCollidableMeshDestructionEffect.OnComponentMadeVisible  (script 67 bytes)
+  0000: HmStaticMeshDestructionEffect.OnComponentMadeVisible(Component)
+  000b: GetAttachingActor().CollisionComponent = Component
+  0024: GetAttachingActor().SetPhysics(10, , )
+  0040: return nothing
+  0042: <eos>
+
+function HmCollidableMeshDestructionEffect.OnComponentMadeInvisible  (script 63 bytes)
+  0000: GetAttachingActor().SetPhysics(0, , )
+  001c: GetAttachingActor().CollisionComponent = none
+  0031: HmStaticMeshDestructionEffect.OnComponentMadeInvisible(Component)
+  003c: return nothing
+  003e: <eos>

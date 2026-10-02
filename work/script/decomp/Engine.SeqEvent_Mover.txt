@@ -1,0 +1,44 @@
+function SeqEvent_Mover.RegisterEvent  (script 50 bytes)
+  0000: Mover = InterpActor(self.Originator)
+  0010: if !((Mover != none)) goto 0x002f
+  001b: Mover.StayOpenTime = self.StayOpenTime
+  002f: return nothing
+  0031: <eos>
+
+function SeqEvent_Mover.NotifyEncroachingOn  (script 103 bytes)
+  0000: 0[ActivateIndices] = 3
+  000a: if !(CheckActivate(self.Originator, self.Instigator, false, ActivateIndices, true)) goto 0x0064
+  0028: foreach LinkedVariables(obj'SeqVar_Object', ObjVar, "Actor Hit") (end 0x0063)
+  004a: ObjVar.SetObjectValue(Hit)
+  0062: iternext
+  0063: iterpop
+  0064: return nothing
+  0066: <eos>
+
+function SeqEvent_Mover.NotifyAttached  (script 86 bytes)
+  0000: if !(((Pawn(Other) != none) && obj'Core.Math'.static.IsZero(self.Originator.Velocity))) goto 0x0053
+  002f: 0[ActivateIndices] = 0
+  0038: CheckActivate(self.Originator, Other, false, ActivateIndices, )
+  0053: return nothing
+  0055: <eos>
+
+function SeqEvent_Mover.NotifyDetached  (script 127 bytes)
+  0000: if !((self.Originator == none)) goto 0x002a
+  000b: WarnInternal("Originator mover missing")
+  0027: goto 0x007c
+  002a: if !((Pawn(Other) != none)) goto 0x007c
+  003a: foreach self.Originator.BasedActors(obj'Pawn', P) (end 0x0057)
+  0053: iterpop
+  0054: return nothing
+  0056: iternext
+  0057: iterpop
+  0058: 0[ActivateIndices] = 1
+  0061: CheckActivate(self.Originator, self.Instigator, false, ActivateIndices, )
+  007c: return nothing
+  007e: <eos>
+
+function SeqEvent_Mover.NotifyFinishedOpen  (script 40 bytes)
+  0000: 0[ActivateIndices] = 2
+  000a: CheckActivate(self.Originator, self.Instigator, false, ActivateIndices, )
+  0025: return nothing
+  0027: <eos>

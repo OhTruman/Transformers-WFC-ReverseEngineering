@@ -1,0 +1,387 @@
+function OnlineSubsystemLiveDemonware.Init  (script 340 bytes)
+  0000: if !(!OnlineSubsystemLive.Init()) goto 0x000d
+  000b: return false
+  000d: OnlineSubsystemLiveDemonware.InitializeDemonwareLibrary()
+  0013: self.TaskList.Init(self)
+  0027: self.Lobby.Init(self)
+  003b: self.Lobby.AddLoginChangeDelegate(delegate.OnSecondaryOnlineServiceLoginChange)
+  0057: AdvertiserClass = class<DemonwareSessionAdvertiser>(FindObject(self.SessionAdvertiserClassName, obj'Core.Class'))
+  0076: assert((AdvertiserClass != none))
+  0082: self.SessionAdvertiser = new(nothing, nothing, AdvertiserClass, nothing, LoginType)
+  0096: self.SessionAdvertiser.Init(self, self.Lobby)
+  00af: self.StatsReaderWriter.Init(self, self.Lobby)
+  00c8: self.KeyReaderWriter.Init(self, self.Lobby)
+  00e1: self.EventRecorder.Init(self, self.Lobby)
+  00fa: self.StorageReaderWriter.Init(self, self.Lobby)
+  0113: self.GroupReaderWriter.Init(self, self.Lobby)
+  012c: self.ChatService.Init(self, self.Lobby)
+  0145: OnlineSubsystemLiveDemonware.RegisterEventHandler()
+  014b: return true
+  014d: return return
+  0153: <eos>
+
+function OnlineSubsystemLiveDemonware.Shutdown  (script 15 bytes)
+  0000: OnlineSubsystemLiveDemonware.ShutDownDemonwareLibrary()
+  0006: return true
+  0008: return return
+  000e: <eos>
+
+function OnlineSubsystemLiveDemonware.RegisterEventHandler  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLiveDemonware.InitializeDemonwareLibrary  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLiveDemonware.ShutDownDemonwareLibrary  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLiveDemonware.AddAsyncTask  (script 7 bytes)
+  0000: NewTask
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLiveDemonware.CancelAllLobbyTasks  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLiveDemonware.LoginToOnlineService  (script 35 bytes)
+  0000: return self.Lobby.Login(LocalUserNum, , , )
+  001c: return return
+  0022: <eos>
+
+function OnlineSubsystemLiveDemonware.GetSecondaryLoginStatus  (script 32 bytes)
+  0000: return self.Lobby.GetLoginStatus(LocalUserNum)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.OnSecondaryOnlineServiceLoginChange  (script 12 bytes)
+  0000: LocalUserNum
+  0005: LoginType
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLiveDemonware.WriteOnlineStats  (script 214 bytes)
+  0000: if !(!OnlineSubsystemLive.WriteOnlineStats(SessionName, Player, StatsWrite)) goto 0x0069
+  001a: LogInternal("ERROR: Xbox stats failed to write, not writing Demonware stats", 'DevDemonware', , )
+  0067: return false
+  0069: if !(!self.StatsReaderWriter.WriteOnlineStats(Player, StatsWrite)) goto 0x00cd
+  008b: LogInternal("ERROR: Failed to write stats to Demonware server.", 'DevDemonware', , )
+  00cb: return false
+  00cd: return true
+  00cf: return return
+  00d5: <eos>
+
+function OnlineSubsystemLiveDemonware.FlushOnlineStats  (script 194 bytes)
+  0000: if !(!OnlineSubsystemLive.FlushOnlineStats(SessionName)) goto 0x005f
+  0010: LogInternal("ERROR: Xbox stats failed to flush, not writing Demonware stats", 'DevDemonware', , )
+  005d: return false
+  005f: if !(!self.StatsReaderWriter.FlushOnlineStats(SessionName)) goto 0x00b9
+  007c: LogInternal("ERROR: Failed to flush Demonware stats write", 'DevDemonware', , )
+  00b7: return false
+  00b9: return true
+  00bb: return return
+  00c1: <eos>
+
+function OnlineSubsystemLiveDemonware.UpdateOnlineGame  (script 81 bytes)
+  0000: default=false
+  0005: if !(!OnlineSubsystemLive.UpdateOnlineGame(SessionName, UpdatedGameSettings, bShouldRefreshOnlineData)) goto 0x0022
+  0020: return false
+  0022: if !(bShouldRefreshOnlineData) goto 0x0048
+  002b: self.SessionAdvertiser.UpdateOnlineGame(SessionName, UpdatedGameSettings)
+  0048: return true
+  004a: return return
+  0050: <eos>
+
+function OnlineSubsystemLiveDemonware.RecordEvent  (script 45 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return self.EventRecorder.RecordEvent(Contents, Category, Compress)
+  0026: return return
+  002c: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadKeyArchive  (script 51 bytes)
+  0000: return self.KeyReaderWriter.ReadValues(GetProfileSettings(self.Lobby.LoggedInPlayerNum))
+  002c: return return
+  0032: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadKeyArchiveCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLiveDemonware.AddReadKeyArchiveCompleteDelegate  (script 27 bytes)
+  0000: self.KeyReaderWriter.AddReadCompleteDelegate(ReadKeyArchiveCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearReadKeyArchiveCompleteDelegate  (script 27 bytes)
+  0000: self.KeyReaderWriter.ClearReadCompleteDelegate(ReadKeyArchiveCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.HasReadKeyArchiveFor  (script 32 bytes)
+  0000: return self.KeyReaderWriter.HasReadKeyArchiveFor(OwnerId)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.PublishKeyArchive  (script 51 bytes)
+  0000: return self.KeyReaderWriter.Publish(GetProfileSettings(self.Lobby.LoggedInPlayerNum))
+  002c: return return
+  0032: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearDeferredKeyArchiveWrites  (script 22 bytes)
+  0000: self.KeyReaderWriter.ClearDeferredKeyArchiveWrites()
+  0013: return nothing
+  0015: <eos>
+
+function OnlineSubsystemLiveDemonware.SetKeyArchiveValue  (script 39 bytes)
+  0000: nothing
+  0001: return self.KeyReaderWriter.SetValue(Value, DeferredWrite)
+  0020: return return
+  0026: <eos>
+
+function OnlineSubsystemLiveDemonware.GetKeyArchiveValue  (script 32 bytes)
+  0000: return self.KeyReaderWriter.GetValue(Value)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadProfileSettings  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ProfileSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLiveDemonware.WriteProfileSettings  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ProfileSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLiveDemonware.UpdateGlobalCounter  (script 37 bytes)
+  0000: return self.GlobalCounterReaderWriter.UpdateCounter(CounterId, Delta)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadGlobalCounterValues  (script 32 bytes)
+  0000: return self.GlobalCounterReaderWriter.GetCounterValues(CounterIds)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadGlobalCountersCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLiveDemonware.AddReadGlobalCountersCompleteDelegate  (script 27 bytes)
+  0000: self.GlobalCounterReaderWriter.AddReadCompleteDelegate(ReadGlobalCountersCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearReadGlobalCountersCompleteDelegate  (script 27 bytes)
+  0000: self.GlobalCounterReaderWriter.ClearReadCompleteDelegate(ReadGlobalCountersCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadTitleFile  (script 32 bytes)
+  0000: return self.StorageReaderWriter.ReadTitleFile(FileToRead)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.AddReadTitleFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.AddCompleteDelegate(ReadTitleFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearReadTitleFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.ClearCompleteDelegate(ReadTitleFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.GetTitleFileContents  (script 37 bytes)
+  0000: return self.StorageReaderWriter.GetTitleFileContents(Filename, FileContents)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemLiveDemonware.GetTitleFileState  (script 32 bytes)
+  0000: return self.StorageReaderWriter.GetTitleFileState(Filename)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadUserFile  (script 32 bytes)
+  0000: return self.StorageReaderWriter.ReadUserFile(FileToRead)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.AddReadUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.AddReadUserFileCompleteDelegate(ReadUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearReadUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.ClearReadUserFileCompleteDelegate(ReadUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.GetUserFileContents  (script 37 bytes)
+  0000: return self.StorageReaderWriter.GetUserFileContents(Filename, FileContents)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemLiveDemonware.WriteUserFile  (script 37 bytes)
+  0000: return self.StorageReaderWriter.WriteUserFile(FileToWrite, FileContents)
+  001e: return return
+  0024: <eos>
+
+function OnlineSubsystemLiveDemonware.AddWriteUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.AddWriteUserFileCompleteDelegate(WriteUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearWriteUserFileCompleteDelegate  (script 27 bytes)
+  0000: self.StorageReaderWriter.ClearWriteUserFileCompleteDelegate(WriteUserFileCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.GetUserFileState  (script 32 bytes)
+  0000: return self.StorageReaderWriter.GetUserFileState(Filename)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.SetGroups  (script 32 bytes)
+  0000: return self.GroupReaderWriter.SetGroups(Groups)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.ReadGroupCounts  (script 32 bytes)
+  0000: return self.GroupReaderWriter.ReadGroupCounts(Groups)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.OnReadGroupCountsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLiveDemonware.AddReadGroupCountsCompleteDelegate  (script 27 bytes)
+  0000: self.GroupReaderWriter.AddReadCompleteDelegate(ReadGroupCountsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearReadGroupCountsCompleteDelegate  (script 27 bytes)
+  0000: self.GroupReaderWriter.ClearReadCompleteDelegate(ReadGroupCountsCompleteDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.HasAsyncTasks  (script 28 bytes)
+  0000: return (OnlineSubsystemLive.HasAsyncTasks() || (self.AsyncDemonwareTasks.Length > 0))
+  0015: return return
+  001b: <eos>
+
+function OnlineSubsystemLiveDemonware.PrintAsyncTasks  (script 28 bytes)
+  0000: OnlineSubsystemLive.PrintAsyncTasks()
+  0006: self.TaskList.PrintActiveTasks()
+  0019: return nothing
+  001b: <eos>
+
+function OnlineSubsystemLiveDemonware.RegisterPlayer  (script 17 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: bWasInvited
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLiveDemonware.UnregisterPlayer  (script 12 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLiveDemonware.CreateChatChannel  (script 27 bytes)
+  0000: return self.ChatService.CreateChatChannel()
+  0014: return return
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.AddChatCreateDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatCreateDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearChatCreateDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatCreateDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.SubscribeToChatChannel  (script 32 bytes)
+  0000: return self.ChatService.SubscribeToChatChannel(ChannelId)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.AddChatSubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatSubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearChatSubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatSubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.UnsubscribeFromChatChannel  (script 32 bytes)
+  0000: return self.ChatService.UnsubscribeFromChatChannel(ChannelId)
+  0019: return return
+  001f: <eos>
+
+function OnlineSubsystemLiveDemonware.AddChatUnsubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatUnsubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearChatUnsubscribeDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatUnsubscribeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.SendChatMessage  (script 42 bytes)
+  0000: return self.ChatService.SendChatMessage(ChannelId, Message, MessageSize)
+  0023: return return
+  0029: <eos>
+
+function OnlineSubsystemLiveDemonware.SendChatWhisperMessage  (script 47 bytes)
+  0000: return self.ChatService.SendChatWhisperMessage(ChannelId, UserId, Message, MessageSize)
+  0028: return return
+  002e: <eos>
+
+function OnlineSubsystemLiveDemonware.AddChatSendCompleteDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatSendCompleteDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearChatSendCompleteDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatSendCompleteDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.AddChatChangeDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatChangeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearChatChangeDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatChangeDelegate(ChatDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.AddChatMessageDelegate  (script 27 bytes)
+  0000: self.ChatService.AddChatMessageDelegate(ChatMessageDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.ClearChatMessageDelegate  (script 27 bytes)
+  0000: self.ChatService.ClearChatMessageDelegate(ChatMessageDelegate)
+  0018: return nothing
+  001a: <eos>
+
+function OnlineSubsystemLiveDemonware.LogoutOfOnlineService  (script 34 bytes)
+  0000: return self.Lobby.Logout(LocalUserNum, 0)
+  001b: return return
+  0021: <eos>

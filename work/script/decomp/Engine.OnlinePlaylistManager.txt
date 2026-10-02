@@ -1,0 +1,117 @@
+function OnlinePlaylistManager.OnReadPlaylistComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlinePlaylistManager.DownloadPlaylist  (script 620 bytes)
+  0000: if !(((cast3a(self.Status) != cast3a(0)) && (cast3a(self.Status) != cast3a(3)))) goto 0x0068
+  0022: LogInternal("Skipping playlist download because one is in progress", 'DevOnline', , )
+  0066: return nothing
+  0068: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0081: if !((OnlineSub == none)) goto 0x00d9
+  008c: LogInternal("No online layer present, using defaults for playlist", 'DevOnline', , )
+  00cf: self.Status = 3
+  00d7: return nothing
+  00d9: if !((OnlineSub.Patcher == none)) goto 0x013c
+  00ed: LogInternal("No online patcher present, using defaults for playlist", 'DevOnline', , )
+  0132: self.Status = 3
+  013a: return nothing
+  013c: if !((self.PlaylistFileNames.Length != 0)) goto 0x0197
+  0148: LogInternal("Playlists are done downloading already.", 'DevOnline', , )
+  017e: self.Status = 2
+  0186: OnReadPlaylistComplete()
+  0195: return nothing
+  0197: self.Status = 1
+  019f: OnlineSub.Patcher.AddReadFileDelegate(delegate.OnReadTitleFileComplete)
+  01c4: self.DownloadCount = 0
+  01cb: self.SuccessfulCount = 0
+  01d2: OnlinePlaylistManager.DetermineFilesToDownload()
+  01d8: FileIndex = 0
+  01df: if !((FileIndex < self.PlaylistFileNames.Length)) goto 0x0269
+  01ef: LogInternal((("PlaylistManager: Downloading" @ FileIndex[self.PlaylistFileNames]) @ "playlist file"), 'DevOnline', , )
+  0238: OnlineSub.Patcher.AddFileToDownload(FileIndex[self.PlaylistFileNames])
+  025f: AddAdd_Int(FileIndex)
+  0266: goto 0x01df
+  0269: return nothing
+  026b: <eos>
+
+function OnlinePlaylistManager.DetermineFilesToDownload  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlinePlaylistManager.OnReadTitleFileComplete  (script 443 bytes)
+  0000: FileIndex = 0
+  0007: if !((FileIndex < self.PlaylistFileNames.Length)) goto 0x01b8
+  0017: if !((obj'Core.Strings'.static.Locs(FileIndex[self.PlaylistFileNames]) == obj'Core.Strings'.static.Locs(Filename))) goto 0x01ae
+  0042: AddAdd_Int(self.DownloadCount)
+  0049: LogInternal(((("Completed downloading file " $ cast53(self.DownloadCount)) $ " of ") $ cast53(self.PlaylistFileNames.Length)), 'DevOnline', , )
+  008e: if !((cast3a(Result) == cast3a(1))) goto 0x00a5
+  009e: AddAdd_PreInt(self.SuccessfulCount)
+  00a5: if !((self.DownloadCount == self.PlaylistFileNames.Length)) goto 0x01ae
+  00b5: self.Status = 2
+  00bd: if !((self.SuccessfulCount != self.DownloadCount)) goto 0x0136
+  00cc: LogInternal("ERROR: PlaylistManager: not all files downloaded correctly, using defaults where applicable", 'DevOnline', , )
+  0136: FinalizePlaylistObjects()
+  0140: OnReadPlaylistComplete()
+  014f: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0168: if !(((OnlineSub != none) && (OnlineSub.Patcher != none))) goto 0x01ae
+  0189: OnlineSub.Patcher.ClearReadFileDelegate(delegate.OnReadTitleFileComplete)
+  01ae: AddAdd_Int(FileIndex)
+  01b5: goto 0x0007
+  01b8: return nothing
+  01ba: <eos>
+
+function OnlinePlaylistManager.FinalizePlaylistObjects  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlinePlaylistManager.RefreshDatastores  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlinePlaylistManager.GetGameSettings  (script 213 bytes)
+  0000: PlaylistIndex = 0
+  0007: if !((PlaylistIndex < self.Playlists.Length)) goto 0x00cc
+  0017: if !((PlaylistIndex[self.Playlists].PlaylistId == PlaylistId)) goto 0x00c2
+  0037: GameIndex = 0
+  003e: if !((GameIndex < PlaylistIndex[self.Playlists].ConfiguredGames.Length)) goto 0x00c2
+  005f: if !((GameIndex[PlaylistIndex[self.Playlists].ConfiguredGames].GameSettingId == GameSettingsId)) goto 0x00b8
+  0090: return GameIndex[PlaylistIndex[self.Playlists].ConfiguredGames].GameSettings
+  00b8: AddAdd_Int(GameIndex)
+  00bf: goto 0x003e
+  00c2: AddAdd_Int(PlaylistIndex)
+  00c9: goto 0x0007
+  00cc: return none
+  00ce: return return
+  00d4: <eos>
+
+function OnlinePlaylistManager.GetContentIdsFromPlaylist  (script 156 bytes)
+  0000: PlaylistIndex = 0
+  0007: if !((PlaylistIndex < self.Playlists.Length)) goto 0x0099
+  0017: if !((PlaylistIndex[self.Playlists].PlaylistId == PlaylistId)) goto 0x008f
+  0037: ContentIdx = 0
+  003e: if !((ContentIdx < PlaylistIndex[self.Playlists].ContentIds.Length)) goto 0x008d
+  005f: ContentIds.AddItem(ContentIdx[PlaylistIndex[self.Playlists].ContentIds])
+  0083: AddAdd_Int(ContentIdx)
+  008a: goto 0x003e
+  008d: return nothing
+  008f: AddAdd_Int(PlaylistIndex)
+  0096: goto 0x0007
+  0099: return nothing
+  009b: <eos>
+
+function OnlinePlaylistManager.HasRequiredContentForPlaylist  (script 72 bytes)
+  0000: GetContentIdsFromPlaylist(PlaylistId, RequiredContentIds)
+  0014: foreach RequiredContentIds(RequiredContentId,) (end 0x003e)
+  0023: if !((LocalContentIds.Find(RequiredContentId) == -1)) goto 0x003d
+  003a: iterpop
+  003b: return false
+  003d: iternext
+  003e: iterpop
+  003f: return true
+  0041: return return
+  0047: <eos>
+
+function OnlinePlaylistManager.GetPlaylistCount  (script 14 bytes)
+  0000: return self.Playlists.Length
+  0007: return return
+  000d: <eos>

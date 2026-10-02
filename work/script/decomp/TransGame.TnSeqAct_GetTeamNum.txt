@@ -1,0 +1,8 @@
+function TnSeqAct_GetTeamNum.Activated  (script 131 bytes)
+  0000: if !((self.Targets.Length == 0)) goto 0x0053
+  000c: LogInternal("Warning: Missing Target for Get Team Number, result is invalid", , , )
+  0051: return nothing
+  0053: A = Actor(0[self.Targets])
+  0065: self.TeamNum = cast3a(A.GetTeamNum())
+  0080: return nothing
+  0082: <eos>

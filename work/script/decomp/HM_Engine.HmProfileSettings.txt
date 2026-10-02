@@ -1,0 +1,116 @@
+function HmProfileSettings.GetNormalizedPropertyValue  (script 62 bytes)
+  0000: GetProfileSettingValueInt(PropertyId, Value)
+  0014: return obj'Core.Math'.static.FClamp((cast3f(Value) / cast3f(100)), 0.0, 1.0)
+  0037: return return
+  003d: <eos>
+
+function HmProfileSettings.SetNormalizedPropertyValue  (script 56 bytes)
+  0000: Value = cast44((NormalizedValue * cast3f(100)))
+  0013: SetProfileSettingValueInt(PropertyId, obj'Core.Math'.static.Clamp(Value, 0, 100))
+  0035: return nothing
+  0037: <eos>
+
+function HmProfileSettings.GetInvertMouseOption  (script 33 bytes)
+  0000: GetProfileSettingValueBool(2, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function HmProfileSettings.SetInvertMouseOption  (script 21 bytes)
+  0000: SetProfileSettingValueBool(2, Value)
+  0012: return nothing
+  0014: <eos>
+
+function HmProfileSettings.GetControllerVibrationOption  (script 32 bytes)
+  0000: GetProfileSettingValueBool(1, Value)
+  0010: return (Value != 0)
+  0019: return return
+  001f: <eos>
+
+function HmProfileSettings.SetControllerVibrationOption  (script 20 bytes)
+  0000: SetProfileSettingValueBool(1, Value)
+  0011: return nothing
+  0013: <eos>
+
+function HmProfileSettings.GetSubtitleConfigOption  (script 33 bytes)
+  0000: GetProfileSettingValueBool(30, Value)
+  0011: return (Value != 0)
+  001a: return return
+  0020: <eos>
+
+function HmProfileSettings.SetSubtitleConfigOption  (script 21 bytes)
+  0000: SetProfileSettingValueBool(30, Value)
+  0012: return nothing
+  0014: <eos>
+
+function HmProfileSettings.GetDialogVolume  (script 20 bytes)
+  0000: return GetNormalizedPropertyValue(33)
+  000d: return return
+  0013: <eos>
+
+function HmProfileSettings.SetDialogVolume  (script 20 bytes)
+  0000: SetNormalizedPropertyValue(33, Value)
+  0011: return nothing
+  0013: <eos>
+
+function HmProfileSettings.GetFxVolume  (script 20 bytes)
+  0000: return GetNormalizedPropertyValue(32)
+  000d: return return
+  0013: <eos>
+
+function HmProfileSettings.SetFxVolume  (script 20 bytes)
+  0000: SetNormalizedPropertyValue(32, Value)
+  0011: return nothing
+  0013: <eos>
+
+function HmProfileSettings.GetMusicVolume  (script 20 bytes)
+  0000: return GetNormalizedPropertyValue(31)
+  000d: return return
+  0013: <eos>
+
+function HmProfileSettings.SetMusicVolume  (script 20 bytes)
+  0000: SetNormalizedPropertyValue(31, Value)
+  0011: return nothing
+  0013: <eos>
+
+function HmProfileSettings.GetGammaSetting  (script 61 bytes)
+  0000: NormalizedValue = GetNormalizedPropertyValue(35)
+  0012: return (2.2 + obj'Core.Math'.static.Lerp(-0.95, 0.95, NormalizedValue))
+  0036: return return
+  003c: <eos>
+
+function HmProfileSettings.SetGammaSetting  (script 47 bytes)
+  0000: NormalizedValue = ((Value - 1.0) * 50.0)
+  0019: SetProfileSettingValueInt(35, cast44(NormalizedValue))
+  002c: return nothing
+  002e: <eos>
+
+function HmProfileSettings.GetProfileCorruptionState  (script 44 bytes)
+  0000: if !(!GetProfileSettingValueInt(37, corruption)) goto 0x001d
+  0016: corruption = 0
+  001d: return cast3d(corruption)
+  0025: return return
+  002b: <eos>
+
+function HmProfileSettings.SetProfileCorruptionState  (script 22 bytes)
+  0000: SetProfileSettingValueInt(37, cast3a(corruption))
+  0013: return nothing
+  0015: <eos>
+
+function HmProfileSettings.GetDifficulty  (script 42 bytes)
+  0000: if !(!GetProfileSettingValueInt(12, Difficulty)) goto 0x001d
+  0016: Difficulty = 1
+  001d: return Difficulty
+  0023: return return
+  0029: <eos>
+
+function HmProfileSettings.SetDifficulty  (script 20 bytes)
+  0000: SetProfileSettingValueInt(12, Difficulty)
+  0011: return nothing
+  0013: <eos>
+
+function HmProfileSettings.OnReadSystemProfileComplete  (script 21 bytes)
+  0000: OnReadSystemProfileComplete()
+  0006: SetProfileCorruptionState(0)
+  0012: return nothing
+  0014: <eos>

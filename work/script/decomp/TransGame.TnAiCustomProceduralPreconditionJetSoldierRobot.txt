@@ -1,0 +1,12 @@
+function TnAiCustomProceduralPreconditionJetSoldierRobot.CheckProceduralPrecondition  (script 154 bytes)
+  0000: TransformerController = TnAiController(C)
+  0010: if !((TransformerController == none)) goto 0x001d
+  001b: return false
+  001d: if !((C.Enemy == none)) goto 0x0033
+  0031: return false
+  0033: EnemyPawn = TnPawn(TransformerController.Enemy)
+  004c: if !(((EnemyPawn == none) || ((cast3a(EnemyPawn.get_VehicleType()) == cast3a(2)) && EnemyPawn.get_IsInVehicleForm()))) goto 0x0091
+  008f: return false
+  0091: return true
+  0093: return return
+  0099: <eos>

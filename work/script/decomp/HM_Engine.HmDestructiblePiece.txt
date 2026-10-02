@@ -1,0 +1,441 @@
+function HmDestructiblePiece.set_PieceHealth  (script 14 bytes)
+  0000: self.Health = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructiblePiece.Initialize  (script 37 bytes)
+  0000: self.Handle = Handle_
+  000b: self.Blueprint = Blueprint_
+  0016: HmDestructiblePiece.CreateMeshEffects()
+  001c: HmDestructiblePiece.CreateDestructionStates()
+  0022: return nothing
+  0024: <eos>
+
+function HmDestructiblePiece.AttachToActor  (script 41 bytes)
+  0000: if !((self.AttachingActor != none)) goto 0x0015
+  000b: DetachFromActor()
+  0015: self.AttachingActor = AttachingActor_
+  0020: HmDestructiblePiece.AttachMeshComponents()
+  0026: return nothing
+  0028: <eos>
+
+function HmDestructiblePiece.DetachFromActor  (script 29 bytes)
+  0000: HmDestructiblePiece.ExitCurrentState()
+  0006: HmDestructiblePiece.DetachMeshComponents()
+  000c: self.ActiveState = none
+  0013: self.AttachingActor = none
+  001a: return nothing
+  001c: <eos>
+
+function HmDestructiblePiece.ContainsPrimitiveComponent  (script 246 bytes)
+  0000: if !((self.ActiveState == none)) goto 0x0078
+  000b: LogInternal(((("Error: The destructible piece" @ cast57(self.Blueprint.PieceName)) @ "is not in any state. The owning actor is") @ cast56(self.AttachingActor)), , , )
+  0076: return false
+  0078: ActiveMeshEffect = self.ActiveState.GetHandle()[self.MeshEffects]
+  0097: if !((ActiveMeshEffect == none)) goto 0x00a4
+  00a2: return false
+  00a4: MeshComp = MeshComponent(PrimitiveComp)
+  00b4: if !((MeshComp == none)) goto 0x00c1
+  00bf: return false
+  00c1: PieceComps = ActiveMeshEffect.GetMeshComponents()
+  00da: return (PieceComps.Find(MeshComp) != -1)
+  00ef: return return
+  00f5: <eos>
+
+function HmDestructiblePiece.NotifyHit  (script 136 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=true
+  0007: HmType = class<HmDamageType>(DamageType)
+  0017: if !((HmType == none)) goto 0x0024
+  0022: return nothing
+  0024: if !((self.ActiveState == none)) goto 0x0031
+  002f: return nothing
+  0031: self.ActiveState.NotifyHit(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0067: if !(AllowStateChanges) goto 0x0085
+  0070: HmDestructiblePiece.UpdateStateFromHit(Damage, EventInstigator, HmType)
+  0085: return nothing
+  0087: <eos>
+
+function HmDestructiblePiece.NotifyRadiusHit  (script 140 bytes)
+  0000: default=true
+  0005: HmType = class<HmDamageType>(DamageType)
+  0015: if !((HmType == none)) goto 0x0022
+  0020: return nothing
+  0022: if !((self.ActiveState == none)) goto 0x002f
+  002d: return nothing
+  002f: self.ActiveState.NotifyRadiusHit(EventInstigator, Damage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser)
+  006b: if !(AllowStateChanges) goto 0x0089
+  0074: HmDestructiblePiece.UpdateStateFromHit(Damage, EventInstigator, HmType)
+  0089: return nothing
+  008b: <eos>
+
+function HmDestructiblePiece.UpdateStateFromHit  (script 125 bytes)
+  0000: if !(!ActiveStateAcceptsDamageFromTrigger(DamageType.static.default.DestructionTrigger)) goto 0x001f
+  001d: return nothing
+  001f: HmDestructiblePiece.UpdateStateFromDamage(Damage, DamageType.static.default.DestructionTrigger)
+  0038: DNI = HmDamageNotificationInterface(EventInstigator)
+  0048: if !(NotEqual_InterfaceInterface(DNI, HmDamageNotificationInterface(none))) goto 0x007a
+  005c: DNI.NotifyCausedDamageToDestructible(Damage, DamageType)
+  007a: return nothing
+  007c: <eos>
+
+function HmDestructiblePiece.ActiveStateAcceptsDamageFromTrigger  (script 45 bytes)
+  0000: if !((self.ActiveState == none)) goto 0x000d
+  000b: return false
+  000d: return self.ActiveState.AcceptsDamageFromTrigger(DestructionTrigger)
+  0026: return return
+  002c: <eos>
+
+function HmDestructiblePiece.NotifyDamage  (script 41 bytes)
+  0000: if !(!ActiveStateAcceptsDamageFromTrigger(DestructionTrigger)) goto 0x0016
+  0014: return nothing
+  0016: HmDestructiblePiece.UpdateStateFromDamage(Damage, DestructionTrigger)
+  0026: return nothing
+  0028: <eos>
+
+function HmDestructiblePiece.UpdateStateFromDamage  (script 153 bytes)
+  0000: if !((self.Health > cast3f(0))) goto 0x0029
+  000d: (self.AccumulatedDamage += obj'Core.Math'.static.FMin(self.Health, Damage))
+  0029: (self.Health -= Damage)
+  0035: DestructionObserver = HmDestructionObserver(self.AttachingActor)
+  0045: if !(NotEqual_InterfaceInterface(DestructionObserver, HmDestructionObserver(none))) goto 0x007e
+  0059: DestructionObserver.OnDamage(self.Handle, HmDestructiblePiece.GetNormalizedHealth(), HmDestructiblePiece.GetNormalizedAccumulatedDamage())
+  007e: if !((self.Health <= cast3f(0))) goto 0x0096
+  008b: HmDestructiblePiece.TransitionToNextMatchingState(DestructionTrigger)
+  0096: return nothing
+  0098: <eos>
+
+function HmDestructiblePiece.GetNormalizedHealth  (script 40 bytes)
+  0000: return ((self.InitialHealth > cast3f(0)) ? (self.Health / self.InitialHealth) : 0.0)
+  0021: return return
+  0027: <eos>
+
+function HmDestructiblePiece.GetNormalizedAccumulatedDamage  (script 40 bytes)
+  0000: return ((self.InitialHealthTotalForAllStates > cast3f(0)) ? (self.AccumulatedDamage / self.InitialHealthTotalForAllStates) : 0.0)
+  0021: return return
+  0027: <eos>
+
+function HmDestructiblePiece.Reset  (script 110 bytes)
+  0000: self.AccumulatedDamage = 0.0
+  000b: HmDestructiblePiece.ComputeInitialHealthTotalForAllStates()
+  0011: if !((self.Blueprint.StateBlueprints.Length == 0)) goto 0x0028
+  0026: return nothing
+  0028: if !((cast3a(ResetType) == cast3a(0))) goto 0x0053
+  0038: TransitionToState(self.Blueprint.InitialStateHandle)
+  0050: goto 0x006b
+  0053: TransitionToState(self.Blueprint.ReferenceStateHandle)
+  006b: return nothing
+  006d: <eos>
+
+function HmDestructiblePiece.TransitionToState  (script 480 bytes)
+  0000: if !((self.AttachingActor == none)) goto 0x000d
+  000b: return nothing
+  000d: HmDestructiblePiece.ExitCurrentState()
+  0013: if !(((HmDestructibleActorBase(self.AttachingActor) != none) && (HmDestructibleActorBase(self.AttachingActor).LastHit.HitComponent != none))) goto 0x009c
+  0049: self.AttachingActor.TriggerStimulus(obj'HmStimulusType_Destructible', HmDestructibleActorBase(self.AttachingActor).LastHit.HitComponent.GetBounds().Origin, )
+  0099: goto 0x00c3
+  009c: self.AttachingActor.TriggerStimulus(obj'HmStimulusType_Destructible', self.AttachingActor.Location, )
+  00c3: if !((NextStateHandle < self.DestructionStates.Length)) goto 0x01dd
+  00d3: self.ActiveState = NextStateHandle[self.DestructionStates]
+  00e4: self.ActiveState.CreateEffects(self)
+  00f8: self.ActiveState.BeginEffects()
+  010b: self.InitialHealth = cast3f(NextStateHandle[self.Blueprint.StateBlueprints].InitialHealth)
+  0130: self.Health = self.InitialHealth
+  013b: if !((self.AttachingActor != none)) goto 0x01dd
+  0146: if !(((cast3a(self.AttachingActor.Role) == cast3a(3)) && self.ActiveState.HasAutomaticTransition())) goto 0x01a1
+  0177: self.AttachingActor.SetTimer(self.ActiveState.GetAutomaticTransitionTime(), false, 'OnTransitionTimerExpired', self)
+  01a1: if !(NotEqual_InterfaceInterface(HmDestructionObserver(self.AttachingActor), HmDestructionObserver(none))) goto 0x01dd
+  01ba: HmDestructionObserver(self.AttachingActor).OnStateEnter(self.Handle, NextStateHandle)
+  01dd: return nothing
+  01df: <eos>
+
+function HmDestructiblePiece.ExitCurrentState  (script 167 bytes)
+  0000: if !((self.ActiveState == none)) goto 0x000d
+  000b: return nothing
+  000d: self.ActiveState.EndEffects()
+  0020: if !(self.ActiveState.HasAutomaticTransition()) goto 0x0053
+  0036: self.AttachingActor.ClearTimer('OnTransitionTimerExpired', self)
+  0053: if !(NotEqual_InterfaceInterface(HmDestructionObserver(self.AttachingActor), HmDestructionObserver(none))) goto 0x009d
+  006c: HmDestructionObserver(self.AttachingActor).OnStateExit(self.Handle, self.ActiveState.GetHandle())
+  009d: self.ActiveState = none
+  00a4: return nothing
+  00a6: <eos>
+
+function HmDestructiblePiece.OnTransitionTimerExpired  (script 14 bytes)
+  0000: HmDestructiblePiece.TransitionToNextMatchingState(obj'HmTimerExpiredDestructionTrigger')
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructiblePiece.SetBlueprint  (script 20 bytes)
+  0000: self.Blueprint = Blueprint_
+  000b: HmDestructiblePiece.CreateDestructionStates()
+  0011: return nothing
+  0013: <eos>
+
+function HmDestructiblePiece.GetMeshEffects  (script 13 bytes)
+  0000: return self.MeshEffects
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.GetDestructionStates  (script 13 bytes)
+  0000: return self.DestructionStates
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.GetActiveState  (script 13 bytes)
+  0000: return self.ActiveState
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.GetActiveStateName  (script 48 bytes)
+  0000: if !((self.ActiveState == none)) goto 0x0015
+  000b: return 'None'
+  0015: return self.ActiveState.GetName()
+  0029: return return
+  002f: <eos>
+
+function HmDestructiblePiece.FindStateByName  (script 62 bytes)
+  0000: foreach self.DestructionStates(DestructionState,) (end 0x0034)
+  000f: if !((DestructionState.GetName() == StateName)) goto 0x0033
+  002c: iterpop
+  002d: return DestructionState
+  0033: iternext
+  0034: iterpop
+  0035: return none
+  0037: return return
+  003d: <eos>
+
+function HmDestructiblePiece.IsInFinalState  (script 27 bytes)
+  0000: return self.ActiveState.IsFinalState()
+  0014: return return
+  001a: <eos>
+
+function HmDestructiblePiece.GetActiveMeshEffect  (script 46 bytes)
+  0000: if !((self.ActiveState == none)) goto 0x000d
+  000b: return none
+  000d: return self.ActiveState.GetHandle()[self.MeshEffects]
+  0027: return return
+  002d: <eos>
+
+function HmDestructiblePiece.GetActiveMeshComponent  (script 111 bytes)
+  0000: if !((self.ActiveState == none)) goto 0x000d
+  000b: return none
+  000d: ActiveMeshEffect = self.ActiveState.GetHandle()[self.MeshEffects]
+  002c: if !((ActiveMeshEffect == none)) goto 0x0039
+  0037: return none
+  0039: MeshComps = ActiveMeshEffect.GetMeshComponents()
+  0052: if !((MeshComps.Length == 0)) goto 0x0060
+  005e: return none
+  0060: return 0[MeshComps]
+  0068: return return
+  006e: <eos>
+
+function HmDestructiblePiece.SetSimulatedHealth  (script 108 bytes)
+  0000: if !((self.AttachingActor == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(self.AttachingActor.Role) != cast3a(3))) goto 0x0034
+  0026: self.Health = SimulatedHealth
+  0031: goto 0x0069
+  0034: LogInternal("ERROR: Health can only be simulated on proxies", , , )
+  0069: return nothing
+  006b: <eos>
+
+function HmDestructiblePiece.SetSimulatedAccumulatedDamage  (script 120 bytes)
+  0000: if !((self.AttachingActor == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(self.AttachingActor.Role) != cast3a(3))) goto 0x0034
+  0026: self.AccumulatedDamage = SimulatedAccumulatedDamage
+  0031: goto 0x0075
+  0034: LogInternal("ERROR: Accumulated Damage can only be simulated on proxies", , , )
+  0075: return nothing
+  0077: <eos>
+
+function HmDestructiblePiece.AddHealth  (script 164 bytes)
+  0000: if !((cast3a(self.AttachingActor.Role) == cast3a(3))) goto 0x00a1
+  0019: HealthToAdd = obj'Core.Math'.static.FMin(Amount, (GetInitialHealth() - self.Health))
+  0040: (self.Health += HealthToAdd)
+  004c: (self.AccumulatedDamage -= HealthToAdd)
+  0058: Observer = HmDestructionObserver(self.AttachingActor)
+  0068: if !(NotEqual_InterfaceInterface(Observer, HmDestructionObserver(none))) goto 0x00a1
+  007c: Observer.OnDamage(self.Handle, HmDestructiblePiece.GetNormalizedHealth(), HmDestructiblePiece.GetNormalizedAccumulatedDamage())
+  00a1: return nothing
+  00a3: <eos>
+
+function HmDestructiblePiece.GetHealth  (script 13 bytes)
+  0000: return self.Health
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.GetInitialHealth  (script 13 bytes)
+  0000: return self.InitialHealth
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.GetInitialHealthTotalForAllStates  (script 13 bytes)
+  0000: return self.InitialHealthTotalForAllStates
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.ComputeInitialHealthTotalForAllStates  (script 94 bytes)
+  0000: self.InitialHealthTotalForAllStates = 0.0
+  000b: I = 0
+  0012: if !((I < self.Blueprint.StateBlueprints.Length)) goto 0x005b
+  002b: (self.InitialHealthTotalForAllStates += cast3f(I[self.Blueprint.StateBlueprints].InitialHealth))
+  0051: AddAdd_PreInt(I)
+  0058: goto 0x0012
+  005b: return nothing
+  005d: <eos>
+
+function HmDestructiblePiece.GetAccumulatedDamageForAllStates  (script 33 bytes)
+  0000: return ((self.Health > cast3f(0)) ? self.AccumulatedDamage : self.InitialHealthTotalForAllStates)
+  001a: return return
+  0020: <eos>
+
+function HmDestructiblePiece.GetAttachingActor  (script 13 bytes)
+  0000: return self.AttachingActor
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.GetBlueprint  (script 13 bytes)
+  0000: return self.Blueprint
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.SetPieceToActorTransform  (script 23 bytes)
+  0000: self.Blueprint.Transform = PieceToActorTransform_
+  0014: return nothing
+  0016: <eos>
+
+function HmDestructiblePiece.SetAttachToActorTransform  (script 14 bytes)
+  0000: self.AttachToActorTransform = AttachToActorTransform_
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructiblePiece.GetPieceToActorTransform  (script 46 bytes)
+  0000: return obj'Core.Math'.static.CombineTransforms(self.AttachToActorTransform, self.Blueprint.Transform)
+  0027: return return
+  002d: <eos>
+
+function HmDestructiblePiece.GetPieceName  (script 22 bytes)
+  0000: return self.Blueprint.PieceName
+  000f: return return
+  0015: <eos>
+
+function HmDestructiblePiece.GetHandle  (script 13 bytes)
+  0000: return self.Handle
+  0006: return return
+  000c: <eos>
+
+function HmDestructiblePiece.CreateDestructionStates  (script 305 bytes)
+  0000: if !((self.Blueprint.StateBlueprints.Length != self.MeshEffects.Length)) goto 0x00ad
+  001a: LogInternal((((("Error: Piece named" @ cast57(self.Blueprint.PieceName)) @ "in actor") @ cast56(self.AttachingActor)) @ "is broken. The blueprint and the actor don't match. Please replace the actor."), , , )
+  00ab: return nothing
+  00ad: I = 0
+  00b4: if !((I < self.Blueprint.StateBlueprints.Length)) goto 0x012e
+  00cd: I[self.DestructionStates] = new(self, nothing, obj'HmDestructionState', nothing, AttachTreeCallback)
+  00e7: I[self.DestructionStates].Initialize(I, I[self.Blueprint.StateBlueprints], I[self.MeshEffects])
+  0124: AddAdd_PreInt(I)
+  012b: goto 0x00b4
+  012e: return nothing
+  0130: <eos>
+
+function HmDestructiblePiece.CreateMeshEffects  (script 203 bytes)
+  0000: self.MeshEffects.Length = self.Blueprint.StateBlueprints.Length
+  0016: I = 0
+  001d: if !((I < self.Blueprint.StateBlueprints.Length)) goto 0x00c8
+  0036: StateBlueprint = I[self.Blueprint.StateBlueprints]
+  0050: foreach StateBlueprint.EffectFactories(EffectFactory,) (end 0x00bd)
+  0068: if !((EffectFactory == none)) goto 0x0077
+  0073: iternext
+  0074: goto 0x00bd
+  0077: if !((EffectFactory.CreatesMeshEffect() == false)) goto 0x0094
+  0090: iternext
+  0091: goto 0x00bd
+  0094: I[self.MeshEffects] = HmMeshDestructionEffect(EffectFactory.CreateInstance(self))
+  00b9: goto 0x00bd
+  00bc: iternext
+  00bd: iterpop
+  00be: AddAdd_PreInt(I)
+  00c5: goto 0x001d
+  00c8: return nothing
+  00ca: <eos>
+
+function HmDestructiblePiece.UpdateMeshTransforms  (script 210 bytes)
+  0000: self.MeshEffects.Length = self.Blueprint.StateBlueprints.Length
+  0016: I = 0
+  001d: if !((I < self.Blueprint.StateBlueprints.Length)) goto 0x00cf
+  0036: StateBlueprint = I[self.Blueprint.StateBlueprints]
+  0050: foreach StateBlueprint.EffectFactories(EffectFactory,) (end 0x00c4)
+  0068: if !((EffectFactory == none)) goto 0x0077
+  0073: iternext
+  0074: goto 0x00c4
+  0077: if !((EffectFactory.CreatesMeshEffect() == false)) goto 0x0094
+  0090: iternext
+  0091: goto 0x00c4
+  0094: I[self.MeshEffects].SetEffectToPieceTransform(EffectFactory.GetTransform())
+  00c0: goto 0x00c4
+  00c3: iternext
+  00c4: iterpop
+  00c5: AddAdd_PreInt(I)
+  00cc: goto 0x001d
+  00cf: return nothing
+  00d1: <eos>
+
+function HmDestructiblePiece.AttachMeshComponents  (script 398 bytes)
+  0000: DisplayStateHandle = (obj'Engine.WorldInfo'.static.IsInEditor() ? self.Blueprint.ReferenceStateHandle : self.Blueprint.InitialStateHandle)
+  003a: LightEnv = self.AttachingActor.FindComponent(obj'Engine.LightEnvironmentComponent')
+  0058: I = 0
+  005f: if !((I < self.MeshEffects.Length)) goto 0x018b
+  006f: Effect = I[self.MeshEffects]
+  0080: if !((Effect == none)) goto 0x008e
+  008b: goto 0x0181
+  008e: MeshComponents = Effect.GetMeshComponents()
+  00a7: EffectToActorTransform = Effect.GetEffectToActorTransform()
+  00c0: foreach MeshComponents(CurrentMeshComponent,) (end 0x0180)
+  00cf: if !(!CurrentMeshComponent.bUsePrecomputedShadows) goto 0x00fe
+  00e3: CurrentMeshComponent.SetLightEnvironment(LightEnv)
+  00fb: goto 0x0112
+  00fe: CurrentMeshComponent.SetLightEnvironment(none)
+  0112: CurrentMeshComponent.SetRotation(EffectToActorTransform.Orientation)
+  0135: CurrentMeshComponent.SetTranslation(EffectToActorTransform.Position)
+  0158: if !((I == DisplayStateHandle)) goto 0x017f
+  0167: self.AttachingActor.AttachComponent(CurrentMeshComponent)
+  017f: iternext
+  0180: iterpop
+  0181: AddAdd_PreInt(I)
+  0188: goto 0x005f
+  018b: return nothing
+  018d: <eos>
+
+function HmDestructiblePiece.DetachMeshComponents  (script 114 bytes)
+  0000: if !((self.AttachingActor == none)) goto 0x000d
+  000b: return nothing
+  000d: foreach self.MeshEffects(Effect,) (end 0x006e)
+  001c: if !((Effect == none)) goto 0x002b
+  0027: iternext
+  0028: goto 0x006e
+  002b: MeshComponents = Effect.GetMeshComponents()
+  0044: foreach MeshComponents(CurrentMeshComponent,) (end 0x006c)
+  0053: self.AttachingActor.DetachComponent(CurrentMeshComponent)
+  006b: iternext
+  006c: iterpop
+  006d: iternext
+  006e: iterpop
+  006f: return nothing
+  0071: <eos>
+
+function HmDestructiblePiece.TransitionToNextMatchingState  (script 65 bytes)
+  0000: NextStateHandle = self.ActiveState.ChooseNextStateHandle(DestructionTrigger)
+  001e: if !((NextStateHandle == -1)) goto 0x002f
+  002d: return nothing
+  002f: TransitionToState(NextStateHandle)
+  003e: return nothing
+  0040: <eos>
+
+function HmDestructiblePiece.CheckForErrors  (script 126 bytes)
+  0000: if !(((self.Blueprint == none) && (Prefab(self.get_Outer().get_Outer().get_Outer()) == none))) goto 0x0075
+  002e: EmitCheckMessage(1, (cast56(self.AttachingActor) @ "has a destructible piece with a None Blueprint"), , )
+  0075: CheckForErrors()
+  007b: return nothing
+  007d: <eos>

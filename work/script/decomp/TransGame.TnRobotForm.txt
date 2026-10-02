@@ -1,0 +1,530 @@
+function TnRobotForm.set_Animator  (script 14 bytes)
+  0000: self._Animator = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_AdditiveAnimator  (script 14 bytes)
+  0000: self._AdditiveAnimator = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.get_HitReactionAnimator  (script 13 bytes)
+  0000: return self._HitReactionAnimator
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.get_AcrobaticsManager  (script 13 bytes)
+  0000: return self._AcrobaticsManager
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.set_AcrobaticsManager  (script 14 bytes)
+  0000: self._AcrobaticsManager = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.get_RobotMeshComponent  (script 13 bytes)
+  0000: return self._MeshComponent
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.set_RobotMeshComponent  (script 14 bytes)
+  0000: self._MeshComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_RobotLightEnvironmentComponent  (script 14 bytes)
+  0000: self._LightEnvironmentComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_BodyImpactComponent  (script 14 bytes)
+  0000: self._BodyImpactComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.get_IsPlayingCustomAnimation  (script 27 bytes)
+  0000: return self._Animator.get_IsPlayingAnimation()
+  0014: return return
+  001a: <eos>
+
+function TnRobotForm.get_IsHovering  (script 30 bytes)
+  0000: return (cast3a(self._AcrobaticsManager._AcrobaticsState) == cast3a(3))
+  0017: return return
+  001d: <eos>
+
+function TnRobotForm.get_IsDodging  (script 30 bytes)
+  0000: return (cast3a(self._AcrobaticsManager._AcrobaticsState) == cast3a(5))
+  0017: return return
+  001d: <eos>
+
+function TnRobotForm.get_IsOnTheGround  (script 57 bytes)
+  0000: return ((cast3a(self._AcrobaticsManager._AcrobaticsState) == cast3a(8)) || (cast3a(self._AcrobaticsManager._AcrobaticsState) == cast3a(7)))
+  0032: return return
+  0038: <eos>
+
+function TnRobotForm.get_IsAttacking  (script 27 bytes)
+  0000: return self._MeleeManager.get_IsAttacking()
+  0014: return return
+  001a: <eos>
+
+function TnRobotForm.set_BlockController  (script 14 bytes)
+  0000: self._BlockController = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_MeleeService  (script 14 bytes)
+  0000: self._MeleeService = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_MeleeManager  (script 14 bytes)
+  0000: self._MeleeManager = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_RobotTargetableComponent  (script 14 bytes)
+  0000: self._TargetableComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.set_WoundedPlayer  (script 14 bytes)
+  0000: self._WoundedPlayer = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.get_DeathPlayer  (script 13 bytes)
+  0000: return self._DeathPlayer
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.get_DeathMotionController  (script 13 bytes)
+  0000: return self._DeathMotionController
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.get_CanSwitchWeapons  (script 29 bytes)
+  0000: return !self._MeleeManager.get_IsAttacking()
+  0016: return return
+  001c: <eos>
+
+function TnRobotForm.get_SoundEventSet  (script 36 bytes)
+  0000: return ((self._Blueprint == none) ? none : self._Blueprint.SoundEventSet)
+  001d: return return
+  0023: <eos>
+
+function TnRobotForm.get_FormMovementCapabilities  (script 13 bytes)
+  0000: return self._MovementCapabilities
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.set_FormMovementCapabilities  (script 14 bytes)
+  0000: self._MovementCapabilities = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotForm.get_FriendlyName  (script 15 bytes)
+  0000: return cast56(self._Blueprint)
+  0008: return return
+  000e: <eos>
+
+function TnRobotForm.get_FormType  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function TnRobotForm.get_Arm  (script 13 bytes)
+  0000: return self._Arm
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.set_FallingAnimSetOverride  (script 91 bytes)
+  0000: if !((Value == none)) goto 0x000d
+  000b: return nothing
+  000d: self._FallingAnimSetOverride = Value
+  0018: self._MeshComponent.AnimSets.Length[self._MeshComponent.AnimSets] = self._FallingAnimSetOverride
+  003c: self._AcrobaticsManager.set_OnFallCompleteDelegate(delegate.RemoveLandingAnimSet)
+  0058: return nothing
+  005a: <eos>
+
+function TnRobotForm.get_CylinderPhysicalMaterial  (script 13 bytes)
+  0000: return self._CylinderPhysicalMaterial
+  0006: return return
+  000c: <eos>
+
+function TnRobotForm.get_CanAnchor  (script 49 bytes)
+  0000: if !(((self._AcrobaticsManager != none) && (cast3a(self._AcrobaticsManager._AcrobaticsState) != cast3a(8)))) goto 0x0028
+  0026: return false
+  0028: return true
+  002a: return return
+  0030: <eos>
+
+function TnRobotForm.get_CollisionExtent  (script 75 bytes)
+  0000: return obj'Core.Math'.static.MakeVector(self._MovementCapabilities.CylinderRadius, self._MovementCapabilities.CylinderRadius, self._MovementCapabilities.CylinderHeight)
+  0044: return return
+  004a: <eos>
+
+function TnRobotForm.OnGetService  (script 381 bytes)
+  0000: switch (Type)
+  0007: case 'TnAnimatorService': (next 0x0021)
+  0013: Service = self._Animator
+  001e: goto 0x0148
+  0021: case 'TnAdditiveAnimatorService': (next 0x003b)
+  002d: Service = self._AdditiveAnimator
+  0038: goto 0x0148
+  003b: case 'TnPhysicsService': (next 0x0058)
+  0047: Service = cast36(TnRobotForm.ConstructPhysicsService())
+  0055: goto 0x0148
+  0058: case 'TnWeaponService': (next 0x0075)
+  0064: Service = cast36(TnRobotForm.ConstructWeaponService())
+  0072: goto 0x0148
+  0075: case 'TnShieldService': (next 0x0092)
+  0081: Service = cast36(TnRobotForm.ConstructShieldService())
+  008f: goto 0x0148
+  0092: case 'TnMeleeService': (next 0x00ac)
+  009e: Service = self._MeleeService
+  00a9: goto 0x0148
+  00ac: case 'TnBuffService': (next 0x00c6)
+  00b8: Service = self._BuffManager
+  00c3: goto 0x0148
+  00c6: case 'TnDodgeService': (next 0x00e0)
+  00d2: Service = self._AcrobaticsManager
+  00dd: goto 0x0148
+  00e0: case 'TnAcrobaticsService': (next 0x00fa)
+  00ec: Service = self._AcrobaticsManager
+  00f7: goto 0x0148
+  00fa: case 'TnTargetableService': (next 0x0114)
+  0106: Service = self._TargetableComponent
+  0111: goto 0x0148
+  0114: case 'TnAudioService': (next 0x0145)
+  0120: Service = self._OwnerPawn.GetService('TnAudioService')
+  0142: goto 0x0148
+  0145: default:
+  0148: if !((Service != none)) goto 0x0170
+  0153: self._Services.Add(Type, Service)
+  0170: return Service
+  0176: return return
+  017c: <eos>
+
+function TnRobotForm.ConstructShieldService  (script 107 bytes)
+  0000: if !(!self._BlockController.get_IsInitialized()) goto 0x001a
+  0018: return none
+  001a: ShieldService = new(nothing, nothing, obj'TnRobotShieldService', nothing, DeltaTime)
+  002e: ShieldService.Initialize(self._BlockController, self._OwnerPawn.InvManager, self._MeleeManager)
+  0059: return TnShieldService(ShieldService)
+  0064: return return
+  006a: <eos>
+
+function TnRobotForm.ConstructPhysicsService  (script 58 bytes)
+  0000: PhysicsService = new(nothing, nothing, obj'TnPawnPhysicsService', nothing, DeltaTime)
+  0014: PhysicsService._OwnerPawn = self._OwnerPawn
+  0028: return TnPhysicsService(PhysicsService)
+  0033: return return
+  0039: <eos>
+
+function TnRobotForm.ConstructWeaponService  (script 58 bytes)
+  0000: WeaponService = new(nothing, nothing, obj'TnPawnWeaponService', nothing, DeltaTime)
+  0014: WeaponService._OwnerPawn = self._OwnerPawn
+  0028: return TnWeaponService(WeaponService)
+  0033: return return
+  0039: <eos>
+
+function TnRobotForm.OnRegisterReplicatedObjects  (script 285 bytes)
+  0000: OwnerActor.RegisterReplicatedObject(self._Animator.get_FullBodyCustomAnimationPlayer(), 'FullBodyCustomAnimationPlayer')
+  002f: OwnerActor.RegisterReplicatedObject(self._Animator.get_UpperBodyCustomAnimationPlayer(), 'UpperBodyCustomAnimationPlayer')
+  005e: OwnerActor.RegisterReplicatedObject(self._Animator.get_LeftArmCustomAnimationPlayer(), 'LeftArmCustomAnimationPlayer')
+  008d: OwnerActor.RegisterReplicatedObject(self._AdditiveAnimator._AnimationPlayer, 'RobotAdditiveAnimationPlayer')
+  00b7: OwnerActor.RegisterReplicatedObject(self._BlockController, '_BlockController')
+  00d8: OwnerActor.RegisterReplicatedObject(self._AcrobaticsManager, '_AcrobaticsManager')
+  00f9: OwnerActor.RegisterReplicatedObject(self._MeleeManager, '_MeleeManager')
+  011a: return nothing
+  011c: <eos>
+
+function TnRobotForm.OnUnregisterReplicatedObjects  (script 285 bytes)
+  0000: OwnerActor.UnregisterReplicatedObject(self._Animator.get_FullBodyCustomAnimationPlayer(), 'FullBodyCustomAnimationPlayer')
+  002f: OwnerActor.UnregisterReplicatedObject(self._Animator.get_UpperBodyCustomAnimationPlayer(), 'UpperBodyCustomAnimationPlayer')
+  005e: OwnerActor.UnregisterReplicatedObject(self._Animator.get_LeftArmCustomAnimationPlayer(), 'LeftArmCustomAnimationPlayer')
+  008d: OwnerActor.UnregisterReplicatedObject(self._AdditiveAnimator._AnimationPlayer, 'RobotAdditiveAnimationPlayer')
+  00b7: OwnerActor.UnregisterReplicatedObject(self._BlockController, '_BlockController')
+  00d8: OwnerActor.UnregisterReplicatedObject(self._AcrobaticsManager, '_AcrobaticsManager')
+  00f9: OwnerActor.UnregisterReplicatedObject(self._MeleeManager, '_MeleeManager')
+  011a: return nothing
+  011c: <eos>
+
+function TnRobotForm.SetTransformMeshOffset  (script 43 bytes)
+  0000: self._MeshComponent.SetTranslation((self._Blueprint.MeshTranslation + Offset))
+  0028: return nothing
+  002a: <eos>
+
+function TnRobotForm.Initialize  (script 1769 bytes)
+  0000: self._OwnerPawn = OwnerPawn
+  000b: self._Blueprint = Blueprint
+  0016: self._BuffManager = BuffManager
+  0021: self._MeshComponent.SetSkeletalMesh(Blueprint.SkelMesh, )
+  0043: self._OwnerPawn.AttachComponent(self._MeshComponent)
+  005b: self._MeshComponent.SetPhysicsAsset(Blueprint.PhysicsAsset, )
+  007d: self._MeshComponent.SetHasPhysicsAssetInstance((Blueprint.PhysicsAsset != none))
+  00a1: self._MeshComponent.SetTranslation(Blueprint.MeshTranslation)
+  00c2: self._MeshComponent.AnimSets = Blueprint.AnimSets
+  00df: self._MeshComponent.SetHidden(true)
+  00f3: if !((Blueprint.MeleeSet != none)) goto 0x0136
+  0107: get_RobotMeshComponent().AppendAnimSet(Blueprint.MeleeSet.MeleeAnimSet)
+  0136: self._MeshComponent.SetAnimTreeTemplate(Blueprint.AnimTree)
+  0157: self._Animator.Initialize(self._MeshComponent)
+  016f: self._AdditiveAnimator.Initialize(self._MeshComponent, 'AdditiveSlot')
+  0190: if !((Blueprint.BlockParams != none)) goto 0x01cf
+  01a4: self._BlockController.Initialize(self._OwnerPawn, Blueprint.BlockParams, self._MeshComponent)
+  01cf: self._MeleeService.Initialize(self._MeleeManager, self._BuffManager)
+  01ec: self._AcrobaticsManager.Initialize(TnServiceProvider(self), Blueprint.AcrobaticsManagerBlueprint)
+  0213: self._MeleeManager.Initialize(self._OwnerPawn, self._Animator, self._Blueprint.MeleeSet)
+  023e: if !((Blueprint.TargetingBlueprint != none)) goto 0x028b
+  0252: self._TargetableComponent = TnTargetableComponent(Blueprint.TargetingBlueprint.TargetableComponent.Clone(self._OwnerPawn, ))
+  0288: goto 0x02cc
+  028b: if !((Blueprint.TargetableComp != none)) goto 0x02cc
+  029f: self._TargetableComponent = TnTargetableComponent(Blueprint.TargetableComp.Clone(self._OwnerPawn, ))
+  02cc: if !((Blueprint.AcrobaticsManagerBlueprint != none)) goto 0x034d
+  02e0: self._MovementCapabilities.MaxJumpHeight = Blueprint.AcrobaticsManagerBlueprint.JumpHeight
+  0308: if !((Blueprint.AcrobaticsManagerBlueprint.JumpHeight <= cast3f(0))) goto 0x034d
+  0327: self._MovementCapabilities.bCanJump = false
+  033a: self._MovementCapabilities.bJumpCapable = false
+  034d: if !((Blueprint.HitReactionBlueprint != none)) goto 0x0388
+  0361: self._HitReactionAnimator = new(self, nothing, obj'TnHitReactionAnimator', nothing, ?obj5884929)
+  0375: ?obj8787737
+  037a: Blueprint
+  037f: ?obj84148480
+  0384: ?obj-1771629031
+  0389: self._WoundedPlayer
+  038e: ?obj570432256
+  0393: ?obj800653312
+  0398: ?obj65536
+  039d: DivideEqual_ByteByte(self, self._MeshComponent, self._Blueprint.WoundedBlueprint)
+  03b3: self._DeathMotionController.Initialize(self._OwnerPawn)
+  03cb: self._DeathPlayer.Initialize(self._OwnerPawn, self._Blueprint.DeathBlueprint, TnDeathMotionController(self._DeathMotionController))
+  03fb: self._MovementCapabilities.CylinderHeight = self._Blueprint.Collision.CollisionHeight
+  0425: self._MovementCapabilities.CylinderRadius = self._Blueprint.Collision.CollisionRadius
+  044f: self._OwnerPawn.SetCollisionSize(self._Blueprint.Collision.CollisionRadius, self._Blueprint.Collision.CollisionHeight)
+  048d: self._OwnerPawn.CylinderComponent.bDisableAllRigidBody = false
+  04a7: self._OwnerPawn.CylinderComponent.SetRigidBodyMesh(obj'Engine.CylinderComponent'.static.InstantiateRigidBodyMesh(self._Blueprint.Collision.RigidBodyMeshCache))
+  04ef: self._OwnerPawn.CylinderComponent.InitComponentRBPhys(true)
+  050c: self._OwnerPawn.CylinderComponent.SetPhysMaterialOverride(self._CylinderPhysicalMaterial)
+  052d: if !((get_SoundEventSet() != none)) goto 0x0563
+  053d: self._BodyImpactComponent.SetBodyImpactProperties(get_SoundEventSet().BodyImpactProperties)
+  0563: self._OwnerPawn.DetachComponent(self._MeshComponent)
+  057b: self._Arm.Initialize(Blueprint.ArmBlueprint, self._MeshComponent, TnWeaponService(GetService('TnWeaponService')))
+  05b9: CharacterMaterialService = TnCharacterMaterialService(self._OwnerPawn.GetService('TnCharacterMaterialService'))
+  05e0: CharacterMaterialService.AddMesh(0, self._MeshComponent, )
+  05fc: CharacterMaterialService.AddMesh(1, self._MeshComponent, self._Blueprint.BuffMaterials)
+  0625: CharacterMaterialService.AddMesh(2, self._MeshComponent, self._Blueprint.BuffMaterials)
+  064e: CharacterMaterialService.AddMesh(0, self._Arm.get_Mesh(), )
+  0678: CharacterMaterialService.AddMesh(1, self._Arm.get_Mesh(), self._Blueprint.BuffMaterials)
+  06af: CharacterMaterialService.AddMesh(2, self._Arm.get_Mesh(), self._Blueprint.BuffMaterials)
+  06e6: return nothing
+  06e8: <eos>
+
+function TnRobotForm.OnActivate  (script 430 bytes)
+  0000: self._MeshComponent.bPauseAnims = false
+  0011: self._OwnerPawn.AttachComponent(self._MeshComponent)
+  0029: self._OwnerPawn.Mesh = self._MeshComponent
+  003d: self._OwnerPawn.AttachComponent(self._LightEnvironmentComponent)
+  0055: if !((none != self._OwnerPawn.get_VehicleMeshComponent())) goto 0x0094
+  006e: self._OwnerPawn.get_VehicleMeshComponent().SetLightEnvironment(self._LightEnvironmentComponent)
+  0094: if !((none != self._OwnerPawn.get_RobotMeshComponent())) goto 0x00d3
+  00ad: self._OwnerPawn.get_RobotMeshComponent().SetLightEnvironment(self._LightEnvironmentComponent)
+  00d3: self._OwnerPawn.AttachComponent(self._TargetableComponent)
+  00eb: self._OwnerPawn.AttachComponent(self._BodyImpactComponent)
+  0103: self._OwnerPawn.SetCollisionSize(self._Blueprint.Collision.CollisionRadius, self._Blueprint.Collision.CollisionHeight)
+  0141: self._OwnerPawn._BodyImpactComponent = self._BodyImpactComponent
+  0155: self._AcrobaticsManager.Activate()
+  0168: if !(((cast3a(GetRole()) != cast3a(1)) || (cast3a(self._AcrobaticsManager._AcrobaticsState) == cast3a(9)))) goto 0x01ab
+  0198: self._AcrobaticsManager.Fall()
+  01ab: return nothing
+  01ad: <eos>
+
+function TnRobotForm.HideAttachedDestructibles  (script 92 bytes)
+  0000: AttachedDestructibles = self._OwnerPawn.GetAttachedDestructibles()
+  0019: I = 0
+  0020: if !((I < AttachedDestructibles.Length)) goto 0x0059
+  0030: I[AttachedDestructibles].SetHidden(Hidden)
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x0020
+  0059: return nothing
+  005b: <eos>
+
+function TnRobotForm.OnBeginPlay  (script 30 bytes)
+  0000: self._MeshComponent.SetHidden(false)
+  0014: TnRobotForm.HideAttachedDestructibles(false)
+  001b: return nothing
+  001d: <eos>
+
+function TnRobotForm.OnDeactivate  (script 44 bytes)
+  0000: self._OwnerPawn.DetachComponent(self._MeshComponent)
+  0018: self._MeshComponent.bPauseAnims = true
+  0029: return nothing
+  002b: <eos>
+
+function TnRobotForm.OnEndPlay  (script 120 bytes)
+  0000: self._OwnerPawn.DetachComponent(self._TargetableComponent)
+  0018: self._OwnerPawn.DetachComponent(self._LightEnvironmentComponent)
+  0030: self._OwnerPawn.DetachComponent(self._BodyImpactComponent)
+  0048: self._AcrobaticsManager.Deactivate()
+  005b: self._MeleeManager.UnequipMeleeWeapon()
+  006e: TnRobotForm.HideAttachedDestructibles(true)
+  0075: return nothing
+  0077: <eos>
+
+function TnRobotForm.OnUpdate  (script 212 bytes)
+  0000: self._Animator.Update(DeltaTime)
+  0018: self._AdditiveAnimator.Update(DeltaTime)
+  0030: self._AcrobaticsManager.Update(DeltaTime)
+  0048: self._MeleeManager.Update(DeltaTime)
+  0060: self._WoundedPlayer.Tick(DeltaTime)
+  0078: self._DeathPlayer.Tick(DeltaTime)
+  0090: self._Arm.Update()
+  00a3: if !(self._BlockController.get_IsInitialized()) goto 0x00d1
+  00b9: self._BlockController.Update(DeltaTime)
+  00d1: return nothing
+  00d3: <eos>
+
+function TnRobotForm.Jump  (script 101 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(self._MeleeManager.get_IsAttacking()) goto 0x001a
+  0018: return nothing
+  001a: if !((self._MovementCapabilities.bCanJump && self._MovementCapabilities.bJumpCapable)) goto 0x0062
+  0044: self._AcrobaticsManager.Jump(OverrideVelocity, ForceDoubleJump)
+  0062: return nothing
+  0064: <eos>
+
+function TnRobotForm.Hover  (script 22 bytes)
+  0000: self._AcrobaticsManager.Hover()
+  0013: return nothing
+  0015: <eos>
+
+function TnRobotForm.Dodge  (script 59 bytes)
+  0000: nothing
+  0001: nothing
+  0002: self._AcrobaticsManager.set_MaxDodgeDistance(MaxDistance)
+  001a: self._AcrobaticsManager.Dodge(Direction, ForceDodge)
+  0038: return nothing
+  003a: <eos>
+
+function TnRobotForm.Rammed  (script 27 bytes)
+  0000: self._AcrobaticsManager.Rammed(DirectionVector)
+  0018: return nothing
+  001a: <eos>
+
+function TnRobotForm.OnGetWeaponSockets  (script 104 bytes)
+  0000: if !((TnMeleeWeapon(WeaponToAttach) != none)) goto 0x0020
+  0010: Sockets.AddItem(self.MeleeWeaponSocket)
+  001d: goto 0x005b
+  0020: if !((cast3a(TnWeapon(WeaponToAttach).WeaponType) == cast3a(5))) goto 0x004e
+  003e: Sockets.AddItem(self.HeavyWeaponSocket)
+  004b: goto 0x005b
+  004e: Sockets.AddItem(self.DefaultWeaponSocket)
+  005b: return Sockets
+  0061: return return
+  0067: <eos>
+
+function TnRobotForm.OnPlayHit  (script 38 bytes)
+  0000: if !((self._HitReactionAnimator != none)) goto 0x0023
+  000b: self._HitReactionAnimator.Play(HitInfo)
+  0023: return nothing
+  0025: <eos>
+
+function TnRobotForm.OnPlayDeath  (script 79 bytes)
+  0000: self._OwnerPawn.Acceleration = vect(0,0,0)
+  001c: ResumeCustomAnimations()
+  0026: self._DeathPlayer.Activate()
+  0039: self._AcrobaticsManager.Deactivate()
+  004c: return nothing
+  004e: <eos>
+
+function TnRobotForm.Ragdoll  (script 32 bytes)
+  0000: self._DeathMotionController.Ragdoll(BlendTime, RandomDelay)
+  001d: return nothing
+  001f: <eos>
+
+function TnRobotForm.OnPlayGib  (script 22 bytes)
+  0000: self._DeathPlayer.Deactivate()
+  0013: return nothing
+  0015: <eos>
+
+function TnRobotForm.OnAdjustDamage  (script 179 bytes)
+  0000: if !(self._BlockController.get_IsInitialized()) goto 0x0043
+  0016: Damage = self._BlockController.AdjustDamage(Instigator, Damage, DamageType, HitInfo)
+  0043: if !((self._Blueprint != none)) goto 0x0082
+  004e: (Damage *= ((Instigator == self._OwnerPawn) ? self._Blueprint.SelfDamageMultiplier : self._Blueprint.DamageMultiplier))
+  0082: if !(self._MeleeService.IsMeleeing(3)) goto 0x00a6
+  009a: (Damage *= self.WhirlwindDamageMultiplier)
+  00a6: return Damage
+  00ac: return return
+  00b2: <eos>
+
+function TnRobotForm.HitWall  (script 22 bytes)
+  0000: self._AcrobaticsManager.NotifyHitWall()
+  0013: return nothing
+  0015: <eos>
+
+function TnRobotForm.Grabbed  (script 171 bytes)
+  0000: Params.AnimName = self._Blueprint.GrabVictimAnimation
+  001f: Params.Looping = true
+  0032: Params.RootMotionMode = 2
+  0045: Params.Override = 1
+  0058: Params.Priority = 1
+  006b: self._Animator.EnqueueLocalAnimation(Params, delegate.None, delegate.None)
+  0095: self._AcrobaticsManager.Fall()
+  00a8: return nothing
+  00aa: <eos>
+
+function TnRobotForm.Released  (script 24 bytes)
+  0000: self._Animator.StopAnimation(, )
+  0015: return nothing
+  0017: <eos>
+
+function TnRobotForm.OnDisplayDebug  (script 207 bytes)
+  0000: (out_YPos += out_YL)
+  000c: HUD.Canvas.DrawTextNormal(("Acrobatics:" @ cast57(self._AcrobaticsManager.GetStateName())), , , )
+  0048: (out_YPos += out_YL)
+  0054: HUD.Canvas.DrawTextNormal(("Melee:" @ cast57(self._MeleeManager.GetStateName())), , , )
+  008b: (out_YPos += out_YL)
+  0097: HUD.Canvas.DrawTextNormal(("Arm:" @ cast57(self._Arm.GetStateName())), , , )
+  00cc: return nothing
+  00ce: <eos>
+
+function TnRobotForm.OnMapHitComponentToIndex  (script 40 bytes)
+  0000: if !((HitComponent == self._BlockController.GetShieldMeshComponent())) goto 0x001f
+  001d: return 1
+  001f: return 0
+  0021: return return
+  0027: <eos>
+
+function TnRobotForm.OnMapIndexToHitComponent  (script 44 bytes)
+  0000: if !((Index == 1)) goto 0x001f
+  000b: return self._BlockController.GetShieldMeshComponent()
+  001f: return self._MeshComponent
+  0025: return return
+  002b: <eos>
+
+function TnRobotForm.SuspendCustomAnimations  (script 41 bytes)
+  0000: self._Animator.Suspend()
+  0013: self._AdditiveAnimator.Suspend()
+  0026: return nothing
+  0028: <eos>
+
+function TnRobotForm.ResumeCustomAnimations  (script 41 bytes)
+  0000: self._Animator.Resume()
+  0013: self._AdditiveAnimator.Resume()
+  0026: return nothing
+  0028: <eos>
+
+function TnRobotForm.RemoveLandingAnimSet  (script 117 bytes)
+  0000: if !((self._FallingAnimSetOverride == none)) goto 0x000d
+  000b: return nothing
+  000d: AnimSetIndex = self._MeshComponent.AnimSets.Find(self._FallingAnimSetOverride)
+  0029: if !((AnimSetIndex == -1)) goto 0x003a
+  0038: return nothing
+  003a: self._MeshComponent.AnimSets.Remove(AnimSetIndex,1)
+  004f: self._FallingAnimSetOverride = none
+  0056: self._AcrobaticsManager.set_OnFallCompleteDelegate(delegate.None)
+  0072: return nothing
+  0074: <eos>

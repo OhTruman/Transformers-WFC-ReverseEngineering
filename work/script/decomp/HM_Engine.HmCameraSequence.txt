@@ -1,0 +1,95 @@
+function HmCameraSequence.StageWillPassOutsideWorld  (script 237 bytes)
+  0000: cameraLoc = HmCameraSequence.StageToWorldSpace(Stage.Location, Player)
+  0021: self.UnsafeTraceStart = Player.Location
+  0035: HitActor = Player.TraceCamera(HitLocation, HitNormal, cameraLoc, Player.Location, true, CameraExtent, , )
+  0073: bOutsideWorld = ((HitActor != none) && (Pawn(HitActor) == none))
+  0094: if !(bOutsideWorld) goto 0x00df
+  009d: self.CurrentUnsafeStage.CameraLocation = cameraLoc
+  00b3: self.CurrentUnsafeStage.HitNormal = HitNormal
+  00c9: self.CurrentUnsafeStage.HitLocation = HitLocation
+  00df: return bOutsideWorld
+  00e6: return return
+  00ec: <eos>
+
+function HmCameraSequence.StageToWorldSpace  (script 46 bytes)
+  0000: return (Player.Location + (StageLocation >> Player.Rotation))
+  0027: return return
+  002d: <eos>
+
+function HmCameraSequence.CameraWillPassOutsideWorld  (script 74 bytes)
+  0000: I = 0
+  0007: if !((I != self.Stages.Length)) goto 0x0041
+  0017: if !(HmCameraSequence.StageWillPassOutsideWorld(Player, CameraExtent, I[self.Stages])) goto 0x0037
+  0035: return true
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return false
+  0043: return return
+  0049: <eos>
+
+function HmCameraSequence.EncroachingOnParticipant  (script 107 bytes)
+  0000: I = 0
+  0007: if !((I < Pawns.Length)) goto 0x0062
+  0017: if !((obj'Core.Math'.static.VSizeSq((I[Pawns].Location - Location)) < (self.MinOffsetDistance * self.MinOffsetDistance))) goto 0x0058
+  0056: return true
+  0058: AddAdd_PreInt(I)
+  005f: goto 0x0007
+  0062: return false
+  0064: return return
+  006a: <eos>
+
+function HmCameraSequence.FindValidCameraStage  (script 278 bytes)
+  0000: LookAtPawn = Stage.LookAtParticipant[Pawns]
+  001c: if !(HmCameraSequence.StageWillPassOutsideWorld(LookAtPawn, vect(1,1,1), Stage)) goto 0x00f9
+  003c: Distance = obj'Core.Math'.static.VSize((self.CurrentUnsafeStage.HitLocation - self.CurrentUnsafeStage.CameraLocation))
+  006f: NewLocation = (Stage.Location + (obj'Core.Math'.static.Normal(Stage.Location) * -(Distance + self.OffsetCollidingCamera)))
+  00b2: bEncroaching = HmCameraSequence.EncroachingOnParticipant(Pawns, HmCameraSequence.StageToWorldSpace(NewLocation, LookAtPawn))
+  00d4: if !(bEncroaching) goto 0x00e0
+  00dd: goto 0x00f9
+  00e0: Stage.Location = NewLocation
+  00f6: goto 0x001c
+  00f9: return (bEncroaching ? self.NoneStage : Stage)
+  010f: return return
+  0115: <eos>
+
+function HmCameraSequence.MakeSafeSequence  (script 558 bytes)
+  0000: SafeSequence = new(self, nothing, obj'HmCameraSequence', nothing, AttachTreeCallback)
+  0014: SafeSequence.DebugDisable = self.DebugDisable
+  002a: SafeSequence.DeactivationDelay = self.DeactivationDelay
+  003e: SafeSequence.bSetFinalTransform = self.bSetFinalTransform
+  0054: SafeSequence.FinalLocation = self.FinalLocation
+  0068: SafeSequence.FinalRotation = self.FinalRotation
+  007c: SafeSequence.bTransitionOut = self.bTransitionOut
+  0092: SafeSequence.TransitionOutTime = self.TransitionOutTime
+  00a6: self.UnsafeStages.Remove(0,self.UnsafeStages.Length)
+  00b3: I = 0
+  00ba: if !((I < self.Stages.Length)) goto 0x0221
+  00ca: CurrentStage = I[self.Stages]
+  00db: NewStage = HmCameraSequence.FindValidCameraStage(CurrentStage, Pawns)
+  00f1: if !((NewStage != self.NoneStage)) goto 0x0153
+  0103: NextSafeStage[SafeSequence.Stages] = NewStage
+  011d: (AddAdd_Int(NextSafeStage)[SafeSequence.Stages].Duration += AddDuration)
+  0145: AddDuration = 0.0
+  0150: goto 0x01b6
+  0153: if !((SafeSequence.Stages.Length == 0)) goto 0x0182
+  0168: (AddDuration += CurrentStage.Duration)
+  017f: goto 0x01b6
+  0182: ((NextSafeStage - 1)[SafeSequence.Stages].Duration += CurrentStage.Duration)
+  01b6: if !((NewStage != CurrentStage)) goto 0x0217
+  01c8: self.CurrentUnsafeStage.CameraLocation = HmCameraSequence.StageToWorldSpace(CurrentStage.Location, CurrentStage.LookAtParticipant[Pawns])
+  0205: self.UnsafeStages.Length[self.UnsafeStages] = self.CurrentUnsafeStage
+  0217: AddAdd_PreInt(I)
+  021e: goto 0x00ba
+  0221: return SafeSequence
+  0227: return return
+  022d: <eos>
+
+function HmCameraSequence.GetUnsafeStages  (script 13 bytes)
+  0000: return self.UnsafeStages
+  0006: return return
+  000c: <eos>
+
+function HmCameraSequence.Duplicate  (script 25 bytes)
+  0000: return new(nothing, nothing, self.get_Class(), self, AttachTreeCallback)
+  0012: return return
+  0018: <eos>

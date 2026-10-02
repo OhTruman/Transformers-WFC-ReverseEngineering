@@ -1,0 +1,285 @@
+function TnTogethernessVolume.Touch  (script 167 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: Touch(Other, OtherComp, HitLocation, HitNormal)
+  0035: P = TnPawn(Other)
+  0045: if !((P == none)) goto 0x0052
+  0050: return nothing
+  0052: if !((self.TouchedPawns.Find(P) == -1)) goto 0x00a4
+  0069: self.TouchedPawns.AddItem(P)
+  0076: if !((cast3a(TnTogethernessVolume.AllPawnsInVolume(TnPawn(Other))) == cast3a(4))) goto 0x009c
+  0091: TnTogethernessVolume.NotifyTogetherEvents(4)
+  0099: goto 0x00a4
+  009c: TnTogethernessVolume.NotifyTogetherEvents(2)
+  00a4: return nothing
+  00a6: <eos>
+
+function TnTogethernessVolume.UnTouch  (script 138 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: LeavingPawn = TnPawn(Other)
+  002b: if !((LeavingPawn == none)) goto 0x0038
+  0036: return nothing
+  0038: if !((self.TouchedPawns.Find(LeavingPawn) == -1)) goto 0x0051
+  004f: return nothing
+  0051: self.TouchedPawns.RemoveItem(LeavingPawn)
+  005e: if !((cast3a(TnTogethernessVolume.AllPawnsInVolume(LeavingPawn)) == cast3a(5))) goto 0x007f
+  0074: TnTogethernessVolume.NotifyTogetherEvents(5)
+  007c: goto 0x0087
+  007f: TnTogethernessVolume.NotifyTogetherEvents(3)
+  0087: return nothing
+  0089: <eos>
+
+function TnTogethernessVolume.OnActivateTogethernessVolume  (script 160 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: AiSquad = TnCampaignGameBase(self.WorldInfo.Game).get_AiSquad()
+  0042: if !((none != AiSquad)) goto 0x0066
+  004d: AiSquad.SpawnPendingMembers(0.0, true)
+  0066: TnTogethernessVolume.NotifyPlayerWithinTogethernessVolume(Action.InstigatingPawn)
+  007a: TnTogethernessVolume.TeleportFriendlies(Action.InstigatingPawn, Action.HideTeleports)
+  009d: return nothing
+  009f: <eos>
+
+function TnTogethernessVolume.NotifyPlayerWithinTogethernessVolume  (script 116 bytes)
+  0000: if !((InitiatingPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: GI = TnGame(self.WorldInfo.Game)
+  0026: if !((GI == none)) goto 0x0033
+  0031: return nothing
+  0033: PC = TnPlayerController(InitiatingPawn.Controller)
+  004c: if !((PC == none)) goto 0x0059
+  0057: return nothing
+  0059: GI.NotifyPlayerWithinTogethernessVolume(PC)
+  0071: return nothing
+  0073: <eos>
+
+function TnTogethernessVolume.TeleportFriendlies  (script 258 bytes)
+  0000: default=true
+  0005: if !((self.DisableTeleportation || ((InitiatingPawn != none) && !InitiatingPawn.IsHumanControlled()))) goto 0x0037
+  0035: return nothing
+  0037: self.DisableTeleportation = true
+  003f: Friendlies = TnTogethernessVolume.GetFriendlies()
+  004b: if !((Friendlies.Length > 3)) goto 0x00a8
+  0058: LogInternal(((("ERROR:" @ cast56(self)) @ "Trying to teleport too many friendles, you have:") @ cast53(Friendlies.Length)), , , )
+  00a8: TnTogethernessVolume.UpdatePlayerVisibilities()
+  00ae: BestIndex = (AIOutOfView ? 0 : (self.TeleportPoints.Length - 1))
+  00c9: TnTogethernessVolume.TryTeleportFriendlies(false, AIOutOfView, BestIndex, Friendlies)
+  00e0: TnTogethernessVolume.TryTeleportFriendlies(true, AIOutOfView, BestIndex, Friendlies)
+  00f7: self.DisableTeleportation = false
+  00ff: return nothing
+  0101: <eos>
+
+function TnTogethernessVolume.TryTeleportFriendlies  (script 631 bytes)
+  0000: foreach Friendlies(P,) (end 0x0273)
+  000f: if !((ConsiderPlayer && !P.IsHumanControlled())) goto 0x0036
+  0032: iternext
+  0033: goto 0x0273
+  0036: if !((!ConsiderPlayer && P.IsHumanControlled())) goto 0x005d
+  0059: iternext
+  005a: goto 0x0273
+  005d: if !((self.TouchedPawns.Find(P) != -1)) goto 0x0078
+  0074: iternext
+  0075: goto 0x0273
+  0078: SpawnRadius = P.GetCollisionRadius()
+  0091: SpawnHeight = P.GetCollisionHeight()
+  00aa: if !(true) goto 0x0272
+  00ae: if !(((BestIndex < 0) || (BestIndex >= self.TeleportPoints.Length))) goto 0x0185
+  00cb: LogInternal((("ERROR:" @ cast56(self)) @ "Could not find an open spawn point to teleport a friendly in, all spawn points are occupied.  All failed teleports will be in the log above this message."), , , )
+  017a: self.DisableTeleportation = false
+  0182: iterpop
+  0183: return nothing
+  0185: NP = BestIndex[self.Sorter.SortedIndices][self.TeleportPoints]
+  01a5: if !((NP == none)) goto 0x01b3
+  01b0: goto 0x026f
+  01b3: if !(IncrementIndex) goto 0x01c6
+  01bc: AddAdd_PreInt(BestIndex)
+  01c3: goto 0x01cd
+  01c6: SubtractSubtract_PreInt(BestIndex)
+  01cd: if !(self.SpawnValidator.IsSafeSpawnLocation(NP.Location, SpawnRadius, SpawnHeight)) goto 0x0211
+  01fb: TnTogethernessVolume.TeleportPawn(P, NP)
+  020b: goto 0x0272
+  020e: goto 0x026f
+  0211: LogInternal((((("--" @ cast56(self)) @ "trying to teleport a friendly to:") @ cast56(NP)) @ ", but something is in the way."), , , )
+  026f: goto 0x00aa
+  0272: iternext
+  0273: iterpop
+  0274: return nothing
+  0276: <eos>
+
+function TnTogethernessVolume.AllInWaitTimeExpired  (script 23 bytes)
+  0000: if !((self.TouchedPawns.Length > 0)) goto 0x0014
+  000c: TnTogethernessVolume.NotifyTogetherEvents(6)
+  0014: return nothing
+  0016: <eos>
+
+function TnTogethernessVolume.AllOutWaitTimeExpired  (script 11 bytes)
+  0000: TnTogethernessVolume.NotifyTogetherEvents(7)
+  0008: return nothing
+  000a: <eos>
+
+function TnTogethernessVolume.NotifyTogetherEvents  (script 287 bytes)
+  0000: ClearTimer('AllInWaitTimeExpired', )
+  0014: ClearTimer('AllOutWaitTimeExpired', )
+  0028: I = 0
+  002f: if !((I < self.GeneratedEvents.Length)) goto 0x011c
+  003f: TogetherEvent = TnSeqEvent_Together(I[self.GeneratedEvents])
+  0055: if !((TogetherEvent != none)) goto 0x0112
+  0060: switch (Tog)
+  0067: case 2: (next 0x0083)
+  006c: TogetherEvent.NotifyTouch(self)
+  0080: goto 0x0112
+  0083: case 3: (next 0x009f)
+  0088: TogetherEvent.NotifyUnTouch(self)
+  009c: goto 0x0112
+  009f: case 4: (next 0x00bb)
+  00a4: TogetherEvent.NotifyAllIn(self)
+  00b8: goto 0x0112
+  00bb: case 5: (next 0x00d7)
+  00c0: TogetherEvent.NotifyAllOut(self)
+  00d4: goto 0x0112
+  00d7: case 6: (next 0x00f3)
+  00dc: TogetherEvent.NotifyAllInExpired(self)
+  00f0: goto 0x0112
+  00f3: case 7: (next 0x010f)
+  00f8: TogetherEvent.NotifyAllOutExpired(self)
+  010c: goto 0x0112
+  010f: default:
+  0112: AddAdd_Int(I)
+  0119: goto 0x002f
+  011c: return nothing
+  011e: <eos>
+
+function TnTogethernessVolume.AllPawnsInVolume  (script 131 bytes)
+  0000: if !((InitiatingPawn == none)) goto 0x000e
+  000b: return 0
+  000e: Pawns = TnTogethernessVolume.GetFriendlies()
+  001a: foreach Pawns(P,) (end 0x0052)
+  0029: if !((self.TouchedPawns.Find(P) != -1)) goto 0x004a
+  0040: AddAdd_Int(NumIn)
+  0047: goto 0x0051
+  004a: AddAdd_Int(NumOut)
+  0051: iternext
+  0052: iterpop
+  0053: if !((NumIn == Pawns.Length)) goto 0x0066
+  0063: return 4
+  0066: if !((NumOut == Pawns.Length)) goto 0x0079
+  0076: return 5
+  0079: return 1
+  007c: return return
+  0082: <eos>
+
+function TnTogethernessVolume.GetFriendlies  (script 177 bytes)
+  0000: Squad = TnCampaignGameBase(self.WorldInfo.Game).get_AiSquad()
+  0027: if !((Squad != none)) goto 0x00a4
+  0032: foreach self.WorldInfo.AllPawns(obj'TnPawn', P, , ) (end 0x00a3)
+  0054: if !((P.IsHumanControlled() || Squad.IsActiveMember(TnAiController(P.Controller)))) goto 0x00a2
+  0095: Friendlies.AddItem(P)
+  00a2: iternext
+  00a3: iterpop
+  00a4: return Friendlies
+  00aa: return return
+  00b0: <eos>
+
+function TnTogethernessVolume.TeleportPawn  (script 360 bytes)
+  0000: if !((NP == none)) goto 0x00cd
+  000b: LogInternal((("ERROR:" @ cast56(self)) @ "Attempting to teleport friendly to null Nav point.  Please check the togetherness volume and make sure there isn't a null nav point reference in the teleport points list."), , , )
+  00cb: return nothing
+  00cd: P.Teleport(NP.Location, NP.Rotation)
+  00fc: P.SetViewRotation(NP.Rotation)
+  011d: P.ClientSetRotation(NP.Rotation)
+  013e: if !(P._IsDowned) goto 0x0165
+  0150: P.GetRevive(none, false)
+  0165: return nothing
+  0167: <eos>
+
+function TnTogethernessVolume.PostBeginPlay  (script 15 bytes)
+  0000: TnTogethernessVolume.InitializeVisibilities()
+  0006: TnTogethernessVolume.UpdateNavPointVisibilities()
+  000c: return nothing
+  000e: <eos>
+
+function TnTogethernessVolume.InitializeVisibilities  (script 90 bytes)
+  0000: I = 0
+  0007: if !((I < self.TeleportPoints.Length)) goto 0x0057
+  0017: Vis.SeenByPlayer = 0
+  0029: Vis.SeenByPoint = 0
+  003b: self.TeleportPointVisibilities.Length[self.TeleportPointVisibilities] = Vis
+  004d: AddAdd_Int(I)
+  0054: goto 0x0007
+  0057: return nothing
+  0059: <eos>
+
+function TnTogethernessVolume.UpdateNavPointVisibilities  (script 54 bytes)
+  0000: I = 0
+  0007: if !((I < self.TeleportPoints.Length)) goto 0x0033
+  0017: TnTogethernessVolume.UpdateVisibilities(I[self.TeleportPoints], false)
+  0029: AddAdd_Int(I)
+  0030: goto 0x0007
+  0033: return nothing
+  0035: <eos>
+
+function TnTogethernessVolume.UpdatePlayerVisibilities  (script 160 bytes)
+  0000: I = 0
+  0007: if !((I < self.TeleportPointVisibilities.Length)) goto 0x0039
+  0017: I[self.TeleportPointVisibilities].SeenByPlayer = 0
+  002f: AddAdd_Int(I)
+  0036: goto 0x0007
+  0039: foreach self.TouchedPawns(P,) (end 0x006b)
+  0048: if !(P.IsHumanControlled()) goto 0x006a
+  005e: TnTogethernessVolume.UpdateVisibilities(P, true)
+  006a: iternext
+  006b: iterpop
+  006c: self.Sorter.__Compare__Delegate = delegate.CompareSeenBy
+  0084: self.Sorter.SortArray(self.TeleportPointVisibilities.Length)
+  009d: return nothing
+  009f: <eos>
+
+function TnTogethernessVolume.UpdateVisibilities  (script 501 bytes)
+  0000: if !((A == none)) goto 0x000d
+  000b: return nothing
+  000d: obj'Core.Math'.static.GetAxes(A.Rotation, Forward, Right, Up)
+  0035: if !(((TnPlayerPawn(A) != none) && (PlayerController(TnPlayerPawn(A).Controller) != none))) goto 0x00f7
+  0065: FOVRadians = ((0.0174533 * PlayerController(TnPlayerPawn(A).Controller).GetFOVAngle()) / cast3f(2))
+  009e: PlayerCamera = PlayerController(TnPlayerPawn(A).Controller).PlayerCamera
+  00c5: Loc = ((PlayerCamera != none) ? PlayerCamera.Location : A.Location)
+  00f4: goto 0x011d
+  00f7: FOVRadians = (90.0 * 0.0174533)
+  0109: Loc = A.Location
+  011d: I = 0
+  0124: if !((I < self.TeleportPointVisibilities.Length)) goto 0x01f2
+  0134: TP = I[self.TeleportPoints]
+  0145: if !((TP != A)) goto 0x01e8
+  0154: DirFromA = obj'Core.Math'.static.Normal((TP.Location - Loc))
+  017a: VectorsAngleRadians = obj'Core.Math'.static.RadianAngleBetweenUnitVectors(Forward, DirFromA)
+  019d: if !((FOVRadians > VectorsAngleRadians)) goto 0x01e8
+  01ac: if !(bSeenByPlayer) goto 0x01d0
+  01b5: AddAdd_Int(I[self.TeleportPointVisibilities].SeenByPlayer)
+  01cd: goto 0x01e8
+  01d0: AddAdd_Int(I[self.TeleportPointVisibilities].SeenByPoint)
+  01e8: AddAdd_Int(I)
+  01ef: goto 0x0124
+  01f2: return nothing
+  01f4: <eos>
+
+function TnTogethernessVolume.CompareSeenBy  (script 221 bytes)
+  0000: if !((IndexA[self.TeleportPointVisibilities].SeenByPlayer < IndexB[self.TeleportPointVisibilities].SeenByPlayer)) goto 0x0037
+  0031: return -1
+  0037: if !((IndexA[self.TeleportPointVisibilities].SeenByPlayer > IndexB[self.TeleportPointVisibilities].SeenByPlayer)) goto 0x006a
+  0068: return 1
+  006a: if !((IndexA[self.TeleportPointVisibilities].SeenByPoint < IndexB[self.TeleportPointVisibilities].SeenByPoint)) goto 0x00a1
+  009b: return -1
+  00a1: if !((IndexA[self.TeleportPointVisibilities].SeenByPoint > IndexB[self.TeleportPointVisibilities].SeenByPoint)) goto 0x00d4
+  00d2: return 1
+  00d4: return 0
+  00d6: return return
+  00dc: <eos>
+
+function TnTogethernessVolume.CheckForErrors  (script 87 bytes)
+  0000: foreach self.TeleportPoints(Point,) (end 0x0053)
+  000f: if !((Point == none)) goto 0x0052
+  001a: EmitCheckMessage(0, "NULL spawn point in TeleportPoints array", , )
+  0052: iternext
+  0053: iterpop
+  0054: return nothing
+  0056: <eos>

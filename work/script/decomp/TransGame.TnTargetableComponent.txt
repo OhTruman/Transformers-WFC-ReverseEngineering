@@ -1,0 +1,68 @@
+function TnTargetableComponent.get_TargetableLocation  (script 18 bytes)
+  0000: return GetTargetLocation()
+  000b: return return
+  0011: <eos>
+
+function TnTargetableComponent.CheckForAttachmentErrors  (script 161 bytes)
+  0000: if !(((self.SMC == none) && (TnPawn(self.Owner) != none))) goto 0x008e
+  001d: LogInternal((("Error: Targeting is broken.  Pawn: " $ cast56(self.Owner)) $ "'s SkeletalMesh not attached before Targetable Component"), , , )
+  008c: return nothing
+  008e: CheckForAttachmentErrors(AtType, AtName)
+  009e: return nothing
+  00a0: <eos>
+
+function TnTargetableComponent.CheckTargetSnapSocket  (script 130 bytes)
+  0000: if !(((self.SMC != none) && (self.SMC.GetSocketByName(self.TargetSnapSocketName) == none))) goto 0x007f
+  002b: LogInternal(((("Error: Target Snap Socket" @ cast57(self.TargetSnapSocketName)) @ "could not be found on") @ cast56(self.SMC.SkeletalMesh)), , , )
+  007f: return nothing
+  0081: <eos>
+
+function TnTargetableComponent.Attached  (script 108 bytes)
+  0000: Attached()
+  0006: if !((self.Owner != none)) goto 0x002a
+  0011: WI = TnWorldInfo(self.Owner.WorldInfo)
+  002a: if !(((WI != none) && !WI.IsInEditor())) goto 0x0063
+  004f: WI.AddTargetableComponent(self)
+  0063: TnTargetableComponent.CheckTargetSnapSocket()
+  0069: return nothing
+  006b: <eos>
+
+function TnTargetableComponent.Detached  (script 108 bytes)
+  0000: Detached(bWillReattach)
+  000c: if !((self.Owner != none)) goto 0x0030
+  0017: WI = TnWorldInfo(self.Owner.WorldInfo)
+  0030: if !(((WI != none) && !WI.IsInEditor())) goto 0x0069
+  0055: WI.RemoveTargetableComponent(self)
+  0069: return nothing
+  006b: <eos>
+
+function TnTargetableComponent.GetOwnerSkeletalMeshComponent  (script 57 bytes)
+  0000: OwnerPawn = TnPawn(self.Owner)
+  0010: return ((OwnerPawn == none) ? GetOwnerSkeletalMeshComponent() : OwnerPawn.Mesh)
+  0032: return return
+  0038: <eos>
+
+function TnTargetableComponent.GetTargetSnapDesiredLocation  (script 208 bytes)
+  0000: if !((self.Owner == none)) goto 0x0011
+  000b: return self.LastSnapLocation
+  0011: self.LastSnapLocation = self.Owner.Location
+  0025: if !((self.SMC != none)) goto 0x00c3
+  0030: if !((self.SMC.GetSocketByName(self.TargetSnapSocketName) != none)) goto 0x006f
+  004e: self.LastSnapLocation = self.SMC.GetSocketWorldLocation(self.TargetSnapSocketName)
+  006c: goto 0x00c3
+  006f: LogInternal(((("Error: Target Snap Socket" @ cast57(self.TargetSnapSocketName)) @ "could not be found on") @ cast56(self.SMC.SkeletalMesh)), , , )
+  00c3: return self.LastSnapLocation
+  00c9: return return
+  00cf: <eos>
+
+function TnTargetableComponent.GetTargetAssistStickynessStrafe  (script 155 bytes)
+  0000: DistanceToTargetSq = obj'Core.Math'.static.VSizeSq(CameraToTarget)
+  001e: I = 0
+  0025: if !((I < self.TargetStickinessRanges.Length)) goto 0x008e
+  0035: if !((DistanceToTargetSq < (I[self.TargetStickinessRanges].Range * I[self.TargetStickinessRanges].Range))) goto 0x0084
+  006d: return I[self.TargetStickinessRanges].Stickiness
+  0084: AddAdd_PreInt(I)
+  008b: goto 0x0025
+  008e: return 1.0
+  0094: return return
+  009a: <eos>

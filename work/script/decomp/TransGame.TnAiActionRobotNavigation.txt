@@ -1,0 +1,12 @@
+function TnAiActionRobotNavigation.OnSetUpConditions  (script 141 bytes)
+  0000: Section = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: if !((((Section == none) || (cast3a(Section.GetSectionType()) == cast3a(3))) || (cast3a(Section.GetSectionType()) == cast3a(4)))) goto 0x0075
+  0073: return false
+  0075: return TnAiActionNavigatePathSection.OnSetUpConditions(ExpectedEffects, Conditions)
+  0086: return return
+  008c: <eos>
+
+function TnAiActionRobotNavigation.CanInterruptNow  (script 29 bytes)
+  0000: return !self._TransformerPawn.IsJumping()
+  0016: return return
+  001c: <eos>

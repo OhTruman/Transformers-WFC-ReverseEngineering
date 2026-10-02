@@ -1,0 +1,82 @@
+function HmPCSettingsActionScriptBinding.GetPCSM  (script 60 bytes)
+  0000: Engine = obj'Engine.Engine'.static.GetEngine()
+  0019: if !((Engine == none)) goto 0x0026
+  0024: return none
+  0026: return Engine.PCSettingManager
+  0035: return return
+  003b: <eos>
+
+function HmPCSettingsActionScriptBinding.GetResolutions  (script 196 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !((PCSM == none)) goto 0x001e
+  001b: return ""
+  001e: PCSM.GetAvailableResolutions(Resolutions, )
+  0037: I = 0
+  003e: if !((I < Resolutions.Length)) goto 0x00b7
+  004e: if !((I != 0)) goto 0x0069
+  0059: ResolutionCSV = (ResolutionCSV $ ",")
+  0069: ResolutionCSV = (((ResolutionCSV $ cast53(I[Resolutions].Width)) $ "x") $ cast53(I[Resolutions].Height))
+  00ad: AddAdd_PreInt(I)
+  00b4: goto 0x003e
+  00b7: return ResolutionCSV
+  00bd: return return
+  00c3: <eos>
+
+function HmPCSettingsActionScriptBinding.SetResolution  (script 124 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !((PCSM == none)) goto 0x001d
+  001b: return nothing
+  001d: NewResolution.Width = Width
+  0033: NewResolution.Height = Height
+  0049: NewResolution.Fullscreen = Fullscreen
+  0061: PCSM.SetCurrentResolution(NewResolution)
+  0079: return nothing
+  007b: <eos>
+
+function HmPCSettingsActionScriptBinding.IsFullScreen  (script 85 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !(((PCSM == none) || !PCSM.GetCurrentResolution(ScreenRes))) goto 0x003c
+  003a: return false
+  003c: return ScreenRes.Fullscreen
+  004e: return return
+  0054: <eos>
+
+function HmPCSettingsActionScriptBinding.GetResolution  (script 112 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !(((PCSM == none) || !PCSM.GetCurrentResolution(ScreenRes))) goto 0x003d
+  003a: return ""
+  003d: return ((cast53(ScreenRes.Width) $ "x") $ cast53(ScreenRes.Height))
+  0069: return return
+  006f: <eos>
+
+function HmPCSettingsActionScriptBinding.SetVSyncState  (script 57 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !((PCSM == none)) goto 0x001d
+  001b: return nothing
+  001d: PCSM.SetCurrentVSyncState(IsVSyncEnabled)
+  0036: return nothing
+  0038: <eos>
+
+function HmPCSettingsActionScriptBinding.GetVSyncState  (script 56 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !((PCSM == none)) goto 0x001d
+  001b: return false
+  001d: return PCSM.GetCurrentVSyncState()
+  0031: return return
+  0037: <eos>
+
+function HmPCSettingsActionScriptBinding.SetTextureQualityLevel  (script 56 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !((PCSM == none)) goto 0x001d
+  001b: return nothing
+  001d: PCSM.SetCurrentTextureQualityLevel(TextureQualityLevel)
+  0035: return nothing
+  0037: <eos>
+
+function HmPCSettingsActionScriptBinding.GetTextureQualityLevel  (script 56 bytes)
+  0000: PCSM = GetPCSM()
+  0010: if !((PCSM == none)) goto 0x001d
+  001b: return 0
+  001d: return PCSM.GetCurrentTextureQualityLevel()
+  0031: return return
+  0037: <eos>

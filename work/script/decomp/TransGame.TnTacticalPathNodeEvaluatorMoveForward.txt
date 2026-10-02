@@ -1,0 +1,8 @@
+function TnTacticalPathNodeEvaluatorMoveForward.Score  (script 143 bytes)
+  0000: AiPawn = TnAiPawn(Searcher.Pawn)
+  0019: if !((AiPawn == none)) goto 0x002a
+  0024: return 0.0
+  002a: PawnToTactical = obj'Core.Math'.static.Normal((Tactical._Location - Searcher.Pawn.Location))
+  0062: return (PawnToTactical dot obj'Core.Math'.static.Normal(AiPawn.get_AverageVelocity()))
+  0088: return return
+  008e: <eos>

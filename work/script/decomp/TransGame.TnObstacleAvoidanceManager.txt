@@ -1,0 +1,105 @@
+function TnObstacleAvoidanceManager.set_SearchRadius  (script 14 bytes)
+  0000: self._SearchRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnObstacleAvoidanceManager.get_AvoidInfo  (script 13 bytes)
+  0000: return self.Avoid
+  0006: return return
+  000c: <eos>
+
+function TnObstacleAvoidanceManager.Initialize  (script 14 bytes)
+  0000: self.AiPawn = P
+  000b: return nothing
+  000d: <eos>
+
+function TnObstacleAvoidanceManager.GetCollisionLocation  (script 27 bytes)
+  0000: return (Location + (Velocity * CollisionTime))
+  0014: return return
+  001a: <eos>
+
+function TnObstacleAvoidanceManager.GetSafeLocations  (script 306 bytes)
+  0000: AvoidanceDirection = (CollisionLocation1 - CollisionLocation2)
+  0012: if !(bUseNavMesh) goto 0x0031
+  001b: AvoidanceDirection.Z = 0.0
+  0031: AvoidanceMagnitude = obj'Core.Math'.static.VSize(AvoidanceDirection)
+  0047: if !((AvoidanceMagnitude <= 0.0)) goto 0x006e
+  0056: SafeLocationOut = CollisionLocation1
+  0061: AlternateSafeLocationOut = CollisionLocation1
+  006c: return false
+  006e: AvoidanceDirection = (AvoidanceDirection / AvoidanceMagnitude)
+  0080: HalfAvoidanceMagnitude = (AvoidanceMagnitude / 2.0)
+  0092: Overlap = 0.0
+  009d: if !((HalfAvoidanceMagnitude < Radius2)) goto 0x00be
+  00ac: Overlap = (Radius2 - HalfAvoidanceMagnitude)
+  00be: CenterPoint = ((CollisionLocation1 + CollisionLocation2) / 2.0)
+  00d7: FinalSeparationDistance = ((Radius1 + (Separation / 2.0)) + Overlap)
+  00f7: SafeLocationOut = (CenterPoint + (AvoidanceDirection * FinalSeparationDistance))
+  0110: AlternateSafeLocationOut = (CenterPoint - (AvoidanceDirection * FinalSeparationDistance))
+  0129: return true
+  012b: return return
+  0131: <eos>
+
+function TnObstacleAvoidanceManager.UpdateAvoidance  (script 351 bytes)
+  0000: self.Destination = IntendedDestination
+  000b: DestinationDirection = obj'Core.Math'.static.Normal((IntendedDestination - self.AiPawn.Location))
+  0031: DesiredVelocity = (CurrentSpeed * DestinationDirection)
+  0043: self.Avoid = obj'TnObstacleAvoidance'.static.FindBestPawnToAvoid(self.AiPawn, GoalActor, AiPawnRadius, DesiredVelocity, AvoidanceDistance, SeparationDistance, self._SearchRadius)
+  007f: if !((self.Avoid.P == none)) goto 0x0097
+  0095: return false
+  0097: self.CollisionLocation = TnObstacleAvoidanceManager.GetCollisionLocation(self.AiPawn.Location, self.AiPawn.Velocity, self.Avoid.CollisionTime)
+  00cf: self.PawnToAvoidCollisionLocation = TnObstacleAvoidanceManager.GetCollisionLocation(self.Avoid.P.Location, self.Avoid.P.Velocity, self.Avoid.CollisionTime)
+  011d: return TnObstacleAvoidanceManager.GetSafeLocations(self.CollisionLocation, self.PawnToAvoidCollisionLocation, AiPawnRadius, self.Avoid.Radius, SeparationDistance, bUseNavMesh, self.SafeLocation, self.AlternateSafeLocation)
+  0158: return return
+  015e: <eos>
+
+function TnObstacleAvoidanceManager.ShouldAvoid  (script 313 bytes)
+  0000: CurrentSpeed = obj'Core.Math'.static.VSize(self.AiPawn.Velocity)
+  001f: AiPawnRadius = obj'TnObstacleAvoidance'.static.GetRadius(self.AiPawn)
+  003d: if !(!TnObstacleAvoidanceManager.UpdateAvoidance(IntendedDestination, GoalActor, AiPawnRadius, CurrentSpeed, AvoidanceDistance, SeparationDistance, bUseNavMesh)) goto 0x006f
+  006c: return 0
+  006f: if !(bUseNavMesh) goto 0x00f1
+  0078: if !(obj'TnObstacleAvoidance'.static.IsPathClearToLocationOnNavMesh(self.AiPawn, AiPawnRadius, self.SafeLocation)) goto 0x00b3
+  009d: SafeLoc = self.SafeLocation
+  00a8: self.AvoidancePathClear = 1
+  00b0: return 1
+  00b3: if !(obj'TnObstacleAvoidance'.static.IsPathClearToLocationOnNavMesh(self.AiPawn, AiPawnRadius, self.AlternateSafeLocation)) goto 0x00ee
+  00d8: SafeLoc = self.AlternateSafeLocation
+  00e3: self.AvoidancePathClear = 2
+  00eb: return 1
+  00ee: goto 0x0127
+  00f1: if !(obj'TnObstacleAvoidance'.static.IsPathClearToLocation(self.AiPawn, self.SafeLocation)) goto 0x0127
+  0111: SafeLoc = self.SafeLocation
+  011c: self.AvoidancePathClear = 1
+  0124: return 1
+  0127: self.AvoidancePathClear = 0
+  012f: return 2
+  0132: return return
+  0138: <eos>
+
+function TnObstacleAvoidanceManager.DisplayDebug  (script 946 bytes)
+  0000: if !((self.Avoid.P != none)) goto 0x03af
+  0016: obj'Engine.Debug'.static.DrawSphere(self.Destination, 20.0, 6, MakeColor(0, cast3d(255), 0, ), )
+  0049: obj'Engine.Debug'.static.DrawSphere(self.CollisionLocation, 20.0, 6, MakeColor(cast3d(255), 50, 50, ), )
+  007c: obj'Engine.Debug'.static.DrawSphere(self.CollisionLocation, obj'TnObstacleAvoidance'.static.GetRadius(self.AiPawn), 6, MakeColor(cast3d(255), 100, 100, ), )
+  00c2: switch (self.AvoidancePathClear)
+  00c9: case 0: (next 0x0102)
+  00ce: obj'Engine.Debug'.static.DrawSphere(self.SafeLocation, 20.0, 6, MakeColor(50, 50, 50, ), )
+  00ff: goto 0x01f3
+  0102: case 1: (next 0x017f)
+  0107: obj'Engine.Debug'.static.DrawSphere(self.SafeLocation, 20.0, 6, MakeColor(cast3d(255), cast3d(255), cast3d(255), ), )
+  013e: obj'Engine.Debug'.static.DrawLine(self.AiPawn.Location, self.SafeLocation, MakeColor(cast3d(255), cast3d(255), cast3d(255), ), )
+  017c: goto 0x01f3
+  017f: case 2: (next 0x01f0)
+  0184: obj'Engine.Debug'.static.DrawSphere(self.AlternateSafeLocation, 20.0, 6, MakeColor(200, 50, 50, ), )
+  01b5: obj'Engine.Debug'.static.DrawLine(self.AiPawn.Location, self.AlternateSafeLocation, MakeColor(200, 50, 50, ), )
+  01ed: goto 0x01f3
+  01f0: default:
+  01f3: obj'Engine.Debug'.static.DrawSphere(self.PawnToAvoidCollisionLocation, 20.0, 6, MakeColor(cast3d(255), 50, 50, ), )
+  0226: obj'Engine.Debug'.static.DrawSphere(self.PawnToAvoidCollisionLocation, self.Avoid.Radius, 6, MakeColor(cast3d(255), 100, 100, ), )
+  0264: obj'Engine.Debug'.static.DrawLine(self.CollisionLocation, self.PawnToAvoidCollisionLocation, MakeColor(cast3d(255), 50, 50, ), )
+  0295: obj'Engine.Debug'.static.DrawLine(self.AiPawn.Location, (self.AiPawn.Location + self.AiPawn.Acceleration), MakeColor(0, 100, cast3d(255), ), )
+  02e8: obj'Engine.Debug'.static.DrawLine(self.AiPawn.Location, (self.AiPawn.Location + self.AiPawn.Velocity), obj'Core.Colors'.static.Green(), )
+  033b: obj'Engine.Debug'.static.DrawLine(self.Avoid.P.Location, (self.Avoid.P.Location + self.Avoid.P.Velocity), obj'Core.Colors'.static.Green(), )
+  03af: return nothing
+  03b1: <eos>

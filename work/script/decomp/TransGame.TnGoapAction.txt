@@ -1,0 +1,109 @@
+function TnGoapAction.get_TransformerPawn  (script 13 bytes)
+  0000: return self._TransformerPawn
+  0006: return return
+  000c: <eos>
+
+function TnGoapAction.get_TransformerController  (script 13 bytes)
+  0000: return self._TransformerController
+  0006: return return
+  000c: <eos>
+
+function TnGoapAction.get_WeaponShooter  (script 22 bytes)
+  0000: return self._TransformerController.WeaponShooter
+  000f: return return
+  0015: <eos>
+
+function TnGoapAction.get_WeaponAimer  (script 22 bytes)
+  0000: return self._TransformerController.WeaponAimer
+  000f: return return
+  0015: <eos>
+
+function TnGoapAction.get_CurrentWorldState  (script 22 bytes)
+  0000: return self._TransformerController.AiWorldState
+  000f: return return
+  0015: <eos>
+
+function TnGoapAction.get_VehicleAiControl  (script 22 bytes)
+  0000: return self._TransformerController._VehicleAiControl
+  000f: return return
+  0015: <eos>
+
+function TnGoapAction.get_AbilityManager  (script 22 bytes)
+  0000: return self._TransformerPawn.AbilityManager
+  000f: return return
+  0015: <eos>
+
+function TnGoapAction.get_InvManager  (script 27 bytes)
+  0000: return TnInventoryManager(self._TransformerPawn.InvManager)
+  0014: return return
+  001a: <eos>
+
+function TnGoapAction.get_TacticalAnalyzer  (script 27 bytes)
+  0000: return self._TransformerController.GetTacticalAnalyzer()
+  0014: return return
+  001a: <eos>
+
+function TnGoapAction.get_PlanningScheduler  (script 41 bytes)
+  0000: return TnGame(obj'Engine.Engine'.static.GetGame())._AiPlanningScheduler
+  0022: return return
+  0028: <eos>
+
+function TnGoapAction.get_TacticalSystem  (script 13 bytes)
+  0000: return self._TacticalSystem
+  0006: return return
+  000c: <eos>
+
+function TnGoapAction.OnBind  (script 89 bytes)
+  0000: OnBind()
+  0006: self._TransformerController = TnAiController(self._BoundController)
+  0016: self._TransformerPawn = self._TransformerController.get_TransformerPawn()
+  002f: self._TacticalSystem = TnGame(obj'Engine.Engine'.static.GetGame())._TacticalSystem
+  0056: return nothing
+  0058: <eos>
+
+function TnGoapAction.SetCharacterState  (script 382 bytes)
+  0000: if !(((CharacterState & 8) != 0)) goto 0x0022
+  000f: self._TransformerPawn.DisableAllIkTracking()
+  0022: self._TransformerController.bRotateTowardFocus = ((CharacterState & 1) == 0)
+  003d: if !((self._TransformerController._VehicleAiControl != none)) goto 0x0079
+  0051: self._TransformerController._VehicleAiControl.set_BoostOverride(((CharacterState & 4) != 0))
+  0079: if !(((self._TransformerPawn._VehicleForm != none) && (self._TransformerPawn._VehicleForm.get_VehicleTargetableComponent() != none))) goto 0x00e4
+  00b1: self._TransformerPawn._VehicleForm.get_VehicleTargetableComponent().EligibleForTargetAssist = ((CharacterState & 2) == 0)
+  00e4: self._TransformerPawn.bCanStrafe = ((CharacterState & 0) != 0)
+  00ff: self._TransformerPawn._LockAimOffset = ((CharacterState & 32) != 0)
+  011b: self._TransformerPawn.set_LockIkTargetLocation(((CharacterState & 64) != 0))
+  013a: self._TransformerPawn._CanPlayHitReaction = ((CharacterState & 256) == 0)
+  0159: self._TransformerPawn.SetWalkOffLedge(((CharacterState & 512) == 0))
+  017b: return nothing
+  017d: <eos>
+
+function TnGoapAction.PlayDialog  (script 27 bytes)
+  0000: self._TransformerController.PlayDialogEvent(DialogEvent)
+  0018: return nothing
+  001a: <eos>
+
+function TnGoapAction.SucceedCallback  (script 26 bytes)
+  0000: if !((self._TransformerController == none)) goto 0x000d
+  000b: return nothing
+  000d: Succeed()
+  0017: return nothing
+  0019: <eos>
+
+function TnGoapAction.FailCallback  (script 26 bytes)
+  0000: if !((self._TransformerController == none)) goto 0x000d
+  000b: return nothing
+  000d: Fail()
+  0017: return nothing
+  0019: <eos>
+
+function TnGoapAction.GetService  (script 107 bytes)
+  0000: switch (ServiceType)
+  0007: case 2: (next 0x0025)
+  000c: return self._TransformerController.GetService(RequestedService)
+  0025: case 0: (next 0x0043)
+  002a: return self._TransformerPawn.GetRobotService(RequestedService)
+  0043: case 1: (next 0x0061)
+  0048: return self._TransformerPawn.GetVehicleService(RequestedService)
+  0061: default:
+  0064: return return
+  006a: <eos>

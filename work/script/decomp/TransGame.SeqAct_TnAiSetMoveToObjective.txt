@@ -1,0 +1,59 @@
+function SeqAct_TnAiSetMoveToObjective.SetWorldState  (script 293 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI == none)) goto 0x0026
+  0024: return nothing
+  0026: CampaignGame = TnCampaignGameBase(WI.Game)
+  003f: if !((CampaignGame == none)) goto 0x004c
+  004a: return nothing
+  004c: if !((CampaignGame.get_AiSquad() == none)) goto 0x0067
+  0065: return nothing
+  0067: I = 0
+  006e: if !((I < self.Targets.Length)) goto 0x0122
+  007e: CharacterName = SeqAct_TnAiSetMoveToObjective.GetCharacterName(I[self.Targets])
+  0095: if !((CharacterName == "")) goto 0x00a3
+  00a1: return nothing
+  00a3: if !((CampaignGame.get_AiSquad().SetObjective(CharacterName, anActor, self.Range) == false)) goto 0x0118
+  00d9: C = SeqAct_TnAiSetMoveToObjective.GetAiController(I[self.Targets])
+  00f0: if !((C != none)) goto 0x0118
+  00fb: C.SetMoveToObjective(anActor, self.Range)
+  0118: AddAdd_Int(I)
+  011f: goto 0x006e
+  0122: return nothing
+  0124: <eos>
+
+function SeqAct_TnAiSetMoveToObjective.GetAiController  (script 92 bytes)
+  0000: C = TnAiController(Target)
+  0010: if !((C == none)) goto 0x004f
+  001b: P = Pawn(Target)
+  002b: if !((P != none)) goto 0x004f
+  0036: C = TnAiController(P.Controller)
+  004f: return C
+  0055: return return
+  005b: <eos>
+
+function SeqAct_TnAiSetMoveToObjective.GetCharacterName  (script 189 bytes)
+  0000: C = SeqAct_TnAiSetMoveToObjective.GetAiController(Target)
+  0011: if !((C != none)) goto 0x0055
+  001c: return (C.IsDead() ? "" : C.GetCurrentCharacter().CharacterName)
+  0055: CharacterVar = TnSeqVar_Character(Target)
+  0065: if !((CharacterVar != none)) goto 0x0084
+  0070: return CharacterVar.GetCharacterName()
+  0084: BuddyVar = TnSeqVar_Buddy(Target)
+  0094: if !((BuddyVar != none)) goto 0x00b3
+  009f: return BuddyVar.GetCharacterName()
+  00b3: return ""
+  00b6: return return
+  00bc: <eos>
+
+function SeqAct_TnAiSetMoveToObjective.Activated  (script 99 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: if !(0[self.InputLinks].bHasImpulse) goto 0x003c
+  002a: SeqAct_TnAiSetMoveToObjective.SetWorldState(self.Targets, self.ObjectiveActor)
+  003a: return nothing
+  003c: if !(1[self.InputLinks].bHasImpulse) goto 0x0060
+  0052: SeqAct_TnAiSetMoveToObjective.SetWorldState(self.Targets, none)
+  005e: return nothing
+  0060: return nothing
+  0062: <eos>

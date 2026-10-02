@@ -1,0 +1,68 @@
+=== decomp 0x82b01e80
+
+void Function_82B01E80(undefined8 param_1,ulonglong param_2,int param_3)
+
+{
+  int iVar1;
+  uint uVar2;
+  int iVar3;
+  undefined1 local_40 [4];
+  undefined4 local_3c [3];
+  uint local_30;
+  int local_2c;
+  int local_28;
+  int local_24;
+  
+  iVar1 = FUN_830eacdc();
+  local_30 = (uint)param_2;
+  local_24 = 0;
+  iVar3 = 0;
+  local_2c = param_3;
+LAB_82b01eb8:
+  while( true ) {
+    do {
+      local_28 = iVar3 + 1;
+      if (local_2c < local_28) {
+        return;
+      }
+      uVar2 = (uint)*(byte *)(iVar3 + (int)param_2);
+      iVar3 = local_28;
+    } while ((7 < uVar2 - 3) || (uVar2 == 4));
+    if (uVar2 == 5) break;
+    if (uVar2 == 6) {
+      Function_82AFE9E0(iVar1);
+      goto LAB_82b01f74;
+    }
+    if (uVar2 == 7) {
+      Function_82B0C438(iVar1);
+      goto LAB_82b01f74;
+    }
+    if (uVar2 == 8) goto LAB_82b01f50;
+    if (uVar2 != 9) {
+      if (uVar2 == 3) {
+        Function_82AFFF18(iVar1,&local_30);
+      }
+      else {
+        Function_82AFE2B0(iVar1,&local_30);
+      }
+      goto LAB_82b01f74;
+    }
+  }
+  Function_82B00048(iVar1,&local_30);
+  goto LAB_82b01f74;
+LAB_82b01f50:
+  if (*(int *)(iVar1 + 0x38) != 0) {
+    local_40[0] = 8;
+    local_3c[0] = 0;
+    Function_82B0BC08(*(int *)(iVar1 + 0x38),local_40,1,local_3c);
+LAB_82b01f74:
+    if (local_24 != 0) {
+      return;
+    }
+    param_2 = (ulonglong)local_30;
+    iVar3 = local_28;
+  }
+  goto LAB_82b01eb8;
+}
+
+

@@ -1,0 +1,16 @@
+function TnAiActionTransformToRobo.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTransformToRoboBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTransformToRobo.OnStart  (script 117 bytes)
+  0000: if !(self._TransformerPawn.get_IsInRobotForm()) goto 0x0021
+  0016: return Succeed()
+  0021: if !(self._TransformerPawn.get_IsTransforming()) goto 0x0042
+  0037: return Fail()
+  0042: SetCharacterState(0)
+  004d: self._TransformerController.Transform(0, )
+  0063: return Succeed()
+  006e: return return
+  0074: <eos>

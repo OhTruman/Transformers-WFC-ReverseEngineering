@@ -1,0 +1,95 @@
+function TnGameRules_SingleFlagCTF.PostBeginPlay  (script 158 bytes)
+  0000: PostBeginPlay()
+  0006: if !(((cast3f(self.WorldInfo.Game.GoalScore) % cast3f(2)) != cast3f(0))) goto 0x009b
+  002d: LogInternal(((("Error:  Playing round based game rule" @ cast56(self)) @ "with non even number of rounds") @ cast53(self.WorldInfo.Game.GoalScore)), , , )
+  009b: return nothing
+  009d: <eos>
+
+function TnGameRules_SingleFlagCTF.RecievedGRI  (script 20 bytes)
+  0000: RecievedGRI(GRI)
+  000b: TnGameRules_SingleFlagCTF.SetNextAttackingTeam()
+  0011: return nothing
+  0013: <eos>
+
+function TnGameRules_SingleFlagCTF.SetupRoundStart  (script 311 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0016
+  0014: return nothing
+  0016: self.AttackingTeam = TnTeamInfo(AttackingTeamIndex[self.WorldInfo.GRI.Teams])
+  003e: self.DefendingTeam = TnTeamInfo(((AttackingTeamIndex == 0) ? 1 : 0)[self.WorldInfo.GRI.Teams])
+  0070: CapturePoints = self.WorldInfo.GetAllNavigationPoints(obj'TnFlagCapturePointBase')
+  008e: foreach CapturePoints(CapturePoint,) (end 0x00c1)
+  009d: CapturePoint.ActivateIfMatchingTeam(cast3d(self.AttackingTeam.TeamIndex))
+  00c0: iternext
+  00c1: iterpop
+  00c2: BasePoints = self.WorldInfo.GetAllNavigationPoints(obj'TnGameObjectiveWeaponPickupFactory')
+  00e0: foreach BasePoints(BasePoint,) (end 0x0113)
+  00ef: BasePoint.ActivateIfMatchingTeam(cast3d(self.DefendingTeam.TeamIndex))
+  0112: iternext
+  0113: iterpop
+  0114: BroadcastLocalizedMessage(obj'TnCTFMessage', self.AttackingTeam.TeamIndex, , , )
+  0134: return nothing
+  0136: <eos>
+
+function TnGameRules_SingleFlagCTF.CheckMercyRule  (script 278 bytes)
+  0000: GRI = TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI)
+  0019: if !(((GRI == none) || ((get_CurrentRound() + 1) < GRI.Rounds))) goto 0x0048
+  0046: return false
+  0048: LastTeam = GRI.get_AttackingTeam()[GRI.Teams]
+  0070: SecondToLastTeam = ((GRI.get_AttackingTeam() == 0) ? 1 : 0)[GRI.Teams]
+  00a2: if !(((LastTeam == none) || (SecondToLastTeam == none))) goto 0x00bc
+  00ba: return false
+  00bc: if !((LastTeam.GetScore() > SecondToLastTeam.GetScore())) goto 0x010d
+  00e7: self.WorldInfo.Game.EndGame(none, "Score")
+  010b: return true
+  010d: return false
+  010f: return return
+  0115: <eos>
+
+function TnGameRules_SingleFlagCTF.Active.BeginState  (script 25 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: TnGameRules_SingleFlagCTF.SetupRoundStart(self.NextAttackingTeamIndex)
+  0016: return nothing
+  0018: <eos>
+
+function TnGameRules_SingleFlagCTF.BetweenRounds.BeginState  (script 20 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: TnGameRules_SingleFlagCTF.SetNextAttackingTeam()
+  0011: return nothing
+  0013: <eos>
+
+function TnGameRules_SingleFlagCTF.CheckEndCondition  (script 90 bytes)
+  0000: if !((get_CurrentRound() >= TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI).Rounds)) goto 0x0051
+  002b: self.WorldInfo.Game.EndGame(none, "Score")
+  004f: return true
+  0051: return false
+  0053: return return
+  0059: <eos>
+
+function TnGameRules_SingleFlagCTF.SetupGameOnClient  (script 224 bytes)
+  0000: if !((PC == none)) goto 0x000d
+  000b: return nothing
+  000d: H = TnHUD(PC.myHUD)
+  0026: if !((H == none)) goto 0x00ad
+  0031: LogInternal("ERROR: Hud was none when Setting up game rule on client for single flag ctf.  Dumping backtrace.", , , )
+  0098: obj'Core.Profiling'.static.PrintScriptBacktrace()
+  00ab: return nothing
+  00ad: H.AddHudDataObserver(obj'TnHudDataObserverSingleFlagCTF')
+  00c5: H.AddHudDataObserver(obj'TnHudDataObserverOnAttackingTeam')
+  00dd: return nothing
+  00df: <eos>
+
+function TnGameRules_SingleFlagCTF.SetNextAttackingTeam  (script 129 bytes)
+  0000: if !((self.NextAttackingTeamIndex == -1)) goto 0x002d
+  000f: self.NextAttackingTeamIndex = obj'Core.Random'.static.RandomInt(2)
+  002a: goto 0x0042
+  002d: self.NextAttackingTeamIndex = ((self.NextAttackingTeamIndex == 0) ? 1 : 0)
+  0042: GRI = TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI)
+  005b: if !((GRI != none)) goto 0x007e
+  0066: GRI.set_AttackingTeam(self.NextAttackingTeamIndex)
+  007e: return nothing
+  0080: <eos>
+
+function TnGameRules_SingleFlagCTF.GetGameType  (script 10 bytes)
+  0000: return 3
+  0003: return return
+  0009: <eos>

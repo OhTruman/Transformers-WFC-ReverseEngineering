@@ -1,0 +1,131 @@
+function SavedMove.Clear  (script 130 bytes)
+  0000: self.TimeStamp = 0.0
+  000b: self.Delta = 0.0
+  0016: self.DoubleClickMove = 0
+  001e: self.Acceleration = vect(0,0,0)
+  0031: self.StartVelocity = vect(0,0,0)
+  0044: self.bRun = false
+  004c: self.bDuck = false
+  0054: self.bPressedJump = false
+  005c: self.bDoubleJump = false
+  0064: self.bPreciseDestination = false
+  006c: self.bForceRMVelocity = false
+  0074: self.CustomTimeDilation = 1.0
+  007f: return nothing
+  0081: <eos>
+
+function SavedMove.PostUpdate  (script 270 bytes)
+  0000: self.bDoubleJump = (P.bDoubleJump || self.bDoubleJump)
+  0021: if !((P.Pawn != none)) goto 0x00f7
+  0035: self.RMVelocity = P.Pawn.RMVelocity
+  0052: self.SavedLocation = P.Pawn.Location
+  006f: self.SavedVelocity = P.Pawn.Velocity
+  008c: self.EndBase = P.Pawn.Base
+  00a9: if !(((self.EndBase != none) && !self.EndBase.bWorldGeometry)) goto 0x00f7
+  00ca: self.SavedRelativeLocation = (P.Pawn.Location - self.EndBase.Location)
+  00f7: self.Rotation = P.Rotation
+  010b: return nothing
+  010d: <eos>
+
+function SavedMove.IsImportantMove  (script 164 bytes)
+  0000: if !(((self.bPressedJump || self.bDoubleJump) || (((cast3a(self.DoubleClickMove) != cast3a(0)) && (cast3a(self.DoubleClickMove) != cast3a(5))) && (cast3a(self.DoubleClickMove) != cast3a(6))))) goto 0x004c
+  004a: return true
+  004c: AccelNorm = obj'Core.Math'.static.Normal(self.Acceleration)
+  0062: CompareAccel = obj'Core.Math'.static.Normal(CompareAccel)
+  0078: return ((CompareAccel != AccelNorm) && ((CompareAccel dot AccelNorm) < self.AccelDotThreshold))
+  009d: return return
+  00a3: <eos>
+
+function SavedMove.GetStartLocation  (script 68 bytes)
+  0000: if !(((self.StartBase != none) && !self.StartBase.bWorldGeometry)) goto 0x0037
+  0021: return (self.StartBase.Location + self.StartRelativeLocation)
+  0037: return self.StartLocation
+  003d: return return
+  0043: <eos>
+
+function SavedMove.SetInitialPosition  (script 192 bytes)
+  0000: self.SavedPhysics = P.Physics
+  0014: self.StartLocation = P.Location
+  0028: self.StartVelocity = P.Velocity
+  003c: self.StartBase = P.Base
+  0050: self.StartFloor = P.Floor
+  0064: self.CustomTimeDilation = P.CustomTimeDilation
+  0078: if !(((self.StartBase != none) && !self.StartBase.bWorldGeometry)) goto 0x00bd
+  0099: self.StartRelativeLocation = (P.Location - self.StartBase.Location)
+  00bd: return nothing
+  00bf: <eos>
+
+function SavedMove.CanCombineWith  (script 840 bytes)
+  0000: if !((inPawn == none)) goto 0x000d
+  000b: return false
+  000d: if !((NewMove.Acceleration == vect(0,0,0))) goto 0x01b0
+  002d: return (((((((((((((((self.Acceleration == vect(0,0,0)) && (self.StartVelocity == vect(0,0,0))) && (NewMove.StartVelocity == vect(0,0,0))) && (cast3a(self.SavedPhysics) == cast3a(inPawn.Physics))) && !self.bPressedJump) && !NewMove.bPressedJump) && (self.bRun == NewMove.bRun)) && (self.bDuck == NewMove.bDuck)) && (self.bPreciseDestination == NewMove.bPreciseDestination)) && (self.bDoubleJump == NewMove.bDoubleJump)) && ((cast3a(self.DoubleClickMove) == cast3a(0)) || (cast3a(self.DoubleClickMove) == cast3a(5)))) && (cast3a(NewMove.DoubleClickMove) == cast3a(self.DoubleClickMove))) && !self.bForceRMVelocity) && !NewMove.bForceRMVelocity) && (self.CustomTimeDilation == NewMove.CustomTimeDilation))
+  01ad: goto 0x0341
+  01b0: return (((((((((((((((inPawn != none) && ((NewMove.Delta + self.Delta) < MaxDelta)) && (cast3a(self.SavedPhysics) == cast3a(inPawn.Physics))) && !self.bPressedJump) && !NewMove.bPressedJump) && (self.bRun == NewMove.bRun)) && (self.bDuck == NewMove.bDuck)) && (self.bDoubleJump == NewMove.bDoubleJump)) && (self.bPreciseDestination == NewMove.bPreciseDestination)) && ((cast3a(self.DoubleClickMove) == cast3a(0)) || (cast3a(self.DoubleClickMove) == cast3a(5)))) && (cast3a(NewMove.DoubleClickMove) == cast3a(self.DoubleClickMove))) && ((obj'Core.Math'.static.Normal(self.Acceleration) dot obj'Core.Math'.static.Normal(NewMove.Acceleration)) > 0.99)) && !self.bForceRMVelocity) && !NewMove.bForceRMVelocity) && (self.CustomTimeDilation == NewMove.CustomTimeDilation))
+  0341: return return
+  0347: <eos>
+
+function SavedMove.SetMoveFor  (script 486 bytes)
+  0000: self.Delta = DeltaTime
+  000b: if !((obj'Core.Math'.static.VSize(newAccel) > cast3f(26214))) goto 0x0046
+  0027: newAccel = (cast3f(26214) * obj'Core.Math'.static.Normal(newAccel))
+  0046: if !((P.Pawn != none)) goto 0x0072
+  005a: SetInitialPosition(P.Pawn)
+  0072: self.Acceleration = newAccel
+  007d: self.DoubleClickMove = InDoubleClick
+  0088: self.bRun = (cast3a(P.bRun) > 0)
+  00a2: self.bDuck = (cast3a(P.bDuck) > 0)
+  00bc: self.bPressedJump = P.bPressedJump
+  00d2: self.bDoubleJump = P.bDoubleJump
+  00e8: self.bPreciseDestination = P.bPreciseDestination
+  00fe: self.bForceRMVelocity = (P.bPreciseDestination || (((P.Pawn != none) && (P.Pawn.Mesh != none)) && ((cast3a(P.Pawn.Mesh.RootMotionMode) == cast3a(3)) || (cast3a(P.Pawn.Mesh.RootMotionMode) == cast3a(1)))))
+  01a3: self.TimeStamp = P.WorldInfo.TimeSeconds
+  01c0: self.bUserInputDetected = P.PlayerInput.UserInputDetectedThisFrame()
+  01e3: return nothing
+  01e5: <eos>
+
+function SavedMove.CompressedFlags  (script 137 bytes)
+  0000: Result = cast3a(self.DoubleClickMove)
+  000d: if !(self.bRun) goto 0x001f
+  0016: (Result += 8)
+  001f: if !(self.bDuck) goto 0x0031
+  0028: (Result += 16)
+  0031: if !(self.bPressedJump) goto 0x0043
+  003a: (Result += 32)
+  0043: if !(self.bDoubleJump) goto 0x0055
+  004c: (Result += 64)
+  0055: if !(self.bPreciseDestination) goto 0x0067
+  005e: (Result += 128)
+  0067: if !(self.bUserInputDetected) goto 0x007c
+  0070: (Result += 256)
+  007c: return Result
+  0082: return return
+  0088: <eos>
+
+function SavedMove.SetFlags  (script 250 bytes)
+  0000: if !(((Flags & 8) != 0)) goto 0x0023
+  000f: PC.bRun = 1
+  0020: goto 0x0034
+  0023: PC.bRun = 0
+  0034: if !(((Flags & 16) != 0)) goto 0x0057
+  0043: PC.bDuck = 1
+  0054: goto 0x0068
+  0057: PC.bDuck = 0
+  0068: PC.bPreciseDestination = ((Flags & 128) != 0)
+  0084: PC.bDoubleJump = ((Flags & 64) != 0)
+  00a0: PC.bPressedJump = ((Flags & 32) != 0)
+  00bc: switch ((Flags & 7))
+  00c7: case 0: (next 0x00ce)
+  00cb: return 0
+  00ce: case 1: (next 0x00d5)
+  00d2: return 1
+  00d5: case 2: (next 0x00dd)
+  00da: return 2
+  00dd: case 3: (next 0x00e5)
+  00e2: return 3
+  00e5: case 4: (next 0x00ed)
+  00ea: return 4
+  00ed: default:
+  00f0: return 0
+  00f3: return return
+  00f9: <eos>

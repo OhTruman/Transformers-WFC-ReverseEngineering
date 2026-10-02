@@ -1,0 +1,13 @@
+function TnObjectiveMarkerTypeObjective.GetMarkerSetup  (script 28 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: return self.MarkerSetup
+  0015: return return
+  001b: <eos>
+
+function TnObjectiveMarkerTypeObjective.GetLabelText  (script 125 bytes)
+  0000: Distance = cast44((obj'Core.Math'.static.VSize((MarkerData.MarkerBase.Location - Owner.Location)) / 10.0))
+  0043: LabelText = self.DistanceLabel
+  004e: LabelText = obj'Core.Strings'.static.Repl(self.DistanceLabel, "`d", cast53(Distance), )
+  0070: return LabelText
+  0076: return return
+  007c: <eos>

@@ -1,0 +1,40 @@
+function HmAnimatedDepthOfFieldPostProcessModifier.Activate  (script 182 bytes)
+  0000: self.FalloffExponent.SetTime(0.0)
+  0018: self.BlurKernelSize.SetTime(0.0)
+  0030: self.MaxNearBlurAmount.SetTime(0.0)
+  0048: self.MaxFarBlurAmount.SetTime(0.0)
+  0060: self.FocusNearFalloff.SetTime(0.0)
+  0078: self.FocusFarFalloff.SetTime(0.0)
+  0090: self.FocusDistance.SetTime(0.0)
+  00a8: self.CurTime = 0.0
+  00b3: return nothing
+  00b5: <eos>
+
+function HmAnimatedDepthOfFieldPostProcessModifier.Update  (script 231 bytes)
+  0000: if !((self.CurTime <= self.StartBlendingTime)) goto 0x002d
+  000f: (self.CurTime += DeltaTime)
+  001b: DeltaTime = (self.CurTime - self.StartBlendingTime)
+  002d: if !((self.CurTime > self.StartBlendingTime)) goto 0x00e4
+  003c: self.FalloffExponent.Update(DeltaTime)
+  0054: self.BlurKernelSize.Update(DeltaTime)
+  006c: self.MaxNearBlurAmount.Update(DeltaTime)
+  0084: self.MaxFarBlurAmount.Update(DeltaTime)
+  009c: self.FocusNearFalloff.Update(DeltaTime)
+  00b4: self.FocusFarFalloff.Update(DeltaTime)
+  00cc: self.FocusDistance.Update(DeltaTime)
+  00e4: return nothing
+  00e6: <eos>
+
+function HmAnimatedDepthOfFieldPostProcessModifier.ModifySettings  (script 315 bytes)
+  0000: Settings.DOF_FalloffExponent = self.FalloffExponent.GetValue()
+  0024: Settings.DOF_BlurKernelSize = self.BlurKernelSize.GetValue()
+  0048: Settings.DOF_MaxNearBlurAmount = self.MaxNearBlurAmount.GetValue()
+  006c: Settings.DOF_MaxFarBlurAmount = self.MaxFarBlurAmount.GetValue()
+  0090: Settings.DOF_FocusNearFalloff = self.FocusNearFalloff.GetValue()
+  00b4: Settings.DOF_FocusFarFalloff = self.FocusFarFalloff.GetValue()
+  00d8: Settings.DOF_FocusDistance = self.FocusDistance.GetValue()
+  00fc: Settings.bEnableDOF = true
+  010f: Settings.DOF_FocusType = 0
+  0122: Settings.DOF_ModulateBlurColor = self.ModulateBlurColor
+  0138: return nothing
+  013a: <eos>

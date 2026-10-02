@@ -1,0 +1,106 @@
+function DemonwareChatService.CreateChatChannel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareChatService.AddChatCreateDelegate  (script 39 bytes)
+  0000: if !((self.ChatCreateDelegates.Find(ChatDelegate) == -1)) goto 0x0024
+  0017: self.ChatCreateDelegates.AddItem(ChatDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareChatService.ClearChatCreateDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ChatCreateDelegates.Find(ChatDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ChatCreateDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareChatService.SubscribeToChatChannel  (script 7 bytes)
+  0000: ChannelId
+  0005: nothing
+  0006: <eos>
+
+function DemonwareChatService.AddChatSubscribeDelegate  (script 39 bytes)
+  0000: if !((self.ChatSubscribeDelegates.Find(ChatDelegate) == -1)) goto 0x0024
+  0017: self.ChatSubscribeDelegates.AddItem(ChatDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareChatService.ClearChatSubscribeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ChatSubscribeDelegates.Find(ChatDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ChatSubscribeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareChatService.UnsubscribeFromChatChannel  (script 7 bytes)
+  0000: ChannelId
+  0005: nothing
+  0006: <eos>
+
+function DemonwareChatService.AddChatUnsubscribeDelegate  (script 39 bytes)
+  0000: if !((self.ChatUnsubscribeDelegates.Find(ChatDelegate) == -1)) goto 0x0024
+  0017: self.ChatUnsubscribeDelegates.AddItem(ChatDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareChatService.ClearChatUnsubscribeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ChatUnsubscribeDelegates.Find(ChatDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ChatUnsubscribeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareChatService.SendChatMessage  (script 17 bytes)
+  0000: ChannelId
+  0005: Message
+  000a: MessageSize
+  000f: nothing
+  0010: <eos>
+
+function DemonwareChatService.SendChatWhisperMessage  (script 22 bytes)
+  0000: ChannelId
+  0005: UserId
+  000a: Message
+  000f: MessageSize
+  0014: nothing
+  0015: <eos>
+
+function DemonwareChatService.AddChatSendCompleteDelegate  (script 39 bytes)
+  0000: if !((self.ChatSendDelegates.Find(ChatDelegate) == -1)) goto 0x0024
+  0017: self.ChatSendDelegates.AddItem(ChatDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareChatService.ClearChatSendCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ChatSendDelegates.Find(ChatDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ChatSendDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareChatService.AddChatChangeDelegate  (script 39 bytes)
+  0000: if !((self.ChatChangeDelegates.Find(ChatDelegate) == -1)) goto 0x0024
+  0017: self.ChatChangeDelegates.AddItem(ChatDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareChatService.ClearChatChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ChatChangeDelegates.Find(ChatDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ChatChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareChatService.AddChatMessageDelegate  (script 39 bytes)
+  0000: if !((self.ChatMessageDelegates.Find(ChatMessageDelegate) == -1)) goto 0x0024
+  0017: self.ChatMessageDelegates.AddItem(ChatMessageDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareChatService.ClearChatMessageDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ChatMessageDelegates.Find(ChatMessageDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ChatMessageDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>

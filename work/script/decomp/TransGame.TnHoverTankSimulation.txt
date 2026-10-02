@@ -1,0 +1,419 @@
+function TnHoverTankSimulation.get_IsOnTheGround  (script 14 bytes)
+  0000: return self._OnTheGround
+  0007: return return
+  000d: <eos>
+
+function TnHoverTankSimulation.get_IsDrifting  (script 18 bytes)
+  0000: return (self._DriftTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnHoverTankSimulation.get_Base  (script 62 bytes)
+  0000: foreach self._Suspension(Suspension,) (end 0x0034)
+  000f: if !((Suspension._HitActor != none)) goto 0x0033
+  0023: iterpop
+  0024: return Suspension._HitActor
+  0033: iternext
+  0034: iterpop
+  0035: return none
+  0037: return return
+  003d: <eos>
+
+function TnHoverTankSimulation.get_Suspension  (script 13 bytes)
+  0000: return self._Suspension
+  0006: return return
+  000c: <eos>
+
+function TnHoverTankSimulation.get_Blueprint  (script 13 bytes)
+  0000: return self._Blueprint
+  0006: return return
+  000c: <eos>
+
+function TnHoverTankSimulation.get_IsStable  (script 127 bytes)
+  0000: return ((obj'Core.Math'.static.Abs((cast3f(self._RigidBody.get_Rotation().Pitch) * 0.0054932)) < cast3f(30)) && (obj'Core.Math'.static.Abs((cast3f(self._RigidBody.get_Rotation().Roll) * 0.0054932)) < cast3f(30)))
+  0078: return return
+  007e: <eos>
+
+function TnHoverTankSimulation.get_IsBoosting  (script 14 bytes)
+  0000: return self._Boosting
+  0007: return return
+  000d: <eos>
+
+function TnHoverTankSimulation.get_MaxAiLinearSpeed  (script 61 bytes)
+  0000: return (self._Boosting ? (self._Blueprint.AiBoostLinearSpeed * self._AiBoostLinearSpeedModifier) : (self._Blueprint.AiMaxLinearSpeed * self._AiMaxLinearSpeedModifier))
+  0036: return return
+  003c: <eos>
+
+function TnHoverTankSimulation.set_AiBoostLinearSpeedModifier  (script 14 bytes)
+  0000: self._AiBoostLinearSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.set_AiMaxLinearSpeedModifier  (script 14 bytes)
+  0000: self._AiMaxLinearSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.set_DefaultAngularDampingModifier  (script 14 bytes)
+  0000: self._DefaultAngularDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_DefaultAngularDamping  (script 20 bytes)
+  0000: return (0.1 * self._DefaultAngularDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverTankSimulation.set_StopLinearDampingModifier  (script 14 bytes)
+  0000: self._StopLinearDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_StopLinearDamping  (script 20 bytes)
+  0000: return (10.0 * self._StopLinearDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverTankSimulation.set_DefaultLinearDampingModifier  (script 14 bytes)
+  0000: self._DefaultLinearDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_DefaultLinearDamping  (script 20 bytes)
+  0000: return (0.1 * self._DefaultLinearDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverTankSimulation.set_AiMaxLinearAccelerationModifier  (script 14 bytes)
+  0000: self._AiMaxLinearAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_AiMaxLinearAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxLinearAcceleration * self._AiMaxLinearAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_AiMaxAngularAccelerationModifier  (script 14 bytes)
+  0000: self._AiMaxAngularAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_AiMaxAngularAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxAngularAcceleration * self._AiMaxAngularAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_AiMaxAngularSpeedModifier  (script 14 bytes)
+  0000: self._AiMaxAngularSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_AiMaxAngularSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxAngularSpeed * self._AiMaxAngularSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_DriftDurationModifier  (script 14 bytes)
+  0000: self._DriftDurationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_DriftDuration  (script 29 bytes)
+  0000: return (self._Blueprint.DriftDuration * self._DriftDurationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_JumpLinearSpeedModifer  (script 14 bytes)
+  0000: self._JumpLinearSpeedModifer = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_JumpLinearSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.JumpLinearSpeed * self._JumpLinearSpeedModifer)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_JumpAngularSpeedModifier  (script 14 bytes)
+  0000: self._JumpAngularSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_JumpAngularSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.JumpAngularSpeed * self._JumpAngularSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_RecoilVelocityModifier  (script 14 bytes)
+  0000: self._RecoilVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_RecoilVelocity  (script 29 bytes)
+  0000: return (self._Blueprint.RecoilVelocity * self._RecoilVelocityModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_TerminalVelocityModifier  (script 14 bytes)
+  0000: self._TerminalVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_TerminalVelocity  (script 20 bytes)
+  0000: return (3500.0 * self._TerminalVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverTankSimulation.set_MaxLinearAccelerationModifier  (script 14 bytes)
+  0000: self._MaxLinearAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_MaxLinearAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.MaxLinearAcceleration * self._MaxLinearAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_MaxBoostSpeedModifier  (script 14 bytes)
+  0000: self._MaxBoostSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_MaxBoostSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.MaxBoostSpeed * self._MaxBoostSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_MaxLinearSpeedModifier  (script 14 bytes)
+  0000: self._MaxLinearSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_MaxLinearSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.MaxLinearSpeed * self._MaxLinearSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_TurnRateModifier  (script 14 bytes)
+  0000: self._TurnRateModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_TurnRate  (script 29 bytes)
+  0000: return (vect(0.05,0.05,1) * self._TurnRateModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.set_SuspensionRadiusModifier  (script 14 bytes)
+  0000: self._SuspensionRadiusModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverTankSimulation.get_SuspensionRadius  (script 29 bytes)
+  0000: return (self._Blueprint.SuspensionRadius * self._SuspensionRadiusModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverTankSimulation.Initialize  (script 96 bytes)
+  0000: if !((((Blueprint == none) || (Owner == none)) || EqualEqual_InterfaceInterface(RigidBody, IRigidBody(none)))) goto 0x0030
+  002e: return nothing
+  0030: self._Blueprint = Blueprint
+  003b: self._Owner = Owner
+  0046: self._RigidBody = RigidBody
+  0051: TnHoverTankSimulation.InitializeSuspension()
+  0057: TnHoverTankSimulation.AddBlueprintObservers()
+  005d: return nothing
+  005f: <eos>
+
+function TnHoverTankSimulation.Shutdown  (script 9 bytes)
+  0000: TnHoverTankSimulation.RemoveBlueprintObservers()
+  0006: return nothing
+  0008: <eos>
+
+function TnHoverTankSimulation.Activate  (script 119 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self._RigidBody, IRigidBody(none))) goto 0x0016
+  0014: return nothing
+  0016: self._RigidBody.set_AngularDamping(0.0)
+  002f: self._DriftTimeRemaining = 0.0
+  003a: I = 0
+  0041: if !((I < self._Suspension.Length)) goto 0x0074
+  0051: I[self._Suspension].Reset()
+  006a: AddAdd_PreInt(I)
+  0071: goto 0x0041
+  0074: return nothing
+  0076: <eos>
+
+function TnHoverTankSimulation.Update  (script 209 bytes)
+  0000: if !(((self._Blueprint == none) || (DeltaTime == cast3f(0)))) goto 0x001c
+  001a: return nothing
+  001c: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0066
+  003a: self._RigidBody.ApplyLinearAcceleration(-self._RigidBody.get_Gravity())
+  0064: return nothing
+  0066: FrameOfReference = obj'Core.Math'.static.MakeRotator(0, cast44(Yaw), 0)
+  0088: TnHoverTankSimulation.UpdateSuspension(DeltaTime)
+  0093: TnHoverTankSimulation.UpdateTerminalVelocity()
+  0099: TnHoverTankSimulation.UpdateStrafe(DeltaTime, ForwardBackInput, RightLeftInput, FrameOfReference)
+  00b3: TnHoverTankSimulation.UpdateRoll(RightLeftInput)
+  00be: TnHoverTankSimulation.UpdateTurn(DeltaTime, FrameOfReference)
+  00ce: return nothing
+  00d0: <eos>
+
+function TnHoverTankSimulation.UpdateFromLocationAndRotation  (script 327 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: self._DriftTimeRemaining = 0.0
+  0018: TnHoverTankSimulation.UpdateSuspension(DeltaTime)
+  0023: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0043
+  0041: return nothing
+  0043: self._RigidBody.set_AngularDamping(TnHoverTankSimulation.get_DefaultAngularDamping())
+  005d: self._RigidBody.set_LinearDamping(((obj'Core.Math'.static.VSizeSq((LocationToMatch - self._RigidBody.get_Location())) < cast3f(100)) ? TnHoverTankSimulation.get_StopLinearDamping() : TnHoverTankSimulation.get_DefaultLinearDamping()))
+  00b6: obj'HoverPhysics'.static.MoveToTargetLocation(self._RigidBody, DeltaTime, LocationToMatch, TnHoverTankSimulation.get_MaxAiLinearSpeed(), TnHoverTankSimulation.get_AiMaxLinearAcceleration(), vect(1,1,0))
+  00f1: obj'HoverPhysics'.static.RotateToTargetOrientation(self._RigidBody, DeltaTime, RotationToMatch, TnHoverTankSimulation.get_AiMaxAngularSpeed(), TnHoverTankSimulation.get_AiMaxAngularAcceleration(), (TnHoverTankSimulation.get_IsStable() ? vect(0,0,1) : vect(1,1,1)))
+  0144: return nothing
+  0146: <eos>
+
+function TnHoverTankSimulation.Drift  (script 73 bytes)
+  0000: if !(((self._Owner == none) || (cast3a(self._Owner.get_SimulationMode()) == cast3a(0)))) goto 0x002d
+  002b: return nothing
+  002d: if !((self._Blueprint == none)) goto 0x003a
+  0038: return nothing
+  003a: self._DriftTimeRemaining = TnHoverTankSimulation.get_DriftDuration()
+  0046: return nothing
+  0048: <eos>
+
+function TnHoverTankSimulation.Jump  (script 147 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: self._RigidBody.ApplyLinearVelocity(obj'Core.Math'.static.MakeVector(0.0, 0.0, TnHoverTankSimulation.get_JumpLinearSpeed()))
+  0057: self._RigidBody.ApplyLocalAngularVelocity(obj'Core.Math'.static.MakeVector(0.0, -TnHoverTankSimulation.get_JumpAngularSpeed(), 0.0))
+  0090: return nothing
+  0092: <eos>
+
+function TnHoverTankSimulation.Recoil  (script 92 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: self._RigidBody.ApplyLocalLinearVelocity(obj'Core.Math'.static.MakeVector(-TnHoverTankSimulation.get_RecoilVelocity(), 0.0, 0.0))
+  0059: return nothing
+  005b: <eos>
+
+function TnHoverTankSimulation.StartBoost  (script 11 bytes)
+  0000: self._Boosting = true
+  0008: return nothing
+  000a: <eos>
+
+function TnHoverTankSimulation.StopBoost  (script 11 bytes)
+  0000: self._Boosting = false
+  0008: return nothing
+  000a: <eos>
+
+function TnHoverTankSimulation.UpdateSuspension  (script 252 bytes)
+  0000: self._OnTheGround = false
+  0008: Direction = self._RigidBody.RotateToWorldSpace(vect(0,0,-1))
+  002f: I = 0
+  0036: if !((I < self._Suspension.Length)) goto 0x00f9
+  0046: Location = TnHoverTankSimulation.CalculateSuspensionLocation(I)
+  0057: I[self._Suspension].Update(DeltaTime, Location, Direction)
+  007f: if !(!I[self._Suspension]._HasContact) goto 0x009c
+  0099: goto 0x00ef
+  009c: self._RigidBody.ApplyForce((-Direction * obj'Core.Math'.static.FMax(0.0, I[self._Suspension].get_Force())), Location)
+  00e7: self._OnTheGround = true
+  00ef: AddAdd_PreInt(I)
+  00f6: goto 0x0036
+  00f9: return nothing
+  00fb: <eos>
+
+function TnHoverTankSimulation.UpdateTerminalVelocity  (script 139 bytes)
+  0000: if !((self._RigidBody.get_LinearVelocity().Z > -TnHoverTankSimulation.get_TerminalVelocity())) goto 0x002e
+  002c: return nothing
+  002e: self._RigidBody.ApplyLinearVelocity(obj'Core.Math'.static.MakeVector(0.0, 0.0, (-self._RigidBody.get_LinearVelocity().Z - TnHoverTankSimulation.get_TerminalVelocity())))
+  0088: return nothing
+  008a: <eos>
+
+function TnHoverTankSimulation.UpdateStrafe  (script 207 bytes)
+  0000: self._DriftTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._DriftTimeRemaining - DeltaTime))
+  0022: if !(!TnHoverTankSimulation.get_IsStable()) goto 0x002f
+  002d: return nothing
+  002f: MaxAcceleration = (TnHoverTankSimulation.get_MaxLinearAcceleration() * TnHoverTankSimulation.CalculateDriftScale())
+  0043: MaxSpeed = (self._Boosting ? TnHoverTankSimulation.get_MaxBoostSpeed() : TnHoverTankSimulation.get_MaxLinearSpeed())
+  0060: Inputs = (self._Boosting ? vect(1,0,0) : obj'Core.Math'.static.MakeVector(ForwardBackInput, RightLeftInput, 0.0))
+  00a0: TnHoverTankSimulation.Strafe(DeltaTime, Inputs, vect(1,1,0), FrameOfReference, MaxAcceleration, MaxSpeed)
+  00cc: return nothing
+  00ce: <eos>
+
+function TnHoverTankSimulation.UpdateTurn  (script 318 bytes)
+  0000: RotationToMatch = obj'Core.Math'.static.QuatFromRotator(FrameOfReference)
+  001e: CurrentRotation = self._RigidBody.get_RotationAsQuaternion()
+  0038: if !((obj'Core.Math'.static.QuatDot(RotationToMatch, CurrentRotation) < cast3f(0))) goto 0x007b
+  005d: RotationToMatch = obj'Core.Math'.static.QuatNegate(RotationToMatch)
+  007b: Difference = obj'Core.Math'.static.QuatProduct(obj'Core.Math'.static.QuatInvert(CurrentRotation), RotationToMatch)
+  00b1: Velocity = (((obj'Core.Math'.static.QuatToAxisWithAngle(Difference) * TnHoverTankSimulation.get_TurnRate()) / DeltaTime) - self._RigidBody.get_LocalAngularVelocity())
+  00f5: if !((TnHoverTankSimulation.get_IsStable() && get_IsOnTheGround())) goto 0x0122
+  010d: (Velocity *= vect(0,0,1))
+  0122: self._RigidBody.ApplyLocalAngularVelocity(Velocity)
+  013b: return nothing
+  013d: <eos>
+
+function TnHoverTankSimulation.UpdateRoll  (script 104 bytes)
+  0000: self._RigidBody.ApplyLocalAngularAcceleration(obj'Core.Math'.static.MakeVector(((1.0 * RightLeftInput) + (cast3f(1) * -self._RigidBody.get_LocalAngularVelocity().Z)), 0.0, 0.0))
+  0065: return nothing
+  0067: <eos>
+
+function TnHoverTankSimulation.Strafe  (script 209 bytes)
+  0000: CurrentVelocity = ((self._RigidBody.get_LinearVelocity() << FrameOfReference) * AxisMask)
+  002a: MaxSpeed = self._SpeedModifier.ModifyFloat(MaxSpeed, self._Owner, )
+  004e: DesiredVelocity = (Direction * MaxSpeed)
+  0060: DesiredAcceleration = obj'Core.Math'.static.ClampLength(((DesiredVelocity - CurrentVelocity) / DeltaTime), MaxAcceleration)
+  0091: self._RigidBody.ApplyLocalLinearAcceleration((self._RigidBody.RotateToLocalSpace((DesiredAcceleration >> FrameOfReference)) * AxisMask))
+  00ce: return nothing
+  00d0: <eos>
+
+function TnHoverTankSimulation.CalculateSuspensionLocation  (script 156 bytes)
+  0000: LocalOffset = ((obj'Core.Math'.static.Normal(vect(1,1,0)) * TnHoverTankSimulation.get_SuspensionRadius()) << obj'Core.Math'.static.MakeRotatorDeg(0.0, ((360.0 * cast3f(I)) / cast3f(4)), 0.0))
+  005a: LocalLocation = (self._RigidBody.get_LocalCenterOfMass() + LocalOffset)
+  007b: return self._RigidBody.TransformToWorldSpace(LocalLocation)
+  0095: return return
+  009b: <eos>
+
+function TnHoverTankSimulation.CalculateDriftScale  (script 39 bytes)
+  0000: return obj'Core.Math'.static.Square((1.0 - (self._DriftTimeRemaining / TnHoverTankSimulation.get_DriftDuration())))
+  0020: return return
+  0026: <eos>
+
+function TnHoverTankSimulation.InitializeSuspension  (script 166 bytes)
+  0000: if !((self._Blueprint.SuspensionBlueprint == none)) goto 0x0016
+  0014: return nothing
+  0016: MassShare = (self._RigidBody.get_Mass() / cast3f(4))
+  0036: I = 0
+  003d: if !((I < 4)) goto 0x00a3
+  0049: I[self._Suspension] = new(self, nothing, obj'TnSuspension', nothing, DeltaTime)
+  0063: I[self._Suspension].Initialize(self._Owner, self._Blueprint.SuspensionBlueprint, 0.0, MassShare)
+  0099: AddAdd_PreInt(I)
+  00a0: goto 0x003d
+  00a3: return nothing
+  00a5: <eos>
+
+function TnHoverTankSimulation.AddBlueprintObservers  (script 128 bytes)
+  0000: if !(!obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor()) goto 0x0028
+  0026: return nothing
+  0028: self._Blueprint.AddAssetChangedObserver(delegate.BlueprintChanged)
+  0044: if !((self._Blueprint.SuspensionBlueprint != none)) goto 0x007d
+  0058: self._Blueprint.SuspensionBlueprint.AddAssetChangedObserver(delegate.BlueprintChanged)
+  007d: return nothing
+  007f: <eos>
+
+function TnHoverTankSimulation.RemoveBlueprintObservers  (script 143 bytes)
+  0000: if !(!obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor()) goto 0x0028
+  0026: return nothing
+  0028: if !((self._Blueprint == none)) goto 0x0035
+  0033: return nothing
+  0035: self._Blueprint.RemoveAssetChangedObserver(delegate.BlueprintChanged)
+  0051: if !((self._Blueprint.SuspensionBlueprint == none)) goto 0x0067
+  0065: return nothing
+  0067: self._Blueprint.SuspensionBlueprint.RemoveAssetChangedObserver(delegate.BlueprintChanged)
+  008c: return nothing
+  008e: <eos>
+
+function TnHoverTankSimulation.BlueprintChanged  (script 9 bytes)
+  0000: TnHoverTankSimulation.InitializeSuspension()
+  0006: return nothing
+  0008: <eos>

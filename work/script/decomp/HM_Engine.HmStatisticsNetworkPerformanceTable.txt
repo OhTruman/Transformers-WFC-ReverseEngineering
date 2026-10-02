@@ -1,0 +1,31 @@
+function HmStatisticsNetworkPerformanceTable.PopulateNativeStats  (script 7 bytes)
+  0000: sample
+  0005: nothing
+  0006: <eos>
+
+function HmStatisticsNetworkPerformanceTable.StatisticsSupported  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmStatisticsNetworkPerformanceTable.TurnOnCycleCounters  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmStatisticsNetworkPerformanceTable.sample  (script 330 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(!HmStatisticsNetworkPerformanceTable.StatisticsSupported()) goto 0x001a
+  0018: return nothing
+  001a: if !((Game.GetNumPlayers() < 2)) goto 0x0036
+  0034: return nothing
+  0036: sample.Session_Id = Game.StatisticsSessionId
+  0055: if !((Sampler != none)) goto 0x00de
+  0060: sample.LocationX = Sampler.Location.X
+  008a: sample.LocationY = Sampler.Location.Y
+  00b4: sample.LocationZ = Sampler.Location.Z
+  00de: sample.WorldTime = Game.WorldInfo.TimeSeconds
+  0106: sample.NumPlayers = Game.GetNumPlayers()
+  012a: HmStatisticsNetworkPerformanceTable.PopulateNativeStats(sample)
+  0135: self.Samples.Length[self.Samples] = sample
+  0147: return nothing
+  0149: <eos>

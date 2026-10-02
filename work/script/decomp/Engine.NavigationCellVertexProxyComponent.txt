@@ -1,0 +1,9 @@
+function NavigationCellVertexProxyComponent.CreatePrimitives  (script 248 bytes)
+  0000: Vertex = NavigationCellVertex(self.Owner)
+  0010: if !((Vertex == none)) goto 0x001d
+  001b: return nothing
+  001d: SetHitProxy(0, "A Navigation Cell Vertex")
+  0042: AddSolidBox(Vertex.Location, obj'Core.Math'.static.MakeRotator(0, 0, 0), obj'Core.Math'.static.MakeVector(50.0, 50.0, 50.0), (obj'EditorUtils'.static.IsObjectSelected(Vertex) ? MakeLinearColor(1.0, 1.0, 0.4, 1.0) : MakeLinearColor(0.4, 0.4, 1.0, 1.0)))
+  00eb: ClearHitProxy()
+  00f5: return nothing
+  00f7: <eos>

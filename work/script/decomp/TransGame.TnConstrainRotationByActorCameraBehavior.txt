@@ -1,0 +1,13 @@
+function TnConstrainRotationByActorCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.Player = TnPlayerPawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnConstrainRotationByActorCameraBehavior.Update  (script 129 bytes)
+  0000: if !(((self.Player == none) || (self.Player.Controller == none))) goto 0x0027
+  0021: return Result
+  0027: PC = TnPlayerController(self.Player.Controller)
+  0040: Result.OrbitRotation = PC.GetConstrainedCameraRotation(Result.OrbitRotation)
+  0074: return Result
+  007a: return return
+  0080: <eos>

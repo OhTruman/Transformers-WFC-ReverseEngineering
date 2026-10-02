@@ -1,0 +1,69 @@
+function TnTransformer.PostLoad  (script 116 bytes)
+  0000: PostLoad()
+  0006: if !(((self.Collision.RigidBodyMeshCache.Length == 0) && !IsTemplate())) goto 0x0071
+  002e: obj'Engine.CylinderComponent'.static.CreateRigidBodyMeshCache(self.Collision.CollisionHeight, self.Collision.CollisionRadius, self.Collision.RigidBodyMeshCache)
+  0071: return nothing
+  0073: <eos>
+
+function TnTransformer.PreSave  (script 89 bytes)
+  0000: PreSave()
+  0006: if !(IsCooking()) goto 0x0056
+  0013: obj'Engine.CylinderComponent'.static.CreateRigidBodyMeshCache(self.Collision.CollisionHeight, self.Collision.CollisionRadius, self.Collision.RigidBodyMeshCache)
+  0056: return nothing
+  0058: <eos>
+
+function TnTransformer.OnPostEditChange  (script 142 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((((PropertyName == 'Collision') || (PropertyName == 'CollisionHeight')) || (PropertyName == 'CollisionRadius'))) goto 0x008b
+  0048: obj'Engine.CylinderComponent'.static.CreateRigidBodyMeshCache(self.Collision.CollisionHeight, self.Collision.CollisionRadius, self.Collision.RigidBodyMeshCache)
+  008b: return nothing
+  008d: <eos>
+
+function TnTransformer.CheckForErrors  (script 673 bytes)
+  0000: if !((self.HitEffectPlayerBlueprint == none)) goto 0x005f
+  000b: EmitCheckMessage(0, "Has no hit effect player blueprint, don't you want squibs and stuff?", , )
+  005f: if !((self.BlockParams != none)) goto 0x007d
+  006a: self.BlockParams.CheckForErrors()
+  007d: foreach self.TransformerExtensions(extension,) (end 0x00a1)
+  008c: extension.CheckForTransformerErrors(self)
+  00a0: iternext
+  00a1: iterpop
+  00a2: if !((self.SkelMesh != none)) goto 0x0123
+  00ad: foreach self.RequiredSockets(SocketName,) (end 0x0122)
+  00bc: if !((self.SkelMesh.FindSocket(SocketName) == none)) goto 0x0121
+  00da: EmitCheckMessage(0, (((cast56(self.SkelMesh) $ " is missing a required socket: '") $ cast57(SocketName)) $ "'"), , )
+  0121: iternext
+  0122: iterpop
+  0123: if !((!self.IgnorePathingCollisionCheck && (self.Collision.CollisionRadius > cast3f(250)))) goto 0x0198
+  0149: EmitCheckMessage(0, ("Collision Radius set larger than Max Robot Pathing Radius" @ cast53(250)), , )
+  0198: if !((!self.IgnorePathingCollisionCheck && (self.Collision.CollisionHeight > cast3f(300)))) goto 0x0213
+  01c1: EmitCheckMessage(0, ("Collision Height set larger than Max Robot Pathing Height" @ cast53(300)), , )
+  0213: if !(self.IgnorePathingCollisionCheck) goto 0x029e
+  021c: EmitCheckMessage(2, "You have disabled the collision checking which would cause this character to have problems pathing! (OK for Omega)", , )
+  029e: return nothing
+  02a0: <eos>
+
+function TnTransformer.OnPostApplication  (script 118 bytes)
+  0000: I = 0
+  0007: if !((I < self.TransformerExtensions.Length)) goto 0x003f
+  0017: I[self.TransformerExtensions].ApplyTransformerExtension(P)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: P._AimSmoothTime = ((cast3a(P.Role) == cast3a(1)) ? self.SimulatedAimSmoothTime : self.AimSmoothTime)
+  0073: return nothing
+  0075: <eos>
+
+function TnTransformer.CreateRobotForm  (script 37 bytes)
+  0000: return obj'Engine.Allocation'.static.CreateObject(obj'TnRobotForm', OuterPawn)
+  001e: return return
+  0024: <eos>
+
+function TnTransformer.GetMaxRobotPathingRadius  (script 13 bytes)
+  0000: return 250.0
+  0006: return return
+  000c: <eos>
+
+function TnTransformer.GetMaxRobotPathingHeight  (script 13 bytes)
+  0000: return 300.0
+  0006: return return
+  000c: <eos>

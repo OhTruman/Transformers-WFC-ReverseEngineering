@@ -1,0 +1,69 @@
+function TnAiActionTurretScanForEnemies.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTurretScanForEnemiesBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTurretScanForEnemies.OnSetUpConditions  (script 245 bytes)
+  0000: Turret = self._TransformerController.GetUsableScriptedTurret()
+  0019: if !((Turret != none)) goto 0x0049
+  0024: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateTurret', Turret)
+  0046: goto 0x00dd
+  0049: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateTurret') != 1)) goto 0x006e
+  006c: return false
+  006e: Turret = TnMountableTurretBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTurret'))
+  0096: if !(((Turret == none) || Turret.PlayerRequestingTurret())) goto 0x00bb
+  00b9: return false
+  00bb: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateTurret', Turret)
+  00dd: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00ee: return return
+  00f4: <eos>
+
+function TnAiActionTurretScanForEnemies.OnStart  (script 147 bytes)
+  0000: self._TransformerController.StopMovement()
+  0013: self._Turret = TnMountableTurretBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTurret'))
+  003b: self._TransformerController.WeaponShooter.Activate(self._Turret.WeaponClass, delegate.FailCallback)
+  006e: TnAiActionTurretScanForEnemies.AimTurretStraightAhead()
+  0074: self._ScanTimeRemaining = TnAiActionTurretScanForEnemies.GetDelayBeforeScan()
+  0080: return OnStart(ExpectedEffects)
+  008c: return return
+  0092: <eos>
+
+function TnAiActionTurretScanForEnemies.OnFinish  (script 66 bytes)
+  0000: self._TransformerController.WeaponShooter.Deactivate()
+  001c: get_WeaponAimer().Reset()
+  0034: OnFinish(CurrentState)
+  003f: return nothing
+  0041: <eos>
+
+function TnAiActionTurretScanForEnemies.OnUpdate  (script 188 bytes)
+  0000: self._TransformerController.OnEnemyChangeAllowed()
+  0013: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  0035: if !(self._Turret.PlayerRequestingTurret()) goto 0x0056
+  004b: return Fail()
+  0056: self._TransformerPawn.SetAnchor(self._Turret.HotSpotPathNode)
+  0077: (self._ScanTimeRemaining -= DeltaTime)
+  0083: if !((self._ScanTimeRemaining <= 0.0)) goto 0x00a4
+  0092: TnAiActionTurretScanForEnemies.AimTurretInRandomDirection()
+  0098: self._ScanTimeRemaining = TnAiActionTurretScanForEnemies.GetDelayBeforeScan()
+  00a4: return OnUpdate(ExpectedEffects, DeltaTime)
+  00b5: return return
+  00bb: <eos>
+
+function TnAiActionTurretScanForEnemies.AimTurretStraightAhead  (script 78 bytes)
+  0000: get_WeaponAimer().AimAtLocation((self._TransformerPawn.GetPawnViewLocation() + (vect(1000,0,0) >> self._Turret.Rotation)))
+  004b: return nothing
+  004d: <eos>
+
+function TnAiActionTurretScanForEnemies.AimTurretInRandomDirection  (script 326 bytes)
+  0000: RandomTurretAimRotation.Pitch = cast44(((self._Blueprint.RandomScanPitchFactor * obj'Core.Random'.static.RandRangeFloat(self._Turret.YawRange.Min, self._Turret.YawRange.Max)) * 182.0444489))
+  006f: RandomTurretAimRotation.Yaw = cast44(((self._Blueprint.RandomScanYawFactor * obj'Core.Random'.static.RandRangeFloat(self._Turret.PitchRange.Min, self._Turret.PitchRange.Max)) * 182.0444489))
+  00de: RandomTurretAimRotation.Roll = 0
+  00f0: get_WeaponAimer().AimAtLocation((self._TransformerPawn.GetPawnViewLocation() + (vect(1000,0,0) >> (self._Turret.Rotation + RandomTurretAimRotation))))
+  0143: return nothing
+  0145: <eos>
+
+function TnAiActionTurretScanForEnemies.GetDelayBeforeScan  (script 55 bytes)
+  0000: return obj'Core.Random'.static.RandRangeFloat(self._Blueprint.MinTimeBetweenRandomScan, self._Blueprint.MaxTimeBetweenRandomScan)
+  0030: return return
+  0036: <eos>

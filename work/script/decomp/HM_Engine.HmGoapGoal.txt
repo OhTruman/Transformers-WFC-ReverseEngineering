@@ -1,0 +1,69 @@
+function HmGoapGoal.get_GenerateSearchSpace  (script 14 bytes)
+  0000: return self._GenerateSearchSpace
+  0007: return return
+  000d: <eos>
+
+function HmGoapGoal.set_GenerateSearchSpace  (script 16 bytes)
+  0000: self._GenerateSearchSpace = Value
+  000d: return nothing
+  000f: <eos>
+
+function HmGoapGoal.get_DesiredStateIdx  (script 13 bytes)
+  0000: return self._DesiredStateIdx
+  0006: return return
+  000c: <eos>
+
+function HmGoapGoal.set_DesiredStateIdx  (script 14 bytes)
+  0000: self._DesiredStateIdx = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapGoal.AddCondition  (script 32 bytes)
+  0000: obj'HmGoap'.static.SetProperty(self.Conditions, Condition)
+  001d: return nothing
+  001f: <eos>
+
+function HmGoapGoal.AddGoal  (script 32 bytes)
+  0000: obj'HmGoap'.static.SetProperty(self.Goals, Goal)
+  001d: return nothing
+  001f: <eos>
+
+function HmGoapGoal.OnPieSessionEnding  (script 27 bytes)
+  0000: obj'HmGoap'.static.ClearSubjects(self.Goals)
+  0018: return nothing
+  001a: <eos>
+
+function HmGoapGoal.Initialize  (script 89 bytes)
+  0000: self.Description = Blueprint.Description
+  0014: self._GenerateSearchSpace = Blueprint._GenerateSearchSpace
+  002a: self.Conditions.Properties = self.DefaultConditions
+  0040: self.Goals.Properties = self.DefaultGoals
+  0056: return nothing
+  0058: <eos>
+
+function HmGoapGoal.Bind  (script 14 bytes)
+  0000: self.BoundController = InAiController
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapGoal.Unbind  (script 10 bytes)
+  0000: self.BoundController = none
+  0007: return nothing
+  0009: <eos>
+
+function HmGoapGoal.PopulateGoals  (script 20 bytes)
+  0000: out_PopulatedGoals = self.Goals
+  000b: return true
+  000d: return return
+  0013: <eos>
+
+function HmGoapGoal.ConditionsMet  (script 48 bytes)
+  0000: default=false
+  0005: return obj'HmGoap'.static.ConditionsMet(self.Conditions, WorldState, IsRunning)
+  0029: return return
+  002f: <eos>
+
+function HmGoapGoal.VerifyRunningDesiredEffects  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

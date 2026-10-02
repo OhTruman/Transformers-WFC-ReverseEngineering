@@ -1,0 +1,230 @@
+function OnlineSubsystem.GetOnlineDisconnector  (script 13 bytes)
+  0000: return self._Disconnector
+  0006: return return
+  000c: <eos>
+
+function OnlineSubsystem.GetOnlineSessionJoiner  (script 13 bytes)
+  0000: return self._SessionJoiner
+  0006: return return
+  000c: <eos>
+
+function OnlineSubsystem.Init  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystem.DownloadIniFiles  (script 196 bytes)
+  0000: if !((self.Patcher == none)) goto 0x0098
+  000b: if !((self.IniLocPatcherClassName != "")) goto 0x0098
+  0017: LogInternal((("Loading " $ self.IniLocPatcherClassName) $ " for INI/Loc patching"), , , )
+  0046: IniLocPatcherClass = class<IniLocPatcher>(DynamicLoadObject(self.IniLocPatcherClassName, obj'Core.Class', ))
+  0066: if !((IniLocPatcherClass != none)) goto 0x0098
+  0071: self.Patcher = new(nothing, nothing, IniLocPatcherClass, nothing, GetRemoteRole)
+  0085: self.Patcher.Init()
+  0098: if !((self.Patcher != none)) goto 0x00bb
+  00a3: self.Patcher.DownloadFiles()
+  00b6: return true
+  00b8: goto 0x00bd
+  00bb: return false
+  00bd: return return
+  00c3: <eos>
+
+function OnlineSubsystem.Exit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystem.SetAccountInterface  (script 41 bytes)
+  0000: self.AccountInterface = OnlineAccountInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.AccountInterface, OnlineAccountInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetPlayerInterface  (script 41 bytes)
+  0000: self.PlayerInterface = OnlinePlayerInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.PlayerInterface, OnlinePlayerInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetPlayerInterfaceEx  (script 41 bytes)
+  0000: self.PlayerInterfaceEx = OnlinePlayerInterfaceEx(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetSystemInterface  (script 41 bytes)
+  0000: self.SystemInterface = OnlineSystemInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.SystemInterface, OnlineSystemInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetGameInterface  (script 41 bytes)
+  0000: self.GameInterface = OnlineGameInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetContentInterface  (script 41 bytes)
+  0000: self.ContentInterface = OnlineContentInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.ContentInterface, OnlineContentInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetVoiceInterface  (script 41 bytes)
+  0000: self.VoiceInterface = OnlineVoiceInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.VoiceInterface, OnlineVoiceInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetStatsInterface  (script 41 bytes)
+  0000: self.StatsInterface = OnlineStatsInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.StatsInterface, OnlineStatsInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetNewsInterface  (script 41 bytes)
+  0000: self.NewsInterface = OnlineNewsInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.NewsInterface, OnlineNewsInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetReservationInterface  (script 41 bytes)
+  0000: self.ReservationInterface = OnlineReservationInterface(NewInterface)
+  0010: return NotEqual_InterfaceInterface(self.ReservationInterface, OnlineReservationInterface(none))
+  0022: return return
+  0028: <eos>
+
+function OnlineSubsystem.SetNamedInterface  (script 114 bytes)
+  0000: InterfaceIndex = self.NamedInterfaces.Find('InterfaceName',InterfaceName)
+  001c: if !((InterfaceIndex == -1)) goto 0x0053
+  002b: InterfaceIndex = self.NamedInterfaces.Length
+  0037: InterfaceIndex[self.NamedInterfaces].InterfaceName = InterfaceName
+  0053: InterfaceIndex[self.NamedInterfaces].InterfaceObject = NewInterface
+  006f: return nothing
+  0071: <eos>
+
+function OnlineSubsystem.GetNamedInterface  (script 75 bytes)
+  0000: InterfaceIndex = self.NamedInterfaces.Find('InterfaceName',InterfaceName)
+  001c: if !((InterfaceIndex != -1)) goto 0x0042
+  002b: return InterfaceIndex[self.NamedInterfaces].InterfaceObject
+  0042: return none
+  0044: return return
+  004a: <eos>
+
+function OnlineSubsystem.UniqueNetIdToString  (script 7 bytes)
+  0000: IdToConvert
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystem.StringToUniqueNetId  (script 12 bytes)
+  0000: UniqueNetIdString
+  0005: out_UniqueId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystem.AreUniqueNetIdsEqual  (script 12 bytes)
+  0000: NetIdA
+  0005: NetIdB
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystem.UniqueNetIdHasValue  (script 7 bytes)
+  0000: NetId
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystem.GetBuildUniqueId  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystem.DumpSessionState  (script 2243 bytes)
+  0000: NetId = ZeroId
+  000b: ZeroId = NetId
+  0016: LogInternal("Unreal online session state", 'DevOnline', , )
+  0040: LogInternal("-------------------------------------------------------------", 'DevOnline', , )
+  008c: LogInternal("", , , )
+  0093: LogInternal(("Number of sessions: " $ cast53(self.Sessions.Length)), 'DevOnline', , )
+  00c0: Index = 0
+  00c7: if !((Index < self.Sessions.Length)) goto 0x08b6
+  00d7: LogInternal(("  Session: " $ cast57(Index[self.Sessions].SessionName)), 'DevOnline', , )
+  010b: LogInternal(("    OnlineGameSettings: " $ cast56(Index[self.Sessions].GameSettings)), 'DevOnline', , )
+  014c: LogInternal(("      OwningPlayerName: " $ Index[self.Sessions].GameSettings.OwningPlayerName), 'DevOnline', , )
+  0194: NetId = Index[self.Sessions].GameSettings.OwningPlayerId
+  01b9: LogInternal(("      OwningPlayerId: " $ UniqueNetIdToString(NetId)), 'DevOnline', , )
+  01ef: LogInternal(("      PingInMs: " $ cast53(Index[self.Sessions].GameSettings.PingInMs)), 'DevOnline', , )
+  0231: LogInternal(("      NumPublicConnections: " $ cast53(Index[self.Sessions].GameSettings.NumPublicConnections)), 'DevOnline', , )
+  027f: LogInternal(("      NumOpenPublicConnections: " $ cast53(Index[self.Sessions].GameSettings.NumOpenPublicConnections)), 'DevOnline', , )
+  02d1: LogInternal(("      NumPrivateConnections: " $ cast53(Index[self.Sessions].GameSettings.NumPrivateConnections)), 'DevOnline', , )
+  0320: LogInternal(("      bIsLanMatch: " $ cast54(Index[self.Sessions].GameSettings.bIsLanMatch)), 'DevOnline', , )
+  0366: LogInternal(("      bUsesStats: " $ cast54(Index[self.Sessions].GameSettings.bUsesStats)), 'DevOnline', , )
+  03ab: LogInternal(("      bUsesArbitration: " $ cast54(Index[self.Sessions].GameSettings.bUsesArbitration)), 'DevOnline', , )
+  03f6: LogInternal(("      bShouldAdvertise: " $ cast54(Index[self.Sessions].GameSettings.bShouldAdvertise)), 'DevOnline', , )
+  0441: LogInternal(("      bAllowJoinInProgress: " $ cast54(Index[self.Sessions].GameSettings.bAllowJoinInProgress)), 'DevOnline', , )
+  0490: LogInternal(("      bAllowInvites: " $ cast54(Index[self.Sessions].GameSettings.bAllowInvites)), 'DevOnline', , )
+  04d8: LogInternal(("      bUsesPresence: " $ cast54(Index[self.Sessions].GameSettings.bUsesPresence)), 'DevOnline', , )
+  0520: LogInternal(("      bAllowJoinViaPresence: " $ cast54(Index[self.Sessions].GameSettings.bAllowJoinViaPresence)), 'DevOnline', , )
+  0570: LogInternal(("      bAllowJoinViaPresenceFriendsOnly: " $ cast54(Index[self.Sessions].GameSettings.bAllowJoinViaPresenceFriendsOnly)), 'DevOnline', , )
+  05cb: LogInternal(("      GameState: " $ cast52(Index[self.Sessions].GameSettings.GameState)), 'DevOnline', , )
+  060e: LogInternal(("      ReservationChannel: " $ UniqueNetIdToString(Index[self.Sessions].GameSettings.ReservationChannel)), 'DevOnline', , )
+  0662: LogInternal(("    Number of players: " $ cast53(Index[self.Sessions].Registrants.Length)), 'DevOnline', , )
+  06a3: PlayerIndex = 0
+  06aa: if !((PlayerIndex < Index[self.Sessions].Registrants.Length)) goto 0x077a
+  06cb: NetId = PlayerIndex[Index[self.Sessions].Registrants].PlayerNetId
+  06f8: PRI = obj'Engine'.static.GetCurrentWorldInfo().GRI.FindPlayerByUniqueNetId(NetId)
+  072d: LogInternal((("      Player: " $ UniqueNetIdToString(NetId)) @ PRI.GetHumanReadableName()), 'DevOnline', , )
+  0770: AddAdd_Int(PlayerIndex)
+  0777: goto 0x06aa
+  077a: LogInternal(("    Number of arbitrated players: " $ cast53(Index[self.Sessions].ArbitrationRegistrants.Length)), 'DevOnline', , )
+  07c6: PlayerIndex = 0
+  07cd: if !((PlayerIndex < Index[self.Sessions].ArbitrationRegistrants.Length)) goto 0x089d
+  07ee: NetId = PlayerIndex[Index[self.Sessions].ArbitrationRegistrants].PlayerNetId
+  081b: PRI = obj'Engine'.static.GetCurrentWorldInfo().GRI.FindPlayerByUniqueNetId(NetId)
+  0850: LogInternal((("      Player: " $ UniqueNetIdToString(NetId)) @ PRI.GetHumanReadableName()), 'DevOnline', , )
+  0893: AddAdd_Int(PlayerIndex)
+  089a: goto 0x07cd
+  089d: LogInternal("", 'DevOnline', , )
+  08ac: AddAdd_Int(Index)
+  08b3: goto 0x00c7
+  08b6: DumpSessionIDs()
+  08c0: return nothing
+  08c2: <eos>
+
+function OnlineSubsystem.DumpSessionIDs  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystem.DumpVoiceRegistration  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystem.SetDebugSpewLevel  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystem.IsSelectedDeviceValid  (script 56 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x002f
+  0014: return self.PlayerInterfaceEx.IsDeviceValid(DeviceID, )
+  002f: return false
+  0031: return return
+  0037: <eos>
+
+function OnlineSubsystem.HasAsyncTasks  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystem.IsIdle  (script 92 bytes)
+  0000: if !(HasAsyncTasks()) goto 0x000f
+  000d: return false
+  000f: if !(!self._Disconnector.IsInState('Ready', )) goto 0x002c
+  002a: return false
+  002c: if !(((self.Patcher != none) && !self.Patcher.IsIdle())) goto 0x0053
+  0051: return false
+  0053: return true
+  0055: return return
+  005b: <eos>
+
+function OnlineSubsystem.PrintAsyncTasks  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystem.GetDeferredGameInviteControllerId  (script 7 bytes)
+  0000: return return
+  0006: <eos>

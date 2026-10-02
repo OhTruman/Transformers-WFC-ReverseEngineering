@@ -1,0 +1,20 @@
+function TnAiActionNavigatingIdle.OnStart  (script 36 bytes)
+  0000: TnAiActionNavigatingIdle.UpdateFocus()
+  0006: SetCharacterState(0)
+  0011: return OnStart(ExpectedEffects)
+  001d: return return
+  0023: <eos>
+
+function TnAiActionNavigatingIdle.OnUpdate  (script 30 bytes)
+  0000: TnAiActionNavigatingIdle.UpdateFocus()
+  0006: return OnUpdate(ExpectedEffects, DeltaTime)
+  0017: return return
+  001d: <eos>
+
+function TnAiActionNavigatingIdle.UpdateFocus  (script 102 bytes)
+  0000: if !((self._TransformerController.MoveTarget == none)) goto 0x0016
+  0014: return nothing
+  0016: self._FocusLocation.SetFocalPoint(self._TransformerController.MoveTarget.GetDestination(self._TransformerController))
+  004a: self._TransformerController.Focus = IFocusible(self._FocusLocation)
+  0063: return nothing
+  0065: <eos>

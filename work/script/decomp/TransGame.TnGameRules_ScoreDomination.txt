@@ -1,0 +1,10 @@
+function TnGameRules_ScoreDomination.GetGameType  (script 10 bytes)
+  0000: return 6
+  0003: return return
+  0009: <eos>
+
+function TnGameRules_ScoreDomination.ScoreObjective  (script 43 bytes)
+  0000: if !((self.NextGameRules != none)) goto 0x0028
+  000b: self.NextGameRules.ScoreObjective(Scorer, Score)
+  0028: return nothing
+  002a: <eos>

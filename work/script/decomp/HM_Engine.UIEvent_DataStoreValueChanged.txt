@@ -1,0 +1,58 @@
+function UIEvent_DataStoreValueChanged.SetDataStoreBinding  (script 12 bytes)
+  0000: MarkupText
+  0005: BindingIndex
+  000a: nothing
+  000b: <eos>
+
+function UIEvent_DataStoreValueChanged.GetDataStoreBinding  (script 7 bytes)
+  0000: BindingIndex
+  0005: nothing
+  0006: <eos>
+
+function UIEvent_DataStoreValueChanged.RefreshSubscriberValue  (script 7 bytes)
+  0000: BindingIndex
+  0005: nothing
+  0006: <eos>
+
+function UIEvent_DataStoreValueChanged.NotifyDataStoreValueUpdated  (script 27 bytes)
+  0000: SourceDataStore
+  0005: bValuesInvalidated
+  000a: PropertyTag
+  000f: SourceProvider
+  0014: ArrayIndex
+  0019: nothing
+  001a: <eos>
+
+function UIEvent_DataStoreValueChanged.GetBoundDataStores  (script 7 bytes)
+  0000: out_BoundDataStores
+  0005: nothing
+  0006: <eos>
+
+function UIEvent_DataStoreValueChanged.ClearBoundDataStores  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIEvent_DataStoreValueChanged.UpdateVariableLinks  (script 294 bytes)
+  0000: if !((cast3a(self.CurVarType) != cast3a(self.VarType))) goto 0x0123
+  0013: self.CurVarType = self.VarType
+  001e: switch (self.VarType)
+  0025: case 0: (next 0x005f)
+  002a: 0[self.VariableLinks].ExpectedType = obj'Engine.SeqVar_Float'
+  0042: 0[self.VariableLinks].LinkDesc = "Float"
+  005c: goto 0x010e
+  005f: case 1: (next 0x0097)
+  0064: 0[self.VariableLinks].ExpectedType = obj'Engine.SeqVar_Int'
+  007c: 0[self.VariableLinks].LinkDesc = "Int"
+  0094: goto 0x010e
+  0097: case 2: (next 0x00d2)
+  009c: 0[self.VariableLinks].ExpectedType = obj'Engine.SeqVar_String'
+  00b4: 0[self.VariableLinks].LinkDesc = "String"
+  00cf: goto 0x010e
+  00d2: case 3: (next 0x010b)
+  00d7: 0[self.VariableLinks].ExpectedType = obj'Engine.SeqVar_Bool'
+  00ef: 0[self.VariableLinks].LinkDesc = "Bool"
+  0108: goto 0x010e
+  010b: default:
+  010e: 0[self.VariableLinks].LinkedVariables.Length = 0
+  0123: return nothing
+  0125: <eos>

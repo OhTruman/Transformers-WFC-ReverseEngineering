@@ -1,0 +1,28 @@
+function TnGoapGoalHunkerDown.Bind  (script 30 bytes)
+  0000: Bind(InAiController)
+  000b: self.AiC = TnAiController(InAiController)
+  001b: return nothing
+  001d: <eos>
+
+function TnGoapGoalHunkerDown.Initialize  (script 30 bytes)
+  0000: Initialize(Blueprint)
+  000b: self.HunkerDownBlueprint = TnGoapGoalHunkerDownBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnGoapGoalHunkerDown.PopulateGoals  (script 249 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: CurrentDamageThreat = cast3d(WorldState.GetIntValue(obj'TnAiWorldStateDamageThreat'))
+  0037: if !((cast3a(CurrentDamageThreat) < cast3a(self.HunkerDownBlueprint.DamageThreatThreshold))) goto 0x0055
+  0053: return false
+  0055: if !((self.AiC.Enemy == none)) goto 0x006b
+  0069: return false
+  006b: EnemyRange = self.AiC.GetEnemyCenterPointRange()
+  0084: if !((cast3a(EnemyRange) < cast3a(self.HunkerDownBlueprint.MinEnemyRange))) goto 0x00a2
+  00a0: return false
+  00a2: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateDefending', self.AiC.Enemy)
+  00cd: self.AiC.AiWorldState.SetBoolValue(obj'TnAiWorldStateDefending', false, )
+  00f0: return true
+  00f2: return return
+  00f8: <eos>

@@ -1,0 +1,16 @@
+function TnStatisticsBackendScoreTable.RecordScores  (script 332 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: foreach Game.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0148)
+  0036: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  004f: S.Id = obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(PRI.UniqueId)
+  0081: if !((Game.bTeamGame && (PRI.Team != none))) goto 0x00d1
+  00a9: S.TM = PRI.Team.TeamIndex
+  00d1: S.Scr = PRI.GetScore()
+  00f5: S.Kls = PRI.Kills
+  0114: S.Dths = cast44(PRI.GetDeaths())
+  013a: self.Scores.AddItem(S)
+  0147: iternext
+  0148: iterpop
+  0149: return nothing
+  014b: <eos>

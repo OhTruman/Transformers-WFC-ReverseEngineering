@@ -1,0 +1,18 @@
+function ShortcutReachSpec.Connect  (script 149 bytes)
+  0000: self.reachFlags = InReachFlags
+  000b: self.CollisionRadius = cast3f(Radius)
+  0018: self.CollisionHeight = cast3f(Height)
+  0025: self.Start = StartPoint
+  0030: self.End.Nav = EndPoint
+  0046: self.Distance = obj'Core.Math'.static.VSize((self.Start.Location - self.End.Nav.Location))
+  0080: self.Start.PathList.AddItem(self)
+  0092: return nothing
+  0094: <eos>
+
+function ShortcutReachSpec.Disconnect  (script 65 bytes)
+  0000: idx = self.Start.PathList.Find(self)
+  0018: if !((idx == -1)) goto 0x0029
+  0027: return nothing
+  0029: self.Start.PathList.Remove(idx,1)
+  003e: return nothing
+  0040: <eos>

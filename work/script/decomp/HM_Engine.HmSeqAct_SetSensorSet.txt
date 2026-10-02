@@ -1,0 +1,15 @@
+function HmSeqAct_SetSensorSet.Activated  (script 221 bytes)
+  0000: SensorSetToUse = (self.bUsePackageSensorSet ? self.PackageSensorSet : self.SensorSet)
+  001b: I = 0
+  0022: if !((I < self.Targets.Length)) goto 0x00da
+  0032: TargetPawn = HmPawn(I[self.Targets])
+  0048: if !((TargetPawn == none)) goto 0x0056
+  0053: goto 0x00d0
+  0056: C = HmGoapWorldStateInterface(TargetPawn.Controller)
+  006f: if !((EqualEqual_InterfaceInterface(C, HmGoapWorldStateInterface(none)) || (C.GetGoapPlanRunner() == none))) goto 0x00a2
+  009f: goto 0x00d0
+  00a2: C.SetSensorSet(HmAiSensorSet(SensorSetToUse.Clone(self, )))
+  00d0: AddAdd_PreInt(I)
+  00d7: goto 0x0022
+  00da: return nothing
+  00dc: <eos>

@@ -1,0 +1,51 @@
+function TnDeathFactory.Create  (script 111 bytes)
+  0000: self.Owner = Owner_
+  000b: self.Blueprint = Blueprint_
+  0016: Death = TnDeathFactory.CreateDefaultDeath()
+  0022: CustomDeathIndex = TnDeathFactory.FindCustomDeath()
+  002e: if !((CustomDeathIndex != -1)) goto 0x0062
+  003d: Death = TnDeathFactory.AddCustomDeath(Death, CustomDeathIndex[self.Blueprint.Deaths])
+  0062: return Death
+  0068: return return
+  006e: <eos>
+
+function TnDeathFactory.CreateDefaultDeath  (script 207 bytes)
+  0000: TnDeathFactory.CloneModifiersInto(DefaultDeath.Modifiers, self.Blueprint.DefaultModifiers)
+  0024: DefaultDeath.GibsBlueprint = self.Blueprint.DefaultGibsBlueprint
+  0043: DefaultDeath.SkeletalGibs = TnSkeletalGibSpawner(self.Blueprint.SkeletalGibs.Clone(self, ))
+  0077: self.Owner.AddDefaultSkeletalGibTemplates(DefaultDeath.SkeletalGibs.Templates)
+  00a3: DefaultDeath.DecalApplicator = self.Blueprint.DecalApplicator
+  00c2: return DefaultDeath
+  00c8: return return
+  00ce: <eos>
+
+function TnDeathFactory.FindCustomDeath  (script 144 bytes)
+  0000: if !((self.Blueprint.ForceDeathTypes.Length > 0)) goto 0x0059
+  0015: self.DebugPicker.DeathTypes = self.Blueprint.ForceDeathTypes
+  0032: return self.DebugPicker.Pick(self.Owner, self.Blueprint.Deaths)
+  0059: return self.Blueprint.Picker.Pick(self.Owner, self.Blueprint.Deaths)
+  0089: return return
+  008f: <eos>
+
+function TnDeathFactory.AddCustomDeath  (script 309 bytes)
+  0000: Death.Animation = CustomDeath.Animation
+  0021: TnDeathFactory.CloneModifiersInto(Death.Modifiers, CustomDeath.Modifiers)
+  0047: if !(CustomDeath.UseCustomGibs) goto 0x007c
+  005b: Death.GibsBlueprint = CustomDeath.GibsBlueprint
+  007c: if !(CustomDeath.UseCustomSkeletalGibs) goto 0x00b1
+  0090: Death.SkeletalGibs = CustomDeath.SkeletalGibs
+  00b1: if !(CustomDeath.UseCustomDecals) goto 0x00e6
+  00c5: Death.DecalApplicator = CustomDeath.DecalApplicator
+  00e6: Death.TotalTime = CustomDeath.TotalTime
+  0107: Death.TotalTimeForAI = CustomDeath.TotalTimeForAI
+  0128: return Death
+  012e: return return
+  0134: <eos>
+
+function TnDeathFactory.CloneModifiersInto  (script 54 bytes)
+  0000: foreach Source(Modifier,) (end 0x0032)
+  000f: Target.AddItem(TnDeathModifier(Modifier.Clone(self, )))
+  0031: iternext
+  0032: iterpop
+  0033: return nothing
+  0035: <eos>

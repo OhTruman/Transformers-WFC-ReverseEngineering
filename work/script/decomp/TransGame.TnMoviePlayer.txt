@@ -1,0 +1,88 @@
+function TnMoviePlayer.StartLoadingMovie  (script 323 bytes)
+  0000: Options = obj'Core.Strings'.static.Mid(PendingURL, obj'Core.Strings'.static.InStr(PendingURL, "?", ), )
+  002b: GameModeTag = obj'Core.Strings'.static.ParseOption(Options, "GameModeTag")
+  0056: GameClass = obj'Core.Strings'.static.ParseOption(Options, "Game")
+  007a: MapId = obj'Core.Strings'.static.GetIntOption(Options, "MapId", -1)
+  00a4: if !((obj'Core.Strings'.static.InStr(GameClass, "TnPartyLobbyGame", ) != -1)) goto 0x00da
+  00d1: TnMoviePlayer.EnqueuePartyLobbyLoadingMovie()
+  00d7: goto 0x0140
+  00da: if !((obj'Core.Strings'.static.InStr(GameClass, "TnGameLobbyGame", ) != -1)) goto 0x0116
+  0106: TnMoviePlayer.EnqueueGameLobbyLoadingMovie(cast60(GameModeTag))
+  0113: goto 0x0140
+  0116: if !((MapId != -1)) goto 0x013a
+  0125: TnMoviePlayer.EnqueueLoadingMapMovie(MapId, cast60(GameModeTag))
+  0137: goto 0x0140
+  013a: TnMoviePlayer.EnqueueGenericLoadingMovie()
+  0140: return nothing
+  0142: <eos>
+
+function TnMoviePlayer.StartLoadFromCheckpointLoadingMovie  (script 126 bytes)
+  0000: CampaignType = ((CheckpointIndex == 0) ? "$UIText.LoadScreen.ResumeAutobot" : "$UIText.LoadScreen.ResumeDecepticon")
+  005a: TnMoviePlayer.EnqueueMovieWithParameters(CampaignType, "")
+  0067: TnMoviePlayer.AddEngageText(obj'TnOnlineGameSettingsCP'.static.default.EngageText)
+  007b: return nothing
+  007d: <eos>
+
+function TnMoviePlayer.EnqueueGenericLoadingMovie  (script 33 bytes)
+  0000: TnMoviePlayer.EnqueueMovieWithParameters("", "")
+  000a: TnMoviePlayer.AddEngageText(obj'TnOnlineGameSettingsBase'.static.default.EngageText)
+  001e: return nothing
+  0020: <eos>
+
+function TnMoviePlayer.EnqueuePartyLobbyLoadingMovie  (script 33 bytes)
+  0000: TnMoviePlayer.EnqueueMovieWithParameters("", "")
+  000a: TnMoviePlayer.AddEngageText(obj'TnOnlineGameSettingsBase'.static.default.EngageText)
+  001e: return nothing
+  0020: <eos>
+
+function TnMoviePlayer.EnqueueGameLobbyLoadingMovie  (script 33 bytes)
+  0000: TnMoviePlayer.EnqueueMovieWithParameters("", "")
+  000a: TnMoviePlayer.AddEngageText(obj'TnOnlineGameSettingsBase'.static.default.EngageText)
+  001e: return nothing
+  0020: <eos>
+
+function TnMoviePlayer.GetSettingsForGameMode  (script 118 bytes)
+  0000: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0019: TagName = obj'TnDataStore_GameSettings'.static.default.Tag
+  002d: SettingsDataStore = UIDataStore_OnlineGameSettings(DataStoreManager.FindDataStore(TagName, ))
+  0051: return class<TnOnlineGameSettingsBase>(SettingsDataStore.GetSettingsClassForName(GameModeTag))
+  006f: return return
+  0075: <eos>
+
+function TnMoviePlayer.EnqueueLoadingMapMovie  (script 220 bytes)
+  0000: MapName = obj'TnDataStore_MenuItems'.static.ConvertMapIdToFriendlyName(MapId)
+  001e: FormatedMapName = obj'Core.Strings'.static.Repl(Localize("LoadScreen", "LoadingMap", "UIText"), "`m", MapName, )
+  0063: SettingsClass = TnMoviePlayer.GetSettingsForGameMode(GameModeTag)
+  0074: if !((SettingsClass != none)) goto 0x0093
+  007f: GameModeName = SettingsClass.static.default.FriendlyName
+  0093: TnMoviePlayer.EnqueueMovieWithParameters(GameModeName, FormatedMapName)
+  00a3: if !((SettingsClass != none)) goto 0x00c5
+  00ae: TnMoviePlayer.AddEngageText(SettingsClass.static.default.EngageText)
+  00c2: goto 0x00d9
+  00c5: TnMoviePlayer.AddEngageText(obj'TnOnlineGameSettingsBase'.static.default.EngageText)
+  00d9: return nothing
+  00db: <eos>
+
+function TnMoviePlayer.EnqueueMovieWithParameters  (script 133 bytes)
+  0000: obj'Engine.Settings'.static.SetSettingsDataString(D1, Title)
+  001d: obj'Engine.Settings'.static.SetSettingsDataString(D2, Message)
+  003a: Data.AddItem(D1)
+  0047: Data.AddItem(D2)
+  0054: obj'Engine.HmMoviePlayer'.static.AddDeferredMethod("_global.SetLevelText", Data)
+  0082: return nothing
+  0084: <eos>
+
+function TnMoviePlayer.AddEngageText  (script 180 bytes)
+  0000: if !((EngageText.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: I = 0
+  0015: if !((I < 3)) goto 0x00b1
+  0021: R = obj'Core.Random'.static.RandomInt(EngageText.Length)
+  0040: obj'Engine.Settings'.static.SetSettingsDataString(D, R[EngageText])
+  0063: Data.Length = 0
+  006b: Data.AddItem(D)
+  0078: obj'Engine.HmMoviePlayer'.static.AddDeferredMethod("_global.AddEngageText", Data)
+  00a7: AddAdd_PreInt(I)
+  00ae: goto 0x0015
+  00b1: return nothing
+  00b3: <eos>

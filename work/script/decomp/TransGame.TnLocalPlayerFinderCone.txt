@@ -1,0 +1,19 @@
+function TnLocalPlayerFinderCone.FindLocalPlayers  (script 290 bytes)
+  0000: DotProdMin = obj'Core.Math'.static.Cos(((self.Angle * 0.5) * 0.0174533))
+  0024: foreach Owner.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0114)
+  004d: if !((PC.Pawn == none)) goto 0x0065
+  0061: iternext
+  0062: goto 0x0114
+  0065: OwnerToPlayer = (PC.Pawn.Location - Owner.Location)
+  0092: if !((obj'Core.Math'.static.VSizeSq(OwnerToPlayer) > (self.Radius * self.Radius))) goto 0x00bf
+  00bb: iternext
+  00bc: goto 0x0114
+  00bf: OwnerToPlayer = obj'Core.Math'.static.Normal(OwnerToPlayer)
+  00d5: DotProd = (OwnerToPlayer dot cast39(Owner.Rotation))
+  00f2: if !((DotProd >= DotProdMin)) goto 0x0113
+  0101: Controllers.Length[Controllers] = PC
+  0113: iternext
+  0114: iterpop
+  0115: return Controllers
+  011b: return return
+  0121: <eos>

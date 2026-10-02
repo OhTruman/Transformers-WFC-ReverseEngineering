@@ -1,0 +1,165 @@
+function HmStressTester.CompletionObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStressTester.MoveProbe  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStressTester.Initialize  (script 73 bytes)
+  0000: self.VisitActorType = VisitActorType_
+  000b: self.__CompletionObserver__Delegate = CompletionObserver_
+  0016: self.__MoveProbe__Delegate = ProbeMover_
+  0021: HmStressTester.FindCheckpoints()
+  0027: if !((self.Checkpoints.Length > 0)) goto 0x0046
+  0033: self.SecsBetweenCheckpoints = (SecondsTotal / self.Checkpoints.Length)
+  0046: return nothing
+  0048: <eos>
+
+function HmStressTester.Update  (script 74 bytes)
+  0000: if !((self.PC != none)) goto 0x0047
+  000b: self.PC.bPseudoGodMode = true
+  001c: if !(self.PC.IsPaused()) goto 0x0047
+  0032: self.PC.SetPause(false, )
+  0047: return nothing
+  0049: <eos>
+
+function HmStressTester.InitializePlayer  (script 119 bytes)
+  0000: nothing
+  0001: if !((self.PC != none)) goto 0x000e
+  000c: return nothing
+  000e: foreach self.WorldInfo.LocalPlayerControllers(obj'Engine.PlayerController', self.PC) (end 0x0032)
+  002e: goto 0x0032
+  0031: iternext
+  0032: iterpop
+  0033: if !((InputGeneratorClass != none)) goto 0x0049
+  003e: self.InputGeneratorType = InputGeneratorClass
+  0049: HmPlayerInput(self.PC.PlayerInput)._InputGenerator = new(self, nothing, self.InputGeneratorType, nothing, AttachTreeCallback)
+  0074: return nothing
+  0076: <eos>
+
+function HmStressTester.FindCheckpoints  (script 78 bytes)
+  0000: self.Checkpoints.Length = 0
+  0008: foreach AllObjects(obj'Engine.Checkpoint', C) (end 0x004a)
+  001f: if !(!C.IsDefaultObject()) goto 0x0049
+  0037: self.Checkpoints.Length[self.Checkpoints] = C
+  0049: iternext
+  004a: iterpop
+  004b: return nothing
+  004d: <eos>
+
+function HmStressTester.InitializeVisitActors  (script 138 bytes)
+  0000: self.VisitActors.Length = 0
+  0008: if !((self.VisitActorType == none)) goto 0x0015
+  0013: return nothing
+  0015: foreach AllActors(self.VisitActorType, A) (end 0x0086)
+  002c: if !(A.IsDefaultObject()) goto 0x0046
+  0042: iternext
+  0043: goto 0x0086
+  0046: AType = A.get_Class()
+  0058: if !((self.ExcludedVisitTypes.Find(AType) != -1)) goto 0x0073
+  006f: iternext
+  0070: goto 0x0086
+  0073: self.VisitActors.Length[self.VisitActors] = A
+  0085: iternext
+  0086: iterpop
+  0087: return nothing
+  0089: <eos>
+
+function HmStressTester.StartCheckpoint  (script 115 bytes)
+  0000: nothing
+  0001: HmStressTester.InitializePlayer(InputGeneratorClass)
+  000c: HmStressTester.InitializeVisitActors()
+  0012: if !((self.VisitActors.Length > 0)) goto 0x005b
+  001e: SecondsBetweenTravel = cast3f(obj'Core.Math'.static.Max(1, cast44((cast3f(self.SecsBetweenCheckpoints) / cast3f(self.VisitActors.Length)))))
+  0045: SetTimer(SecondsBetweenTravel, true, 'MoveToNextVisitActor', )
+  0058: goto 0x0070
+  005b: SetTimer(cast3f(self.SecsBetweenCheckpoints), false, 'MoveToNextCheckpoint', )
+  0070: return nothing
+  0072: <eos>
+
+function HmStressTester.PruneNullVisitActors  (script 103 bytes)
+  0000: I = 0
+  0007: if !((I < self.VisitActors.Length)) goto 0x0064
+  0017: if !((I[self.VisitActors] == none)) goto 0x005a
+  0028: I[self.VisitActors] = (self.VisitActors.Length - 1)[self.VisitActors]
+  0043: self.VisitActors.Remove((self.VisitActors.Length - 1),1)
+  0053: SubtractSubtract_PreInt(I)
+  005a: AddAdd_PreInt(I)
+  0061: goto 0x0007
+  0064: return nothing
+  0066: <eos>
+
+function HmStressTester.FindNextVisitActorLocation  (script 378 bytes)
+  0000: if !((self.PC.Pawn == none)) goto 0x0016
+  0014: return none
+  0016: HmStressTester.PruneNullVisitActors()
+  001c: if !((self.VisitActors.Length > 0)) goto 0x016d
+  0028: ClosestDistSq = 3.4028234663852886e+38
+  0033: I = 0
+  003a: if !((I < self.VisitActors.Length)) goto 0x00bf
+  004a: DistSq = obj'Core.Math'.static.VSizeSq((self.PC.Pawn.Location - I[self.VisitActors].Location))
+  0090: if !((DistSq < ClosestDistSq)) goto 0x00b5
+  009f: ClosestDistSq = DistSq
+  00aa: BestIndex = I
+  00b5: AddAdd_PreInt(I)
+  00bc: goto 0x003a
+  00bf: ReturnLoc = BestIndex[self.VisitActors]
+  00d0: self.VisitActors.Remove(BestIndex,1)
+  00dc: downLocation = ReturnLoc.Location
+  00f0: (downLocation.Z -= cast3f((20 * 100)))
+  010a: if !((self.PC.Pawn._WorkingMovementCapabilities.bCanFly || (none != self.PC.Trace(HitLocation, HitNormal, none, downLocation, ReturnLoc.Location, , , , , )))) goto 0x016a
+  0167: goto 0x016d
+  016a: goto 0x001c
+  016d: return ReturnLoc
+  0173: return return
+  0179: <eos>
+
+function HmStressTester.MoveToNextVisitActor  (script 187 bytes)
+  0000: if !(self.PC.bCinematicMode) goto 0x0014
+  0012: return nothing
+  0014: if !((self.VisitActors.Length > 0)) goto 0x009e
+  0020: VisitActor = HmStressTester.FindNextVisitActorLocation()
+  002c: if !((VisitActor == none)) goto 0x0039
+  0037: return nothing
+  0039: SafeLocation = VisitActor.Location
+  004d: FindSpot(self.PC.Pawn.GetCollisionExtent(), SafeLocation)
+  0078: MoveProbe(self.PC, SafeLocation)
+  0091: ShowHUD()
+  009b: goto 0x00b8
+  009e: ClearTimer('MoveToNextVisitActor', )
+  00b2: HmStressTester.MoveToNextCheckpoint()
+  00b8: return nothing
+  00ba: <eos>
+
+function HmStressTester.ShowHUD  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStressTester.MoveToNextCheckpoint  (script 335 bytes)
+  0000: if !((self.Checkpoints.Length > 0)) goto 0x010a
+  000c: ConsoleCommand("TRACKINGCHECKPOINT", )
+  0030: CP = 0[self.Checkpoints]
+  003d: self.Checkpoints.Remove(0,1)
+  0045: CM = CheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  0071: CM.SetActiveCheckpoint(CP)
+  0089: CM.RestartFromActiveCheckpoint()
+  009c: ConsoleCommand("TRACKINGCHECKPOINT", )
+  00c0: LogInternal((((("Moving to checkpoint" @ cast57(CP.Tag)) @ "with") @ cast53(self.Checkpoints.Length)) @ "left"), , , )
+  0107: goto 0x014c
+  010a: CompletionObserver()
+  0119: self.WorldInfo.Game.EndGame(none, "StressTesterComplete")
+  014c: return nothing
+  014e: <eos>
+
+function HmStressTester.ResetExcludedVisitTypes  (script 37 bytes)
+  0000: self.ExcludedVisitTypes.Length = 0
+  0008: 0[self.ExcludedVisitTypes] = obj'Engine.Checkpoint'
+  0015: 1[self.ExcludedVisitTypes] = obj'Engine.PlayerStart'
+  0022: return nothing
+  0024: <eos>
+
+function HmStressTester.ExcludeVisitTypes  (script 16 bytes)
+  0000: self.ExcludedVisitTypes.AddItem(classToExclude)
+  000d: return nothing
+  000f: <eos>

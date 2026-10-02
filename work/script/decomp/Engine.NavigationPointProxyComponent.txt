@@ -1,0 +1,30 @@
+function NavigationPointProxyComponent.set_IsPlacementValid  (script 16 bytes)
+  0000: self._IsPlacementValid = Value
+  000d: return nothing
+  000f: <eos>
+
+function NavigationPointProxyComponent.CreatePrimitives  (script 580 bytes)
+  0000: self.NP = NavigationPoint(self.Owner)
+  0010: if !((self.NP == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(obj'EditorUtils'.static.IsObjectSelected(self.NP)) goto 0x005f
+  0038: IconColor = MakeLinearColor(0.5, 1.0, 0.5, 1.0)
+  005c: goto 0x0082
+  005f: IconColor = ColorToLinearColor(obj'Core.Colors'.static.White())
+  0082: ArrowOffset = (cast39(self.NP.Rotation) * cast3f(120))
+  009e: obj'DebugRenderHelpers'.static.DrawArrowHead(self, (self.NP.Location + ArrowOffset), self.NP.Location, IconColor, 60.0, 30.0)
+  00e4: if !((cast3a(self.NP.TeamNum) == 0)) goto 0x0124
+  00fa: AddSprite(self.AutobotTexture, self.NP.Location, 3.0, IconColor)
+  0121: goto 0x0161
+  0124: if !((cast3a(self.NP.TeamNum) == 1)) goto 0x0161
+  013a: AddSprite(self.DecepticonTexture, self.NP.Location, 3.0, IconColor)
+  0161: if !(self._IsPlacementValid) goto 0x021a
+  016a: AddSprite(self.GoodTexture, self.NP.Location, 3.0, IconColor)
+  0191: if !((self.NP.bNotBased && self.NP.bCheckForNotBasedErrors)) goto 0x01de
+  01b7: AddSprite(self.FloatTexture, self.NP.Location, 3.0, IconColor)
+  01de: if !(self.NP.bGated) goto 0x0217
+  01f0: AddSprite(self.GateTexture, self.NP.Location, 3.0, IconColor)
+  0217: goto 0x0241
+  021a: AddSprite(self.BadTexture, self.NP.Location, 3.0, IconColor)
+  0241: return nothing
+  0243: <eos>

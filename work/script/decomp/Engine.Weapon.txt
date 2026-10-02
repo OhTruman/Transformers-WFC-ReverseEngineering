@@ -1,0 +1,910 @@
+function Weapon.SetData  (script 35 bytes)
+  0000: if !((WD != none)) goto 0x0020
+  000b: self.Data = WD
+  0016: UpdateData()
+  0020: return nothing
+  0022: <eos>
+
+function Weapon.SetPlayerAiData  (script 25 bytes)
+  0000: self.PlayerData = NewPlayerData
+  000b: self.AiData = NewAiData
+  0016: return nothing
+  0018: <eos>
+
+function Weapon.UpdateData  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.GetHumanReadableName  (script 33 bytes)
+  0000: return (((cast56(get_Class()) $ " (") $ cast56(self.PlayerData)) $ ")")
+  001a: return return
+  0020: <eos>
+
+function Weapon.Destroyed  (script 43 bytes)
+  0000: if !(!self.WorldInfo.IsInEditor()) goto 0x0022
+  0018: DetachWeapon()
+  0022: Inventory.Destroyed()
+  0028: return nothing
+  002a: <eos>
+
+function Weapon.ItemRemovedFromInvManager  (script 44 bytes)
+  0000: DetachWeapon()
+  000a: if !(Weapon.IsActiveWeapon()) goto 0x0023
+  0013: self.Instigator.Weapon = none
+  0023: Inventory.ItemRemovedFromInvManager()
+  0029: return nothing
+  002b: <eos>
+
+function Weapon.IsActiveWeapon  (script 41 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0020
+  000b: return self.InvManager.IsActiveWeapon(self)
+  0020: return false
+  0022: return return
+  0028: <eos>
+
+function Weapon.HolderDied  (script 18 bytes)
+  0000: ServerStopFire(self.CurrentFireMode)
+  000f: return nothing
+  0011: <eos>
+
+function Weapon.DoOverrideNextWeapon  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.DoOverridePrevWeapon  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.DropFrom  (script 109 bytes)
+  0000: nothing
+  0001: if !(!CanThrow()) goto 0x0012
+  0010: return none
+  0012: if !((self.Instigator != none)) goto 0x0037
+  001d: ForceEndFire()
+  0027: DetachWeapon()
+  0031: Weapon.ClientWeaponThrown()
+  0037: DroppedPickup = Inventory.DropFrom(StartLocation, StartVelocity, StartRotation)
+  0052: GotoState('Inactive', , , )
+  0060: return DroppedPickup
+  0066: return return
+  006c: <eos>
+
+function Weapon.CanThrow  (script 23 bytes)
+  0000: return self.Data.CanDrop
+  0010: return return
+  0016: <eos>
+
+function Weapon.ClientWeaponThrown  (script 107 bytes)
+  0000: LogInternal((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(self.Instigator)) @ cast57(GetStateName())) $ "::") $ cast57(GetFuncName())) @ cast56(self)), 'Inventory', , )
+  0046: ForceEndFire()
+  0050: DetachWeapon()
+  005a: GotoState('Inactive', , , )
+  0068: return nothing
+  006a: <eos>
+
+function Weapon.IsFiring  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.DenyClientWeaponSet  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.DisplayDebug  (script 185 bytes)
+  0000: Weapon.GetWeaponDebug(DebugInfo)
+  000b: HUD.Canvas.SetDrawColor(0, cast3d(255), 0, cast3d(255))
+  0033: I = 0
+  003a: if !((I < DebugInfo.Length)) goto 0x00b6
+  004a: HUD.Canvas.DrawTextNormal(("  " @ I[DebugInfo]), , , )
+  007a: (out_YPos += out_YL)
+  0086: HUD.Canvas.SetPos(4.0, out_YPos)
+  00ac: AddAdd_Int(I)
+  00b3: goto 0x003a
+  00b6: return nothing
+  00b8: <eos>
+
+function Weapon.GetWeaponDebug  (script 654 bytes)
+  0000: DebugInfo.Length[DebugInfo] = ((((((("Weapon:" $ GetItemName(cast56(self))) @ "State:") $ cast57(GetStateName())) @ "Instigator:") $ cast56(self.Instigator)) @ "Owner:") $ cast56(self.Owner))
+  0061: DebugInfo.Length[DebugInfo] = ((((("IsFiring():" $ cast54(IsFiring())) @ "CurrentFireMode:") $ cast52(self.CurrentFireMode)) @ "bWeaponPutDown:") $ cast54(self.bWeaponPutDown))
+  00c3: if !((self.Instigator != none)) goto 0x0149
+  00ce: DebugInfo.Length[DebugInfo] = ((((("ShotCount:" $ cast53(self.Instigator.ShotCount)) @ "FlashCount:") $ cast52(self.Instigator.FlashCount)) @ "FlashLocation:") $ cast58(self.Instigator.FlashImpact.HitLocation))
+  0149: T = "PendingFires:"
+  015e: I = 0
+  0165: if !((I < self.InvManager.PendingFire.Length)) goto 0x01ab
+  017e: T = ((T $ cast54(PendingFire(I))) $ " ")
+  01a1: AddAdd_Int(I)
+  01a8: goto 0x0165
+  01ab: DebugInfo.Length[DebugInfo] = T
+  01bd: if !((self.Timers.Length > 0)) goto 0x028b
+  01c9: I = 0
+  01d0: if !((I < self.Timers.Length)) goto 0x028b
+  01e0: DebugInfo.Length[DebugInfo] = ((((("Timer" @ cast57(I[self.Timers].FuncName)) @ cast55(I[self.Timers].Count)) @ cast55(I[self.Timers].Rate)) @ cast53(cast44(((I[self.Timers].Count / I[self.Timers].Rate) * cast3f(100))))) $ "%")
+  0281: AddAdd_Int(I)
+  0288: goto 0x01d0
+  028b: return nothing
+  028d: <eos>
+
+function Weapon.DumpWeaponDebugToLog  (script 115 bytes)
+  0000: Weapon.WeaponLog(("Weapon:" @ cast56(self)), cast57(GetFuncName()))
+  0020: Weapon.GetWeaponDebug(DebugInfo)
+  002b: I = 0
+  0032: if !((I < DebugInfo.Length)) goto 0x0070
+  0042: LogInternal(("Weapondebuginfo " $ I[DebugInfo]), , , )
+  0066: AddAdd_Int(I)
+  006d: goto 0x0032
+  0070: return nothing
+  0072: <eos>
+
+function Weapon.WeaponLog  (script 58 bytes)
+  0000: LogInternal((((((("[" $ cast55(self.WorldInfo.TimeSeconds)) $ "]") @ msg) @ "(") $ FuncStr) $ ")"), , , )
+  0037: return nothing
+  0039: <eos>
+
+function Weapon.ConsumeAmmo  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.AddAmmo  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Weapon.HasAmmo  (script 10 bytes)
+  0000: nothing
+  0001: return true
+  0003: return return
+  0009: <eos>
+
+function Weapon.HasAnyAmmo  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Weapon.PendingFire  (script 43 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0022
+  000b: return cast3e(FireMode[self.InvManager.PendingFire])
+  0022: return false
+  0024: return return
+  002a: <eos>
+
+function Weapon.SetPendingFire  (script 36 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0021
+  000b: FireMode[self.InvManager.PendingFire] = 1
+  0021: return nothing
+  0023: <eos>
+
+function Weapon.ClearPendingFire  (script 36 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0021
+  000b: FireMode[self.InvManager.PendingFire] = 0
+  0021: return nothing
+  0023: <eos>
+
+function Weapon.GetProjectileClass  (script 30 bytes)
+  0000: return cast3a(self.CurrentFireMode)[self.Data.WeaponProjectiles]
+  0017: return return
+  001d: <eos>
+
+function Weapon.GetSpread  (script 30 bytes)
+  0000: return cast3a(self.CurrentFireMode)[self.Data.Spread]
+  0017: return return
+  001d: <eos>
+
+function Weapon.AddSpread  (script 210 bytes)
+  0000: CurrentSpread = GetSpread()
+  0010: if !((CurrentSpread == cast3f(0))) goto 0x0026
+  001d: return BaseAim
+  0023: goto 0x00cb
+  0026: obj'Core.Math'.static.GetAxes(BaseAim, X, Y, Z)
+  0045: RandY = (obj'Core.Random'.static.FRand() - 0.5)
+  005d: RandZ = (obj'Core.Math'.static.Sqrt((0.5 - obj'Core.Math'.static.Square(RandY))) * (obj'Core.Random'.static.FRand() - 0.5))
+  0099: return cast50(((X + ((RandY * CurrentSpread) * Y)) + ((RandZ * CurrentSpread) * Z)))
+  00cb: return return
+  00d1: <eos>
+
+function Weapon.GivenTo  (script 56 bytes)
+  0000: nothing
+  0001: Inventory.GivenTo(ThisPawn, bDoNotActivate)
+  0012: if !((!bDoNotActivate && (ThisPawn != none))) goto 0x0035
+  002a: ClientWeaponSet(true)
+  0035: return nothing
+  0037: <eos>
+
+function Weapon.GetAIRating  (script 13 bytes)
+  0000: return self.AIRating
+  0006: return return
+  000c: <eos>
+
+function Weapon.GetWeaponRating  (script 66 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0020
+  000b: return self.InvManager.GetWeaponRatingFor(self)
+  0020: if !(!HasAnyAmmo()) goto 0x0035
+  002f: return 0.0
+  0035: return self.Rating
+  003b: return return
+  0041: <eos>
+
+function Weapon.RecommendRangedAttack  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.FocusOnLeader  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.RecommendLongRangedAttack  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.RangedAttackTime  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function Weapon.CanAttack  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Weapon.SuggestAttackStyle  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function Weapon.SuggestDefenseStyle  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function Weapon.FireOnRelease  (script 40 bytes)
+  0000: return ((self.ShouldFireOnRelease.Length > 0) && (cast3a(cast3a(self.CurrentFireMode)[self.ShouldFireOnRelease]) != 0))
+  0021: return return
+  0027: <eos>
+
+function Weapon.GetWeaponAnimNodeSeq  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function Weapon.WeaponPlaySound  (script 59 bytes)
+  0000: nothing
+  0001: if !(((Sound == none) || (self.Instigator == none))) goto 0x001b
+  0019: return nothing
+  001b: self.Instigator.PlaySound(Sound, false, true, , , )
+  0038: return nothing
+  003a: <eos>
+
+function Weapon.StopWeaponAnimation  (script 76 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x001b
+  0019: return nothing
+  001b: AnimSeq = GetWeaponAnimNodeSeq()
+  002b: if !((AnimSeq != none)) goto 0x0049
+  0036: AnimSeq.StopAnim()
+  0049: return nothing
+  004b: <eos>
+
+function Weapon.PlayFireEffects  (script 36 bytes)
+  0000: if !(ShouldPlayFireEffects()) goto 0x0021
+  000d: OnPlayFireEffects(FireModeNum, Impact)
+  0021: return nothing
+  0023: <eos>
+
+function Weapon.ShouldPlayFireEffects  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Weapon.OnPlayFireEffects  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.StopFireEffects  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.PlayFiringSound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.PlayImpactEffects  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.GetFireInterval  (script 67 bytes)
+  0000: return ((cast3a(FireModeNum)[self.Data.FireInterval] > cast3f(0)) ? cast3a(FireModeNum)[self.Data.FireInterval] : 0.01)
+  003c: return return
+  0042: <eos>
+
+function Weapon.TimeWeaponFiring  (script 57 bytes)
+  0000: if !(!IsTimerActive('RefireCheckTimer', )) goto 0x0036
+  0019: SetTimer(GetFireInterval(FireModeNum), true, 'RefireCheckTimer', )
+  0036: return nothing
+  0038: <eos>
+
+function Weapon.RefireCheckTimer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.TimeWeaponPutDown  (script 60 bytes)
+  0000: SetTimer(((self.Data.PutDownTime > cast3f(0)) ? self.Data.PutDownTime : 0.01), false, 'WeaponIsDown', )
+  0039: return nothing
+  003b: <eos>
+
+function Weapon.WeaponIsDown  (script 105 bytes)
+  0000: if !(((self.InvManager == none) || (self.InvManager.Instigator == none))) goto 0x0023
+  0021: return nothing
+  0023: if !(self.InvManager.CancelWeaponChange()) goto 0x003b
+  0039: return nothing
+  003b: DetachWeapon()
+  0045: GotoState('Inactive', , , )
+  0053: self.InvManager.ChangedWeapon()
+  0066: return nothing
+  0068: <eos>
+
+function Weapon.TimeWeaponEquipping  (script 60 bytes)
+  0000: SetTimer(((self.Data.EquipTime > cast3f(0)) ? self.Data.EquipTime : 0.01), false, 'WeaponEquipped', )
+  0039: return nothing
+  003b: <eos>
+
+function Weapon.Activate  (script 32 bytes)
+  0000: if !(!IsFiring()) goto 0x001d
+  000f: GotoState('WeaponEquipping', , , )
+  001d: return nothing
+  001f: <eos>
+
+function Weapon.PutDownWeapon  (script 17 bytes)
+  0000: GotoState('WeaponPuttingDown', , , )
+  000e: return nothing
+  0010: <eos>
+
+function Weapon.DenyPickupQuery  (script 24 bytes)
+  0000: if !((ItemClass == get_Class())) goto 0x000f
+  000d: return true
+  000f: return false
+  0011: return return
+  0017: <eos>
+
+function Weapon.WeaponEmpty  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.IncrementFlashCount  (script 39 bytes)
+  0000: if !((self.Instigator != none)) goto 0x0024
+  000b: self.Instigator.IncrementFlashCount(self, self.CurrentFireMode)
+  0024: return nothing
+  0026: <eos>
+
+function Weapon.ClearFlashCount  (script 34 bytes)
+  0000: if !((self.Instigator != none)) goto 0x001f
+  000b: self.Instigator.ClearFlashCount(self)
+  001f: return nothing
+  0021: <eos>
+
+function Weapon.SetFlashImpact  (script 44 bytes)
+  0000: if !((self.Instigator != none)) goto 0x0029
+  000b: self.Instigator.SetFlashImpact(self, self.CurrentFireMode, Impact)
+  0029: return nothing
+  002b: <eos>
+
+function Weapon.ClearFlashImpact  (script 34 bytes)
+  0000: if !((self.Instigator != none)) goto 0x001f
+  000b: self.Instigator.ClearFlashImpact(self)
+  001f: return nothing
+  0021: <eos>
+
+function Weapon.AttachWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.DetachWeapon  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.GetViewAxes  (script 59 bytes)
+  0000: AimRot = self.Instigator.GetBaseAimRotation()
+  0019: obj'Core.Math'.static.GetAxes(AimRot, XAxis, YAxis, ZAxis)
+  0038: return nothing
+  003a: <eos>
+
+function Weapon.AdjustFOVAngle  (script 13 bytes)
+  0000: return FOVAngle
+  0006: return return
+  000c: <eos>
+
+function Weapon.ClientWeaponSet  (script 49 bytes)
+  0000: self.ClientWeaponSetTime = obj'Engine'.static.GetCurrentWorldInfo().TimeSeconds
+  0022: Weapon.TryToSetWeapon(bOptionalSet)
+  002e: return nothing
+  0030: <eos>
+
+function Weapon.TryToSetWeapon  (script 83 bytes)
+  0000: if !((self.Instigator == none)) goto 0x001b
+  000b: GotoState('PendingClientWeaponSet', , , )
+  0019: return nothing
+  001b: if !((self.InvManager == none)) goto 0x0036
+  0026: GotoState('PendingClientWeaponSet', , , )
+  0034: return nothing
+  0036: self.InvManager.ClientWeaponSet(self, bOptionalSet)
+  0050: return nothing
+  0052: <eos>
+
+function Weapon.WeaponCalcCamera  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.StartFire  (script 51 bytes)
+  0000: if !(((self.Instigator == none) || !self.Instigator.bNoWeaponFiring)) goto 0x0030
+  0021: BeginFire(FireModeNum)
+  0030: return nothing
+  0032: <eos>
+
+function Weapon.BeginFire  (script 20 bytes)
+  0000: SetPendingFire(cast3a(FireModeNum))
+  0011: return nothing
+  0013: <eos>
+
+function Weapon.StopFire  (script 49 bytes)
+  0000: EndFire(FireModeNum)
+  000f: if !((cast3a(self.Role) < cast3a(3))) goto 0x002e
+  001f: ServerStopFire(FireModeNum)
+  002e: return nothing
+  0030: <eos>
+
+function Weapon.ServerStopFire  (script 18 bytes)
+  0000: EndFire(FireModeNum)
+  000f: return nothing
+  0011: <eos>
+
+function Weapon.EndFire  (script 20 bytes)
+  0000: ClearPendingFire(cast3a(FireModeNum))
+  0011: return nothing
+  0013: <eos>
+
+function Weapon.ForceEndFire  (script 93 bytes)
+  0000: if !((self.InvManager == none)) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.InvManager.PendingFire.Length)) goto 0x005a
+  002d: if !(PendingFire(I)) goto 0x0050
+  003f: EndFire(cast3d(I))
+  0050: AddAdd_Int(I)
+  0057: goto 0x0014
+  005a: return nothing
+  005c: <eos>
+
+function Weapon.SendToFiringState  (script 174 bytes)
+  0000: if !((cast3a(FireModeNum) >= self.FiringStatesArray.Length)) goto 0x004a
+  0012: Weapon.WeaponLog("Invalid FireModeNum", "Weapon::SendToFiringState")
+  0048: return nothing
+  004a: if !(((cast3a(FireModeNum)[self.FiringStatesArray] == 'None') || (cast3a(cast3a(FireModeNum)[self.Data.WeaponFireTypes]) == cast3a(3)))) goto 0x008a
+  0088: return nothing
+  008a: SetCurrentFireMode(FireModeNum)
+  0099: GotoState(cast3a(FireModeNum)[self.FiringStatesArray], , , )
+  00ab: return nothing
+  00ad: <eos>
+
+function Weapon.SetCurrentFireMode  (script 49 bytes)
+  0000: self.CurrentFireMode = FiringModeNum
+  000b: if !((self.Instigator != none)) goto 0x002e
+  0016: self.Instigator.SetFiringMode(FiringModeNum)
+  002e: return nothing
+  0030: <eos>
+
+function Weapon.FireModeUpdated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.FireAmmunition  (script 270 bytes)
+  0000: BeginSingleFire()
+  000a: PlayFiringSound()
+  0014: switch (cast3a(self.CurrentFireMode)[self.Data.WeaponFireTypes])
+  002c: case 0: (next 0x003e)
+  0031: InstantFire()
+  003b: goto 0x009f
+  003e: case 1: (next 0x008a)
+  0043: NumShotsToFire = GetNumShotsToFire()
+  0053: idx = 0
+  005a: if !((idx < NumShotsToFire)) goto 0x0087
+  0069: ProjectileFire()
+  0073: SingleFireAction()
+  007d: AddAdd_PreInt(idx)
+  0084: goto 0x005a
+  0087: goto 0x009f
+  008a: case 2: (next 0x009c)
+  008f: CustomFire()
+  0099: goto 0x009f
+  009c: default:
+  009f: if !((cast3a(self.Role) < cast3a(3))) goto 0x00be
+  00af: ConsumeAmmo(self.CurrentFireMode)
+  00be: if !(((self.Instigator != none) && (AIController(self.Instigator.Controller) != none))) goto 0x010b
+  00e4: AIController(self.Instigator.Controller).NotifyWeaponFired(self, self.CurrentFireMode)
+  010b: return nothing
+  010d: <eos>
+
+function Weapon.BeginSingleFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.SingleFireAction  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.GetAdjustedAim  (script 65 bytes)
+  0000: if !((self.Instigator != none)) goto 0x002a
+  000b: R = self.Instigator.GetAdjustedAimFor(self, StartFireLoc)
+  002a: return AddSpread(R)
+  003a: return return
+  0040: <eos>
+
+function Weapon.GetAdjustedAimNoSpread  (script 33 bytes)
+  0000: return self.Instigator.GetAdjustedAimFor(self, StartFireLoc)
+  001a: return return
+  0020: <eos>
+
+function Weapon.GetTraceRange  (script 22 bytes)
+  0000: return self.Data.WeaponRange
+  000f: return return
+  0015: <eos>
+
+function Weapon.GetTraceOwner  (script 27 bytes)
+  0000: return ((self.Instigator != none) ? self.Instigator : self)
+  0014: return return
+  001a: <eos>
+
+function Weapon.PerformWeaponTrace  (script 67 bytes)
+  0000: return GetTraceOwner().Trace(HitLocation, HitNormal, none, EndTrace, StartTrace, true, vect(0,0,0), true, HitInfo, 1)
+  003c: return return
+  0042: <eos>
+
+function Weapon.CalcWeaponFire  (script 623 bytes)
+  0000: nothing
+  0001: HitActor = PerformWeaponTrace(HitLocation, HitNormal, EndTrace, StartTrace, HitInfo)
+  002a: if !((HitActor == none)) goto 0x0040
+  0035: HitLocation = EndTrace
+  0040: CurrentImpact.HitActor = HitActor
+  0056: CurrentImpact.HitLocation = HitLocation
+  006c: CurrentImpact.HitNormal = HitNormal
+  0082: CurrentImpact.RayDir = obj'Core.Math'.static.Normal((EndTrace - StartTrace))
+  00aa: CurrentImpact.HitInfo = HitInfo
+  00c0: ImpactList.Length[ImpactList] = CurrentImpact
+  00d2: if !((HitActor != none)) goto 0x0262
+  00dd: if !((!HitActor.bBlockActors && Weapon.PassThroughDamage(HitActor))) goto 0x0182
+  0101: HitActor.bProjTarget = false
+  0112: OldBlockActors = HitActor.bBlockActors
+  0128: HitActor.bBlockActors = false
+  0139: CurrentImpact = CalcWeaponFire(HitLocation, EndTrace, ImpactList)
+  0158: HitActor.bProjTarget = true
+  0169: HitActor.bBlockActors = OldBlockActors
+  017f: goto 0x0262
+  0182: Portal = PortalTeleporter(HitActor)
+  0192: if !(((Portal != none) && (Portal.SisterPortal != none))) goto 0x0262
+  01b3: Dir = (EndTrace - StartTrace)
+  01c5: HitDist = obj'Core.Math'.static.VSize((HitLocation - StartTrace))
+  01e2: StartTrace = Portal.TransformHitLocation(HitLocation)
+  0200: EndTrace = (StartTrace + Portal.TransformVector((obj'Core.Math'.static.Normal(Dir) * (obj'Core.Math'.static.VSize(Dir) - HitDist))))
+  0249: CalcWeaponFire(StartTrace, EndTrace, ImpactList)
+  0262: return CurrentImpact
+  0268: return return
+  026e: <eos>
+
+function Weapon.PassThroughDamage  (script 39 bytes)
+  0000: return ((Trigger(HitActor) != none) || (TriggerVolume(HitActor) != none))
+  0020: return return
+  0026: <eos>
+
+function Weapon.GetNumShotsToFire  (script 9 bytes)
+  0000: return 1
+  0002: return return
+  0008: <eos>
+
+function Weapon.GetEndTrace  (script 32 bytes)
+  0000: return (StartTrace + (AimDir * GetTraceRange()))
+  0019: return return
+  001f: <eos>
+
+function Weapon.InstantFire  (script 527 bytes)
+  0000: NumShotsToFire = GetNumShotsToFire()
+  0010: idx = 0
+  0017: if !((idx < NumShotsToFire)) goto 0x020c
+  0026: StartTrace = self.Instigator.GetWeaponStartTraceLocation()
+  0040: Aim = cast39(GetAdjustedAim(StartTrace))
+  0057: EndTrace = GetEndTrace(StartTrace, Aim)
+  0071: CalcWeaponFire(StartTrace, EndTrace, ImpactList)
+  008a: Idx2 = 0
+  0091: if !((Idx2 < ImpactList.Length)) goto 0x01f0
+  00a1: Idx2[ImpactList].HitInfo.Item = -1
+  00c8: if !((cast3a(self.Role) != cast3a(3))) goto 0x01c4
+  00d8: HitActor = Idx2[ImpactList].HitActor
+  00f4: HitComponent = Idx2[ImpactList].HitInfo.HitComponent
+  011b: if !(((HitActor != none) && (HitComponent != none))) goto 0x016d
+  0133: Idx2[ImpactList].HitInfo.Item = HitActor.MapHitComponentToIndex(HitComponent)
+  016d: ProcessInstantHit(self.CurrentFireMode, Idx2[ImpactList])
+  0187: if !((idx == 0)) goto 0x01af
+  0192: PlayFireEffects(self.CurrentFireMode, Idx2[ImpactList])
+  01ac: goto 0x01c4
+  01af: PlayImpactEffects(Idx2[ImpactList])
+  01c4: ServerImpact(self.CurrentFireMode, Idx2[ImpactList], (idx == 0))
+  01e6: AddAdd_Int(Idx2)
+  01ed: goto 0x0091
+  01f0: ImpactList.Length = 0
+  01f8: SingleFireAction()
+  0202: AddAdd_PreInt(idx)
+  0209: goto 0x0017
+  020c: return nothing
+  020e: <eos>
+
+function Weapon.ServerImpact  (script 274 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return nothing
+  000d: HitActor = Impact.HitActor
+  0023: HitComponentIndex = Impact.HitInfo.Item
+  0044: if !(((HitActor != none) && (HitComponentIndex != -1))) goto 0x00b7
+  0060: Impact.HitInfo.HitComponent = HitActor.MapIndexToHitComponent(HitComponentIndex)
+  0094: if !((Impact.HitInfo.HitComponent == none)) goto 0x00b7
+  00b5: return nothing
+  00b7: self.CurrentFireMode = ImpactFireMode
+  00c2: ProcessInstantHit(ImpactFireMode, Impact)
+  00d6: if !(UpdateFlashImpact) goto 0x0100
+  00df: SetFlashImpact(Impact)
+  00ee: ConsumeAmmo(ImpactFireMode)
+  00fd: goto 0x010f
+  0100: PlayImpactEffects(Impact)
+  010f: return nothing
+  0111: <eos>
+
+function Weapon.ModifyDamage  (script 13 bytes)
+  0000: return BaseDamage
+  0006: return return
+  000c: <eos>
+
+function Weapon.ProcessInstantHit  (script 212 bytes)
+  0000: if !((Impact.HitActor != none)) goto 0x00d1
+  0016: Impact.HitActor.TakeDamage(ModifyDamage(cast3a(self.CurrentFireMode)[self.Data.InstantHitDamage], Impact.HitActor), self.Instigator.Controller, Impact.HitLocation, (cast3a(FiringMode)[self.Data.InstantHitMomentum] * Impact.RayDir), cast3a(FiringMode)[self.Data.InstantHitDamageTypes], Impact.HitInfo, self)
+  00d1: return nothing
+  00d3: <eos>
+
+function Weapon.ProjectileFire  (script 261 bytes)
+  0000: StartTrace = self.Instigator.GetWeaponStartTraceLocation()
+  001a: AimDir = cast39(GetAdjustedAim(StartTrace))
+  0031: RealStartLoc = GetPhysicalFireStartLoc(AimDir)
+  0046: if !((StartTrace != RealStartLoc)) goto 0x00b6
+  0055: EndTrace = (StartTrace + (AimDir * GetTraceRange()))
+  0073: TestImpact = CalcWeaponFire(StartTrace, EndTrace, )
+  008e: AimDir = obj'Core.Math'.static.Normal((TestImpact.HitLocation - RealStartLoc))
+  00b6: ServerFireProjectile(self.CurrentFireMode, RealStartLoc, (cast3f(10000) * AimDir))
+  00d8: if !((cast3a(self.Role) != cast3a(3))) goto 0x00fc
+  00e8: PlayFireEffects(self.CurrentFireMode, TestImpact)
+  00fc: return none
+  00fe: return return
+  0104: <eos>
+
+function Weapon.ServerFireProjectile  (script 182 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return nothing
+  000d: (AimDirection *= 0.0001)
+  0019: self.CurrentFireMode = ProjectileFireMode
+  0024: IncrementFlashCount()
+  002e: SpawnedProjectile = self.Instigator.Spawn(GetProjectileClass(), , , StartLocation, , , , )
+  005c: if !(((SpawnedProjectile != none) && !SpawnedProjectile.bDeleteMe)) goto 0x00a4
+  007d: SpawnedProjectile.Init(AimDirection)
+  0095: ServerSpawnedProjectile(SpawnedProjectile)
+  00a4: ConsumeAmmo(ProjectileFireMode)
+  00b3: return nothing
+  00b5: <eos>
+
+function Weapon.ServerSpawnedProjectile  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.CustomFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.GetMuzzleLoc  (script 73 bytes)
+  0000: if !((self.Instigator != none)) goto 0x003c
+  000b: return (self.Instigator.GetPawnViewLocation() + (self.FireOffset >> self.Instigator.GetViewRotation()))
+  003c: return self.Location
+  0042: return return
+  0048: <eos>
+
+function Weapon.GetPhysicalFireStartLoc  (script 397 bytes)
+  0000: nothing
+  0001: MuzzleLoc = GetMuzzleLoc()
+  0011: if !(((self.Instigator == none) || (AimDir == vect(0,0,0)))) goto 0x003b
+  0035: return MuzzleLoc
+  003b: MuzzleDist = obj'Core.Math'.static.VSize2D((MuzzleLoc - self.Instigator.Location))
+  0069: if !((MuzzleDist > self.Instigator.CylinderComponent.CollisionRadius)) goto 0x0180
+  008a: PulledInMuzzleLoc = (MuzzleLoc - (MuzzleDist * AimDir))
+  00a3: MuzzleDist = obj'Core.Math'.static.VSize2D((PulledInMuzzleLoc - self.Instigator.Location))
+  00d1: if !((MuzzleDist < self.Instigator.CylinderComponent.CollisionRadius)) goto 0x0100
+  00f2: MuzzleLoc = PulledInMuzzleLoc
+  00fd: goto 0x0180
+  0100: ExtraPullIn = (self.Instigator.Location - PulledInMuzzleLoc)
+  011b: ExtraPullIn.Z = 0.0
+  0131: ExtraPullIn = (((2.0 + MuzzleDist) - self.Instigator.CylinderComponent.CollisionRadius) * obj'Core.Math'.static.Normal(ExtraPullIn))
+  016e: MuzzleLoc = (PulledInMuzzleLoc + ExtraPullIn)
+  0180: return MuzzleLoc
+  0186: return return
+  018c: <eos>
+
+function Weapon.TryPutDown  (script 17 bytes)
+  0000: self.bWeaponPutDown = true
+  0008: return true
+  000a: return return
+  0010: <eos>
+
+function Weapon.Inactive.BeginState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.Inactive.ServerStopFire  (script 20 bytes)
+  0000: ClearPendingFire(cast3a(FireModeNum))
+  0011: return nothing
+  0013: <eos>
+
+function Weapon.Inactive.StartFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.Inactive.TryPutDown  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.ReadyToFire  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.Active.BeginState  (script 144 bytes)
+  0000: if !(self.bWeaponPutDown) goto 0x0016
+  0009: PutDownWeapon()
+  0013: goto 0x008d
+  0016: if !(!HasAnyAmmo()) goto 0x0032
+  0025: WeaponEmpty()
+  002f: goto 0x008d
+  0032: if !((self.InvManager != none)) goto 0x008d
+  003d: I = 0
+  0044: if !((I < self.InvManager.PendingFire.Length)) goto 0x008d
+  005d: if !(PendingFire(I)) goto 0x0083
+  006f: BeginFire(cast3d(I))
+  0080: goto 0x008d
+  0083: AddAdd_Int(I)
+  008a: goto 0x0044
+  008d: return nothing
+  008f: <eos>
+
+function Weapon.Active.BeginFire  (script 98 bytes)
+  0000: if !((!self.bDeleteMe && (self.Instigator != none))) goto 0x005f
+  0018: global.BeginFire(FireModeNum)
+  0027: if !((PendingFire(cast3a(FireModeNum)) && HasAmmo(FireModeNum, ))) goto 0x005f
+  0050: SendToFiringState(FireModeNum)
+  005f: return nothing
+  0061: <eos>
+
+function Weapon.Active.ReadyToFire  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Weapon.Active.Activate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.Active.TryPutDown  (script 19 bytes)
+  0000: PutDownWeapon()
+  000a: return true
+  000c: return return
+  0012: <eos>
+
+function Weapon.WeaponFiring.IsFiring  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Weapon.WeaponFiring.RefireCheckTimer  (script 63 bytes)
+  0000: if !(self.bWeaponPutDown) goto 0x0015
+  0009: PutDownWeapon()
+  0013: return nothing
+  0015: if !(ShouldRefire()) goto 0x002e
+  0022: FireAmmunition()
+  002c: return nothing
+  002e: GotoState('Active', , , )
+  003c: return nothing
+  003e: <eos>
+
+function Weapon.WeaponFiring.BeginState  (script 24 bytes)
+  0000: Weapon.TimeWeaponFiring(self.CurrentFireMode)
+  000b: FireAmmunition()
+  0015: return nothing
+  0017: <eos>
+
+function Weapon.WeaponFiring.EndState  (script 120 bytes)
+  0000: ClearFlashCount()
+  000a: ClearFlashImpact()
+  0014: ClearTimer('RefireCheckTimer', )
+  0028: if !(((self.Instigator != none) && (AIController(self.Instigator.Controller) != none))) goto 0x0075
+  004e: AIController(self.Instigator.Controller).NotifyWeaponFinishedFiring(self, self.CurrentFireMode)
+  0075: return nothing
+  0077: <eos>
+
+function Weapon.ShouldRefire  (script 46 bytes)
+  0000: if !(!HasAmmo(self.CurrentFireMode, )) goto 0x0017
+  0015: return false
+  0017: return StillFiring(self.CurrentFireMode)
+  0027: return return
+  002d: <eos>
+
+function Weapon.StillFiring  (script 25 bytes)
+  0000: return PendingFire(cast3a(FireMode))
+  0012: return return
+  0018: <eos>
+
+function Weapon.GetShootingFromLocation  (script 18 bytes)
+  0000: return GetMuzzleLoc()
+  000b: return return
+  0011: <eos>
+
+function Weapon.WeaponEquipped  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.WeaponEquipping.BeginState  (script 21 bytes)
+  0000: TimeWeaponEquipping()
+  000a: self.bWeaponPutDown = false
+  0012: return nothing
+  0014: <eos>
+
+function Weapon.WeaponEquipping.Activate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Weapon.WeaponEquipping.EndState  (script 23 bytes)
+  0000: ClearTimer('WeaponEquipped', )
+  0014: return nothing
+  0016: <eos>
+
+function Weapon.WeaponEquipping.WeaponEquipped  (script 38 bytes)
+  0000: if !(self.bWeaponPutDown) goto 0x0015
+  0009: PutDownWeapon()
+  0013: return nothing
+  0015: GotoState('Active', , , )
+  0023: return nothing
+  0025: <eos>
+
+function Weapon.WeaponPuttingDown.BeginState  (script 31 bytes)
+  0000: TimeWeaponPutDown()
+  000a: self.bWeaponPutDown = false
+  0012: ForceEndFire()
+  001c: return nothing
+  001e: <eos>
+
+function Weapon.WeaponPuttingDown.TryPutDown  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Weapon.WeaponPuttingDown.EndState  (script 23 bytes)
+  0000: ClearTimer('WeaponIsDown', )
+  0014: return nothing
+  0016: <eos>
+
+function Weapon.PendingClientWeaponSet.PendingWeaponSetTimer  (script 10 bytes)
+  0000: Weapon.TryToSetWeapon(true)
+  0007: return nothing
+  0009: <eos>
+
+function Weapon.PendingClientWeaponSet.BeginState  (script 22 bytes)
+  0000: SetTimer(0.05, true, 'PendingWeaponSetTimer', )
+  0013: return nothing
+  0015: <eos>
+
+function Weapon.PendingClientWeaponSet.EndState  (script 23 bytes)
+  0000: ClearTimer('PendingWeaponSetTimer', )
+  0014: return nothing
+  0016: <eos>

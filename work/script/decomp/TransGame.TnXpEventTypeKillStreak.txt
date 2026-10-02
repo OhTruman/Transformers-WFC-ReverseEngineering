@@ -1,0 +1,29 @@
+function TnXpEventTypeKillStreak.GetKillstreakProvider  (script 108 bytes)
+  0000: if !((OwnerPC == none)) goto 0x000d
+  000b: return none
+  000d: if !((OwnerPC.PlayerReplicationInfo == none)) goto 0x0023
+  0021: return none
+  0023: Specialty = OwnerPC.get_CurrentCharacter().Specialty
+  0047: return default.CustomCharacterOptions.FindKillstreakProvider(Specialty, default.KillstreakCount)
+  0065: return return
+  006b: <eos>
+
+function TnXpEventTypeKillStreak.GetDescription  (script 145 bytes)
+  0000: KillstreakProvider = TnXpEventTypeKillStreak.GetKillstreakProvider(OwnerPC)
+  0011: if !((KillstreakProvider == none)) goto 0x001f
+  001c: return ""
+  001f: FinalDescription = default.Description
+  002a: FinalDescription = obj'Core.Strings'.static.Repl(FinalDescription, "`k", KillstreakProvider.FriendlyName, )
+  0053: FinalDescription = OwnerPC.get_InputCommandToBindingMapper().TranslateCommandsInString(OwnerPC, FinalDescription)
+  0084: return FinalDescription
+  008a: return return
+  0090: <eos>
+
+function TnXpEventTypeKillStreak.GetExtraData  (script 79 bytes)
+  0000: KillstreakProvider = TnXpEventTypeKillStreak.GetKillstreakProvider(OwnerPC)
+  0011: if !((KillstreakProvider == none)) goto 0x001f
+  001c: return ""
+  001f: FinalExtraData = ("Killstreak," $ KillstreakProvider.UniqueId)
+  0042: return FinalExtraData
+  0048: return return
+  004e: <eos>

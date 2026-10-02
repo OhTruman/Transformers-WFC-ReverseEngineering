@@ -1,0 +1,7 @@
+function TnKillAwardRuleHigherLevel.CheckRule  (script 153 bytes)
+  0000: KillerPRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0019: KilledPRI = TnPlayerReplicationInfo(Killed.PlayerReplicationInfo)
+  0032: if !((((KillerPRI != none) && (KilledPRI != none)) && (KilledPRI.GetCurrentSpecialtyLevel() > KillerPRI.GetCurrentSpecialtyLevel()))) goto 0x0096
+  0077: KillerPRI.IncrementGameStat(1.0, 5889, 0)
+  0096: return nothing
+  0098: <eos>

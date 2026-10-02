@@ -1,0 +1,121 @@
+function SeqAct_CrowdSpawner.CheckForErrors  (script 68 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.Blueprint == none)) goto 0x0041
+  0011: EmitCheckMessage(0, ("Missing Crowd Blueprint for" @ cast56(self)), , )
+  0041: return nothing
+  0043: <eos>
+
+function SeqAct_CrowdSpawner.CacheSpawnerVars  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_CrowdSpawner.DestroyAgents  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_CrowdSpawner.KillAgents  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_CrowdSpawner.UpdateSpawning  (script 7 bytes)
+  0000: DeltaSeconds
+  0005: nothing
+  0006: <eos>
+
+function SeqAct_CrowdSpawner.CreateAttachments  (script 1137 bytes)
+  0000: AttachIdx = 0
+  0007: if !((AttachIdx < self.Blueprint.Attachments.Length)) goto 0x046e
+  0020: if !((AttachIdx[self.Blueprint.Attachments].List.Length == 0)) goto 0x0049
+  0046: goto 0x0464
+  0049: ChanceTotal = 0.0
+  0054: InfoIdx = 0
+  005b: if !((InfoIdx < AttachIdx[self.Blueprint.Attachments].List.Length)) goto 0x00c6
+  0085: (ChanceTotal += InfoIdx[AttachIdx[self.Blueprint.Attachments].List].Chance)
+  00bc: AddAdd_Int(InfoIdx)
+  00c3: goto 0x005b
+  00c6: RandVal = (obj'Core.Random'.static.FRand() * ChanceTotal)
+  00de: ChanceTotal = 0.0
+  00e9: InfoIdx = 0
+  00f0: if !((InfoIdx < AttachIdx[self.Blueprint.Attachments].List.Length)) goto 0x0178
+  011a: (ChanceTotal += InfoIdx[AttachIdx[self.Blueprint.Attachments].List].Chance)
+  0151: if !((ChanceTotal >= RandVal)) goto 0x016e
+  0160: PickedInfoIdx = InfoIdx
+  016b: goto 0x0178
+  016e: AddAdd_Int(InfoIdx)
+  0175: goto 0x00f0
+  0178: if !((PickedInfoIdx[AttachIdx[self.Blueprint.Attachments].List].StaticMesh != none)) goto 0x0464
+  01ae: bUseSocket = (Agent.SkeletalMeshComponent.GetSocketByName(AttachIdx[self.Blueprint.Attachments].SocketName) != none)
+  01f3: bUseBone = (Agent.SkeletalMeshComponent.MatchRefBone(AttachIdx[self.Blueprint.Attachments].SocketName) != -1)
+  023c: if !((bUseSocket || bUseBone)) goto 0x03b6
+  0250: StaticMeshComp = new(Agent, nothing, obj'StaticMeshComponent', nothing, GetRemoteRole)
+  0268: StaticMeshComp.SetStaticMesh(PickedInfoIdx[AttachIdx[self.Blueprint.Attachments].List].StaticMesh)
+  02ab: StaticMeshComp.SetActorCollision(false, false)
+  02c0: StaticMeshComp.SetScale3D(PickedInfoIdx[AttachIdx[self.Blueprint.Attachments].List].Scale3D)
+  0303: StaticMeshComp.SetLightEnvironment(Agent.LightEnvironment)
+  0324: if !(bUseSocket) goto 0x0370
+  032d: Agent.SkeletalMeshComponent.AttachComponentToSocket(StaticMeshComp, AttachIdx[self.Blueprint.Attachments].SocketName)
+  036d: goto 0x03b3
+  0370: Agent.SkeletalMeshComponent.AttachComponent(StaticMeshComp, AttachIdx[self.Blueprint.Attachments].SocketName, , , )
+  03b3: goto 0x0464
+  03b6: LogInternal((((("CrowdAgent: WARNING: Could not find socket or bone called '" $ cast57(AttachIdx[self.Blueprint.Attachments].SocketName)) $ "' for mesh '") @ cast56(PickedInfoIdx[AttachIdx[self.Blueprint.Attachments].List].StaticMesh)) $ "'"), , , )
+  0464: AddAdd_Int(AttachIdx)
+  046b: goto 0x0007
+  046e: return nothing
+  0470: <eos>
+
+function SeqAct_CrowdSpawner.SpawnAgent  (script 1989 bytes)
+  0000: if !((SpawnLoc == none)) goto 0x000d
+  000b: return none
+  000d: if !(self.bLineSpawner) goto 0x00af
+  0016: RandScale = (-1.0 + (2.0 * obj'Core.Random'.static.FRand()))
+  0035: SpawnLine = (vect(0,1,0) >> SpawnLoc.Rotation)
+  0059: SpawnPos = (SpawnLoc.Location + ((RandScale * SpawnLine) * self.Radius))
+  0082: Rot.Yaw = SpawnLoc.Rotation.Yaw
+  00ac: goto 0x0151
+  00af: Rot = obj'Core.Random'.static.RotRand(false)
+  00c2: Rot.Pitch = 0
+  00d4: if !(self.bSpawnAtEdge) goto 0x0112
+  00dd: SpawnPos = (SpawnLoc.Location + ((vect(1,0,0) * self.Radius) >> Rot))
+  010f: goto 0x0151
+  0112: SpawnPos = (SpawnLoc.Location + (((vect(1,0,0) * obj'Core.Random'.static.FRand()) * self.Radius) >> Rot))
+  0151: Agent = SpawnLoc.Spawn(self.AgentClass, , , SpawnPos, Rot, , , )
+  017e: if !(self.Blueprint.bFlockScaleUniform) goto 0x01d4
+  0190: AgentScale3D = (self.Blueprint.FlockMeshMinScale3D + (obj'Core.Random'.static.FRand() * (self.Blueprint.FlockMeshMaxScale3D - self.Blueprint.FlockMeshMinScale3D)))
+  01d1: goto 0x02d6
+  01d4: AgentScale3D.X = obj'Core.Random'.static.RandRangeFloat(self.Blueprint.FlockMeshMinScale3D.X, self.Blueprint.FlockMeshMaxScale3D.X)
+  022a: AgentScale3D.Y = obj'Core.Random'.static.RandRangeFloat(self.Blueprint.FlockMeshMinScale3D.Y, self.Blueprint.FlockMeshMaxScale3D.Y)
+  0280: AgentScale3D.Z = obj'Core.Random'.static.RandRangeFloat(self.Blueprint.FlockMeshMinScale3D.Z, self.Blueprint.FlockMeshMaxScale3D.Z)
+  02d6: Agent.SetDrawScale3D(AgentScale3D)
+  02ee: Agent.SkeletalMeshComponent.AnimSets = self.Blueprint.FlockAnimSets
+  0314: if !((self.Blueprint.FlockMeshes.Length > 0)) goto 0x036f
+  0329: Agent.SkeletalMeshComponent.SetSkeletalMesh(obj'Core.Random'.static.Rand(self.Blueprint.FlockMeshes.Length)[self.Blueprint.FlockMeshes], )
+  036f: Agent.SkeletalMeshComponent.SetAnimTreeTemplate(self.Blueprint.FlockAnimTree)
+  0399: Agent.SkeletalMeshComponent.SetLightingChannels(self.Blueprint.FlockLighting)
+  03c3: Agent.SkeletalMeshComponent.LineCheckBoundsScale = self.Blueprint.CollisionBoxScaling
+  03e9: if !(self.Blueprint.bEnableCrowdLightEnvironment) goto 0x041b
+  03fb: Agent.LightEnvironment.SetEnabled(true)
+  0418: goto 0x043c
+  041b: Agent.DetachComponent(Agent.LightEnvironment)
+  043c: if !((self.Blueprint.RandomMaterials.Length > 0)) goto 0x0497
+  0451: Agent.SkeletalMeshComponent.SetMaterial(0, obj'Core.Random'.static.Rand(self.Blueprint.RandomMaterials.Length)[self.Blueprint.RandomMaterials])
+  0497: SeqAct_CrowdSpawner.CreateAttachments(Agent)
+  04a2: Agent.SpeedBlendNode = AnimNodeBlend(Agent.SkeletalMeshComponent.FindAnimNode('SpeedBlendNode'))
+  04db: Agent.ActionBlendNode = AnimNodeBlend(Agent.SkeletalMeshComponent.FindAnimNode('ActionBlendNode'))
+  0514: Agent.ActionSeqNode = AnimNodeSequence(Agent.SkeletalMeshComponent.FindAnimNode('ActionSeqNode'))
+  054d: Agent.WalkSeqNode = AnimNodeSequence(Agent.SkeletalMeshComponent.FindAnimNode('WalkSeqNode'))
+  0586: Agent.RunSeqNode = AnimNodeSequence(Agent.SkeletalMeshComponent.FindAnimNode('RunSeqNode'))
+  05bf: Agent.AgentTree = AnimTree(Agent.SkeletalMeshComponent.Animations)
+  05ea: if !(((Agent.WalkSeqNode != none) && (self.Blueprint.WalkAnimNames.Length > 0))) goto 0x065a
+  0615: Agent.WalkSeqNode.SetAnim(obj'Core.Random'.static.Rand(self.Blueprint.WalkAnimNames.Length)[self.Blueprint.WalkAnimNames])
+  065a: if !(((Agent.RunSeqNode != none) && (self.Blueprint.RunAnimNames.Length > 0))) goto 0x06ca
+  0685: Agent.RunSeqNode.SetAnim(obj'Core.Random'.static.Rand(self.Blueprint.RunAnimNames.Length)[self.Blueprint.RunAnimNames])
+  06ca: if !((Agent.ActionSeqNode != none)) goto 0x06f8
+  06de: Agent.ActionSeqNode.bZeroRootTranslation = true
+  06f8: if !(((self.Blueprint.DeathEffects.Length > 0) && (self.Blueprint.DeathEffects.Length > 0))) goto 0x0764
+  0724: Agent.DeathEffect = obj'Core.Random'.static.RandomInt(self.Blueprint.DeathEffects.Length)[self.Blueprint.DeathEffects]
+  0764: Agent.VelDamping = obj'Core.Random'.static.RandomInRange(self.VelDamping)
+  078b: Agent.Health = self.Blueprint.Health
+  07a8: Agent.Spawner = self
+  07b8: return Agent
+  07be: return return
+  07c4: <eos>

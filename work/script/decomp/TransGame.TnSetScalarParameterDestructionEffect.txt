@@ -1,0 +1,40 @@
+function TnSetScalarParameterDestructionEffect.get_ScalarValue  (script 13 bytes)
+  0000: return self._ScalarValue
+  0006: return return
+  000c: <eos>
+
+function TnSetScalarParameterDestructionEffect.set_ScalarValue  (script 14 bytes)
+  0000: self._ScalarValue = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSetScalarParameterDestructionEffect.get_ParameterName  (script 13 bytes)
+  0000: return self._ParameterName
+  0006: return return
+  000c: <eos>
+
+function TnSetScalarParameterDestructionEffect.set_ParameterName  (script 14 bytes)
+  0000: self._ParameterName = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSetScalarParameterDestructionEffect.BeginEffect  (script 85 bytes)
+  0000: OwnerPiece = GetOwner()
+  0010: if !((OwnerPiece == none)) goto 0x001d
+  001b: return nothing
+  001d: MeshEffects = OwnerPiece.GetMeshEffects()
+  0036: foreach MeshEffects(CurrentMeshEffect,) (end 0x0051)
+  0045: TnSetScalarParameterDestructionEffect.SetScalarParams(CurrentMeshEffect)
+  0050: iternext
+  0051: iterpop
+  0052: return nothing
+  0054: <eos>
+
+function TnSetScalarParameterDestructionEffect.SetScalarParams  (script 74 bytes)
+  0000: MeshComponents = MeshEffect.GetMeshComponents()
+  0019: foreach MeshComponents(CurrentMeshComponent,) (end 0x0046)
+  0028: CurrentMeshComponent.SetScalarParam(self._ParameterName, self._ScalarValue)
+  0045: iternext
+  0046: iterpop
+  0047: return nothing
+  0049: <eos>

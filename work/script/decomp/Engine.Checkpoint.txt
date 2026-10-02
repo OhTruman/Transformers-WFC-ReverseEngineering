@@ -1,0 +1,63 @@
+function Checkpoint.ProcessActions  (script 62 bytes)
+  0000: I = 0
+  0007: if !((I < self.Actions.Length)) goto 0x003b
+  0017: I[self.Actions].Process(self)
+  0031: AddAdd_PreInt(I)
+  0038: goto 0x0007
+  003b: return nothing
+  003d: <eos>
+
+function Checkpoint.CheckForErrors  (script 778 bytes)
+  0000: NavigationPoint.CheckForErrors()
+  0006: if !((self.Tag == 'None')) goto 0x0045
+  0019: EmitCheckMessage(0, "Checkpoint missing tag name.", , )
+  0045: if !((self.Tag == 'Checkpoint')) goto 0x0099
+  0058: EmitCheckMessage(0, ""Checkpoint" is a bad name.  Choose again buster.", , )
+  0099: foreach AllActors(obj'Checkpoint', C) (end 0x012f)
+  00b0: if !((C == self)) goto 0x00bf
+  00bb: iternext
+  00bc: goto 0x012f
+  00bf: if !((C.Tag == self.Tag)) goto 0x012e
+  00d7: EmitCheckMessage(0, (((("Checkpoint " @ cast56(C)) @ "has duplicate tag name '") @ cast57(C.Tag)) @ "'"), , )
+  012e: iternext
+  012f: iterpop
+  0130: if !((self.StreamingState == none)) goto 0x016e
+  013b: EmitCheckMessage(0, "Checkpoint missing streaming state.", , )
+  016e: if !((self.AuxilliarySpawnPoints.Length < self.MinNumAuxilliarySpawnPoints)) goto 0x01d0
+  017e: EmitCheckMessage(0, (("Checkpoints must have at least" @ cast53(self.MinNumAuxilliarySpawnPoints)) @ "auxilliary spawn points"), , )
+  01d0: foreach self.AuxilliarySpawnPoints(NP,) (end 0x0297)
+  01df: if !((NP == none)) goto 0x0235
+  01ea: EmitCheckMessage(0, "Checkpoints cannot contain empty auxilliary spawn points", , )
+  0232: goto 0x0296
+  0235: if !((NP == self)) goto 0x0296
+  0240: EmitCheckMessage(0, "Checkpoints cannot contain the checkpoint as an auxilliary spawn point", , )
+  0296: iternext
+  0297: iterpop
+  0298: if !((self.DisplayOrder == -1)) goto 0x0307
+  02a7: EmitCheckMessage(1, "Please assign a display order value to ensure debug menus show the correct order", , )
+  0307: return nothing
+  0309: <eos>
+
+function Checkpoint.GetStartSpotForPlayer  (script 197 bytes)
+  0000: if !(PC.IsLocalPlayerController()) goto 0x0018
+  0016: return self
+  0018: if !((self.AuxilliarySpawnPoints.Length == 0)) goto 0x0099
+  0024: LogInternal((("Error: No Auxilliary spawn points set for checkpoint:" @ cast56(self)) @ "clients will fail to spawn due to encroachment"), , , )
+  0097: return self
+  0099: if !((AddAdd_PreInt(self.CurrentAuxilliarySpawnPointIndex) >= self.AuxilliarySpawnPoints.Length)) goto 0x00b2
+  00ab: self.CurrentAuxilliarySpawnPointIndex = 0
+  00b2: return self.CurrentAuxilliarySpawnPointIndex[self.AuxilliarySpawnPoints]
+  00be: return return
+  00c4: <eos>
+
+function Checkpoint.TeleportPlayerToCheckpoint  (script 265 bytes)
+  0000: PC = PlayerController(P.Controller)
+  0019: if !((none != PC)) goto 0x0106
+  0024: PC.SetLocation(PC.StartSpot.Location)
+  0047: PC.SetRotation(PC.StartSpot.Rotation)
+  006a: PC.ClientSetRotation(PC.StartSpot.Rotation, true)
+  0095: P.Teleport(PC.StartSpot.Location, PC.StartSpot.Rotation)
+  00d6: if !((PC.PlayerCamera != none)) goto 0x0106
+  00ea: PC.PlayerCamera.Reset()
+  0106: return nothing
+  0108: <eos>

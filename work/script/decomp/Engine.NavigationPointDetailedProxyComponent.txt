@@ -1,0 +1,80 @@
+function NavigationPointDetailedProxyComponent.CreatePrimitives  (script 930 bytes)
+  0000: self.NP = NavigationPoint(self.Owner)
+  0010: if !((self.NP == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(self.DrawMaxDistanceSphere) goto 0x006a
+  0026: AddWireSphere(self.NP.Location, self.NP.MaxConnectionDistance, MakeLinearColor(1.0, 1.0, 1.0, 1.0))
+  006a: if !(self.DrawCylinder) goto 0x00d9
+  0073: AddWireCylinder(self.NP.Location, self.NP.CylinderComponent.CollisionRadius, self.NP.CylinderComponent.CollisionHeight, 16, MakeLinearColor(1.0, 1.0, 1.0, 1.0))
+  00d9: NavigationPointDetailedProxyComponent.DrawDropCone()
+  00df: idx = 0
+  00e6: if !((idx < self.NP.PathList.Length)) goto 0x0123
+  00ff: NavigationPointDetailedProxyComponent.DrawReachSpec(idx[self.NP.PathList])
+  0119: AddAdd_PreInt(idx)
+  0120: goto 0x00e6
+  0123: idx = 0
+  012a: if !((idx < self.NP.EditorJumpPaths.Length)) goto 0x019e
+  0143: OtherNav = idx[self.NP.EditorJumpPaths].Nav
+  0168: if !((OtherNav == none)) goto 0x0176
+  0173: goto 0x0194
+  0176: obj'DebugRenderHelpers'.static.DrawJumpConnection(self, self.NP, OtherNav)
+  0194: AddAdd_PreInt(idx)
+  019b: goto 0x012a
+  019e: idx = 0
+  01a5: if !((idx < self.NP.EditorMoverFlyPaths.Length)) goto 0x0249
+  01be: OtherNav = idx[self.NP.EditorMoverFlyPaths].Nav
+  01e3: if !((OtherNav == none)) goto 0x01f1
+  01ee: goto 0x023f
+  01f1: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, self.NP.Location, OtherNav.Location, MakeLinearColor(1.0, 0.66, 0.0, 0.0))
+  023f: AddAdd_PreInt(idx)
+  0246: goto 0x01a5
+  0249: idx = 0
+  0250: if !((idx < self.NP.EditorMoverJumpPaths.Length)) goto 0x02f4
+  0269: OtherNav = idx[self.NP.EditorMoverJumpPaths].Nav
+  028e: if !((OtherNav == none)) goto 0x029c
+  0299: goto 0x02ea
+  029c: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, self.NP.Location, OtherNav.Location, MakeLinearColor(1.0, 0.66, 0.0, 0.0))
+  02ea: AddAdd_PreInt(idx)
+  02f1: goto 0x0250
+  02f4: idx = 0
+  02fb: if !((idx < self.NP.EditorMoverWalkPaths.Length)) goto 0x039f
+  0314: OtherNav = idx[self.NP.EditorMoverWalkPaths].Nav
+  0339: if !((OtherNav == none)) goto 0x0347
+  0344: goto 0x0395
+  0347: obj'DebugRenderHelpers'.static.DrawDashedConnection(self, self.NP.Location, OtherNav.Location, MakeLinearColor(0.0, 1.0, 0.0, 0.0))
+  0395: AddAdd_PreInt(idx)
+  039c: goto 0x02fb
+  039f: return nothing
+  03a1: <eos>
+
+function NavigationPointDetailedProxyComponent.GetPointRadius  (script 43 bytes)
+  0000: StartPointRadius = RS.CollisionRadius
+  0014: EndPointRadius = RS.CollisionRadius
+  0028: return nothing
+  002a: <eos>
+
+function NavigationPointDetailedProxyComponent.DrawDropCone  (script 223 bytes)
+  0000: APN = AirPathNode(self.NP)
+  0010: if !((APN == none)) goto 0x001d
+  001b: return nothing
+  001d: AddWireChoppedCone((self.NP.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, (-self.NP.MaxConnectionDistance * 0.5))), (obj'Core.Math'.static.Tan((APN.LandingAngle * (3.1415927 / 180.0))) * self.NP.MaxConnectionDistance), 0.0, (self.NP.MaxConnectionDistance * 0.5), 8, MakeLinearColor(0.0, 1.0, 1.0, 1.0))
+  00dc: return nothing
+  00de: <eos>
+
+function NavigationPointDetailedProxyComponent.DrawReachSpec  (script 641 bytes)
+  0000: if !((((RS == none) || (RS.Start == none)) || (RS.End.Nav == none))) goto 0x0044
+  0042: return nothing
+  0044: Start = RS.Start.Location
+  0061: End = RS.End.Nav.Location
+  0089: Direction = (End - Start)
+  009b: Right = obj'Core.Math'.static.Normal((Direction cross vect(0,0,1)))
+  00c0: if !(self.DrawRadiusBorder) goto 0x0176
+  00c9: GetPointRadius(RS, StartPointRadius, EndPointRadius)
+  00e2: AddDashedLine((Start + (Right * StartPointRadius)), (End + (Right * EndPointRadius)), 20.0, RS.PathColor())
+  012a: AddDashedLine((Start + (Right * -StartPointRadius)), (End + (Right * -EndPointRadius)), 20.0, RS.PathColor())
+  0176: if !(self.DrawHeightBorder) goto 0x0257
+  017f: AddDashedLine((Start + (vect(0,0,1) * RS.CollisionHeight)), (End + (vect(0,0,1) * RS.CollisionHeight)), 20.0, RS.PathColor())
+  01e9: AddDashedLine((Start + (vect(0,0,1) * -RS.CollisionHeight)), (End + (vect(0,0,1) * -RS.CollisionHeight)), 20.0, RS.PathColor())
+  0257: AddArrowLine(Start, End, RS.PathColor())
+  027e: return nothing
+  0280: <eos>

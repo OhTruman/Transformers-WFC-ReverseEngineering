@@ -1,0 +1,225 @@
+function TnTransformerForm.get_IsActive  (script 14 bytes)
+  0000: return self._Active
+  0007: return return
+  000d: <eos>
+
+function TnTransformerForm.get_IsPlaying  (script 14 bytes)
+  0000: return self._Playing
+  0007: return return
+  000d: <eos>
+
+function TnTransformerForm.get_SoundEventSet  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.get_FormMovementCapabilities  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.set_FormMovementCapabilities  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.get_FriendlyName  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.get_FormType  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.get_Services  (script 13 bytes)
+  0000: return self._Services
+  0006: return return
+  000c: <eos>
+
+function TnTransformerForm.set_Services  (script 14 bytes)
+  0000: self._Services = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerForm.get_IsDead  (script 14 bytes)
+  0000: return self._IsDead
+  0007: return return
+  000d: <eos>
+
+function TnTransformerForm.get_CanAnchor  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnTransformerForm.RegisterReplicatedObjects  (script 18 bytes)
+  0000: OnRegisterReplicatedObjects(OwnerActor)
+  000f: return nothing
+  0011: <eos>
+
+function TnTransformerForm.UnregisterReplicatedObjects  (script 18 bytes)
+  0000: OnUnregisterReplicatedObjects(OwnerActor)
+  000f: return nothing
+  0011: <eos>
+
+function TnTransformerForm.GetService  (script 75 bytes)
+  0000: Service = self._Services.GetService(Type)
+  001e: if !((Service == none)) goto 0x003e
+  0029: Service = OnGetService(Type)
+  003e: return Service
+  0044: return return
+  004a: <eos>
+
+function TnTransformerForm.Activate  (script 35 bytes)
+  0000: if !((self._Active == true)) goto 0x000e
+  000c: return nothing
+  000e: self._Active = true
+  0016: OnActivate()
+  0020: return nothing
+  0022: <eos>
+
+function TnTransformerForm.Deactivate  (script 35 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: OnDeactivate()
+  0018: self._Active = false
+  0020: return nothing
+  0022: <eos>
+
+function TnTransformerForm.BeginPlay  (script 49 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: if !((self._Playing == true)) goto 0x001c
+  001a: return nothing
+  001c: self._Playing = true
+  0024: OnBeginPlay()
+  002e: return nothing
+  0030: <eos>
+
+function TnTransformerForm.EndPlay  (script 49 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: if !((self._Playing == false)) goto 0x001c
+  001a: return nothing
+  001c: OnEndPlay()
+  0026: self._Playing = false
+  002e: return nothing
+  0030: <eos>
+
+function TnTransformerForm.Update  (script 32 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: OnUpdate(DeltaTime)
+  001d: return nothing
+  001f: <eos>
+
+function TnTransformerForm.GetWeaponSockets  (script 23 bytes)
+  0000: return OnGetWeaponSockets(WeaponToAttach)
+  0010: return return
+  0016: <eos>
+
+function TnTransformerForm.AdjustDamage  (script 43 bytes)
+  0000: return OnAdjustDamage(Instigator, Damage, HitLocation, DamageType, HitInfo)
+  0024: return return
+  002a: <eos>
+
+function TnTransformerForm.DisplayDebug  (script 28 bytes)
+  0000: OnDisplayDebug(HUD, out_YL, out_YPos)
+  0019: return nothing
+  001b: <eos>
+
+function TnTransformerForm.PlayHit  (script 18 bytes)
+  0000: OnPlayHit(HitInfo)
+  000f: return nothing
+  0011: <eos>
+
+function TnTransformerForm.WeaponFired  (script 13 bytes)
+  0000: OnWeaponFired()
+  000a: return nothing
+  000c: <eos>
+
+function TnTransformerForm.PlayDeath  (script 21 bytes)
+  0000: self._IsDead = true
+  0008: OnPlayDeath()
+  0012: return nothing
+  0014: <eos>
+
+function TnTransformerForm.PlayGib  (script 13 bytes)
+  0000: OnPlayGib()
+  000a: return nothing
+  000c: <eos>
+
+function TnTransformerForm.MapHitComponentToIndex  (script 23 bytes)
+  0000: return OnMapHitComponentToIndex(HitComponent)
+  0010: return return
+  0016: <eos>
+
+function TnTransformerForm.MapIndexToHitComponent  (script 23 bytes)
+  0000: return OnMapIndexToHitComponent(Index)
+  0010: return return
+  0016: <eos>
+
+function TnTransformerForm.OnDisplayDebug  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnGetService  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.OnRegisterReplicatedObjects  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnUnregisterReplicatedObjects  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnActivate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnDeactivate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnBeginPlay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnEndPlay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnWeaponFired  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnGetWeaponSockets  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.OnAdjustDamage  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformerForm.OnPlayHit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnPlayDeath  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnPlayGib  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformerForm.OnMapHitComponentToIndex  (script 13 bytes)
+  0000: return -1
+  0006: return return
+  000c: <eos>
+
+function TnTransformerForm.OnMapIndexToHitComponent  (script 7 bytes)
+  0000: return return
+  0006: <eos>

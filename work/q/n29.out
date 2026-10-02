@@ -1,0 +1,138 @@
+=== decomp 0x829eb730
+
+undefined8 Function_829EB730(undefined8 param_1,ulonglong param_2)
+
+{
+  undefined4 uVar1;
+  int iVar3;
+  int iVar4;
+  char cVar8;
+  int iVar5;
+  undefined8 uVar2;
+  undefined4 *puVar6;
+  int *piVar7;
+  ulonglong uVar9;
+  undefined1 auStack_220 [8];
+  uint local_218;
+  int local_214;
+  undefined8 local_208;
+  undefined1 auStack_200 [8];
+  undefined1 auStack_1f8 [8];
+  undefined1 auStack_1f0 [8];
+  undefined4 local_1e8;
+  undefined8 local_1d4;
+  undefined1 auStack_1cc [108];
+  undefined4 local_160;
+  undefined4 local_15c;
+  undefined1 auStack_158 [128];
+  undefined1 auStack_d8 [24];
+  undefined1 auStack_c0 [4];
+  undefined1 auStack_bc [128];
+  undefined1 *local_3c;
+  
+  iVar3 = FUN_830eacd4();
+  iVar5 = *(int *)(iVar3 + 0x48);
+  *(int *)(iVar3 + 0x30) = *(int *)(iVar3 + 0x30) + 1;
+  if (iVar5 != 0) {
+    if (DAT_83755ce8 == 0) {
+      DAT_83755ce8 = Function_829E9FE8(0xffffffff82002aa0);
+      Function_829B9AD8();
+    }
+    iVar4 = FUN_826eccc8(iVar5,DAT_83755ce8);
+    if (iVar4 != 0) goto LAB_829eb79c;
+  }
+  iVar5 = 0;
+LAB_829eb79c:
+  if (*(int *)(iVar3 + 0xd8) != 0) {
+    Function_83578FC0(auStack_220);
+    iVar4 = Function_829CEC88(iVar3 + 0xd4,iVar3 + 0xe0,auStack_220);
+    if (iVar4 != 0) {
+      param_2 = param_2 & 0xff;
+      iVar4 = Function_829BA618(iVar5,param_2);
+      if (((iVar4 == 0) && (cVar8 = Function_829BA4F8(iVar5,param_2), cVar8 == '\x02')) &&
+         (iVar4 = Function_829BA688(iVar5,param_2,&local_208), iVar4 != 0)) {
+        Function_829C9F08(&local_218,iVar5,param_2);
+        Function_8357D878(auStack_1f0);
+        local_1e8 = 0x14b3;
+        local_1d4 = local_208;
+        if (local_214 == 0) {
+          uVar9 = 0xffffffff820019bc;
+        }
+        else {
+          uVar9 = (ulonglong)local_218;
+        }
+        iVar5 = Function_8279A390(auStack_c0,uVar9);
+        FUN_82b1a4c8(auStack_1cc,*(undefined4 *)(iVar5 + 0x84),0x40);
+        if ((local_3c != auStack_bc) && (local_3c != (undefined1 *)0x0)) {
+          Function_82B19638();
+        }
+        local_15c = 0;
+        FUN_830ebb10(auStack_158,0,0x80);
+        FUN_830ebb10(auStack_d8,0,0x18);
+        local_160 = 0x14b3;
+        Function_8357D920(auStack_1f0,auStack_158);
+        uVar2 = Function_83578FF8(auStack_1f8,auStack_220);
+        cVar8 = Function_8357BA18(*(undefined4 *)(iVar3 + 0x44),uVar2,auStack_200,&local_160);
+        if (cVar8 != '\0') {
+          puVar6 = (undefined4 *)Function_82B19590(0x18,8);
+          if (puVar6 == (undefined4 *)0x0) {
+            puVar6 = (undefined4 *)0x0;
+          }
+          else {
+            uVar1 = *(undefined4 *)(iVar3 + 0x44);
+            puVar6[5] = iVar3;
+            puVar6[1] = 0;
+            puVar6[3] = 0;
+            puVar6[2] = L"Connect to Demonware Lobby";
+            *puVar6 = &PTR_Function_829B3AD8_821f53e0;
+            puVar6[4] = uVar1;
+          }
+          if (*(int *)(iVar3 + 0x58) == 0) {
+            piVar7 = (int *)0x0;
+          }
+          else {
+            piVar7 = *(int **)(iVar3 + 0x5c);
+          }
+          (**(code **)(*piVar7 + 8))(piVar7,puVar6);
+          FUN_827bf7c8(auStack_1f0);
+          Function_826F0D78(&local_218);
+          FUN_83578d58(auStack_220);
+          return 1;
+        }
+        FUN_827bf7c8(auStack_1f0);
+        Function_826F0D78(&local_218);
+      }
+    }
+    FUN_83578d58(auStack_220);
+  }
+  return 0;
+}
+
+
+=== func 0x829eb730
+  Function_829EB730 entry=829eb730 body=[[829eb730, 829eb9a7]]
+  caller Function_829EC0C8@829ec0c8
+  callee Function_829B9AD8@829b9ad8
+  callee Function_8279A390@8279a390
+  callee Function_82B19638@82b19638
+  callee FUN_830ebb10@830ebb10
+  callee Function_826F0D78@826f0d78
+  callee Function_8357D878@8357d878
+  callee Function_829E9FE8@829e9fe8
+  callee Function_83578FC0@83578fc0
+  callee Function_8357BA18@8357ba18
+  callee FUN_83578d58@83578d58
+  callee Function_82B19590@82b19590
+  callee FUN_830eacd4@830eacd4
+  callee Function_829C9F08@829c9f08
+  callee FUN_827bf7c8@827bf7c8
+  callee Function_8357D920@8357d920
+  callee Function_83578FF8@83578ff8
+  callee Function_829CEC88@829cec88
+  callee Function_829BA618@829ba618
+  callee FUN_826eccc8@826eccc8
+  callee Function_829BA688@829ba688
+  callee FUN_82b1a4c8@82b1a4c8
+  callee Function_829BA4F8@829ba4f8
+  ref 829eb730 UNCONDITIONAL_CALL from 829ec15c in Function_829EC0C8@829ec0c8
+  ref 829eb730 UNCONDITIONAL_CALL from 82a25724 in <nofunc>

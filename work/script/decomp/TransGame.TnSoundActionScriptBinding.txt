@@ -1,0 +1,21 @@
+function TnSoundActionScriptBinding.PlaySound  (script 104 bytes)
+  0000: PlayerController = GetPlayerController()
+  0010: if !((none == PlayerController)) goto 0x001d
+  001b: return nothing
+  001d: SoundCue = PlayerController.GetUISound(SoundCueName)
+  003b: if !((none == SoundCue)) goto 0x0048
+  0046: return nothing
+  0048: PlayerController.CreateAudioComponent(SoundCue, true, true, , , )
+  0065: return nothing
+  0067: <eos>
+
+function TnSoundActionScriptBinding.StopSound  (script 104 bytes)
+  0000: PlayerController = GetPlayerController()
+  0010: if !((none == PlayerController)) goto 0x001d
+  001b: return nothing
+  001d: SoundCue = PlayerController.GetUISound(SoundCueName)
+  003b: if !((none == SoundCue)) goto 0x0048
+  0046: return nothing
+  0048: PlayerController.StopSound(SoundCue, FadeTime)
+  0065: return nothing
+  0067: <eos>

@@ -1,0 +1,290 @@
+function TnCamera.UpdateViewTarget  (script 34 bytes)
+  0000: UpdateViewTarget(OutVT, DeltaTime)
+  0010: self.FiredWeapon = none
+  0017: self.bShakeStarted = false
+  001f: return nothing
+  0021: <eos>
+
+function TnCamera.UpdateCamera  (script 61 bytes)
+  0000: UpdateCamera(DeltaTime)
+  000b: TnCamera.UpdateEmitters()
+  0011: TnCamera.UpdatePawnTransparencies()
+  0017: self.PostProcessModifier.Update(DeltaTime)
+  002f: TnCamera.UpdateAutoFadeIn(DeltaTime)
+  003a: return nothing
+  003c: <eos>
+
+function TnCamera.UpdateAutoFadeIn  (script 118 bytes)
+  0000: if !((self._FadeTimeRemaining <= cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: self._FadeTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._FadeTimeRemaining - DeltaTime))
+  0031: Amount = obj'Core.Math'.static.FMin(1.0, (self._FadeTimeRemaining / 0.5))
+  0053: if !((Amount < 1.0)) goto 0x006d
+  0062: self.FadeAmount = Amount
+  006d: TnCamera.SetFadeHudVisibility()
+  0073: return nothing
+  0075: <eos>
+
+function TnCamera.Reset  (script 63 bytes)
+  0000: Reset()
+  0006: self.PostProcessModifier.Deactivate()
+  0019: self.WiggleData.Initialize()
+  002c: RemoveFovSettings()
+  0036: TnCamera.DeactivateEmitters()
+  003c: return nothing
+  003e: <eos>
+
+function TnCamera.ActivateAutoFadeIn  (script 117 bytes)
+  0000: if !(((self.PCOwner == none) || self.PCOwner.bCinematicMode)) goto 0x0021
+  001f: return nothing
+  0021: self.bEnableFading = true
+  0029: self.FadeColor = obj'Core.Colors'.static.Black()
+  0042: self.FadeAmount = 1.1
+  004d: self._FadeTimeRemaining = (0.5 + 1.0)
+  005f: SetTimer(1.0, false, 'CheckStartFade', )
+  0072: return nothing
+  0074: <eos>
+
+function TnCamera.CheckStartFade  (script 35 bytes)
+  0000: if !((self.FadeAmount < 1.1)) goto 0x0020
+  000f: self._FadeTimeRemaining = 0.0
+  001a: TnCamera.SetFadeHudVisibility()
+  0020: return nothing
+  0022: <eos>
+
+function TnCamera.SetFadeHudVisibility  (script 133 bytes)
+  0000: C = TnPlayerController(self.PCOwner)
+  0010: if !(((C == none) || (C.myHUD == none))) goto 0x0033
+  0031: return nothing
+  0033: C.myHUD.SetVisibility((C.bCinematicMode ? !C.get_HudOffInCinematicMode() : (self._FadeTimeRemaining == cast3f(0))))
+  0082: return nothing
+  0084: <eos>
+
+function TnCamera.SpawnEmitter  (script 186 bytes)
+  0000: if !(TnCamera.IsPlayingEffect(EmitterTemplate)) goto 0x0010
+  000e: return none
+  0010: TnCamera.GetEmitterLocationRotation(EmitterLocation, EmitterRotation)
+  0020: PSC = self.WorldInfo.GetEmitterPool().SpawnEmitter(EmitterTemplate, EmitterLocation, EmitterRotation, , , )
+  0059: if !((PSC == none)) goto 0x0066
+  0064: return none
+  0066: self.Emitters.Insert(0,1)
+  006e: 0[self.Emitters].PSC = PSC
+  0086: 0[self.Emitters].TimeStamp = self.WorldInfo.TimeSeconds
+  00a7: TnCamera.UpdateEmitters()
+  00ad: return PSC
+  00b3: return return
+  00b9: <eos>
+
+function TnCamera.IsPlayingEffect  (script 172 bytes)
+  0000: I = 0
+  0007: if !((I < self.Emitters.Length)) goto 0x00a3
+  0017: if !((((I[self.Emitters].PSC.Template == EmitterTemplate) && I[self.Emitters].PSC.bIsActive) && ((I[self.Emitters].TimeStamp + self.DisableDuplicateEmitterDelay) >= self.WorldInfo.TimeSeconds))) goto 0x0099
+  0097: return true
+  0099: AddAdd_PreInt(I)
+  00a0: goto 0x0007
+  00a3: return false
+  00a5: return return
+  00ab: <eos>
+
+function TnCamera.UpdateEmitters  (script 254 bytes)
+  0000: TnCamera.GetEmitterLocationRotation(EmitterLocation, EmitterRotation)
+  0010: I = (self.Emitters.Length - 1)
+  001f: if !((I >= 0)) goto 0x00fb
+  002a: if !(((I[self.Emitters].PSC != none) && I[self.Emitters].PSC.bIsActive)) goto 0x00e5
+  006b: I[self.Emitters].PSC.SetTranslation(EmitterLocation)
+  0094: I[self.Emitters].PSC.SetRotation(EmitterRotation)
+  00bd: I[self.Emitters].PSC.ForceUpdate(true)
+  00e2: goto 0x00f1
+  00e5: self.Emitters.Remove(I,1)
+  00f1: SubtractSubtract_PreInt(I)
+  00f8: goto 0x001f
+  00fb: return nothing
+  00fd: <eos>
+
+function TnCamera.DeactivateEmitters  (script 80 bytes)
+  0000: I = 0
+  0007: if !((I < self.Emitters.Length)) goto 0x0045
+  0017: I[self.Emitters].PSC.DeactivateSystem()
+  003b: AddAdd_PreInt(I)
+  0042: goto 0x0007
+  0045: self.Emitters.Length = 0
+  004d: return nothing
+  004f: <eos>
+
+function TnCamera.GetEmitterLocationRotation  (script 81 bytes)
+  0000: GetCameraViewPoint(CameraLocation, CameraRotation)
+  0014: EmitterLocation = (CameraLocation + (cast39(CameraRotation) * self.EmitterDistance))
+  002f: EmitterRotation = cast50(obj'Core.Math'.static.Normal((CameraLocation - EmitterLocation)))
+  004e: return nothing
+  0050: <eos>
+
+function TnCamera.OnWeaponFired  (script 14 bytes)
+  0000: self.FiredWeapon = Weapon
+  000b: return nothing
+  000d: <eos>
+
+function TnCamera.GetFiredWeapon  (script 13 bytes)
+  0000: return self.FiredWeapon
+  0006: return return
+  000c: <eos>
+
+function TnCamera.StartShake  (script 48 bytes)
+  0000: if !((Params.Intensity == cast3f(0))) goto 0x001a
+  0018: return nothing
+  001a: self.bShakeStarted = true
+  0022: self.ShakeParams = Params
+  002d: return nothing
+  002f: <eos>
+
+function TnCamera.IsCameraShakeStarted  (script 14 bytes)
+  0000: return self.bShakeStarted
+  0007: return return
+  000d: <eos>
+
+function TnCamera.GetCurrentShake  (script 13 bytes)
+  0000: return self.ShakeParams
+  0006: return return
+  000c: <eos>
+
+function TnCamera.AddPlayerCameraState  (script 36 bytes)
+  0000: if !(!HasPlayerCameraState(PCS)) goto 0x0021
+  0014: self.PlayerCameraStates.AddItem(PCS)
+  0021: return nothing
+  0023: <eos>
+
+function TnCamera.RemovePlayerCameraState  (script 16 bytes)
+  0000: self.PlayerCameraStates.RemoveItem(PCS)
+  000d: return nothing
+  000f: <eos>
+
+function TnCamera.ClearPlayerCameraStates  (script 11 bytes)
+  0000: self.PlayerCameraStates.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnCamera.HasPlayerCameraState  (script 28 bytes)
+  0000: return (self.PlayerCameraStates.Find(PCS) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnCamera.HasAllPlayerCameraStates  (script 49 bytes)
+  0000: foreach AllPCS(PCS,) (end 0x0027)
+  000f: if !(!HasPlayerCameraState(PCS)) goto 0x0026
+  0023: iterpop
+  0024: return false
+  0026: iternext
+  0027: iterpop
+  0028: return true
+  002a: return return
+  0030: <eos>
+
+function TnCamera.SetTargetFocusParams  (script 27 bytes)
+  0000: self.TargetFocuser.SetTargetFocusParams(FocusParams)
+  0018: return nothing
+  001a: <eos>
+
+function TnCamera.ClearTargetFocusParams  (script 22 bytes)
+  0000: self.TargetFocuser.ClearTargetFocusParams()
+  0013: return nothing
+  0015: <eos>
+
+function TnCamera.ModifyPostProcessSettings  (script 106 bytes)
+  0000: ModifyPostProcessSettings(Settings)
+  000b: self.PostProcessModifier.ModifyPostProcessSettings(Settings)
+  0023: self.TargetFocuser.ModifyPostProcessSettings(self, Settings)
+  003c: TnDebugManager(self.WorldInfo.GetDebugManager()).ModifyPostProcessSettings(Settings)
+  0067: return nothing
+  0069: <eos>
+
+function TnCamera.ActivatePostProcessModification  (script 27 bytes)
+  0000: self.PostProcessModifier.Activate(Modification)
+  0018: return nothing
+  001a: <eos>
+
+function TnCamera.GetLookAtActor  (script 13 bytes)
+  0000: return self.LookAtActor
+  0006: return return
+  000c: <eos>
+
+function TnCamera.GetWiggleData  (script 13 bytes)
+  0000: return self.WiggleData
+  0006: return return
+  000c: <eos>
+
+function TnCamera.UseFovSettings  (script 14 bytes)
+  0000: return self.bUseFovSettings
+  0007: return return
+  000d: <eos>
+
+function TnCamera.GetFovSettings  (script 13 bytes)
+  0000: return self.Fov
+  0006: return return
+  000c: <eos>
+
+function TnCamera.SetFovSettings  (script 22 bytes)
+  0000: self.bUseFovSettings = true
+  0008: self.Fov = Settings
+  0013: return nothing
+  0015: <eos>
+
+function TnCamera.RemoveFovSettings  (script 11 bytes)
+  0000: self.bUseFovSettings = false
+  0008: return nothing
+  000a: <eos>
+
+function TnCamera.DisplayDebug  (script 627 bytes)
+  0000: HUD.Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  002c: HUD.Canvas.DrawTextNormal(("Camera Manager Owner:" @ cast57(TnPlayerController(self.PCOwner)._CameraStrategyManager.get_CameraOwnerName())), , , )
+  0087: (out_YPos += out_YL)
+  0093: HUD.Canvas.SetPos(4.0, out_YPos)
+  00b9: HUD.Canvas.DrawTextNormal(("Camera Manager State:" @ cast57(TnPlayerController(self.PCOwner)._CameraStrategyManager.GetStateName())), , , )
+  010d: (out_YPos += out_YL)
+  0119: HUD.Canvas.SetPos(4.0, out_YPos)
+  013f: HUD.Canvas.DrawTextNormal(("Strategy Type:" @ cast57(TnPlayerController(self.PCOwner)._CameraStrategyManager.get_CameraStrategyName())), , , )
+  0193: (out_YPos += out_YL)
+  019f: HUD.Canvas.SetPos(4.0, out_YPos)
+  01c5: DebugString = "PlayerCameraStates:"
+  01e0: foreach self.PlayerCameraStates(PCS,) (end 0x0204)
+  01ef: AtEqual_StrStr(DebugString, cast56(PCS))
+  0203: iternext
+  0204: iterpop
+  0205: HUD.Canvas.DrawTextNormal(DebugString, , , )
+  0229: (out_YPos += out_YL)
+  0235: HUD.Canvas.SetPos(4.0, out_YPos)
+  025b: DisplayDebug(HUD, out_YL, out_YPos)
+  0270: return nothing
+  0272: <eos>
+
+function TnCamera.StopsProjectile  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnCamera.GetViewPointLocation  (script 33 bytes)
+  0000: GetCameraViewPoint(L, R)
+  0014: return L
+  001a: return return
+  0020: <eos>
+
+function TnCamera.UpdatePawnTransparencies  (script 441 bytes)
+  0000: CameraLocation = TnCamera.GetViewPointLocation()
+  000c: ForceVisible = (IsPlayingCameraAnimation() || MatineeCameraActive())
+  002c: foreach self.WorldInfo.AllPawns(obj'Engine.Pawn', P, , ) (end 0x01b5)
+  004e: if !(((HmPawn(P) == none) && (TnSentryPawnAbility(P) == none))) goto 0x0074
+  0070: iternext
+  0071: goto 0x01b5
+  0074: if !(ForceVisible) goto 0x009a
+  007d: P.SetSemiTransparentOpacityOverride(1.0, false)
+  0096: iternext
+  0097: goto 0x01b5
+  009a: CapsuleRadius = (P.CylinderComponent.CollisionRadius + self.PawnCylinderRadiusPadding)
+  00be: CapsuleHeight = obj'Core.Math'.static.FMax(((P.CylinderComponent.CollisionHeight + self.PawnCylinderHeightPadding) - CapsuleRadius), 0.0)
+  00f9: Offset = (P.Location - CameraLocation)
+  0114: Offset.Z = obj'Core.Math'.static.FMax((obj'Core.Math'.static.Abs(Offset.Z) - CapsuleHeight), 0.0)
+  0157: CameraDistanceFromCapsule = (obj'Core.Math'.static.VSize(Offset) - CapsuleRadius)
+  0174: Opacity = obj'Core.Math'.static.FClamp((CameraDistanceFromCapsule / self.PawnFadeStartDistance), 0.001, 1.0)
+  019b: P.SetSemiTransparentOpacityOverride(Opacity, false)
+  01b4: iternext
+  01b5: iterpop
+  01b6: return nothing
+  01b8: <eos>

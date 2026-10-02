@@ -1,0 +1,26 @@
+function HmPlayAnimationCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.OwningActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayAnimationCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = HmCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmPlayAnimationCameraBehavior.Update  (script 322 bytes)
+  0000: if !(!self.CameraActor.IsPlayingCameraAnimation()) goto 0x001e
+  0018: return Result
+  001e: BaseActor = self.CameraActor.GetAnimationBaseActor()
+  0037: if !((BaseActor == none)) goto 0x004d
+  0042: BaseActor = self.OwningActor
+  004d: BaseLocation = BaseActor.Location
+  0061: BasePawn = Pawn(BaseActor)
+  0071: if !((BasePawn != none)) goto 0x00a1
+  007c: (BaseLocation.Z -= BasePawn.GetCollisionHeight())
+  00a1: AnimFrame = self.CameraActor.GetCurrentAnimFrame()
+  00ba: Result.Location = (BaseLocation + (AnimFrame.Position >> BaseActor.Rotation))
+  00f3: Result.Rotation = obj'Core.Math'.static.TransformRotator(AnimFrame.Rotation, BaseActor.Rotation)
+  0135: return Result
+  013b: return return
+  0141: <eos>

@@ -1,0 +1,12 @@
+function TnGameRules_ScoreKills.ShouldScoreKill  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGameRules_ScoreKills.ScoreKill  (script 171 bytes)
+  0000: if !(((((DamageType != obj'Engine.DmgType_Suicided') && (Killer != none)) && (Killer.PlayerReplicationInfo != none)) && ShouldScoreKill(Killed))) goto 0x0093
+  0046: KilledSelf = (Killer == Killed)
+  0059: Killer.PlayerReplicationInfo.AddScore((KilledSelf ? 0 : 1), (KilledSelf ? 0 : self.TeamScoreAmount))
+  0093: ScoreKill(Killer, Killed, DamageType)
+  00a8: return nothing
+  00aa: <eos>

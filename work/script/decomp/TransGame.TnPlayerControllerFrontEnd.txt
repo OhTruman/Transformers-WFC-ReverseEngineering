@@ -1,0 +1,40 @@
+function TnPlayerControllerFrontEnd.OnReadProfileSettingsComplete  (script 39 bytes)
+  0000: TnPlayerController.OnReadProfileSettingsComplete(LocalUserNum, bWasSuccessful)
+  0011: if !(bWasSuccessful) goto 0x0024
+  001a: CheckForFirstBoot()
+  0024: return nothing
+  0026: <eos>
+
+function TnPlayerControllerFrontEnd.ClearOnlineDelegates  (script 98 bytes)
+  0000: TnPlayerController.ClearOnlineDelegates()
+  0006: if !((self.OnlineSub == none)) goto 0x0013
+  0011: return nothing
+  0013: AccountInterface = OnlineAccountInterfaceEx(cast36(self.OnlineSub.AccountInterface))
+  002e: if !(NotEqual_InterfaceInterface(AccountInterface, OnlineAccountInterfaceEx(none))) goto 0x005f
+  0042: AccountInterface.ClearReadProductKeyAccountNamesCompletedDelegate(delegate.OnReadAccountNamesComplete)
+  005f: return nothing
+  0061: <eos>
+
+function TnPlayerControllerFrontEnd.ReadAccountNames  (script 100 bytes)
+  0000: AccountInterface = OnlineAccountInterfaceEx(cast36(self.OnlineSub.AccountInterface))
+  001b: if !(NotEqual_InterfaceInterface(AccountInterface, OnlineAccountInterfaceEx(none))) goto 0x0061
+  002f: AccountInterface.AddReadProductKeyAccountNamesCompletedDelegate(delegate.OnReadAccountNamesComplete)
+  004c: AccountInterface.ReadProductKeyAccountNames()
+  0061: return nothing
+  0063: <eos>
+
+function TnPlayerControllerFrontEnd.OnReadAccountNamesComplete  (script 206 bytes)
+  0000: AccountInterface = OnlineAccountInterfaceEx(cast36(self.OnlineSub.AccountInterface))
+  001b: AccountInterface.ClearReadProductKeyAccountNamesCompletedDelegate(delegate.OnReadAccountNamesComplete)
+  0038: if !(((cast3a(Result) != cast3a(0)) && (self.UIController != none))) goto 0x00cb
+  0055: self.UIController.ShowPopupUI("$UIText.MessagePrompts.AccountNamesFailedTitle", "$UIText.MessagePrompts.AccountNamesFailedMessage", )
+  00cb: return nothing
+  00cd: <eos>
+
+function TnPlayerControllerFrontEnd.CheckForFirstBoot  (script 83 bytes)
+  0000: PS = TnProfileSettings(self.ProfileSettings)
+  0010: if !(!PS.HasBootedGame()) goto 0x0050
+  0028: PS.SetHasBootedGame()
+  003b: self._AchievementManager.UnlockAvatarReward(0)
+  0050: return nothing
+  0052: <eos>

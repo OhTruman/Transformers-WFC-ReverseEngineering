@@ -1,0 +1,616 @@
+function TnCarForm.set_StrafeForwardBackInput  (script 23 bytes)
+  0000: self._InputState._StrafeForwardBack = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnCarForm.set_StrafeLeftRightInput  (script 23 bytes)
+  0000: self._InputState._StrafeRightLeft = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnCarForm.set_SteeringInput  (script 23 bytes)
+  0000: self._InputState._Steering = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnCarForm.set_DashingInput  (script 25 bytes)
+  0000: self._InputState._Dashing = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnCarForm.set_BoostingInput  (script 25 bytes)
+  0000: self._InputState._Boosting = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnCarForm.set_JumpingInput  (script 25 bytes)
+  0000: self._InputState._Jumping = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnCarForm.get_CarSimulation  (script 13 bytes)
+  0000: return self._CarSimulation
+  0006: return return
+  000c: <eos>
+
+function TnCarForm.set_CarSimulation  (script 14 bytes)
+  0000: self._CarSimulation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarForm.get_HoverSimulation  (script 13 bytes)
+  0000: return self._HoverSimulation
+  0006: return return
+  000c: <eos>
+
+function TnCarForm.set_HoverSimulation  (script 14 bytes)
+  0000: self._HoverSimulation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarForm.get_CarFormBlueprint  (script 18 bytes)
+  0000: return TnCarFormBlueprint(self._Blueprint)
+  000b: return return
+  0011: <eos>
+
+function TnCarForm.get_InputState  (script 13 bytes)
+  0000: return self._InputState
+  0006: return return
+  000c: <eos>
+
+function TnCarForm.get_IsOnTheGround  (script 57 bytes)
+  0000: return (self._Boosting ? self._CarSimulation.get_IsOnTheGround() : self._HoverSimulation.get_IsOnTheGround())
+  0032: return return
+  0038: <eos>
+
+function TnCarForm.get_ViewRotation  (script 22 bytes)
+  0000: return self._InputState._ViewRotation
+  000f: return return
+  0015: <eos>
+
+function TnCarForm.set_ViewRotation  (script 27 bytes)
+  0000: self._InputState.set_ViewRotation(Value)
+  0018: return nothing
+  001a: <eos>
+
+function TnCarForm.get_IsBoosting  (script 14 bytes)
+  0000: return self._Boosting
+  0007: return return
+  000d: <eos>
+
+function TnCarForm.get_VehicleType  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function TnCarForm.get_CanAnchor  (script 18 bytes)
+  0000: return get_IsOnTheGround()
+  000b: return return
+  0011: <eos>
+
+function TnCarForm.get_CosCollisionNormalThreshold  (script 20 bytes)
+  0000: return (0.866 * self.CosCollisionNormalThresholdModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarForm.get_TimeBetweenJumps  (script 20 bytes)
+  0000: return (0.3 * self.TimeBetweenJumpsModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarForm.get_TimeBetweenRolls  (script 20 bytes)
+  0000: return (2.0 * self.TimeBetweenRollsModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarForm.get_ThrusterLinearAccelerationLimit  (script 20 bytes)
+  0000: return (3000.0 * self.ThrusterLinearAccelerationLimitModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarForm.get_ThrusterAngularAccelerationLimit  (script 20 bytes)
+  0000: return (6.0 * self.ThrusterAngularAccelerationLimitModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarForm.get_TimeBetweenDashes  (script 20 bytes)
+  0000: return (2.0 * self.TimeBetweenDashesModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarForm.PostConstruct  (script 34 bytes)
+  0000: TnVehicleForm.PostConstruct()
+  0006: self._DeathMotionController = TnVehicleDeathMotionController(new(self, nothing, obj'TnCarDeathMotionController', nothing, DeltaTime))
+  001f: return nothing
+  0021: <eos>
+
+function TnCarForm.OnRegisterReplicatedObjects  (script 47 bytes)
+  0000: TnVehicleForm.OnRegisterReplicatedObjects(OwningActor)
+  000b: OwningActor.RegisterReplicatedObject(self._InputState, 'CarInputState')
+  002c: return nothing
+  002e: <eos>
+
+function TnCarForm.OnUnregisterReplicatedObjects  (script 47 bytes)
+  0000: TnVehicleForm.OnUnregisterReplicatedObjects(OwningActor)
+  000b: OwningActor.UnregisterReplicatedObject(self._InputState, 'CarInputState')
+  002c: return nothing
+  002e: <eos>
+
+function TnCarForm.OnInitialize  (script 1089 bytes)
+  0000: if !(((get_CarFormBlueprint() == none) || (get_CarFormBlueprint().CarBlueprint == none))) goto 0x002d
+  002b: return nothing
+  002d: self._CarSimulation.Initialize(self._OwnerPawn, self._RigidBody, get_CarFormBlueprint().CarBlueprint, get_CarFormBlueprint().ChassisOffset)
+  0070: self._HoverSimulation.Initialize(self._OwnerPawn, self._RigidBody, get_CarFormBlueprint().HoverBlueprint)
+  00a0: self._CarSimulation._SineBoostScaleStartAngleModifier = self.CarSineBoostScaleStartAngleModifier
+  00b4: self._CarSimulation._SineBoostScaleStopAngleModifier = self.CarSineBoostScaleStopAngleModifier
+  00c8: self._CarSimulation._JumpBoostDurationModifier = self.CarJumpBoostDurationModifier
+  00dc: self._CarSimulation._RollDurationModifier = self.CarRollDurationModifier
+  00f0: self._CarSimulation._DefaultLinearDampingModifier = self.CarDefaultLinearDampingModifier
+  0104: self._CarSimulation._JumpLinearVelocityModifier = self.CarJumpLinearVelocityModifier
+  0118: self._CarSimulation._JumpAngularVelocityModifier = self.CarJumpAngularVelocityModifier
+  012c: self._CarSimulation._RollHorizontalLinearVelocityModifier = self.CarRollHorizontalLinearVelocityModifier
+  0140: self._CarSimulation._RollVerticalLinearVelocityModifier = self.CarRollVerticalLinearVelocityModifier
+  0154: self._CarSimulation._RollAngularVelocityModifier = self.CarRollAngularVelocityModifier
+  0168: self._CarSimulation._TerminalVelocityModifier = self.CarTerminalVelocityModifier
+  017c: self._CarSimulation._LandingTraceDistanceModifier = self.CarLandingTraceDistanceModifier
+  0190: self._CarSimulation._LandingVelocityModifier = self.CarLandingVelocityModifier
+  01a4: self._CarSimulation._AngularDampingModifier = self.CarAngularDampingModifier
+  01b8: self._CarSimulation._MaxAccelerationModifier = self.CarMaxAccelerationModifier
+  01cc: self._CarSimulation._MaxSpeedModifier = self.CarMaxSpeedModifier
+  01e0: self._CarSimulation._LowSpeedBoostScaleModifier = self.CarLowSpeedBoostScaleModifier
+  01f4: self._CarSimulation._LowSpeedBoostThresholdModifier = self.CarLowSpeedBoostThresholdModifier
+  0208: self._CarSimulation._MaxExtraAccelerationModifier = self.CarMaxExtraAccelerationModifier
+  021c: self._CarSimulation._AirControlStrafeAccelerationModifier = self.CarAirControlStrafeAccelerationModifier
+  0230: self._CarSimulation._AirControlTurnAccelerationModifier = self.CarAirControlTurnAccelerationModifier
+  0244: self._CarSimulation._PitchForwardLimitModifier = self.CarPitchForwardLimitModifier
+  0258: self._CarSimulation._PitchForwardAccelerationModifier = self.CarPitchForwardAccelerationModifier
+  026c: self._CarSimulation._RollAngularAccelerationModifier = self.CarRollAngularAccelerationModifier
+  0280: self._CarSimulation._RollLinearAccelerationModifier = self.CarRollLinearAccelerationModifier
+  0294: self._CarSimulation._RollCorrectionAngularAccelerationModifier = self.CarRollCorrectionAngularAccelerationModifier
+  02a8: self._HoverSimulation._CosGroundAngleModifier = self.HoverCosGroundAngleModifier
+  02bc: self._HoverSimulation._StabilityThresholdModifier = self.HoverStabilityThresholdModifier
+  02d0: self._HoverSimulation._DefaultAngularDampingModifier = self.HoverDefaultAngularDampingModifier
+  02e4: self._HoverSimulation._StopLinearDampingModifier = self.HoverStopLinearDampingModifier
+  02f8: self._HoverSimulation._DefaultLinearDampingModifier = self.HoverDefaultLinearDampingModifier
+  030c: self._HoverSimulation._AiMaxLinearSpeedModifier = self.HoverAiMaxLinearSpeedModifier
+  0320: self._HoverSimulation._AiMaxLinearAccelerationModifier = self.HoverAiMaxLinearAccelerationModifier
+  0334: self._HoverSimulation._AiMaxAngularSpeedModifier = self.HoverAiMaxAngularSpeedModifier
+  0348: self._HoverSimulation._AiMaxAngularAccelerationModifier = self.HoverAiMaxAngularAccelerationModifier
+  035c: self._HoverSimulation._DriftDurationModifier = self.HoverDriftDurationModifier
+  0370: self._HoverSimulation._JumpLinearSpeedModifier = self.HoverJumpLinearSpeedModifier
+  0384: self._HoverSimulation._JumpAngularSpeedModifier = self.HoverJumpAngularSpeedModifier
+  0398: self._HoverSimulation._DashDurationModifier = self.HoverDashDurationModifier
+  03ac: self._HoverSimulation._MaxLinearAccelerationModifier = self.HoverMaxLinearAccelerationModifier
+  03c0: self._HoverSimulation._MaxLinearSpeedModifier = self.HoverMaxLinearSpeedModifier
+  03d4: self._HoverSimulation._TurnRateModifier = self.HoverTurnRateModifier
+  03e8: self._HoverSimulation._DashAccelerationModifier = self.HoverDashAccelerationModifier
+  03fc: self._HoverSimulation._DashDecelerationModifier = self.HoverDashDecelerationModifier
+  0410: self._HoverSimulation._DashSpeedModifier = self.HoverDashSpeedModifier
+  0424: self._HoverSimulation._SuspensionRadiusModifier = self.HoverSuspensionRadiusModifier
+  0438: TnCarForm.CreateVisualWheels()
+  043e: return nothing
+  0440: <eos>
+
+function TnCarForm.OnShutdown  (script 63 bytes)
+  0000: if !((self._CarSimulation != none)) goto 0x001e
+  000b: self._CarSimulation.Shutdown()
+  001e: if !((self._HoverSimulation != none)) goto 0x003c
+  0029: self._HoverSimulation.Shutdown()
+  003c: return nothing
+  003e: <eos>
+
+function TnCarForm.OnTeleport  (script 27 bytes)
+  0000: self._InputState.set_ViewRotation(Rotation)
+  0018: return nothing
+  001a: <eos>
+
+function TnCarForm.OnActivate  (script 34 bytes)
+  0000: TnVehicleForm.OnActivate()
+  0006: self._TimeBeforeNextJump = 0.0
+  0011: GotoState('Hovering', , , )
+  001f: return nothing
+  0021: <eos>
+
+function TnCarForm.OnDeactivate  (script 23 bytes)
+  0000: TnVehicleForm.OnDeactivate()
+  0006: GotoState('None', , , )
+  0014: return nothing
+  0016: <eos>
+
+function TnCarForm.OnEndPlay  (script 47 bytes)
+  0000: TnVehicleForm.OnEndPlay()
+  0006: self._FxPlayer.Stop(get_CarFormBlueprint().JumpFX)
+  002c: return nothing
+  002e: <eos>
+
+function TnCarForm.OnUpdate  (script 114 bytes)
+  0000: TnVehicleForm.OnUpdate(DeltaTime)
+  000b: self._InputState.Update()
+  001e: UpdateFx()
+  0028: if !(((self._IsDead || (get_CarFormBlueprint() == none)) || (cast3a(self._OwnerPawn.Physics) != cast3a(10)))) goto 0x0060
+  005e: return nothing
+  0060: DoUpdate(self._PhysicsDeltaTime)
+  006f: return nothing
+  0071: <eos>
+
+function TnCarForm.UpdateAi  (script 64 bytes)
+  0000: if !(self._IsDead) goto 0x000b
+  0009: return nothing
+  000b: self._InputState.Update()
+  001e: DoUpdateAi(self._PhysicsDeltaTime, DesiredLocation, DesiredFacingRotation, StopAtTargetLocation)
+  003d: return nothing
+  003f: <eos>
+
+function TnCarForm.UpdateFx  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCarForm.DoUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCarForm.DoUpdateAi  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCarForm.Driving.BeginState  (script 30 bytes)
+  0000: self._Boosting = true
+  0008: self._CarSimulation.Activate()
+  001b: return nothing
+  001d: <eos>
+
+function TnCarForm.Driving.EndState  (script 9 bytes)
+  0000: StopBoostFx()
+  0006: return nothing
+  0008: <eos>
+
+function TnCarForm.Driving.UpdateFx  (script 77 bytes)
+  0000: if !((!get_FxAllowed() && (self._BoostFx.Length > 0))) goto 0x0023
+  001d: StopBoostFx()
+  0023: if !((get_FxAllowed() && (self._BoostFx.Length == 0))) goto 0x0044
+  003e: PlayBoostFx()
+  0044: UpdateBoostFx()
+  004a: return nothing
+  004c: <eos>
+
+function TnCarForm.Driving.DoUpdate  (script 147 bytes)
+  0000: UpdateJumping(DeltaTime)
+  000b: UpdateRolling(DeltaTime)
+  0016: UpdateSounds()
+  001c: UpdateSimulationInputs()
+  0022: self._CarSimulation.Update(DeltaTime, get_ViewRotation())
+  0044: UpdateVisualWheels(DeltaTime)
+  004f: ClearTransientInputs()
+  0055: if !((cast3a(self._OwnerPawn.Role) >= cast3a(2))) goto 0x008a
+  006e: self._OwnerPawn.SetBase(FindBase(), , , )
+  008a: UpdateBoosting()
+  0090: return nothing
+  0092: <eos>
+
+function TnCarForm.Driving.OnRigidBodyCollision  (script 119 bytes)
+  0000: TnVehicleForm.OnRigidBodyCollision(RigidCollisionData, HitActor)
+  0010: ContactNormal = -obj'Core.Math'.static.Normal(RigidCollisionData.TotalNormalForceVector)
+  0033: Direction = cast39(self._RigidBody.get_Rotation())
+  004f: if !(((ContactNormal dot Direction) > TnCarForm.get_CosCollisionNormalThreshold())) goto 0x0074
+  0066: GotoState('Hovering', , , )
+  0074: return nothing
+  0076: <eos>
+
+function TnCarForm.Driving.UpdateSounds  (script 91 bytes)
+  0000: if !((get_VehicleAudioComponent() == none)) goto 0x0012
+  0010: return nothing
+  0012: get_VehicleAudioComponent()._IsOnGround = get_IsOnTheGround()
+  0031: get_VehicleAudioComponent()._WheelSlipRatio = self._CarSimulation.get_SlipAngle()
+  0058: return nothing
+  005a: <eos>
+
+function TnCarForm.Driving.PlayBoostFx  (script 66 bytes)
+  0000: self._BoostFx = self._FxPlayer.Play(self._Blueprint.BoostFx)
+  0027: get_VehicleAudioComponent().PlayBoostSound()
+  003f: return nothing
+  0041: <eos>
+
+function TnCarForm.Driving.StopBoostFx  (script 68 bytes)
+  0000: self._FxPlayer.Stop(self._Blueprint.BoostFx)
+  0021: get_VehicleAudioComponent().StopBoostSound()
+  0039: self._BoostFx.Length = 0
+  0041: return nothing
+  0043: <eos>
+
+function TnCarForm.Driving.UpdateBoostFx  (script 185 bytes)
+  0000: BoostColor = ColorLerp(self._OwnerPawn.get_EnergonColor(), obj'Core.Colors'.static.Yellow(), self._CarSimulation.get_NormalizedJumpTimeRemaining())
+  0049: BoostColor.A = cast43(obj'Core.Math'.static.Lerp(100.0, 255.0, self._CarSimulation.get_NormalizedJumpTimeRemaining()))
+  0084: foreach self._BoostFx(PSC,) (end 0x00b5)
+  0093: PSC.SetColorParameter('Color', BoostColor)
+  00b4: iternext
+  00b5: iterpop
+  00b6: return nothing
+  00b8: <eos>
+
+function TnCarForm.Driving.UpdateVisualWheels  (script 388 bytes)
+  0000: foreach self._VisualWheels(CurrentVisualWheel,) (end 0x0180)
+  000f: PhysicsWheel = cast3a(CurrentVisualWheel.PhysicsWheel)[self._CarSimulation._WheelAssemblies]
+  0036: WheelDisplacement = obj'Core.Math'.static.FMax(0.0, ((((CurrentVisualWheel.LocalPosition.Z - PhysicsWheel.get_LocalPosition().Z) + PhysicsWheel.get_WheelRadius()) - CurrentVisualWheel.Radius) + PhysicsWheel._Suspension.get_Length()))
+  00cc: (CurrentVisualWheel.WheelControl.WheelRoll += (((cast3f(360) * DeltaTime) * PhysicsWheel._LocalSpaceVelocity.X) / ((cast3f(2) * 3.1415927) * CurrentVisualWheel.Radius)))
+  012f: CurrentVisualWheel.WheelControl.WheelDisplacement = -WheelDisplacement
+  0150: CurrentVisualWheel.WheelControl.WheelSteering = (PhysicsWheel._SteeringAngle * 57.2957802)
+  017f: iternext
+  0180: iterpop
+  0181: return nothing
+  0183: <eos>
+
+function TnCarForm.Driving.UpdateSimulationInputs  (script 132 bytes)
+  0000: self._CarSimulation._Accelerator = 1.0
+  0014: self._CarSimulation._Steering = ((obj'Core.Math'.static.Sign(self._InputState._Steering) * self._InputState._Steering) * self._InputState._Steering)
+  0064: self._CarSimulation._RollControl = self._InputState._StrafeRightLeft
+  0081: return nothing
+  0083: <eos>
+
+function TnCarForm.Driving.UpdateBoosting  (script 37 bytes)
+  0000: if !(!self._InputState._Boosting) goto 0x0022
+  0014: GotoState('Hovering', , , )
+  0022: return nothing
+  0024: <eos>
+
+function TnCarForm.Driving.UpdateJumping  (script 230 bytes)
+  0000: if !(!self._CarSimulation.get_IsOnTheGround()) goto 0x001a
+  0018: return nothing
+  001a: self._TimeBeforeNextJump = obj'Core.Math'.static.FMax(0.0, (self._TimeBeforeNextJump - DeltaTime))
+  003c: if !((self._TimeBeforeNextJump != 0.0)) goto 0x004d
+  004b: return nothing
+  004d: if !(!self._InputState._Jumping) goto 0x0063
+  0061: return nothing
+  0063: self._CarSimulation.Jump()
+  0076: self._TimeBeforeNextJump = TnCarForm.get_TimeBetweenJumps()
+  0082: get_VehicleAudioComponent().PlayAscendSound()
+  009a: self._FxPlayer.Play(get_CarFormBlueprint().JumpFX)
+  00c5: PlayForceFeedbackEvent(get_CarFormBlueprint().JumpForceFeedback, )
+  00e3: return nothing
+  00e5: <eos>
+
+function TnCarForm.Driving.UpdateRolling  (script 200 bytes)
+  0000: if !(!self._CarSimulation.get_CanRoll()) goto 0x001a
+  0018: return nothing
+  001a: if !(!CanUseSpecialMove()) goto 0x002b
+  0029: return nothing
+  002b: if !(!self._InputState._Dashing) goto 0x0041
+  003f: return nothing
+  0041: self._CarSimulation.Roll()
+  0054: StartSpecialMoveCooldown(TnCarForm.get_TimeBetweenRolls())
+  0064: get_VehicleAudioComponent().PlayAscendSound()
+  007c: self._FxPlayer.Play(get_CarFormBlueprint().JumpFX)
+  00a7: PlayForceFeedbackEvent(get_CarFormBlueprint().RollForceFeedback, )
+  00c5: return nothing
+  00c7: <eos>
+
+function TnCarForm.Driving.ClearTransientInputs  (script 37 bytes)
+  0000: self._InputState._Jumping = false
+  0011: self._InputState._Dashing = false
+  0022: return nothing
+  0024: <eos>
+
+function TnCarForm.Driving.FindBase  (script 175 bytes)
+  0000: if !(!self._CarSimulation.get_IsOnTheGround()) goto 0x001a
+  0018: return none
+  001a: WheelAssemblies = self._CarSimulation._WheelAssemblies
+  002e: foreach WheelAssemblies(WheelAssembly,) (end 0x00a5)
+  003d: if !(!WheelAssembly.get_IsTouchingTheGround()) goto 0x0059
+  0055: iternext
+  0056: goto 0x00a5
+  0059: HitActor = WheelAssembly.get_HitActor()
+  0072: if !(((HitActor != none) && (InterpActor(HitActor.GetBaseMost()) != none))) goto 0x00a4
+  009d: iterpop
+  009e: return HitActor
+  00a4: iternext
+  00a5: iterpop
+  00a6: return none
+  00a8: return return
+  00ae: <eos>
+
+function TnCarForm.Driving.OnDisplayDebug  (script 762 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0037: X = ((Canvas.ClipX / cast3f(2)) + cast3f(400))
+  005a: Y = ((Canvas.ClipY / cast3f(2)) - cast3f(300))
+  007d: Canvas.SetPos(X, Y)
+  009a: Canvas.DrawBox(140.0, 65.0)
+  00b7: Canvas.SetPos((X + cast3f(15)), (Y + cast3f(15)))
+  00e0: Canvas.DrawTextNormal((("Speed: " $ cast53(cast44((self._RigidBody.get_ForwardSpeed() * 0.0223694)))) $ " MPH"), , , )
+  0128: Canvas.SetPos((X + cast3f(15)), (Y + cast3f(45)))
+  0151: Canvas.DrawTextNormal((("Slip: " $ cast53(cast44((self._CarSimulation.get_SlipAngle() * 57.2957802)))) $ " Degrees"), , , )
+  019b: X = ((Canvas.ClipX * 0.5) - cast3f(250))
+  01bc: Y = 50.0
+  01c7: WheelAssemblies = self._CarSimulation._WheelAssemblies
+  01db: ChassisWidth = ((get_VehicleMeshComponent().SkeletalMesh.Bounds.BoxExtent.Y / get_VehicleMeshComponent().SkeletalMesh.Bounds.BoxExtent.X) * cast3f(350))
+  0250: ChassisHeight = 350.0
+  025b: Canvas.SetPos(((0.5 * Canvas.ClipX) - (ChassisWidth * 0.5)), ((0.5 * Canvas.ClipY) - (ChassisHeight * 0.5)))
+  02b4: Canvas.DrawBox(ChassisWidth, ChassisHeight)
+  02d1: foreach WheelAssemblies(WheelAssembly,) (end 0x02f6)
+  02e0: DisplayDebugWheel(HUD, WheelAssembly, Canvas)
+  02f5: iternext
+  02f6: iterpop
+  02f7: return nothing
+  02f9: <eos>
+
+function TnCarForm.Driving.DisplayDebugWheel  (script 835 bytes)
+  0000: WheelLocationScale = (get_VehicleMeshComponent().SkeletalMesh.Bounds.BoxExtent.X * 0.8)
+  003f: LocalWheelPosition = WheelAssembly.get_LocalPosition()
+  0058: X = (((LocalWheelPosition.Y / WheelLocationScale) * cast3f(350)) + (0.5 * Canvas.ClipX))
+  0095: Y = (((-LocalWheelPosition.X / WheelLocationScale) * cast3f(350)) + (0.5 * Canvas.ClipY))
+  00d4: Canvas.SetDrawColor(0, 0, 0, cast3d(255))
+  00f1: Canvas.SetPos((X - cast3f(15)), (Y - cast3f(25)))
+  011a: Canvas.DrawRotatedRect(obj'Core.Math'.static.MakeRotator(0, cast44((WheelAssembly._SteeringAngle * 10430.21875)), 0), 30.0, 50.0, )
+  0164: TractionForceDirection = (obj'Core.Math'.static.MakeVector((WheelAssembly._Tire._LateralForce / cast3f(10000)), 0.0, 0.0) >> obj'Core.Math'.static.MakeRotator(0, cast44((WheelAssembly._SteeringAngle * 10430.21875)), 0))
+  01d6: Canvas.Draw2DLine(X, Y, (X + TractionForceDirection.X), (Y + TractionForceDirection.Y), MakeColor(cast3d(255), cast3d(255), cast3d(255), ))
+  0238: (X += (obj'Core.Math'.static.Sign(LocalWheelPosition.Y) * cast3f(50)))
+  0268: if !((X < (Canvas.ClipX * 0.5))) goto 0x0295
+  0287: (X -= cast3f(500))
+  0295: if !(HUD.ShouldDisplayDebug('Suspension')) goto 0x02e6
+  02b4: WheelAssembly._Suspension.DisplayDebug(Canvas, X, Y, 500, 140)
+  02e6: if !(HUD.ShouldDisplayDebug('tires')) goto 0x0340
+  0305: WheelAssembly._Tire.DisplayDebug(Canvas, X, (Y + cast3f(150)), 500.0, 50.0)
+  0340: return nothing
+  0342: <eos>
+
+function TnCarForm.Hovering.BeginState  (script 49 bytes)
+  0000: self._Boosting = false
+  0008: self._HoverSimulation.Activate()
+  001b: self._HoverSimulation.Drift()
+  002e: return nothing
+  0030: <eos>
+
+function TnCarForm.Hovering.EndState  (script 9 bytes)
+  0000: StopHoverFx()
+  0006: return nothing
+  0008: <eos>
+
+function TnCarForm.Hovering.UpdateFx  (script 446 bytes)
+  0000: if !((!get_FxAllowed() && (self._HoverFx.Length > 0))) goto 0x0023
+  001d: StopHoverFx()
+  0023: if !((get_FxAllowed() && (self._HoverFx.Length == 0))) goto 0x0044
+  003e: PlayHoverFx()
+  0044: Params = get_CarFormBlueprint().HoverFX
+  005d: self._SmoothLocalLinearAcceleration = obj'Core.Math'.static.VLerp(self._SmoothLocalLinearAcceleration, self._RigidBody.get_LocalLinearAcceleration(), 0.1)
+  0094: self._SmoothLocalAngularAcceleration = obj'Core.Math'.static.VLerp(self._SmoothLocalAngularAcceleration, self._RigidBody.get_LocalAngularAcceleration(), 0.1)
+  00cb: LocalGravity = self._RigidBody.RotateToLocalSpace(self._RigidBody.get_Gravity())
+  00f9: I = 0
+  0100: if !((I < self._HoverFx.Length)) goto 0x018e
+  0110: FxAmount = CalculateBoosterFxAmount(I[Params].Socket, LocalGravity)
+  0137: LargestContribution = obj'Core.Math'.static.FMax(obj'Core.Math'.static.VSize(FxAmount), LargestContribution)
+  015d: I[self._HoverFx].SetVectorParameter('Size', FxAmount)
+  0184: AddAdd_PreInt(I)
+  018b: goto 0x0100
+  018e: if !((get_VehicleAudioComponent() != none)) goto 0x01bb
+  019e: get_VehicleAudioComponent().set_BoosterAmount(LargestContribution)
+  01bb: return nothing
+  01bd: <eos>
+
+function TnCarForm.Hovering.CalculateBoosterFxAmount  (script 329 bytes)
+  0000: Socket = get_VehicleMeshComponent().GetSocketByName(SocketName)
+  0023: if !((Socket == none)) goto 0x003c
+  002e: return vect(0,0,0)
+  003c: LocalLocation = self._RigidBody.TransformToLocalSpace(get_VehicleMeshComponent().GetSocketWorldLocation(SocketName))
+  0073: LocalDirection = self._RigidBody.RotateToLocalSpace(-cast39(get_VehicleMeshComponent().GetSocketWorldRotation(SocketName)))
+  00ae: LocalScale = Socket.RelativeScale
+  00c2: LinearContribution = obj'HoverPhysics'.static.CalculateThrusterLinearContribution(LocalDirection, LocalGravity, self._SmoothLocalLinearAcceleration, TnCarForm.get_ThrusterLinearAccelerationLimit())
+  00f0: AngularContribution = obj'HoverPhysics'.static.CalculateThrusterAngularContribution(LocalLocation, LocalDirection, self._SmoothLocalAngularAcceleration, TnCarForm.get_ThrusterAngularAccelerationLimit())
+  011e: return (obj'Core.Math'.static.FMin(1.0, (LinearContribution + AngularContribution)) * LocalScale)
+  0142: return return
+  0148: <eos>
+
+function TnCarForm.Hovering.DoUpdate  (script 209 bytes)
+  0000: UpdateJumping(DeltaTime)
+  000b: UpdateDashing(DeltaTime)
+  0016: UpdateSounds()
+  001c: if !((!self._IsDead && (TnAiController(self._OwnerPawn.Controller) == none))) goto 0x008d
+  0042: self._HoverSimulation.Update(DeltaTime, self._InputState._StrafeForwardBack, self._InputState._StrafeRightLeft, cast3f(get_ViewRotation().Yaw))
+  008d: if !((cast3a(self._OwnerPawn.Role) >= cast3a(2))) goto 0x00c2
+  00a6: self._OwnerPawn.SetBase(FindBase(), , , )
+  00c2: ClearTransientInputs()
+  00c8: UpdateBoosting()
+  00ce: return nothing
+  00d0: <eos>
+
+function TnCarForm.Hovering.DoUpdateAi  (script 43 bytes)
+  0000: self._HoverSimulation.UpdateFromLocationAndRotation(DeltaTime, DesiredLocation, DesiredFacingRotation, StopAtTargetLocation)
+  0028: return nothing
+  002a: <eos>
+
+function TnCarForm.Hovering.PlayHoverFx  (script 47 bytes)
+  0000: self._HoverFx = self._FxPlayer.Play(get_CarFormBlueprint().HoverFX)
+  002c: return nothing
+  002e: <eos>
+
+function TnCarForm.Hovering.StopHoverFx  (script 49 bytes)
+  0000: self._FxPlayer.Stop(get_CarFormBlueprint().HoverFX)
+  0026: self._HoverFx.Length = 0
+  002e: return nothing
+  0030: <eos>
+
+function TnCarForm.Hovering.UpdateBoosting  (script 93 bytes)
+  0000: if !((self._InputState._Boosting && ((cast3a(self._OwnerPawn.get_SimulationMode()) == cast3a(0)) || !self._HoverSimulation.get_IsDrifting()))) goto 0x005a
+  004c: GotoState('Driving', , , )
+  005a: return nothing
+  005c: <eos>
+
+function TnCarForm.Hovering.UpdateSounds  (script 206 bytes)
+  0000: if !((get_VehicleAudioComponent() == none)) goto 0x0012
+  0010: return nothing
+  0012: get_VehicleAudioComponent()._IsOnGround = self._HoverSimulation.get_IsOnTheGround()
+  003a: get_VehicleAudioComponent()._WheelSlipRatio = 0.0
+  0053: if !((self._InputState._StrafeForwardBack > 0.01)) goto 0x0084
+  006b: get_VehicleAudioComponent()._EngineLoadState = 1
+  0081: goto 0x00cb
+  0084: if !((self._InputState._StrafeForwardBack < -0.01)) goto 0x00b5
+  009c: get_VehicleAudioComponent()._EngineLoadState = 2
+  00b2: goto 0x00cb
+  00b5: get_VehicleAudioComponent()._EngineLoadState = 0
+  00cb: return nothing
+  00cd: <eos>
+
+function TnCarForm.Hovering.UpdateJumping  (script 269 bytes)
+  0000: if !((self._HoverSimulation.get_IsOnTheGround() && (self._TimeBeforeNextJump > 0.0))) goto 0x0049
+  0027: self._TimeBeforeNextJump = obj'Core.Math'.static.FMax(0.0, (self._TimeBeforeNextJump - DeltaTime))
+  0049: if !(!self._InputState._Jumping) goto 0x005f
+  005d: return nothing
+  005f: if !((self._TimeBeforeNextJump != 0.0)) goto 0x0070
+  006e: return nothing
+  0070: if !(!self._HoverSimulation.get_IsOnTheGround()) goto 0x008a
+  0088: return nothing
+  008a: self._HoverSimulation.Jump()
+  009d: self._TimeBeforeNextJump = TnCarForm.get_TimeBetweenJumps()
+  00a9: PlayForceFeedbackEvent(get_CarFormBlueprint().JumpForceFeedback, )
+  00c7: self._FxPlayer.Play(get_CarFormBlueprint().JumpFX)
+  00f2: get_VehicleAudioComponent().PlayAscendSound()
+  010a: return nothing
+  010c: <eos>
+
+function TnCarForm.Hovering.UpdateDashing  (script 68 bytes)
+  0000: if !(!CanUseSpecialMove()) goto 0x0011
+  000f: return nothing
+  0011: if !(!self._InputState._Dashing) goto 0x0027
+  0025: return nothing
+  0027: DoDash()
+  0031: StartSpecialMoveCooldown(TnCarForm.get_TimeBetweenDashes())
+  0041: return nothing
+  0043: <eos>
+
+function TnCarForm.Hovering.DoDash  (script 249 bytes)
+  0000: self._HoverSimulation.Dash(((obj'Core.Math'.static.Abs(self._InputState._StrafeRightLeft) > obj'Core.Math'.static.Abs(self._InputState._StrafeForwardBack)) ? obj'Core.Math'.static.MakeVector(0.0, obj'Core.Math'.static.Sign(self._InputState._StrafeRightLeft), 0.0) : obj'Core.Math'.static.MakeVector(obj'Core.Math'.static.Sign(self._InputState._StrafeForwardBack), 0.0, 0.0)))
+  00c8: if !(self._HoverSimulation.get_IsDashing()) goto 0x00f6
+  00de: get_VehicleAudioComponent().PlayBoosterSound()
+  00f6: return nothing
+  00f8: <eos>
+
+function TnCarForm.Hovering.ClearTransientInputs  (script 37 bytes)
+  0000: self._InputState._Jumping = false
+  0011: self._InputState._Dashing = false
+  0022: return nothing
+  0024: <eos>
+
+function TnCarForm.Hovering.FindBase  (script 126 bytes)
+  0000: if !(!self._HoverSimulation.get_IsOnTheGround()) goto 0x001a
+  0018: return none
+  001a: if !(((self._HoverSimulation.get_Base() != none) && (InterpActor(self._HoverSimulation.get_Base().GetBaseMost()) != none))) goto 0x0075
+  0061: return self._HoverSimulation.get_Base()
+  0075: return none
+  0077: return return
+  007d: <eos>
+
+function TnCarForm.Hovering.OnDisplayDebug  (script 155 bytes)
+  0000: HUD.Canvas.DrawTextNormal((self._HoverSimulation.get_ShouldUpright() ? "Uprighting" : "Not uprighting"), , , )
+  0053: HUD.Canvas.DrawTextNormal((self._HoverSimulation.get_HasContact() ? "Contact" : "Air"), , , )
+  0098: return nothing
+  009a: <eos>
+
+function TnCarForm.CreateVisualWheels  (script 233 bytes)
+  0000: foreach get_CarFormBlueprint().VisualWheels(CurrentWheelInfo,) (end 0x00e5)
+  001d: CurrentWheel.WheelControl = SkelControlWheel(get_VehicleMeshComponent().FindSkelControl(CurrentWheelInfo.SkelControlName))
+  005b: CurrentWheel.LocalPosition = get_VehicleMeshComponent().GetBoneLocation(CurrentWheelInfo.BoneName, 1)
+  0095: CurrentWheel.Radius = CurrentWheelInfo.Radius
+  00b6: CurrentWheel.PhysicsWheel = CurrentWheelInfo.PhysicsWheel
+  00d7: self._VisualWheels.AddItem(CurrentWheel)
+  00e4: iternext
+  00e5: iterpop
+  00e6: return nothing
+  00e8: <eos>

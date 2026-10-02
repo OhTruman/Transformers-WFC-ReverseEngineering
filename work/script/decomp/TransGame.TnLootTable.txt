@@ -1,0 +1,71 @@
+function TnLootTable.GetLoot  (script 623 bytes)
+  0000: if !((LootClassification == 'None')) goto 0x0019
+  0013: return ReturnLoot
+  0019: LootTableIndex = self.LootTables.Find('LootClassification',LootClassification)
+  0035: if !((LootTableIndex == -1)) goto 0x009c
+  0044: LogInternal(((("ERROR: Could not find Loot Classification:" @ cast57(LootClassification)) $ ", in LootTable:") @ cast56(self)), , , )
+  0096: return ReturnLoot
+  009c: foreach LootTableIndex[self.LootTables].CommonItems(SubTable,) (end 0x017e)
+  00bc: if !((((SubTable.GameDifficulty == -1) || (SubTable.GameDifficulty == GameDifficulty)) && ((SubTable.TotalWeight > 0.0) && (obj'Core.Random'.static.RandomFloat(100.0) <= (SubTable.ChanceToDrop + Modifiers.CommonItemBonus))))) goto 0x017d
+  014f: ReturnLoot.AddItem(TnLootTable.FindLootFromArray(SubTable.Items, SubTable.TotalWeight))
+  017d: iternext
+  017e: iterpop
+  017f: foreach LootTableIndex[self.LootTables].RareItems(SubTable,) (end 0x0261)
+  019f: if !((((SubTable.GameDifficulty == -1) || (SubTable.GameDifficulty == GameDifficulty)) && ((SubTable.TotalWeight > 0.0) && (obj'Core.Random'.static.RandomFloat(100.0) <= (SubTable.ChanceToDrop + Modifiers.RareItemBonus))))) goto 0x0260
+  0232: ReturnLoot.AddItem(TnLootTable.FindLootFromArray(SubTable.Items, SubTable.TotalWeight))
+  0260: iternext
+  0261: iterpop
+  0262: return ReturnLoot
+  0268: return return
+  026e: <eos>
+
+function TnLootTable.FindLootFromArray  (script 296 bytes)
+  0000: ChosenWeight = obj'Core.Random'.static.RandomFloat(TotalWeight)
+  001e: I = (Loots.Length - 1)
+  002d: if !((I >= 0)) goto 0x008c
+  0038: (Current += I[Loots].Weight)
+  0055: if !(((ChosenWeight + Current) >= TotalWeight)) goto 0x0082
+  006b: return I[Loots].DropClass
+  0082: SubtractSubtract_PreInt(I)
+  0089: goto 0x002d
+  008c: LogInternal("ERROR: Total weight is too high, loot table package needs to be resaved.  Defaulting to random item", , , )
+  00f6: return obj'Core.Random'.static.RandomInt(Loots.Length)[Loots].DropClass
+  0121: return return
+  0127: <eos>
+
+function TnLootTable.GetTossSpeed  (script 111 bytes)
+  0000: LootTableIndex = self.LootTables.Find('LootClassification',LootClassification)
+  001c: if !(((LootTableIndex != -1) && (LootTableIndex[self.LootTables].OverrideTossSpeed > cast3f(0)))) goto 0x0062
+  004b: return LootTableIndex[self.LootTables].OverrideTossSpeed
+  0062: return self.DefaultTossSpeed
+  0068: return return
+  006e: <eos>
+
+function TnLootTable.OnPostEditChange  (script 317 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: I = 0
+  0012: if !((I < self.LootTables.Length)) goto 0x013a
+  0022: J = 0
+  0029: if !((J < I[self.LootTables].CommonItems.Length)) goto 0x00a9
+  004a: J[I[self.LootTables].CommonItems].TotalWeight = TnLootTable.CalcTotalWeight(J[I[self.LootTables].CommonItems].Items)
+  009f: AddAdd_PreInt(J)
+  00a6: goto 0x0029
+  00a9: J = 0
+  00b0: if !((J < I[self.LootTables].RareItems.Length)) goto 0x0130
+  00d1: J[I[self.LootTables].RareItems].TotalWeight = TnLootTable.CalcTotalWeight(J[I[self.LootTables].RareItems].Items)
+  0126: AddAdd_PreInt(J)
+  012d: goto 0x00b0
+  0130: AddAdd_PreInt(I)
+  0137: goto 0x0012
+  013a: return nothing
+  013c: <eos>
+
+function TnLootTable.CalcTotalWeight  (script 75 bytes)
+  0000: I = 0
+  0007: if !((I < Items.Length)) goto 0x003e
+  0017: (Total += I[Items].Weight)
+  0034: AddAdd_PreInt(I)
+  003b: goto 0x0007
+  003e: return Total
+  0044: return return
+  004a: <eos>

@@ -1,0 +1,957 @@
+function HmPlayerController.PostBeginPlay  (script 15 bytes)
+  0000: PostBeginPlay()
+  0006: HmPlayerController.SetNextLazyProfileWriteTime()
+  000c: return nothing
+  000e: <eos>
+
+function HmPlayerController.AddPostProcessChainF  (script 23 bytes)
+  0000: AddPostProcessChain(Chain)
+  0014: return nothing
+  0016: <eos>
+
+function HmPlayerController.RemovePostProcessChainF  (script 23 bytes)
+  0000: RemovePostProcessChain(Chain)
+  0014: return nothing
+  0016: <eos>
+
+function HmPlayerController.AddPostProcessChain  (script 149 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer != none)) goto 0x0036
+  001b: LocalPlayer.AddPostProcessChain(Chain)
+  0033: goto 0x0092
+  0036: LogInternal((("WARN:" @ "Player is not local. Cannot append post process chain name ") @ cast56(Chain)), 'HmPlayerController', , )
+  0092: return nothing
+  0094: <eos>
+
+function HmPlayerController.GetPostProcessChain  (script 51 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer == none)) goto 0x001d
+  001b: return none
+  001d: return LocalPlayer.PlayerPostProcess
+  002c: return return
+  0032: <eos>
+
+function HmPlayerController.RemovePostProcessChain  (script 149 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer != none)) goto 0x0036
+  001b: LocalPlayer.RemovePostProcessChain(Chain)
+  0033: goto 0x0092
+  0036: LogInternal((("WARN:" @ "Player is not local. Cannot remove post process chain name ") @ cast56(Chain)), 'HmPlayerController', , )
+  0092: return nothing
+  0094: <eos>
+
+function HmPlayerController.HasPostProcessChain  (script 61 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer != none)) goto 0x0034
+  001b: return LocalPlayer.HasPostProcessChain(Chain)
+  0034: return false
+  0036: return return
+  003c: <eos>
+
+function HmPlayerController.AddPostProcessEffect  (script 150 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer != none)) goto 0x0036
+  001b: LocalPlayer.AddPostProcessEffect(Effect)
+  0033: goto 0x0093
+  0036: LogInternal((("WARN:" @ "Player is not local. Cannot append post process effect name ") @ cast56(Effect)), 'HmPlayerController', , )
+  0093: return nothing
+  0095: <eos>
+
+function HmPlayerController.AddPostProcessEffectToFront  (script 54 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer != none)) goto 0x0033
+  001b: LocalPlayer.AddPostProcessEffectToFront(Effect)
+  0033: return nothing
+  0035: <eos>
+
+function HmPlayerController.RemovePostProcessEffect  (script 150 bytes)
+  0000: LocalPlayer = LocalPlayer(self.Player)
+  0010: if !((LocalPlayer != none)) goto 0x0036
+  001b: LocalPlayer.RemovePostProcessEffect(Effect)
+  0033: goto 0x0093
+  0036: LogInternal((("WARN:" @ "Player is not local. Cannot append post process effect name ") @ cast56(Effect)), 'HmPlayerController', , )
+  0093: return nothing
+  0095: <eos>
+
+function HmPlayerController.OnCameraShake  (script 454 bytes)
+  0000: AmplitudeScale = (inAction.GlobalScale * inAction.GlobalAmplitudeScale)
+  0024: FrequencyScale = (inAction.GlobalScale * inAction.GlobalFrequencyScale)
+  0048: CameraShakeDef = inAction.CameraShake
+  005c: (CameraShakeDef.TimeDuration *= inAction.GlobalScale)
+  007c: (CameraShakeDef.RotAmplitude *= AmplitudeScale)
+  0093: (CameraShakeDef.RotFrequency *= FrequencyScale)
+  00aa: (CameraShakeDef.LocAmplitude *= AmplitudeScale)
+  00c1: (CameraShakeDef.LocFrequency *= FrequencyScale)
+  00d8: (CameraShakeDef.FOVAmplitude *= AmplitudeScale)
+  00ef: (CameraShakeDef.FOVFrequency *= FrequencyScale)
+  0106: if !(0[inAction.InputLinks].bHasImpulse) goto 0x0137
+  0125: PlayCameraShake(CameraShakeDef)
+  0134: goto 0x01c3
+  0137: if !(1[inAction.InputLinks].bHasImpulse) goto 0x017e
+  0156: CameraShakeDef.TimeDuration = 9999999.0
+  016c: PlayCameraShake(CameraShakeDef)
+  017b: goto 0x01c3
+  017e: if !(2[inAction.InputLinks].bHasImpulse) goto 0x01c3
+  019e: CameraShakeDef.TimeDuration = -1.0
+  01b4: PlayCameraShake(CameraShakeDef)
+  01c3: return nothing
+  01c5: <eos>
+
+function HmPlayerController.PlayCameraShake  (script 164 bytes)
+  0000: if !((HmCamera(self.PlayerCamera) != none)) goto 0x00a1
+  0010: HmCamera(self.PlayerCamera).ScreenShake.StartNewShake(ScreenShake.TimeDuration, ScreenShake.RotAmplitude, ScreenShake.RotFrequency, ScreenShake.LocAmplitude, ScreenShake.LocFrequency, ScreenShake.FOVAmplitude, ScreenShake.FOVFrequency)
+  00a1: return nothing
+  00a3: <eos>
+
+function HmPlayerController.CreateLookScales  (script 37 bytes)
+  0000: Scales = new(none, InstanceName, obj'HmLookScales', nothing, AttachTreeCallback)
+  0018: return Scales
+  001e: return return
+  0024: <eos>
+
+function HmPlayerController.GetRampedLookRates  (script 33 bytes)
+  0000: GetLookRates(RawJoyLookRight, RawJoyLookUp, LookRightScale, LookUpScale)
+  001e: return nothing
+  0020: <eos>
+
+function HmPlayerController.GetLookRates  (script 245 bytes)
+  0000: LookRightScale = self.CurrentLookScales.LookRightScale
+  0014: LookUpScale = self.CurrentLookScales.LookUpScale
+  0028: RawJoyVector = obj'Core.Math'.static.MakeVector(RawJoyLookRight, RawJoyLookUp, 0.0)
+  0050: RawJoyVectorLenSquared = obj'Core.Math'.static.VSizeSq(RawJoyVector)
+  006e: StepThresholdSquared = (self.CurrentLookScales.StepThreshold * self.CurrentLookScales.StepThreshold)
+  0092: if !((RawJoyVectorLenSquared < StepThresholdSquared)) goto 0x00cb
+  00a1: (LookRightScale *= self.CurrentLookScales.BelowStepMultiplier)
+  00b6: (LookUpScale *= self.CurrentLookScales.BelowStepMultiplier)
+  00cb: (LookRightScale += (self.CurrentLookScales.RawJoyLookRightModifier * obj'Core.Math'.static.Abs(RawJoyLookRight)))
+  00f2: return nothing
+  00f4: <eos>
+
+function HmPlayerController.ApplyLookCompensatedStrafeStickiness  (script 13 bytes)
+  0000: return PreviousLookRotation
+  0006: return return
+  000c: <eos>
+
+function HmPlayerController.ShowPauseMenu  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.DebugCamMoveForward  (script 25 bytes)
+  0000: self.DebugCamVelocity.X = Speed
+  0016: return nothing
+  0018: <eos>
+
+function HmPlayerController.DebugCamStrafe  (script 25 bytes)
+  0000: self.DebugCamVelocity.Y = Speed
+  0016: return nothing
+  0018: <eos>
+
+function HmPlayerController.DebugCamMoveUp  (script 25 bytes)
+  0000: self.DebugCamVelocity.Z = Speed
+  0016: return nothing
+  0018: <eos>
+
+function HmPlayerController.DebugCamPitch  (script 25 bytes)
+  0000: self.DebugCamAngularVelocity.Pitch = Speed
+  0016: return nothing
+  0018: <eos>
+
+function HmPlayerController.DebugCamTurn  (script 25 bytes)
+  0000: self.DebugCamAngularVelocity.Yaw = Speed
+  0016: return nothing
+  0018: <eos>
+
+function HmPlayerController.DebugCamStop  (script 41 bytes)
+  0000: self.DebugCamVelocity = vect(0,0,0)
+  0013: self.DebugCamAngularVelocity = rot(0,0,0)
+  0026: return nothing
+  0028: <eos>
+
+function HmPlayerController.SetActiveCameraStrategy  (script 37 bytes)
+  0000: HmCamera(self.PlayerCamera).SetActiveCameraStrategy(CameraStrategy, Parent)
+  0022: return nothing
+  0024: <eos>
+
+function HmPlayerController.PawnDied  (script 46 bytes)
+  0000: PawnDied(P)
+  000b: self.ActiveTargeting = none
+  0012: if !(!IsLocalPlayerController()) goto 0x002b
+  0021: ClientPawnDied()
+  002b: return nothing
+  002d: <eos>
+
+function HmPlayerController.ClientPawnDied  (script 22 bytes)
+  0000: SetCameraMode('Death')
+  0013: return nothing
+  0015: <eos>
+
+function HmPlayerController.ServerPlayDialog  (script 88 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'HmPlayerController', PC) (end 0x0054)
+  0020: if !((PC != self)) goto 0x0053
+  002b: PC.ClientPlayDialog(Speaker, SoundCue, Type, Deactivate)
+  0053: iternext
+  0054: iterpop
+  0055: return nothing
+  0057: <eos>
+
+function HmPlayerController.ClientPlayDialog  (script 113 bytes)
+  0000: if !(((none == Speaker) || (none == SoundCue))) goto 0x001a
+  0018: return nothing
+  001a: DialogInterface = HmDialogInterface(Speaker)
+  002a: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0040
+  003e: return nothing
+  0040: DialogInterface.PlayDialog(SoundCue, false, Type, Deactivate, delegate.None)
+  006e: return nothing
+  0070: <eos>
+
+function HmPlayerController.ServerStopDialog  (script 83 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'HmPlayerController', PC) (end 0x004f)
+  0020: if !((PC != self)) goto 0x004e
+  002b: PC.ClientStopDialog(Speaker, SoundCue, ConversationOnly)
+  004e: iternext
+  004f: iterpop
+  0050: return nothing
+  0052: <eos>
+
+function HmPlayerController.ClientStopDialog  (script 127 bytes)
+  0000: if !(((none == Speaker) || (none == SoundCue))) goto 0x001a
+  0018: return nothing
+  001a: DialogInterface = HmDialogInterface(Speaker)
+  002a: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0040
+  003e: return nothing
+  0040: if !((false == DialogInterface.GetIsDialogPlaying(SoundCue))) goto 0x0061
+  005f: return nothing
+  0061: DialogInterface.StopDialog(ConversationOnly, false)
+  007c: return nothing
+  007e: <eos>
+
+function HmPlayerController.ServerPlayMusic  (script 83 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'HmPlayerController', PC) (end 0x004f)
+  0020: if !((PC != self)) goto 0x004e
+  002b: PC.ClientPlayMusic(MusicTrack, IgnoreSpazTimer, FadeOutTimeOverride)
+  004e: iternext
+  004f: iterpop
+  0050: return nothing
+  0052: <eos>
+
+function HmPlayerController.ClientPlayMusic  (script 77 bytes)
+  0000: MusicPlayer = HmWorldInfo(self.WorldInfo)._MusicPlayer
+  0019: if !((none == MusicPlayer)) goto 0x0026
+  0024: return nothing
+  0026: MusicPlayer.PlayMusic(MusicTrack, false, IgnoreSpazTimer, FadeOutTimeOverride)
+  004a: return nothing
+  004c: <eos>
+
+function HmPlayerController.ServerStopMusic  (script 72 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'HmPlayerController', PC) (end 0x0044)
+  0020: if !((PC != self)) goto 0x0043
+  002b: PC.ClientStopMusic(FadeOutTimeOverride)
+  0043: iternext
+  0044: iterpop
+  0045: return nothing
+  0047: <eos>
+
+function HmPlayerController.ClientStopMusic  (script 66 bytes)
+  0000: MusicPlayer = HmWorldInfo(self.WorldInfo)._MusicPlayer
+  0019: if !((none == MusicPlayer)) goto 0x0026
+  0024: return nothing
+  0026: MusicPlayer.StopMusic(FadeOutTimeOverride, false)
+  003f: return nothing
+  0041: <eos>
+
+function HmPlayerController.ServerGetMusic  (script 94 bytes)
+  0000: MusicPlayer = HmWorldInfo(self.WorldInfo)._MusicPlayer
+  0019: if !((none == MusicPlayer)) goto 0x0026
+  0024: return nothing
+  0026: if !((false == MusicPlayer.GetPlayingMusic(MusicTrack))) goto 0x0046
+  0044: return nothing
+  0046: ClientPlayMusic(MusicTrack, false, -1.0)
+  005b: return nothing
+  005d: <eos>
+
+function HmPlayerController.ServerPlayStinger  (script 72 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'HmPlayerController', PC) (end 0x0044)
+  0020: if !((PC != self)) goto 0x0043
+  002b: PC.ClientPlayStinger(Stinger)
+  0043: iternext
+  0044: iterpop
+  0045: return nothing
+  0047: <eos>
+
+function HmPlayerController.ClientPlayStinger  (script 66 bytes)
+  0000: MusicPlayer = HmWorldInfo(self.WorldInfo)._MusicPlayer
+  0019: if !((none == MusicPlayer)) goto 0x0026
+  0024: return nothing
+  0026: MusicPlayer.PlayStinger(Stinger, false)
+  003f: return nothing
+  0041: <eos>
+
+function HmPlayerController.GetUISound  (script 7 bytes)
+  0000: SoundCueName
+  0005: nothing
+  0006: <eos>
+
+function HmPlayerController.StopSound  (script 84 bytes)
+  0000: foreach ComponentList(obj'Engine.AudioComponent', AC) (end 0x0050)
+  0017: if !((SoundCue == AC.SoundCue)) goto 0x004f
+  002f: AC.FadeOut(FadeTime, 0.0)
+  004c: iterpop
+  004d: return nothing
+  004f: iternext
+  0050: iterpop
+  0051: return nothing
+  0053: <eos>
+
+function HmPlayerController.DisplayDebug  (script 228 bytes)
+  0000: HUD.Canvas.SetDrawColor(128, 192, cast3d(255), cast3d(255))
+  0028: if !((self.Pawn != none)) goto 0x0059
+  0033: GroundSpeedText = ("GroundSpeed:" @ cast55(self.Pawn.GroundSpeed))
+  0059: HUD.Canvas.DrawTextNormal((("Input: " @ cast55(self.PlayerInput.RawJoyUp)) @ GroundSpeedText), , , )
+  009a: (out_YPos += out_YL)
+  00a6: HUD.Canvas.SetPos(4.0, out_YPos)
+  00cc: DisplayDebug(HUD, out_YL, out_YPos)
+  00e1: return nothing
+  00e3: <eos>
+
+function HmPlayerController.ReloadWeapon  (script 49 bytes)
+  0000: ValidPawn = HmPawn(self.Pawn)
+  0010: if !((ValidPawn != none)) goto 0x002e
+  001b: ValidPawn.ReloadWeapon()
+  002e: return nothing
+  0030: <eos>
+
+function HmPlayerController.PlayerTick  (script 85 bytes)
+  0000: PlayerTick(DeltaTime)
+  000b: UpdateTargeting(DeltaTime)
+  001a: UpdateDebugCamera()
+  0024: HmPlayerController.UpdateCameraAudio()
+  002a: WI = HmWorldInfo(self.WorldInfo)
+  003a: WI.Update(DeltaTime)
+  0052: return nothing
+  0054: <eos>
+
+function HmPlayerController.UpdateDebugCamera  (script 197 bytes)
+  0000: if !(self.bUseDebugCamera) goto 0x00c2
+  0009: UpdateDebugCameraVars(self.WorldInfo.CameraTimeStepSeconds, self.WorldInfo.TimeDilation)
+  002f: ConsoleCommand((((((("PUSHVIEW " @ cast55(self.DebugCamLocation.X)) @ cast55(self.DebugCamLocation.Y)) @ cast55(self.DebugCamLocation.Z)) @ cast53(self.DebugCamRotation.Pitch)) @ cast53(self.DebugCamRotation.Yaw)) @ cast53(self.DebugCamRotation.Roll)), )
+  00c2: return nothing
+  00c4: <eos>
+
+function HmPlayerController.UpdateCameraAudio  (script 539 bytes)
+  0000: Device = obj'Engine.Engine'.static.GetAudioDevice()
+  0019: if !((none == Device)) goto 0x0026
+  0024: return nothing
+  0026: if !(((false == IsLocalPlayerController()) || (none == self.PlayerCamera))) goto 0x0045
+  0043: return nothing
+  0045: if !((self.CamAudioSettings.SoundCue != self.PlayerCamera.CamAudioSettings.SoundCue)) goto 0x0117
+  0073: if !((self.CameraAudioComponent != none)) goto 0x00a2
+  007e: self.CameraAudioComponent.FadeOut(0.5, 0.0)
+  009b: self.CameraAudioComponent = none
+  00a2: if !((self.PlayerCamera.CamAudioSettings.SoundCue != none)) goto 0x0117
+  00c1: self.CameraAudioComponent = CreateAudioComponent(self.PlayerCamera.CamAudioSettings.SoundCue, false, true, , , )
+  00ef: if !((self.CameraAudioComponent != none)) goto 0x0117
+  00fa: self.CameraAudioComponent.FadeIn(0.5, 1.0)
+  0117: if !((self.CamAudioSettings.MixerPreset != self.PlayerCamera.CamAudioSettings.MixerPreset)) goto 0x01da
+  0145: if !((self.CamAudioSettings.MixerPreset != 'None')) goto 0x0187
+  0163: Device.DisableMixerPreset(self.CamAudioSettings.MixerPreset, false)
+  0187: if !((self.PlayerCamera.CamAudioSettings.MixerPreset != 'None')) goto 0x01da
+  01ae: Device.EnableMixerPreset(self.PlayerCamera.CamAudioSettings.MixerPreset)
+  01da: Device._AllowPlayerPOVSounds = self.PlayerCamera.CamAudioSettings.AllowPlayerPOVSounds
+  0204: self.CamAudioSettings = self.PlayerCamera.CamAudioSettings
+  0218: return nothing
+  021a: <eos>
+
+function HmPlayerController.UpdateDebugCameraVars  (script 81 bytes)
+  0000: applyTime = (DeltaTime / TimeDilation)
+  0012: self.DebugCamLocation = (self.DebugCamLocation + ((self.DebugCamVelocity * applyTime) >> self.DebugCamRotation))
+  0033: self.DebugCamRotation = (self.DebugCamRotation + (self.DebugCamAngularVelocity * applyTime))
+  004e: return nothing
+  0050: <eos>
+
+function HmPlayerController.CommonSetCameraMode  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnTeleport  (script 44 bytes)
+  0000: OnTeleport(Action)
+  000b: if !((self.PlayerCamera != none)) goto 0x0029
+  0016: self.PlayerCamera.Reset()
+  0029: return nothing
+  002b: <eos>
+
+function HmPlayerController.ClientSetCameraMode  (script 40 bytes)
+  0000: ClientSetCameraMode(NewCamMode)
+  000b: if !((self.Pawn != none)) goto 0x0025
+  0016: CommonSetCameraMode(NewCamMode)
+  0025: return nothing
+  0027: <eos>
+
+function HmPlayerController.SetCameraMode  (script 42 bytes)
+  0000: SetCameraMode(NewCamMode)
+  000b: if !(IsLocalPlayerController()) goto 0x0027
+  0018: CommonSetCameraMode(NewCamMode)
+  0027: return nothing
+  0029: <eos>
+
+function HmPlayerController.PerformedUseAction  (script 116 bytes)
+  0000: if !((self.WorldInfo.Pauser == self.PlayerReplicationInfo)) goto 0x0036
+  0018: if !((cast3a(self.Role) == cast3a(3))) goto 0x0034
+  0028: SetPause(false, )
+  0034: return true
+  0036: if !(((self.Pawn == none) || !self.Pawn.bCanUse)) goto 0x0059
+  0057: return true
+  0059: if !((cast3a(self.Role) < cast3a(3))) goto 0x006b
+  0069: return false
+  006b: return false
+  006d: return return
+  0073: <eos>
+
+function HmPlayerController.IsControlling  (script 88 bytes)
+  0000: if !((HmPawn(P) != none)) goto 0x002f
+  0010: return (HmPawn(P).GetController() == self)
+  002c: goto 0x0051
+  002f: if !((P != none)) goto 0x004f
+  003a: return (P.Controller == self)
+  004c: goto 0x0051
+  004f: return false
+  0051: return return
+  0057: <eos>
+
+function HmPlayerController.GetViewportClient  (script 50 bytes)
+  0000: if !((LocalPlayer(self.Player) != none)) goto 0x0029
+  0010: return HmGameViewportClient(LocalPlayer(self.Player).ViewportClient)
+  0029: return none
+  002b: return return
+  0031: <eos>
+
+function HmPlayerController.GetTargetingRange  (script 63 bytes)
+  0000: return ((self.Pawn.Weapon != none) ? self.Pawn.Weapon.GetTraceRange() : 0.0)
+  0038: return return
+  003e: <eos>
+
+function HmPlayerController.UpdateTargeting  (script 189 bytes)
+  0000: C = HmCamera(self.PlayerCamera)
+  0010: if !((((self.Pawn == none) || (self.ActiveTargeting == none)) || (C == none))) goto 0x0037
+  0035: return nothing
+  0037: C.GetCameraViewPoint(CameraLocation, CameraRotation)
+  0054: self.ActiveTargeting.Update(CameraLocation, CameraRotation, GetTargetingRange(), DeltaTime)
+  0080: C.UpdateTargetingData(self.ActiveTargeting._TargetLocation, HmPlayerController.GetTargetAssistStickiness(), self.ActiveTargeting.GetTarget())
+  00ba: return nothing
+  00bc: <eos>
+
+function HmPlayerController.GetTargetAssistStickiness  (script 207 bytes)
+  0000: TargetStickiness = self.ActiveTargeting.GetTargetAssistStickiness()
+  0019: W = HmWeapon(self.Pawn.Weapon)
+  0032: if !((W != none)) goto 0x00c2
+  003d: ExternalStickiness = W.GetTargetStickinessFactor()
+  0056: TargetStickiness.PitchStickiness = obj'Core.Math'.static.Lerp(1.0, TargetStickiness.PitchStickiness, ExternalStickiness)
+  008c: TargetStickiness.YawStickiness = obj'Core.Math'.static.Lerp(1.0, TargetStickiness.YawStickiness, ExternalStickiness)
+  00c2: return TargetStickiness
+  00c8: return return
+  00ce: <eos>
+
+function HmPlayerController.ToggleTargetingDebug  (script 13 bytes)
+  0000: ShowTargetingDebug()
+  000a: return nothing
+  000c: <eos>
+
+function HmPlayerController.ShowTargetingDebug  (script 33 bytes)
+  0000: if !((self.ActiveTargeting != none)) goto 0x001e
+  000b: self.ActiveTargeting.ToggleDebug()
+  001e: return nothing
+  0020: <eos>
+
+function HmPlayerController.IsDebugCameraActive  (script 46 bytes)
+  0000: return ((self.PlayerCamera == none) ? false : HmCamera(self.PlayerCamera).IsDebugStrategyActive())
+  0027: return return
+  002d: <eos>
+
+function HmPlayerController.ShouldStrafe  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmPlayerController.AddGlobalInteraction  (script 71 bytes)
+  0000: V = GetViewportClient()
+  0010: if !((V == none)) goto 0x001d
+  001b: return nothing
+  001d: V.GlobalInteractions.Insert(0,1)
+  002e: 0[V.GlobalInteractions] = I
+  0044: return nothing
+  0046: <eos>
+
+function HmPlayerController.RemoveGlobalInteraction  (script 54 bytes)
+  0000: V = GetViewportClient()
+  0010: if !((V == none)) goto 0x001d
+  001b: return nothing
+  001d: V.GlobalInteractions.RemoveItem(I)
+  0033: return nothing
+  0035: <eos>
+
+function HmPlayerController.ClientPrepareForCheckpointData  (script 7 bytes)
+  0000: TotalDataSize
+  0005: nothing
+  0006: <eos>
+
+function HmPlayerController.ClientSendCheckpointDataPiece  (script 7 bytes)
+  0000: CheckpointDataPiece
+  0005: nothing
+  0006: <eos>
+
+function HmPlayerController.ClientRestartFromCheckpoint  (script 7 bytes)
+  0000: FinalCheckpointDataPiece
+  0005: nothing
+  0006: <eos>
+
+function HmPlayerController.ClientPlayerCleanupBeforeCheckpointOrTransition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.PlayerCleanupBeforeCheckpointOrTransition  (script 193 bytes)
+  0000: V = Vehicle(self.Pawn)
+  0010: if !((V != none)) goto 0x00b8
+  001b: LogInternal(((("V:" $ ((V != none) ? cast57(V.Name) : "None")) @ "V.Controller:") $ ((V.Controller != none) ? cast57(V.Controller.Name) : "None")), 'CheckpointDebug', , )
+  0099: V.DriverExitForCheckpoint()
+  00ac: V.DestroyActor()
+  00b8: HmPlayerController.ClientPlayerCleanupBeforeCheckpointOrTransition()
+  00be: return nothing
+  00c0: <eos>
+
+function HmPlayerController.ServerNotifyClientLoadedCheckpoint  (script 135 bytes)
+  0000: if !((LocalPlayer(self.Player) == none)) goto 0x0084
+  0010: foreach AllActors(obj'Engine.Actor', A) (end 0x0083)
+  0027: if !(((cast3a(A.RemoteRole) != cast3a(0)) && (A.NetUpdateFrequency < 1.0))) goto 0x0082
+  005a: A.SetNetUpdateTime((self.WorldInfo.TimeSeconds - 1.0))
+  0082: iternext
+  0083: iterpop
+  0084: return nothing
+  0086: <eos>
+
+function HmPlayerController.NotifyClientLoadedCheckpoint  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.GetGameResourcesDataStore  (script 62 bytes)
+  0000: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0019: return DataStoreManager.FindDataStore('GameResources', )
+  0037: return return
+  003d: <eos>
+
+function HmPlayerController.ReadNoProfileGameResources  (script 678 bytes)
+  0000: if !((self.ProfileSettings != none)) goto 0x02a3
+  000b: DataStore = HmPlayerController.GetGameResourcesDataStore()
+  0017: DataStore.GetDataStoreBoolValue("NoProfileGameplayDataProvider.ControllerVibration", Value)
+  0062: self.ProfileSettings.SetControllerVibrationOption((Value != 0))
+  007d: DataStore.GetDataStoreBoolValue("NoProfileGameplayDataProvider.YInversion", Value)
+  00bf: self.ProfileSettings.SetInvertMouseOption((Value != 0))
+  00da: DataStore.GetDataStoreBoolValue("NoProfileGameplayDataProvider.Subtitles", Value)
+  011b: self.ProfileSettings.SetSubtitleConfigOption((Value != 0))
+  0136: DataStore.GetDataStoreFloatValue("NoProfileGameplayDataProvider.MusicVolume", fValue)
+  0179: self.ProfileSettings.SetMusicVolume(fValue)
+  0191: DataStore.GetDataStoreFloatValue("NoProfileGameplayDataProvider.FxVolume", fValue)
+  01d1: self.ProfileSettings.SetFxVolume(fValue)
+  01e9: DataStore.GetDataStoreFloatValue("NoProfileGameplayDataProvider.DialogueVolume", fValue)
+  022f: self.ProfileSettings.SetDialogVolume(fValue)
+  0247: DataStore.GetDataStoreFloatValue("NoProfileGameplayDataProvider.GammaSetting", fValue)
+  028b: self.ProfileSettings.SetGammaSetting(fValue)
+  02a3: return nothing
+  02a5: <eos>
+
+function HmPlayerController.WriteNoProfileGameResources  (script 599 bytes)
+  0000: if !((self.ProfileSettings != none)) goto 0x0254
+  000b: DataStore = HmPlayerController.GetGameResourcesDataStore()
+  0017: DataStore.SetDataStoreBoolValue("NoProfileGameplayDataProvider.ControllerVibration", self.ProfileSettings.GetControllerVibrationOption())
+  0070: DataStore.SetDataStoreBoolValue("NoProfileGameplayDataProvider.YInversion", self.ProfileSettings.GetInvertMouseOption())
+  00c0: DataStore.SetDataStoreBoolValue("NoProfileGameplayDataProvider.Subtitles", self.ProfileSettings.GetSubtitleConfigOption())
+  010f: DataStore.SetDataStoreFloatValue("NoProfileGameplayDataProvider.MusicVolume", self.ProfileSettings.GetMusicVolume())
+  0160: DataStore.SetDataStoreFloatValue("NoProfileGameplayDataProvider.FxVolume", self.ProfileSettings.GetFxVolume())
+  01ae: DataStore.SetDataStoreFloatValue("NoProfileGameplayDataProvider.DialogueVolume", self.ProfileSettings.GetDialogVolume())
+  0202: DataStore.SetDataStoreFloatValue("NoProfileGameplayDataProvider.GammaSetting", self.ProfileSettings.GetGammaSetting())
+  0254: return nothing
+  0256: <eos>
+
+function HmPlayerController.SetNextLazyProfileWriteTime  (script 38 bytes)
+  0000: self.PendingLazyProfileWrite = false
+  0008: self.NextLazyProfileWriteTime = (self.TimeBetweenLazyProfileWrite + self.WorldInfo.RealTimeSeconds)
+  0023: return nothing
+  0025: <eos>
+
+function HmPlayerController.WriteProfileSettings  (script 86 bytes)
+  0000: if !((LazyWrite && (self.WorldInfo.RealTimeSeconds < self.NextLazyProfileWriteTime))) goto 0x002d
+  0023: self.PendingLazyProfileWrite = true
+  002b: return nothing
+  002d: PlayerInterface.WriteProfileSettings(cast3d(ControllerId), self.ProfileSettings)
+  004d: HmPlayerController.SetNextLazyProfileWriteTime()
+  0053: return nothing
+  0055: <eos>
+
+function HmPlayerController.FinalSaveProfileSettings  (script 35 bytes)
+  0000: if !(!self.PendingLazyProfileWrite) goto 0x000d
+  000b: return nothing
+  000d: SaveProfileSettings()
+  0018: self.PendingLazyProfileWrite = false
+  0020: return nothing
+  0022: <eos>
+
+function HmPlayerController.SaveProfileSettings  (script 210 bytes)
+  0000: nothing
+  0001: if !(((self.OnlineSub != none) && IsLocalPlayerController())) goto 0x00cf
+  001b: PlayerInterface = self.OnlineSub.PlayerInterface
+  002f: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00cf
+  0043: LP = LocalPlayer(self.Player)
+  0053: if !((self.WorldInfo.IsDemoBuild() || (cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LP.ControllerId))) == cast3a(0)))) goto 0x00b0
+  00a3: WriteNoProfileGameResources()
+  00ad: goto 0x00cf
+  00b0: HmPlayerController.WriteProfileSettings(PlayerInterface, LP.ControllerId, LazyWrite)
+  00cf: return nothing
+  00d1: <eos>
+
+function HmPlayerController.OnReadProfileSettingsComplete  (script 195 bytes)
+  0000: if !((self.OnlineSub == none)) goto 0x000d
+  000b: return nothing
+  000d: PlayerInterface = self.OnlineSub.PlayerInterface
+  0021: if !(EqualEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0037
+  0035: return nothing
+  0037: if !((self.Player != none)) goto 0x008b
+  0042: PlayerID = cast3d(LocalPlayer(self.Player).ControllerId)
+  005d: LogInternal(("Profile Read Complete: Player " $ cast52(PlayerID)), , , )
+  008b: self.ProfileSettings = HmProfileSettings(self.OnlinePlayerData.ProfileProvider.Profile)
+  00ad: if !(bWasSuccessful) goto 0x00c0
+  00b6: UpdateLocalCacheOfProfileSettings()
+  00c0: return nothing
+  00c2: <eos>
+
+function HmPlayerController.OnNotifyLoginChange  (script 34 bytes)
+  0000: OnNotifyLoginChange(LoginType, PrimaryStatus, SecondaryStatus)
+  0015: UpdateGamerTag()
+  001f: return nothing
+  0021: <eos>
+
+function HmPlayerController.OnDeviceSelectFailed  (script 50 bytes)
+  0000: LP = HmLocalPlayer(self.Player)
+  0010: if !((LP != none)) goto 0x002f
+  001b: LP.set_CurrentStorageDeviceId(0)
+  002f: return nothing
+  0031: <eos>
+
+function HmPlayerController.NotifyDeviceSelectComplete  (script 338 bytes)
+  0000: if !((self.ProfileSettings == none)) goto 0x000d
+  000b: return nothing
+  000d: LP = HmLocalPlayer(self.Player)
+  001d: if !(bWasSuccessful) goto 0x00c7
+  0026: DeviceID = self.OnlineSub.PlayerInterfaceEx.GetDeviceSelectionResults(cast3d(LP.ControllerId), DeviceName)
+  005e: LP.set_CurrentStorageDeviceId(DeviceID)
+  0076: if !(!LP.IsStorageDeviceValid(self.NumBytesRequiredToPlayGame)) goto 0x00c4
+  0093: OnInsufficientDeviceSpace()
+  009d: DeviceID = 0
+  00a4: DeviceName = "None"
+  00b0: LP.set_CurrentStorageDeviceId(0)
+  00c4: goto 0x00e4
+  00c7: OnDeviceSelectFailed()
+  00d1: DeviceID = 0
+  00d8: DeviceName = "None"
+  00e4: LogInternal((((((("Storage Device Change: Player " $ cast53(LP.ControllerId)) $ " changed Device ID to ") $ cast53(DeviceID)) $ "(") $ DeviceName) $ ")"), , , )
+  014f: return nothing
+  0151: <eos>
+
+function HmPlayerController.ShowDeviceSelectionUI  (script 248 bytes)
+  0000: nothing
+  0001: LP = LocalPlayer(self.Player)
+  0011: if !((LP == none)) goto 0x001e
+  001c: return nothing
+  001e: if !((self.OnlineSub == none)) goto 0x002b
+  0029: return nothing
+  002b: if !(EqualEqual_InterfaceInterface(self.OnlineSub.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x004a
+  0048: return nothing
+  004a: if !((NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)) && (cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(LP.ControllerId))) == cast3a(0)))) goto 0x00a3
+  00a1: return nothing
+  00a3: self.OnlineSub.PlayerInterfaceEx.ShowDeviceSelectionUI(cast3d(LP.ControllerId), 0, ForceShowUI, )
+  00d8: self.OnlineSub.SystemInterface.UIStartupComplete()
+  00f5: return nothing
+  00f7: <eos>
+
+function HmPlayerController.OnStorageDeviceChange  (script 258 bytes)
+  0000: LocPlayer = HmLocalPlayer(self.Player)
+  0010: if !(((self.OnlineSub != none) && (LocPlayer != none))) goto 0x00ff
+  0028: if !((LocPlayer.IsStorageDeviceDesired() && !LocPlayer.IsStorageDeviceValid())) goto 0x0063
+  0059: OnStorageDeviceRemoved()
+  0063: ContentInterface = self.OnlineSub.ContentInterface
+  0077: if !((cast3a(ContentInterface.GetContentList(cast3d(GetLocalUserNum()), self.SavedContentList)) == cast3a(2))) goto 0x00ff
+  00a7: LogInternal("Storage device changed, flushing and rereading all DLC", , , )
+  00e4: self.FlushedContentCounter = 0
+  00eb: ContentInterface.FlushAllContent()
+  00ff: return nothing
+  0101: <eos>
+
+function HmPlayerController.OnInsufficientDeviceSpace  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnStorageDeviceRemoved  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnFlushContentComplete  (script 88 bytes)
+  0000: AddAdd_PreInt(self.FlushedContentCounter)
+  0007: if !((self.FlushedContentCounter < self.SavedContentList.Length)) goto 0x0019
+  0017: return nothing
+  0019: self.WorldInfo.ForceGarbageCollection()
+  002c: self.OnlineSub.ContentInterface.ReadContentList(cast3d(GetLocalUserNum()))
+  0055: return nothing
+  0057: <eos>
+
+function HmPlayerController.OnReadContentComplete  (script 560 bytes)
+  0000: OnReadContentComplete(ReadStatus)
+  000b: if !((cast3a(ReadStatus) == cast3a(1))) goto 0x0027
+  001b: OnContentCorrupt()
+  0025: return nothing
+  0027: if !(((cast3a(ReadStatus) != cast3a(0)) || (self.SavedContentList.Length == 0))) goto 0x0047
+  0045: return nothing
+  0047: if !((cast3a(self.OnlineSub.ContentInterface.GetContentList(cast3d(GetLocalUserNum()), NewContentList)) != cast3a(2))) goto 0x0082
+  0080: return nothing
+  0082: LogInternal(((("Read Content Complete, comparing content lists.  Old count:" @ cast53(self.SavedContentList.Length)) $ ", New count:") @ cast53(NewContentList.Length)), , , )
+  00e8: if !((self.SavedContentList.Length > NewContentList.Length)) goto 0x0177
+  00f9: Added = false
+  0101: foreach self.SavedContentList(OC,) (end 0x0173)
+  0110: if !((NewContentList.Find('FriendlyName',OC.FriendlyName) == -1)) goto 0x0172
+  013b: ContentChange.AddItem(OC)
+  0148: LogInternal(("Removing content:" @ OC.FriendlyName), , , )
+  0172: iternext
+  0173: iterpop
+  0174: goto 0x0201
+  0177: if !((self.SavedContentList.Length < NewContentList.Length)) goto 0x0201
+  0188: Added = true
+  0190: foreach NewContentList(OC,) (end 0x0200)
+  019f: if !((self.SavedContentList.Find('FriendlyName',OC.FriendlyName) == -1)) goto 0x01ff
+  01ca: ContentChange.AddItem(OC)
+  01d7: LogInternal(("Adding content:" @ OC.FriendlyName), , , )
+  01ff: iternext
+  0200: iterpop
+  0201: if !((ContentChange.Length > 0)) goto 0x0222
+  020d: OnContentAvailabilityChange(ContentChange, Added)
+  0222: self.SavedContentList = NewContentList
+  022d: return nothing
+  022f: <eos>
+
+function HmPlayerController.OnContentAvailabilityChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnContentCorrupt  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.UpdateGamerTag  (script 166 bytes)
+  0000: if !((self.OnlineSub != none)) goto 0x00a3
+  000b: LocPlayer = LocalPlayer(self.Player)
+  001b: if !(((LocPlayer != none) && NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none)))) goto 0x00a3
+  0045: Gamertag = self.OnlineSub.PlayerInterface.GetPlayerNickname(cast3d(LocPlayer.ControllerId))
+  0078: if !((Gamertag == "")) goto 0x0098
+  0084: Gamertag = obj'Engine.GameInfo'.static.default.DefaultPlayerName
+  0098: HmPlayerController.ServerSetGamerTag(Gamertag)
+  00a3: return nothing
+  00a5: <eos>
+
+function HmPlayerController.ServerSetGamerTag  (script 38 bytes)
+  0000: if !((self.PlayerReplicationInfo != none)) goto 0x0023
+  000b: self.PlayerReplicationInfo.SetPlayerName(Gamertag)
+  0023: return nothing
+  0025: <eos>
+
+function HmPlayerController.UpdateLocalCacheOfProfileSettings  (script 557 bytes)
+  0000: if !(((self.ProfileSettings == none) || (self.PlayerReplicationInfo == none))) goto 0x001a
+  0018: return nothing
+  001a: PlayerIndex = obj'Engine.UIInteraction'.static.GetPlayerIndex(LocalPlayer(self.Player).ControllerId)
+  0046: if !((self.WorldInfo.IsDemoBuild() || ((self.OnlineSub != none) && (cast3a(self.OnlineSub.PlayerInterface.GetLoginStatus(cast3d(PlayerIndex))) == cast3a(0))))) goto 0x00a4
+  009a: WriteNoProfileGameResources()
+  00a4: LogInternal(("Updating Local Cache of Profile Settings for UI PlayerIndex " $ cast53(PlayerIndex)), , , )
+  00f0: self.PlayerReplicationInfo.bControllerVibrationAllowed = self.ProfileSettings.GetControllerVibrationOption()
+  0113: if !((PlayerIndex == 0)) goto 0x022a
+  011e: SetShowSubtitles(self.ProfileSettings.GetSubtitleConfigOption())
+  013b: SetAudioGroupVolume('Dialog', self.ProfileSettings.GetDialogVolume())
+  0161: SetAudioGroupVolume('SFX', self.ProfileSettings.GetFxVolume())
+  0187: SetAudioGroupVolume('MUSIC', self.ProfileSettings.GetMusicVolume())
+  01ad: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  01c6: DisplayDataStore = DataStoreManager.FindDataStore('Display', LocalPlayer(self.Player))
+  01f2: if !((DisplayDataStore != none)) goto 0x022a
+  01fd: DisplayDataStore.SetDataStoreFloatValue("Gamma", self.ProfileSettings.GetGammaSetting())
+  022a: return nothing
+  022c: <eos>
+
+function HmPlayerController.RegisterOnlineDelegates  (script 145 bytes)
+  0000: RegisterOnlineDelegates()
+  0006: if !((((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.SystemInterface, OnlineSystemInterface(none))) && (LocalPlayer(self.Player) != none))) goto 0x008e
+  0042: self.OnlineSub.SystemInterface.AddConnectionStatusChangeDelegate(delegate.OnConnectionStatusChange)
+  0068: self.OnlineSub.SystemInterface.AddLinkStatusChangeDelegate(delegate.OnLinkStatusChange)
+  008e: return nothing
+  0090: <eos>
+
+function HmPlayerController.ClearOnlineDelegates  (script 172 bytes)
+  0000: ClearOnlineDelegates()
+  0006: LP = LocalPlayer(self.Player)
+  0016: if !(((cast3a(self.Role) < cast3a(3)) || (LP != none))) goto 0x00a9
+  0033: if !(((self.OnlineSub != none) && NotEqual_InterfaceInterface(self.OnlineSub.SystemInterface, OnlineSystemInterface(none)))) goto 0x00a9
+  005d: self.OnlineSub.SystemInterface.ClearConnectionStatusChangeDelegate(delegate.OnConnectionStatusChange)
+  0083: self.OnlineSub.SystemInterface.ClearLinkStatusChangeDelegate(delegate.OnLinkStatusChange)
+  00a9: return nothing
+  00ab: <eos>
+
+function HmPlayerController.OnConnectionStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnLinkStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.NotifyCausedDamage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.NotifyCausedDamageToDestructible  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.SetCinematicModeWithoutHidingPlayer  (script 101 bytes)
+  0000: if !(bAffectsButtons) goto 0x003e
+  0009: if !((self.PlayerInput != none)) goto 0x0032
+  0014: HmPlayerInput(self.PlayerInput).SetCinematicButtonsDisabled(bInCinematicMode)
+  0032: HmPlayerController.SetInteractiveState(bInCinematicMode)
+  003e: SetCinematicModeWithoutHidingPlayer(bInCinematicMode, bAffectsHUD, bAffectsMovement, bAffectsTurning, bAffectsButtons)
+  0062: return nothing
+  0064: <eos>
+
+function HmPlayerController.ClientSetCinematicMode  (script 101 bytes)
+  0000: ClientSetCinematicMode(bInCinematicMode, bAffectsMovement, bAffectsTurning, bAffectsHUD, bAffectsButtons)
+  0024: if !(bAffectsButtons) goto 0x0062
+  002d: if !((self.PlayerInput != none)) goto 0x0056
+  0038: HmPlayerInput(self.PlayerInput).SetCinematicButtonsDisabled(bInCinematicMode)
+  0056: HmPlayerController.SetInteractiveState(bInCinematicMode)
+  0062: return nothing
+  0064: <eos>
+
+function HmPlayerController.PauseMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPlayerController.UnpauseMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPlayerController.MovieAudioSetup  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPlayerController.MovieAudioShutdown  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPlayerController.OnFullScreenMovieStart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnFullScreenMovieStop  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPlayerController.OnExternalUIChanged  (script 101 bytes)
+  0000: OnExternalUIChanged(bIsOpening)
+  000c: if !(((self.WorldInfo == none) || (self.WorldInfo.Game == none))) goto 0x002f
+  002d: return nothing
+  002f: if !(self.WorldInfo.Game.bPauseable) goto 0x0062
+  004a: if !(bIsOpening) goto 0x005c
+  0053: HmPlayerController.PauseMovie()
+  0059: goto 0x0062
+  005c: HmPlayerController.UnpauseMovie()
+  0062: return nothing
+  0064: <eos>
+
+function HmPlayerController.BeginMovieMode  (script 57 bytes)
+  0000: OnFullScreenMovieStart()
+  000a: HmPlayerController.MovieAudioSetup()
+  0010: HmPlayerController.SetMovieCinematicMode(true)
+  0017: SetCinematicPauseable(false)
+  0022: self.ForceFeedbackManager.StopForceFeedbackWaveform()
+  0036: return nothing
+  0038: <eos>
+
+function HmPlayerController.EndMovieMode  (script 26 bytes)
+  0000: HmPlayerController.MovieAudioShutdown()
+  0006: HmPlayerController.SetMovieCinematicMode(false)
+  000d: OnFullScreenMovieStop()
+  0017: return nothing
+  0019: <eos>
+
+function HmPlayerController.ClientPlayMovie  (script 22 bytes)
+  0000: MovieFileName
+  0005: bRenderLastFrameAtEnd
+  000a: bBlendWithGameRendering
+  000f: StartTimeInMilliseconds
+  0014: nothing
+  0015: <eos>
+
+function HmPlayerController.ClientStopMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPlayerController.SetMovieCinematicMode  (script 61 bytes)
+  0000: if !((bInCinematicMode || !self.bNonMovieCinematicMode)) goto 0x0023
+  0016: self.bCinematicMode = bInCinematicMode
+  0023: if !(!self.bKismetInteractiveStateDisabled) goto 0x003a
+  002e: HmPlayerController.SetInteractiveState(self.bCinematicMode)
+  003a: return nothing
+  003c: <eos>
+
+function HmPlayerController.DisableIncidentalDialog  (script 42 bytes)
+  0000: HmWorldInfo(self.WorldInfo)._DialogEventManager.DisablePlayback(bDisable)
+  0027: return nothing
+  0029: <eos>
+
+function HmPlayerController.GetSoundLocation  (script 7 bytes)
+  0000: SocketName
+  0005: nothing
+  0006: <eos>
+
+function HmPlayerController.SetInteractiveState  (script 94 bytes)
+  0000: GE = GameEngine(obj'Engine.Engine'.static.GetEngine())
+  001e: if !((GE != none)) goto 0x005b
+  0029: if !(bInCinematicMode) goto 0x0048
+  0032: GE.DisableInteractiveState()
+  0045: goto 0x005b
+  0048: GE.EnableInteractiveState()
+  005b: return nothing
+  005d: <eos>
+
+function HmPlayerController.SetKismetInteractiveDisabled  (script 16 bytes)
+  0000: self.bKismetInteractiveStateDisabled = bDisabled
+  000d: return nothing
+  000f: <eos>
+
+function HmPlayerController.GetKismetInteractiveDisabled  (script 14 bytes)
+  0000: return self.bKismetInteractiveStateDisabled
+  0007: return return
+  000d: <eos>
+
+function HmPlayerController.Give  (script 58 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x001e
+  0010: HmPlayerController.ServerGive(InvClass)
+  001b: goto 0x0037
+  001e: self.Pawn.CreateInventory(InvClass, )
+  0037: return nothing
+  0039: <eos>
+
+function HmPlayerController.ServerGive  (script 18 bytes)
+  0000: Give(InvClass)
+  000f: return nothing
+  0011: <eos>
+
+function HmPlayerController.ClientRestart  (script 40 bytes)
+  0000: ClientRestart(NewPawn)
+  000b: if !((cast3a(self.Role) < cast3a(3))) goto 0x0025
+  001b: ServerGetMusic()
+  0025: return nothing
+  0027: <eos>
+
+function HmPlayerController.NotifySavingCheckpoint  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

@@ -1,0 +1,18 @@
+function TnObjectiveBasedMultiplayerTestingPolicy.HandleEnterGame  (script 42 bytes)
+  0000: TnMultiplayerGameTestingPolicy.HandleEnterGame(Game)
+  000b: Game.SetTimer(self.ScoreInterval, true, 'CauseRandomScore', self)
+  0027: return nothing
+  0029: <eos>
+
+function TnObjectiveBasedMultiplayerTestingPolicy.CauseRandomScore  (script 155 bytes)
+  0000: foreach self._Game.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0037)
+  0029: Players.AddItem(PC)
+  0036: iternext
+  0037: iterpop
+  0038: if !((Players.Length < 1)) goto 0x0046
+  0044: return nothing
+  0046: ScorerIndex = obj'Core.Random'.static.RandomInt(Players.Length)
+  0065: Scorer = ScorerIndex[Players]
+  0076: self._Game.ScoreObjective(Scorer.PlayerReplicationInfo, 1)
+  0098: return nothing
+  009a: <eos>

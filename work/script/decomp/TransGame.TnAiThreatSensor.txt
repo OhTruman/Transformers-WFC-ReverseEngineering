@@ -1,0 +1,150 @@
+function TnAiThreatSensor.AddEvaluator  (script 16 bytes)
+  0000: self._Evaluators.AddItem(Evaluator)
+  000d: return nothing
+  000f: <eos>
+
+function TnAiThreatSensor.OnInitialize  (script 44 bytes)
+  0000: foreach self._Evaluators(Evaluator,) (end 0x0028)
+  000f: Evaluator.Initialize(self._OwnerPawn)
+  0027: iternext
+  0028: iterpop
+  0029: return nothing
+  002b: <eos>
+
+function TnAiThreatSensor.OnUpdate  (script 381 bytes)
+  0000: if !((self._OwnerController._ShootAtActor != none)) goto 0x0016
+  0014: return nothing
+  0016: HighestThreatLevel = -3.4028234663852886e+38
+  0023: I = 0
+  002a: if !((I < self._TacticalDatabase.Enemies.Length)) goto 0x014f
+  0043: CurrentThreatLevel = 0.0
+  004e: if !(TnAiThreatSensor.InvalidSentryTarget(I[self._TacticalDatabase.Enemies].EnemyController)) goto 0x0079
+  0076: goto 0x0145
+  0079: CurrentThreatPawn = TnAiThreatSensor.GetEnemyPawn(I)
+  008a: if !((CurrentThreatPawn == none)) goto 0x0098
+  0095: goto 0x0145
+  0098: CurrentThreatTnPawn = TnPawn(CurrentThreatPawn)
+  00a8: if !(((CurrentThreatTnPawn != none) && !CurrentThreatTnPawn.IsTargetableEnemy())) goto 0x00d0
+  00cd: goto 0x0145
+  00d0: foreach self._Evaluators(Evaluator,) (end 0x011f)
+  00df: (CurrentThreatLevel += Evaluator.CalculateThreatLevel(CurrentThreatPawn))
+  00fe: if !(Evaluator._ShouldDiscardThreat) goto 0x011e
+  0110: CurrentThreatLevel = 0.0
+  011b: goto 0x011f
+  011e: iternext
+  011f: iterpop
+  0120: if !((CurrentThreatLevel > HighestThreatLevel)) goto 0x0145
+  012f: HighestThreatLevel = CurrentThreatLevel
+  013a: HighestThreatPawn = CurrentThreatPawn
+  0145: AddAdd_PreInt(I)
+  014c: goto 0x002a
+  014f: self._OwnerController.set_DesiredEnemy(HighestThreatPawn)
+  0167: self._OwnerController.OnEnemyChangeAllowed()
+  017a: return nothing
+  017c: <eos>
+
+function TnAiThreatSensor.InvalidSentryTarget  (script 120 bytes)
+  0000: SentryController = TnAiSentryController(C)
+  0010: if !((SentryController != none)) goto 0x006f
+  001b: if !(SentryController.get_IsDormant()) goto 0x0033
+  0031: return true
+  0033: SentryPawn = TnSentryPawn(C.Pawn)
+  004c: if !(((SentryPawn != none) && !SentryPawn._TargetableByAi)) goto 0x006f
+  006d: return true
+  006f: return false
+  0071: return return
+  0077: <eos>
+
+function TnAiThreatSensor.GetEnemyPawn  (script 73 bytes)
+  0000: EnemyController = Index[self._TacticalDatabase.Enemies].EnemyController
+  0025: return ((EnemyController != none) ? EnemyController.Pawn : none)
+  0042: return return
+  0048: <eos>
+
+function TnAiThreatSensor.GetEnemyPawnName  (script 150 bytes)
+  0000: P = TnPawn(TnAiThreatSensor.GetEnemyPawn(Index))
+  0016: if !((P == none)) goto 0x0027
+  0021: return "???"
+  0027: A = TnAiPawn(P)
+  0037: if !((A == none)) goto 0x007f
+  0042: Result = obj'Core.Strings'.static.Repl(P._RobotForm.get_FriendlyName(), "_ROBODEF", "", )
+  007c: goto 0x0089
+  007f: Result = "AI"
+  0089: return Result
+  008f: return return
+  0095: <eos>
+
+function TnAiThreatSensor.DisplayDebug  (script 2237 bytes)
+  0000: if !((self._TacticalDatabase.Enemies.Length == 0)) goto 0x0017
+  0015: return nothing
+  0017: Canvas = HUD.Canvas
+  002b: LeftCellWidth = 80.0
+  0036: CellWidth = 70.0
+  0041: CellHeight = Canvas.Font.GetMaxCharHeight()
+  0063: NumCellsX = self._TacticalDatabase.Enemies.Length
+  0078: NumCellsY = (self._Evaluators.Length + 2)
+  0088: Bottom = (Canvas.ClipY - cast3f(25))
+  00a2: Left = 25.0
+  00ad: Margin = 5.0
+  00b8: BarMargin = 2.0
+  00c3: Width = ((LeftCellWidth + (cast3f(NumCellsX) * CellWidth)) + (Margin * cast3f(2)))
+  00eb: Height = ((CellHeight * cast3f(NumCellsY)) + (Margin * cast3f(3)))
+  010c: Top = (Bottom - Height)
+  011e: Canvas.SetDrawColor(0, 0, 0, 200)
+  0139: Canvas.SetPos(Left, ((Top + CellHeight) + Margin))
+  0164: Canvas.DrawRect(Width, (Height - (cast3f(2) * (CellHeight + Margin))), )
+  0196: Canvas.SetDrawColor(cast3d(255), 0, 0, 128)
+  01b3: Canvas.SetPos(Left, Top)
+  01d0: Canvas.DrawRect(Width, (CellHeight + Margin), )
+  01f5: Canvas.SetDrawColor(32, 32, 32, 200)
+  0210: Canvas.SetPos(Left, ((Bottom - CellHeight) - Margin))
+  023b: Canvas.DrawRect(Width, (CellHeight + Margin), )
+  0260: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), 128)
+  0281: Canvas.SetPos(Left, Top)
+  029e: Canvas.DrawBox(Width, Height)
+  02bb: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  02de: (Top += Margin)
+  02ea: (Left += Margin)
+  02f6: Canvas.SetPos(Left, Top)
+  0313: Canvas.DrawTextNormal("Threats", , , )
+  0332: (Top += (Margin + CellHeight))
+  0345: J = 0
+  034c: if !((J < self._Evaluators.Length)) goto 0x0440
+  035c: Canvas.SetDrawColor(obj'Core.Colors'.static.Sequence(J, ).R, obj'Core.Colors'.static.Sequence(J, ).G, obj'Core.Colors'.static.Sequence(J, ).B, cast3d(255))
+  03df: Canvas.SetPos(Left, (Top + (cast3f(J) * CellHeight)))
+  040c: Canvas.DrawTextNormal(J[self._Evaluators]._DisplayName, , , )
+  0436: AddAdd_PreInt(J)
+  043d: goto 0x034c
+  0440: (Left += LeftCellWidth)
+  044c: I = 0
+  0453: if !((I < self._TacticalDatabase.Enemies.Length)) goto 0x08ba
+  046c: CurrentThreatPawn = TnAiThreatSensor.GetEnemyPawn(I)
+  047d: Projected = Canvas.Project(CurrentThreatPawn.Location)
+  04a4: if !((Projected.Z > cast3f(0))) goto 0x0642
+  04bc: Canvas.SetPos((Projected.X - cast3f(5)), (Projected.Y - cast3f(5)))
+  04fb: Canvas.SetDrawColor(0, 0, 0, cast3d(255))
+  0518: Canvas.Draw2DLine(((Left + (cast3f(I) * CellWidth)) + (0.25 * CellWidth)), ((Top - (cast3f(2) * Margin)) - CellHeight), Projected.X, Projected.Y, ((CurrentThreatPawn == self._OwnerController.Enemy) ? obj'Core.Colors'.static.Red() : obj'Core.Colors'.static.White()))
+  05c7: if !((CurrentThreatPawn == self._OwnerController.Enemy)) goto 0x0601
+  05df: Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  05fe: goto 0x0624
+  0601: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0624: Canvas.DrawRect(10.0, 10.0, )
+  0642: ThreatLevelSum = 0.0
+  064d: J = 0
+  0654: if !((J < self._Evaluators.Length)) goto 0x07d7
+  0664: ThreatLevel = J[self._Evaluators].CalculateThreatLevel(CurrentThreatPawn)
+  0688: (ThreatLevelSum += ThreatLevel)
+  0694: Canvas.SetPos(((Left + (cast3f(I) * CellWidth)) + BarMargin), ((Top + (cast3f(J) * CellHeight)) + BarMargin))
+  06df: Canvas.SetDrawColor(obj'Core.Colors'.static.Sequence(J, ).R, obj'Core.Colors'.static.Sequence(J, ).G, obj'Core.Colors'.static.Sequence(J, ).B, cast3d(((ThreatLevel > cast3f(0)) ? 255 : 64)))
+  0773: Canvas.DrawRect(((CellWidth - (cast3f(2) * BarMargin)) * obj'Core.Math'.static.FMin(1.0, obj'Core.Math'.static.Abs(ThreatLevel))), (CellHeight - (cast3f(2) * BarMargin)), )
+  07cd: AddAdd_PreInt(J)
+  07d4: goto 0x0654
+  07d7: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  07fa: Canvas.SetPos((Left + (cast3f(I) * CellWidth)), ((Top - Margin) - CellHeight))
+  0835: Canvas.DrawTextNormal(TnAiThreatSensor.GetEnemyPawnName(I), , , )
+  0856: Canvas.SetPos((Left + (cast3f(I) * CellWidth)), (Top + (cast3f(J) * CellHeight)))
+  0893: Canvas.DrawTextNormal(cast55(ThreatLevelSum), , , )
+  08b0: AddAdd_PreInt(I)
+  08b7: goto 0x0453
+  08ba: return nothing
+  08bc: <eos>

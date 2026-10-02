@@ -1,0 +1,33 @@
+function TnStatisticsErrorTable.MakeErrorId  (script 216 bytes)
+  0000: SplitCallstack = obj'Core.Strings'.static.Split(Callstack, "
+")
+  0021: I = 0
+  0028: if !((I < SplitCallstack.Length)) goto 0x0095
+  0038: OpenParenthPos = obj'Core.Strings'.static.InStr(I[SplitCallstack], "(", )
+  0058: FunctionCallNoParams = obj'Core.Strings'.static.Left(I[SplitCallstack], OpenParenthPos)
+  0079: ConcatEqual_StrStr(CallstackNoParams, FunctionCallNoParams)
+  008b: AddAdd_PreInt(I)
+  0092: goto 0x0028
+  0095: Crc = obj'HM_Engine.HmCrc'.static.CrcStr(CallstackNoParams)
+  00b3: if !((Crc < 0)) goto 0x00cb
+  00be: Crc = -Crc
+  00cb: return Crc
+  00d1: return return
+  00d7: <eos>
+
+function TnStatisticsErrorTable.RecordError  (script 377 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: ES.Session_Id = Game.StatisticsSessionId
+  002c: ES.PlayerName = PC.GetHumanReadableName()
+  0050: ES.ErrorString = ErrorString
+  0066: ES.WorldTime = obj'Engine.Engine'.static.GetWorldTime()
+  008a: ES.Callstack = Callstack
+  00a0: ES.CallstackCRC = TnStatisticsErrorTable.MakeErrorId(Callstack)
+  00bc: if !((PC.Pawn != none)) goto 0x0169
+  00d0: ES.PositionX = PC.Pawn.Location.X
+  0103: ES.PositionY = PC.Pawn.Location.Y
+  0136: ES.PositionZ = PC.Pawn.Location.Z
+  0169: self.Errors.AddItem(ES)
+  0176: return nothing
+  0178: <eos>

@@ -1,0 +1,28 @@
+function SessionSettingsProvider.BindProviderClient  (script 7 bytes)
+  0000: DataSourceClass
+  0005: nothing
+  0006: <eos>
+
+function SessionSettingsProvider.UnbindProviderClient  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SessionSettingsProvider.ProviderClientBound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SessionSettingsProvider.ProviderClientUnbound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SessionSettingsProvider.IsValidDataSourceClass  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function SessionSettingsProvider.CleanupDataProvider  (script 27 bytes)
+  0000: if !((self.ProviderClient != none)) goto 0x0012
+  000b: return SessionSettingsProvider.UnbindProviderClient()
+  0012: return false
+  0014: return return
+  001a: <eos>

@@ -1,0 +1,1762 @@
+function GameInfo.get_IsAutomatedTesting  (script 16 bytes)
+  0000: return (self.TestingPolicy != none)
+  0009: return return
+  000f: <eos>
+
+function GameInfo.get_DesiredPlayerControllerClass  (script 13 bytes)
+  0000: return self.PlayerControllerClass
+  0006: return return
+  000c: <eos>
+
+function GameInfo.StaticCheckForErrors  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.CreateGameReplicationInfo  (script 30 bytes)
+  0000: return Spawn(self.GameReplicationInfoClass, , , , , , , )
+  0017: return return
+  001d: <eos>
+
+function GameInfo.NotifyNetTraffic  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.NotifyClientAdjust  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.PreBeginPlay  (script 204 bytes)
+  0000: self.AdjustedNetSpeed = self.MaxDynamicBandwidth
+  000b: SetGameSpeed(self.GameSpeed)
+  001a: if !((self.GameReplicationInfo == none)) goto 0x0035
+  0025: self.GameReplicationInfo = CreateGameReplicationInfo()
+  0035: self.WorldInfo.GRI = self.GameReplicationInfo
+  0049: self.GameReplicationInfo.bIsArbitrated = self.bUsingArbitration
+  005f: InitGameReplicationInfo()
+  0069: if !((self.GameRulesModifiers != none)) goto 0x008c
+  0074: self.GameRulesModifiers.RecievedGRI(self.GameReplicationInfo)
+  008c: if !((self.DialogueManagerClass != "")) goto 0x00c9
+  0098: self.DialogueManager = Spawn(class<DialogueManager>(DynamicLoadObject(self.DialogueManagerClass, obj'Core.Class', )), , , , , , , )
+  00c9: return nothing
+  00cb: <eos>
+
+function GameInfo.FindPlayerByID  (script 66 bytes)
+  0000: PRI = self.GameReplicationInfo.FindPlayerByID(PlayerID)
+  001e: if !((PRI != none)) goto 0x0038
+  0029: return PRI.PlayerName
+  0038: return ""
+  003b: return return
+  0041: <eos>
+
+function GameInfo.UseLowGore  (script 43 bytes)
+  0000: return ((default.GoreLevel > 0) && (cast3a(WI.NetMode) != cast3a(1)))
+  0024: return return
+  002a: <eos>
+
+function GameInfo.GetOnlineSubsystem  (script 13 bytes)
+  0000: return self.OnlineSub
+  0006: return return
+  000c: <eos>
+
+function GameInfo.PostBeginPlay  (script 78 bytes)
+  0000: if !((self.MaxIdleTime > cast3f(0))) goto 0x0028
+  000d: self.MaxIdleTime = obj'Core.Math'.static.FMax(self.MaxIdleTime, 20.0)
+  0028: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x004b
+  0041: UpdateGameSettings()
+  004b: return nothing
+  004d: <eos>
+
+function GameInfo.Reset  (script 35 bytes)
+  0000: Actor.Reset()
+  0006: self.bGameEnded = false
+  000e: self.bOverTime = false
+  0016: InitGameReplicationInfo()
+  0020: return nothing
+  0022: <eos>
+
+function GameInfo.ShouldReset  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.ResetLevel  (script 499 bytes)
+  0000: LogInternal(("Reset" @ cast56(self)), , , )
+  0011: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x006d)
+  0031: if !((PlayerController(C) != none)) goto 0x0059
+  0041: PlayerController(C).ClientReset()
+  0059: C.Reset()
+  006c: iternext
+  006d: iterpop
+  006e: foreach AllActors(obj'Actor', A) (end 0x00ca)
+  0085: if !((((A != self) && (Controller(A) == none)) && ShouldReset(A))) goto 0x00c9
+  00b6: A.Reset()
+  00c9: iternext
+  00ca: iterpop
+  00cb: Reset()
+  00d5: GameSeq = self.WorldInfo.GetGameSequence()
+  00ef: if !((GameSeq != none)) goto 0x01f0
+  00fa: GameSeq.Reset()
+  010d: if !(!obj'Engine'.static.GetEngine().GetCheckpointManager().IsRestartingFromCheckpoint()) goto 0x0155
+  0141: self.WorldInfo.PerformPreGameplaySetup(none)
+  0155: GameSeq.FindSeqObjectsByClass(obj'SeqEvent_SequenceActivated', true, AllSeqEvents)
+  0173: I = 0
+  017a: if !((I < AllSeqEvents.Length)) goto 0x01f0
+  018a: if !(((none != SeqEvent_SequenceActivated(I[AllSeqEvents])) && (none != Level(I[AllSeqEvents].get_Outer())))) goto 0x01e6
+  01bf: SequenceEvent(I[AllSeqEvents]).CheckActivate(self.WorldInfo, none, , , )
+  01e6: AddAdd_Int(I)
+  01ed: goto 0x017a
+  01f0: return nothing
+  01f2: <eos>
+
+function GameInfo.Timer  (script 122 bytes)
+  0000: self.BroadcastHandler.UpdateSentText()
+  0013: if !(((get_IsAutomatedTesting() && (self.TestingPolicy.RemainingTime > cast3f(0))) && (self.TestingPolicy.bAutoContinueToNextRound == false))) goto 0x0077
+  004f: SubtractSubtract_Int(self.RemainingTime)
+  0056: if !((self.RemainingTime <= 0)) goto 0x0077
+  0061: ConsoleCommand("EXIT", )
+  0077: return nothing
+  0079: <eos>
+
+function GameInfo.NotifyNavigationChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.GameEnding  (script 21 bytes)
+  0000: GameInfo.EndLogging("serverquit")
+  0012: return nothing
+  0014: <eos>
+
+function GameInfo.KickIdler  (script 98 bytes)
+  0000: LogInternal(("Kicking idle player " $ PC.PlayerReplicationInfo.GetPlayerAlias()), , , )
+  0039: self.AccessControl.KickPlayer(PC, self.AccessControl.IdleKickReason)
+  005f: return nothing
+  0061: <eos>
+
+function GameInfo.NotifyLevelStreamedOut  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.InitGameReplicationInfo  (script 41 bytes)
+  0000: self.GameReplicationInfo.GameClass = get_Class()
+  0012: self.GameReplicationInfo.MaxLives = self.MaxLives
+  0026: return nothing
+  0028: <eos>
+
+function GameInfo.GetNetworkNumber  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GameInfo.GetNumPlayers  (script 20 bytes)
+  0000: return (self.NumPlayers + self.NumTravellingPlayers)
+  000d: return return
+  0013: <eos>
+
+function GameInfo.GetServerPort  (script 98 bytes)
+  0000: S = self.WorldInfo.GetAddressURL()
+  0019: I = obj'Core.Strings'.static.InStr(S, ":", )
+  0033: assert((I >= 0))
+  003f: return cast4a(obj'Core.Strings'.static.Mid(S, (I + 1), ))
+  005b: return return
+  0061: <eos>
+
+function GameInfo.CanUnpause  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.SetPause  (script 175 bytes)
+  0000: nothing
+  0001: if !(AllowPausing(PC)) goto 0x00a6
+  0013: if !(IsCallable(CanUnpauseDelegate)) goto 0x0073
+  0025: FoundIndex = self.Pausers.Find(CanUnpauseDelegate)
+  0038: if !((FoundIndex == -1)) goto 0x0073
+  0047: FoundIndex = self.Pausers.Length
+  0053: self.Pausers.Length = (FoundIndex + 1)
+  0062: FoundIndex[self.Pausers] = CanUnpauseDelegate
+  0073: if !((self.WorldInfo.Pauser == none)) goto 0x00a4
+  0087: self.WorldInfo.Pauser = PC.PlayerReplicationInfo
+  00a4: return true
+  00a6: return false
+  00a8: return return
+  00ae: <eos>
+
+function GameInfo.PauseGame  (script 24 bytes)
+  0000: return SetPause(PC, )
+  0011: return return
+  0017: <eos>
+
+function GameInfo.ClearPause  (script 243 bytes)
+  0000: if !((!AllowPausing() && (self.Pausers.Length > 0))) goto 0x0082
+  001e: LogInternal((("Clearing list of UnPause delegates for" @ cast57(self.Name)) @ "because game type is not pauseable"), , , )
+  007a: self.Pausers.Length = 0
+  0082: Index = 0
+  0089: if !((Index < self.Pausers.Length)) goto 0x00d4
+  0099: CanUnpauseCriteriaMet = Index[self.Pausers]
+  00aa: if !(CanUnpause()) goto 0x00ca
+  00bc: self.Pausers.Remove(SubtractSubtract_Int(Index),1)
+  00ca: AddAdd_Int(Index)
+  00d1: goto 0x0089
+  00d4: if !((self.Pausers.Length == 0)) goto 0x00f0
+  00e0: self.WorldInfo.Pauser = none
+  00f0: return nothing
+  00f2: <eos>
+
+function GameInfo.ForceClearUnpauseDelegates  (script 7 bytes)
+  0000: PauseActor
+  0005: nothing
+  0006: <eos>
+
+function GameInfo.DebugPause  (script 209 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.Pausers.Length)) goto 0x00ce
+  0017: CanUnpauseCriteriaMet = Index[self.Pausers]
+  0028: if !(CanUnpause()) goto 0x007b
+  003a: LogInternal((("Pauser in index " $ cast53(Index)) $ " thinks it's ok to unpause"), , , )
+  0078: goto 0x00c4
+  007b: LogInternal((("Pauser in index " $ cast53(Index)) $ " thinks the game should remain paused"), , , )
+  00c4: AddAdd_Int(Index)
+  00cb: goto 0x0007
+  00ce: return nothing
+  00d0: <eos>
+
+function GameInfo.SetGameSpeed  (script 70 bytes)
+  0000: self.GameSpeed = obj'Core.Math'.static.FMax(T, 0.001)
+  001b: self.WorldInfo.TimeDilation = self.GameSpeed
+  002f: SetTimer(self.WorldInfo.TimeDilation, true, , )
+  0043: return nothing
+  0045: <eos>
+
+function GameInfo.SetGameType  (script 11 bytes)
+  0000: return get_Class()
+  0004: return return
+  000a: <eos>
+
+function GameInfo.GetOnlineGameSettings  (script 122 bytes)
+  0000: OS = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OS == none)) goto 0x0026
+  0024: return none
+  0026: GI = OS.GameInterface
+  003a: if !(EqualEqual_InterfaceInterface(GI, OnlineGameInterface(none))) goto 0x0050
+  004e: return none
+  0050: return GI.GetGameSettings(default.PlayerReplicationInfoClass.static.default.SessionName)
+  0073: return return
+  0079: <eos>
+
+function GameInfo.AllowGameRules  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.InitGame  (script 2132 bytes)
+  0000: self.OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((self.OnlineSub != none)) goto 0x0038
+  0024: self.GameInterface = self.OnlineSub.GameInterface
+  0038: self.MaxPlayers = obj'Core.Math'.static.Clamp(obj'Core.Strings'.static.GetIntOption(Options, "MaxPlayers", self.MaxPlayers), 0, self.MaxPlayersAllowed)
+  0078: self.MaxSpectators = obj'Core.Math'.static.Clamp(obj'Core.Strings'.static.GetIntOption(Options, "MaxSpectators", self.MaxSpectators), 0, self.MaxSpectatorsAllowed)
+  00bb: InOpt = obj'Core.Strings'.static.ParseOption(Options, "GameSpeed")
+  00e4: if !((InOpt != "")) goto 0x0118
+  00f0: LogInternal(("GameSpeed" @ InOpt), , , )
+  0107: SetGameSpeed(cast4c(InOpt))
+  0118: self.TimeLimit = obj'Core.Math'.static.Max(0, obj'Core.Strings'.static.GetIntOption(Options, "TimeLimit", self.TimeLimit))
+  0152: self.BroadcastHandler = Spawn(self.BroadcastHandlerClass, , , , , , , )
+  016e: InOpt = obj'Core.Strings'.static.ParseOption(Options, "AccessControl")
+  019b: if !((InOpt != "")) goto 0x01c7
+  01a7: ACClass = class<AccessControl>(DynamicLoadObject(InOpt, obj'Core.Class', ))
+  01c7: if !((ACClass == none)) goto 0x01dd
+  01d2: ACClass = self.AccessControlClass
+  01dd: LeftOpt = obj'Core.Strings'.static.ParseOption(Options, "AdminName")
+  0206: InOpt = obj'Core.Strings'.static.ParseOption(Options, "AdminPassword")
+  0233: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(2)) || (cast3a(self.WorldInfo.NetMode) == cast3a(1)))) goto 0x02b4
+  0267: self.AccessControl = Spawn(ACClass, , , , , , , )
+  0283: if !(((self.AccessControl != none) && (InOpt != ""))) goto 0x02b4
+  029c: self.AccessControl.SetAdminPassword(InOpt)
+  02b4: InOpt = obj'Core.Strings'.static.ParseOption(Options, "GameRules")
+  02dd: if !((InOpt != "")) goto 0x03c4
+  02e9: LogInternal(("GameRules" @ InOpt), , , )
+  0300: if !((InOpt != "")) goto 0x03c4
+  030c: Pos = obj'Core.Strings'.static.InStr(InOpt, ",", )
+  0326: if !((Pos > 0)) goto 0x037f
+  0331: LeftOpt = obj'Core.Strings'.static.Left(InOpt, Pos)
+  034c: InOpt = obj'Core.Strings'.static.Right(InOpt, ((obj'Core.Strings'.static.Len(InOpt) - Pos) - 1))
+  037c: goto 0x0392
+  037f: LeftOpt = InOpt
+  038a: InOpt = ""
+  0392: GameRulesClass = class<GameRules>(DynamicLoadObject(LeftOpt, obj'Core.Class', ))
+  03b2: AddGameRules(GameRulesClass)
+  03c1: goto 0x0300
+  03c4: GameSettings = GetOnlineGameSettings()
+  03d4: if !((GameSettings != none)) goto 0x0439
+  03df: if !(AllowGameRules()) goto 0x03fb
+  03ec: AddGameRulesFromSettings(GameSettings)
+  03fb: self.bUsingArbitration = GameSettings.bUsesArbitration
+  0411: self.LeaderboardId = GameSettings.LeaderboardId
+  0425: self.ArbitratedLeaderboardId = GameSettings.ArbitratedLeaderboardId
+  0439: InOpt = obj'Core.Strings'.static.ParseOption(Options, "StatsWriters")
+  0465: if !((InOpt != "")) goto 0x054d
+  0471: LogInternal(("StatsWriters" @ InOpt), , , )
+  048b: if !((InOpt != "")) goto 0x054d
+  0497: Pos = obj'Core.Strings'.static.InStr(InOpt, ",", )
+  04b1: if !((Pos > 0)) goto 0x050a
+  04bc: LeftOpt = obj'Core.Strings'.static.Left(InOpt, Pos)
+  04d7: InOpt = obj'Core.Strings'.static.Right(InOpt, ((obj'Core.Strings'.static.Len(InOpt) - Pos) - 1))
+  0507: goto 0x051d
+  050a: LeftOpt = InOpt
+  0515: InOpt = ""
+  051d: StatsWriteClass = class<OnlineStatsWrite>(DynamicLoadObject(LeftOpt, obj'Core.Class', ))
+  053d: self.OnlineStatsWriteClasses.AddItem(StatsWriteClass)
+  054a: goto 0x048b
+  054d: InOpt = obj'Core.Strings'.static.ParseOption(Options, "Mutator")
+  0574: if !((InOpt != "")) goto 0x0637
+  0580: LogInternal(("Mutators" @ InOpt), , , )
+  0596: if !((InOpt != "")) goto 0x0637
+  05a2: Pos = obj'Core.Strings'.static.InStr(InOpt, ",", )
+  05bc: if !((Pos > 0)) goto 0x0615
+  05c7: LeftOpt = obj'Core.Strings'.static.Left(InOpt, Pos)
+  05e2: InOpt = obj'Core.Strings'.static.Right(InOpt, ((obj'Core.Strings'.static.Len(InOpt) - Pos) - 1))
+  0612: goto 0x0628
+  0615: LeftOpt = InOpt
+  0620: InOpt = ""
+  0628: GameInfo.AddMutator(LeftOpt, true)
+  0634: goto 0x0596
+  0637: InOpt = obj'Core.Strings'.static.ParseOption(Options, "GamePassword")
+  0663: if !(((InOpt != "") && (self.AccessControl != none))) goto 0x06ae
+  067c: self.AccessControl.SetGamePassword(InOpt)
+  0694: LogInternal(("GamePassword" @ InOpt), , , )
+  06ae: GameInfo.SetupAutomatedTesting()
+  06b4: self.bFixedPlayerStart = (obj'Core.Strings'.static.ParseOption(Options, "FixedPlayerStart") ~= "1")
+  06ea: self.bDoingAFlyThrough = (obj'Core.Strings'.static.ParseOption(Options, "causeevent") ~= "FlyThrough")
+  0723: self.bCheckingForFragmentation = (obj'Core.Strings'.static.ParseOption(Options, "CheckingForFragmentation") ~= "1")
+  0761: self.bCheckingForMemLeaks = (obj'Core.Strings'.static.ParseOption(Options, "CheckingForMemLeaks") ~= "1")
+  079a: self.BugLocString = obj'Core.Strings'.static.ParseOption(Options, "BugLoc")
+  07c0: self.BugRotString = obj'Core.Strings'.static.ParseOption(Options, "BugRot")
+  07e6: if !((self.BaseMutator != none)) goto 0x080e
+  07f1: self.BaseMutator.InitMutator(Options, ErrorMessage)
+  080e: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && (GameSettings == none))) goto 0x0851
+  0834: self.ServerOptions = Options
+  083f: if !((GameInfo.ProcessServerLogin() == false)) goto 0x0851
+  084b: GameInfo.RegisterServer()
+  0851: return nothing
+  0853: <eos>
+
+function GameInfo.SetupAutomatedTesting  (script 192 bytes)
+  0000: if !(obj'Core.Strings'.static.ParseCommandLineStringOption("TestingPolicy", PolicyTypeOption)) goto 0x00bd
+  002a: PolicyType = class<AutomatedTestingPolicy>(FindObject(PolicyTypeOption, obj'Core.Class'))
+  0049: if !((PolicyType != none)) goto 0x006b
+  0054: self.TestingPolicy = new(nothing, nothing, PolicyType, nothing, GetRemoteRole)
+  0068: goto 0x00bd
+  006b: LogInternal((("ERROR: Failed to find Automated testing policy type '" $ cast56(PolicyType)) $ "'"), 'DevAutomatedTesting', , )
+  00bd: return nothing
+  00bf: <eos>
+
+function GameInfo.AddGameRulesFromSettings  (script 75 bytes)
+  0000: I = 0
+  0007: if !((I < GameSettings.Rules.Length)) goto 0x0048
+  0020: AddGameRules(I[GameSettings.Rules])
+  003e: AddAdd_PreInt(I)
+  0045: goto 0x0007
+  0048: return nothing
+  004a: <eos>
+
+function GameInfo.NotifyPendingConnectionLost  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.AddMutator  (script 591 bytes)
+  0000: nothing
+  0001: if !(!GameInfo.AllowMutator(mutname)) goto 0x0013
+  0011: return nothing
+  0013: mutClass = class<Mutator>(DynamicLoadObject(mutname, obj'Core.Class', ))
+  0033: if !((mutClass == none)) goto 0x0040
+  003e: return nothing
+  0040: if !(((mutClass.static.default.GroupNames.Length > 0) && (self.BaseMutator != none))) goto 0x0146
+  0062: mut = self.BaseMutator
+  006d: if !((mut != none)) goto 0x0146
+  0078: I = 0
+  007f: if !((I < mut.GroupNames.Length)) goto 0x012f
+  0098: if !((mutClass.static.default.GroupNames.Find(I[mut.GroupNames]) != -1)) goto 0x0125
+  00c7: LogInternal(((("Not adding " $ cast56(mutClass)) $ " because already have a mutator in the same group - ") $ cast56(mut)), , , )
+  0123: return nothing
+  0125: AddAdd_Int(I)
+  012c: goto 0x007f
+  012f: mut = mut.NextMutator
+  0143: goto 0x006d
+  0146: mut = self.BaseMutator
+  0151: if !((mut != none)) goto 0x01dc
+  015c: if !((mut.get_Class() == mutClass)) goto 0x01c5
+  0172: LogInternal(((("Not adding " $ cast56(mutClass)) $ " because this mutator is already added - ") $ cast56(mut)), , , )
+  01c3: return nothing
+  01c5: mut = mut.NextMutator
+  01d9: goto 0x0151
+  01dc: mut = Spawn(mutClass, , , , , , , )
+  01f8: if !((mut == none)) goto 0x0205
+  0203: return nothing
+  0205: mut.bUserAdded = bUserAdded
+  021b: if !((self.BaseMutator == none)) goto 0x0234
+  0226: self.BaseMutator = mut
+  0231: goto 0x024c
+  0234: self.BaseMutator.AddMutator(mut)
+  024c: return nothing
+  024e: <eos>
+
+function GameInfo.AddGameRules  (script 97 bytes)
+  0000: if !((GRClass != none)) goto 0x005e
+  000b: if !((self.GameRulesModifiers == none)) goto 0x0035
+  0016: self.GameRulesModifiers = Spawn(GRClass, , , , , , , )
+  0032: goto 0x005e
+  0035: self.GameRulesModifiers.AddGameRules(Spawn(GRClass, , , , , , , ))
+  005e: return nothing
+  0060: <eos>
+
+function GameInfo.HasRule  (script 83 bytes)
+  0000: RulesNode = self.GameRulesModifiers
+  000b: if !((RulesNode != none)) goto 0x004a
+  0016: if !((RulesNode.get_Class() == GRClass)) goto 0x002e
+  002c: return true
+  002e: RulesNode = RulesNode.GetNextGameRules()
+  0047: goto 0x000b
+  004a: return false
+  004c: return return
+  0052: <eos>
+
+function GameInfo.GetRulesAsCsv  (script 117 bytes)
+  0000: RulesNode = self.GameRulesModifiers
+  000b: if !((RulesNode != none)) goto 0x0068
+  0016: Result = (Result $ cast56(RulesNode.get_Class()))
+  0031: RulesNode = RulesNode.GetNextGameRules()
+  004a: if !((RulesNode != none)) goto 0x0065
+  0055: Result = (Result $ ",")
+  0065: goto 0x000b
+  0068: return Result
+  006e: return return
+  0074: <eos>
+
+function GameInfo.RemoveMutator  (script 153 bytes)
+  0000: if !((self.BaseMutator == MutatorToRemove)) goto 0x0026
+  000f: self.BaseMutator = MutatorToRemove.NextMutator
+  0023: goto 0x0096
+  0026: if !((self.BaseMutator != none)) goto 0x0096
+  0031: M = self.BaseMutator
+  003c: if !((M != none)) goto 0x0096
+  0047: if !((M.NextMutator == MutatorToRemove)) goto 0x007f
+  005f: M.NextMutator = MutatorToRemove.NextMutator
+  007c: goto 0x0096
+  007f: M = M.NextMutator
+  0093: goto 0x003c
+  0096: return nothing
+  0098: <eos>
+
+function GameInfo.GetBeaconText  (script 90 bytes)
+  0000: return ((((((self.WorldInfo.ComputerName $ " ") $ obj'Core.Strings'.static.Left(self.WorldInfo.Title, 24)) $ "\t") $ cast53(GetNumPlayers())) $ "/") $ cast53(self.MaxPlayers))
+  0053: return return
+  0059: <eos>
+
+function GameInfo.ProcessServerTravel  (script 655 bytes)
+  0000: nothing
+  0001: self.bLevelChange = true
+  0009: GameInfo.EndLogging("mapchange")
+  001a: bSeamless = (self.bUseSeamlessTravel && (self.WorldInfo.TimeSeconds < 172800.0))
+  0041: if !((obj'Core.Strings'.static.InStr(obj'Core.Strings'.static.Caps(URL), "?RESTART", ) != -1)) goto 0x008f
+  0071: NextMap = cast57(self.WorldInfo.GetPackageName())
+  008c: goto 0x00e1
+  008f: OptionStart = obj'Core.Strings'.static.InStr(URL, "?", )
+  00a9: if !((OptionStart == -1)) goto 0x00c6
+  00b8: NextMap = URL
+  00c3: goto 0x00e1
+  00c6: NextMap = obj'Core.Strings'.static.Left(URL, OptionStart)
+  00e1: NextMapGuid = GetPackageGuid(cast60(NextMap))
+  00f8: LocalPlayer = ProcessClientTravel(URL, NextMapGuid, bSeamless, bAbsolute)
+  011e: LogInternal(("ProcessServerTravel:" @ URL), , , )
+  0140: self.WorldInfo.NextURL = URL
+  0154: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(2)) && (LocalPlayer != none))) goto 0x01ff
+  017a: ConcatEqual_StrStr(self.WorldInfo.NextURL, ((((("?Team=" $ LocalPlayer.GetDefaultURL("Team")) $ "?Name=") $ LocalPlayer.GetDefaultURL("Name")) $ "?Class=") $ LocalPlayer.GetDefaultURL("Class")))
+  01ff: if !(bSeamless) goto 0x0244
+  0208: self.WorldInfo.SeamlessTravel(self.WorldInfo.NextURL, bAbsolute, )
+  0230: self.WorldInfo.NextURL = ""
+  0241: goto 0x028c
+  0244: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(1)) && (cast3a(self.WorldInfo.NetMode) != cast3a(2)))) goto 0x028c
+  0278: self.WorldInfo.NextSwitchCountdown = 0.0
+  028c: return nothing
+  028e: <eos>
+
+function GameInfo.ProcessClientTravel  (script 187 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x00ad)
+  0020: if !((NetConnection(P.Player) != none)) goto 0x0074
+  0039: P.LongTimeout()
+  004c: P.ClientTravel(URL, 2, bSeamless, NextMapGuid)
+  0071: goto 0x00ac
+  0074: LP = P
+  007f: P.PreClientTravel(URL, (bAbsolute ? 0 : 2), bSeamless)
+  00ac: iternext
+  00ad: iterpop
+  00ae: return LP
+  00b4: return return
+  00ba: <eos>
+
+function GameInfo.RequiresPassword  (script 40 bytes)
+  0000: return ((self.AccessControl != none) && self.AccessControl.RequiresPassword())
+  0021: return return
+  0027: <eos>
+
+function GameInfo.PreLogin  (script 243 bytes)
+  0000: if !((((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && self.bUsingArbitration) && self.bHasArbitratedHandshakeBegun)) goto 0x0045
+  002f: ErrorMessage = self.GameMessageClass.static.default.ArbitrationMessage
+  0043: return nothing
+  0045: bPerfTesting = (obj'Core.Strings'.static.ParseOption(Options, "AutomatedPerfTesting") ~= "1")
+  007f: bSpectator = (bPerfTesting || (obj'Core.Strings'.static.ParseOption(Options, "SpectatorOnly") ~= "1"))
+  00bd: if !((self.AccessControl != none)) goto 0x00f0
+  00c8: self.AccessControl.PreLogin(Options, Address, ErrorMessage, bSpectator)
+  00f0: return nothing
+  00f2: <eos>
+
+function GameInfo.AtCapacity  (script 125 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x001b
+  0019: return false
+  001b: if !(bSpectator) goto 0x005c
+  0024: return ((self.NumSpectators >= self.MaxSpectators) && ((cast3a(self.WorldInfo.NetMode) != cast3a(2)) || (self.NumPlayers > 0)))
+  0059: goto 0x0076
+  005c: return ((self.MaxPlayers > 0) && (self.NumPlayers >= self.MaxPlayers))
+  0076: return return
+  007c: <eos>
+
+function GameInfo.SpawnPlayerController  (script 38 bytes)
+  0000: return Spawn(self.PlayerControllerClass, , , SpawnLocation, SpawnRotation, , , )
+  001f: return return
+  0025: <eos>
+
+function GameInfo.SetupNewPlayerController  (script 193 bytes)
+  0000: if !((NewPlayer.PlayerReplicationInfo == none)) goto 0x00be
+  0014: NewPlayer.InitPlayerReplicationInfo()
+  0027: NewPlayer.PlayerReplicationInfo.PlayerID = AddAdd_Int(self.CurrentID)
+  0046: InName = obj'Core.Strings'.static.Left(obj'Core.Strings'.static.ParseOption(LoginOptions, "Name"), 20)
+  0077: if !((InName == "")) goto 0x00a9
+  0083: InName = (self.DefaultPlayerName $ cast53(NewPlayer.PlayerReplicationInfo.PlayerID))
+  00a9: ChangeName(NewPlayer, InName, false)
+  00be: return nothing
+  00c0: <eos>
+
+function GameInfo.Login  (script 1038 bytes)
+  0000: bAdmin = false
+  0008: if !((self.bUsingArbitration && self.bHasArbitratedHandshakeBegun)) goto 0x0032
+  001c: ErrorMessage = self.GameMessageClass.static.default.MaxedOutMessage
+  0030: return none
+  0032: if !((self.BaseMutator != none)) goto 0x005a
+  003d: self.BaseMutator.ModifyLogin(Portal, Options)
+  005a: bPerfTesting = (obj'Core.Strings'.static.ParseOption(Options, "AutomatedPerfTesting") ~= "1")
+  0094: bSpectator = (bPerfTesting || (obj'Core.Strings'.static.ParseOption(Options, "SpectatorOnly") ~= "1"))
+  00d2: InTeam = cast3d(obj'Core.Strings'.static.GetIntOption(Options, "Team", 255))
+  00fa: InPassword = obj'Core.Strings'.static.ParseOption(Options, "Password")
+  0122: if !((self.AccessControl != none)) goto 0x014c
+  012d: bAdmin = self.AccessControl.ParseAdminOptions(Options)
+  014c: if !((!bAdmin && AtCapacity(bSpectator))) goto 0x0182
+  016c: ErrorMessage = self.GameMessageClass.static.default.MaxedOutMessage
+  0180: return none
+  0182: if !((bAdmin && AtCapacity(false))) goto 0x01a3
+  019b: bSpectator = true
+  01a3: if !(!GameInfo.GetTeamAssignmentFromReservation(InTeam, Options)) goto 0x01ce
+  01b8: InTeam = PickTeam(InTeam, none)
+  01ce: StartSpot = FindPlayerStart(none, InTeam, Portal)
+  01e9: if !((StartSpot == none)) goto 0x020a
+  01f4: ErrorMessage = self.GameMessageClass.static.default.FailedPlaceMessage
+  0208: return none
+  020a: SpawnRotation.Yaw = StartSpot.Rotation.Yaw
+  0234: NewPlayer = SpawnPlayerController(StartSpot.Location, SpawnRotation)
+  025c: if !((NewPlayer == none)) goto 0x02b7
+  0267: LogInternal(("Couldn't spawn player controller of class " $ cast56(self.PlayerControllerClass)), , , )
+  02a1: ErrorMessage = self.GameMessageClass.static.default.FailedSpawnMessage
+  02b5: return none
+  02b7: SetupNewPlayerController(NewPlayer, Options)
+  02cb: ChangeTeam(NewPlayer, cast3a(InTeam), false)
+  02e2: NewPlayer.StartSpot = StartSpot
+  02f6: if !(((bSpectator || NewPlayer.PlayerReplicationInfo.bOnlySpectator) || ShouldSpectateOnLogin())) goto 0x0396
+  032b: NewPlayer.GotoState('Spectating', , , )
+  0342: NewPlayer.PlayerReplicationInfo.bOnlySpectator = true
+  035c: NewPlayer.PlayerReplicationInfo.bIsSpectator = true
+  0376: NewPlayer.PlayerReplicationInfo.bOutOfLives = true
+  0390: return NewPlayer
+  0396: if !(((self.AccessControl != none) && self.AccessControl.AdminLogin(NewPlayer, InPassword))) goto 0x03db
+  03c3: self.AccessControl.AdminEntered(NewPlayer)
+  03db: if !(self.bDelayedStart) goto 0x0401
+  03e4: NewPlayer.GotoState('PlayerWaiting', , , )
+  03fb: return NewPlayer
+  0401: return NewPlayer
+  0407: return return
+  040d: <eos>
+
+function GameInfo.ShouldSpectateOnLogin  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function GameInfo.StartMatch  (script 77 bytes)
+  0000: foreach AllActors(obj'Actor', A) (end 0x002b)
+  0017: A.MatchStarting()
+  002a: iternext
+  002b: iterpop
+  002c: StartHumans()
+  0036: GameInfo.StartBots()
+  003c: self.bWaitingToStartMatch = false
+  0044: GameInfo.StartOnlineGame()
+  004a: return nothing
+  004c: <eos>
+
+function GameInfo.StartOnlineGame  (script 212 bytes)
+  0000: if !((NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none)) && (cast3a(self.WorldInfo.NetMode) != cast3a(0)))) goto 0x00be
+  002f: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x007b)
+  004f: if !(!PC.IsLocalPlayerController()) goto 0x007a
+  0067: PC.ClientStartOnlineGame()
+  007a: iternext
+  007b: iterpop
+  007c: self.GameInterface.AddStartOnlineGameCompleteDelegate(delegate.OnStartOnlineGameComplete)
+  0099: self.GameInterface.StartOnlineGame(self.PlayerReplicationInfoClass.static.default.SessionName)
+  00bb: goto 0x00d1
+  00be: self.GameReplicationInfo.StartMatch()
+  00d1: return nothing
+  00d3: <eos>
+
+function GameInfo.OnStartOnlineGameComplete  (script 221 bytes)
+  0000: self.GameInterface.ClearStartOnlineGameCompleteDelegate(delegate.OnStartOnlineGameComplete)
+  001d: if !((bWasSuccessful && NotEqual_InterfaceInterface(self.OnlineSub.StatsInterface, OnlineStatsInterface(none)))) goto 0x00c7
+  0045: StatGuid = self.OnlineSub.StatsInterface.GetHostStatGuid()
+  0068: if !((StatGuid != "")) goto 0x00c7
+  0074: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x00c6)
+  0094: if !((PC.IsLocalPlayerController() == false)) goto 0x00c5
+  00ad: PC.ClientRegisterHostStatGuid(StatGuid)
+  00c5: iternext
+  00c6: iterpop
+  00c7: self.GameReplicationInfo.StartMatch()
+  00da: return nothing
+  00dc: <eos>
+
+function GameInfo.StartHumans  (script 109 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x0069)
+  0020: if !((P.Pawn == none)) goto 0x0068
+  0034: if !(self.bGameEnded) goto 0x0043
+  003d: iterpop
+  003e: return nothing
+  0040: goto 0x0068
+  0043: if !(P.CanRestartPlayer()) goto 0x0068
+  0059: RestartPlayer(P)
+  0068: iternext
+  0069: iterpop
+  006a: return nothing
+  006c: <eos>
+
+function GameInfo.StartBots  (script 147 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Controller', P) (end 0x008f)
+  0020: if !((P.bIsPlayer && (PlayerController(P) == none))) goto 0x008e
+  0044: if !((cast3a(self.WorldInfo.NetMode) == cast3a(0))) goto 0x006f
+  005d: RestartPlayer(P)
+  006c: goto 0x008e
+  006f: P.GotoState('Dead', 'MPStart', , )
+  008e: iternext
+  008f: iterpop
+  0090: return nothing
+  0092: <eos>
+
+function GameInfo.RestartPlayer  (script 1288 bytes)
+  0000: if !(((self.bRestartLevel && (cast3a(self.WorldInfo.NetMode) != cast3a(1))) && (cast3a(self.WorldInfo.NetMode) != cast3a(2)))) goto 0x0089
+  003f: WarnInternal(("bRestartLevel && !server, abort from RestartPlayer" @ cast52(self.WorldInfo.NetMode)))
+  0087: return nothing
+  0089: TeamNum = (((NewPlayer.PlayerReplicationInfo == none) || (NewPlayer.PlayerReplicationInfo.Team == none)) ? 255 : NewPlayer.PlayerReplicationInfo.Team.TeamIndex)
+  00e6: StartSpot = FindPlayerStart(NewPlayer, cast3d(TeamNum), )
+  0103: if !((StartSpot == none)) goto 0x01b4
+  010e: if !((NewPlayer.StartSpot != none)) goto 0x0174
+  0122: StartSpot = NewPlayer.StartSpot
+  0136: LogInternal("Error: Player start not found, using last start spot", , , )
+  0171: goto 0x01b4
+  0174: LogInternal("Error: Player start not found, failed to restart player", , , )
+  01b2: return nothing
+  01b4: if !((NewPlayer.Pawn == none)) goto 0x01eb
+  01c8: NewPlayer.Pawn = SpawnDefaultPawnFor(NewPlayer, StartSpot)
+  01eb: if !((NewPlayer.Pawn == none)) goto 0x027d
+  01ff: LogInternal(("failed to spawn player at " $ cast56(StartSpot)), , , )
+  0229: NewPlayer.GotoState('Dead', , , )
+  0240: if !((PlayerController(NewPlayer) != none)) goto 0x027a
+  0250: PlayerController(NewPlayer).ClientGotoState('Dead', 'Begin')
+  027a: goto 0x04e0
+  027d: NewPlayer.Pawn.SetAnchor(StartSpot)
+  029e: NewPlayerPC = PlayerController(NewPlayer)
+  02ae: if !((NewPlayerPC != none)) goto 0x0318
+  02b9: NewPlayerPC.TimeMargin = -0.1
+  02cd: StartSpot.AnchoredPawn = none
+  02dd: if !(AllowCheats(NewPlayerPC)) goto 0x0305
+  02ef: NewPlayerPC.AddCheats()
+  0302: goto 0x0318
+  0305: NewPlayerPC.RemoveCheats()
+  0318: NewPlayer.Pawn.LastStartSpot = PlayerStart(StartSpot)
+  033a: NewPlayer.Pawn.LastStartTime = self.WorldInfo.TimeSeconds
+  0360: NewPlayer.Possess(NewPlayer.Pawn, false)
+  0382: NewPlayer.Pawn.PlayTeleportEffect(true, true)
+  03a0: NewPlayer.ClientSetRotation(NewPlayer.Pawn.Rotation, true)
+  03cb: if !(!self.WorldInfo.bNoDefaultInventoryForPlayer) goto 0x03f3
+  03df: GameInfo.AddDefaultInventory(NewPlayer.Pawn)
+  03f3: SetPlayerDefaults(NewPlayer.Pawn)
+  040b: if !((self.WorldInfo.GetGameSequence() != none)) goto 0x04e0
+  0425: self.WorldInfo.GetGameSequence().FindSeqObjectsByClass(obj'SeqEvent_PlayerSpawned', true, Events)
+  0452: idx = 0
+  0459: if !((idx < Events.Length)) goto 0x04e0
+  0469: SpawnedEvent = SeqEvent_PlayerSpawned(idx[Events])
+  047f: if !(((SpawnedEvent != none) && SpawnedEvent.CheckActivate(NewPlayer, NewPlayer, , , ))) goto 0x04d6
+  04af: SpawnedEvent.SpawnPoint = StartSpot
+  04c3: SpawnedEvent.PopulateLinkedVariableValues()
+  04d6: AddAdd_Int(idx)
+  04dd: goto 0x0459
+  04e0: if !(get_IsAutomatedTesting()) goto 0x0505
+  04ed: self.TestingPolicy.HandleRestartPlayer(NewPlayer)
+  0505: return nothing
+  0507: <eos>
+
+function GameInfo.SpawnDefaultPawnFor  (script 195 bytes)
+  0000: DefaultPlayerClass = GetDefaultPlayerClass(NewPlayer)
+  0015: StartRotation.Yaw = StartSpot.Rotation.Yaw
+  003f: ResultPawn = Spawn(DefaultPlayerClass, , , StartSpot.Location, StartRotation, , , )
+  006c: if !((ResultPawn == none)) goto 0x00b6
+  0077: LogInternal(((("Couldn't spawn player of type " $ cast56(DefaultPlayerClass)) $ " at ") $ cast56(StartSpot)), , , )
+  00b6: return ResultPawn
+  00bc: return return
+  00c2: <eos>
+
+function GameInfo.GetDefaultPlayerClass  (script 13 bytes)
+  0000: return self.DefaultPawnClass
+  0006: return return
+  000c: <eos>
+
+function GameInfo.GetMaxPlayers  (script 13 bytes)
+  0000: return self.MaxPlayers
+  0006: return return
+  000c: <eos>
+
+function GameInfo.ReplicateStreamingState  (script 185 bytes)
+  0000: if !(PC.IsLocalPlayerController()) goto 0x0018
+  0016: return nothing
+  0018: if !((none != self.WorldInfo.CurrentStreamingState)) goto 0x0049
+  002c: NewStreamingState = self.WorldInfo.CurrentStreamingState.Name
+  0049: LogInternal((((("Sending streaming state '" $ cast57(NewStreamingState)) $ "' to '") $ PC.GetHumanReadableName()) $ "'"), 'DevStreaming', , )
+  009e: PC.ClientUpdateLevelStreamingState(NewStreamingState)
+  00b6: return nothing
+  00b8: <eos>
+
+function GameInfo.PostLogin  (script 908 bytes)
+  0000: if !(NewPlayer.PlayerReplicationInfo.bOnlySpectator) goto 0x0025
+  001b: AddAdd_Int(self.NumSpectators)
+  0022: goto 0x004c
+  0025: if !(NewPlayer.HasClientTravelFinished()) goto 0x0045
+  003b: AddAdd_Int(self.NumPlayers)
+  0042: goto 0x004c
+  0045: AddAdd_Int(self.NumTravellingPlayers)
+  004c: UpdateGameSettingsCounts()
+  0056: Address = NewPlayer.GetPlayerNetworkAddress()
+  006f: Pos = obj'Core.Strings'.static.InStr(Address, ":", )
+  0089: NewPlayer.PlayerReplicationInfo.SavedNetworkAddress = ((Pos > 0) ? obj'Core.Strings'.static.Left(Address, Pos) : Address)
+  00c8: GameInfo.FindInactivePRI(NewPlayer)
+  00d3: if !(!self.bDelayedStart) goto 0x0118
+  00de: self.bRestartLevel = false
+  00e6: if !(self.bWaitingToStartMatch) goto 0x00fc
+  00ef: StartMatch()
+  00f9: goto 0x010b
+  00fc: RestartPlayer(NewPlayer)
+  010b: self.bRestartLevel = default.bRestartLevel
+  0118: NewPlayer.ClientSetHUD(self.HUDType, self.ScoreBoardType)
+  0135: if !((NewPlayer.Pawn != none)) goto 0x017c
+  0149: NewPlayer.Pawn.ClientSetRotation(NewPlayer.Pawn.Rotation)
+  017c: NewPlayer.ClientCapBandwidth(NewPlayer.Player.CurrentNetSpeed)
+  01a6: GameInfo.UpdateNetSpeeds()
+  01ac: if !((self.BaseMutator != none)) goto 0x01cf
+  01b7: self.BaseMutator.NotifyLogin(NewPlayer)
+  01cf: GameInfo.ReplicateStreamingState(NewPlayer)
+  01da: NewPlayer.ServerSendMusicInfo()
+  01ed: NewPlayer.ClientSetOnlineStatus()
+  0200: if !(((self.GameReplicationInfo.bMatchHasBegun && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.StatsInterface, OnlineStatsInterface(none)))) goto 0x0285
+  023e: StatGuid = self.OnlineSub.StatsInterface.GetHostStatGuid()
+  0261: if !((StatGuid != "")) goto 0x0285
+  026d: NewPlayer.ClientRegisterHostStatGuid(StatGuid)
+  0285: if !(self.bRequiresPushToTalk) goto 0x02a4
+  028e: NewPlayer.ClientStopNetworkedVoice()
+  02a1: goto 0x02b7
+  02a4: NewPlayer.ClientStartNetworkedVoice()
+  02b7: if !(NewPlayer.PlayerReplicationInfo.bOnlySpectator) goto 0x02ef
+  02d2: NewPlayer.ClientGotoState('Spectating', )
+  02ef: if !((self.GameRulesModifiers != none)) goto 0x031b
+  02fa: self.GameRulesModifiers.HandleNewPlayer(NewPlayer.PlayerReplicationInfo)
+  031b: GameSettings = GetOnlineGameSettings()
+  032b: if !(((GameSettings != none) && (cast3a(GameSettings.GameState) == cast3a(3)))) goto 0x0364
+  0351: NewPlayer.ClientStartOnlineGame()
+  0364: if !(get_IsAutomatedTesting()) goto 0x0389
+  0371: self.TestingPolicy.HandlePlayerEnterGame(NewPlayer)
+  0389: return nothing
+  038b: <eos>
+
+function GameInfo.UpdateNetSpeeds  (script 332 bytes)
+  0000: GameSettings = GetOnlineGameSettings()
+  0010: if !((((cast3a(self.WorldInfo.NetMode) == cast3a(1)) || (cast3a(self.WorldInfo.NetMode) == cast3a(0))) || ((GameSettings != none) && GameSettings.bIsLanMatch))) goto 0x0067
+  0065: return nothing
+  0067: if !(((self.WorldInfo.TimeSeconds - self.LastNetSpeedUpdateTime) < 1.0)) goto 0x009b
+  0086: SetTimer(1.0, false, 'UpdateNetSpeeds', )
+  0099: return nothing
+  009b: self.LastNetSpeedUpdateTime = self.WorldInfo.TimeSeconds
+  00af: NewNetSpeed = GameInfo.CalculatedNetSpeed()
+  00bb: LogInternal(((("New Dynamic NetSpeed " $ cast53(NewNetSpeed)) $ " vs old ") $ cast53(self.AdjustedNetSpeed)), , , )
+  00f5: if !((self.AdjustedNetSpeed != NewNetSpeed)) goto 0x0149
+  0104: self.AdjustedNetSpeed = NewNetSpeed
+  010f: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0148)
+  012f: PC.SetNetSpeed(self.AdjustedNetSpeed)
+  0147: iternext
+  0148: iterpop
+  0149: return nothing
+  014b: <eos>
+
+function GameInfo.CalculatedNetSpeed  (script 53 bytes)
+  0000: return obj'Core.Math'.static.Clamp((self.TotalNetBandwidth / obj'Core.Math'.static.Max(self.NumPlayers, 1)), self.MinDynamicBandwidth, self.MaxDynamicBandwidth)
+  002e: return return
+  0034: <eos>
+
+function GameInfo.PreExit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.Logout  (script 389 bytes)
+  0000: PC = PlayerController(Exiting)
+  0010: if !(((PC != none) && (cast3a(self.WorldInfo.NetMode) < cast3a(3)))) goto 0x0159
+  0036: if !(((PC.PlayerReplicationInfo != none) && PC.PlayerReplicationInfo.bOnlySpectator)) goto 0x0071
+  0067: SubtractSubtract_Int(self.NumSpectators)
+  006e: goto 0x00ba
+  0071: if !(PC.HasClientTravelFinished()) goto 0x0091
+  0087: SubtractSubtract_Int(self.NumPlayers)
+  008e: goto 0x0098
+  0091: SubtractSubtract_Int(self.NumTravellingPlayers)
+  0098: if !(!PC.IsLocalPlayerController()) goto 0x00ba
+  00b0: UpdateGameSettingsCounts()
+  00ba: if !(((self.bUsingArbitration && self.bHasArbitratedHandshakeBegun) && !self.bHasEndGameHandshakeBegun)) goto 0x0117
+  00db: LogInternal((("Player " $ PC.PlayerReplicationInfo.GetPlayerAlias()) $ " has dropped"), , , )
+  0117: GameInfo.UnregisterPlayer(PC)
+  0122: if !(self.bUsingArbitration) goto 0x0159
+  012b: PCIndex = self.ArbitrationPCs.Find(PC)
+  013e: if !((PCIndex != -1)) goto 0x0159
+  014d: self.ArbitrationPCs.Remove(PCIndex,1)
+  0159: if !((self.BaseMutator != none)) goto 0x017c
+  0164: self.BaseMutator.NotifyLogout(Exiting)
+  017c: GameInfo.UpdateNetSpeeds()
+  0182: return nothing
+  0184: <eos>
+
+function GameInfo.UnregisterPlayer  (script 156 bytes)
+  0000: if !(((((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) && (GetOnlineGameSettings() != none)) && (PC.PlayerReplicationInfo != none))) goto 0x0099
+  0057: self.GameInterface.UnregisterPlayer(PC.PlayerReplicationInfo.SessionName, PC.PlayerReplicationInfo.UniqueId)
+  0099: return nothing
+  009b: <eos>
+
+function GameInfo.AcceptInventory  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.AddDefaultInventory  (script 98 bytes)
+  0000: P.AddDefaultInventory()
+  0013: if !((P.InvManager == none)) goto 0x005f
+  0027: WarnInternal("GameInfo::AddDefaultInventory - P.InvManager == None")
+  005f: return nothing
+  0061: <eos>
+
+function GameInfo.Mutate  (script 43 bytes)
+  0000: if !((self.BaseMutator != none)) goto 0x0028
+  000b: self.BaseMutator.Mutate(MutateString, Sender)
+  0028: return nothing
+  002a: <eos>
+
+function GameInfo.SetPlayerDefaults  (script 274 bytes)
+  0000: PlayerPawn.AirControl = PlayerPawn.default.AirControl
+  001d: PlayerPawn.GroundSpeed = PlayerPawn.default.GroundSpeed
+  003a: PlayerPawn.WaterSpeed = PlayerPawn.default.WaterSpeed
+  0057: PlayerPawn.AirSpeed = PlayerPawn.default.AirSpeed
+  0074: PlayerPawn.Acceleration = PlayerPawn.default.Acceleration
+  0091: PlayerPawn.AccelRate = PlayerPawn.default.AccelRate
+  00ae: PlayerPawn.JumpZ = PlayerPawn.default.JumpZ
+  00cb: if !((self.BaseMutator != none)) goto 0x00ee
+  00d6: self.BaseMutator.ModifyPlayer(PlayerPawn)
+  00ee: PlayerPawn.PhysicsVolume.ModifyPlayer(PlayerPawn)
+  010f: return nothing
+  0111: <eos>
+
+function GameInfo.NotifyKilled  (script 76 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x0048)
+  0020: C.NotifyKilled(Killer, Killed, KilledPawn, DamageType)
+  0047: iternext
+  0048: iterpop
+  0049: return nothing
+  004b: <eos>
+
+function GameInfo.NotifyExplicitDestroy  (script 61 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x0039)
+  0020: C.NotifyExplicitDestroy(DestroyedPawn)
+  0038: iternext
+  0039: iterpop
+  003a: return nothing
+  003c: <eos>
+
+function GameInfo.Killed  (script 353 bytes)
+  0000: if !((KilledPlayer != none)) goto 0x0024
+  000b: ScoreKill(Killer, KilledPlayer, DamageType)
+  0024: if !((KilledPlayer != none)) goto 0x00ee
+  002f: if !(KilledPlayer.bIsPlayer) goto 0x00be
+  0041: KilledPlayer.PlayerReplicationInfo.AddDeaths(1)
+  005e: KilledPlayer.PlayerReplicationInfo.SetNetUpdateTime(obj'Core.Math'.static.FMin(KilledPlayer.PlayerReplicationInfo.NetUpdateTime, (self.WorldInfo.TimeSeconds + (0.3 * obj'Core.Random'.static.FRand()))))
+  00be: if !(ShouldAnnounceKill(KilledPlayer, DamageType)) goto 0x00ee
+  00d5: BroadcastDeathMessage(Killer, KilledPlayer, DamageType)
+  00ee: if !(((Killer != none) || (self.MaxLives > 0))) goto 0x011e
+  0106: CheckScore(Killer.PlayerReplicationInfo)
+  011e: if !(ShouldDiscardInventoryWhileDying(KilledPawn)) goto 0x0144
+  0130: DiscardInventory(KilledPawn, Killer)
+  0144: GameInfo.NotifyKilled(Killer, KilledPlayer, KilledPawn, DamageType)
+  015e: return nothing
+  0160: <eos>
+
+function GameInfo.ShouldAnnounceKill  (script 40 bytes)
+  0000: return (KilledPlayer.bIsPlayer && (DamageType != obj'DmgType_Suicided'))
+  0021: return return
+  0027: <eos>
+
+function GameInfo.ShouldDiscardInventoryWhileDying  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.PreventDeath  (script 60 bytes)
+  0000: if !((self.GameRulesModifiers == none)) goto 0x000d
+  000b: return false
+  000d: return self.GameRulesModifiers.PreventDeath(KilledPawn, Killer, DamageType, HitLocation)
+  0035: return return
+  003b: <eos>
+
+function GameInfo.BroadcastDeathMessage  (script 121 bytes)
+  0000: if !(((Killer == Other) || (Killer == none))) goto 0x0044
+  001c: BroadcastLocalized(self, self.DeathMessageClass, 1, none, Other.PlayerReplicationInfo, DamageType)
+  0041: goto 0x0076
+  0044: BroadcastLocalized(self, self.DeathMessageClass, 0, Killer.PlayerReplicationInfo, Other.PlayerReplicationInfo, DamageType)
+  0076: return nothing
+  0078: <eos>
+
+function GameInfo.ParseKillMessage  (script 55 bytes)
+  0000: return obj'Core.Strings'.static.Repl(obj'Core.Strings'.static.Repl(DeathMessage, "`k", KillerName, ), "`o", VictimName, )
+  0030: return return
+  0036: <eos>
+
+function GameInfo.Kick  (script 38 bytes)
+  0000: if !((self.AccessControl != none)) goto 0x0023
+  000b: self.AccessControl.Kick(S)
+  0023: return nothing
+  0025: <eos>
+
+function GameInfo.KickBan  (script 38 bytes)
+  0000: if !((self.AccessControl != none)) goto 0x0023
+  000b: self.AccessControl.KickBan(S)
+  0023: return nothing
+  0025: <eos>
+
+function GameInfo.CanSpectate  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.ReduceDamage  (script 327 bytes)
+  0000: OriginalDamage = cast44(Damage)
+  000d: if !((injured.PhysicsVolume.bNeutralZone || injured.InGodMode())) goto 0x004d
+  0040: Damage = 0.0
+  004b: return nothing
+  004d: if !(((Damage >= injured.Health) && injured.InPseudoGodMode())) goto 0x00ab
+  007d: Damage = obj'Core.Math'.static.FMax(0.0, (injured.Health - cast3f(1)))
+  00a6: return nothing
+  00a8: goto 0x0103
+  00ab: if !(((Damage > cast3f(0)) && (injured.InvManager != none))) goto 0x0103
+  00ce: injured.InvManager.ModifyDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType)
+  0103: if !((self.GameRulesModifiers != none)) goto 0x0144
+  010e: self.GameRulesModifiers.NetDamage(OriginalDamage, Damage, injured, InstigatedBy, HitLocation, Momentum, DamageType)
+  0144: return nothing
+  0146: <eos>
+
+function GameInfo.CheckRelevance  (script 45 bytes)
+  0000: if !((self.BaseMutator == none)) goto 0x000d
+  000b: return true
+  000d: return self.BaseMutator.CheckRelevance(Other)
+  0026: return return
+  002c: <eos>
+
+function GameInfo.ShouldRespawn  (script 30 bytes)
+  0000: return (cast3a(self.WorldInfo.NetMode) != cast3a(0))
+  0017: return return
+  001d: <eos>
+
+function GameInfo.PickupQuery  (script 134 bytes)
+  0000: if !(((self.GameRulesModifiers != none) && self.GameRulesModifiers.OverridePickupQuery(Other, ItemClass, Pickup, bAllowPickup))) goto 0x003f
+  0037: return cast3b(bAllowPickup)
+  003f: if !((Other.InvManager == none)) goto 0x0058
+  0053: return false
+  0055: goto 0x007f
+  0058: return Other.InvManager.HandlePickupQuery(ItemClass, Pickup)
+  007f: return return
+  0085: <eos>
+
+function GameInfo.DiscardInventory  (script 52 bytes)
+  0000: nothing
+  0001: if !((Other.InvManager != none)) goto 0x0031
+  0015: Other.InvManager.DiscardInventory()
+  0031: return nothing
+  0033: <eos>
+
+function GameInfo.ChangeName  (script 50 bytes)
+  0000: if !((S == "")) goto 0x000e
+  000c: return nothing
+  000e: Other.PlayerReplicationInfo.SetPlayerName(S)
+  002f: return nothing
+  0031: <eos>
+
+function GameInfo.ChangeTeam  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.PickTeam  (script 13 bytes)
+  0000: return Current
+  0006: return return
+  000c: <eos>
+
+function GameInfo.GetTeamAssignmentFromReservation  (script 346 bytes)
+  0000: if !(((self.OnlineSub == none) || EqualEqual_InterfaceInterface(self.OnlineSub.ReservationInterface, OnlineReservationInterface(none)))) goto 0x002c
+  002a: return false
+  002c: UniqueIdAsString = obj'Core.Strings'.static.ParseOption(LoginOptions, "UniqueId")
+  0054: if !(!self.OnlineSub.StringToUniqueNetId(UniqueIdAsString, UniqueId)) goto 0x0078
+  0076: return false
+  0078: if !(!ShouldPickTeamFromReservation(UniqueId)) goto 0x008e
+  008c: return false
+  008e: Parties = self.OnlineSub.ReservationInterface.GetReservations()
+  00b1: if !(!Parties.IsMember(UniqueId)) goto 0x00d0
+  00ce: return false
+  00d0: Team = Parties.GetTeamIndexForPlayer(UniqueId)
+  00ee: LogInternal((((("GameInfo: Picking team" @ cast52(Team)) @ "for") @ obj'OnlineSubsystem'.static.UniqueNetIdToString(UniqueId)) @ "from reservation"), 'DevTeams', , )
+  0151: return true
+  0153: return return
+  0159: <eos>
+
+function GameInfo.ShouldPickTeamFromReservation  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function GameInfo.SendPlayer  (script 31 bytes)
+  0000: aPlayer.ClientTravel(URL, 2, , )
+  001c: return nothing
+  001e: <eos>
+
+function GameInfo.GetNextMap  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function GameInfo.GetTravelType  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function GameInfo.RestartGame  (script 208 bytes)
+  0000: if !(self.bUsingArbitration) goto 0x001a
+  0009: if !(self.bIsEndGameHandshakeComplete) goto 0x0018
+  0012: GameInfo.NotifyArbitratedMatchEnd()
+  0018: return nothing
+  001a: if !(((self.GameRulesModifiers != none) && self.GameRulesModifiers.HandleRestartGame())) goto 0x003f
+  003d: return nothing
+  003f: if !(self.bGameRestarted) goto 0x004a
+  0048: return nothing
+  004a: self.bGameRestarted = true
+  0052: if !((self.bChangeLevels && !self.bAlreadyChanged)) goto 0x00a9
+  0068: self.bAlreadyChanged = true
+  0070: NextMap = GameInfo.GetNextMap()
+  007c: if !((NextMap != "")) goto 0x00a9
+  0088: self.WorldInfo.ServerTravel(NextMap, GameInfo.GetTravelType(), )
+  00a7: return nothing
+  00a9: self.WorldInfo.ServerTravel("?Restart", GameInfo.GetTravelType(), )
+  00cd: return nothing
+  00cf: <eos>
+
+function GameInfo.Broadcast  (script 38 bytes)
+  0000: nothing
+  0001: self.BroadcastHandler.Broadcast(Sender, msg, Type)
+  0023: return nothing
+  0025: <eos>
+
+function GameInfo.BroadcastTeam  (script 38 bytes)
+  0000: nothing
+  0001: self.BroadcastHandler.BroadcastTeam(Sender, msg, Type)
+  0023: return nothing
+  0025: <eos>
+
+function GameInfo.BroadcastLocalized  (script 67 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !((self.BroadcastHandler != none)) goto 0x0040
+  000f: self.BroadcastHandler.AllowBroadcastLocalized(Sender, Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0040: return nothing
+  0042: <eos>
+
+function GameInfo.BroadcastLocalizedTeam  (script 61 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: self.BroadcastHandler.AllowBroadcastLocalizedTeam(TeamIndex, Sender, Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  003a: return nothing
+  003c: <eos>
+
+function GameInfo.CheckModifiedEndGame  (script 52 bytes)
+  0000: return ((self.GameRulesModifiers != none) && !self.GameRulesModifiers.CheckEndGame(Winner, Reason))
+  002d: return return
+  0033: <eos>
+
+function GameInfo.CheckEndGame  (script 85 bytes)
+  0000: if !(GameInfo.CheckModifiedEndGame(Winner, Reason)) goto 0x0015
+  0013: return false
+  0015: foreach self.WorldInfo.AllControllers(obj'Controller', P) (end 0x004b)
+  0035: P.GameHasEnded(, )
+  004a: iternext
+  004b: iterpop
+  004c: return true
+  004e: return return
+  0054: <eos>
+
+function GameInfo.WriteOnlineStatsForPlayer  (script 187 bytes)
+  0000: if !((self.OnlineStatsWriteClasses.Length > 4)) goto 0x005a
+  000d: LogInternal("ERROR: Trying to send too many leaderboard write classes to the client", , , )
+  005a: I = 0
+  0061: if !(((I < 4) && (I < self.OnlineStatsWriteClasses.Length))) goto 0x00a0
+  007f: I[WriteClassesToSend] = I[self.OnlineStatsWriteClasses]
+  0096: AddAdd_PreInt(I)
+  009d: goto 0x0061
+  00a0: PC.ClientWriteLeaderboardStats(WriteClassesToSend)
+  00b8: return nothing
+  00ba: <eos>
+
+function GameInfo.WriteOnlineStats  (script 215 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x00d4
+  0014: CurrentSettings = GetOnlineGameSettings()
+  0024: if !(((CurrentSettings != none) && CurrentSettings.bUsesStats)) goto 0x00d4
+  0043: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x008c)
+  0063: if !((PC.IsLocalPlayerController() == false)) goto 0x008b
+  007c: WriteOnlineStatsForPlayer(PC)
+  008b: iternext
+  008c: iterpop
+  008d: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x00d3)
+  00ad: if !(PC.IsLocalPlayerController()) goto 0x00d2
+  00c3: WriteOnlineStatsForPlayer(PC)
+  00d2: iternext
+  00d3: iterpop
+  00d4: return nothing
+  00d6: <eos>
+
+function GameInfo.WriteOnlinePlayerScores  (script 156 bytes)
+  0000: if !(self.bUsingArbitration) goto 0x0046
+  0009: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0042)
+  0029: PC.ClientWriteOnlinePlayerScores(self.ArbitratedLeaderboardId)
+  0041: iternext
+  0042: iterpop
+  0043: goto 0x0099
+  0046: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0098)
+  0066: if !(PC.IsLocalPlayerController()) goto 0x0097
+  007c: PC.ClientWriteOnlinePlayerScores(self.LeaderboardId)
+  0094: goto 0x0098
+  0097: iternext
+  0098: iterpop
+  0099: return nothing
+  009b: <eos>
+
+function GameInfo.NotifyGameNearlyComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.EndGame  (script 76 bytes)
+  0000: if !(!CheckEndGame(Winner, Reason)) goto 0x0023
+  0019: self.bOverTime = true
+  0021: return nothing
+  0023: SetTimer(1.5, false, 'PerformEndGameHandling', )
+  0036: self.bGameEnded = true
+  003e: GameInfo.EndLogging(Reason)
+  0049: return nothing
+  004b: <eos>
+
+function GameInfo.PerformEndGameHandling  (script 76 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x0049
+  0014: WriteOnlineStats()
+  001e: GameInfo.WriteOnlinePlayerScores()
+  0024: GameInfo.EndOnlineGame()
+  002a: if !(self.bUsingArbitration) goto 0x0049
+  0033: self.PendingArbitrationPCs.Length = 0
+  003b: self.ArbitrationPCs.Length = 0
+  0043: GameInfo.NotifyArbitratedMatchEnd()
+  0049: return nothing
+  004b: <eos>
+
+function GameInfo.EndOnlineGame  (script 153 bytes)
+  0000: self.GameReplicationInfo.EndGame()
+  0013: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x0096
+  0027: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0073)
+  0047: if !(!PC.IsLocalPlayerController()) goto 0x0072
+  005f: PC.ClientEndOnlineGame()
+  0072: iternext
+  0073: iterpop
+  0074: self.GameInterface.EndOnlineGame(self.PlayerReplicationInfoClass.static.default.SessionName)
+  0096: return nothing
+  0098: <eos>
+
+function GameInfo.EndLogging  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.ShouldSpawnAtStartSpot  (script 127 bytes)
+  0000: return ((((cast3a(self.WorldInfo.NetMode) == cast3a(0)) && (Player != none)) && (Player.StartSpot != none)) && (self.bWaitingToStartMatch || ((Player.PlayerReplicationInfo != none) && Player.PlayerReplicationInfo.bWaitingPlayer)))
+  0078: return return
+  007e: <eos>
+
+function GameInfo.FindPlayerStart  (script 465 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self.GameRulesModifiers != none)) goto 0x0046
+  000d: N = self.GameRulesModifiers.FindPlayerStart(Player, InTeam, IncomingName)
+  0035: if !((N != none)) goto 0x0046
+  0040: return N
+  0046: if !((IncomingName != "")) goto 0x00ad
+  0052: foreach self.WorldInfo.AllNavigationPoints(obj'Teleporter', Tel) (end 0x009b)
+  0072: if !((cast57(Tel.Tag) ~= IncomingName)) goto 0x009a
+  008c: BestStart = Tel
+  0097: goto 0x009b
+  009a: iternext
+  009b: iterpop
+  009c: if !((BestStart != none)) goto 0x00ad
+  00a7: return BestStart
+  00ad: if !((GameInfo.ShouldSpawnAtStartSpot(Player) && ((PlayerStart(Player.StartSpot) == none) || (RatePlayerStart(PlayerStart(Player.StartSpot), InTeam, Player) >= 0.0)))) goto 0x0118
+  0109: return Player.StartSpot
+  0118: BestStart = ChoosePlayerStart(Player, InTeam)
+  0132: if !((BestStart == none)) goto 0x0185
+  013d: LogInternal("Error: - PATHS NOT DEFINED or NO PLAYERSTART with positive rating", , , )
+  0185: if !(((BestStart == none) && (Player == none))) goto 0x01c4
+  019d: foreach AllActors(obj'NavigationPoint', N) (end 0x01c3)
+  01b4: BestStart = N
+  01bf: goto 0x01c3
+  01c2: iternext
+  01c3: iterpop
+  01c4: return BestStart
+  01ca: return return
+  01d0: <eos>
+
+function GameInfo.ChoosePlayerStart  (script 227 bytes)
+  0000: nothing
+  0001: Team = ((((Player != none) && (Player.PlayerReplicationInfo != none)) && (Player.PlayerReplicationInfo.Team != none)) ? cast3d(Player.PlayerReplicationInfo.Team.TeamIndex) : InTeam)
+  0070: foreach self.WorldInfo.AllNavigationPoints(obj'PlayerStart', P) (end 0x00d5)
+  0090: NewRating = RatePlayerStart(P, Team, Player)
+  00af: if !((NewRating > BestRating)) goto 0x00d4
+  00be: BestRating = NewRating
+  00c9: BestStart = P
+  00d4: iternext
+  00d5: iterpop
+  00d6: return BestStart
+  00dc: return return
+  00e2: <eos>
+
+function GameInfo.RatePlayerStart  (script 60 bytes)
+  0000: if !(!P.bEnabled) goto 0x001a
+  0014: return 10.0
+  001a: return cast3f((P.bPrimaryStart ? 100 : 20))
+  0035: return return
+  003b: <eos>
+
+function GameInfo.AddObjectiveScore  (script 43 bytes)
+  0000: if !((self.GameRulesModifiers != none)) goto 0x0028
+  000b: self.GameRulesModifiers.ScoreObjective(Scorer, Score)
+  0028: return nothing
+  002a: <eos>
+
+function GameInfo.ScoreObjective  (script 38 bytes)
+  0000: AddObjectiveScore(Scorer, Score)
+  0014: CheckScore(Scorer)
+  0023: return nothing
+  0025: <eos>
+
+function GameInfo.CheckScore  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.ScoreKill  (script 48 bytes)
+  0000: if !((self.GameRulesModifiers != none)) goto 0x002d
+  000b: self.GameRulesModifiers.ScoreKill(Killer, Other, DamageType)
+  002d: return nothing
+  002f: <eos>
+
+function GameInfo.ParseMessageString  (script 13 bytes)
+  0000: return Message
+  0006: return return
+  000c: <eos>
+
+function GameInfo.DriverEnteredVehicle  (script 43 bytes)
+  0000: if !((self.BaseMutator != none)) goto 0x0028
+  000b: self.BaseMutator.DriverEnteredVehicle(V, P)
+  0028: return nothing
+  002a: <eos>
+
+function GameInfo.CanLeaveVehicle  (script 50 bytes)
+  0000: if !((self.BaseMutator == none)) goto 0x000d
+  000b: return true
+  000d: return self.BaseMutator.CanLeaveVehicle(V, P)
+  002b: return return
+  0031: <eos>
+
+function GameInfo.DriverLeftVehicle  (script 43 bytes)
+  0000: if !((self.BaseMutator != none)) goto 0x0028
+  000b: self.BaseMutator.DriverLeftVehicle(V, P)
+  0028: return nothing
+  002a: <eos>
+
+function GameInfo.KillBots  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.PlayerCanRestartGame  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.PlayerCanRestart  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.AllowMutator  (script 29 bytes)
+  0000: return !obj'WorldInfo'.static.IsDemoBuild()
+  0016: return return
+  001c: <eos>
+
+function GameInfo.AllowCheats  (script 35 bytes)
+  0000: if !(!P.IsLocalPlayerController()) goto 0x001a
+  0018: return false
+  001a: return true
+  001c: return return
+  0022: <eos>
+
+function GameInfo.AllowPausing  (script 55 bytes)
+  0000: nothing
+  0001: return (self.bPauseable || (self.bAdminCanPause && self.AccessControl.IsAdmin(PC)))
+  0030: return return
+  0036: <eos>
+
+function GameInfo.AddInactivePRI  (script 432 bytes)
+  0000: if !((!PRI.bFromPreviousLevel && !PRI.bOnlySpectator)) goto 0x0197
+  002a: NewPRI = PRI.Duplicate()
+  0043: self.WorldInfo.GRI.RemovePRI(NewPRI)
+  0064: NewPRI.RemoteRole = 0
+  0075: NewPRI.LifeSpan = 300.0
+  0089: bIsConsole = self.WorldInfo.IsConsoleBuild()
+  00a4: I = 0
+  00ab: if !((I < self.InactivePRIArray.Length)) goto 0x0167
+  00bb: if !(((((I[self.InactivePRIArray] == none) || I[self.InactivePRIArray].bDeleteMe) || (!bIsConsole && (I[self.InactivePRIArray].SavedNetworkAddress == NewPRI.SavedNetworkAddress))) || (bIsConsole && I[self.InactivePRIArray].AreUniqueNetIdsEqual(NewPRI)))) goto 0x015d
+  014a: self.InactivePRIArray.Remove(I,1)
+  0156: SubtractSubtract_Int(I)
+  015d: AddAdd_Int(I)
+  0164: goto 0x00ab
+  0167: self.InactivePRIArray.Length[self.InactivePRIArray] = NewPRI
+  0179: if !((self.InactivePRIArray.Length > 16)) goto 0x0197
+  0186: self.InactivePRIArray.Remove(0,(self.InactivePRIArray.Length - 16))
+  0197: PRI.DestroyActor()
+  01a3: RecalculateSkillRating()
+  01ad: return nothing
+  01af: <eos>
+
+function GameInfo.FindInactivePRI  (script 583 bytes)
+  0000: if !(PC.PlayerReplicationInfo.bOnlySpectator) goto 0x001d
+  001b: return false
+  001d: bIsConsole = self.WorldInfo.IsConsoleBuild()
+  0038: NewNetworkAddress = PC.PlayerReplicationInfo.SavedNetworkAddress
+  0055: NewName = PC.PlayerReplicationInfo.PlayerName
+  0072: I = 0
+  0079: if !((I < self.InactivePRIArray.Length)) goto 0x023e
+  0089: if !(((I[self.InactivePRIArray] == none) || I[self.InactivePRIArray].bDeleteMe)) goto 0x00ca
+  00b4: self.InactivePRIArray.Remove(I,1)
+  00c0: SubtractSubtract_Int(I)
+  00c7: goto 0x0234
+  00ca: if !(((bIsConsole && I[self.InactivePRIArray].AreUniqueNetIdsEqual(PC.PlayerReplicationInfo)) || ((!bIsConsole && (I[self.InactivePRIArray].SavedNetworkAddress ~= NewNetworkAddress)) && (I[self.InactivePRIArray].PlayerName ~= NewName)))) goto 0x0234
+  014c: OldPRI = PC.PlayerReplicationInfo
+  0160: PC.PlayerReplicationInfo = I[self.InactivePRIArray]
+  017a: PC.PlayerReplicationInfo.SetOwner(PC)
+  0194: PC.PlayerReplicationInfo.RemoteRole = 1
+  01ae: PC.PlayerReplicationInfo.LifeSpan = 0.0
+  01cb: OverridePRI(PC, OldPRI)
+  01df: self.WorldInfo.GRI.AddPRI(PC.PlayerReplicationInfo)
+  0209: self.InactivePRIArray.Remove(I,1)
+  0215: OldPRI.bIsInactive = true
+  0226: OldPRI.DestroyActor()
+  0232: return true
+  0234: AddAdd_Int(I)
+  023b: goto 0x0079
+  023e: return false
+  0240: return return
+  0246: <eos>
+
+function GameInfo.OverridePRI  (script 36 bytes)
+  0000: PC.PlayerReplicationInfo.OverrideWith(OldPRI)
+  0021: return nothing
+  0023: <eos>
+
+function GameInfo.GetSeamlessTravelActorList  (script 43 bytes)
+  0000: if !((self.BaseMutator != none)) goto 0x0028
+  000b: self.BaseMutator.GetSeamlessTravelActorList(TravelToURL, ActorList)
+  0028: return nothing
+  002a: <eos>
+
+function GameInfo.SwapPlayerControllers  (script 12 bytes)
+  0000: OldPC
+  0005: NewPC
+  000a: nothing
+  000b: <eos>
+
+function GameInfo.PostSeamlessTravel  (script 284 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x00c1)
+  0020: if !(C.bIsPlayer) goto 0x00c0
+  0032: PC = PlayerController(C)
+  0042: if !((PC == none)) goto 0x005f
+  004d: HandleSeamlessTravelPlayer(C)
+  005c: goto 0x00c0
+  005f: if !(!C.PlayerReplicationInfo.bOnlySpectator) goto 0x0083
+  007c: AddAdd_Int(self.NumTravellingPlayers)
+  0083: if !((PC.IsLocalPlayerController() || PC.NeedsHandleSeamlessTravelPlayer())) goto 0x00c0
+  00b1: HandleSeamlessTravelPlayer(C)
+  00c0: iternext
+  00c1: iterpop
+  00c2: if !(((self.bWaitingToStartMatch && !self.bDelayedStart) && ((self.NumPlayers + self.NumBots) > 0))) goto 0x00f6
+  00ec: StartMatch()
+  00f6: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x0119
+  010f: UpdateGameSettings()
+  0119: return nothing
+  011b: <eos>
+
+function GameInfo.UpdateGameSettings  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.HandleSeamlessTravelPlayer  (script 1601 bytes)
+  0000: LogInternal((">> GameInfo::HandleSeamlessTravelPlayer:" @ cast56(C)), 'SeamlessTravel', , )
+  0040: PC = PlayerController(C)
+  0050: if !(((PC != none) && (PC.get_Class() != self.PlayerControllerClass))) goto 0x01a5
+  0073: if !((PC.Player != none)) goto 0x0196
+  0087: NewPC = Spawn(self.PlayerControllerClass, , , PC.Location, PC.Rotation, , , )
+  00bd: if !((NewPC == none)) goto 0x013d
+  00c8: WarnInternal((((("Failed to spawn new PlayerController for" @ PC.GetHumanReadableName()) @ "(old class") @ cast56(PC.get_Class())) $ ")"))
+  012c: PC.DestroyActor()
+  0138: return nothing
+  013a: goto 0x0193
+  013d: PC.SeamlessTravelTo(NewPC)
+  0155: NewPC.SeamlessTravelFrom(PC)
+  016d: GameInfo.SwapPlayerControllers(PC, NewPC)
+  017d: PC = NewPC
+  0188: C = NewPC
+  0193: goto 0x01a2
+  0196: PC.DestroyActor()
+  01a2: goto 0x0215
+  01a5: C.PlayerReplicationInfo.Reset()
+  01c1: OldPRI = C.PlayerReplicationInfo
+  01d5: C.InitPlayerReplicationInfo()
+  01e8: OldPRI.SeamlessTravelTo(C.PlayerReplicationInfo)
+  0209: OldPRI.DestroyActor()
+  0215: if !((!self.bTeamGame && (C.PlayerReplicationInfo.Team != none))) goto 0x0276
+  023f: C.PlayerReplicationInfo.Team.DestroyActor()
+  025d: C.PlayerReplicationInfo.Team = none
+  0276: StartSpot = FindPlayerStart(C, C.GetTeamNum(), )
+  029f: if !((StartSpot == none)) goto 0x030c
+  02aa: WarnInternal(self.GameMessageClass.static.default.FailedPlaceMessage)
+  02ba: LogInternal(("SeamlessTravel: Couldn't find start spot for controller" @ PathName(C)), , , )
+  0309: goto 0x0414
+  030c: LogInternal(((("SeamlessTravel: Moving player controller" @ PathName(C)) @ "to start spot") @ PathName(StartSpot)), , , )
+  036e: StartRotation.Yaw = StartSpot.Rotation.Yaw
+  0398: C.SetLocation(StartSpot.Location)
+  03b2: C.SetRotation(StartRotation)
+  03c3: if !((C.Pawn != none)) goto 0x0414
+  03d7: C.Pawn.SetLocation(StartSpot.Location)
+  03fa: C.Pawn.SetRotation(StartRotation)
+  0414: C.StartSpot = StartSpot
+  0428: if !((PC != none)) goto 0x056c
+  0433: PC.ClientInitializeDataStores()
+  0446: if !((none == PC.PlayerCamera)) goto 0x046d
+  045a: PC.SpawnPlayerCamera()
+  046d: PC.SetViewTarget(PC, )
+  0486: if !(PC.PlayerReplicationInfo.bOnlySpectator) goto 0x04f6
+  04a1: PC.GotoState('Spectating', , , )
+  04b8: PC.PlayerReplicationInfo.bIsSpectator = true
+  04d2: PC.PlayerReplicationInfo.bOutOfLives = true
+  04ec: AddAdd_Int(self.NumSpectators)
+  04f3: goto 0x051b
+  04f6: AddAdd_Int(self.NumPlayers)
+  04fd: SubtractSubtract_Int(self.NumTravellingPlayers)
+  0504: PC.GotoState('PlayerWaiting', , , )
+  051b: PC.ClientSetHUD(self.HUDType, self.ScoreBoardType)
+  0538: GameInfo.ReplicateStreamingState(PC)
+  0543: PC.ServerSendMusicInfo()
+  0556: PC.ClientSetOnlineStatus()
+  0569: goto 0x058a
+  056c: AddAdd_Int(self.NumBots)
+  0573: C.GotoState('RoundEnded', , , )
+  058a: if !((self.BaseMutator != none)) goto 0x05ad
+  0595: self.BaseMutator.NotifyLogin(C)
+  05ad: if !((self.GameRulesModifiers != none)) goto 0x05d9
+  05b8: self.GameRulesModifiers.HandleNewPlayer(PC.PlayerReplicationInfo)
+  05d9: if !(get_IsAutomatedTesting()) goto 0x05fe
+  05e6: self.TestingPolicy.HandlePlayerEnterGame(PC)
+  05fe: LogInternal(("<< GameInfo::HandleSeamlessTravelPlayer:" @ cast56(C)), 'SeamlessTravel', , )
+  063e: return nothing
+  0640: <eos>
+
+function GameInfo.UpdateGameSessionPublicConnections  (script 291 bytes)
+  0000: if !((NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none)) && (cast3a(self.WorldInfo.NetMode) != cast3a(0)))) goto 0x0120
+  002f: GameSettings = GetOnlineGameSettings()
+  003f: if !((GameSettings != none)) goto 0x0120
+  004a: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x00b3)
+  006a: if !((PC.IsLocalPlayerController() && (PC.PlayerReplicationInfo.UniqueId != GameSettings.OwningPlayerId))) goto 0x00b2
+  00af: iterpop
+  00b0: return nothing
+  00b2: iternext
+  00b3: iterpop
+  00b4: GameSettings.NumOpenPublicConnections = (GameSettings.NumPublicConnections - GetNumPlayers())
+  00dd: if !((GameSettings.NumOpenPublicConnections < 0)) goto 0x0101
+  00f1: GameSettings.NumOpenPublicConnections = 0
+  0101: self.GameInterface.UpdateOnlineGame(SessionName, GameSettings, true)
+  0120: return nothing
+  0122: <eos>
+
+function GameInfo.UpdateGameSettingsCounts  (script 27 bytes)
+  0000: UpdateGameSessionPublicConnections(self.PlayerReplicationInfoClass.static.default.SessionName)
+  0018: return nothing
+  001a: <eos>
+
+function GameInfo.ProcessClientRegistrationCompletion  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.StartArbitrationRegistration  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.StartArbitratedMatch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.RegisterServerForArbitration  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.ArbitrationRegistrationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.MatchIsInProgress  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameInfo.PendingMatch.MatchIsInProgress  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function GameInfo.PendingMatch.StartMatch  (script 35 bytes)
+  0000: if !(self.bUsingArbitration) goto 0x0016
+  0009: StartArbitrationRegistration()
+  0013: goto 0x0020
+  0016: global.StartMatch()
+  0020: return nothing
+  0022: <eos>
+
+function GameInfo.PendingMatch.StartArbitrationRegistration  (script 225 bytes)
+  0000: if !(!self.bHasArbitratedHandshakeBegun) goto 0x00de
+  000b: self.bHasArbitratedHandshakeBegun = true
+  0013: GameSettings = GetOnlineGameSettings()
+  0023: HostId = GameSettings.OwningPlayerId
+  0037: self.PendingArbitrationPCs.Length = 0
+  003f: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x00ca)
+  005f: if !(!PC.IsLocalPlayerController()) goto 0x00b7
+  0077: PC.ClientSetHostUniqueId(HostId)
+  008f: PC.ClientRegisterForArbitration()
+  00a2: self.PendingArbitrationPCs.Length[self.PendingArbitrationPCs] = PC
+  00b4: goto 0x00c9
+  00b7: self.ArbitrationPCs.Length[self.ArbitrationPCs] = PC
+  00c9: iternext
+  00ca: iterpop
+  00cb: SetTimer(self.ArbitrationHandshakeTimeout, false, 'ArbitrationTimeout', )
+  00de: return nothing
+  00e0: <eos>
+
+function GameInfo.PendingMatch.RegisterServerForArbitration  (script 114 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x0056
+  0014: self.GameInterface.AddArbitrationRegistrationCompleteDelegate(delegate.ArbitrationRegistrationComplete)
+  0031: self.GameInterface.RegisterForArbitration(self.PlayerReplicationInfoClass.static.default.SessionName)
+  0053: goto 0x006f
+  0056: ArbitrationRegistrationComplete(self.PlayerReplicationInfoClass.static.default.SessionName, true)
+  006f: return nothing
+  0071: <eos>
+
+function GameInfo.PendingMatch.ArbitrationRegistrationComplete  (script 82 bytes)
+  0000: self.GameInterface.ClearArbitrationRegistrationCompleteDelegate(delegate.ArbitrationRegistrationComplete)
+  001d: if !(bWasSuccessful) goto 0x0033
+  0026: StartArbitratedMatch()
+  0030: goto 0x004f
+  0033: ConsoleCommand("Disconnect", )
+  004f: return nothing
+  0051: <eos>
+
+function GameInfo.PendingMatch.ArbitrationTimeout  (script 98 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.PendingArbitrationPCs.Length)) goto 0x004d
+  0017: self.AccessControl.KickPlayer(Index[self.PendingArbitrationPCs], self.GameMessageClass.static.default.MaxedOutMessage)
+  0043: AddAdd_Int(Index)
+  004a: goto 0x0007
+  004d: self.PendingArbitrationPCs.Length = 0
+  0055: RegisterServerForArbitration()
+  005f: return nothing
+  0061: <eos>
+
+function GameInfo.PendingMatch.StartArbitratedMatch  (script 21 bytes)
+  0000: self.bNeedsEndGameHandshake = true
+  0008: global.StartMatch()
+  0012: return nothing
+  0014: <eos>
+
+function GameInfo.PendingMatch.ProcessClientRegistrationCompletion  (script 280 bytes)
+  0000: FoundIndex = self.PendingArbitrationPCs.Find(PC)
+  0013: if !((FoundIndex != -1)) goto 0x00ec
+  0022: self.PendingArbitrationPCs.Remove(FoundIndex,1)
+  002e: if !(bWasSuccessful) goto 0x0081
+  0037: LogInternal(("Arbitration complete for " $ PC.GetHumanReadableName()), , , )
+  006c: self.ArbitrationPCs.Length[self.ArbitrationPCs] = PC
+  007e: goto 0x00ec
+  0081: LogInternal((("Arbitration failed for for " $ PC.GetHumanReadableName()) $ ". Kicking!"), , , )
+  00c6: self.AccessControl.KickPlayer(PC, self.GameMessageClass.static.default.MaxedOutMessage)
+  00ec: if !((self.PendingArbitrationPCs.Length == 0)) goto 0x0115
+  00f8: SetTimer(0.0, false, 'ArbitrationTimeout', )
+  010b: RegisterServerForArbitration()
+  0115: return nothing
+  0117: <eos>
+
+function GameInfo.PendingMatch.EndState  (script 71 bytes)
+  0000: SetTimer(0.0, false, 'ArbitrationTimeout', )
+  0013: if !(NotEqual_InterfaceInterface(self.GameInterface, OnlineGameInterface(none))) goto 0x0044
+  0027: self.GameInterface.ClearArbitrationRegistrationCompleteDelegate(delegate.ArbitrationRegistrationComplete)
+  0044: return nothing
+  0046: <eos>
+
+function GameInfo.NotifyArbitratedMatchEnd  (script 156 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x004d)
+  0020: if !((PC.IsLocalPlayerController() == false)) goto 0x004c
+  0039: PC.ClientArbitratedMatchEnded()
+  004c: iternext
+  004d: iterpop
+  004e: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0098)
+  006e: if !(PC.IsLocalPlayerController()) goto 0x0097
+  0084: PC.ClientArbitratedMatchEnded()
+  0097: iternext
+  0098: iterpop
+  0099: return nothing
+  009b: <eos>
+
+function GameInfo.UpdateGameplayMuteList  (script 39 bytes)
+  0000: PC.bHasVoiceHandshakeCompleted = true
+  0011: PC.ClientVoiceHandshakeComplete()
+  0024: return nothing
+  0026: <eos>
+
+function GameInfo.RecalculateSkillRating  (script 258 bytes)
+  0000: if !((((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x00ff
+  0045: Index = 0
+  004c: if !((Index < self.GameReplicationInfo.PRIArray.Length)) goto 0x00c3
+  0065: if !((ZeroId != Index[self.GameReplicationInfo.PRIArray].UniqueId)) goto 0x00b9
+  008f: Players.Length[Players] = Index[self.GameReplicationInfo.PRIArray].UniqueId
+  00b9: AddAdd_Int(Index)
+  00c0: goto 0x004c
+  00c3: if !((Players.Length > 0)) goto 0x00ff
+  00cf: self.OnlineSub.GameInterface.RecalculateSkillRating(self.PlayerReplicationInfoClass.static.default.SessionName, Players)
+  00ff: return nothing
+  0101: <eos>
+
+function GameInfo.MatineeCancelled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameInfo.ProcessServerLogin  (script 172 bytes)
+  0000: if !((self.OnlineSub != none)) goto 0x00a3
+  000b: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x00a3
+  0028: self.OnlineSub.PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChange)
+  004e: self.OnlineSub.PlayerInterface.AddLoginFailedDelegate(0, delegate.OnLoginFailed)
+  0076: if !((self.OnlineSub.PlayerInterface.AutoLogin() == false)) goto 0x00a1
+  0099: GameInfo.ClearAutoLoginDelegates()
+  009f: return false
+  00a1: return true
+  00a3: return false
+  00a5: return return
+  00ab: <eos>
+
+function GameInfo.ClearAutoLoginDelegates  (script 110 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.OnlineSub.PlayerInterface, OnlinePlayerInterface(none))) goto 0x006b
+  001d: self.OnlineSub.PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChange)
+  0043: self.OnlineSub.PlayerInterface.ClearLoginFailedDelegate(0, delegate.OnLoginFailed)
+  006b: return nothing
+  006d: <eos>
+
+function GameInfo.OnLoginFailed  (script 9 bytes)
+  0000: GameInfo.ClearAutoLoginDelegates()
+  0006: return nothing
+  0008: <eos>
+
+function GameInfo.OnLoginChange  (script 15 bytes)
+  0000: GameInfo.ClearAutoLoginDelegates()
+  0006: GameInfo.RegisterServer()
+  000c: return nothing
+  000e: <eos>
+
+function GameInfo.RegisterServer  (script 318 bytes)
+  0000: if !((((self.OnlineGameSettingsClass != none) && (self.OnlineSub != none)) && NotEqual_InterfaceInterface(self.OnlineSub.GameInterface, OnlineGameInterface(none)))) goto 0x00e9
+  0037: GameSettings = new(nothing, nothing, self.OnlineGameSettingsClass, nothing, GetRemoteRole)
+  004b: GameSettings.UpdateFromURL(self.ServerOptions)
+  0063: self.OnlineSub.GameInterface.AddCreateOnlineGameCompleteDelegate(delegate.OnServerCreateComplete)
+  0089: if !(!self.OnlineSub.GameInterface.CreateOnlineGame(0, self.PlayerReplicationInfoClass.static.default.SessionName, GameSettings)) goto 0x00e6
+  00c0: self.OnlineSub.GameInterface.ClearCreateOnlineGameCompleteDelegate(delegate.OnServerCreateComplete)
+  00e6: goto 0x013b
+  00e9: WarnInternal("No game settings to register with the online service. Game won't be advertised")
+  013b: return nothing
+  013d: <eos>
+
+function GameInfo.OnServerCreateComplete  (script 357 bytes)
+  0000: self.GameInterface.ClearCreateOnlineGameCompleteDelegate(delegate.OnServerCreateComplete)
+  001d: if !((bWasSuccessful == false)) goto 0x0158
+  0029: GameSettings = GetOnlineGameSettings()
+  0039: if !((GameSettings.bIsLanMatch == false)) goto 0x010c
+  004e: WarnInternal("Failed to register game with online service. Registering as a LAN match")
+  0099: GameSettings.bIsLanMatch = true
+  00aa: self.GameInterface.AddCreateOnlineGameCompleteDelegate(delegate.OnServerCreateComplete)
+  00c7: if !(!self.GameInterface.CreateOnlineGame(0, SessionName, GameSettings)) goto 0x0109
+  00ec: self.GameInterface.ClearCreateOnlineGameCompleteDelegate(delegate.OnServerCreateComplete)
+  0109: goto 0x0155
+  010c: WarnInternal("Failed to register game with online service. Game won't be advertised")
+  0155: goto 0x0162
+  0158: UpdateGameSettings()
+  0162: return nothing
+  0164: <eos>
+
+function GameInfo.TellClientsToReturnToPartyHost  (script 79 bytes)
+  0000: nothing
+  0001: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x004b)
+  0021: if !(PC.IsPrimaryPlayer()) goto 0x004a
+  0037: PC.ClientReturnToParty()
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function GameInfo.TellClientsToTravelToSession  (script 121 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0075)
+  0020: if !((!PC.IsLocalPlayerController() && PC.IsPrimaryPlayer())) goto 0x0074
+  0050: PC.ClientJoinSession(SessionName, SearchClass, PlatformSpecificInfo, 0)
+  0074: iternext
+  0075: iterpop
+  0076: return nothing
+  0078: <eos>

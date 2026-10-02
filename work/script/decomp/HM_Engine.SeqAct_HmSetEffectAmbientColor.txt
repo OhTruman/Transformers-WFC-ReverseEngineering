@@ -1,0 +1,21 @@
+function SeqAct_HmSetEffectAmbientColor.OnUpdate  (script 110 bytes)
+  0000: self.BlendRatio = ((self.BlendTime == cast3f(0)) ? 1.0 : obj'Core.Math'.static.FClamp((self.BlendRatio + (DeltaTime / self.BlendTime)), 0.0, 1.0))
+  0042: GetWorldInfo().EffectAmbientColor = SeqAct_HmSetEffectAmbientColor.CLerp(self.InitialColor, self.TargetColor, self.BlendRatio)
+  006b: return nothing
+  006d: <eos>
+
+function SeqAct_HmSetEffectAmbientColor.IsComplete  (script 20 bytes)
+  0000: return (self.BlendRatio >= 1.0)
+  000d: return return
+  0013: <eos>
+
+function SeqAct_HmSetEffectAmbientColor.Activated  (script 39 bytes)
+  0000: self.BlendRatio = 0.0
+  000b: self.InitialColor = GetWorldInfo().EffectAmbientColor
+  0024: return nothing
+  0026: <eos>
+
+function SeqAct_HmSetEffectAmbientColor.CLerp  (script 234 bytes)
+  0000: return MakeColor(cast43(obj'Core.Math'.static.Lerp(cast3c(C1.R), cast3c(C2.R), K)), cast43(obj'Core.Math'.static.Lerp(cast3c(C1.G), cast3c(C2.G), K)), cast43(obj'Core.Math'.static.Lerp(cast3c(C1.B), cast3c(C2.B), K)), cast43(obj'Core.Math'.static.Lerp(cast3c(C1.A), cast3c(C2.A), K)))
+  00e3: return return
+  00e9: <eos>

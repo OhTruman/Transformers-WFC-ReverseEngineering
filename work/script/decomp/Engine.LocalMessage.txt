@@ -1,0 +1,69 @@
+function LocalMessage.ClientReceive  (script 385 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: MessageString = GetString(Switch, (RelatedPRI_1 == P.PlayerReplicationInfo), RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  003d: if !((MessageString != "")) goto 0x017e
+  0049: if !((P.myHUD != none)) goto 0x00f5
+  005d: P.myHUD.LocalizedMessage(get_Class(), RelatedPRI_1, MessageString, Switch, LocalMessage.GetPos(Switch, P.myHUD), LocalMessage.GetLifeTime(Switch), LocalMessage.GetFontSize(Switch, RelatedPRI_1, RelatedPRI_2, P.PlayerReplicationInfo), GetColor(Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject), OptionalObject)
+  00f5: if !(((IsConsoleMessage(Switch) && (LocalPlayer(P.Player) != none)) && (LocalPlayer(P.Player).ViewportClient != none))) goto 0x017e
+  0146: LocalPlayer(P.Player).ViewportClient.ViewportConsole.OutputText(MessageString)
+  017e: return nothing
+  0180: <eos>
+
+function LocalMessage.GetString  (script 71 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: if !((class<Actor>(OptionalObject) != none)) goto 0x003d
+  0015: return class<Actor>(OptionalObject).static.GetLocalString(Switch, RelatedPRI_1, RelatedPRI_2)
+  003d: return ""
+  0040: return return
+  0046: <eos>
+
+function LocalMessage.GetConsoleColor  (script 13 bytes)
+  0000: return default.DrawColor
+  0006: return return
+  000c: <eos>
+
+function LocalMessage.GetColor  (script 17 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: return default.DrawColor
+  000a: return return
+  0010: <eos>
+
+function LocalMessage.GetPos  (script 13 bytes)
+  0000: return default.PosY
+  0006: return return
+  000c: <eos>
+
+function LocalMessage.GetFontSize  (script 13 bytes)
+  0000: return default.FontSize
+  0006: return return
+  000c: <eos>
+
+function LocalMessage.GetLifeTime  (script 13 bytes)
+  0000: return default.Lifetime
+  0006: return return
+  000c: <eos>
+
+function LocalMessage.IsConsoleMessage  (script 14 bytes)
+  0000: return default.bIsConsoleMessage
+  0007: return return
+  000d: <eos>
+
+function LocalMessage.IsKeyObjectiveMessage  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function LocalMessage.PartiallyDuplicates  (script 20 bytes)
+  0000: return (Switch1 == Switch2)
+  000d: return return
+  0013: <eos>

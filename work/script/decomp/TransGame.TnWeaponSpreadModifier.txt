@@ -1,0 +1,35 @@
+function TnWeaponSpreadModifier.Initialize  (script 64 bytes)
+  0000: self.OwnerPawn = OwnerPawn_
+  000b: self.RobotAcrobatics = TnAcrobaticsService(self.OwnerPawn.GetRobotService('TnAcrobaticsService'))
+  0032: self.CurrentAirborneMultiplier = 1.0
+  003d: return nothing
+  003f: <eos>
+
+function TnWeaponSpreadModifier.ModifySpread  (script 192 bytes)
+  0000: if !(((self.OwnerPawn == none) || !self.OwnerPawn.get_IsInRobotForm())) goto 0x002b
+  0025: return Spread
+  002b: (Spread *= self.CurrentAirborneMultiplier)
+  0037: OwnerController = TnPlayerController(self.OwnerPawn.Controller)
+  0050: OwnerWeapon = TnWeapon(self.OwnerPawn.Weapon)
+  0069: if !((((OwnerController != none) && (OwnerWeapon != none)) && OwnerController.IsUsingFineAim())) goto 0x00b3
+  0099: (Spread *= OwnerWeapon.GetFineAimSpreadModifier())
+  00b3: return Spread
+  00b9: return return
+  00bf: <eos>
+
+function TnWeaponSpreadModifier.Tick  (script 255 bytes)
+  0000: if !(((self.OwnerPawn == none) || !self.OwnerPawn.get_IsInRobotForm())) goto 0x0027
+  0025: return nothing
+  0027: IsAirborne = (cast3a(self.RobotAcrobatics.get_AcrobaticsState()) != cast3a(8))
+  004a: IsHovering = (cast3a(self.RobotAcrobatics.get_AcrobaticsState()) == cast3a(3))
+  006d: if !((IsAirborne && !IsHovering)) goto 0x0091
+  0083: SpreadTime = self.AirborneRampUpTime
+  008e: goto 0x00b7
+  0091: if !(IsHovering) goto 0x00aa
+  009a: SpreadTime = -self.HoverRampDownTime
+  00a7: goto 0x00b7
+  00aa: SpreadTime = -self.LandRampDownTime
+  00b7: SpreadRate = (((self.AirborneMultiplier - cast3f(1)) / SpreadTime) * DeltaTime)
+  00d5: self.CurrentAirborneMultiplier = obj'Core.Math'.static.FClamp((self.CurrentAirborneMultiplier + SpreadRate), 1.0, self.AirborneMultiplier)
+  00fc: return nothing
+  00fe: <eos>

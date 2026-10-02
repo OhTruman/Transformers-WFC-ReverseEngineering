@@ -1,0 +1,2906 @@
+function TnPawn.get_LockOnThreatManager  (script 13 bytes)
+  0000: return self._LockOnThreatManager
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_CharacterApplier  (script 13 bytes)
+  0000: return self._CharacterApplier
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_CharacterMaterialManager  (script 13 bytes)
+  0000: return self._CharacterMaterials
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_CharacterMaterialManager  (script 14 bytes)
+  0000: self._CharacterMaterials = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_EnergonColor  (script 27 bytes)
+  0000: return self._CharacterApplier.get_EnergonColor()
+  0014: return return
+  001a: <eos>
+
+function TnPawn.get_RobotMeshComponent  (script 41 bytes)
+  0000: return ((self._RobotForm != none) ? self._RobotForm.get_RobotMeshComponent() : none)
+  0022: return return
+  0028: <eos>
+
+function TnPawn.get_VehicleMeshComponent  (script 41 bytes)
+  0000: return ((self._VehicleForm != none) ? self._VehicleForm.get_VehicleMeshComponent() : none)
+  0022: return return
+  0028: <eos>
+
+function TnPawn.get_RobotForm  (script 13 bytes)
+  0000: return self._RobotForm
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_RobotForm  (script 14 bytes)
+  0000: self._RobotForm = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_VehicleForm  (script 13 bytes)
+  0000: return self._VehicleForm
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_VehicleForm  (script 14 bytes)
+  0000: self._VehicleForm = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_CurrentForm  (script 13 bytes)
+  0000: return self._CurrentForm
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_Size  (script 37 bytes)
+  0000: return ((self._Blueprint != none) ? self._Blueprint.Size : 1)
+  001e: return return
+  0024: <eos>
+
+function TnPawn.get_CurrentCharacter  (script 13 bytes)
+  0000: return self._CurrentCharacter
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_IsAirborne  (script 31 bytes)
+  0000: if !(!self._bAirborneUpToDate) goto 0x0011
+  000b: TnPawn.UpdateAirborne()
+  0011: return self._bAirborne
+  0018: return return
+  001e: <eos>
+
+function TnPawn.get_IsCloaking  (script 14 bytes)
+  0000: return self._IsCloaking
+  0007: return return
+  000d: <eos>
+
+function TnPawn.set_BuffManager  (script 47 bytes)
+  0000: self._BuffManager = Value
+  000b: self._Services.Replace('TnBuffService', Value)
+  002c: return nothing
+  002e: <eos>
+
+function TnPawn.set_DeathLightManager  (script 47 bytes)
+  0000: self._DeathLightManager = Value
+  000b: self._Services.Replace('TnDeathLightService', Value)
+  002c: return nothing
+  002e: <eos>
+
+function TnPawn.set_CloakLightManager  (script 47 bytes)
+  0000: self._CloakLightManager = Value
+  000b: self._Services.Replace('TnCloakLightService', Value)
+  002c: return nothing
+  002e: <eos>
+
+function TnPawn.set_HitEffectPlayer  (script 14 bytes)
+  0000: self._HitEffectPlayer = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.set_Grabber  (script 14 bytes)
+  0000: self._Grabber = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.set_CollisionController  (script 14 bytes)
+  0000: self._CollisionController = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.set_RobotToVehicleTransformation  (script 54 bytes)
+  0000: self._RobotToVehicleTransformation = Value
+  000b: if !((self._Blueprint != none)) goto 0x0033
+  0016: self._RobotToVehicleTransformation.Initialize(self._RobotForm, self._VehicleForm)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.set_VehicleToRobotTransformation  (script 54 bytes)
+  0000: self._VehicleToRobotTransformation = Value
+  000b: if !((self._Blueprint != none)) goto 0x0033
+  0016: self._VehicleToRobotTransformation.Initialize(self._VehicleForm, self._RobotForm)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.get_CurrentTransformation  (script 13 bytes)
+  0000: return self._CurrentTransformation
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_IsTransforming  (script 36 bytes)
+  0000: return ((self._CurrentTransformation != none) && self._CurrentTransformation._IsActive)
+  001d: return return
+  0023: <eos>
+
+function TnPawn.get_IsTransformingEnabled  (script 14 bytes)
+  0000: return self._TransformingEnabled
+  0007: return return
+  000d: <eos>
+
+function TnPawn.get_IsJumpingEnabled  (script 14 bytes)
+  0000: return self._JumpingEnabled
+  0007: return return
+  000d: <eos>
+
+function TnPawn.get_AreAbilitiesEnabled  (script 14 bytes)
+  0000: return self._AbilitiesEnabled
+  0007: return return
+  000d: <eos>
+
+function TnPawn.get_FriendlyName  (script 42 bytes)
+  0000: return ((self._CurrentForm != none) ? self._CurrentForm.get_FriendlyName() : "")
+  0023: return return
+  0029: <eos>
+
+function TnPawn.get_VehicleType  (script 42 bytes)
+  0000: return ((self._VehicleForm != none) ? self._VehicleForm.get_VehicleType() : 4)
+  0023: return return
+  0029: <eos>
+
+function TnPawn.get_FormType  (script 41 bytes)
+  0000: if !((self._CurrentForm == none)) goto 0x000e
+  000b: return 2
+  000e: return self._CurrentForm.get_FormType()
+  0022: return return
+  0028: <eos>
+
+function TnPawn.get_IsInRobotForm  (script 48 bytes)
+  0000: return ((self._CurrentForm != none) && (cast3a(self._CurrentForm.get_FormType()) == cast3a(0)))
+  0029: return return
+  002f: <eos>
+
+function TnPawn.get_IsInVehicleForm  (script 48 bytes)
+  0000: return ((self._CurrentForm != none) && (cast3a(self._CurrentForm.get_FormType()) == cast3a(1)))
+  0029: return return
+  002f: <eos>
+
+function TnPawn.get_Services  (script 13 bytes)
+  0000: return self._Services
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_Services  (script 14 bytes)
+  0000: self._Services = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_IsAttached  (script 27 bytes)
+  0000: return (self._AttachToSocketInfo.Attacher != none)
+  0014: return return
+  001a: <eos>
+
+function TnPawn.set_AttachToSocketInfo  (script 14 bytes)
+  0000: self._AttachToSocketInfo = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.set_AimSmoothTime  (script 14 bytes)
+  0000: self._AimSmoothTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.set_AimSmoother  (script 14 bytes)
+  0000: self._AimSmoother = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_ReviverPawn  (script 13 bytes)
+  0000: return self._ReviverPawn
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_ReviverPawn  (script 14 bytes)
+  0000: self._ReviverPawn = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_ReviveTarget  (script 13 bytes)
+  0000: return self._ReviveTarget
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_RevivePercentDone  (script 13 bytes)
+  0000: return self._RevivePercentDone
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_CharacterSoundEventSet  (script 13 bytes)
+  0000: return self._CharacterSoundEventSet
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_CharacterSoundEventSet  (script 14 bytes)
+  0000: self._CharacterSoundEventSet = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_AirborneTraceDistance  (script 13 bytes)
+  0000: return self._AirborneTraceDistance
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_ForceJetBoostInput  (script 14 bytes)
+  0000: return self._ForceJetBoostInput
+  0007: return return
+  000d: <eos>
+
+function TnPawn.set_ForceJetBoostInput  (script 16 bytes)
+  0000: self._ForceJetBoostInput = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPawn.get_BaseAirSpeed  (script 13 bytes)
+  0000: return self._BaseAirSpeed
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_BaseAirSpeed  (script 20 bytes)
+  0000: self._BaseAirSpeed = Value
+  000b: TnPawn.UpdateSpeeds()
+  0011: return nothing
+  0013: <eos>
+
+function TnPawn.get_BaseGroundSpeed  (script 13 bytes)
+  0000: return self._BaseGroundSpeed
+  0006: return return
+  000c: <eos>
+
+function TnPawn.set_BaseGroundSpeed  (script 20 bytes)
+  0000: self._BaseGroundSpeed = Value
+  000b: TnPawn.UpdateSpeeds()
+  0011: return nothing
+  0013: <eos>
+
+function TnPawn.set_TargetTracker  (script 14 bytes)
+  0000: self._TargetTracker = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.set_LockIkTargetLocation  (script 25 bytes)
+  0000: self._TargetTracker._LockTargetLocation = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnPawn.set_IkTarget  (script 23 bytes)
+  0000: self._TargetTracker._Target = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnPawn.set_IkTargetLocation  (script 27 bytes)
+  0000: self._TargetTracker.set_TargetLocation(Value)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.get_EnergyDeathMaterial  (script 56 bytes)
+  0000: return (get_IsInRobotForm() ? self._Blueprint.EnergyDeathMaterial : self._VehicleForm.get_EnergyDeathMaterial())
+  0031: return return
+  0037: <eos>
+
+function TnPawn.get_IsInteracting  (script 16 bytes)
+  0000: return (self.UseableInteract != none)
+  0009: return return
+  000f: <eos>
+
+function TnPawn.get_CanPlayHitReaction  (script 85 bytes)
+  0000: if !(get_IsInteracting()) goto 0x000f
+  000d: return false
+  000f: W = TnWeapon(self.Weapon)
+  001f: if !(((W != none) && (cast3a(W.WeaponType) == cast3a(7)))) goto 0x0047
+  0045: return false
+  0047: return self._CanPlayHitReaction
+  004e: return return
+  0054: <eos>
+
+function TnPawn.set_CanPlayHitReaction  (script 16 bytes)
+  0000: self._CanPlayHitReaction = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPawn.get_DrainHealthWhenDown  (script 14 bytes)
+  0000: return self._DrainHealthWhenDown
+  0007: return return
+  000d: <eos>
+
+function TnPawn.set_DrainHealthWhenDown  (script 16 bytes)
+  0000: self._DrainHealthWhenDown = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPawn.get_CanHealWhenDown  (script 14 bytes)
+  0000: return self._CanHealWhenDown
+  0007: return return
+  000d: <eos>
+
+function TnPawn.set_CanHealWhenDown  (script 16 bytes)
+  0000: self._CanHealWhenDown = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPawn.get_IsDowned  (script 14 bytes)
+  0000: return self._IsDowned
+  0007: return return
+  000d: <eos>
+
+function TnPawn.get_IsDownedOrReviving  (script 32 bytes)
+  0000: return (self._IsDowned || IsInState('RobotDowned', ))
+  0019: return return
+  001f: <eos>
+
+function TnPawn.get_IsGivingRevive  (script 16 bytes)
+  0000: return (self._ReviveTarget != none)
+  0009: return return
+  000f: <eos>
+
+function TnPawn.get_SimulationMode  (script 27 bytes)
+  0000: return (IsLocallyControlled() ? 1 : 0)
+  0014: return return
+  001a: <eos>
+
+function TnPawn.get_TimeSinceRevived  (script 29 bytes)
+  0000: return (self.WorldInfo.TimeSeconds - self._LastReviveTime)
+  0016: return return
+  001c: <eos>
+
+function TnPawn.get_IsVehicleVisible  (script 30 bytes)
+  0000: return !get_VehicleMeshComponent().HiddenGame
+  0017: return return
+  001d: <eos>
+
+function TnPawn.set_OverrideAcceleration  (script 14 bytes)
+  0000: self._OverrideAcceleration = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.get_CanFly  (script 25 bytes)
+  0000: return self._SecondaryMovementCapabilities.bCanFly
+  0012: return return
+  0018: <eos>
+
+function TnPawn.get_WeaponIdleState  (script 13 bytes)
+  0000: return self._WeaponIdleState
+  0006: return return
+  000c: <eos>
+
+function TnPawn.get_NumAiTargeters  (script 14 bytes)
+  0000: return self._Targeters.Length
+  0007: return return
+  000d: <eos>
+
+function TnPawn.get_ReceivedWeapon  (script 14 bytes)
+  0000: return self._ReceivedWeapon
+  0007: return return
+  000d: <eos>
+
+function TnPawn.GetService  (script 93 bytes)
+  0000: Service = self._Services.GetService(Type)
+  001e: if !((Service != none)) goto 0x002f
+  0029: return Service
+  002f: return ((self._CurrentForm == none) ? none : self._CurrentForm.GetService(Type))
+  0056: return return
+  005c: <eos>
+
+function TnPawn.IsRobot  (script 18 bytes)
+  0000: return get_IsInRobotForm()
+  000b: return return
+  0011: <eos>
+
+function TnPawn.GetRobotService  (script 46 bytes)
+  0000: return ((self._RobotForm == none) ? none : self._RobotForm.GetService(Type))
+  0027: return return
+  002d: <eos>
+
+function TnPawn.GetVehicleService  (script 46 bytes)
+  0000: return ((self._VehicleForm == none) ? none : self._VehicleForm.GetService(Type))
+  0027: return return
+  002d: <eos>
+
+function TnPawn.GetSharedService  (script 32 bytes)
+  0000: return self._Services.GetService(Type)
+  0019: return return
+  001f: <eos>
+
+function TnPawn.ReplicatedEvent  (script 402 bytes)
+  0000: switch (VarName)
+  0007: case '_LastTakeHitInfo': (next 0x002b)
+  0013: if !((self._CurrentForm != none)) goto 0x0028
+  001e: ClientPlayHit()
+  0028: goto 0x018f
+  002b: case '_CurrentCharacterCompressed': (next 0x0068)
+  0037: self._CurrentCharacter = self.CharacterDataHelpers.ResolveReplicatedCharacterData(self._CurrentCharacterCompressed, )
+  0056: ApplyCharacter(self._CurrentCharacter)
+  0065: goto 0x018f
+  0068: case '_ChargeWeaponState': (next 0x007d)
+  0074: TnPawn.OnChargeWeaponState()
+  007a: goto 0x018f
+  007d: case '_TargetForm': (next 0x00a1)
+  0089: if !((self._VehicleForm != none)) goto 0x009e
+  0094: OnTransformationChanged()
+  009e: goto 0x018f
+  00a1: case '_AttachToSocketInfo': (next 0x010f)
+  00ad: if !((self._AttachToSocketInfo.Attacher == none)) goto 0x00d0
+  00c3: DetachFromSocket()
+  00cd: goto 0x010c
+  00d0: AttachToSocket(self._AttachToSocketInfo.Attacher, self._AttachToSocketInfo.AttachMode, self._AttachToSocketInfo.Socket, , )
+  010c: goto 0x018f
+  010f: case '_Grabbed': (next 0x013d)
+  011b: if !(self._Grabbed) goto 0x0132
+  0124: NotifyGrabBegin(none)
+  012f: goto 0x013d
+  0132: NotifyGrabEnd(none)
+  013d: case 'TeleportCounter': (next 0x0152)
+  0149: TnPawn.ClientPlayTeleportEffects()
+  014f: goto 0x018f
+  0152: case '_IsDowned': (next 0x0181)
+  015e: if !(self._IsDowned) goto 0x0174
+  0167: ClientStartDowned()
+  0171: goto 0x017e
+  0174: ClientStopDowned()
+  017e: goto 0x018f
+  0181: default:
+  0184: ReplicatedEvent(VarName)
+  018f: return nothing
+  0191: <eos>
+
+function TnPawn.ClientForcePawnReplicationChannel  (script 14 bytes)
+  0000: DoNothing = DoNothing
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.AddHealth  (script 48 bytes)
+  0000: ClampedAmount = obj'Core.Math'.static.FMin(Amount, (self.HealthMax - self.Health))
+  0022: AddHealth(ClampedAmount)
+  002d: return nothing
+  002f: <eos>
+
+function TnPawn.GetNormalizedHealth  (script 41 bytes)
+  0000: if !(self._IsDowned) goto 0x001b
+  0009: return (GetHealth() / self.DownedHealth)
+  001b: return GetNormalizedHealth()
+  0022: return return
+  0028: <eos>
+
+function TnPawn.PostBeginPlay  (script 488 bytes)
+  0000: PostBeginPlay()
+  0006: RegisterReplicatedObject(self._BuffManager, '_BuffManager')
+  001e: RegisterReplicatedObject(self.AbilityManager, 'AbilityManager')
+  0036: RegisterReplicatedObject(self._CharacterApplier, '_CharacterApplier')
+  004e: RegisterReplicatedObject(self._Grabber, '_Grabber')
+  0066: RegisterReplicatedObject(self._TargetTracker, '_TargetTracker')
+  007e: self._BaseGroundSpeed = self.GroundSpeed
+  0089: self._BaseAirSpeed = self.AirSpeed
+  0094: TnPawn.AddServices()
+  009a: ChassisType = TnTransformer(self._ActorBlueprint)
+  00aa: if !((ChassisType != none)) goto 0x00ca
+  00b5: self._Blueprint = ChassisType
+  00c0: ApplyTransformer()
+  00ca: self._PawnHorizontalSpeedGraph.AddDataSet("Horizontal Speed (uu/s)", MakeColor(cast3d(255), cast3d(255), cast3d(255), ), obj'Core.Math'.static.MakeFloatRange(0.0, 4000.0))
+  012a: self._PawnVerticalSpeedGraph.AddDataSet("Vertical Speed (uu/s)", MakeColor(cast3d(255), cast3d(255), cast3d(255), ), obj'Core.Math'.static.MakeFloatRange(-4000.0, 4000.0))
+  0188: self._PawnLocationGraph.AddDataSet("Location", obj'Core.Colors'.static.White(), obj'Core.Math'.static.MakeBox(vect(-5000,-5000,0), vect(5000,5000,0)))
+  01e5: return nothing
+  01e7: <eos>
+
+function TnPawn.SetInitialState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.AddServices  (script 503 bytes)
+  0000: LockOnVictimService = new(self, nothing, obj'TnPawnLockOnVictimService', nothing, DeltaTime)
+  0014: LockOnVictimService._OwnerPawn = self
+  0024: CollisionService = new(nothing, nothing, obj'TnPawnCollisionService', nothing, DeltaTime)
+  0038: CollisionService._CollisionController = self._CollisionController
+  004c: AudioService = new(nothing, nothing, obj'TnPawnAudioService', nothing, DeltaTime)
+  0060: AudioService._OwnerPawn = self
+  0070: self._Services.Add('TnBuffService', self._BuffManager)
+  0091: self._Services.Add('TnLockOnVictimService', LockOnVictimService)
+  00b2: self._Services.Add('TnAnchorService', self._AnchorManager)
+  00d3: self._Services.Add('TnGrabVictimService', self)
+  00f0: self._Services.Add('TnGrabAttackerService', self._Grabber)
+  0111: self._Services.Add('TnAttacheeService', self)
+  012e: self._Services.Add('TnActionTargetClaimService', self._ActionTargetClaimer)
+  014f: self._Services.Add('TnDeathLightService', self._DeathLightManager)
+  0170: self._Services.Add('TnCloakLightService', self._CloakLightManager)
+  0191: self._Services.Add('TnCollisionService', CollisionService)
+  01b2: self._Services.Add('TnCharacterMaterialService', self._CharacterMaterials)
+  01d3: self._Services.Add('TnAudioService', AudioService)
+  01f4: return nothing
+  01f6: <eos>
+
+function TnPawn.NotifyTeamChanged  (script 28 bytes)
+  0000: NotifyTeamChanged()
+  0006: self._CollisionController.SetupTeamBlockingChannels()
+  0019: return nothing
+  001b: <eos>
+
+function TnPawn.ApplyCharacter  (script 149 bytes)
+  0000: self._CollisionController.Initialize(self, get_RobotMeshComponent(), get_VehicleMeshComponent(), self.CylinderComponent)
+  002d: self._CurrentCharacterCompressed = self.CharacterDataHelpers.ReplicateResolvedCharacterData(CD)
+  004b: self._CurrentCharacter = CD
+  0056: ApplyDifficultyBuffs()
+  0060: self._CharacterApplier.ApplyCharacter(self._CurrentCharacter, self, self.Role)
+  007e: self._Blueprint.OnPostApplication(self)
+  0092: return nothing
+  0094: <eos>
+
+function TnPawn.GetSkeletalMesh  (script 46 bytes)
+  0000: default=0
+  0005: return ((MeshIndex == 0) ? get_RobotMeshComponent() : get_VehicleMeshComponent())
+  0027: return return
+  002d: <eos>
+
+function TnPawn.ApplyDifficultyBuffs  (script 139 bytes)
+  0000: Game = TnCampaignGameBase(self.WorldInfo.Game)
+  0019: if !((Game == none)) goto 0x0026
+  0024: return nothing
+  0026: DifficultyBuffs = Game.GetDifficultyBuffs(self)
+  0040: DifficultyBuffLevel = Game.GetDifficultyBuffLevel()
+  0059: foreach DifficultyBuffs(Buff,) (end 0x0087)
+  0068: self._BuffManager.AddBuff(Buff, DifficultyBuffLevel, self)
+  0086: iternext
+  0087: iterpop
+  0088: return nothing
+  008a: <eos>
+
+function TnPawn.GetSpecialty  (script 24 bytes)
+  0000: return self._CurrentCharacter.Specialty
+  0011: return return
+  0017: <eos>
+
+function TnPawn.HasSkill  (script 39 bytes)
+  0000: return (self._CurrentCharacter.Skills.Find(Skill) != -1)
+  0020: return return
+  0026: <eos>
+
+function TnPawn.HeatCheat  (script 18 bytes)
+  0000: self.HeatCheatEnabled = !self.HeatCheatEnabled
+  000f: return nothing
+  0011: <eos>
+
+function TnPawn.DebugGiveSkill  (script 63 bytes)
+  0000: SkillClass = self.CustomCharacterOptions.FindSkill(SkillUniqueId)
+  001e: self._CharacterApplier.DebugGiveSkill(SkillClass, Level, self)
+  003c: return nothing
+  003e: <eos>
+
+function TnPawn.DebugGiveAbility  (script 69 bytes)
+  0000: AbilityClass = self.CustomCharacterOptions.FindAbility(AbilityUniqueId)
+  001e: if !((AbilityClass != none)) goto 0x0042
+  0029: self._CharacterApplier.DebugGiveAbility(AbilityClass, self)
+  0042: return nothing
+  0044: <eos>
+
+function TnPawn.OnTransformerChanged  (script 29 bytes)
+  0000: self._Blueprint = TnTransformer(NewBlueprint)
+  0010: ApplyTransformer()
+  001a: return nothing
+  001c: <eos>
+
+function TnPawn.ApplyTransformer  (script 1004 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x0060
+  000b: LogInternal("ERROR: Can't set (none) transformer.  It may not be set in the player start.", , , )
+  005e: return nothing
+  0060: self.TerminalVelocity = self._Blueprint.TerminalVelocity
+  0074: self._CharacterMaterials.Initialize(self)
+  0088: TnPawn.CreateRobotForm(self._Blueprint)
+  0093: TnPawn.CreateVehicleForm(self._Blueprint.TransformerVehicle)
+  00a7: TnPawn.InitializeTransformations()
+  00ad: self._PrimaryMovementCapabilities = self._RobotForm.get_FormMovementCapabilities()
+  00c6: if !((self._VehicleForm != none)) goto 0x00ea
+  00d1: self._SecondaryMovementCapabilities = self._VehicleForm.get_FormMovementCapabilities()
+  00ea: self._BuffManager.Initialize(self)
+  00fe: self._Grabber.Initialize(self)
+  0112: self._DeathLightManager.Initialize(self.DeathLight)
+  012a: self._CloakLightManager.Initialize(self.CloakLight)
+  0142: self._TargetTracker.Initialize(self._RobotForm.get_RobotMeshComponent())
+  0168: self._TargetTracker.RegisterIkControl(0, 'LookAtTarget')
+  0186: self.AbilityManager.Initialize(self)
+  019a: self._LockOnThreatManager._BuffManager = self._BuffManager
+  01ae: SetCollisionSize(self._Blueprint.Collision.CollisionRadius, self._Blueprint.Collision.CollisionHeight)
+  01e3: self.BaseEyeHeight = self._Blueprint.BaseEyeHeight
+  01f7: self.EyeHeight = self._Blueprint.BaseEyeHeight
+  020b: self._ShouldDropHealthPickup = self._Blueprint.DropHealthPickup
+  0221: self.Mass = self._Blueprint.Mass
+  0235: self.AccelRate = self._Blueprint.AccelRate
+  0249: set_BaseGroundSpeed(self._Blueprint.BaseGroundSpeed)
+  0261: set_BaseAirSpeed(self._Blueprint.AirSpeed)
+  0279: self.AirControl = self._Blueprint.AirControl
+  028d: if !((self._Blueprint.AcrobaticsManagerBlueprint != none)) goto 0x0323
+  02a1: MC = self._WorkingMovementCapabilities
+  02ac: MC.MaxJumpHeight = self._Blueprint.AcrobaticsManagerBlueprint.JumpHeight
+  02d4: self._WorkingMovementCapabilities = MC
+  02df: self.JumpZ = obj'Core.Math'.static.Sqrt(((-2.0 * self.WorldInfo.GetGravityZ()) * self._Blueprint.AcrobaticsManagerBlueprint.JumpHeight))
+  0323: self.Health = self._Blueprint.Health
+  0337: self.HealthMax = self._Blueprint.Health
+  034b: self.HealthRegener.Initalize(self, self._Blueprint.HealthRegenParameters)
+  036d: self.DamageMultiplier = self._Blueprint.DamageMultiplier
+  0381: if !(self.WorldInfo.IsPlayInEditor()) goto 0x03b3
+  0397: self._Blueprint.AddAssetChangedObserver(delegate.OnTransformerChanged)
+  03b3: self._HitEffectPlayer.Initialize(self, self._Blueprint.HitEffectPlayerBlueprint)
+  03d5: self._AnchorManager.Initialize(self)
+  03e9: return nothing
+  03eb: <eos>
+
+function TnPawn.CreateRobotForm  (script 159 bytes)
+  0000: if !((NewBlueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self._RobotForm != none)) goto 0x0023
+  0018: TnPawn.ShutdownForm(self._RobotForm)
+  0023: self._RobotForm = NewBlueprint.CreateRobotForm(self)
+  003d: self._RobotForm.RegisterReplicatedObjects(self)
+  0051: self._RobotForm.Initialize(self, NewBlueprint, self._BuffManager)
+  006f: self.Recoiler.Initialize(get_RobotMeshComponent())
+  008c: RegisterReplicatedObject(self._RobotForm, )
+  009c: return nothing
+  009e: <eos>
+
+function TnPawn.CreateVehicleForm  (script 125 bytes)
+  0000: if !((NewBlueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self._VehicleForm != none)) goto 0x0023
+  0018: TnPawn.ShutdownForm(self._VehicleForm)
+  0023: self._VehicleForm = NewBlueprint.CreateVehicleForm(self)
+  003d: self._VehicleForm.RegisterReplicatedObjects(self)
+  0051: self._VehicleForm.Initialize(self, NewBlueprint)
+  006a: RegisterReplicatedObject(self._VehicleForm, )
+  007a: return nothing
+  007c: <eos>
+
+function TnPawn.ShutdownForm  (script 99 bytes)
+  0000: if !(Form.get_IsActive()) goto 0x003c
+  0016: Form.EndPlay()
+  0029: Form.Deactivate()
+  003c: Form.UnregisterReplicatedObjects(self)
+  0050: UnregisterReplicatedObject(Form, )
+  0060: return nothing
+  0062: <eos>
+
+function TnPawn.InitializeState  (script 195 bytes)
+  0000: if !((self._CurrentForm != none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(self._CurrentCharacter.StartingForm) == cast3a(0))) goto 0x0031
+  0028: TnPawn.StartRobot()
+  002e: goto 0x0037
+  0031: TnPawn.StartVehicle()
+  0037: if !((self.Mesh != none)) goto 0x0056
+  0042: self.Mesh.SetHidden(false)
+  0056: C = TnPlayerController(self.Controller)
+  0066: if !(((none != C) && (C._DialogManager != none))) goto 0x00c0
+  0087: C._DialogManager.Initialize(self)
+  00a4: C._DialogManager.PlaySpawnedDialog()
+  00c0: return nothing
+  00c2: <eos>
+
+function TnPawn.StartRobot  (script 36 bytes)
+  0000: TnPawn.StartForm(self._RobotForm)
+  000b: self._TargetForm = 0
+  0013: GotoState('InRobotForm', , , )
+  0021: return nothing
+  0023: <eos>
+
+function TnPawn.StartVehicle  (script 87 bytes)
+  0000: if !((self._VehicleForm == none)) goto 0x000d
+  000b: return nothing
+  000d: self._TargetForm = 1
+  0015: self._CollisionController.SetCollisionMode(4)
+  002a: TnPawn.StartForm(self._VehicleForm)
+  0035: self._VehicleForm._FxAllowed = true
+  0046: GotoState('InVehicleForm', , , )
+  0054: return nothing
+  0056: <eos>
+
+function TnPawn.StartForm  (script 81 bytes)
+  0000: self._CurrentForm = StartForm
+  000b: SetMovementCapabilities(StartForm.get_FormMovementCapabilities())
+  0028: StartForm.Activate()
+  003b: StartForm.BeginPlay()
+  004e: return nothing
+  0050: <eos>
+
+function TnPawn.SetMovementCapabilities  (script 14 bytes)
+  0000: self._WorkingMovementCapabilities = Capabilities
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.InitializeTransformations  (script 61 bytes)
+  0000: self._RobotToVehicleTransformation.Initialize(self._RobotForm, self._VehicleForm)
+  001d: self._VehicleToRobotTransformation.Initialize(self._VehicleForm, self._RobotForm)
+  003a: return nothing
+  003c: <eos>
+
+function TnPawn.RestoreDefaultAirMovement  (script 67 bytes)
+  0000: self.AccelRate = self._Blueprint.AccelRate
+  0014: self.AirControl = self._Blueprint.AirControl
+  0028: set_BaseAirSpeed(self._Blueprint.AirSpeed)
+  0040: return nothing
+  0042: <eos>
+
+function TnPawn.ClientGetWeaponByClass  (script 75 bytes)
+  0000: W = TnWeapon(ClientGetWeaponByClass(WeaponClass))
+  0016: if !((W == none)) goto 0x0023
+  0021: return none
+  0023: if !((cast3a(W.WeaponType) == cast3a(7))) goto 0x003e
+  003c: return none
+  003e: return W
+  0044: return return
+  004a: <eos>
+
+function TnPawn.CanPickupInventory  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.GetWeaponSockets  (script 184 bytes)
+  0000: W = TnWeapon(WeaponToAttach)
+  0010: if !((cast3a(W.WeaponType) == cast3a(7))) goto 0x003d
+  0029: return W.MountedSockets()
+  003d: if !((self._CurrentForm != none)) goto 0x0061
+  0048: return self._CurrentForm.GetWeaponSockets(WeaponToAttach)
+  0061: LogInternal(("ERROR: EngineTeam - _CurrentForm was none in " $ cast57(GetFuncName())), , , )
+  00a3: emptyArray.Length = 0
+  00ab: return emptyArray
+  00b1: return return
+  00b7: <eos>
+
+function TnPawn.GetCurrentWeapon  (script 65 bytes)
+  0000: TransformerInventoryManager = TnInventoryManager(self.InvManager)
+  0010: if !((TransformerInventoryManager == none)) goto 0x0021
+  001b: return self.Weapon
+  0021: return TnInventoryManager(self.InvManager).GetCurrentWeapon()
+  003a: return return
+  0040: <eos>
+
+function TnPawn.GetAttachedDestructibles  (script 44 bytes)
+  0000: foreach BasedActors(obj'TnDestructibleActor', Destructible) (end 0x001e)
+  0010: DestructibleActors.AddItem(Destructible)
+  001d: iternext
+  001e: iterpop
+  001f: return DestructibleActors
+  0025: return return
+  002b: <eos>
+
+function TnPawn.SetupMarker  (script 178 bytes)
+  0000: if !((self.ObjectiveMarkerInitialized || !self.DisplayObjectiveMarker)) goto 0x0018
+  0016: return nothing
+  0018: if !((((self.PlayerReplicationInfo == none) || (self._Blueprint == none)) || (TnGameReplicationInfoGameBase(self.WorldInfo.GRI) == none))) goto 0x004d
+  004b: return nothing
+  004d: self.ObjectiveMarkerInitialized = true
+  0055: CharName = GetObjectiveMarkerLabel()
+  0065: MarkerClass = GetObjectiveMarkerClass()
+  0075: if !((MarkerClass == none)) goto 0x0082
+  0080: return nothing
+  0082: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker(CharName, self, MarkerClass, true)
+  00af: return nothing
+  00b1: <eos>
+
+function TnPawn.GetObjectiveMarkerLabel  (script 86 bytes)
+  0000: CharName = self.PlayerReplicationInfo.PlayerName
+  0014: if !((CharName == "")) goto 0x0049
+  0020: CharName = obj'TnDataProvider_Chassis'.static.LocalizeUniqueIconicId(self._CurrentCharacter.CharacterName)
+  0049: return CharName
+  004f: return return
+  0055: <eos>
+
+function TnPawn.GetObjectiveMarkerClass  (script 91 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0016
+  0014: return none
+  0016: GameClass = class<TnGame>(self.WorldInfo.GRI.GameClass)
+  0038: if !((GameClass == none)) goto 0x0045
+  0043: return none
+  0045: return GameClass.static.default.TransformerMarkerClass
+  0054: return return
+  005a: <eos>
+
+function TnPawn.Tick  (script 808 bytes)
+  0000: if !((self._CurrentForm == none)) goto 0x000d
+  000b: return nothing
+  000d: self._IsTicking = true
+  0015: Tick(DeltaTime)
+  0020: if !((self._Blueprint == none)) goto 0x007b
+  002b: LogInternal(((("Error:" @ cast56(self)) @ "does not have a transformer chassis set") @ cast56(self.PlayerReplicationInfo)), , , )
+  0071: self._IsTicking = false
+  0079: return nothing
+  007b: self._CountdownToIdleTimer.Tick(DeltaTime)
+  0093: TnPawn.UpdateCurrentLockOnStatus()
+  0099: TnPawn.SetupMarker()
+  009f: self._BuffManager.Tick(DeltaTime)
+  00b7: self.AbilityManager.Tick(DeltaTime)
+  00cf: if !((self._EnableFlyingTurnaroundBehavior && (self.Controller != none))) goto 0x0120
+  00e5: self._EnableFlyingTurnaroundBehavior = false
+  00ed: PC = TnPlayerController(self.Controller)
+  00fd: if !((PC != none)) goto 0x0120
+  0108: PC.EnableFlyingTurnaroundBehavior(self._FlyingTurnaroundParams)
+  0120: UpdateAimOffset(DeltaTime)
+  012f: TransWeapon = TnWeapon(self.Weapon)
+  013f: if !((TransWeapon != none)) goto 0x019a
+  014a: self.WeaponTypeObserved = cast3a(TransWeapon.get_Stance())
+  0165: if !((TransWeapon.IsReloading() || TransWeapon.IsOverheating())) goto 0x019a
+  0193: self._WeaponIdleState = 1
+  019a: self._CollisionController.Tick(DeltaTime)
+  01b2: self._Grabber.Update(DeltaTime)
+  01ca: if !((((cast3a(self.Role) == cast3a(3)) && (self.HealthRegener != none)) && !self._IsDowned)) goto 0x020c
+  01f4: self.HealthRegener.Update(DeltaTime)
+  020c: self._bAirborneUpToDate = false
+  0214: (self._CurrentStunTimeRemaining -= DeltaTime)
+  0220: self._CloakLightManager.UpdateLight(DeltaTime)
+  0238: self._TargetTracker.Update(DeltaTime)
+  0250: if !((self._IsDowned && self._DrainHealthWhenDown)) goto 0x0298
+  0264: TakeDamage((DeltaTime * self.DownedHealthDrainRate), self.LastHitBy, self.Location, vect(0,0,0), obj'TnDamageTypeDownedDrain', , )
+  0298: TnPawn.UpdateReviveTimes(DeltaTime)
+  02a3: MakeFootstepNoise()
+  02ad: TnPawn.UpdateSpeedGraphs(DeltaTime)
+  02b8: self._CharacterMaterials.Tick(DeltaTime)
+  02d0: OnUpdate(DeltaTime)
+  02df: TnPawn.UpdateFellOutOfWorld()
+  02e5: if !(self._DeferredDied) goto 0x0303
+  02ee: TnPawn.HandleDied(self.StoredKiller, self.StoredDamageType, self.StoredHitLocation)
+  0303: self._IsTicking = false
+  030b: self._ReceivedWeapon = (self._ReceivedWeapon || (self.Weapon != none))
+  0325: return nothing
+  0327: <eos>
+
+function TnPawn.UpdateSpeedGraphs  (script 213 bytes)
+  0000: self._PawnHorizontalSpeedGraph.AddSample(0, obj'Core.Math'.static.VSize((self.Velocity * vect(1,1,0))))
+  0034: self._PawnHorizontalSpeedGraph.Update(DeltaTime)
+  004c: self._PawnVerticalSpeedGraph.AddSample(0, self.Velocity.Z)
+  0070: self._PawnVerticalSpeedGraph.Update(DeltaTime)
+  0088: self._PawnLocationGraph.AddSample(0, self.Location)
+  00a1: self._PawnLocationGraph.SetCenter(0, self.Location)
+  00ba: self._PawnLocationGraph.Update(DeltaTime)
+  00d2: return nothing
+  00d4: <eos>
+
+function TnPawn.UpdateReviveTimes  (script 75 bytes)
+  0000: if !((self._ReviveTimeLeft > cast3f(0))) goto 0x0048
+  000d: self._ReviveTimeLeft = obj'Core.Math'.static.FMax(0.0, (self._ReviveTimeLeft - DeltaTime))
+  002f: self._RevivePercentDone = (1.0 - (self._ReviveTimeLeft / self._ReviveTotalTime))
+  0048: return nothing
+  004a: <eos>
+
+function TnPawn.Transform  (script 153 bytes)
+  0000: if !(!self._TransformingEnabled) goto 0x000d
+  000b: return false
+  000d: if !(((cast3a(TargetForm) == cast3a(1)) && (self.InvManager != none))) goto 0x0042
+  002a: TnInventoryManager(self.InvManager).DropHeavyWeapons()
+  0042: self._TargetForm = TargetForm
+  004d: self._CurrentCharacterCompressed.StartingForm = TargetForm
+  0063: self._TransformCompleteEvent = TransformCompleteEvent
+  006e: MoveToSafeTransformationLocation(TargetForm)
+  007d: OnTransformationChanged()
+  0087: return get_IsTransforming()
+  0092: return return
+  0098: <eos>
+
+function TnPawn.MoveToSafeTransformationLocation  (script 273 bytes)
+  0000: OriginalLocation = self.Location
+  000b: SafeLocation = self.Location
+  0016: CollisionExtent = ((cast3a(TargetForm) == cast3a(0)) ? self._RobotForm.get_CollisionExtent() : self._VehicleForm.get_CollisionExtent())
+  0054: if !(!FindSpotAwayFromPawns(self, CollisionExtent, SafeLocation)) goto 0x008d
+  006e: LogInternal("Find start spot failed", , , )
+  008b: return false
+  008d: if !((SafeLocation == self.Location)) goto 0x009e
+  009c: return true
+  009e: if !((cast3a(TargetForm) == cast3a(0))) goto 0x00de
+  00ae: self._TransformationPositionShift = ((OriginalLocation - SafeLocation) << self.Rotation)
+  00c8: self._TransformBlendTimeRemaining = 0.5
+  00d3: TnPawn.OffsetMeshes(self._TransformationPositionShift)
+  00de: SetLocation(SafeLocation)
+  00e6: self._VehicleForm.Teleport(SafeLocation, self.Rotation, self.Velocity)
+  0108: return true
+  010a: return return
+  0110: <eos>
+
+function TnPawn.IsStunned  (script 18 bytes)
+  0000: return (self._CurrentStunTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnPawn.RegisterIkControl  (script 32 bytes)
+  0000: self._TargetTracker.RegisterIkControl(BodyPart, ControlName)
+  001d: return nothing
+  001f: <eos>
+
+function TnPawn.EnableIkTracking  (script 27 bytes)
+  0000: self._TargetTracker.EnableTracking(BodyPart)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.DisableIkTracking  (script 27 bytes)
+  0000: self._TargetTracker.DisableTracking(BodyPart)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.DisableAllIkTracking  (script 22 bytes)
+  0000: self._TargetTracker.DisableAllTracking()
+  0013: return nothing
+  0015: <eos>
+
+function TnPawn.OnTeleport  (script 426 bytes)
+  0000: if !(get_IsInteracting()) goto 0x0020
+  000d: self.UseableInteract.ForceEndUse()
+  0020: NavDestination = NavigationPoint(Action.DestinationActor)
+  0039: if !((NavDestination == none)) goto 0x005c
+  0044: NavDestination = GetBestAnchor(self, self.Location, true, )
+  005c: SetAnchor(NavDestination)
+  006b: OnTeleport(Action)
+  0076: HitActor = Trace(HitPosition, HitNormal, none, (self.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -500.0)), self.Location, , , , , 32)
+  00be: NewLocation = self.Location
+  00c9: if !(get_IsInVehicleForm()) goto 0x0167
+  00d6: if !((HitActor != none)) goto 0x0120
+  00e1: NewLocation = (HitPosition + obj'Core.Math'.static.MakeVector(0.0, 0.0, (self._WorkingMovementCapabilities.CylinderHeight + cast3f(1))))
+  0120: FindSpotAwayFromPawns(self, get_VehicleMeshComponent().GetBounds().BoxExtent, NewLocation)
+  0153: HandleTeleport(NewLocation, self.Rotation)
+  0167: if !(!IsLocallyControlled()) goto 0x018a
+  0176: ClientTeleport(NewLocation, self.Rotation)
+  018a: if !((HitActor != none)) goto 0x01a7
+  0195: SetBase(HitActor, , , )
+  01a7: return nothing
+  01a9: <eos>
+
+function TnPawn.TeleportCamera  (script 54 bytes)
+  0000: PC = TnPlayerController(self.Controller)
+  0010: if !((PC != none)) goto 0x0033
+  001b: PC.CameraTeleported(self.Rotation)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.ClientTeleport  (script 19 bytes)
+  0000: TnPawn.LocalTeleport(NewLocation, NewRotation)
+  0010: return nothing
+  0012: <eos>
+
+function TnPawn.LocalTeleport  (script 152 bytes)
+  0000: if !(!SetLocation(NewLocation)) goto 0x0079
+  000d: LogInternal(((((("Error: Teleport for " $ cast56(self)) $ " failed.  Current location = ") $ cast58(self.Location)) $ " Teleport Location = ") $ cast58(NewLocation)), , , )
+  0079: SetRotation(NewRotation)
+  0081: HandleTeleport(NewLocation, NewRotation)
+  0095: return nothing
+  0097: <eos>
+
+function TnPawn.Teleport  (script 54 bytes)
+  0000: TnPawn.LocalTeleport(NewLocation, NewRotation)
+  0010: if !(!IsLocallyControlled()) goto 0x0033
+  001f: ClientTeleport(NewLocation, NewRotation)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.HandleTeleport  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Rammed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.OnTransformationChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.HandleRBCollision  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.RigidBodyCollision  (script 59 bytes)
+  0000: RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  001a: HandleRBCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  0038: return nothing
+  003a: <eos>
+
+function TnPawn.StateCanBeDowned  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPawn.StateClientStartDowned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.StateClientStopDowned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.OnRevivedAnimationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.PlayDownedAnim  (script 215 bytes)
+  0000: AnimatorService = TnAnimatorService(GetService('TnAnimatorService'))
+  001e: if !(EqualEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x0034
+  0032: return nothing
+  0034: Params.AnimName = AnimName
+  004a: Params.Looping = Looping
+  0062: Params.MaskType = 0
+  0075: Params.Override = 2
+  0088: Params.Priority = 1
+  009b: Params.RootMotionMode = MotionMode
+  00b1: AnimatorService.EnqueueLocalAnimation(Params, CompleteCallback, FailedCallback)
+  00d4: return nothing
+  00d6: <eos>
+
+function TnPawn.PlayDownedSound  (script 120 bytes)
+  0000: if !(((none == self.Controller) || (false == self.Controller.IsLocalPlayerController()))) goto 0x0028
+  0026: return nothing
+  0028: AudioService = TnAudioService(GetService('TnAudioService'))
+  0046: if !(EqualEqual_InterfaceInterface(TnAudioService(none), AudioService)) goto 0x005c
+  005a: return nothing
+  005c: AudioService.PlayLoopingSound(self.DownedSound)
+  0075: return nothing
+  0077: <eos>
+
+function TnPawn.PlayReviveSound  (script 150 bytes)
+  0000: if !(((none == self.Controller) || (false == self.Controller.IsLocalPlayerController()))) goto 0x0028
+  0026: return nothing
+  0028: AudioService = TnAudioService(GetService('TnAudioService'))
+  0046: if !(EqualEqual_InterfaceInterface(TnAudioService(none), AudioService)) goto 0x005c
+  005a: return nothing
+  005c: AudioService.StopLoopingSound(self.DownedSound, 0.25)
+  007a: AudioService.PlaySound(self.ReviveSound)
+  0093: return nothing
+  0095: <eos>
+
+function TnPawn.UpdateLockOnSound  (script 210 bytes)
+  0000: if !(((none == self.Controller) || (false == self.Controller.IsLocalPlayerController()))) goto 0x0028
+  0026: return nothing
+  0028: AudioService = TnAudioService(GetService('TnAudioService'))
+  0046: if !(EqualEqual_InterfaceInterface(TnAudioService(none), AudioService)) goto 0x005c
+  005a: return nothing
+  005c: if !((cast3a(GetCurrentLockOnStatus()) == cast3a(1))) goto 0x00a0
+  0071: if !(!self.IsLockedOn) goto 0x0095
+  007c: AudioService.PlayLoopingSound(self.LockOnWarningSound)
+  0095: self.IsLockedOn = true
+  009d: goto 0x00cf
+  00a0: if !(self.IsLockedOn) goto 0x00c7
+  00a9: AudioService.StopLoopingSound(self.LockOnWarningSound, 0.5)
+  00c7: self.IsLockedOn = false
+  00cf: return nothing
+  00d1: <eos>
+
+function TnPawn.CalcVelocity  (script 628 bytes)
+  0000: if !((DeltaTime == cast3f(0))) goto 0x000f
+  000d: return true
+  000f: if !((obj'Core.Math'.static.VSizeSq(self._OverrideAcceleration) > cast3f(0))) goto 0x0044
+  002f: (self.Velocity += (self._OverrideAcceleration * DeltaTime))
+  0042: return true
+  0044: Mask = (((cast3a(self.Physics) == cast3a(2)) || (cast3a(self.Physics) == cast3a(1))) ? vect(1,1,0) : vect(1,1,1))
+  0088: PreviousVelocity = (self.Velocity * Mask)
+  009b: DesiredNormalizedVelocity = obj'Core.Math'.static.ClampLength((self.Acceleration * Mask), 1.0)
+  00c6: DesiredVelocity = TnPawn.CalculateDesiredFlatVelocity(DesiredNormalizedVelocity, PreviousVelocity, MaxSpeed)
+  00e1: MaxAcceleration = CalculateMaxAcceleration(CalculateMomentumPreservation(DesiredNormalizedVelocity, PreviousVelocity, MaxSpeed))
+  010a: LocalAcceleration = (((DesiredVelocity - PreviousVelocity) / DeltaTime) << self.Rotation)
+  012b: LocalAcceleration.X = obj'Core.Math'.static.FClamp(LocalAcceleration.X, -MaxAcceleration, MaxAcceleration)
+  0163: LocalAcceleration.Y = obj'Core.Math'.static.FClamp(LocalAcceleration.Y, -MaxAcceleration, MaxAcceleration)
+  019b: LocalAcceleration.Z = obj'Core.Math'.static.FClamp(LocalAcceleration.Z, -MaxAcceleration, MaxAcceleration)
+  01d3: FlatAcceleration = (LocalAcceleration >> self.Rotation)
+  01e6: FlatVelocity = (PreviousVelocity + (FlatAcceleration * DeltaTime))
+  01ff: OldVelocityZ = self.Velocity.Z
+  0215: self.Velocity = FlatVelocity
+  0220: if !((cast3a(self.Physics) == cast3a(2))) goto 0x026b
+  0230: self.Velocity.Z = obj'Core.Math'.static.FMax((OldVelocityZ + (GetGravityZ() * DeltaTime)), -self.TerminalVelocity)
+  026b: return true
+  026d: return return
+  0273: <eos>
+
+function TnPawn.CalculateDesiredFlatVelocity  (script 145 bytes)
+  0000: if !((obj'Core.Math'.static.VSizeSq(DesiredNormalizedVelocity) == cast3f(0))) goto 0x0045
+  0020: return ((cast3a(self.Physics) == cast3a(2)) ? PreviousFlatVelocity : vect(0,0,0))
+  0045: DesiredNormalizedSpeed = obj'Core.Math'.static.VSize(DesiredNormalizedVelocity)
+  005b: return (obj'Core.Math'.static.Normal(DesiredNormalizedVelocity) * obj'Core.Math'.static.FMax(450.0, (DesiredNormalizedSpeed * MaxSpeed)))
+  008a: return return
+  0090: <eos>
+
+function TnPawn.CalculateMomentumPreservation  (script 368 bytes)
+  0000: FlatSpeed = obj'Core.Math'.static.VSize(FlatVelocity)
+  0016: if !(((self._Blueprint.MomentumBlueprint == none) || (FlatSpeed < (MaxFlatSpeed + 0.1)))) goto 0x0048
+  0042: return 0.0
+  0048: if !((obj'Core.Math'.static.VSizeSq(DesiredNormalizedVelocity) > cast3f(0))) goto 0x0090
+  0068: AccelerationInVelocityDirection = (obj'Core.Math'.static.Normal(DesiredNormalizedVelocity) dot obj'Core.Math'.static.Normal(FlatVelocity))
+  0090: if !(((cast3a(self.Physics) == cast3a(2)) || get_IsTransforming())) goto 0x00cf
+  00af: Params = self._Blueprint.MomentumBlueprint.InAir
+  00cc: goto 0x00ec
+  00cf: Params = self._Blueprint.MomentumBlueprint.OnGround
+  00ec: if !((AccelerationInVelocityDirection > 0.866)) goto 0x0114
+  00fb: MomentumPreservation = Params.Forward
+  0111: goto 0x0163
+  0114: if !((obj'Core.Math'.static.VSizeSq(DesiredNormalizedVelocity) == cast3f(0))) goto 0x014d
+  0134: MomentumPreservation = Params.Neutral
+  014a: goto 0x0163
+  014d: MomentumPreservation = Params.Backward
+  0163: return MomentumPreservation
+  0169: return return
+  016f: <eos>
+
+function TnPawn.CalculateMaxAcceleration  (script 25 bytes)
+  0000: return (self.AccelRate / (cast3f(1) + MomentumPreservation))
+  0012: return return
+  0018: <eos>
+
+function TnPawn.ShouldRecordPlayerRecord  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPawn.InVehicleForm.BeginState  (script 155 bytes)
+  0000: self._CollisionController.SetCollisionMode(4)
+  0015: if !((get_RobotMeshComponent() != none)) goto 0x003e
+  0025: get_RobotMeshComponent().SetHidden(true)
+  003e: if !((get_VehicleMeshComponent() != none)) goto 0x0067
+  004e: get_VehicleMeshComponent().SetHidden(false)
+  0067: if !((cast3a(self._TargetForm) == cast3a(0))) goto 0x0085
+  0077: GotoState('TransformingToRobot', , , )
+  0085: if !(self._IsDowned) goto 0x0098
+  008e: StateClientStartDowned()
+  0098: return nothing
+  009a: <eos>
+
+function TnPawn.InVehicleForm.OnTransformationChanged  (script 33 bytes)
+  0000: if !((cast3a(self._TargetForm) == cast3a(0))) goto 0x001e
+  0010: GotoState('TransformingToRobot', , , )
+  001e: return nothing
+  0020: <eos>
+
+function TnPawn.InVehicleForm.OnUpdate  (script 27 bytes)
+  0000: self._VehicleForm.Update(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.InVehicleForm.HandleRBCollision  (script 55 bytes)
+  0000: self._VehicleForm.RigidBodyCollisionOccurred(RigidCollisionData, ((OtherComponent != none) ? OtherComponent.Owner : none))
+  0034: return nothing
+  0036: <eos>
+
+function TnPawn.InVehicleForm.RigidBodyTrigger  (script 27 bytes)
+  0000: self._VehicleForm.RigidBodyTrigger(OtherActor)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.InVehicleForm.CanSwitchWeapons  (script 27 bytes)
+  0000: return self._VehicleForm.get_CanSwitchWeapons()
+  0014: return return
+  001a: <eos>
+
+function TnPawn.InVehicleForm.HandleTeleport  (script 73 bytes)
+  0000: NewLocation = NewLocationTemp
+  000b: NewRotation = NewRotationTemp
+  0016: self._VehicleForm.Teleport(NewLocation, NewRotation, vect(0,0,0))
+  0040: TnPawn.TeleportCamera()
+  0046: return nothing
+  0048: <eos>
+
+function TnPawn.InVehicleForm.AddVelocity  (script 57 bytes)
+  0000: nothing
+  0001: if !(ShouldIgnoreForces(DamageType)) goto 0x0015
+  0013: return nothing
+  0015: self.Mesh.AddLinearVelocity((NewVelocity * 0.5), , )
+  0036: return nothing
+  0038: <eos>
+
+function TnPawn.InVehicleForm.StateCanBeDowned  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.InVehicleForm.StateClientStartDowned  (script 46 bytes)
+  0000: if !((cast3a(get_VehicleType()) == cast3a(2))) goto 0x0017
+  0015: return nothing
+  0017: self.bPlayDownedAnimation = false
+  001f: ForceIntoForm(0)
+  002b: return nothing
+  002d: <eos>
+
+function TnPawn.InVehicleForm.ShouldMakeFootstepNoise  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.InVehicleForm.Bump  (script 107 bytes)
+  0000: Bump(Other, OtherComp, HitNormal)
+  0015: get_VehicleMeshComponent().AddLinearAcceleration((obj'Core.Math'.static.Normal(((self.Location - Other.Location) * vect(1,1,0))) * cast3f(1000)), , )
+  0068: return nothing
+  006a: <eos>
+
+function TnPawn.InVehicleForm.ShouldRecordPlayerRecord  (script 50 bytes)
+  0000: if !((cast3a(get_VehicleType()) == cast3a(2))) goto 0x0017
+  0015: return true
+  0017: return self._VehicleForm.get_IsOnTheGround()
+  002b: return return
+  0031: <eos>
+
+function TnPawn.ShouldDoSafeLocationCheck  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.InRobotForm.BeginState  (script 454 bytes)
+  0000: if !(((((cast3a(self.Role) == cast3a(3)) && (PreviousStateName != 'None')) && ShouldDoSafeLocationCheck()) && !MoveToSafeLocation())) goto 0x008d
+  0041: LogInternal("Still stuck in robot form. Transforming back to vehicle", , , )
+  007f: ForceIntoForm(1)
+  008b: return nothing
+  008d: self.CylinderComponent.SetCylinderSize(self._RobotForm.get_FormMovementCapabilities().CylinderRadius, self._RobotForm.get_FormMovementCapabilities().CylinderHeight)
+  00dc: self.CylinderComponent.ForceUpdate(true)
+  00f0: self.CylinderComponent.SetBlockRigidBody(true)
+  0104: if !((get_RobotMeshComponent() != none)) goto 0x012d
+  0114: get_RobotMeshComponent().SetHidden(false)
+  012d: if !((get_VehicleMeshComponent() != none)) goto 0x0156
+  013d: get_VehicleMeshComponent().SetHidden(true)
+  0156: if !(self._IsDowned) goto 0x0169
+  015f: StateClientStartDowned()
+  0169: self._CollisionController.SetCollisionMode((self._Blueprint.Collision.UseMeshCollision ? 2 : 1))
+  019f: if !((cast3a(self._TargetForm) == cast3a(1))) goto 0x01bd
+  01af: GotoState('TransformingToVehicle', , , )
+  01bd: ValidateWeapon()
+  01c3: return nothing
+  01c5: <eos>
+
+function TnPawn.InRobotForm.ValidateWeapon  (script 131 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: if !(IsWeaponEquipping()) goto 0x0021
+  001f: return nothing
+  0021: if !(((TnWeapon(self.Weapon) != none) && TnWeapon(self.Weapon).get_IsRobotWeapon())) goto 0x0050
+  004e: return nothing
+  0050: TnInvManager = TnInventoryManager(self.InvManager)
+  0060: if !((TnInvManager == none)) goto 0x006d
+  006b: return nothing
+  006d: TnInvManager.RestoreRobotWeapon()
+  0080: return nothing
+  0082: <eos>
+
+function TnPawn.InRobotForm.MoveToSafeLocation  (script 123 bytes)
+  0000: SafeLocation = self.Location
+  000b: if !(!FindSpotAwayFromPawns(self, self.CylinderComponent.GetBounds().BoxExtent, SafeLocation)) goto 0x005b
+  003e: LogInternal("Find end spot failed", , , )
+  0059: return false
+  005b: if !((SafeLocation != self.Location)) goto 0x0072
+  006a: SetLocation(SafeLocation)
+  0072: return true
+  0074: return return
+  007a: <eos>
+
+function TnPawn.InRobotForm.OnUpdate  (script 27 bytes)
+  0000: self._RobotForm.Update(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.InRobotForm.OnTransformationChanged  (script 33 bytes)
+  0000: if !((cast3a(self._TargetForm) == cast3a(1))) goto 0x001e
+  0010: GotoState('TransformingToVehicle', , , )
+  001e: return nothing
+  0020: <eos>
+
+function TnPawn.InRobotForm.Bump  (script 43 bytes)
+  0000: Bump(Other, OtherComp, HitNormal)
+  0015: self._RobotForm.HitWall()
+  0028: return nothing
+  002a: <eos>
+
+function TnPawn.InRobotForm.FaceRotation  (script 107 bytes)
+  0000: if !(((self._RobotForm.get_IsDodging() || self._RobotForm.get_IsAttacking()) || self._RobotForm.get_IsHovering())) goto 0x0058
+  0046: NewRotation.Pitch = 0
+  0058: FaceRotation(NewRotation, DeltaTime)
+  0068: return nothing
+  006a: <eos>
+
+function TnPawn.InRobotForm.CanSwitchWeapons  (script 27 bytes)
+  0000: return self._RobotForm.get_CanSwitchWeapons()
+  0014: return return
+  001a: <eos>
+
+function TnPawn.InRobotForm.HitWall  (script 145 bytes)
+  0000: HitWall(HitNormal, Wall, HitInfo)
+  0015: if !(self._RobotForm.get_IsDodging()) goto 0x007b
+  002b: PlaySound(self.HitWallSound, , , , , )
+  003f: C = TnPlayerController(self.Controller)
+  004f: if !((C != none)) goto 0x007b
+  005a: C.StartCameraShake(self._Blueprint.HitWallCameraShake)
+  007b: self._RobotForm.HitWall()
+  008e: return nothing
+  0090: <eos>
+
+function TnPawn.InRobotForm.Rammed  (script 70 bytes)
+  0000: self._RobotForm.Rammed(obj'Core.Math'.static.Normal(((self.Location + self._Blueprint.MeshTranslation) - V.Location)))
+  0043: return nothing
+  0045: <eos>
+
+function TnPawn.InRobotForm.HandleTeleport  (script 17 bytes)
+  0000: SetPhysics(2, , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPawn.InRobotForm.StateCanBeDowned  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.InRobotForm.StateClientStartDowned  (script 17 bytes)
+  0000: GotoState('RobotDowned', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPawn.InRobotForm.ShouldRecordPlayerRecord  (script 27 bytes)
+  0000: return self._RobotForm.get_IsOnTheGround()
+  0014: return return
+  001a: <eos>
+
+function TnPawn.Transforming.BeginTransformation  (script 233 bytes)
+  0000: OldBase = self.Base
+  000b: self._CurrentForm = TargetForm
+  0016: self._CurrentTransformation = Transformation
+  0021: self._CollisionController.SetCollisionMode(CollisionMode)
+  0039: Transformation.Execute(!self.bPlayDownedAnimation)
+  0054: SetMovementCapabilities(TargetForm.get_FormMovementCapabilities())
+  0071: MakeNoise(self._Blueprint.TransformNoiseRadius, )
+  008a: if !((OldBase != none)) goto 0x00a7
+  0095: SetBase(OldBase, , , )
+  00a7: self._PawnLocationGraph.AddEvent(0, "Begin Transform", self.Location)
+  00d1: TriggerStimulus(obj'TnStimulusType_Transforming', self.Location, )
+  00e6: return nothing
+  00e8: <eos>
+
+function TnPawn.Transforming.EndTransformation  (script 129 bytes)
+  0000: self._CurrentTransformation = none
+  0007: TnPawn.OffsetMeshes(vect(0,0,0))
+  001a: if !((self._TransformCompleteEvent != emptydelegate)) goto 0x0056
+  0024: <endparms>
+  0025: TransformComplete(self._CurrentForm.get_FormType())
+  0047: self._TransformCompleteEvent = delegate.None
+  0056: self._PawnLocationGraph.AddEvent(0, "End Transform", self.Location)
+  007e: return nothing
+  0080: <eos>
+
+function TnPawn.Transforming.OnUpdate  (script 134 bytes)
+  0000: self._TransformBlendTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._TransformBlendTimeRemaining - DeltaTime))
+  0022: TnPawn.OffsetMeshes(((self._TransformBlendTimeRemaining / 0.5) * self._TransformationPositionShift))
+  003b: self._RobotForm.Update(DeltaTime)
+  0053: self._VehicleForm.Update(DeltaTime)
+  006b: self._CurrentTransformation.Update(DeltaTime)
+  0083: return nothing
+  0085: <eos>
+
+function TnPawn.OffsetMeshes  (script 51 bytes)
+  0000: self._RobotForm.SetTransformMeshOffset(Amount)
+  0018: self._VehicleForm.SetTransformMeshOffset(Amount)
+  0030: return nothing
+  0032: <eos>
+
+function TnPawn.TransformingToRobot.BeginState  (script 59 bytes)
+  0000: self._HasRestoredRobotWeapon = false
+  0008: StoreVehicleWeapon()
+  000e: BeginTransformation(self._RobotForm, self._VehicleToRobotTransformation, 1)
+  0024: self.CylinderComponent.SetBlockRigidBody(false)
+  0038: return nothing
+  003a: <eos>
+
+function TnPawn.TransformingToRobot.EndState  (script 13 bytes)
+  0000: EndTransformation()
+  000a: return nothing
+  000c: <eos>
+
+function TnPawn.TransformingToRobot.StoreVehicleWeapon  (script 99 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: TnInvManager = TnInventoryManager(self.InvManager)
+  0022: if !((TnInvManager == none)) goto 0x002f
+  002d: return nothing
+  002f: TnInvManager.StoreVehicleWeapon()
+  0042: if !((self.InvManager != none)) goto 0x0060
+  004d: TnInvManager.UnEquipWeaponInstantly()
+  0060: return nothing
+  0062: <eos>
+
+function TnPawn.TransformingToRobot.AttemptRestoreRobotWeapon  (script 176 bytes)
+  0000: if !(self._HasRestoredRobotWeapon) goto 0x000b
+  0009: return nothing
+  000b: TnInvManager = TnInventoryManager(self.InvManager)
+  001b: if !(IsWeaponEquipping()) goto 0x002a
+  0028: return nothing
+  002a: if !(((TnWeapon(self.Weapon) != none) && TnWeapon(self.Weapon).get_IsRobotWeapon())) goto 0x0059
+  0057: return nothing
+  0059: if !((TnInvManager == none)) goto 0x0066
+  0064: return nothing
+  0066: if !(((self._CurrentTransformation != none) && (self._CurrentTransformation.get_RemainingTimeAsFactor() > self._RestoreWeaponTransformFractionRemaining))) goto 0x0092
+  0090: return nothing
+  0092: TnInvManager.RestoreRobotWeapon()
+  00a5: self._HasRestoredRobotWeapon = true
+  00ad: return nothing
+  00af: <eos>
+
+function TnPawn.TransformingToRobot.OnUpdate  (script 77 bytes)
+  0000: OnUpdate(DeltaTime)
+  000b: UpdateCylinderSize()
+  0011: if !((cast3a(self.Role) == cast3a(3))) goto 0x0027
+  0021: AttemptRestoreRobotWeapon()
+  0027: if !((self._CurrentTransformation._IsActive == false)) goto 0x004a
+  003c: GotoState('InRobotForm', , , )
+  004a: return nothing
+  004c: <eos>
+
+function TnPawn.TransformingToRobot.StateCanBeDowned  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.TransformingToRobot.HandleTeleport  (script 17 bytes)
+  0000: SetPhysics(2, , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPawn.TransformingToRobot.UpdateCylinderSize  (script 224 bytes)
+  0000: Radius = obj'Core.Math'.static.Lerp(self._RobotForm.get_FormMovementCapabilities().CylinderRadius, self._VehicleForm.get_FormMovementCapabilities().CylinderRadius, self._CurrentTransformation.get_RemainingTimeAsFactor())
+  0060: HalfHeight = obj'Core.Math'.static.Lerp(self._RobotForm.get_FormMovementCapabilities().CylinderHeight, self._VehicleForm.get_FormMovementCapabilities().CylinderHeight, self._CurrentTransformation.get_RemainingTimeAsFactor())
+  00c0: self.CylinderComponent.SetCylinderSize(Radius, HalfHeight)
+  00dd: return nothing
+  00df: <eos>
+
+function TnPawn.TransformingToVehicle.BeginState  (script 37 bytes)
+  0000: StoreRobotWeapon()
+  0006: BeginTransformation(self._VehicleForm, self._RobotToVehicleTransformation, 4)
+  001c: SelectVehicleWeapon()
+  0022: return nothing
+  0024: <eos>
+
+function TnPawn.TransformingToVehicle.EndState  (script 13 bytes)
+  0000: EndTransformation()
+  000a: return nothing
+  000c: <eos>
+
+function TnPawn.TransformingToVehicle.StoreRobotWeapon  (script 89 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: TnInvManager = TnInventoryManager(self.InvManager)
+  0022: if !((TnInvManager == none)) goto 0x002f
+  002d: return nothing
+  002f: TnInvManager.StoreRobotWeapon()
+  0042: TnInvManager.SetCurrentWeapon(none)
+  0056: return nothing
+  0058: <eos>
+
+function TnPawn.TransformingToVehicle.SelectVehicleWeapon  (script 69 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: TnInvManager = TnInventoryManager(self.InvManager)
+  0022: if !((TnInvManager == none)) goto 0x002f
+  002d: return nothing
+  002f: TnInvManager.RestoreVehicleWeapon()
+  0042: return nothing
+  0044: <eos>
+
+function TnPawn.TransformingToVehicle.OnUpdate  (script 49 bytes)
+  0000: OnUpdate(DeltaTime)
+  000b: if !((self._CurrentTransformation._IsActive == false)) goto 0x002e
+  0020: GotoState('InVehicleForm', , , )
+  002e: return nothing
+  0030: <eos>
+
+function TnPawn.TransformingToVehicle.StateCanBeDowned  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.TransformingToVehicle.HandleTeleport  (script 51 bytes)
+  0000: self._VehicleForm.Teleport(NewLocation, NewRotation, vect(0,0,0))
+  002a: TnPawn.TeleportCamera()
+  0030: return nothing
+  0032: <eos>
+
+function TnPawn.UpdateAimOffset  (script 437 bytes)
+  0000: if !((self.Controller != none)) goto 0x0116
+  000b: PC = TnPlayerController(self.Controller)
+  001b: if !(((PC != none) && PC.IsDebugCameraActive())) goto 0x0040
+  003e: return nothing
+  0040: DeltaRot = obj'Core.Math'.static.Normalize((GetBaseAimRotation() - self.Rotation))
+  006b: NewAimOffsetPct.X = (cast3f(DeltaRot.Yaw) / 16384.0)
+  0095: NewAimOffsetPct.Y = (cast3f(DeltaRot.Pitch) / 16384.0)
+  00bf: NewReplicatedAimOffsetPct = (((DeltaRot.Yaw & 65535) << 16) + (DeltaRot.Pitch & 65535))
+  00f9: if !((NewReplicatedAimOffsetPct != self.ReplicatedAimOffsetPct)) goto 0x0113
+  0108: self.ReplicatedAimOffsetPct = NewReplicatedAimOffsetPct
+  0113: goto 0x0185
+  0116: NewAimOffsetPct.X = (cast3f(obj'Core.Math'.static.NormalizeRotAxis((self.ReplicatedAimOffsetPct >> 16))) / 16384.0)
+  014c: NewAimOffsetPct.Y = (cast3f(obj'Core.Math'.static.NormalizeRotAxis((self.ReplicatedAimOffsetPct & 65535))) / 16384.0)
+  0185: self.AimOffsetPct = self._AimSmoother.Smooth(self.AimOffsetPct, NewAimOffsetPct, self._AimSmoothTime, DeltaTime)
+  01b2: return nothing
+  01b4: <eos>
+
+function TnPawn.IsJumping  (script 21 bytes)
+  0000: return (cast3a(self.Physics) == cast3a(2))
+  000e: return return
+  0014: <eos>
+
+function TnPawn.IsTargetAssistHidden  (script 64 bytes)
+  0000: return (((self._VehicleForm != none) && self._VehicleForm.get_IsActive()) && self._VehicleForm.get_IsBoosting())
+  0039: return return
+  003f: <eos>
+
+function TnPawn.PlayHit  (script 277 bytes)
+  0000: PlayHit(Damage, InstigatedBy, HitLocation, DamageType, Momentum, HitInfo)
+  0024: THI.Location = HitLocation
+  003a: THI.Momentum = Momentum
+  0050: THI.BoneName = HitInfo.BoneName
+  0071: THI.DamageType = DamageType
+  0087: ShieldService = TnShieldService(GetService('TnShieldService'))
+  00a5: if !(NotEqual_InterfaceInterface(ShieldService, TnShieldService(none))) goto 0x00df
+  00b9: THI.IsBlocking = ShieldService.get_IsShieldActive()
+  00df: set_LastTakeHitInfo(THI)
+  00ee: if !((HitInfo.HitComponent == self.Mesh)) goto 0x0112
+  0108: ClientPlayHit()
+  0112: return nothing
+  0114: <eos>
+
+function TnPawn.ClientPlayHit  (script 189 bytes)
+  0000: THI = get_LastTakeHitInfo()
+  0010: if !(TnPawn.ShouldPlayHitEffect()) goto 0x0082
+  0019: self._HitEffectPlayer.PlayEffect(THI.Location, THI.Momentum, THI.DamageType, THI.BoneName, THI.IsBlocking, self.Mesh)
+  0082: if !((self._CurrentForm == none)) goto 0x008f
+  008d: return nothing
+  008f: self._CurrentForm.PlayHit(THI)
+  00a7: self._CharacterMaterials.OnTakeDamage()
+  00ba: return nothing
+  00bc: <eos>
+
+function TnPawn.ShouldPlayHitEffect  (script 115 bytes)
+  0000: if !((get_LastTakeHitInfo().DamageType == none)) goto 0x001d
+  001b: return false
+  001d: if !(!get_LastTakeHitInfo().DamageType.static.default.bCausesBlood) goto 0x0043
+  0041: return false
+  0043: if !((self._HitEffectPlayer == none)) goto 0x0050
+  004e: return false
+  0050: if !(self._CharacterMaterials.IsActive(2)) goto 0x006a
+  0068: return false
+  006a: return true
+  006c: return return
+  0072: <eos>
+
+function TnPawn.AdjustDamage  (script 250 bytes)
+  0000: nothing
+  0001: nothing
+  0002: AdjustDamage(Damage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser)
+  002b: if !((InstigatedBy != none)) goto 0x00d3
+  0036: Damage = ((self._CurrentForm != none) ? self._CurrentForm.AdjustDamage(InstigatedBy.Pawn, Damage, HitLocation, class<TnDamageType>(DamageType), HitInfo) : Damage)
+  0088: if !((TnPawn(InstigatedBy.Pawn) != none)) goto 0x00d3
+  00a1: Damage = self._AllDamageModifierInstigator.ModifyFloat(Damage, TnPawn(InstigatedBy.Pawn), self)
+  00d3: Damage = self._AllDamageModifierSelf.ModifyFloat(Damage, self, DamageCauser)
+  00f7: return nothing
+  00f9: <eos>
+
+function TnPawn.GetDeathMomentum  (script 67 bytes)
+  0000: if !((class<TnDamageType>(DamageType) != none)) goto 0x002b
+  0010: return (Momentum * class<TnDamageType>(DamageType).static.default.DeathMomentumScale)
+  002b: return GetDeathMomentum(Momentum, DamageType)
+  003c: return return
+  0042: <eos>
+
+function TnPawn.Died  (script 81 bytes)
+  0000: if !(self._IsTicking) goto 0x0034
+  0009: self.StoredKiller = Killer
+  0014: self.StoredDamageType = DamageType
+  001f: self.StoredHitLocation = HitLocation
+  002a: self._DeferredDied = true
+  0032: return false
+  0034: return TnPawn.HandleDied(Killer, DamageType, HitLocation)
+  004a: return return
+  0050: <eos>
+
+function TnPawn.HandleDied  (script 380 bytes)
+  0000: if !(((Killer != none) && (cast3a(self.Role) == cast3a(3)))) goto 0x0114
+  001d: TnKiller = TnPawn(Killer.Pawn)
+  0036: if !((TnKiller != none)) goto 0x0114
+  0041: if !(TnKiller.HasSkill(obj'TnSkillHealthForKill')) goto 0x0090
+  005c: TnKiller.HealDamage(obj'TnSkillHealthForKill'.static.default.HealthToAdd, TnKiller.Controller, obj'TnHealTypeHealthOnKill')
+  0090: BS = TnBuffService(TnKiller.GetService('TnBuffService'))
+  00b7: if !((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasBuff(obj'TnBuffRefillHealthOnKill'))) goto 0x0114
+  00e9: TnKiller.HealDamage(1.0, TnKiller.Controller, obj'TnHealTypeHealthPickup')
+  0114: self.StoredKiller = none
+  011b: self._DeferredDied = false
+  0123: Martyrdom = self._BuffManager.GetBuff(obj'TnBuffExplodeOnDeath')
+  0141: if !((Martyrdom != none)) goto 0x015f
+  014c: Martyrdom.SaveNumberOfGrenades()
+  015f: return Died(Killer, DamageType, HitLocation)
+  0175: return return
+  017b: <eos>
+
+function TnPawn.PlayDying  (script 107 bytes)
+  0000: self.HitDamageType = DamageType
+  000b: self.TakeHitLocation = HitLoc
+  0016: self._TargetTracker.DisableAllTracking()
+  0029: self._BuffManager.OwnerDied()
+  003c: if !(get_IsInRobotForm()) goto 0x005a
+  0049: GotoState('RobotDying', , , )
+  0057: goto 0x0068
+  005a: GotoState('VehicleDying', , , )
+  0068: return nothing
+  006a: <eos>
+
+function TnPawn.Gib  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Dying.BeginState  (script 414 bytes)
+  0000: MS = TnMeleeService(GetRobotService('TnMeleeService'))
+  001e: if !(NotEqual_InterfaceInterface(MS, TnMeleeService(none))) goto 0x0046
+  0032: MS.AbortMeleeAttack()
+  0046: if !(get_IsInteracting()) goto 0x0066
+  0053: self.UseableInteract.ForceEndUse()
+  0066: AS = TnAnimatorService(GetRobotService('TnAnimatorService'))
+  0084: if !(NotEqual_InterfaceInterface(AS, TnAnimatorService(none))) goto 0x00ae
+  0098: AS.StopAnimation(, )
+  00ae: T = TnFactionTeam(GetTeam())
+  00c3: if !(((T != none) && (T.FindFriend(self.Controller) == none))) goto 0x00f9
+  00ee: self.DyingTeam = T
+  00f9: BeginState(PreviousStateName)
+  0104: if !((self._CurrentForm != none)) goto 0x0122
+  010f: self._CurrentForm.PlayDeath()
+  0122: if !(TnPawn.ShouldInstaGib(self.LastHitBy, get_LastTakeHitInfo().DamageType)) goto 0x014f
+  0145: Gib()
+  014f: self._Grabber.AbortGrab()
+  0162: EnableBodyImpactSounds()
+  016c: self.bReplicateMovement = false
+  0174: self.bTearOff = true
+  017c: self.bPlayedDeath = true
+  0184: self.bCanTeleport = false
+  018c: self.bBlocksNavigation = false
+  0194: self.HealthRegener = none
+  019b: return nothing
+  019d: <eos>
+
+function TnPawn.Dying.Tick  (script 92 bytes)
+  0000: self._CollisionController.Tick(DeltaTime)
+  0018: self._DeathLightManager.UpdateLight(DeltaTime)
+  0030: if !((self._CurrentForm != none)) goto 0x0053
+  003b: self._CurrentForm.Update(DeltaTime)
+  0053: TnPawn.UpdateFellOutOfWorld()
+  0059: return nothing
+  005b: <eos>
+
+function TnPawn.Dying.Gib  (script 331 bytes)
+  0000: if !((self.LifeSpan > cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: self.LifeSpan = 1.0
+  001a: if !((get_RobotMeshComponent() != none)) goto 0x0043
+  002a: get_RobotMeshComponent().SetHidden(true)
+  0043: if !((get_VehicleMeshComponent() != none)) goto 0x006c
+  0053: get_VehicleMeshComponent().SetHidden(true)
+  006c: self._CollisionController.SetCollisionMode(1)
+  0081: self.CylinderComponent.SetBlockRigidBody(false)
+  0095: self.CylinderComponent.SetActorCollision(true, false)
+  00aa: TriggerExplodeOnDeathBuffs()
+  00b0: if !((self._CurrentForm != none)) goto 0x00ce
+  00bb: self._CurrentForm.PlayGib()
+  00ce: foreach LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0147)
+  00e5: if !(((PC.Pawn != none) && (obj'Core.Math'.static.VSize((PC.Pawn.Location - self.Location)) < self.GibbedShakeEffectDistance))) goto 0x0146
+  012e: PC.StartCameraShake(self.GibbedCameraShake)
+  0146: iternext
+  0147: iterpop
+  0148: return nothing
+  014a: <eos>
+
+function TnPawn.Dying.TriggerExplodeOnDeathBuffs  (script 73 bytes)
+  0000: self._BuffManager.GetDerivedBuffs(obj'TnBuffExplodeOnDeathBase', Buffs)
+  001d: foreach Buffs(Buff,) (end 0x0045)
+  002c: TnBuffExplodeOnDeathBase(Buff).Explode()
+  0044: iternext
+  0045: iterpop
+  0046: return nothing
+  0048: <eos>
+
+function TnPawn.Dying.EndState  (script 244 bytes)
+  0000: if !(((self.DyingTeam != none) && (self.DyingTeam.FindFriend(self.Controller) == none))) goto 0x0047
+  002b: TriggerStimulus(obj'TnStimulusType_AllEnemiesDead', self.Location, self.Controller)
+  0044: goto 0x005c
+  0047: TriggerStimulus(obj'TnStimulusType_Dying', self.Location, )
+  005c: if !((self._Blueprint != none)) goto 0x0083
+  0067: self._Blueprint.RemoveAssetChangedObserver(delegate.OnTransformerChanged)
+  0083: if !((get_VehicleMeshComponent() != none)) goto 0x00ab
+  0093: get_VehicleMeshComponent().TerminateRBPhysics()
+  00ab: if !((get_RobotMeshComponent() != none)) goto 0x00d3
+  00bb: get_RobotMeshComponent().TerminateRBPhysics()
+  00d3: if !((self._VehicleForm != none)) goto 0x00f1
+  00de: self._VehicleForm.Shutdown()
+  00f1: return nothing
+  00f3: <eos>
+
+function TnPawn.RobotDying.BeginState  (script 112 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: W = TnWeapon(self.Weapon)
+  001b: if !((((W != none) && (W.DroppedPickupClass != none)) && !W._HoldWhileOwnerDying)) goto 0x0065
+  0052: W.DetachWeapon()
+  0065: self.bRunPhysicsWithNoController = true
+  006d: return nothing
+  006f: <eos>
+
+function TnPawn.RobotDying.HitWall  (script 24 bytes)
+  0000: self._CollisionController.SetCollisionMode(3)
+  0015: return nothing
+  0017: <eos>
+
+function TnPawn.VehicleDying.RigidBodyCollision  (script 54 bytes)
+  0000: TnPawn.RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  001a: self._VehicleForm.RigidBodyCollisionOccurred(RigidCollisionData, none)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.EnableBodyImpactSounds  (script 147 bytes)
+  0000: SetIsBodyImpactsActivated(true)
+  000b: if !((none != self.Mesh)) goto 0x0090
+  0016: self.Mesh.SetNotifyRigidBodyCollision(true)
+  002a: if !((self.Mesh.ScriptRigidBodyCollisionThreshold > 0.0)) goto 0x0077
+  0042: self.Mesh.ScriptRigidBodyCollisionThreshold = obj'Core.Math'.static.FMin(self.Mesh.ScriptRigidBodyCollisionThreshold, GetMinimumBodyImpactSpeedThreshold())
+  0074: goto 0x0090
+  0077: self.Mesh.ScriptRigidBodyCollisionThreshold = GetMinimumBodyImpactSpeedThreshold()
+  0090: return nothing
+  0092: <eos>
+
+function TnPawn.ShouldDestroyInventoryManagerWhenDying  (script 63 bytes)
+  0000: W = TnWeapon(self.Weapon)
+  0010: if !(((W != none) && W._HoldWhileOwnerDying)) goto 0x0031
+  002f: return false
+  0031: return ShouldDestroyInventoryManagerWhenDying()
+  0038: return return
+  003e: <eos>
+
+function TnPawn.AddActorToBeDestroyedOnDeath  (script 16 bytes)
+  0000: self.DestroyOnDeathActors.AddItem(DestroyOnDeathActor)
+  000d: return nothing
+  000f: <eos>
+
+function TnPawn.Destroyed  (script 68 bytes)
+  0000: self._BuffManager.OwnerDied()
+  0013: foreach self.DestroyOnDeathActors(ActorIter,) (end 0x003a)
+  0022: if !((ActorIter != none)) goto 0x0039
+  002d: ActorIter.DestroyActor()
+  0039: iternext
+  003a: iterpop
+  003b: Destroyed()
+  0041: return nothing
+  0043: <eos>
+
+function TnPawn.PlayWeaponFireEffects  (script 121 bytes)
+  0000: if !((self.Weapon == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self._CurrentForm != none)) goto 0x002b
+  0018: self._CurrentForm.WeaponFired()
+  002b: self._WeaponIdleState = 0
+  0032: self._CountdownToIdleTimer.Start(delegate.CountdownToIdleComplete, 5.0, )
+  0054: self.Recoiler.Recoil(TnWeapon(self.Weapon), self.AimOffsetPct)
+  0076: return nothing
+  0078: <eos>
+
+function TnPawn.CountdownToIdleComplete  (script 10 bytes)
+  0000: self._WeaponIdleState = 1
+  0007: return nothing
+  0009: <eos>
+
+function TnPawn.FellOutOfWorld  (script 59 bytes)
+  0000: THI.DamageType = DamageType
+  0016: set_LastTakeHitInfo(THI)
+  0025: self._DeferredFellOutOfWorldRequested = true
+  002d: self._FellOutOfWorldDamageType = DamageType
+  0038: return nothing
+  003a: <eos>
+
+function TnPawn.UpdateFellOutOfWorld  (script 31 bytes)
+  0000: if !(self._DeferredFellOutOfWorldRequested) goto 0x0014
+  0009: FellOutOfWorld(self._FellOutOfWorldDamageType)
+  0014: self._DeferredFellOutOfWorldRequested = false
+  001c: return nothing
+  001e: <eos>
+
+function TnPawn.ShouldInstaGib  (script 161 bytes)
+  0000: if !(self.bKilledWhenDowned) goto 0x000b
+  0009: return true
+  000b: if !(self._MatineeAnimationPlaying) goto 0x0016
+  0014: return true
+  0016: if !((class<KillZDamageType>(DamageType) != none)) goto 0x0028
+  0026: return true
+  0028: if !((InGodMode() || InPseudoGodMode())) goto 0x0046
+  0044: return false
+  0046: if !(((self._Blueprint != none) && !self._Blueprint.CanInstaGib)) goto 0x0069
+  0067: return false
+  0069: if !((class<TnDamageType>(DamageType) == none)) goto 0x007b
+  0079: return false
+  007b: return class<TnDamageType>(DamageType).static.ShouldGib(self, InstigatedBy)
+  009a: return return
+  00a0: <eos>
+
+function TnPawn.HolsterWeapon  (script 52 bytes)
+  0000: W = TnWeapon(self.Weapon)
+  0010: if !((W == none)) goto 0x001d
+  001b: return nothing
+  001d: W.SetHolstered(self)
+  0031: return nothing
+  0033: <eos>
+
+function TnPawn.UnholsterWeapon  (script 52 bytes)
+  0000: W = TnWeapon(self.Weapon)
+  0010: if !((W == none)) goto 0x001d
+  001b: return nothing
+  001d: W.SetUnholstered(self)
+  0031: return nothing
+  0033: <eos>
+
+function TnPawn.IsBeingGrabbed  (script 14 bytes)
+  0000: return self._Grabbed
+  0007: return return
+  000d: <eos>
+
+function TnPawn.CanBeGrabbedByAttacker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.NotifyGrabBegin  (script 17 bytes)
+  0000: GotoState('Grabbed', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPawn.NotifyGrabEnd  (script 17 bytes)
+  0000: GotoState('InRobotForm', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPawn.Grabbed.SetMovementPhysics  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.HitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.HeadVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.PhysicsVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.Falling  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.BreathTimer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.FellOutOfWorld  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.StartFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Grabbed.BeginState  (script 51 bytes)
+  0000: self._Grabbed = true
+  0008: self._RobotForm.Grabbed()
+  001b: self._CollisionController.SetCollisionMode(0)
+  0030: return nothing
+  0032: <eos>
+
+function TnPawn.Grabbed.EndState  (script 30 bytes)
+  0000: self._Grabbed = false
+  0008: self._RobotForm.Released()
+  001b: return nothing
+  001d: <eos>
+
+function TnPawn.Grabbed.Tick  (script 27 bytes)
+  0000: self._RobotForm.Update(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.AttachToSocket  (script 405 bytes)
+  0000: default=2
+  0006: default=0
+  000c: AttacherMesh = ((cast3a(AttachMode) == cast3a(1)) ? TnWeapon(Attacher.Weapon).GetWeaponMesh().GetAnimatedMeshComponent() : Attacher.Mesh)
+  0061: Socket = AttacherMesh.GetSocketByName(SocketName)
+  007f: if !((Socket == none)) goto 0x008c
+  008a: return nothing
+  008c: SetLocation(AttacherMesh.GetSocketWorldLocation(SocketName))
+  00a7: SetBase(none, , , )
+  00b5: SetHardAttach(true)
+  00c0: self.bCollideWorld = false
+  00c8: self.bReplicateMovement = false
+  00d0: SetBase(AttacherMesh.Owner, , AttacherMesh, Socket.BoneName)
+  00fc: if !((cast3a(GetRole()) == cast3a(3))) goto 0x0153
+  0111: self._AttachToSocketInfo.Attacher = Attacher
+  0127: self._AttachToSocketInfo.AttachMode = AttachMode
+  013d: self._AttachToSocketInfo.Socket = SocketName
+  0153: AiAttacher = TnAiPawn(Attacher)
+  0163: if !((AiAttacher != none)) goto 0x0192
+  016e: TnPawn.PlayGrabVictimReactionAnimation(AiAttacher, RootTranslation, RootRotation)
+  0183: PlayGrabVictimCameraAnimation(AiAttacher)
+  0192: return nothing
+  0194: <eos>
+
+function TnPawn.PlayGrabVictimReactionAnimation  (script 228 bytes)
+  0000: Params.AnimName = Attacher._GrabVictimReactionAnimation
+  001f: Params.Looping = false
+  0032: Params.RootMotionMode = RootTranslation
+  0048: Params.RootMotionRotationMode = RootRotation
+  005e: Params.Override = 2
+  0071: Params.Priority = 1
+  0084: AnimatorService = TnAnimatorService(GetService('TnAnimatorService'))
+  00a2: if !(NotEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x00e1
+  00b6: AnimatorService.EnqueueLocalAnimation(Params, delegate.None, delegate.None)
+  00e1: return nothing
+  00e3: <eos>
+
+function TnPawn.PlayGrabVictimCameraAnimation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.DetachFromSocketWithDamage  (script 59 bytes)
+  0000: DetachFromSocket()
+  000a: TakeDamage(DamageAmount, Attacker.Controller, self.Location, Momentum, DamageType, , )
+  0038: return nothing
+  003a: <eos>
+
+function TnPawn.DetachFromSocket  (script 83 bytes)
+  0000: SetHardAttach(false)
+  000b: self.bCollideWorld = true
+  0013: self.bReplicateMovement = true
+  001b: SetBase(none, , , )
+  0029: if !((cast3a(GetRole()) == cast3a(3))) goto 0x0050
+  003e: self._AttachToSocketInfo.Attacher = none
+  0050: return nothing
+  0052: <eos>
+
+function TnPawn.CanBeBaseForPawn  (script 53 bytes)
+  0000: if !(self._Grabber.IsGrabVictim(TnServiceProvider(SomePawn))) goto 0x0022
+  0020: return true
+  0022: return CanBeBaseForPawn(SomePawn)
+  002e: return return
+  0034: <eos>
+
+function TnPawn.TossWeapon  (script 80 bytes)
+  0000: nothing
+  0001: default=false
+  0006: if !(self.TossingWeapon) goto 0x0011
+  000f: return nothing
+  0011: self.TossingWeapon = true
+  0019: Weap.DropFrom(self.Location, self.InvManager.CalculateTossVelocity(), )
+  0045: self.TossingWeapon = false
+  004d: return nothing
+  004f: <eos>
+
+function TnPawn.ShouldIgnoreForces  (script 92 bytes)
+  0000: AsTnDamageType = class<TnDamageType>(DamageType)
+  0010: if !(self._Grabber.get_IsActive()) goto 0x0028
+  0026: return true
+  0028: if !(((AsTnDamageType != none) && AsTnDamageType.static.default.RequestRespectForcesApplied)) goto 0x0049
+  0047: return false
+  0049: return ShouldIgnoreForces(DamageType)
+  0055: return return
+  005b: <eos>
+
+function TnPawn.UpdateSpeeds  (script 116 bytes)
+  0000: self.GroundSpeed = self._BaseGroundSpeed
+  000b: self.AirSpeed = self._BaseAirSpeed
+  0016: I = 0
+  001d: if !((I < self._SpeedMultiplierFactors.Length)) goto 0x0071
+  002d: (self.GroundSpeed *= I[self._SpeedMultiplierFactors].Multiplier)
+  004a: (self.AirSpeed *= I[self._SpeedMultiplierFactors].Multiplier)
+  0067: AddAdd_PreInt(I)
+  006e: goto 0x001d
+  0071: return nothing
+  0073: <eos>
+
+function TnPawn.SetSpeedMultiplier  (script 125 bytes)
+  0000: MultiplierIndex = self._SpeedMultiplierFactors.Find('AssociatedObject',AssociatedObject)
+  001c: if !((MultiplierIndex == -1)) goto 0x0037
+  002b: MultiplierIndex = self._SpeedMultiplierFactors.Length
+  0037: NewSpeedMultiplierFactor.Multiplier = NewSpeedMultiplier
+  004d: NewSpeedMultiplierFactor.AssociatedObject = AssociatedObject
+  0063: MultiplierIndex[self._SpeedMultiplierFactors] = NewSpeedMultiplierFactor
+  0074: TnPawn.UpdateSpeeds()
+  007a: return nothing
+  007c: <eos>
+
+function TnPawn.RemoveSpeedMultiplier  (script 84 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(2))) goto 0x0012
+  0010: return nothing
+  0012: MultiplierIndex = self._SpeedMultiplierFactors.Find('AssociatedObject',AssociatedObject)
+  002e: if !((MultiplierIndex == -1)) goto 0x003f
+  003d: return nothing
+  003f: self._SpeedMultiplierFactors.Remove(MultiplierIndex,1)
+  004b: TnPawn.UpdateSpeeds()
+  0051: return nothing
+  0053: <eos>
+
+function TnPawn.AdjustInteracter  (script 37 bytes)
+  0000: MoveSmooth((NewLocation - self.Location))
+  000f: self.DesiredRotation = NewRotation
+  001a: SetRotation(NewRotation)
+  0022: return nothing
+  0024: <eos>
+
+function TnPawn.SetInteractState  (script 14 bytes)
+  0000: self.UseableInteract = Interact
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.BeginTurretControl  (script 22 bytes)
+  0000: Turret.AttachMountedWeapon()
+  0013: return nothing
+  0015: <eos>
+
+function TnPawn.BeginAnimControl  (script 167 bytes)
+  0000: self.Acceleration = vect(0,0,0)
+  0013: self.Velocity = vect(0,0,0)
+  0026: self._MatineeAnimationPlaying = true
+  002e: if !((get_IsInVehicleForm() && (get_VehicleMeshComponent() != none))) goto 0x0072
+  004d: self._MatineeAnimator.BeginAnimControl(InAnimSets, get_VehicleMeshComponent())
+  006f: goto 0x00a4
+  0072: if !((get_RobotMeshComponent() != none)) goto 0x00a4
+  0082: self._MatineeAnimator.BeginAnimControl(InAnimSets, get_RobotMeshComponent())
+  00a4: return nothing
+  00a6: <eos>
+
+function TnPawn.SetAnimPosition  (script 54 bytes)
+  0000: self._MatineeAnimator.SetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bFireNotifies, bLooping)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.SetAnimWeights  (script 27 bytes)
+  0000: self._MatineeAnimator.SetAnimWeights(SlotInfos)
+  0018: return nothing
+  001a: <eos>
+
+function TnPawn.FinishAnimControl  (script 30 bytes)
+  0000: self._MatineeAnimationPlaying = false
+  0008: self._MatineeAnimator.FinishAnimControl()
+  001b: return nothing
+  001d: <eos>
+
+function TnPawn.GetInteractSkeletonType  (script 22 bytes)
+  0000: return self._Blueprint.InteractSkeletonType
+  000f: return return
+  0015: <eos>
+
+function TnPawn.UpdateAirborne  (script 84 bytes)
+  0000: TraceEnd = self.Location
+  000b: (TraceEnd.Z -= self._AirborneTraceDistance)
+  0022: self._bAirborne = (Trace(HitLocation, HitNormal, none, TraceEnd, self.Location, true, , , , ) == none)
+  0049: self._bAirborneUpToDate = true
+  0051: return nothing
+  0053: <eos>
+
+function TnPawn.GetOriginalBaseEyeheight  (script 40 bytes)
+  0000: if !((self._Blueprint != none)) goto 0x001a
+  000b: return self._Blueprint.BaseEyeHeight
+  001a: return GetOriginalBaseEyeheight()
+  0021: return return
+  0027: <eos>
+
+function TnPawn.ShouldDisplayHealth  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.HealDamage  (script 208 bytes)
+  0000: if !(((self._IsDowned && !self._CanHealWhenDown) && (HealType != obj'TnHealTypeRevive'))) goto 0x0029
+  0027: return false
+  0029: retval = HealDamage(Amount, Healer, HealType)
+  0045: if !(retval) goto 0x009f
+  004e: if !(((Healer != none) && (Healer.PlayerReplicationInfo != none))) goto 0x009f
+  006f: TnPlayerReplicationInfo(Healer.PlayerReplicationInfo).AddHealedDamage(Amount, class<TnHealType>(HealType))
+  009f: if !((self._IsDowned && (self.Health > cast3f(0)))) goto 0x00c2
+  00b7: TnPawn.Revive(Healer)
+  00c2: return retval
+  00c9: return return
+  00cf: <eos>
+
+function TnPawn.TakeDamage  (script 208 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self._Blueprint == none)) goto 0x000f
+  000d: return nothing
+  000f: if !(get_IsInteracting()) goto 0x002f
+  001c: Momentum = vect(0,0,0)
+  002f: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0058: if !((DamageType == obj'TnDamageTypeInstantKill')) goto 0x0080
+  0067: Died(InstigatedBy, DamageType, HitLocation)
+  0080: if !((DamageType == obj'TnDamageTypeFlashBang')) goto 0x009a
+  008f: self._CurrentStunTimeRemaining = self.StunnedDuration
+  009a: TnPawn.AddDamageVictimBuffs(class<TnDamageType>(DamageType), InstigatedBy)
+  00af: if !((self.HealthRegener != none)) goto 0x00cd
+  00ba: self.HealthRegener.InterruptRegen()
+  00cd: return nothing
+  00cf: <eos>
+
+function TnPawn.AddDamageVictimBuffs  (script 229 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: if !((AsTnDamageType == none)) goto 0x001f
+  001d: return nothing
+  001f: I = 0
+  0026: if !((I < AsTnDamageType.static.default.VictimBuffs.Length)) goto 0x00e2
+  003f: Applier = ((InstigatedBy != none) ? InstigatedBy.Pawn : none)
+  0061: if !(((!AsTnDamageType.static.default.ShouldApplyVictimBuffsToFriendlies && (Applier != none)) && ((Applier == self) || Applier.OnSameTeamAs(self)))) goto 0x00ab
+  00a8: goto 0x00d8
+  00ab: self._BuffManager.AddBuff(I[AsTnDamageType.static.default.VictimBuffs], 0, Applier)
+  00d8: AddAdd_PreInt(I)
+  00df: goto 0x0026
+  00e2: return nothing
+  00e4: <eos>
+
+function TnPawn.ReplicateChargeWeaponState  (script 14 bytes)
+  0000: self._ChargeWeaponState = ChargeState
+  000b: return nothing
+  000d: <eos>
+
+function TnPawn.OnChargeWeaponState  (script 54 bytes)
+  0000: ChargeWeapon = TnChargeWeapon(self.Weapon)
+  0010: if !((ChargeWeapon != none)) goto 0x0033
+  001b: ChargeWeapon.ForceChargeState(self._ChargeWeaponState)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawn.OnBlockDamage  (script 76 bytes)
+  0000: HealthOnBlockBuff = self._BuffManager.GetBuff(obj'TnBuffHealthOnBlock')
+  001e: if !((HealthOnBlockBuff != none)) goto 0x0049
+  0029: HealthOnBlockBuff.OnActivate(self, (PreDamage - PostDamage))
+  0049: return nothing
+  004b: <eos>
+
+function TnPawn.FindSoundCue  (script 244 bytes)
+  0000: if !((none != self._CharacterSoundEventSet)) goto 0x0029
+  000b: Cue = self._CharacterSoundEventSet.FindSoundCue(Event)
+  0029: if !((((none == Cue) && (none != self._RobotForm)) && (none != self._RobotForm.get_SoundEventSet()))) goto 0x0088
+  005c: Cue = self._RobotForm.get_SoundEventSet().FindSoundCue(Event)
+  0088: if !((((none == Cue) && (none != self._VehicleForm)) && (none != self._VehicleForm.get_SoundEventSet()))) goto 0x00e7
+  00bb: Cue = self._VehicleForm.get_SoundEventSet().FindSoundCue(Event)
+  00e7: return Cue
+  00ed: return return
+  00f3: <eos>
+
+function TnPawn.GetDialogCharacters  (script 116 bytes)
+  0000: DialogCharacters.Length = 0
+  0008: if !((none != self._CharacterSoundEventSet)) goto 0x0029
+  0013: DialogCharacters = self._CharacterSoundEventSet.DialogCharacters
+  0027: return nothing
+  0029: if !(((none != self._RobotForm) && (none != self._RobotForm.get_SoundEventSet()))) goto 0x0071
+  004f: DialogCharacters = self._RobotForm.get_SoundEventSet().DialogCharacters
+  0071: return nothing
+  0073: <eos>
+
+function TnPawn.StartCloaking  (script 43 bytes)
+  0000: if !(self._IsCloaking) goto 0x000b
+  0009: return nothing
+  000b: self._IsCloaking = true
+  0013: self._CharacterMaterials.Start(0)
+  0028: return nothing
+  002a: <eos>
+
+function TnPawn.StopCloaking  (script 169 bytes)
+  0000: if !(!self._IsCloaking) goto 0x000d
+  000b: return nothing
+  000d: self._IsCloaking = false
+  0015: if !(((cast3a(self.Role) == cast3a(3)) && HasSkill(obj'TnSkillIncreaseDamageAfterCloak'))) goto 0x0053
+  0039: self._BuffManager.AddBuff(obj'TnBuffIncreaseDamageAfterCloak', 0, self)
+  0053: if !(((cast3a(self.Role) == cast3a(3)) && HasSkill(obj'TnSkillDisableCloakEffects'))) goto 0x0091
+  0077: self._BuffManager.AddBuff(obj'TnBuffDecreaseDamageTakenAfterCloak', 0, self)
+  0091: self._CharacterMaterials.Stop(0)
+  00a6: return nothing
+  00a8: <eos>
+
+function TnPawn.GetLockOnThreatLevel  (script 22 bytes)
+  0000: return self._LockOnThreatManager._LockOnThreatLevel
+  000f: return return
+  0015: <eos>
+
+function TnPawn.SetLockOnThreatLevel  (script 44 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0029
+  0010: self._LockOnThreatManager.SetLockOnThreatLevel(ThreatLevel, self)
+  0029: return nothing
+  002b: <eos>
+
+function TnPawn.ClearLockOnThreatLevel  (script 38 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0023
+  0010: self._LockOnThreatManager.ClearLockOnThreatLevel()
+  0023: return nothing
+  0025: <eos>
+
+function TnPawn.GetCollisionHeight  (script 64 bytes)
+  0000: if !(((self.CylinderComponent == none) && (self._Blueprint != none))) goto 0x0032
+  0018: return self._Blueprint.Collision.CollisionHeight
+  0032: return GetCollisionHeight()
+  0039: return return
+  003f: <eos>
+
+function TnPawn.GetPawnViewLocation  (script 34 bytes)
+  0000: return (get_IsInVehicleForm() ? self.Location : GetPawnViewLocation())
+  001b: return return
+  0021: <eos>
+
+function TnPawn.GetDropHealthPickup  (script 14 bytes)
+  0000: return self._ShouldDropHealthPickup
+  0007: return return
+  000d: <eos>
+
+function TnPawn.Touch  (script 79 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: if !((self.Controller != none)) goto 0x004c
+  0025: self.Controller.Touch(Other, OtherComp, HitLocation, HitNormal)
+  004c: return nothing
+  004e: <eos>
+
+function TnPawn.UnTouch  (script 49 bytes)
+  0000: UnTouch(Other)
+  000b: if !((self.Controller != none)) goto 0x002e
+  0016: self.Controller.UnTouch(Other)
+  002e: return nothing
+  0030: <eos>
+
+function TnPawn.ActorReachableInForm  (script 101 bytes)
+  0000: if !((Form == none)) goto 0x000d
+  000b: return false
+  000d: CurrentMC = self._WorkingMovementCapabilities
+  0018: self._WorkingMovementCapabilities = Form.get_FormMovementCapabilities()
+  0031: Reachable = (ActorReachable(Destination, , ) > 0)
+  004c: self._WorkingMovementCapabilities = CurrentMC
+  0057: return Reachable
+  005e: return return
+  0064: <eos>
+
+function TnPawn.MapHitComponentToIndex  (script 50 bytes)
+  0000: return ((self._CurrentForm != none) ? self._CurrentForm.MapHitComponentToIndex(HitComponent) : -1)
+  002b: return return
+  0031: <eos>
+
+function TnPawn.MapIndexToHitComponent  (script 50 bytes)
+  0000: return ((self._CurrentForm != none) ? self._CurrentForm.MapIndexToHitComponent(Index) : self.Mesh)
+  002b: return return
+  0031: <eos>
+
+function TnPawn.IsInForm  (script 77 bytes)
+  0000: if !(get_IsTransforming()) goto 0x000f
+  000d: return false
+  000f: if !((cast3a(TestForm) == cast3a(0))) goto 0x0033
+  001f: if !(!get_IsInRobotForm()) goto 0x0030
+  002e: return false
+  0030: goto 0x0044
+  0033: if !(!get_IsInVehicleForm()) goto 0x0044
+  0042: return false
+  0044: return true
+  0046: return return
+  004c: <eos>
+
+function TnPawn.ForceIntoForm  (script 126 bytes)
+  0000: if !(IsInForm(ForcedForm)) goto 0x0014
+  0012: return nothing
+  0014: PC = TnPlayerController(self.Controller)
+  0024: if !((PC != none)) goto 0x0047
+  002f: PC.ForceToForm(ForcedForm)
+  0047: AC = TnAiController(self.Controller)
+  0057: if !((AC != none)) goto 0x007b
+  0062: AC.Transform(ForcedForm, )
+  007b: return nothing
+  007d: <eos>
+
+function TnPawn.OnForceIntoForm  (script 118 bytes)
+  0000: if !(IsInForm(Action.ForcedForm)) goto 0x001d
+  001b: return nothing
+  001d: if !(MoveToSafeTransformationLocation(Action.ForcedForm)) goto 0x0050
+  0038: ForceIntoForm(Action.ForcedForm)
+  0050: if !(!get_IsTransforming()) goto 0x0073
+  005f: Action.AbortFor(self)
+  0073: return nothing
+  0075: <eos>
+
+function TnPawn.ServerHardLock  (script 57 bytes)
+  0000: HardLockAbility = self.AbilityManager.GetAbility(obj'TnAbilityHardLock')
+  001e: HardLockAbility.ServerHardLock(HardLockee)
+  0036: return nothing
+  0038: <eos>
+
+function TnPawn.PlayGameplayTeleportEffect  (script 16 bytes)
+  0000: AddAdd_PreInt(self.TeleportCounter)
+  0007: TnPawn.ClientPlayTeleportEffects()
+  000d: return nothing
+  000f: <eos>
+
+function TnPawn.ClientPlayTeleportEffects  (script 87 bytes)
+  0000: PEM = FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  0015: PEM.PlayEffect(self.Mesh, self.TeleportFXSocket, self.TeleportFX, false, vect(0,0,0), rot(0,0,0), 0)
+  0054: return nothing
+  0056: <eos>
+
+function TnPawn.IsDead  (script 25 bytes)
+  0000: if !(self._IsDowned) goto 0x000b
+  0009: return false
+  000b: return IsDead()
+  0012: return return
+  0018: <eos>
+
+function TnPawn.TestDownedServer  (script 13 bytes)
+  0000: DownTransformer()
+  000a: return nothing
+  000c: <eos>
+
+function TnPawn.TestDowned  (script 9 bytes)
+  0000: TnPawn.TestDownedServer()
+  0006: return nothing
+  0008: <eos>
+
+function TnPawn.TestDownedDelayed  (script 22 bytes)
+  0000: SetTimer(5.0, false, 'TestDowned', )
+  0013: return nothing
+  0015: <eos>
+
+function TnPawn.TestReviveServer  (script 19 bytes)
+  0000: GetRevive(self.Controller, false)
+  0010: return nothing
+  0012: <eos>
+
+function TnPawn.TestRevive  (script 9 bytes)
+  0000: TnPawn.TestReviveServer()
+  0006: return nothing
+  0008: <eos>
+
+function TnPawn.CanBeDowned  (script 82 bytes)
+  0000: PC = TnPlayerController(self.Controller)
+  0010: if !(((PC != none) && PC.get_IsUsingTurret())) goto 0x0035
+  0033: return false
+  0035: return (TnPawn.GlobalCanBeDowned() && StateCanBeDowned())
+  004b: return return
+  0051: <eos>
+
+function TnPawn.GlobalCanBeDowned  (script 187 bytes)
+  0000: if !((!self.DownedEnabled || !self.GlobalDownedEnabled)) goto 0x001a
+  0018: return false
+  001a: if !((IsPlayerPawn() && (self.WorldInfo.Game.GetNumPlayers() <= 1))) goto 0x004d
+  004b: return false
+  004d: if !(((self.WorldInfo.GRI != none) && (self.WorldInfo.GRI.GameClass != none))) goto 0x00b2
+  0080: if !(!class<TnGame>(self.WorldInfo.GRI.GameClass).static.AllowDowned(self)) goto 0x00b2
+  00b0: return false
+  00b2: return true
+  00b4: return return
+  00ba: <eos>
+
+function TnPawn.GetPRIToNotifyOfDowned  (script 55 bytes)
+  0000: foreach LocalPlayerControllers(obj'TnPlayerController', LocalPC) (end 0x002d)
+  0017: iterpop
+  0018: return TnPlayerReplicationInfo(LocalPC.PlayerReplicationInfo)
+  002c: iternext
+  002d: iterpop
+  002e: return none
+  0030: return return
+  0036: <eos>
+
+function TnPawn.DownedSuicide  (script 57 bytes)
+  0000: if !(self._IsDowned) goto 0x0036
+  0009: TakeDamage(2147483648.0, self.LastHitBy, self.Location, vect(0,0,0), obj'TnDamageTypeDownedDrain', , )
+  0036: return nothing
+  0038: <eos>
+
+function TnPawn.ClientStartDowned  (script 94 bytes)
+  0000: if !(get_IsInteracting()) goto 0x0020
+  000d: self.UseableInteract.ForceEndUse()
+  0020: NotifyPRI = TnPawn.GetPRIToNotifyOfDowned()
+  002c: if !((NotifyPRI != none)) goto 0x004b
+  0037: NotifyPRI.NotifyPlayerDowned(self)
+  004b: TnPawn.NotifyAiTeammatesDowned()
+  0051: StateClientStartDowned()
+  005b: return nothing
+  005d: <eos>
+
+function TnPawn.NotifyAiTeammatesDowned  (script 164 bytes)
+  0000: CampaignGame = TnCampaignGameBase(self.WorldInfo.Game)
+  0019: if !((CampaignGame == none)) goto 0x0026
+  0024: return nothing
+  0026: AiTeammates = CampaignGame.GetAiTeammates()
+  003f: I = 0
+  0046: if !((I < AiTeammates.Length)) goto 0x00a1
+  0056: AiPRI = TnPlayerReplicationInfo(I[AiTeammates].PlayerReplicationInfo)
+  0075: if !((AiPRI == none)) goto 0x0083
+  0080: goto 0x0097
+  0083: AiPRI.NotifyPlayerDowned(self)
+  0097: AddAdd_PreInt(I)
+  009e: goto 0x0046
+  00a1: return nothing
+  00a3: <eos>
+
+function TnPawn.ClientStopDowned  (script 62 bytes)
+  0000: NotifyPRI = TnPawn.GetPRIToNotifyOfDowned()
+  000c: if !((NotifyPRI != none)) goto 0x002b
+  0017: NotifyPRI.NotifyPlayerNotDowned(self)
+  002b: TnPawn.NotifyAiTeammatesStopDowned()
+  0031: StateClientStopDowned()
+  003b: return nothing
+  003d: <eos>
+
+function TnPawn.NotifyAiTeammatesStopDowned  (script 164 bytes)
+  0000: CampaignGame = TnCampaignGameBase(self.WorldInfo.Game)
+  0019: if !((CampaignGame == none)) goto 0x0026
+  0024: return nothing
+  0026: AiTeammates = CampaignGame.GetAiTeammates()
+  003f: I = 0
+  0046: if !((I < AiTeammates.Length)) goto 0x00a1
+  0056: AiPRI = TnPlayerReplicationInfo(I[AiTeammates].PlayerReplicationInfo)
+  0075: if !((AiPRI == none)) goto 0x0083
+  0080: goto 0x0097
+  0083: AiPRI.NotifyPlayerNotDowned(self)
+  0097: AddAdd_PreInt(I)
+  009e: goto 0x0046
+  00a1: return nothing
+  00a3: <eos>
+
+function TnPawn.TakeDamageHealthBelowZero  (script 298 bytes)
+  0000: if !(((TnPawn.CanBeDowned() && (class<KillZDamageType>(DamageType) == none)) && (class<TnDamageTypeEnvironmentNoDowned>(DamageType) == none))) goto 0x010d
+  002d: if !(self._IsDowned) goto 0x007e
+  0036: if !((self.Health <= -self.DownedHealth)) goto 0x007b
+  0047: self._IsDowned = false
+  004f: ClientStopDowned()
+  0059: self.bKilledWhenDowned = true
+  0061: TakeDamageHealthBelowZero(InstigatedBy, HitLocation, Momentum, DamageType)
+  007b: goto 0x010a
+  007e: self._IsDowned = true
+  0086: self.Health = 0.0
+  0091: ClientStartDowned()
+  009b: TnGame(self.WorldInfo.Game).NotifyDownedPawn(self)
+  00bd: if !((self.Controller != none)) goto 0x00e7
+  00c8: self.Controller.TriggerEventClass(obj'TnSeqEvent_Downed', InstigatedBy, 0, )
+  00e7: if !((self.PlayerReplicationInfo != none)) goto 0x010a
+  00f2: TnPlayerReplicationInfo(self.PlayerReplicationInfo).AddDowned()
+  010a: goto 0x0127
+  010d: TakeDamageHealthBelowZero(InstigatedBy, HitLocation, Momentum, DamageType)
+  0127: return nothing
+  0129: <eos>
+
+function TnPawn.DownTransformer  (script 104 bytes)
+  0000: self._IsDowned = true
+  0008: self.Health = 0.0
+  0013: ClientStartDowned()
+  001d: TnGame(self.WorldInfo.Game).NotifyDownedPawn(self)
+  003f: if !((self.Controller != none)) goto 0x0065
+  004a: self.Controller.TriggerEventClass(obj'TnSeqEvent_Downed', none, 0, )
+  0065: return nothing
+  0067: <eos>
+
+function TnPawn.OnReviveSucceeded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.OnReviveFailed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.TransformComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.GiveRevive  (script 60 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=false
+  0007: TnPawn.ServerGiveRevive(NewReviveTarget, ReviveSucceeded, ReviveFailed, UseFullRevive)
+  0022: if !((cast3a(self.Role) < cast3a(3))) goto 0x0039
+  0032: TnPawn.PlayGiveReviveAnim(false)
+  0039: return nothing
+  003b: <eos>
+
+function TnPawn.ServerGiveRevive  (script 229 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=false
+  0007: if !((NewReviveTarget == none)) goto 0x0014
+  0012: return nothing
+  0014: self.__OnReviveSucceeded__Delegate = ReviveSucceeded
+  001f: self.__OnReviveFailed__Delegate = ReviveFailed
+  002a: SP = TnServiceProvider(self.Controller)
+  003a: if !(NotEqual_InterfaceInterface(SP, TnServiceProvider(none))) goto 0x00a1
+  004e: DNI = TnDialogNotificationService(SP.GetService('TnDialogNotificationService'))
+  0076: if !(NotEqual_InterfaceInterface(DNI, TnDialogNotificationService(none))) goto 0x00a1
+  008a: DNI.DialogNotify(4, none)
+  00a1: self._ReviveTarget = NewReviveTarget
+  00ac: self._UseFullRevive = UseFullRevive
+  00b9: self._ReviveTarget._DrainHealthWhenDown = false
+  00ca: self._ReviveTarget._CanHealWhenDown = true
+  00db: TnPawn.PlayGiveReviveAnim(true)
+  00e2: return nothing
+  00e4: <eos>
+
+function TnPawn.PlayGiveReviveAnim  (script 372 bytes)
+  0000: AnimatorService = TnAnimatorService(GetService('TnAnimatorService'))
+  001e: if !(EqualEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x003e
+  0032: GiveReviveFail()
+  003c: return nothing
+  003e: Params.AnimName = (get_IsInRobotForm() ? self.GiveReviveAnim : self.GiveReviveAnimVEH)
+  0068: Params.BlendInTime = 0.1
+  007e: Params.BlendOutTime = 0.2
+  0094: Params.Looping = false
+  00a7: Params.RootMotionMode = 3
+  00ba: Params.Override = 2
+  00cd: Params.Priority = 1
+  00e0: if !(Replicate) goto 0x0146
+  00e9: AnimatorService.EnqueueReplicatedAnimation(Params, delegate.GiveReviveSucceed, delegate.GiveReviveFail)
+  0114: TnPawn.ClientStartReviveCountdown(self._ReviveTarget, AnimatorService.GetAnimationLength(Params.AnimName))
+  0143: goto 0x0171
+  0146: AnimatorService.EnqueueLocalAnimation(Params, delegate.GiveReviveSucceed, delegate.GiveReviveFail)
+  0171: return nothing
+  0173: <eos>
+
+function TnPawn.ClientStartReviveCountdown  (script 47 bytes)
+  0000: self._ReviveTarget = NewReviveTarget
+  000b: self._ReviveTotalTime = TotalReviveTime
+  0016: self._ReviveTimeLeft = TotalReviveTime
+  0021: self._RevivePercentDone = 0.0
+  002c: return nothing
+  002e: <eos>
+
+function TnPawn.ClientClearReviveCountdown  (script 43 bytes)
+  0000: self._ReviveTarget = none
+  0007: self._ReviveTimeLeft = 0.0
+  0012: self._ReviveTotalTime = 0.0
+  001d: self._RevivePercentDone = 1.0
+  0028: return nothing
+  002a: <eos>
+
+function TnPawn.GiveReviveSucceed  (script 85 bytes)
+  0000: if !((self._ReviveTarget != none)) goto 0x0029
+  000b: self._ReviveTarget.GetRevive(self.Controller, self._UseFullRevive)
+  0029: self._LastReviveTime = self.WorldInfo.TimeSeconds
+  003d: TnPawn.CleanupGiveRevive()
+  0043: OnReviveSucceeded()
+  0052: return nothing
+  0054: <eos>
+
+function TnPawn.GiveReviveFail  (script 24 bytes)
+  0000: TnPawn.CleanupGiveRevive()
+  0006: OnReviveFailed()
+  0015: return nothing
+  0017: <eos>
+
+function TnPawn.CleanupGiveRevive  (script 69 bytes)
+  0000: if !((self._ReviveTarget != none)) goto 0x0034
+  000b: self._ReviveTarget._DrainHealthWhenDown = true
+  001c: self._ReviveTarget._CanHealWhenDown = true
+  002d: self._ReviveTarget = none
+  0034: self._UseFullRevive = false
+  003c: TnPawn.ClientClearReviveCountdown()
+  0042: return nothing
+  0044: <eos>
+
+function TnPawn.AbortGiveRevive  (script 31 bytes)
+  0000: TnPawn.ServerAbortGiveRevive()
+  0006: if !((cast3a(self.Role) < cast3a(3))) goto 0x001c
+  0016: TnPawn.StopGiveReviveAnimation()
+  001c: return nothing
+  001e: <eos>
+
+function TnPawn.ServerAbortGiveRevive  (script 9 bytes)
+  0000: TnPawn.StopGiveReviveAnimation()
+  0006: return nothing
+  0008: <eos>
+
+function TnPawn.StopGiveReviveAnimation  (script 55 bytes)
+  0000: AnimatorService = TnAnimatorService(GetService('TnAnimatorService'))
+  001e: AnimatorService.StopAnimation(, )
+  0034: return nothing
+  0036: <eos>
+
+function TnPawn.GetRevive  (script 103 bytes)
+  0000: if !(!self._IsDowned) goto 0x000d
+  000b: return nothing
+  000d: NewHealth = (UseFullRevive ? self.HealthMax : (-self.Health + self.RevivalHealth))
+  0031: HealDamage(NewHealth, Reviver, obj'TnHealTypeRevive')
+  004a: self._DrainHealthWhenDown = true
+  0052: self._CanHealWhenDown = true
+  005a: OnGetRevive()
+  0064: return nothing
+  0066: <eos>
+
+function TnPawn.OnGetRevive  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPawn.Revive  (script 177 bytes)
+  0000: self._IsDowned = false
+  0008: ClientStopDowned()
+  0012: if !((self.Controller != none)) goto 0x003c
+  001d: self.Controller.TriggerEventClass(obj'TnSeqEvent_Downed', Reviver, 1, )
+  003c: RevivedPRI = TnPlayerReplicationInfo(self.PlayerReplicationInfo)
+  004c: if !((RevivedPRI != none)) goto 0x006a
+  0057: RevivedPRI.AddRevived()
+  006a: if !((Reviver == none)) goto 0x0077
+  0075: return nothing
+  0077: ReviverPRI = TnPlayerReplicationInfo(Reviver.PlayerReplicationInfo)
+  0090: if !((ReviverPRI != none)) goto 0x00ae
+  009b: ReviverPRI.AddRevive()
+  00ae: return nothing
+  00b0: <eos>
+
+function TnPawn.IsTargetableEnemy  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPawn.DisplayDebug  (script 662 bytes)
+  0000: HUD.Canvas.DrawTextNormal(("Blueprint:" @ cast56(self._Blueprint)), , , )
+  0034: HUD.Canvas.DrawTextNormal(("Base:" @ cast56(self.Base)), , , )
+  0063: if !(HUD.ShouldDisplayDebug('General')) goto 0x0097
+  0082: DisplayDebug(HUD, out_YL, out_YPos)
+  0097: if !(HUD.ShouldDisplayDebug('Transform')) goto 0x00cf
+  00b6: DisplayDebugTransform(HUD, out_YL, out_YPos)
+  00cf: if !(HUD.ShouldDisplayDebug('Speed')) goto 0x01e3
+  00ee: HUD.Canvas.DrawTextNormal(cast58(self.Velocity), , , )
+  0114: self._PawnHorizontalSpeedGraph.Draw(HUD.Canvas, (HUD.Canvas.ClipX - cast3f(510)), 10.0, 500, 140)
+  0161: self._PawnVerticalSpeedGraph.Draw(HUD.Canvas, (HUD.Canvas.ClipX - cast3f(510)), 170.0, 500, 140)
+  01ae: self._PawnLocationGraph.Draw(HUD.Canvas, 50.0, 50.0, 600, 600)
+  01e3: if !((HUD.ShouldDisplayDebug('Robot') && (cast3a(get_FormType()) == cast3a(0)))) goto 0x023b
+  0219: self._RobotForm.DisplayDebug(HUD, out_YL, out_YPos)
+  023b: if !((HUD.ShouldDisplayDebug('Vehicle') && (cast3a(get_FormType()) == cast3a(1)))) goto 0x0293
+  0271: self._VehicleForm.DisplayDebug(HUD, out_YL, out_YPos)
+  0293: return nothing
+  0295: <eos>
+
+function TnPawn.DisplayDebugTransform  (script 1370 bytes)
+  0000: RobotRoot = obj'Core.Math'.static.MakeVector(get_RobotMeshComponent().GetBoneMatrix(0).WPlane.X, get_RobotMeshComponent().GetBoneMatrix(0).WPlane.Y, get_RobotMeshComponent().GetBoneMatrix(0).WPlane.Z)
+  00a6: RobotCylinderRadius = self._RobotForm.get_FormMovementCapabilities().CylinderRadius
+  00ca: RobotCylinderHalfHeight = self._RobotForm.get_FormMovementCapabilities().CylinderHeight
+  00ee: VehicleRoot = obj'Core.Math'.static.MakeVector(get_VehicleMeshComponent().GetBoneMatrix(0).WPlane.X, get_VehicleMeshComponent().GetBoneMatrix(0).WPlane.Y, get_VehicleMeshComponent().GetBoneMatrix(0).WPlane.Z)
+  0194: VehicleCylinderRadius = self._VehicleForm.get_FormMovementCapabilities().CylinderRadius
+  01b8: VehicleCylinderHalfHeight = self._VehicleForm.get_FormMovementCapabilities().CylinderHeight
+  01dc: obj'Engine.Debug'.static.DrawSphere(RobotRoot, 30.0, 8, obj'Core.Colors'.static.Blue(), )
+  020f: obj'Engine.Debug'.static.DrawCylinder((self.Location - obj'Core.Math'.static.MakeVector(0.0, 0.0, RobotCylinderHalfHeight)), (self.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, RobotCylinderHalfHeight)), RobotCylinderRadius, 24, obj'Core.Colors'.static.White(), )
+  028f: obj'Engine.Debug'.static.DrawSphere(VehicleRoot, 30.0, 8, obj'Core.Colors'.static.Yellow(), )
+  02c2: obj'Engine.Debug'.static.DrawCylinder((self.Location - obj'Core.Math'.static.MakeVector(0.0, 0.0, VehicleCylinderHalfHeight)), (self.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, VehicleCylinderHalfHeight)), VehicleCylinderRadius, 24, obj'Core.Colors'.static.White(), )
+  0342: obj'Engine.Debug'.static.DrawCylinder((self.Location - obj'Core.Math'.static.MakeVector(0.0, 0.0, self.CylinderComponent.CollisionHeight)), (self.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, self.CylinderComponent.CollisionHeight)), self.CylinderComponent.CollisionRadius, 24, obj'Core.Colors'.static.Green(), )
+  03dd: HUD.Canvas.DrawTextNormal((((("Robot cylinder: (radius =" @ cast55(RobotCylinderRadius)) $ ", height =") @ cast55((RobotCylinderHalfHeight * cast3f(2)))) $ ")"), , , )
+  0442: HUD.Canvas.DrawTextNormal((((("Vehicle cylinder: (radius =" @ cast55(VehicleCylinderRadius)) $ ", height =") @ cast55((VehicleCylinderHalfHeight * cast3f(2)))) $ ")"), , , )
+  04a9: if !(get_IsTransforming()) goto 0x0506
+  04b6: HUD.Canvas.DrawTextNormal(("Vehicle root offset:" @ cast58(((VehicleRoot - RobotRoot) << self.Rotation))), , , )
+  0503: goto 0x0557
+  0506: HUD.Canvas.DrawTextNormal("Transform to see the correct vehicle root offset", , , )
+  0557: return nothing
+  0559: <eos>
+
+function TnPawn.RobotDowned.BeginState  (script 191 bytes)
+  0000: self.StartedRobotDownedAnimation = false
+  0008: AcrobaticsService = TnAcrobaticsService(GetRobotService('TnAcrobaticsService'))
+  0026: if !((NotEqual_InterfaceInterface(AcrobaticsService, TnAcrobaticsService(none)) && (cast3a(AcrobaticsService.get_AcrobaticsState()) != cast3a(8)))) goto 0x006f
+  005b: AcrobaticsService.Fall()
+  006f: TnPawn.PlayDownedSound()
+  0075: TriggerStimulus(obj'TnStimulusType_Downed', self.Location, )
+  008a: self.AccelRate = 0.0
+  0095: self._LastDownedTime = self.WorldInfo.TimeSeconds
+  00a9: if !((self.Weapon == none)) goto 0x00bc
+  00b4: self.WeaponTypeObserved = 4
+  00bc: return nothing
+  00be: <eos>
+
+function TnPawn.RobotDowned.EndState  (script 36 bytes)
+  0000: self._ReviverPawn = none
+  0007: self.bPlayDownedAnimation = true
+  000f: if !((self.Weapon == none)) goto 0x0021
+  001a: self.WeaponTypeObserved = 0
+  0021: return nothing
+  0023: <eos>
+
+function TnPawn.RobotDowned.StateClientStopDowned  (script 76 bytes)
+  0000: if !(!IsDead()) goto 0x0035
+  000f: TnPawn.PlayDownedAnim(self.GetReviveAnim, false, 3, delegate.OnRevivedAnimationComplete, delegate.OnRevivedAnimationComplete)
+  002f: TnPawn.PlayReviveSound()
+  0035: self.AccelRate = self._Blueprint.AccelRate
+  0049: return nothing
+  004b: <eos>
+
+function TnPawn.RobotDowned.OnRevivedAnimationComplete  (script 17 bytes)
+  0000: GotoState('InRobotForm', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnPawn.RobotDowned.Tick  (script 168 bytes)
+  0000: TnPawn.Tick(DeltaTime)
+  000b: if !((!self.StartedRobotDownedAnimation && (cast3a(self.Physics) == cast3a(1)))) goto 0x007f
+  0028: self.StartedRobotDownedAnimation = true
+  0030: self.Velocity = vect(0,0,0)
+  0043: self.Acceleration = vect(0,0,0)
+  0056: if !(self.bPlayDownedAnimation) goto 0x007f
+  005f: TnPawn.PlayDownedAnim(self.DownedAnim, false, 2, delegate.None, delegate.None)
+  007f: if !(((self._ReviverPawn != none) && self._ReviverPawn._IsDowned)) goto 0x00a5
+  009e: self._ReviverPawn = none
+  00a5: return nothing
+  00a7: <eos>
+
+function TnPawn.SetLargeExplosiveTargetLocation  (script 68 bytes)
+  0000: ALE = self.AbilityManager.GetAbility(obj'TnAbilityLargeExplosive')
+  001e: if !((ALE != none)) goto 0x0041
+  0029: ALE.SetTargetLocation(TargetLocation)
+  0041: return nothing
+  0043: <eos>
+
+function TnPawn.GetFootstepLoudness  (script 22 bytes)
+  0000: return self._Blueprint.MovementNoiseRadius
+  000f: return return
+  0015: <eos>
+
+function TnPawn.WasLastHitHeadshot  (script 36 bytes)
+  0000: return (get_LastTakeHitInfo().BoneName == self.HeadShotBoneName)
+  001d: return return
+  0023: <eos>
+
+function TnPawn.DisableTransforming  (script 11 bytes)
+  0000: self._TransformingEnabled = false
+  0008: return nothing
+  000a: <eos>
+
+function TnPawn.EnableTransforming  (script 11 bytes)
+  0000: self._TransformingEnabled = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPawn.DisableJumping  (script 11 bytes)
+  0000: self._JumpingEnabled = false
+  0008: return nothing
+  000a: <eos>
+
+function TnPawn.EnableJumping  (script 11 bytes)
+  0000: self._JumpingEnabled = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPawn.DisableAbilities  (script 11 bytes)
+  0000: self._AbilitiesEnabled = false
+  0008: return nothing
+  000a: <eos>
+
+function TnPawn.EnableAbilities  (script 11 bytes)
+  0000: self._AbilitiesEnabled = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPawn.EnableFlyingTurnaroundBehavior  (script 89 bytes)
+  0000: if !((self.Controller != none)) goto 0x0043
+  000b: PC = TnPlayerController(self.Controller)
+  001b: if !((PC == none)) goto 0x0028
+  0026: return nothing
+  0028: PC.EnableFlyingTurnaroundBehavior(Params)
+  0040: goto 0x0056
+  0043: self._FlyingTurnaroundParams = Params
+  004e: self._EnableFlyingTurnaroundBehavior = true
+  0056: return nothing
+  0058: <eos>
+
+function TnPawn.DisableFlyingTurnaroundBehavior  (script 64 bytes)
+  0000: self._EnableFlyingTurnaroundBehavior = false
+  0008: PC = TnPlayerController(self.Controller)
+  0018: if !((PC == none)) goto 0x0025
+  0023: return nothing
+  0025: PC.DisableFlyingTurnaroundBehavior(Strategy)
+  003d: return nothing
+  003f: <eos>
+
+function TnPawn.GetDisguisedColors  (script 203 bytes)
+  0000: FullCharacter = TnPlayerReplicationInfo(self.PlayerReplicationInfo).GetCurrentCharacterReplicated()
+  001e: CDDisguised = self.CharacterDataHelpers.ResolveReplicatedCharacterData(FullCharacter, cast3d(DisguiseFaction))
+  0043: if !((CDDisguised.ChassisType == none)) goto 0x005b
+  0059: return nothing
+  005b: DisguisedSMC = new(nothing, nothing, obj'Engine.SkeletalMeshComponent', nothing, DeltaTime)
+  006f: DisguisedSMC.SetSkeletalMesh(CDDisguised.ChassisType.SkelMesh, )
+  009c: self._CharacterApplier.ExtractColors(CDDisguised, DisguisedSMC, DisguisePrimaryColor, DisguiseSecondaryColor, DisguiseEnergonColor)
+  00c8: return nothing
+  00ca: <eos>
+
+function TnPawn.ExposeSelf  (script 187 bytes)
+  0000: default=true
+  0005: default=true
+  000a: if !((cast3a(self.Role) == cast3a(3))) goto 0x00b8
+  001a: if !((self._IsCloaking && ExposeCloak)) goto 0x0060
+  002e: self._BuffManager.RemoveBuff(obj'TnBuffCloak')
+  0046: self._BuffManager.AddBuff(obj'TnBuffDecloak', 0, self)
+  0060: if !((ExposeDisguise && self._BuffManager.HasBuff(obj'TnBuffDisguise'))) goto 0x00b8
+  0086: self._BuffManager.RemoveBuff(obj'TnBuffDisguise')
+  009e: self._BuffManager.AddBuff(obj'TnBuffDisguiseLost', 0, self)
+  00b8: return nothing
+  00ba: <eos>
+
+function TnPawn.AddDefaultSkeletalGibTemplates  (script 42 bytes)
+  0000: if !(get_IsInRobotForm()) goto 0x000f
+  000d: return nothing
+  000f: self._VehicleForm.AddDefaultSkeletalGibTemplates(Templates)
+  0027: return nothing
+  0029: <eos>
+
+function TnPawn.GetCurrentLockOnStatus  (script 13 bytes)
+  0000: return self.CurrentLockOnStatus
+  0006: return return
+  000c: <eos>
+
+function TnPawn.UpdateCurrentLockOnStatus  (script 212 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: self.CurrentLockOnStatus = 0
+  001a: I = (self.LockOnInfos.Length - 1)
+  0029: if !((I >= 0)) goto 0x00d1
+  0034: if !(((I[self.LockOnInfos].LockOnInstigator == none) || (I[self.LockOnInfos].LockOnInstigator.bDeleteMe == true))) goto 0x0087
+  0078: self.LockOnInfos.Remove(I,1)
+  0084: goto 0x00c7
+  0087: if !((cast3a(I[self.LockOnInfos].LockOnStatus) > cast3a(self.CurrentLockOnStatus))) goto 0x00c7
+  00ab: self.CurrentLockOnStatus = I[self.LockOnInfos].LockOnStatus
+  00c7: SubtractSubtract_PreInt(I)
+  00ce: goto 0x0029
+  00d1: return nothing
+  00d3: <eos>
+
+function TnPawn.UpdateLockOnInfo  (script 196 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: I = (self.LockOnInfos.Length - 1)
+  0021: if !((I >= 0)) goto 0x00b4
+  002c: if !((I[self.LockOnInfos].LockOnInstigator == UpdatedLOI.LockOnInstigator)) goto 0x00aa
+  0057: if !((cast3a(UpdatedLOI.LockOnStatus) == cast3a(0))) goto 0x0081
+  0072: self.LockOnInfos.Remove(I,1)
+  007e: goto 0x00a8
+  0081: I[self.LockOnInfos].LockOnStatus = UpdatedLOI.LockOnStatus
+  00a8: return nothing
+  00aa: SubtractSubtract_PreInt(I)
+  00b1: goto 0x0021
+  00b4: self.LockOnInfos.AddItem(UpdatedLOI)
+  00c1: return nothing
+  00c3: <eos>
+
+function TnPawn.EncroachingOn  (script 21 bytes)
+  0000: return (Pawn(Other) != none)
+  000e: return return
+  0014: <eos>
+
+function TnPawn.CanAnchor  (script 27 bytes)
+  0000: return self._CurrentForm.get_CanAnchor()
+  0014: return return
+  001a: <eos>
+
+function TnPawn.JumpOffPawn  (script 47 bytes)
+  0000: if !(((self.UseableInteract != none) && self.UseableInteract.IsInUseBy(self))) goto 0x0026
+  0024: return nothing
+  0026: JumpOffPawn()
+  002c: return nothing
+  002e: <eos>
+
+function TnPawn.AddTargeter  (script 119 bytes)
+  0000: Index = self._Targeters.Find(Targeter)
+  0013: if !((Index != -1)) goto 0x0067
+  0022: LogInternal(((("Error: Adding a duplicated targeter" @ cast56(Targeter)) @ "to pawn") @ cast56(self)), , , )
+  0065: return nothing
+  0067: self._Targeters.AddItem(Targeter)
+  0074: return nothing
+  0076: <eos>
+
+function TnPawn.RemoveTargeter  (script 134 bytes)
+  0000: Index = self._Targeters.Find(Targeter)
+  0013: if !((Index == -1)) goto 0x0077
+  0022: LogInternal(((("Error: Removing a targeter" @ cast56(Targeter)) @ "who is not being tracked by pawn") @ cast56(self)), , , )
+  0075: return nothing
+  0077: self._Targeters.Remove(Index,1)
+  0083: return nothing
+  0085: <eos>

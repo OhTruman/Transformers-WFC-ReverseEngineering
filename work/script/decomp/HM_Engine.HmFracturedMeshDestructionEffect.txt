@@ -1,0 +1,36 @@
+function HmFracturedMeshDestructionEffect.SetComponents  (script 55 bytes)
+  0000: self.StaticComponent = NewStaticComponent
+  000b: self.SkinnedComponent = NewSkinnedComponent
+  0016: AddMeshComponent(self.StaticComponent)
+  0025: AddMeshComponent(self.SkinnedComponent)
+  0034: return nothing
+  0036: <eos>
+
+function HmFracturedMeshDestructionEffect.OnMadeVisible  (script 85 bytes)
+  0000: self.Fracturer.Initialize(GetAttachingActor(), self.StaticComponent, self.SkinnedComponent)
+  0027: self.Fracturer.SetPieceHandle(GetOwner().GetHandle())
+  0052: return nothing
+  0054: <eos>
+
+function HmFracturedMeshDestructionEffect.OnMadeInvisible  (script 22 bytes)
+  0000: self.Fracturer.Explode()
+  0013: return nothing
+  0015: <eos>
+
+function HmFracturedMeshDestructionEffect.NotifyHit  (script 59 bytes)
+  0000: nothing
+  0001: nothing
+  0002: self.Fracturer.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0038: return nothing
+  003a: <eos>
+
+function HmFracturedMeshDestructionEffect.NotifyRadiusHit  (script 64 bytes)
+  0000: nothing
+  0001: self.Fracturer.TakeRadiusDamage(EventInstigator, Damage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser)
+  003d: return nothing
+  003f: <eos>
+
+function HmFracturedMeshDestructionEffect.GetFracturer  (script 13 bytes)
+  0000: return self.Fracturer
+  0006: return return
+  000c: <eos>

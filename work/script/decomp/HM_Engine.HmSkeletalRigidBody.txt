@@ -1,0 +1,33 @@
+function HmSkeletalRigidBody.SetLifeSpan  (script 22 bytes)
+  0000: SetTimer(Value, false, 'LifeSpanExpired', )
+  0013: return nothing
+  0015: <eos>
+
+function HmSkeletalRigidBody.SetActiveEffect  (script 58 bytes)
+  0000: if !((EffectTemplate != none)) goto 0x0037
+  000b: self.ActiveEffect.SetTemplate(EffectTemplate)
+  0023: self.ActiveEffect.ActivateSystem()
+  0037: return nothing
+  0039: <eos>
+
+function HmSkeletalRigidBody.SetDestroyedEffect  (script 14 bytes)
+  0000: self.DestroyedEffectTemplate = EffectTemplate
+  000b: return nothing
+  000d: <eos>
+
+function HmSkeletalRigidBody.LifeSpanExpired  (script 137 bytes)
+  0000: self.SkeletalMeshComponent.SetHidden(true)
+  0014: self.CollisionComponent.SetActorCollision(false, false)
+  0029: if !((self.DestroyedEffectTemplate != none)) goto 0x007b
+  0034: self.ActiveEffect.SetTemplate(self.DestroyedEffectTemplate)
+  004c: self.ActiveEffect.ActivateSystem()
+  0060: self.ActiveEffect.__OnSystemFinished__Delegate = delegate.OnDestroyedEffectFinished
+  0078: goto 0x0086
+  007b: HmSkeletalRigidBody.OnDestroyedEffectFinished(self.ActiveEffect)
+  0086: return nothing
+  0088: <eos>
+
+function HmSkeletalRigidBody.OnDestroyedEffectFinished  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>

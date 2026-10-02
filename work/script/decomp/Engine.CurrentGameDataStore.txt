@@ -1,0 +1,146 @@
+function CurrentGameDataStore.CreateGameDataProvider  (script 333 bytes)
+  0000: if !((GRI != none)) goto 0x00d9
+  000b: self.GameData = new(nothing, nothing, self.ProviderTypes.GameDataProviderClass, nothing, GetRemoteRole)
+  002a: if !(!self.GameData.BindProviderInstance(GRI)) goto 0x00d6
+  0047: LogInternal((((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "Failed to bind GameReplicationInfo to game data store:") @ "GRI:") $ ((GRI != none) ? cast57(GRI.Name) : "None")), 'DevDataStore', , )
+  00d6: goto 0x014a
+  00d9: LogInternal((((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "NULL GRI specified!") @ "GameData:") $ ((self.GameData != none) ? cast57(self.GameData.Name) : "None")), 'DevDataStore', , )
+  014a: return nothing
+  014c: <eos>
+
+function CurrentGameDataStore.AddPlayerDataProvider  (script 776 bytes)
+  0000: PlayerName = ((PRI != none) ? PRI.PlayerName : "None")
+  0027: LogInternal(((((">> CurrentGameDataStore::AddPlayerDataProvider -" @ cast56(PRI)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0080: if !((PRI != none)) goto 0x0257
+  008b: if !((self.GameData != none)) goto 0x021b
+  0096: ExistingIndex = CurrentGameDataStore.FindPlayerDataProviderIndex(PRI)
+  00a7: if !((ExistingIndex == -1)) goto 0x016e
+  00b6: DataProvider = new(nothing, nothing, self.ProviderTypes.PlayerDataProviderClass, nothing, GetRemoteRole)
+  00d5: if !(!DataProvider.BindProviderInstance(PRI)) goto 0x014b
+  00f2: LogInternal(((("Failed to bind PRI to PlayerDataProvider:" @ cast56(DataProvider)) @ "for player") @ PlayerName), 'DevDataStore', , )
+  0148: goto 0x016b
+  014b: self.PlayerData.Length[self.PlayerData] = DataProvider
+  015d: RefreshSubscribers(, , , )
+  016b: goto 0x0218
+  016e: LogInternal(((("PlayerDataProvider already registered in 'CurrentGame' data store for" @ PlayerName) @ "PlayerData[ExistingIndex]:") $ ((ExistingIndex[self.PlayerData] != none) ? cast57(ExistingIndex[self.PlayerData].Name) : "None")), 'DevDataStore', , )
+  0218: goto 0x0254
+  021b: LogInternal("CurrentGame data provider not yet created!", 'DevDataStore', , )
+  0254: goto 0x02ac
+  0257: LogInternal(("NULL PRI specified - current number of player data provider:" @ cast53(self.PlayerData.Length)), 'DevDataStore', , )
+  02ac: LogInternal((((("<< CurrentGameDataStore::AddPlayerDataProvider -" @ cast56(PRI)) @ "(") $ PlayerName) $ ")"), 'DevDataStore', , )
+  0305: return nothing
+  0307: <eos>
+
+function CurrentGameDataStore.RemovePlayerDataProvider  (script 204 bytes)
+  0000: if !((PRI != none)) goto 0x0064
+  000b: ExistingIndex = CurrentGameDataStore.FindPlayerDataProviderIndex(PRI)
+  001c: if !((ExistingIndex != -1)) goto 0x0061
+  002b: if !(ExistingIndex[self.PlayerData].CleanupDataProvider()) goto 0x0061
+  0047: self.PlayerData.Remove(ExistingIndex,1)
+  0053: RefreshSubscribers(, , , )
+  0061: goto 0x00c9
+  0064: LogInternal(((((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "NULL PRI specified!") @ "PlayerData.Length:'") $ cast53(self.PlayerData.Length)) $ "'"), 'DevDataStore', , )
+  00c9: return nothing
+  00cb: <eos>
+
+function CurrentGameDataStore.AddTeamDataProvider  (script 654 bytes)
+  0000: TeamName = ((TI != none) ? TI.TeamName : "None")
+  0027: LogInternal(((((">> CurrentGameDataStore::AddTeamDataProvider -" @ cast56(TI)) @ "(") $ TeamName) $ ")"), 'DevDataStore', , )
+  007e: if !((TI != none)) goto 0x0232
+  0089: if !((self.GameData != none)) goto 0x022f
+  0094: ExistingIndex = CurrentGameDataStore.FindTeamDataProviderIndex(TI)
+  00a5: if !((ExistingIndex == -1)) goto 0x0189
+  00b4: DataProvider = new(nothing, nothing, self.ProviderTypes.TeamDataProviderClass, nothing, GetRemoteRole)
+  00d3: if !(!DataProvider.BindProviderInstance(TI)) goto 0x0166
+  00f0: LogInternal(((("Failed to bind TeamInfo to TeamDataProvider in 'CurrentGame' data store:" @ cast56(DataProvider)) @ "for team") @ TeamName), 'DevDataStore', , )
+  0163: goto 0x0186
+  0166: self.TeamData.Length[self.TeamData] = DataProvider
+  0178: RefreshSubscribers(, , , )
+  0186: goto 0x022f
+  0189: LogInternal(((("TeamDataProvider already registered in 'CurrentGame' data store for" @ TeamName) @ "TeamData[ExistingIndex]:") $ ((ExistingIndex[self.TeamData] != none) ? cast57(ExistingIndex[self.TeamData].Name) : "None")), 'DevDataStore', , )
+  022f: goto 0x028b
+  0232: LogInternal(("NULL TeamInfo specified - current number of team data providers:" @ cast53(self.TeamData.Length)), 'DevDataStore', , )
+  028b: return nothing
+  028d: <eos>
+
+function CurrentGameDataStore.RemoveTeamDataProvider  (script 201 bytes)
+  0000: if !((TI != none)) goto 0x0064
+  000b: ExistingIndex = CurrentGameDataStore.FindTeamDataProviderIndex(TI)
+  001c: if !((ExistingIndex != -1)) goto 0x0061
+  002b: if !(ExistingIndex[self.TeamData].CleanupDataProvider()) goto 0x0061
+  0047: self.TeamData.Remove(ExistingIndex,1)
+  0053: RefreshSubscribers(, , , )
+  0061: goto 0x00c6
+  0064: LogInternal(((((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "NULL TeamInfo specified!") @ "TeamCount:'") $ cast53(self.TeamData.Length)) $ "'"), 'DevDataStore', , )
+  00c6: return nothing
+  00c8: <eos>
+
+function CurrentGameDataStore.FindPlayerDataProviderIndex  (script 106 bytes)
+  0000: Result = -1
+  000b: I = 0
+  0012: if !((I < self.PlayerData.Length)) goto 0x005d
+  0022: if !((I[self.PlayerData].GetDataSource() == PRI)) goto 0x0053
+  0045: Result = I
+  0050: goto 0x005d
+  0053: AddAdd_Int(I)
+  005a: goto 0x0012
+  005d: return Result
+  0063: return return
+  0069: <eos>
+
+function CurrentGameDataStore.FindTeamDataProviderIndex  (script 125 bytes)
+  0000: Result = -1
+  000b: I = 0
+  0012: if !((I < self.TeamData.Length)) goto 0x0070
+  0022: if !(((I[self.TeamData] != none) && (I[self.TeamData].GetDataSource() == TI))) goto 0x0066
+  0058: Result = I
+  0063: goto 0x0070
+  0066: AddAdd_Int(I)
+  006d: goto 0x0012
+  0070: return Result
+  0076: return return
+  007c: <eos>
+
+function CurrentGameDataStore.GetPlayerDataProvider  (script 62 bytes)
+  0000: Index = CurrentGameDataStore.FindPlayerDataProviderIndex(PRI)
+  0011: if !((Index != -1)) goto 0x0031
+  0020: Provider = Index[self.PlayerData]
+  0031: return Provider
+  0037: return return
+  003d: <eos>
+
+function CurrentGameDataStore.GetTeamDataProvider  (script 62 bytes)
+  0000: Index = CurrentGameDataStore.FindTeamDataProviderIndex(TI)
+  0011: if !((Index != -1)) goto 0x0031
+  0020: Provider = Index[self.TeamData]
+  0031: return Provider
+  0037: return return
+  003d: <eos>
+
+function CurrentGameDataStore.ClearDataProviders  (script 281 bytes)
+  0000: LogInternal((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())), 'DevDataStore', , )
+  002e: if !((self.GameData != none)) goto 0x004c
+  0039: self.GameData.CleanupDataProvider()
+  004c: I = 0
+  0053: if !((I < self.PlayerData.Length)) goto 0x0086
+  0063: I[self.PlayerData].CleanupDataProvider()
+  007c: AddAdd_Int(I)
+  0083: goto 0x0053
+  0086: I = 0
+  008d: if !((I < self.TeamData.Length)) goto 0x00d1
+  009d: if !((I[self.TeamData] != none)) goto 0x00c7
+  00ae: I[self.TeamData].CleanupDataProvider()
+  00c7: AddAdd_Int(I)
+  00ce: goto 0x008d
+  00d1: self.GameData = none
+  00d8: self.PlayerData.Length = 0
+  00e0: self.TeamData.Length = 0
+  00e8: LogInternal(((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())), 'DevDataStore', , )
+  0116: return nothing
+  0118: <eos>
+
+function CurrentGameDataStore.NotifyGameSessionEnded  (script 19 bytes)
+  0000: ClearDataProviders()
+  000a: return false
+  000c: return return
+  0012: <eos>

@@ -1,0 +1,121 @@
+function TnAiCharacterDefinition.CheckForErrors  (script 857 bytes)
+  0000: if !((self.GoalSet == none)) goto 0x003d
+  000b: EmitCheckMessage(0, (cast56(self) @ "does not have an Ai Goal Set!"), , )
+  003d: if !((self.ActionSet == none)) goto 0x007c
+  0048: EmitCheckMessage(0, (cast56(self) @ "does not have an Ai Action Set!"), , )
+  007c: if !((self.SensorSet == none)) goto 0x00bb
+  0087: EmitCheckMessage(0, (cast56(self) @ "does not have an Ai Sensor Set!"), , )
+  00bb: if !((((self.AiCharacterDataResolved.CharacterName != "") && !obj'TnPlayerController'.static.IsValidIconicCharacterName(self.AiCharacterDataResolved.CharacterName)) && !obj'TnAiController'.static.IsValidAiIconicCharacterName(self.AiCharacterDataResolved.CharacterName))) goto 0x01d2
+  0126: EmitCheckMessage(0, (("The character name '" $ self.AiCharacterDataResolved.CharacterName) $ "' is not valid for human use, make sure it is spelled correctly and case-sensitive (i.e. Bumblebee, not bumblebee)"), , )
+  01d2: if !((self.AiCharacterDataResolved.ChassisType == none)) goto 0x0224
+  01e8: EmitCheckMessage(0, (cast56(self) @ "Does not have a valid chassis type set!"), , )
+  0224: if !(TnAiCharacterDefinition.GoalSetNeedsSearchSpace()) goto 0x0356
+  022d: if !(((self.GoalSet != none) && ((self.BuiltGoalSetVersion != self.GoalSet.get_EditedVersion()) || TnAiCharacterDefinition.GoalSetNeedsRebuildOfSearchSpace()))) goto 0x02c7
+  0262: EmitCheckMessage(0, (cast56(self) @ "needs Goap Search Space Rebuilt, please check BuildGoapSearchSpace in properties"), , )
+  02c7: if !(((self.ActionSet != none) && (self.BuiltActionSetVersion != self.ActionSet.get_EditedVersion()))) goto 0x0356
+  02f1: EmitCheckMessage(0, (cast56(self) @ "needs Goap Search Space Rebuilt, please check BuildGoapSearchSpace in properties"), , )
+  0356: return nothing
+  0358: <eos>
+
+function TnAiCharacterDefinition.RuntimeCheckForErrors  (script 794 bytes)
+  0000: if !((self.GoalSet == none)) goto 0x0034
+  000b: LogInternal((cast56(self) @ "does not have an Ai Goal Set!"), , , )
+  0034: if !((self.ActionSet == none)) goto 0x006a
+  003f: LogInternal((cast56(self) @ "does not have an Ai Action Set!"), , , )
+  006a: if !((self.SensorSet == none)) goto 0x00a0
+  0075: LogInternal((cast56(self) @ "does not have an Ai Sensor Set!"), , , )
+  00a0: if !((((self.AiCharacterDataResolved.CharacterName != "") && !obj'TnPlayerController'.static.IsValidIconicCharacterName(self.AiCharacterDataResolved.CharacterName)) && !obj'TnAiController'.static.IsValidAiIconicCharacterName(self.AiCharacterDataResolved.CharacterName))) goto 0x01ae
+  010b: LogInternal((("The character name '" $ self.AiCharacterDataResolved.CharacterName) $ "' is not valid for human use, make sure it is spelled correctly and case-sensitive (i.e. Bumblebee, not bumblebee)"), , , )
+  01ae: if !((self.AiCharacterDataResolved.ChassisType == none)) goto 0x01f7
+  01c4: LogInternal((cast56(self) @ "Does not have a valid chassis type set!"), , , )
+  01f7: if !(TnAiCharacterDefinition.GoalSetNeedsSearchSpace()) goto 0x0317
+  0200: if !(((self.GoalSet != none) && ((self.BuiltGoalSetVersion != self.GoalSet.get_EditedVersion()) || TnAiCharacterDefinition.GoalSetNeedsRebuildOfSearchSpace()))) goto 0x0291
+  0235: LogInternal((cast56(self) @ "needs Goap Search Space Rebuilt, please check BuildGoapSearchSpace in properties"), , , )
+  0291: if !(((self.ActionSet != none) && (self.BuiltActionSetVersion != self.ActionSet.get_EditedVersion()))) goto 0x0317
+  02bb: LogInternal((cast56(self) @ "needs Goap Search Space Rebuilt, please check BuildGoapSearchSpace in properties"), , , )
+  0317: return nothing
+  0319: <eos>
+
+function TnAiCharacterDefinition.GoalSetNeedsSearchSpace  (script 110 bytes)
+  0000: if !((self.GoalSet == none)) goto 0x000d
+  000b: return false
+  000d: idx = 0
+  0014: if !((idx < self.GoalSet.GoalBlueprints.Length)) goto 0x0065
+  002d: Goal = idx[self.GoalSet.GoalBlueprints]
+  0047: if !(Goal._GenerateSearchSpace) goto 0x005b
+  0059: return true
+  005b: AddAdd_PreInt(idx)
+  0062: goto 0x0014
+  0065: return false
+  0067: return return
+  006d: <eos>
+
+function TnAiCharacterDefinition.GoalSetNeedsRebuildOfSearchSpace  (script 159 bytes)
+  0000: if !((self.GoalSet == none)) goto 0x000d
+  000b: return false
+  000d: if !((self.SearchSpace == none)) goto 0x001a
+  0018: return true
+  001a: idx = 0
+  0021: if !((idx < self.GoalSet.Goals.Length)) goto 0x0096
+  003a: Goal = idx[self.GoalSet.Goals]
+  0054: if !((Goal._GenerateSearchSpace && (self.SearchSpace.GetDesiredStateIdx(idx) == -1))) goto 0x008c
+  008a: return true
+  008c: AddAdd_PreInt(idx)
+  0093: goto 0x0021
+  0096: return false
+  0098: return return
+  009e: <eos>
+
+function TnAiCharacterDefinition.OnPostEditChange  (script 276 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((((PropertyName == 'BuildGoapSearchSpace') || (PropertyName == 'GoalSet')) || (PropertyName == 'ActionSet'))) goto 0x0056
+  0048: TnAiCharacterDefinition.UpdateGoapSearchSpace()
+  004e: self.BuildGoapSearchSpace = false
+  0056: if !((PropertyName == 'ActionSet')) goto 0x0111
+  0069: if !((self.ActionSet != none)) goto 0x0091
+  0074: NewActionOverrides = self.ActionSet.GetActionOverrides(self)
+  008e: goto 0x0099
+  0091: self.ActionOverrides.Length = 0
+  0099: idx = 0
+  00a0: if !((idx < NewActionOverrides.Length)) goto 0x0106
+  00b0: FoundIdx = TnAiCharacterDefinition.FindOverrideByClass(self.ActionOverrides, idx[NewActionOverrides].get_Class())
+  00d3: if !((FoundIdx == -1)) goto 0x00e5
+  00e2: goto 0x00fc
+  00e5: idx[NewActionOverrides] = FoundIdx[self.ActionOverrides]
+  00fc: AddAdd_PreInt(idx)
+  0103: goto 0x00a0
+  0106: self.ActionOverrides = NewActionOverrides
+  0111: return nothing
+  0113: <eos>
+
+function TnAiCharacterDefinition.FindOverrideByClass  (script 80 bytes)
+  0000: idx = 0
+  0007: if !((idx < Overrides.Length)) goto 0x0043
+  0017: if !((idx[Overrides].get_Class() == OverrideClass)) goto 0x0039
+  0033: return idx
+  0039: AddAdd_PreInt(idx)
+  0040: goto 0x0007
+  0043: return -1
+  0049: return return
+  004f: <eos>
+
+function TnAiCharacterDefinition.UpdateGoapSearchSpace  (script 252 bytes)
+  0000: if !(((self.GoalSet == none) || (self.ActionSet == none))) goto 0x001a
+  0018: return nothing
+  001a: Builder = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapSearchSpaceBuilder', self)
+  0039: if !((self.SearchSpace == none)) goto 0x0066
+  0044: self.SearchSpace = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapSearchSpace', self)
+  0063: goto 0x0079
+  0066: self.SearchSpace.Reset()
+  0079: Builder.Build(self.GoalSet, self.ActionSet, self.SearchSpace)
+  009b: LogInternal(("Search Space built for" @ cast56(self)), , , )
+  00bd: self.BuiltGoalSetVersion = self.GoalSet.get_EditedVersion()
+  00d6: self.BuiltActionSetVersion = self.ActionSet.get_EditedVersion()
+  00ef: MarkModified()
+  00f9: return nothing
+  00fb: <eos>
+
+function TnAiCharacterDefinition.GetChassisTypePathName  (script 34 bytes)
+  0000: return PathName(self.AiCharacterDataResolved.ChassisType)
+  001b: return return
+  0021: <eos>

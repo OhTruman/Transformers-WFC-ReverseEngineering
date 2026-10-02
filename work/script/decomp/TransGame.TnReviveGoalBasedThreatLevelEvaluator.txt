@@ -1,0 +1,12 @@
+function TnReviveGoalBasedThreatLevelEvaluator.set_ReviveGoalThreatLevel  (script 14 bytes)
+  0000: self._ReviveGoalThreatLevel = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnReviveGoalBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 137 bytes)
+  0000: C = TnAiController(Threat.Controller)
+  0019: if !((((C != none) && (C.PlanRunner._CurrentSolution != none)) && (C.PlanRunner._CurrentSolution.GoalToSatisfy.get_Class() == obj'TnGoapGoalRevive'))) goto 0x007c
+  0076: return self._ReviveGoalThreatLevel
+  007c: return 0.0
+  0082: return return
+  0088: <eos>

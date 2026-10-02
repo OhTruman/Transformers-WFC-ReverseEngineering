@@ -1,0 +1,15 @@
+function TnSpawnModifierRule.ScoreCluster  (script 237 bytes)
+  0000: OwnerTeam = Owner.GetTeamNum()
+  0019: if !(((cast3a(self.RuleType) == cast3a(1)) && (cast3a(OwnerTeam) != cast3a(Faction)))) goto 0x0044
+  003e: return 0.0
+  0044: if !(((cast3a(self.RuleType) == cast3a(2)) && (cast3a(OwnerTeam) == cast3a(Faction)))) goto 0x006f
+  0069: return 0.0
+  006f: if !(((self.CutoffDistance != cast3f(-1)) && (obj'Core.Math'.static.VSizeSq((Owner.Location - Cluster._CenterPoint)) > (self.CutoffDistance * self.CutoffDistance)))) goto 0x00ca
+  00c4: return 0.0
+  00ca: return (self.Factor * Score(Cluster, Owner))
+  00e6: return return
+  00ec: <eos>
+
+function TnSpawnModifierRule.Score  (script 7 bytes)
+  0000: return return
+  0006: <eos>

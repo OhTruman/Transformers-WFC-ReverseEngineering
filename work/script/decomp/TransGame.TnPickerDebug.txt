@@ -1,0 +1,66 @@
+function TnPickerDebug.get_IsActive  (script 14 bytes)
+  0000: return self.bActive
+  0007: return return
+  000d: <eos>
+
+function TnPickerDebug.SetActive  (script 22 bytes)
+  0000: self.bActive = Active
+  000d: TnPickerDebug.ClearDebugInfo()
+  0013: return nothing
+  0015: <eos>
+
+function TnPickerDebug.ClearDebugInfo  (script 11 bytes)
+  0000: self.DebugInfos.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnPickerDebug.AddDebugString  (script 150 bytes)
+  0000: if !(!self.bActive) goto 0x000d
+  000b: return nothing
+  000d: Index = TnPickerDebug.FindDebugInfo(Tactical)
+  001e: S.Description = DebugString
+  0034: S.TextColor = MakeColor(R, G, B, )
+  005f: Index[self.DebugInfos].DebugStrings.Length[Index[self.DebugInfos].DebugStrings] = S
+  0093: return nothing
+  0095: <eos>
+
+function TnPickerDebug.FindDebugInfo  (script 68 bytes)
+  0000: I = self.DebugInfos.Find('DebugTactical',Tactical)
+  001c: if !((I != -1)) goto 0x0031
+  002b: return I
+  0031: return TnPickerDebug.AddDebugInfo(Tactical)
+  003d: return return
+  0043: <eos>
+
+function TnPickerDebug.AddDebugInfo  (script 87 bytes)
+  0000: NewDebugInfo.DebugTactical = Tactical
+  0016: self.DebugInfos.Length[self.DebugInfos] = NewDebugInfo
+  0028: AddDebugString(Tactical, "X", cast3d(255), cast3d(255), cast3d(255))
+  0046: return (self.DebugInfos.Length - 1)
+  0050: return return
+  0056: <eos>
+
+function TnPickerDebug.DisplayDebugInfo  (script 60 bytes)
+  0000: if !(!self.bActive) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.DebugInfos.Length)) goto 0x0039
+  0024: TnPickerDebug.DrawDebugText(I)
+  002f: AddAdd_PreInt(I)
+  0036: goto 0x0014
+  0039: return nothing
+  003b: <eos>
+
+function TnPickerDebug.DrawDebugText  (script 243 bytes)
+  0000: DebugTactical = Index[self.DebugInfos].DebugTactical
+  001c: TextLocation = DebugTactical._Location
+  0030: (TextLocation.Z += self.TextStartOffset)
+  0047: I = 0
+  004e: if !((I < Index[self.DebugInfos].DebugStrings.Length)) goto 0x00f0
+  006f: S = I[Index[self.DebugInfos].DebugStrings]
+  0091: obj'Engine.Debug'.static.DrawText(TextLocation, S.Description, S.TextColor, self.bPersistentDrawing)
+  00cf: (TextLocation.Z -= self.TextLineSpacing)
+  00e6: AddAdd_PreInt(I)
+  00ed: goto 0x004e
+  00f0: return nothing
+  00f2: <eos>

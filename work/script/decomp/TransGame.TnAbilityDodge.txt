@@ -1,0 +1,14 @@
+function TnAbilityDodge.LocalTriggerAbility  (script 116 bytes)
+  0000: PC = TnPlayerController(self.OwnerPawn.GetController())
+  001e: if !((PC == none)) goto 0x0058
+  0029: LogInternal("Error: Dodge only supported on players", , , )
+  0056: return false
+  0058: PC.Dodge()
+  006b: return true
+  006d: return return
+  0073: <eos>
+
+function TnAbilityDodge.CanStartCooldown  (script 38 bytes)
+  0000: return !self.OwnerPawn._RobotForm.get_IsDodging()
+  001f: return return
+  0025: <eos>

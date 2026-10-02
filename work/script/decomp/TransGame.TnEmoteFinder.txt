@@ -1,0 +1,253 @@
+function TnEmoteFinder.set_MinEnterTime  (script 14 bytes)
+  0000: self._MinEnterTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnEmoteFinder.set_MinExitTime  (script 14 bytes)
+  0000: self._MinExitTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnEmoteFinder.set_UsageInterval  (script 14 bytes)
+  0000: self._UsageInterval = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnEmoteFinder.set_OwningController  (script 14 bytes)
+  0000: self._OwningController = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnEmoteFinder.FindEmote  (script 198 bytes)
+  0000: if !((cast3a(TnEmoteFinder.FindPathToObjective(Buddy, CurrentObjective, PathToObjective)) == cast3a(0))) goto 0x0022
+  0020: return none
+  0022: TnEmoteFinder.FindEmotes(PathToObjective, EmotesAlongPath)
+  0032: self._PathSmoother.CalculateSmoothPath(Buddy.Location, PathToObjective, 0.0, false)
+  005e: BestEmote = FindBestEmoteAlongPath(EmotesAlongPath, Buddy)
+  0078: if !((cast3a(self._OwningController._DebugMode) == cast3a(3))) goto 0x00b9
+  0091: TnEmoteFinder.DrawDebug(BestEmote, Buddy, self._PathSmoother.GetSmoothedLocations(), PathToObjective)
+  00b9: return BestEmote
+  00bf: return return
+  00c5: <eos>
+
+function TnEmoteFinder.FindBestEmoteAlongPath  (script 386 bytes)
+  0000: if !((Emotes.Length == 0)) goto 0x000e
+  000c: return none
+  000e: Time = obj'Engine.Engine'.static.GetWorldTime()
+  0027: SmoothedPath = self._PathSmoother.GetSmoothedLocations()
+  0040: BestTimeToReachEmote = 10000.0
+  004b: FurthestTimeToReachEmote = 0.0
+  0056: idx = 0
+  005d: if !((idx < Emotes.Length)) goto 0x0145
+  006d: TimeToReachEmote = TnEmoteFinder.EstimateTimeToReachEmote(idx[Emotes], Buddy, SmoothedPath)
+  008e: if !((TimeToReachEmote > FurthestTimeToReachEmote)) goto 0x00b9
+  009d: FurthestTimeToReachEmote = TimeToReachEmote
+  00a8: FurthestEmote = idx[Emotes]
+  00b9: if !(((TimeToReachEmote < self._MinEnterTime) || ((idx[Emotes]._LastUsedTime != cast3f(0)) && (Time < (idx[Emotes]._LastUsedTime + self._UsageInterval))))) goto 0x0110
+  010d: goto 0x013b
+  0110: if !((TimeToReachEmote < BestTimeToReachEmote)) goto 0x013b
+  011f: BestTimeToReachEmote = TimeToReachEmote
+  012a: BestEmote = idx[Emotes]
+  013b: AddAdd_PreInt(idx)
+  0142: goto 0x005d
+  0145: TimeToFinishPath = TnEmoteFinder.EstimateTimeForBuddyToCompletePath(Buddy, SmoothedPath)
+  015b: if !((TimeToFinishPath < self._MinEnterTime)) goto 0x0175
+  016a: BestEmote = FurthestEmote
+  0175: return BestEmote
+  017b: return return
+  0181: <eos>
+
+function TnEmoteFinder.IsEmoteValid  (script 489 bytes)
+  0000: PathFindResult = TnEmoteFinder.FindPathToObjective(Buddy, CurrentObjective, PathToObjective)
+  001b: if !((cast3a(PathFindResult) == cast3a(0))) goto 0x002d
+  002b: return false
+  002d: if !((TnEmoteFinder.IsStillOnPath(Emote, PathToObjective) == false)) goto 0x0045
+  0043: return false
+  0045: self._PathSmoother.CalculateSmoothPath(Buddy.Location, PathToObjective, 0.0, false)
+  0071: SmoothedPath = self._PathSmoother.GetSmoothedLocations()
+  008a: if !((cast3a(self._OwningController._DebugMode) == cast3a(3))) goto 0x00bd
+  00a3: TnEmoteFinder.DrawDebug(Emote, Buddy, SmoothedPath, PathToObjective)
+  00bd: TimeToFinishPath = TnEmoteFinder.EstimateTimeForBuddyToCompletePath(Buddy, SmoothedPath)
+  00d3: TimeToReachEmote = TnEmoteFinder.EstimateTimeToReachEmote(Emote, Buddy, SmoothedPath)
+  00ee: TimeToExitEmote = ((Emote.GetCurrentUser() == self._OwningController.Pawn) ? Emote.get_OutAnimLength() : 0.0)
+  0134: MinTime = ((Emote.GetCurrentUser() == self._OwningController.Pawn) ? self._MinExitTime : self._MinEnterTime)
+  016c: if !(((TimeToReachEmote - TimeToExitEmote) < MinTime)) goto 0x01e0
+  0182: if !(((TimeToFinishPath - TimeToReachEmote) < self._MinEnterTime)) goto 0x019a
+  0198: return true
+  019a: if !((cast3a(PathFindResult) == cast3a(2))) goto 0x01de
+  01aa: FoundEmote = FindEmote(Buddy, CurrentObjective)
+  01c4: return ((FoundEmote == Emote) || (FoundEmote == none))
+  01de: return false
+  01e0: return true
+  01e2: return return
+  01e8: <eos>
+
+function TnEmoteFinder.IsStillOnPath  (script 107 bytes)
+  0000: I = 0
+  0007: if !((I < Path.Length)) goto 0x0062
+  0017: NavCell = NavigationCell(I[Path])
+  002d: if !((NavCell == none)) goto 0x003b
+  0038: goto 0x0058
+  003b: if !(NavCell.IsRegistered(Emote)) goto 0x0058
+  0056: return true
+  0058: AddAdd_PreInt(I)
+  005f: goto 0x0007
+  0062: return false
+  0064: return return
+  006a: <eos>
+
+function TnEmoteFinder.FindPathToObjective  (script 605 bytes)
+  0000: OldWorkingMC = Buddy._WorkingMovementCapabilities
+  0014: OldPrimaryMC = Buddy._PrimaryMovementCapabilities
+  0028: OldSecondaryMC = Buddy._SecondaryMovementCapabilities
+  003c: MC = Buddy._PrimaryMovementCapabilities
+  0050: MC.bCanJump = true
+  0063: MC.bCanWalk = true
+  0076: MC.bJumpCapable = true
+  0089: Buddy._PrimaryMovementCapabilities = MC
+  009d: Buddy._WorkingMovementCapabilities = MC
+  00b1: Buddy._SecondaryMovementCapabilities = MC
+  00c5: PathToObjective = obj'Engine.Pathing'.static.FindPath(Buddy, CurrentObjective, false)
+  00e9: Buddy._PrimaryMovementCapabilities = OldPrimaryMC
+  00fd: Buddy._SecondaryMovementCapabilities = OldSecondaryMC
+  0111: Buddy._WorkingMovementCapabilities = OldWorkingMC
+  0125: if !((PathToObjective.Length == 0)) goto 0x0134
+  0131: return 0
+  0134: if !((((PathToObjective.Length > 0) && (Buddy.Anchor != none)) && (0[PathToObjective] != Buddy.Anchor))) goto 0x0190
+  0172: PathToObjective.Insert(0,1)
+  017a: 0[PathToObjective] = Buddy.Anchor
+  0190: Result = 1
+  0198: I = 0
+  019f: if !((I < PathToObjective.Length)) goto 0x0214
+  01af: if !((I[PathToObjective] == none)) goto 0x01c3
+  01c0: return 0
+  01c3: if !((I[PathToObjective].bGated && (I[PathToObjective].bGateOpen == false))) goto 0x020a
+  01f8: Result = 2
+  0200: AddAdd_PreInt(I)
+  0207: goto 0x0214
+  020a: AddAdd_PreInt(I)
+  0211: goto 0x019f
+  0214: PathToObjective.Remove(I,(PathToObjective.Length - I))
+  022c: if !((cast3a(self._OwningController._DebugMode) == cast3a(3))) goto 0x0250
+  0245: TnEmoteFinder.DrawPath(PathToObjective)
+  0250: return Result
+  0256: return return
+  025c: <eos>
+
+function TnEmoteFinder.EstimateTimeToReachEmote  (script 299 bytes)
+  0000: BestDistanceToPath = 10000.0
+  000b: DistanceTraveled = 0.0
+  0016: idx = 0
+  001d: if !((idx < (Path.Length - 1))) goto 0x0111
+  0030: ClosestPoint = obj'Core.Math'.static.ClosestPointToLineSegment(idx[Path], (idx + 1)[Path], Emote.Location)
+  0070: DistanceToPath = obj'Core.Math'.static.VSize((Emote.Location - ClosestPoint))
+  0096: if !((DistanceToPath < BestDistanceToPath)) goto 0x00da
+  00a5: BestDistanceToPath = DistanceToPath
+  00b0: BestDistanceTraveled = (DistanceTraveled + obj'Core.Math'.static.VSize((ClosestPoint - idx[Path])))
+  00da: (DistanceTraveled += obj'Core.Math'.static.VSize(((idx + 1)[Path] - idx[Path])))
+  0107: AddAdd_PreInt(idx)
+  010e: goto 0x001d
+  0111: return (BestDistanceTraveled / TnEmoteFinder.EstimateBuddySpeed(Buddy))
+  0124: return return
+  012a: <eos>
+
+function TnEmoteFinder.EstimateTimeForBuddyToCompletePath  (script 118 bytes)
+  0000: DistanceTraveled = 0.0
+  000b: idx = 0
+  0012: if !((idx < (Path.Length - 1))) goto 0x005c
+  0025: (DistanceTraveled += obj'Core.Math'.static.VSize(((idx + 1)[Path] - idx[Path])))
+  0052: AddAdd_PreInt(idx)
+  0059: goto 0x0012
+  005c: return (DistanceTraveled / TnEmoteFinder.EstimateBuddySpeed(Buddy))
+  006f: return return
+  0075: <eos>
+
+function TnEmoteFinder.FindEmotes  (script 455 bytes)
+  0000: EmotesAlongPath.Length = 0
+  0008: idx = 0
+  000f: if !((idx < PathToObjective.Length)) goto 0x0148
+  001f: Cell = NavigationCell(idx[PathToObjective])
+  0035: if !((Cell == none)) goto 0x0043
+  0040: goto 0x013e
+  0043: if !((idx[PathToObjective].bGated && (idx[PathToObjective].bGateOpen == false))) goto 0x007b
+  0078: goto 0x0148
+  007b: ActorIdx = 0
+  0082: if !((ActorIdx < Cell.get_NumberOfRegisteredActors())) goto 0x013e
+  009f: Emote = TnInteractEmoteBase(Cell.GetRegisteredActor(ActorIdx))
+  00c2: if !((Emote == none)) goto 0x00d0
+  00cd: goto 0x0134
+  00d0: if !((Emote.HotSpotPathNode == none)) goto 0x00e7
+  00e4: goto 0x0134
+  00e7: if !((Emote.HotSpotPathNode.IsOccupiedExcludeController(self._OwningController) || (EmotesAlongPath.Find(Emote) != -1))) goto 0x0127
+  0124: goto 0x0134
+  0127: EmotesAlongPath.AddItem(Emote)
+  0134: AddAdd_PreInt(ActorIdx)
+  013b: goto 0x0082
+  013e: AddAdd_PreInt(idx)
+  0145: goto 0x000f
+  0148: if !((cast3a(self._OwningController._DebugMode) == cast3a(3))) goto 0x01c4
+  0161: idx = 0
+  0168: if !((idx < EmotesAlongPath.Length)) goto 0x01c4
+  0178: obj'Engine.Debug'.static.DrawSphere(idx[EmotesAlongPath].Location, 100.0, 3, obj'Core.Colors'.static.Yellow(), true)
+  01ba: AddAdd_PreInt(idx)
+  01c1: goto 0x0168
+  01c4: return nothing
+  01c6: <eos>
+
+function TnEmoteFinder.DrawDebug  (script 1076 bytes)
+  0000: obj'Engine.Debug'.static.FlushPersistentLines()
+  0013: if !((Emote == none)) goto 0x0020
+  001e: return nothing
+  0020: obj'Engine.Debug'.static.DrawSphere(Emote.Location, 50.0, 16, obj'Core.Colors'.static.White(), true)
+  005c: BestDistanceToPath = 10000.0
+  0067: idx = 0
+  006e: if !((idx < (Path.Length - 1))) goto 0x0116
+  0081: ClosestPoint = obj'Core.Math'.static.ClosestPointToLineSegment(idx[Path], (idx + 1)[Path], Emote.Location)
+  00c1: Distance = obj'Core.Math'.static.VSize((Emote.Location - ClosestPoint))
+  00e7: if !((Distance < BestDistanceToPath)) goto 0x010c
+  00f6: BestDistanceToPath = Distance
+  0101: BestIdx = idx
+  010c: AddAdd_PreInt(idx)
+  0113: goto 0x006e
+  0116: MinEnterDistance = (self._MinEnterTime * TnEmoteFinder.EstimateBuddySpeed(Buddy))
+  012e: MinExitDistance = (self._MinExitTime * TnEmoteFinder.EstimateBuddySpeed(Buddy))
+  0146: PathDistance = 0.0
+  0151: idx = 0
+  0158: if !((idx < (Path.Length - 1))) goto 0x0426
+  016b: SegmentDistance = obj'Core.Math'.static.VSize(((idx + 1)[Path] - idx[Path]))
+  0197: if !(((PathDistance < MinEnterDistance) && ((PathDistance + SegmentDistance) > MinEnterDistance))) goto 0x0229
+  01be: obj'Engine.Debug'.static.DrawSphere((idx[Path] + (((idx + 1)[Path] - idx[Path]) * ((MinEnterDistance - PathDistance) / SegmentDistance))), 30.0, 8, obj'Core.Colors'.static.Red(), true)
+  0229: if !(((PathDistance < MinExitDistance) && ((PathDistance + SegmentDistance) > MinExitDistance))) goto 0x02bb
+  0250: obj'Engine.Debug'.static.DrawSphere((idx[Path] + (((idx + 1)[Path] - idx[Path]) * ((MinExitDistance - PathDistance) / SegmentDistance))), 30.0, 8, obj'Core.Colors'.static.Green(), true)
+  02bb: (PathDistance += SegmentDistance)
+  02c7: if !((idx == BestIdx)) goto 0x038a
+  02d6: ClosestPoint = obj'Core.Math'.static.ClosestPointToLineSegment(idx[Path], (idx + 1)[Path], Emote.Location)
+  0316: obj'Engine.Debug'.static.DrawLine(idx[Path], ClosestPoint, obj'Core.Colors'.static.White(), true)
+  034d: obj'Engine.Debug'.static.DrawLine(ClosestPoint, (idx + 1)[Path], obj'Core.Colors'.static.Red(), true)
+  0387: goto 0x041c
+  038a: if !((idx < BestIdx)) goto 0x03dc
+  0399: obj'Engine.Debug'.static.DrawLine(idx[Path], (idx + 1)[Path], obj'Core.Colors'.static.White(), true)
+  03d9: goto 0x041c
+  03dc: obj'Engine.Debug'.static.DrawLine(idx[Path], (idx + 1)[Path], obj'Core.Colors'.static.Red(), true)
+  041c: AddAdd_PreInt(idx)
+  0423: goto 0x0158
+  0426: TnEmoteFinder.DrawPath(PathToObjective)
+  0431: return nothing
+  0433: <eos>
+
+function TnEmoteFinder.EstimateBuddySpeed  (script 58 bytes)
+  0000: return obj'Core.Math'.static.FMax(Buddy.GroundSpeed, obj'Core.Math'.static.VSize(Buddy.Velocity))
+  0033: return return
+  0039: <eos>
+
+function TnEmoteFinder.DrawPath  (script 176 bytes)
+  0000: idx = 0
+  0007: if !((idx < (Path.Length - 1))) goto 0x00ad
+  001a: obj'Engine.Debug'.static.DrawLine(idx[Path].Location, (idx + 1)[Path].Location, obj'Core.Colors'.static.Magenta(), true)
+  006c: Cell = NavigationCell(idx[Path])
+  0082: if !((Cell != none)) goto 0x00a3
+  008d: Cell.DrawDebug(true, , )
+  00a3: AddAdd_PreInt(idx)
+  00aa: goto 0x0007
+  00ad: return nothing
+  00af: <eos>

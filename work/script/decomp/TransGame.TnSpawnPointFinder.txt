@@ -1,0 +1,84 @@
+function TnSpawnPointFinder.get_MaximumPlayerAnchorAge  (script 13 bytes)
+  0000: return self._MaximumPlayerAnchorAge
+  0006: return return
+  000c: <eos>
+
+function TnSpawnPointFinder.set_MaximumPlayerAnchorAge  (script 14 bytes)
+  0000: self._MaximumPlayerAnchorAge = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSpawnPointFinder.get_DefaultCollisionRadius  (script 13 bytes)
+  0000: return self._DefaultCollisionRadius
+  0006: return return
+  000c: <eos>
+
+function TnSpawnPointFinder.set_DefaultCollisionRadius  (script 14 bytes)
+  0000: self._DefaultCollisionRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSpawnPointFinder.get_DefaultCollisionHeight  (script 13 bytes)
+  0000: return self._DefaultCollisionHeight
+  0006: return return
+  000c: <eos>
+
+function TnSpawnPointFinder.set_DefaultCollisionHeight  (script 14 bytes)
+  0000: self._DefaultCollisionHeight = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSpawnPointFinder.set_Validator  (script 14 bytes)
+  0000: self._Validator = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnSpawnPointFinder.FindFromActiveCheckpoint  (script 272 bytes)
+  0000: CP = CheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager()).GetActiveCheckpoint()
+  003a: if !((CP == none)) goto 0x0047
+  0045: return none
+  0047: if !(self._Validator.IsSafeSpawnLocation(CP.Location, self._DefaultCollisionRadius, self._DefaultCollisionHeight)) goto 0x007b
+  0075: return CP
+  007b: foreach CP.AuxilliarySpawnPoints(NP,) (end 0x00c9)
+  0093: if !(self._Validator.IsSafeSpawnLocation(NP.Location, self._DefaultCollisionRadius, self._DefaultCollisionHeight)) goto 0x00c8
+  00c1: iterpop
+  00c2: return NP
+  00c8: iternext
+  00c9: iterpop
+  00ca: LogInternal(("ERROR: Failed to find open spawn point at" @ cast56(CP)), , , )
+  0103: return CP
+  0109: return return
+  010f: <eos>
+
+function TnSpawnPointFinder.FindNearAnyPlayer  (script 119 bytes)
+  0000: foreach TnSpawnPointFinder.GetWorldInfo().AllControllers(obj'TnPlayerController', PC) (end 0x0069)
+  0021: PP = TnPlayerPawn(PC.Pawn)
+  003a: if !((PP == none)) goto 0x0049
+  0045: iternext
+  0046: goto 0x0069
+  0049: NP = TnSpawnPointFinder.FindFromAnchor(PP)
+  005a: if !((NP != none)) goto 0x0068
+  0065: goto 0x0069
+  0068: iternext
+  0069: iterpop
+  006a: return NP
+  0070: return return
+  0076: <eos>
+
+function TnSpawnPointFinder.FindFromAnchor  (script 206 bytes)
+  0000: AnchorService = TnAnchorService(P.GetService('TnAnchorService'))
+  0027: if !(EqualEqual_InterfaceInterface(AnchorService, TnAnchorService(none))) goto 0x003d
+  003b: return none
+  003d: NP = AnchorService.GetClosestUnoccupiedNavigationPointInFront(P, (cast3a(P.get_VehicleType()) != cast3a(2)), false, self._MaximumPlayerAnchorAge, 180.0)
+  0082: if !((NP == none)) goto 0x008f
+  008d: return none
+  008f: if !(!self._Validator.IsSafeSpawnLocation(NP.Location, self._DefaultCollisionRadius, self._DefaultCollisionHeight)) goto 0x00c1
+  00bf: return none
+  00c1: return NP
+  00c7: return return
+  00cd: <eos>
+
+function TnSpawnPointFinder.GetWorldInfo  (script 27 bytes)
+  0000: return obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0014: return return
+  001a: <eos>

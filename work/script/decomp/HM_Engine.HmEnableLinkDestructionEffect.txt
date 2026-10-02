@@ -1,0 +1,45 @@
+function HmEnableLinkDestructionEffect.get_DestructionTrigger  (script 13 bytes)
+  0000: return self._DestructionTrigger
+  0006: return return
+  000c: <eos>
+
+function HmEnableLinkDestructionEffect.set_DestructionTrigger  (script 14 bytes)
+  0000: self._DestructionTrigger = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmEnableLinkDestructionEffect.get_PieceName  (script 13 bytes)
+  0000: return self._PieceName
+  0006: return return
+  000c: <eos>
+
+function HmEnableLinkDestructionEffect.set_PieceName  (script 14 bytes)
+  0000: self._PieceName = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmEnableLinkDestructionEffect.get_StateName  (script 13 bytes)
+  0000: return self._StateName
+  0006: return return
+  000c: <eos>
+
+function HmEnableLinkDestructionEffect.set_StateName  (script 14 bytes)
+  0000: self._StateName = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmEnableLinkDestructionEffect.BeginEffect  (script 414 bytes)
+  0000: DestructibleComponent = GetAttachingActor().FindComponent(obj'HmDestructibleComponent')
+  0023: if !((DestructibleComponent == none)) goto 0x0030
+  002e: return nothing
+  0030: Piece = DestructibleComponent.FindPiece(self._PieceName)
+  004e: if !((Piece == none)) goto 0x00b5
+  0059: LogInternal(((("Error: could not find piece" @ cast57(self._PieceName)) @ "in destructible") @ cast56(GetOwner().GetAttachingActor())), , , )
+  00b3: return nothing
+  00b5: DestructionState = ((self._StateName == 'None') ? Piece.GetActiveState() : Piece.FindStateByName(self._StateName))
+  00fb: if !((DestructionState == none)) goto 0x0183
+  0106: LogInternal(((((("Error: could not find destruction state" @ cast57(self._StateName)) @ "in piece") @ cast57(self._PieceName)) @ "in destructible") @ cast56(GetOwner().GetAttachingActor())), , , )
+  0181: return nothing
+  0183: DestructionState.EnableLink(self._DestructionTrigger)
+  019b: return nothing
+  019d: <eos>

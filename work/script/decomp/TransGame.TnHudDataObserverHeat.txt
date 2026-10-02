@@ -1,0 +1,8 @@
+function TnHudDataObserverHeat.CheckData  (script 136 bytes)
+  0000: if !(((PC.Pawn != none) && (PC.Pawn.Weapon != none))) goto 0x0066
+  0033: WeaponHeat = TnWeapon(PC.Pawn.Weapon).GetCurrentWeaponHeat()
+  0063: goto 0x0071
+  0066: WeaponHeat = 0.0
+  0071: ProcessNewValue(Movie, WeaponHeat)
+  0085: return nothing
+  0087: <eos>

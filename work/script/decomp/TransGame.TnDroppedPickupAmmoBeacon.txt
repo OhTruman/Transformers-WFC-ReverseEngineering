@@ -1,0 +1,149 @@
+function TnDroppedPickupAmmoBeacon.PostBeginPlay  (script 14 bytes)
+  0000: self.LifeSpan = self.BeaconLifespan
+  000b: return nothing
+  000d: <eos>
+
+function TnDroppedPickupAmmoBeacon.ReplicatedEvent  (script 45 bytes)
+  0000: switch (VarName)
+  0007: case 'Instigator': (next 0x001c)
+  0013: TnDroppedPickupAmmoBeacon.ApplyColorsToMesh()
+  0019: goto 0x001f
+  001c: default:
+  001f: TnDroppedPickupDefrag.ReplicatedEvent(VarName)
+  002a: return nothing
+  002c: <eos>
+
+function TnDroppedPickupAmmoBeacon.SetPickupMesh  (script 20 bytes)
+  0000: TnDroppedPickupDefrag.SetPickupMesh(PickupMesh)
+  000b: TnDroppedPickupAmmoBeacon.ApplyColorsToMesh()
+  0011: return nothing
+  0013: <eos>
+
+function TnDroppedPickupAmmoBeacon.ApplyColorsToMesh  (script 110 bytes)
+  0000: InstigatorPawn = TnPawn(self.Instigator)
+  0010: if !((InstigatorPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: CharacterApplier = InstigatorPawn._CharacterApplier
+  0031: if !((CharacterApplier == none)) goto 0x003e
+  003c: return nothing
+  003e: MC = FindComponent(obj'Engine.MeshComponent')
+  0053: CharacterApplier.ApplyColorsToMesh(MC)
+  006b: return nothing
+  006d: <eos>
+
+function TnDroppedPickupAmmoBeacon.ClientLanded  (script 146 bytes)
+  0000: TnDroppedPickupDefrag.ClientLanded()
+  0006: LocalPC = TnWorldInfo(self.WorldInfo).GetLocalPlayerController()
+  0024: if !((LocalPC == none)) goto 0x0031
+  002f: return nothing
+  0031: if !(((LocalPC.Pawn == self.Instigator) || LocalPC.OnSameTeamAs(self))) goto 0x008f
+  0062: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker(self.AmmoBeaconCaption, self, obj'TnObjectiveMarkerTypeAmmoBeacon', true)
+  008f: return nothing
+  0091: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.BeginState  (script 127 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: if !(((self.Instigator != none) && TnPawn(self.Instigator).HasSkill(obj'TnSkillAmmoBeaconGiftDropper'))) goto 0x0047
+  003f: self.ShouldGiveGift = true
+  0047: if !(((self.Instigator != none) && TnPawn(self.Instigator).HasSkill(obj'TnSkillAmmoBeaconGiveGrenade'))) goto 0x007c
+  0074: self.ShouldGiveGrenades = true
+  007c: return nothing
+  007e: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.EndState  (script 73 bytes)
+  0000: EndState(NextStateName)
+  000b: if !((self.WorldInfo.GRI != none)) goto 0x0046
+  001f: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self, obj'TnObjectiveMarkerTypeAmmoBeacon')
+  0046: return nothing
+  0048: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.UpdateDefragPulse  (script 140 bytes)
+  0000: if !(!self.DefragPulseEnabled) goto 0x000d
+  000b: return nothing
+  000d: if !((self.LifeSpan > (self.DefragPulseTime * 2.0))) goto 0x0060
+  0023: if !(self.Defragger.IsFullyFadedIn()) goto 0x0060
+  0039: self.Defragger.DefragTime = self.DefragPulseTime
+  004d: self.Defragger.StartFadeOut()
+  0060: if !(self.Defragger.IsFullyFadedOut()) goto 0x0089
+  0076: self.Defragger.StartFadeIn()
+  0089: return nothing
+  008b: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.GiveDamageIncrease  (script 159 bytes)
+  0000: BS = TnBuffService(P.GetService('TnBuffService'))
+  0027: if !(EqualEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x003d
+  003b: return nothing
+  003d: BaconDamage = BS.GetBuff(obj'TnBuffAmmoBeaconIncreaseDamage')
+  005c: if !((BaconDamage == none)) goto 0x0089
+  0067: BS.AddBuff(obj'TnBuffAmmoBeaconIncreaseDamage', 0, self.Instigator)
+  0086: goto 0x009c
+  0089: BaconDamage.ResetBuffTime()
+  009c: return nothing
+  009e: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.GiveGrenade  (script 137 bytes)
+  0000: if !((self.AlreadyGaveGrenade.Find(P) == -1)) goto 0x0086
+  0017: GB = TnInventoryManager(P.InvManager).GetWeaponByType(4)
+  0040: if !(((GB != none) && !GB.IsReserveAmmoFull())) goto 0x0086
+  0065: self.AlreadyGaveGrenade.AddItem(P)
+  0072: GB.AddAmmo(1)
+  0086: return nothing
+  0088: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.DropGift  (script 198 bytes)
+  0000: GiftTypeClass = class<Inventory>(FindObject(self.GiftType, obj'Core.Class'))
+  001f: I = self.WorldInfo.Game.Spawn(GiftTypeClass, , , , , , , )
+  004d: if !((I == none)) goto 0x005a
+  0058: return nothing
+  005a: I.InitializeForDrop()
+  006d: RandomRot = obj'Core.Random'.static.RotRand(false)
+  0080: RandomRot.Pitch = 0
+  0092: I.DropFrom((self.Location + self.GiftTossOffset), (self.GiftTossVelocity >> RandomRot), self.Rotation)
+  00c3: return nothing
+  00c5: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.UpdateGift  (script 98 bytes)
+  0000: if !((self.GiftProgress < self.GiftProgressMax)) goto 0x005f
+  000f: GiftProgressDelta = (self.GiftProgressRate * DeltaTime)
+  0021: if !(((self.GiftProgress + GiftProgressDelta) >= self.GiftProgressMax)) goto 0x003d
+  0037: DropGift()
+  003d: self.GiftProgress = obj'Core.Math'.static.FMin(self.GiftProgressMax, (self.GiftProgress + GiftProgressDelta))
+  005f: return nothing
+  0061: <eos>
+
+function TnDroppedPickupAmmoBeacon.Pickup.Tick  (script 300 bytes)
+  0000: Tick(DeltaTime)
+  000b: UpdateDefragPulse()
+  0011: if !((cast3a(self.Role) != cast3a(3))) goto 0x0023
+  0021: return nothing
+  0023: if !(((self.Instigator == none) || self.Instigator.IsDead())) goto 0x0056
+  0046: GotoState('FadeOut', , , )
+  0054: return nothing
+  0056: foreach VisibleCollidingActors(obj'TnPawn', P, self.Radius, self.Location, ) (end 0x0128)
+  0071: if !(((self.Instigator != P) && !P.IsSameTeam(self.Instigator))) goto 0x00a3
+  009f: iternext
+  00a0: goto 0x0128
+  00a3: W = TnWeapon(P.Weapon)
+  00bc: if !(((W != none) && !W.IsReserveAmmoFull())) goto 0x00f4
+  00e1: W.FillReserveAmmo()
+  00f4: GiveDamageIncrease(P)
+  00ff: if !(self.ShouldGiveGrenades) goto 0x0113
+  0108: GiveGrenade(P)
+  0113: if !(self.ShouldGiveGift) goto 0x0127
+  011c: UpdateGift(DeltaTime)
+  0127: iternext
+  0128: iterpop
+  0129: return nothing
+  012b: <eos>
+
+function TnDroppedPickupAmmoBeacon.GetNormalizedGiftProgress  (script 20 bytes)
+  0000: return (self.GiftProgress / self.GiftProgressMax)
+  000d: return return
+  0013: <eos>
+
+function TnDroppedPickupAmmoBeacon.OnFadeOut  (script 38 bytes)
+  0000: self.Defragger.DefragTime = self.Defragger.default.DefragTime
+  001d: TnDroppedPickupDefrag.OnFadeOut()
+  0023: return nothing
+  0025: <eos>

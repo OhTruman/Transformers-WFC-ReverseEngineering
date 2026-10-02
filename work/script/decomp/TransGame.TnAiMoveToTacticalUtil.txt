@@ -1,0 +1,89 @@
+function TnAiMoveToTacticalUtil.get_TacticalPathNodePickerSensor  (script 13 bytes)
+  0000: return self._TacticalPathNodePickerSensor
+  0006: return return
+  000c: <eos>
+
+function TnAiMoveToTacticalUtil.set_BetterNodeExistsCost  (script 14 bytes)
+  0000: self._BetterNodeExistsCost = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiMoveToTacticalUtil.set_ChangeTacticalThreshold  (script 14 bytes)
+  0000: self._ChangeTacticalThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiMoveToTacticalUtil.Initialize  (script 278 bytes)
+  0000: self._BoundController = BoundController
+  000b: if !((self._BoundController == none)) goto 0x0018
+  0016: return nothing
+  0018: SensorSet = self._BoundController.GetTacticalAnalyzer().GetSensorSet()
+  003f: if !((SensorSet == none)) goto 0x004c
+  004a: return nothing
+  004c: self._TacticalPathNodePickerSensor = TnAiMoveToTacticalUtil.GetPickerSensor(SensorSet)
+  005d: if !((self._TacticalPathNodePickerSensor != none)) goto 0x006a
+  0068: return nothing
+  006a: self._TacticalPathNodePickerSensor = TnAiMoveToTacticalUtil.GetPickerSensor(SensorSet.DynamicSensorSet)
+  0084: if !((self._TacticalPathNodePickerSensor != none)) goto 0x0113
+  008f: self._TacticalPathNodePickerSensor = TnTacticalPathNodePickerSensor(self._TacticalPathNodePickerSensor.Clone(self._BoundController.GetTacticalAnalyzer(), ))
+  00c1: self._BoundController.GetTacticalAnalyzer().AddSensor(self._TacticalPathNodePickerSensor)
+  00e7: self._TacticalPathNodePickerSensor.TacticalDescription = "Tactical for moving"
+  010b: self._bDynamicPickerSensor = true
+  0113: return nothing
+  0115: <eos>
+
+function TnAiMoveToTacticalUtil.Shutdown  (script 57 bytes)
+  0000: self._ChosenTacticalInterface = none
+  0007: if !(self._bDynamicPickerSensor) goto 0x0036
+  0010: self._BoundController.GetTacticalAnalyzer().RemoveSensor(self._TacticalPathNodePickerSensor)
+  0036: return nothing
+  0038: <eos>
+
+function TnAiMoveToTacticalUtil.RefreshTacticalInterface  (script 28 bytes)
+  0000: self._ChosenTacticalInterface = self._TacticalPathNodePickerSensor.GetBestTacticalPathNode()
+  0019: return nothing
+  001b: <eos>
+
+function TnAiMoveToTacticalUtil.GetPickerSensor  (script 133 bytes)
+  0000: if !(((SensorSet == none) || (SensorSet.Sensors.Length == 0))) goto 0x0024
+  0022: return none
+  0024: foreach SensorSet.Sensors(Sensor,) (end 0x007b)
+  003c: PickerSensor = TnTacticalPathNodePickerSensor(Sensor)
+  004c: if !((PickerSensor == none)) goto 0x005b
+  0057: iternext
+  0058: goto 0x007b
+  005b: if !((PickerSensor.actionClass == obj'TnAiActionMoveToTactical')) goto 0x007a
+  0073: iterpop
+  0074: return PickerSensor
+  007a: iternext
+  007b: iterpop
+  007c: return none
+  007e: return return
+  0084: <eos>
+
+function TnAiMoveToTacticalUtil.GetBestTacticalPathNode  (script 27 bytes)
+  0000: return self._TacticalPathNodePickerSensor.GetBestTacticalPathNode()
+  0014: return return
+  001a: <eos>
+
+function TnAiMoveToTacticalUtil.GetBestTacticalScore  (script 27 bytes)
+  0000: return self._TacticalPathNodePickerSensor.GetBestTacticalScore()
+  0014: return return
+  001a: <eos>
+
+function TnAiMoveToTacticalUtil.ShouldDiscardTacticalPathNode  (script 86 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self._ChosenTacticalInterface, TnTacticalInterface(none))) goto 0x0034
+  0014: return (self._TacticalPathNodePickerSensor.ScoreTacticalPathNode(self._ChosenTacticalInterface) <= 0.0)
+  0034: return (self._TacticalPathNodePickerSensor.GetBestTacticalScore() <= 0.0)
+  004f: return return
+  0055: <eos>
+
+function TnAiMoveToTacticalUtil.GetRunningCost  (script 179 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self._ChosenTacticalInterface, TnTacticalInterface(none))) goto 0x001a
+  0014: return self._BetterNodeExistsCost
+  001a: CurrentScore = self._TacticalPathNodePickerSensor.ScoreTacticalPathNode(self._ChosenTacticalInterface)
+  0038: BestScore = self._TacticalPathNodePickerSensor.GetBestTacticalScore()
+  0051: NormalizedImprovement = ((BestScore - CurrentScore) / obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(BestScore), obj'Core.Math'.static.Abs(CurrentScore)))
+  0090: return ((NormalizedImprovement > self._ChangeTacticalThreshold) ? self._BetterNodeExistsCost : 0.0)
+  00ac: return return
+  00b2: <eos>

@@ -1,0 +1,49 @@
+function TnAiActionRetreated.OnBind  (script 143 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: Sensors = self._TransformerController.GetTacticalAnalyzer().GetSensorSet().Sensors
+  0036: foreach Sensors(Sensor,) (end 0x008b)
+  0045: CurrentNodeSensor = TnTacticalPathNodePickerSensor(Sensor)
+  0055: if !((CurrentNodeSensor == none)) goto 0x0064
+  0060: iternext
+  0061: goto 0x008b
+  0064: if !((CurrentNodeSensor.actionClass == obj'TnAiActionRetreated')) goto 0x008a
+  007c: self._TacticalPathNodePickerSensor = CurrentNodeSensor
+  0087: goto 0x008b
+  008a: iternext
+  008b: iterpop
+  008c: return nothing
+  008e: <eos>
+
+function TnAiActionRetreated.OnSetUpConditions  (script 116 bytes)
+  0000: if !((self._TacticalPathNodePickerSensor == none)) goto 0x000d
+  000b: return false
+  000d: TacticalPathNode = TnTacticalPathNode(cast36(self._TacticalPathNodePickerSensor.GetBestTacticalPathNode()))
+  002d: if !((TacticalPathNode == none)) goto 0x003a
+  0038: return false
+  003a: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', TacticalPathNode)
+  005c: return OnSetUpConditions(ExpectedEffects, Conditions)
+  006d: return return
+  0073: <eos>
+
+function TnAiActionRetreated.OnStart  (script 91 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDamageThreat') == 0)) goto 0x002e
+  0023: return Succeed()
+  002e: SetCharacterState(0)
+  0039: PlayDialog(obj'SoundEvents_Dialog.RetreatBeginDialog')
+  0048: return OnStart(ExpectedEffects)
+  0054: return return
+  005a: <eos>
+
+function TnAiActionRetreated.OnUpdate  (script 143 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self._TacticalPathNodePickerSensor.GetBestTacticalPathNode(), TnTacticalInterface(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateAtActor')))) goto 0x0049
+  003e: return Fail()
+  0049: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDamageThreat') == 0)) goto 0x0077
+  006c: return Succeed()
+  0077: return OnUpdate(ExpectedEffects, DeltaTime)
+  0088: return return
+  008e: <eos>
+
+function TnAiActionRetreated.DoCalculateAdditionalCost  (script 74 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDamageThreat') < 3) ? 2.0 : 0.0))
+  0043: return return
+  0049: <eos>

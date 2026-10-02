@@ -1,0 +1,143 @@
+function TnProjectileHoming.UpdateData  (script 56 bytes)
+  0000: self.HomingData = TnProjectileDataHoming(self.Data)
+  0010: self.ClosingDistanceSq = obj'Core.Math'.static.Square(self.HomingData.ClosingDistance)
+  002f: UpdateData()
+  0035: return nothing
+  0037: <eos>
+
+function TnProjectileHoming.SetLockOnStatus  (script 96 bytes)
+  0000: P = TnPawn(LockOnTarget)
+  0010: if !((P == none)) goto 0x001d
+  001b: return nothing
+  001d: LOI.LockOnStatus = NewStatus
+  0033: LOI.LockOnInstigator = self
+  0045: P.UpdateLockOnInfo(LOI)
+  005d: return nothing
+  005f: <eos>
+
+function TnProjectileHoming.Destroyed  (script 22 bytes)
+  0000: TnProjectileHoming.SetLockOnStatus(self.Target, 0)
+  000d: Destroyed()
+  0013: return nothing
+  0015: <eos>
+
+function TnProjectileHoming.SetTarget  (script 69 bytes)
+  0000: self.Target = HomingTarget
+  000b: if !((HomingTarget != none)) goto 0x0034
+  0016: TnProjectileHoming.SetLockOnStatus(self.Target, 2)
+  0023: GotoState('Homing', , , )
+  0031: goto 0x0042
+  0034: GotoState('None', , , )
+  0042: return nothing
+  0044: <eos>
+
+function TnProjectileHoming.GetTarget  (script 13 bytes)
+  0000: return self.Target
+  0006: return return
+  000c: <eos>
+
+function TnProjectileHoming.Tick  (script 39 bytes)
+  0000: UpdateState()
+  000a: OnTick(DeltaTime)
+  0019: Tick(DeltaTime)
+  0024: return nothing
+  0026: <eos>
+
+function TnProjectileHoming.UpdateState  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileHoming.OnTick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileHoming.Homing.GetHomingLocation  (script 22 bytes)
+  0000: return (TnProjectileHoming.GetTargetsLocation() + TnProjectileHoming.GetLeadOffset())
+  000f: return return
+  0015: <eos>
+
+function TnProjectileHoming.Homing.GetHomingForce  (script 22 bytes)
+  0000: return self.HomingData.HomingForce
+  000f: return return
+  0015: <eos>
+
+function TnProjectileHoming.Homing.UpdateState  (script 85 bytes)
+  0000: if !(ShouldStopHoming()) goto 0x001a
+  0009: GotoState('None', , , )
+  0017: goto 0x0052
+  001a: if !((obj'Core.Math'.static.VSizeSq((self.Location - TnProjectileHoming.GetTargetsLocation())) <= self.ClosingDistanceSq)) goto 0x0052
+  0044: GotoState('Closing', , , )
+  0052: return nothing
+  0054: <eos>
+
+function TnProjectileHoming.Homing.ShouldStopHoming  (script 234 bytes)
+  0000: if !(IsExploding()) goto 0x000f
+  000d: return true
+  000f: if !((GetTarget() == none)) goto 0x0021
+  001f: return true
+  0021: TargetPawn = Pawn(GetTarget())
+  0036: TnTargetPawn = TnPawn(TargetPawn)
+  0046: if !((((TnTargetPawn != none) && TnTargetPawn._IsDowned) && ClassIsChildOf(self.WorldInfo.GetGameClass(), obj'TnCampaignGameBase'))) goto 0x0087
+  0085: return true
+  0087: if !((((TnTargetPawn != none) && !self.HomingData.CanLockOnToRobots) && TnTargetPawn.get_IsInRobotForm())) goto 0x00c2
+  00c0: return true
+  00c2: return ((TargetPawn != none) && TargetPawn.IsDead())
+  00e3: return return
+  00e9: <eos>
+
+function TnProjectileHoming.Homing.OnTick  (script 71 bytes)
+  0000: Direction = obj'Core.Math'.static.Normal((GetHomingLocation() - self.Location))
+  0022: self.Acceleration = (GetHomingForce() * Direction)
+  0039: TnProjectileHoming.OnTick(DeltaTime)
+  0044: return nothing
+  0046: <eos>
+
+function TnProjectileHoming.Closing.GetHomingLocation  (script 14 bytes)
+  0000: return TnProjectileHoming.GetTargetsLocation()
+  0007: return return
+  000d: <eos>
+
+function TnProjectileHoming.Closing.GetHomingForce  (script 22 bytes)
+  0000: return self.HomingData.ClosingForce
+  000f: return return
+  0015: <eos>
+
+function TnProjectileHoming.Closing.OnTick  (script 78 bytes)
+  0000: (self.ClosingTimer += DeltaTime)
+  000c: if !((self.ClosingTimer >= self.HomingData.ClosingTime)) goto 0x0040
+  0024: Explode(self.Location, vect(0,0,1))
+  0040: OnTick(DeltaTime)
+  004b: return nothing
+  004d: <eos>
+
+function TnProjectileHoming.GetTargetsLocation  (script 92 bytes)
+  0000: TargetableService = TnProjectileHoming.GetTargetableService(self.Target)
+  0011: if !(NotEqual_InterfaceInterface(TargetableService, TnTargetableService(none))) goto 0x003a
+  0025: return TargetableService.get_TargetableLocation()
+  003a: return GetTarget().GetTargetLocation(self, )
+  0055: return return
+  005b: <eos>
+
+function TnProjectileHoming.GetTargetableService  (script 89 bytes)
+  0000: ServiceProvider = TnServiceProvider(TargetActor)
+  0010: if !(NotEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x004c
+  0024: TargetableService = TnTargetableService(ServiceProvider.GetService('TnTargetableService'))
+  004c: return TargetableService
+  0052: return return
+  0058: <eos>
+
+function TnProjectileHoming.GetLeadOffset  (script 328 bytes)
+  0000: TargetSpeed = obj'Core.Math'.static.VSize(GetTarget().Velocity)
+  0024: if !((TargetSpeed < self.HomingData.LeadTargetSpeed.Min)) goto 0x0055
+  0047: return vect(0,0,0)
+  0055: LeadTargetSpeedRange = (self.HomingData.LeadTargetSpeed.Max - self.HomingData.LeadTargetSpeed.Min)
+  008f: if !((LeadTargetSpeedRange <= 0.0)) goto 0x00ac
+  009e: return vect(0,0,0)
+  00ac: NormalizedTargetSpeed = (TargetSpeed - self.HomingData.LeadTargetSpeed.Min)
+  00d2: (NormalizedTargetSpeed /= LeadTargetSpeedRange)
+  00de: NormalizedTargetSpeed = obj'Core.Math'.static.FMin(NormalizedTargetSpeed, 1.0)
+  00f9: LeadDistance = (NormalizedTargetSpeed * self.HomingData.MaxLeadDistance)
+  0114: LeadDirection = (GetTarget().Velocity / TargetSpeed)
+  0134: return (LeadDistance * LeadDirection)
+  0141: return return
+  0147: <eos>

@@ -1,0 +1,22 @@
+function HmRoomVolume.GetPrimitivesContainedInBox  (script 12 bytes)
+  0000: WorldBox
+  0005: OutPrimitives
+  000a: nothing
+  000b: <eos>
+
+function HmRoomVolume.IsValid  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmRoomVolume.CheckForErrors  (script 73 bytes)
+  0000: CheckForErrors()
+  0006: if !(!IsValid()) goto 0x0046
+  0015: EmitCheckMessage(0, (cast56(self) @ "overlaps other room volumes!"), , )
+  0046: return nothing
+  0048: <eos>
+
+function HmRoomVolume.OnStreamedOut  (script 12 bytes)
+  0000: Actor.OnStreamedOut()
+  0006: DestroyActor()
+  0009: return nothing
+  000b: <eos>

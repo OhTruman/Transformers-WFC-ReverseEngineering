@@ -1,0 +1,89 @@
+function TnOnlineTestingPolicy.HandleFrontendReadyToPlay  (script 212 bytes)
+  0000: LogInternal((("Entering  '" $ cast52(self._LobbyToEnter)) $ "' lobby for automated testing"), 'DevAutomatedTesting', , )
+  0044: GRI = TnGameReplicationInfo(Game.GameReplicationInfo)
+  005d: GRI.SetGameTeamStatus(3)
+  0072: foreach Game.WorldInfo.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x00d0)
+  009b: LobbyURL = PC.BuildPartyLobbyURL()
+  00b4: obj'TnGame'.static.ClientTravelToMap(LobbyURL)
+  00cc: goto 0x00d0
+  00cf: iternext
+  00d0: iterpop
+  00d1: return nothing
+  00d3: <eos>
+
+function TnOnlineTestingPolicy.HandleEnterGameLobby  (script 61 bytes)
+  0000: self._Game = Game
+  000b: self._Game.SetTimer(obj'Core.Random'.static.RandomInRange(self._GameLobbyQuitInterval), true, 'CheckForQuits', self)
+  003a: return nothing
+  003c: <eos>
+
+function TnOnlineTestingPolicy.HandleEnterGame  (script 61 bytes)
+  0000: self._Game = Game
+  000b: self._Game.SetTimer(obj'Core.Random'.static.RandomInRange(self._GameQuitInterval), true, 'CheckForQuits', self)
+  003a: return nothing
+  003c: <eos>
+
+function TnOnlineTestingPolicy.HandleTick  (script 230 bytes)
+  0000: TnAutomatedTestingPolicy.HandleTick(DeltaTime)
+  000b: if !((self._Game == none)) goto 0x0018
+  0016: return nothing
+  0018: if !((self._Game.GameReplicationInfo == none)) goto 0x002e
+  002c: return nothing
+  002e: GameSettings = TnOnlineGameSettingsBase(self._Game.GetOnlineGameSettings())
+  004c: if !((GameSettings == none)) goto 0x0059
+  0057: return nothing
+  0059: if !((self._Game.GameReplicationInfo.PRIArray.Length < GameSettings.NumRequiredPlayers)) goto 0x0093
+  0084: (self._SecondsWithoutMinPlayers += DeltaTime)
+  0090: goto 0x009e
+  0093: self._SecondsWithoutMinPlayers = 0.0
+  009e: if !((self._Game.GameReplicationInfo.PRIArray.Length > GameSettings.NumRequiredPlayers)) goto 0x00d8
+  00c9: (self._SecondsAboveRequiredPlayers += DeltaTime)
+  00d5: goto 0x00e3
+  00d8: self._SecondsAboveRequiredPlayers = 0.0
+  00e3: return nothing
+  00e5: <eos>
+
+function TnOnlineTestingPolicy.CheckForQuits  (script 537 bytes)
+  0000: if !((self._SecondsWithoutMinPlayers > self._MaxStaleTime)) goto 0x00a5
+  000f: LogInternal((((("Host has been alone for" @ cast55(self._SecondsWithoutMinPlayers)) @ "and is quitting after being in the lobby for") @ cast53(self._Game.GameReplicationInfo.ElapsedTime)) @ " seconds."), 'DevAutomatedTesting', , )
+  0096: MakeHostQuitGame()
+  00a0: return nothing
+  00a2: goto 0x00f1
+  00a5: LogInternal((("Host has been alone for" @ cast55(self._SecondsWithoutMinPlayers)) @ "and will not cause a quit"), 'DevAutomatedTesting', , )
+  00f1: if !((self._SecondsAboveRequiredPlayers > self._MaxTimeAboveRequiredPlayers)) goto 0x01b4
+  0100: LogInternal((((("Game has had more than enough players for" @ cast55(self._SecondsAboveRequiredPlayers)) @ "and is force quitting a client after being in the game for") @ cast53(self._Game.GameReplicationInfo.ElapsedTime)) @ " seconds."), 'DevAutomatedTesting', , )
+  01a7: MakeRemotePlayerQuitGame()
+  01b1: goto 0x0216
+  01b4: LogInternal((("Game has had over minimum players for" @ cast55(self._SecondsAboveRequiredPlayers)) @ "seconds and will not cause a quit"), 'DevAutomatedTesting', , )
+  0216: return nothing
+  0218: <eos>
+
+function TnOnlineTestingPolicy.MakeHostQuitGame  (script 130 bytes)
+  0000: foreach self._Game.WorldInfo.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x007e)
+  0029: LogInternal((("Host" @ PC.GetHumanReadableName()) $ " is quitting the game"), 'DevAutomatedTesting', , )
+  006a: PC.ClientAutomatedTestingQuitGame()
+  007d: iternext
+  007e: iterpop
+  007f: return nothing
+  0081: <eos>
+
+function TnOnlineTestingPolicy.MakeRemotePlayerQuitGame  (script 316 bytes)
+  0000: if !((self._Game.GameReplicationInfo.PRIArray.Length == 0)) goto 0x0020
+  001e: return nothing
+  0020: self._Game.WorldInfo.GetAllControllers(obj'TnPlayerController', PCS)
+  0046: if !((PCS.Length == 0)) goto 0x0054
+  0052: return nothing
+  0054: Index = (PCS.Length - 1)
+  0063: if !((Index >= 0)) goto 0x00a0
+  006e: if !(Index[PCS].IsLocalPlayerController()) goto 0x0096
+  008a: PCS.Remove(Index,1)
+  0096: SubtractSubtract_PreInt(Index)
+  009d: goto 0x0063
+  00a0: if !((PCS.Length == 0)) goto 0x00ae
+  00ac: return nothing
+  00ae: Index = obj'Core.Random'.static.RandomInt(PCS.Length)
+  00cd: PC = TnPlayerController(Index[PCS])
+  00e3: LogInternal((PC.GetHumanReadableName() $ " is being told to quit the game"), 'DevAutomatedTesting', , )
+  0126: PC.ClientAutomatedTestingQuitGame()
+  0139: return nothing
+  013b: <eos>

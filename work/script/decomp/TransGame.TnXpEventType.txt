@@ -1,0 +1,29 @@
+function TnXpEventType.GetAwardAmount  (script 115 bytes)
+  0000: if !(!TnGameReplicationInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI).CanGainXp()) goto 0x003a
+  0034: return 0.0
+  003a: if !((default.DeathmatchXpAmount >= cast3f(0))) goto 0x005f
+  0047: if !(!TnXpEventType.IsTeamGame()) goto 0x005f
+  0052: return (default.GlobalXpMultiplier * default.DeathmatchXpAmount)
+  005f: return (default.GlobalXpMultiplier * default.XpAmount)
+  006c: return return
+  0072: <eos>
+
+function TnXpEventType.GetAnnouncement  (script 13 bytes)
+  0000: return default.Announcement
+  0006: return return
+  000c: <eos>
+
+function TnXpEventType.GetDescription  (script 13 bytes)
+  0000: return default.Description
+  0006: return return
+  000c: <eos>
+
+function TnXpEventType.GetExtraData  (script 10 bytes)
+  0000: return ""
+  0003: return return
+  0009: <eos>
+
+function TnXpEventType.IsTeamGame  (script 55 bytes)
+  0000: return obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI.GameClass.static.default.bTeamGame
+  0030: return return
+  0036: <eos>

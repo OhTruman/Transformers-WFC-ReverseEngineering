@@ -1,0 +1,91 @@
+function TnSpectateTargetChooser.SwitchTargetFunction  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSpectateTargetChooser.Activate  (script 159 bytes)
+  0000: nothing
+  0001: nothing
+  0002: self.Spectator = SpectatingController
+  000d: self.__SwitchTargetFunction__Delegate = SwitchTargetDelegate
+  0018: if !((ClassToSpectate == none)) goto 0x0031
+  0023: self.SpectateClass = default.SpectateClass
+  002e: goto 0x003c
+  0031: self.SpectateClass = ClassToSpectate
+  003c: self.Killer = TnPlayerPawn(KillerPawn)
+  004c: if !(((self.Killer != none) && TnSpectateTargetChooser.IsValidTarget(self.Killer))) goto 0x0075
+  0067: TnSpectateTargetChooser.SetNewTarget(self.Killer)
+  0072: goto 0x0080
+  0075: SwitchTarget(0)
+  0080: self.Spectator.SetTimer(self.ValidSpectatingTargetRecheckTime, true, 'RecheckValidTarget', self)
+  009c: return nothing
+  009e: <eos>
+
+function TnSpectateTargetChooser.Deactivate  (script 32 bytes)
+  0000: self.Spectator.ClearTimer('RecheckValidTarget', self)
+  001d: return nothing
+  001f: <eos>
+
+function TnSpectateTargetChooser.SwitchTarget  (script 250 bytes)
+  0000: self.Killer = none
+  0007: foreach self.Spectator.WorldInfo.AllPawns(obj'TnPawn', P, , ) (end 0x0054)
+  0032: if !(!TnSpectateTargetChooser.IsValidTarget(P)) goto 0x0046
+  0042: iternext
+  0043: goto 0x0054
+  0046: PossibleTargets.AddItem(P)
+  0053: iternext
+  0054: iterpop
+  0055: if !((PossibleTargets.Length == 0)) goto 0x006f
+  0061: TnSpectateTargetChooser.SetNewTarget(TnSpectateTargetChooser.GetLevelCamera())
+  006d: return nothing
+  006f: if !((Direction != 0)) goto 0x00e6
+  007a: I = PossibleTargets.Find(self.CurrentTarget)
+  008d: if !((I != -1)) goto 0x00df
+  009c: (I += Direction)
+  00a8: if !((I >= PossibleTargets.Length)) goto 0x00c2
+  00b8: I = 0
+  00bf: goto 0x00dc
+  00c2: if !((I < 0)) goto 0x00dc
+  00cd: I = (PossibleTargets.Length - 1)
+  00dc: goto 0x00e6
+  00df: I = 0
+  00e6: TnSpectateTargetChooser.SetNewTarget(I[PossibleTargets])
+  00f7: return nothing
+  00f9: <eos>
+
+function TnSpectateTargetChooser.SetNewTarget  (script 203 bytes)
+  0000: if !((Target == none)) goto 0x000d
+  000b: return nothing
+  000d: self.CurrentTarget = Target
+  0018: P = Pawn(self.CurrentTarget)
+  0028: if !((P != none)) goto 0x00b4
+  0033: obj'TnScaleformHelpers'.static.AddStringArgument(Arguments, ((P.PlayerReplicationInfo == none) ? "" : P.PlayerReplicationInfo.PlayerName))
+  007a: if !((self.Spectator.UIController != none)) goto 0x00b4
+  008e: self.Spectator.UIController.InvokeOnCurrentUI(self.HudTargetFunctionName, Arguments)
+  00b4: SwitchTargetFunction(self.CurrentTarget)
+  00c8: return nothing
+  00ca: <eos>
+
+function TnSpectateTargetChooser.GetLevelCamera  (script 60 bytes)
+  0000: Cam = TnWorldInfo(self.Spectator.WorldInfo).LevelCamera
+  0022: if !((Cam == none)) goto 0x002f
+  002d: return none
+  002f: return Cam
+  0035: return return
+  003b: <eos>
+
+function TnSpectateTargetChooser.IsValidTarget  (script 156 bytes)
+  0000: P = Pawn(A)
+  0010: if !((P == none)) goto 0x001d
+  001b: return false
+  001d: if !(!P.IsA(self.SpectateClass.Name)) goto 0x003d
+  003b: return false
+  003d: return (!P.IsDead() && ((cast3a(self.Spectator.GetTeamNum()) == cast3a(P.GetTeamNum())) || (P == self.Killer)))
+  0095: return return
+  009b: <eos>
+
+function TnSpectateTargetChooser.RecheckValidTarget  (script 72 bytes)
+  0000: P = Pawn(self.CurrentTarget)
+  0010: if !(((self.CurrentTarget == none) || ((P != none) && !TnSpectateTargetChooser.IsValidTarget(P)))) goto 0x0045
+  003a: SwitchTarget(0)
+  0045: return nothing
+  0047: <eos>

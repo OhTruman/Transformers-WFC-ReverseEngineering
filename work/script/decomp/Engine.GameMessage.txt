@@ -1,0 +1,57 @@
+function GameMessage.GetString  (script 496 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: switch (Switch)
+  000c: case 0: (next 0x0016)
+  0010: return default.OvertimeMessage
+  0016: case 1: (next 0x0046)
+  001a: if !((RelatedPRI_1 == none)) goto 0x002b
+  0025: return default.NewPlayerMessage
+  002b: return (RelatedPRI_1.GetPlayerAlias() $ default.EnteredMessage)
+  0046: case 2: (next 0x0084)
+  004b: if !((RelatedPRI_1 == none)) goto 0x0059
+  0056: return ""
+  0059: return ((RelatedPRI_1.OldName @ default.GlobalNameChange) @ RelatedPRI_1.GetPlayerAlias())
+  0084: case 3: (next 0x00e1)
+  0089: if !((RelatedPRI_1 == none)) goto 0x0097
+  0094: return ""
+  0097: if !((OptionalObject == none)) goto 0x00a5
+  00a2: return ""
+  00a5: return (((RelatedPRI_1.GetPlayerAlias() @ default.NewTeamMessage) @ TeamInfo(OptionalObject).GetHumanReadableName()) $ default.NewTeamMessageTrailer)
+  00e1: case 4: (next 0x010f)
+  00e6: if !((RelatedPRI_1 == none)) goto 0x00f4
+  00f1: return ""
+  00f4: return (RelatedPRI_1.GetPlayerAlias() $ default.LeftMessage)
+  010f: case 5: (next 0x011a)
+  0114: return default.SwitchLevelMessage
+  011a: case 6: (next 0x0125)
+  011f: return default.FailedTeamMessage
+  0125: case 7: (next 0x0130)
+  012a: return default.MaxedOutMessage
+  0130: case 8: (next 0x013b)
+  0135: return default.NoNameChange
+  013b: case 9: (next 0x015b)
+  0140: return (RelatedPRI_1.GetPlayerAlias() @ default.VoteStarted)
+  015b: case 10: (next 0x0166)
+  0160: return default.VotePassed
+  0166: case 11: (next 0x0171)
+  016b: return default.MustHaveStats
+  0171: case 12: (next 0x017c)
+  0176: return default.CantBeSpectator
+  017c: case 13: (next 0x0187)
+  0181: return default.CantBePlayer
+  0187: case 14: (next 0x01a7)
+  018c: return (RelatedPRI_1.GetPlayerAlias() @ default.BecameSpectator)
+  01a7: case 15: (next 0x01b2)
+  01ac: return default.KickWarning
+  01b2: case 16: (next 0x01e3)
+  01b7: if !((RelatedPRI_1 == none)) goto 0x01c8
+  01c2: return default.NewSpecMessage
+  01c8: return (RelatedPRI_1.GetPlayerAlias() $ default.SpecEnteredMessage)
+  01e3: default:
+  01e6: return ""
+  01e9: return return
+  01ef: <eos>

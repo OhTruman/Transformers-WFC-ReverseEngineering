@@ -1,0 +1,16 @@
+function TnObjectiveMarkerTypeFuelCell.ShouldDisplayMarker  (script 204 bytes)
+  0000: MarkerToDisplayer = obj'Core.Math'.static.Normal((Displayer.Location - Marker.MarkerBase.Location))
+  003a: if !(((cast39(Marker.MarkerBase.Rotation) dot MarkerToDisplayer) > cast3f(0))) goto 0x0066
+  0064: return false
+  0066: Destructible = TnDestructibleActor(Marker.MarkerBase)
+  0081: if !(((Destructible != none) && Displayer.IsSameTeam(Destructible._AttachedPawn))) goto 0x00b4
+  00b2: return false
+  00b4: return TnObjectiveMarkerType.ShouldDisplayMarker(Displayer, Marker)
+  00c5: return return
+  00cb: <eos>
+
+function TnObjectiveMarkerTypeFuelCell.GetMarkerSetup  (script 28 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: return self.MarkerSetup
+  0015: return return
+  001b: <eos>

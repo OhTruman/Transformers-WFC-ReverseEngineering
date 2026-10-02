@@ -1,0 +1,10 @@
+function SeqAct_TnSetCurrentObjective.Activated  (script 135 bytes)
+  0000: Activated()
+  0006: if !((self.Description != "")) goto 0x0041
+  0012: LocalizedDesc = Localize("Objectives", self.Description, "TransGame")
+  003e: goto 0x0049
+  0041: LocalizedDesc = ""
+  0049: GRI = TnGameReplicationInfoGameBase(TnWorldInfo(GetWorldInfo()).GRI)
+  006c: GRI.SetCurrentObjective(LocalizedDesc)
+  0084: return nothing
+  0086: <eos>

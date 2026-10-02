@@ -1,0 +1,61 @@
+function TnSeqVar_Character.PostLoad  (script 37 bytes)
+  0000: PostLoad()
+  0006: if !((self.ChassisTypePathName == "")) goto 0x0022
+  0012: TnSeqVar_Character.UpdateChassisTypePathName()
+  0018: MarkModified()
+  0022: return nothing
+  0024: <eos>
+
+function TnSeqVar_Character.CheckForErrors  (script 356 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.ChassisTypePathName == "")) goto 0x008a
+  0012: EmitCheckMessage(1, (("Resolved chassis type path name is not set for character kismet variable" @ cast56(self)) @ "please see a programmer"), , )
+  008a: if !((self.Character == none)) goto 0x00df
+  0095: EmitCheckMessage(0, ("Character is not set for character kismet variable" @ cast56(self)), , )
+  00dc: goto 0x0161
+  00df: if !((self.ChassisTypePathName != TnSeqVar_Character.GetChassisTypePathName())) goto 0x0161
+  00ef: EmitCheckMessage(1, (("Character mismatch with Chassis type for character kismet variable" @ cast56(self)) @ "please see a programmer"), , )
+  0161: return nothing
+  0163: <eos>
+
+function TnSeqVar_Character.GetChassisTypePathName  (script 41 bytes)
+  0000: if !((self.Character != none)) goto 0x001f
+  000b: return self.Character.GetChassisTypePathName()
+  001f: return ""
+  0022: return return
+  0028: <eos>
+
+function TnSeqVar_Character.UpdateChassisTypePathName  (script 15 bytes)
+  0000: self.ChassisTypePathName = TnSeqVar_Character.GetChassisTypePathName()
+  000c: return nothing
+  000e: <eos>
+
+function TnSeqVar_Character.OnPostEditChange  (script 28 bytes)
+  0000: if !((PropertyName == 'Character')) goto 0x0019
+  0013: TnSeqVar_Character.UpdateChassisTypePathName()
+  0019: return nothing
+  001b: <eos>
+
+function TnSeqVar_Character.FindMatchingPawn  (script 126 bytes)
+  0000: WI = GetWorldInfo()
+  0010: if !((WI == none)) goto 0x001d
+  001b: return none
+  001d: foreach WI.AllPawns(obj'TnPawn', P, , ) (end 0x0074)
+  003f: if !((PathName(P._CurrentCharacter.ChassisType) == self.ChassisTypePathName)) goto 0x0073
+  006c: iterpop
+  006d: return P
+  0073: iternext
+  0074: iterpop
+  0075: return none
+  0077: return return
+  007d: <eos>
+
+function TnSeqVar_Character.GetCharacterName  (script 33 bytes)
+  0000: return self.Character.AiCharacterDataResolved.CharacterName
+  001a: return return
+  0020: <eos>
+
+function TnSeqVar_Character.GetPathName  (script 23 bytes)
+  0000: return PathName(self.Character)
+  0010: return return
+  0016: <eos>

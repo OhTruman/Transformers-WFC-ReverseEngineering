@@ -1,0 +1,105 @@
+function HmParticleEffectsManager.GetNumFXData  (script 14 bytes)
+  0000: return self.ParticleFXs.Length
+  0007: return return
+  000d: <eos>
+
+function HmParticleEffectsManager.GetFXData  (script 19 bytes)
+  0000: return FXIndex[self.ParticleFXs]
+  000c: return return
+  0012: <eos>
+
+function HmParticleEffectsManager.GetParticleFXEmitter  (script 61 bytes)
+  0000: if !(((FXIndex >= self.ParticleFXs.Length) || (FXIndex < 0))) goto 0x001f
+  001d: return none
+  001f: return FXIndex[self.ParticleFXs].FXEmitter
+  0036: return return
+  003c: <eos>
+
+function HmParticleEffectsManager.CreateEffect  (script 153 bytes)
+  0000: PFX.PSCTemplate = PSCTemplate
+  0016: PFX.Location = Location
+  002c: PFX.Rotation = Rotation
+  0042: NewIndex = self.ParticleFXs.Length
+  004e: NewIndex[self.ParticleFXs] = PFX
+  005f: NewIndex[self.ParticleFXs].FXEmitter = HmParticleEffectsManager.SpawnEffect(Attachee, NewIndex[self.ParticleFXs])
+  008c: return NewIndex
+  0092: return return
+  0098: <eos>
+
+function HmParticleEffectsManager.CreateEffectEmitter  (script 73 bytes)
+  0000: return Attachee.Spawn(obj'Engine.EmitterSpawnable', Attachee, , PFX.Location, PFX.Rotation, , , )
+  0042: return return
+  0048: <eos>
+
+function HmParticleEffectsManager.RemoveEmitterEditorDisplay  (script 124 bytes)
+  0000: if !((SpawnedEmitter == none)) goto 0x000d
+  000b: return nothing
+  000d: SpriteComp = SpawnedEmitter.FindComponent(obj'Engine.SpriteComponent')
+  002b: ArrowComp = SpawnedEmitter.FindComponent(obj'Engine.ArrowComponent')
+  0049: SpawnedEmitter.DetachComponent(SpriteComp)
+  0061: SpawnedEmitter.DetachComponent(ArrowComp)
+  0079: return nothing
+  007b: <eos>
+
+function HmParticleEffectsManager.PlayEffect  (script 167 bytes)
+  0000: if !((PSCTemplate != none)) goto 0x0049
+  000b: HmParticleEffectsManager.TrimUnusedEffects(Attachee)
+  0016: NewIndex = HmParticleEffectsManager.CreateEffect(Attachee, PSCTemplate, Location, Rotation)
+  0036: return GetParticleFXEmitter(NewIndex)
+  0046: goto 0x00a0
+  0049: LogInternal(("Error: Missing particle system template when trying to play effect on" @ cast56(Attachee)), , , )
+  009e: return none
+  00a0: return return
+  00a6: <eos>
+
+function HmParticleEffectsManager.SpawnEffect  (script 202 bytes)
+  0000: SpawnedEmitter = CreateEffectEmitter(Attachee, PFX)
+  001f: SpawnedEmitter.SetTemplate(PFX.PSCTemplate, true)
+  0043: HmParticleEffectsManager.RemoveEmitterEditorDisplay(SpawnedEmitter)
+  004e: PFX.FXEmitter = SpawnedEmitter
+  0064: PSC = SpawnedEmitter.ParticleSystemComponent
+  0078: PSC.bAutoActivate = false
+  0089: PSC.bUpdateComponentInTick = true
+  009a: PSC.SetTemplate(PFX.PSCTemplate)
+  00bd: return SpawnedEmitter
+  00c3: return return
+  00c9: <eos>
+
+function HmParticleEffectsManager.StopAllEffects  (script 60 bytes)
+  0000: I = self.ParticleFXs.Length
+  000c: if !((I >= 0)) goto 0x0031
+  0017: HmParticleEffectsManager.RemoveEffect(Attachee, I)
+  0027: SubtractSubtract_PreInt(I)
+  002e: goto 0x000c
+  0031: self.ParticleFXs.Length = 0
+  0039: return nothing
+  003b: <eos>
+
+function HmParticleEffectsManager.TrimUnusedEffects  (script 190 bytes)
+  0000: I = (self.ParticleFXs.Length - 1)
+  000f: if !((I >= 0)) goto 0x00bb
+  001a: Em = GetParticleFXEmitter(I)
+  002f: if !((Em != none)) goto 0x00a5
+  003a: PSC = I[self.ParticleFXs].FXEmitter.ParticleSystemComponent
+  005f: if !((((PSC == none) || PSC.bWasCompleted) || PSC.bWasDeactivated)) goto 0x00a2
+  0092: HmParticleEffectsManager.RemoveEffect(Attachee, I)
+  00a2: goto 0x00b1
+  00a5: self.ParticleFXs.Remove(I,1)
+  00b1: SubtractSubtract_PreInt(I)
+  00b8: goto 0x000f
+  00bb: return nothing
+  00bd: <eos>
+
+function HmParticleEffectsManager.RemoveEffect  (script 164 bytes)
+  0000: if !(((FXIndex >= self.ParticleFXs.Length) || (FXIndex < 0))) goto 0x001f
+  001d: return nothing
+  001f: Em = GetParticleFXEmitter(FXIndex)
+  0034: if !((Em != none)) goto 0x0095
+  003f: PSC = Em.ParticleSystemComponent
+  0053: if !((PSC != none)) goto 0x0089
+  005e: PSC.DeactivateSystem()
+  0071: Attachee.DetachComponent(PSC)
+  0089: Em.DestroyActor()
+  0095: self.ParticleFXs.Remove(FXIndex,1)
+  00a1: return nothing
+  00a3: <eos>

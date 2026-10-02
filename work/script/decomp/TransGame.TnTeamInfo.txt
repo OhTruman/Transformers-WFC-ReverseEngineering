@@ -1,0 +1,38 @@
+function TnTeamInfo.get_AllowRespawn  (script 14 bytes)
+  0000: return self._AllowRespawn
+  0007: return return
+  000d: <eos>
+
+function TnTeamInfo.set_AllowRespawn  (script 16 bytes)
+  0000: self._AllowRespawn = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTeamInfo.Reset  (script 20 bytes)
+  0000: Reset()
+  0006: self.Score = 0.0
+  0011: return nothing
+  0013: <eos>
+
+function TnTeamInfo.PostMoveToSeamlessTravelWorld  (script 36 bytes)
+  0000: PostMoveToSeamlessTravelWorld(OldWorldInfo, NewWorldInfo, bIsReloadingMap)
+  0016: self.Score = 0.0
+  0021: return nothing
+  0023: <eos>
+
+function TnTeamInfo.AddToTeam  (script 61 bytes)
+  0000: if !(!AddToTeam(Other)) goto 0x0012
+  0010: return false
+  0012: TnPlayerReplicationInfo(Other.PlayerReplicationInfo).TeamName = self.TeamName
+  0034: return true
+  0036: return return
+  003c: <eos>
+
+function TnTeamInfo.AreOnSameTeam  (script 104 bytes)
+  0000: if !(((first == none) || (second == none))) goto 0x001a
+  0018: return false
+  001a: if !((first == second)) goto 0x002b
+  0029: return true
+  002b: return (first.IsSameTeam(second) || second.IsSameTeam(first))
+  0061: return return
+  0067: <eos>

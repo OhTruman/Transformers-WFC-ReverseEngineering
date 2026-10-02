@@ -1,0 +1,408 @@
+function HmPlayerVehicleAudioComponentImpl.Update  (script 25 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.UpdateEngineSound(DeltaTime)
+  000b: HmPlayerVehicleAudioComponentImpl.UpdateLandSound(DeltaTime)
+  0016: return nothing
+  0018: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.Attached  (script 47 bytes)
+  0000: self.OnGroundPrevious = false
+  0008: self.JumpRevTimer = 0.0
+  0013: self.LandTimer = 0.0
+  001e: GotoState('None', , , )
+  002c: return nothing
+  002e: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.Detached  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineSounds()
+  0006: return nothing
+  0008: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.UpdateEngineSound  (script 256 bytes)
+  0000: MovementDirection = HmPlayerVehicleAudioComponentImpl.GetMovementDirection()
+  000c: HmPlayerVehicleAudioComponentImpl.UpdateEngineOneshotSpazTimer(DeltaTime)
+  0017: if !(get_Outer().IsBoosting) goto 0x0038
+  0027: GotoState('Boosting', , , )
+  0035: goto 0x00f7
+  0038: if !(HmPlayerVehicleAudioComponentImpl.GetIsJumpReving(DeltaTime)) goto 0x0057
+  0046: GotoState('JumpReving', , , )
+  0054: goto 0x00f7
+  0057: if !((cast3a(MovementDirection) == cast3a(2))) goto 0x00a0
+  0067: if !((cast3a(get_Outer()._EngineLoadState) == cast3a(2))) goto 0x008f
+  007e: GotoState('ReverseOnLoad', , , )
+  008c: goto 0x009d
+  008f: GotoState('ReverseOffLoad', , , )
+  009d: goto 0x00f7
+  00a0: if !((cast3a(MovementDirection) == cast3a(1))) goto 0x00e9
+  00b0: if !((cast3a(get_Outer()._EngineLoadState) == cast3a(1))) goto 0x00d8
+  00c7: GotoState('ForwardOnLoad', , , )
+  00d5: goto 0x00e6
+  00d8: GotoState('ForwardOffLoad', , , )
+  00e6: goto 0x00f7
+  00e9: GotoState('ForwardOffLoad', , , )
+  00f7: HmPlayerVehicleAudioComponentImpl.UpdateEngineSoundParameters()
+  00fd: return nothing
+  00ff: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.UpdateEngineSoundParameters  (script 1203 bytes)
+  0000: if !((none == get_Outer().SpeedSoundParameter)) goto 0x0014
+  0012: return nothing
+  0014: Index = 0
+  001b: if !((Index < get_Outer().ReverseSound.OnLoadLoops.Length)) goto 0x00cc
+  003d: if !((none != Index[get_Outer().ReverseSound.OnLoadLoops].EngineAudioComponent)) goto 0x00c2
+  006b: Index[get_Outer().ReverseSound.OnLoadLoops].EngineAudioComponent.SetFloatParameter(get_Outer().SpeedSoundParameter.Name, get_Outer()._VehicleSpeed)
+  00c2: AddAdd_Int(Index)
+  00c9: goto 0x001b
+  00cc: Index = 0
+  00d3: if !((Index < get_Outer().ReverseSound.OffLoadLoops.Length)) goto 0x0184
+  00f5: if !((none != Index[get_Outer().ReverseSound.OffLoadLoops].EngineAudioComponent)) goto 0x017a
+  0123: Index[get_Outer().ReverseSound.OffLoadLoops].EngineAudioComponent.SetFloatParameter(get_Outer().SpeedSoundParameter.Name, get_Outer()._VehicleSpeed)
+  017a: AddAdd_Int(Index)
+  0181: goto 0x00d3
+  0184: GearIndex = 0
+  018b: if !((GearIndex < get_Outer().DriveSounds.Length)) goto 0x0340
+  01a2: Index = 0
+  01a9: if !((Index < GearIndex[get_Outer().DriveSounds].OnLoadLoops.Length)) goto 0x026c
+  01d1: if !((none != Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].EngineAudioComponent)) goto 0x0262
+  0205: Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].EngineAudioComponent.SetFloatParameter(get_Outer().SpeedSoundParameter.Name, get_Outer()._VehicleSpeed)
+  0262: AddAdd_Int(Index)
+  0269: goto 0x01a9
+  026c: Index = 0
+  0273: if !((Index < GearIndex[get_Outer().DriveSounds].OffLoadLoops.Length)) goto 0x0336
+  029b: if !((none != Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].EngineAudioComponent)) goto 0x032c
+  02cf: Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].EngineAudioComponent.SetFloatParameter(get_Outer().SpeedSoundParameter.Name, get_Outer()._VehicleSpeed)
+  032c: AddAdd_Int(Index)
+  0333: goto 0x0273
+  0336: AddAdd_Int(GearIndex)
+  033d: goto 0x018b
+  0340: Index = 0
+  0347: if !((Index < get_Outer().BoostSounds.BoostLoops.Length)) goto 0x03f8
+  0369: if !((none != Index[get_Outer().BoostSounds.BoostLoops].EngineAudioComponent)) goto 0x03ee
+  0397: Index[get_Outer().BoostSounds.BoostLoops].EngineAudioComponent.SetFloatParameter(get_Outer().SpeedSoundParameter.Name, get_Outer()._VehicleSpeed)
+  03ee: AddAdd_Int(Index)
+  03f5: goto 0x0347
+  03f8: Index = 0
+  03ff: if !((Index < get_Outer().JumpRevSounds.JumpRevLoops.Length)) goto 0x04b0
+  0421: if !((none != Index[get_Outer().JumpRevSounds.JumpRevLoops].EngineAudioComponent)) goto 0x04a6
+  044f: Index[get_Outer().JumpRevSounds.JumpRevLoops].EngineAudioComponent.SetFloatParameter(get_Outer().SpeedSoundParameter.Name, get_Outer()._VehicleSpeed)
+  04a6: AddAdd_Int(Index)
+  04ad: goto 0x03ff
+  04b0: return nothing
+  04b2: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.UpdateEngineOneshotSpazTimer  (script 41 bytes)
+  0000: (self.EngineOneshotSpazTimer -= DeltaTime)
+  000c: if !((self.EngineOneshotSpazTimer < 0.0)) goto 0x0026
+  001b: self.EngineOneshotSpazTimer = 0.0
+  0026: return nothing
+  0028: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.GetMovementDirection  (script 97 bytes)
+  0000: if !((get_Outer()._VehicleSpeed > 1.0)) goto 0x0057
+  0016: if !(((get_Outer().OwnerPawn.Velocity dot cast39(get_Outer().OwnerPawn.Rotation)) >= -0.0)) goto 0x0054
+  004e: return 1
+  0051: goto 0x0057
+  0054: return 2
+  0057: return 0
+  005a: return return
+  0060: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.GetIsJumpReving  (script 102 bytes)
+  0000: if !(get_Outer().JumpRevSounds.UseJumpRev) goto 0x005d
+  001b: if !(get_Outer()._IsOnGround) goto 0x0039
+  002b: self.JumpRevTimer = 0.0
+  0036: goto 0x005d
+  0039: (self.JumpRevTimer += DeltaTime)
+  0045: if !((self.JumpRevTimer >= get_Outer().JumpRevTime)) goto 0x005d
+  005b: return true
+  005d: return false
+  005f: return return
+  0065: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ComputeGear  (script 175 bytes)
+  0000: if !((0 == get_Outer().DriveSounds.Length)) goto 0x0015
+  0013: return false
+  0015: Index = 0
+  001c: if !((Index < get_Outer().DriveSounds.Length)) goto 0x0079
+  0033: if !((get_Outer()._VehicleSpeed <= Index[get_Outer().DriveSounds].MaxSpeed)) goto 0x006f
+  0061: GearIndex = Index
+  006c: goto 0x0079
+  006f: AddAdd_Int(Index)
+  0076: goto 0x001c
+  0079: if !((GearIndex >= get_Outer().DriveSounds.Length)) goto 0x00a6
+  0090: GearIndex = (get_Outer().DriveSounds.Length - 1)
+  00a6: return true
+  00a8: return return
+  00ae: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.UpdateLandSound  (script 87 bytes)
+  0000: if !(get_Outer()._IsOnGround) goto 0x0034
+  0010: if !((false == self.OnGroundPrevious)) goto 0x0026
+  001c: PlayLandSound()
+  0026: self.LandTimer = 0.0
+  0031: goto 0x0040
+  0034: (self.LandTimer += DeltaTime)
+  0040: self.OnGroundPrevious = get_Outer()._IsOnGround
+  0054: return nothing
+  0056: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.PlayLandSound  (script 134 bytes)
+  0000: Index = (get_Outer().HoverLandSound.Length - 1)
+  0016: if !((Index >= 0)) goto 0x0083
+  0021: if !((self.LandTimer >= Index[get_Outer().HoverLandSound].TimeInAirThreshold)) goto 0x0079
+  0048: get_Outer().PlaySoundEvent(Index[get_Outer().HoverLandSound].LandSound)
+  0076: goto 0x0083
+  0079: SubtractSubtract_Int(Index)
+  0080: goto 0x0016
+  0083: return nothing
+  0085: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineSounds  (script 39 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineReverseOnLoadSounds()
+  0006: HmPlayerVehicleAudioComponentImpl.StopEngineReverseOffLoadSounds()
+  000c: HmPlayerVehicleAudioComponentImpl.StopEngineDriveOnLoadSounds()
+  0012: HmPlayerVehicleAudioComponentImpl.StopEngineDriveOffLoadSounds()
+  0018: HmPlayerVehicleAudioComponentImpl.StopEngineBoostSounds()
+  001e: HmPlayerVehicleAudioComponentImpl.StopEngineJumpRevSounds()
+  0024: return nothing
+  0026: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineReverseOnLoadSounds  (script 180 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().ReverseSound.OnLoadLoops.Length)) goto 0x00b1
+  0029: EngineAudioComponent = Index[get_Outer().ReverseSound.OnLoadLoops].EngineAudioComponent
+  0057: get_Outer().StopLoopingSound(EngineAudioComponent, get_Outer().EngineFadeOutTime)
+  0079: Index[get_Outer().ReverseSound.OnLoadLoops].EngineAudioComponent = EngineAudioComponent
+  00a7: AddAdd_Int(Index)
+  00ae: goto 0x0007
+  00b1: return nothing
+  00b3: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineReverseOffLoadSounds  (script 180 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().ReverseSound.OffLoadLoops.Length)) goto 0x00b1
+  0029: EngineAudioComponent = Index[get_Outer().ReverseSound.OffLoadLoops].EngineAudioComponent
+  0057: get_Outer().StopLoopingSound(EngineAudioComponent, get_Outer().EngineFadeOutTime)
+  0079: Index[get_Outer().ReverseSound.OffLoadLoops].EngineAudioComponent = EngineAudioComponent
+  00a7: AddAdd_Int(Index)
+  00ae: goto 0x0007
+  00b1: return nothing
+  00b3: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineDriveOnLoadSounds  (script 238 bytes)
+  0000: GearIndex = 0
+  0007: if !((GearIndex < get_Outer().DriveSounds.Length)) goto 0x00eb
+  001e: Index = 0
+  0025: if !((Index < GearIndex[get_Outer().DriveSounds].OnLoadLoops.Length)) goto 0x00e1
+  004d: EngineAudioComponent = Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].EngineAudioComponent
+  0081: get_Outer().StopLoopingSound(EngineAudioComponent, get_Outer().EngineFadeOutTime)
+  00a3: Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].EngineAudioComponent = EngineAudioComponent
+  00d7: AddAdd_Int(Index)
+  00de: goto 0x0025
+  00e1: AddAdd_Int(GearIndex)
+  00e8: goto 0x0007
+  00eb: return nothing
+  00ed: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineDriveOffLoadSounds  (script 238 bytes)
+  0000: GearIndex = 0
+  0007: if !((GearIndex < get_Outer().DriveSounds.Length)) goto 0x00eb
+  001e: Index = 0
+  0025: if !((Index < GearIndex[get_Outer().DriveSounds].OffLoadLoops.Length)) goto 0x00e1
+  004d: EngineAudioComponent = Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].EngineAudioComponent
+  0081: get_Outer().StopLoopingSound(EngineAudioComponent, get_Outer().EngineFadeOutTime)
+  00a3: Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].EngineAudioComponent = EngineAudioComponent
+  00d7: AddAdd_Int(Index)
+  00de: goto 0x0025
+  00e1: AddAdd_Int(GearIndex)
+  00e8: goto 0x0007
+  00eb: return nothing
+  00ed: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineBoostSounds  (script 180 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().BoostSounds.BoostLoops.Length)) goto 0x00b1
+  0029: EngineAudioComponent = Index[get_Outer().BoostSounds.BoostLoops].EngineAudioComponent
+  0057: get_Outer().StopLoopingSound(EngineAudioComponent, get_Outer().BoostFadeOutTime)
+  0079: Index[get_Outer().BoostSounds.BoostLoops].EngineAudioComponent = EngineAudioComponent
+  00a7: AddAdd_Int(Index)
+  00ae: goto 0x0007
+  00b1: return nothing
+  00b3: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.StopEngineJumpRevSounds  (script 180 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().JumpRevSounds.JumpRevLoops.Length)) goto 0x00b1
+  0029: EngineAudioComponent = Index[get_Outer().JumpRevSounds.JumpRevLoops].EngineAudioComponent
+  0057: get_Outer().StopLoopingSound(EngineAudioComponent, get_Outer().EngineFadeOutTime)
+  0079: Index[get_Outer().JumpRevSounds.JumpRevLoops].EngineAudioComponent = EngineAudioComponent
+  00a7: AddAdd_Int(Index)
+  00ae: goto 0x0007
+  00b1: return nothing
+  00b3: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.Boosting.BeginState  (script 543 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().BoostSounds.BoostLoops.Length)) goto 0x0101
+  0029: EngineAudioComponent = Index[get_Outer().BoostSounds.BoostLoops].EngineAudioComponent
+  0057: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().BoostSounds.BoostLoops].Sound, get_Outer().BoostFadeInTime, Index[get_Outer().BoostSounds.BoostLoops].SocketName)
+  00c9: Index[get_Outer().BoostSounds.BoostLoops].EngineAudioComponent = EngineAudioComponent
+  00f7: AddAdd_Int(Index)
+  00fe: goto 0x0007
+  0101: if !((self.EngineOneshotSpazTimer <= 0.0)) goto 0x021c
+  0110: Index = 0
+  0117: if !((Index < get_Outer().BoostSounds.BoostOneshots.Length)) goto 0x021c
+  0139: self.EngineOneshotSpazTimer = get_Outer().EngineOneshotSpazTime
+  014b: EngineAudioComponent = Index[get_Outer().BoostSounds.BoostOneshots].EngineAudioComponent
+  0179: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().BoostSounds.BoostOneshots].Sound, 0.0, Index[get_Outer().BoostSounds.BoostOneshots].SocketName)
+  01e4: Index[get_Outer().BoostSounds.BoostOneshots].EngineAudioComponent = EngineAudioComponent
+  0212: AddAdd_Int(Index)
+  0219: goto 0x0117
+  021c: return nothing
+  021e: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.Boosting.EndState  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineBoostSounds()
+  0006: return nothing
+  0008: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.Boosting.PlayLandSound  (script 134 bytes)
+  0000: Index = (get_Outer().BoostLandSound.Length - 1)
+  0016: if !((Index >= 0)) goto 0x0083
+  0021: if !((self.LandTimer >= Index[get_Outer().BoostLandSound].TimeInAirThreshold)) goto 0x0079
+  0048: get_Outer().PlaySoundEvent(Index[get_Outer().BoostLandSound].LandSound)
+  0076: goto 0x0083
+  0079: SubtractSubtract_Int(Index)
+  0080: goto 0x0016
+  0083: return nothing
+  0085: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.JumpReving.BeginState  (script 543 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().JumpRevSounds.JumpRevLoops.Length)) goto 0x0101
+  0029: EngineAudioComponent = Index[get_Outer().JumpRevSounds.JumpRevLoops].EngineAudioComponent
+  0057: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().JumpRevSounds.JumpRevLoops].Sound, get_Outer().EngineFadeInTime, Index[get_Outer().JumpRevSounds.JumpRevLoops].SocketName)
+  00c9: Index[get_Outer().JumpRevSounds.JumpRevLoops].EngineAudioComponent = EngineAudioComponent
+  00f7: AddAdd_Int(Index)
+  00fe: goto 0x0007
+  0101: if !((self.EngineOneshotSpazTimer <= 0.0)) goto 0x021c
+  0110: Index = 0
+  0117: if !((Index < get_Outer().JumpRevSounds.JumpRevOneshots.Length)) goto 0x021c
+  0139: self.EngineOneshotSpazTimer = get_Outer().EngineOneshotSpazTime
+  014b: EngineAudioComponent = Index[get_Outer().JumpRevSounds.JumpRevOneshots].EngineAudioComponent
+  0179: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().JumpRevSounds.JumpRevOneshots].Sound, 0.0, Index[get_Outer().JumpRevSounds.JumpRevOneshots].SocketName)
+  01e4: Index[get_Outer().JumpRevSounds.JumpRevOneshots].EngineAudioComponent = EngineAudioComponent
+  0212: AddAdd_Int(Index)
+  0219: goto 0x0117
+  021c: return nothing
+  021e: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.JumpReving.EndState  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineJumpRevSounds()
+  0006: return nothing
+  0008: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ReverseOffLoad.BeginState  (script 603 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().ReverseSound.OffLoadLoops.Length)) goto 0x0101
+  0029: EngineAudioComponent = Index[get_Outer().ReverseSound.OffLoadLoops].EngineAudioComponent
+  0057: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().ReverseSound.OffLoadLoops].Sound, get_Outer().EngineFadeInTime, Index[get_Outer().ReverseSound.OffLoadLoops].SocketName)
+  00c9: Index[get_Outer().ReverseSound.OffLoadLoops].EngineAudioComponent = EngineAudioComponent
+  00f7: AddAdd_Int(Index)
+  00fe: goto 0x0007
+  0101: if !((!IsChildState(PreviousStateName, 'Boosting') && !IsChildState(PreviousStateName, 'JumpReving'))) goto 0x0258
+  013d: if !((self.EngineOneshotSpazTimer <= 0.0)) goto 0x0258
+  014c: Index = 0
+  0153: if !((Index < get_Outer().ReverseSound.OffLoadOneshots.Length)) goto 0x0258
+  0175: self.EngineOneshotSpazTimer = get_Outer().EngineOneshotSpazTime
+  0187: EngineAudioComponent = Index[get_Outer().ReverseSound.OffLoadOneshots].EngineAudioComponent
+  01b5: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().ReverseSound.OffLoadOneshots].Sound, 0.0, Index[get_Outer().ReverseSound.OffLoadOneshots].SocketName)
+  0220: Index[get_Outer().ReverseSound.OffLoadOneshots].EngineAudioComponent = EngineAudioComponent
+  024e: AddAdd_Int(Index)
+  0255: goto 0x0153
+  0258: return nothing
+  025a: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ReverseOffLoad.EndState  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineReverseOffLoadSounds()
+  0006: return nothing
+  0008: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ReverseOnLoad.BeginState  (script 603 bytes)
+  0000: Index = 0
+  0007: if !((Index < get_Outer().ReverseSound.OnLoadLoops.Length)) goto 0x0101
+  0029: EngineAudioComponent = Index[get_Outer().ReverseSound.OnLoadLoops].EngineAudioComponent
+  0057: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().ReverseSound.OnLoadLoops].Sound, get_Outer().EngineFadeInTime, Index[get_Outer().ReverseSound.OnLoadLoops].SocketName)
+  00c9: Index[get_Outer().ReverseSound.OnLoadLoops].EngineAudioComponent = EngineAudioComponent
+  00f7: AddAdd_Int(Index)
+  00fe: goto 0x0007
+  0101: if !((!IsChildState(PreviousStateName, 'Boosting') && !IsChildState(PreviousStateName, 'JumpReving'))) goto 0x0258
+  013d: if !((self.EngineOneshotSpazTimer <= 0.0)) goto 0x0258
+  014c: Index = 0
+  0153: if !((Index < get_Outer().ReverseSound.OnLoadOneshots.Length)) goto 0x0258
+  0175: self.EngineOneshotSpazTimer = get_Outer().EngineOneshotSpazTime
+  0187: EngineAudioComponent = Index[get_Outer().ReverseSound.OnLoadOneshots].EngineAudioComponent
+  01b5: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[get_Outer().ReverseSound.OnLoadOneshots].Sound, 0.0, Index[get_Outer().ReverseSound.OnLoadOneshots].SocketName)
+  0220: Index[get_Outer().ReverseSound.OnLoadOneshots].EngineAudioComponent = EngineAudioComponent
+  024e: AddAdd_Int(Index)
+  0255: goto 0x0153
+  0258: return nothing
+  025a: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ReverseOnLoad.EndState  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineReverseOnLoadSounds()
+  0006: return nothing
+  0008: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ForwardOffLoad.BeginState  (script 677 bytes)
+  0000: if !(HmPlayerVehicleAudioComponentImpl.ComputeGear(GearIndex)) goto 0x02a2
+  000e: Index = 0
+  0015: if !((Index < GearIndex[get_Outer().DriveSounds].OffLoadLoops.Length)) goto 0x012d
+  003d: EngineAudioComponent = Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].EngineAudioComponent
+  0071: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].Sound, get_Outer().EngineFadeInTime, Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].SocketName)
+  00ef: Index[GearIndex[get_Outer().DriveSounds].OffLoadLoops].EngineAudioComponent = EngineAudioComponent
+  0123: AddAdd_Int(Index)
+  012a: goto 0x0015
+  012d: if !((!IsChildState(PreviousStateName, 'Boosting') && !IsChildState(PreviousStateName, 'JumpReving'))) goto 0x02a2
+  0169: if !((self.EngineOneshotSpazTimer <= 0.0)) goto 0x02a2
+  0178: Index = 0
+  017f: if !((Index < GearIndex[get_Outer().DriveSounds].OffLoadOneshots.Length)) goto 0x02a2
+  01a7: self.EngineOneshotSpazTimer = get_Outer().EngineOneshotSpazTime
+  01b9: EngineAudioComponent = Index[GearIndex[get_Outer().DriveSounds].OffLoadOneshots].EngineAudioComponent
+  01ed: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[GearIndex[get_Outer().DriveSounds].OffLoadOneshots].Sound, 0.0, Index[GearIndex[get_Outer().DriveSounds].OffLoadOneshots].SocketName)
+  0264: Index[GearIndex[get_Outer().DriveSounds].OffLoadOneshots].EngineAudioComponent = EngineAudioComponent
+  0298: AddAdd_Int(Index)
+  029f: goto 0x017f
+  02a2: return nothing
+  02a4: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ForwardOffLoad.EndState  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineDriveOffLoadSounds()
+  0006: return nothing
+  0008: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ForwardOnLoad.BeginState  (script 677 bytes)
+  0000: if !(HmPlayerVehicleAudioComponentImpl.ComputeGear(GearIndex)) goto 0x02a2
+  000e: Index = 0
+  0015: if !((Index < GearIndex[get_Outer().DriveSounds].OnLoadLoops.Length)) goto 0x012d
+  003d: EngineAudioComponent = Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].EngineAudioComponent
+  0071: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].Sound, get_Outer().EngineFadeInTime, Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].SocketName)
+  00ef: Index[GearIndex[get_Outer().DriveSounds].OnLoadLoops].EngineAudioComponent = EngineAudioComponent
+  0123: AddAdd_Int(Index)
+  012a: goto 0x0015
+  012d: if !((!IsChildState(PreviousStateName, 'Boosting') && !IsChildState(PreviousStateName, 'JumpReving'))) goto 0x02a2
+  0169: if !((self.EngineOneshotSpazTimer <= 0.0)) goto 0x02a2
+  0178: Index = 0
+  017f: if !((Index < GearIndex[get_Outer().DriveSounds].OnLoadOneshots.Length)) goto 0x02a2
+  01a7: self.EngineOneshotSpazTimer = get_Outer().EngineOneshotSpazTime
+  01b9: EngineAudioComponent = Index[GearIndex[get_Outer().DriveSounds].OnLoadOneshots].EngineAudioComponent
+  01ed: get_Outer().PlayLoopingSound(EngineAudioComponent, Index[GearIndex[get_Outer().DriveSounds].OnLoadOneshots].Sound, 0.0, Index[GearIndex[get_Outer().DriveSounds].OnLoadOneshots].SocketName)
+  0264: Index[GearIndex[get_Outer().DriveSounds].OnLoadOneshots].EngineAudioComponent = EngineAudioComponent
+  0298: AddAdd_Int(Index)
+  029f: goto 0x017f
+  02a2: return nothing
+  02a4: <eos>
+
+function HmPlayerVehicleAudioComponentImpl.ForwardOnLoad.EndState  (script 9 bytes)
+  0000: HmPlayerVehicleAudioComponentImpl.StopEngineDriveOnLoadSounds()
+  0006: return nothing
+  0008: <eos>

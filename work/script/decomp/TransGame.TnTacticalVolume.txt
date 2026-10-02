@@ -1,0 +1,180 @@
+function TnTacticalVolume.CheckForErrors  (script 394 bytes)
+  0000: CheckForErrors()
+  0006: TnTacticalVolume.PruneOutNoneTactical()
+  000c: if !((self.TacticalPathNodes.Length == 0)) goto 0x00b7
+  0018: EmitCheckMessage(0, "Tactical Volume has no tactical path nodes, please make sure there is at least one tactical path node inside this volume and RESAVE:)", , )
+  00ad: MarkModified()
+  00b7: if !((self.TacticalPathNodes.Length <= 5)) goto 0x0187
+  00c4: EmitCheckMessage(1, (("Tactical Volume has only " @ cast53(self.TacticalPathNodes.Length)) @ "tactical nodes, AI will not work well with such a small amount. Please add more if this volume is not used as a 'crows nest' type of setup:)"), , )
+  0187: return nothing
+  0189: <eos>
+
+function TnTacticalVolume.PruneOutNoneTactical  (script 68 bytes)
+  0000: idx = (self.TacticalPathNodes.Length - 1)
+  000f: if !((idx >= 0)) goto 0x0041
+  001a: if !((idx[self.TacticalPathNodes] == none)) goto 0x0037
+  002b: self.TacticalPathNodes.Remove(idx,1)
+  0037: SubtractSubtract_PreInt(idx)
+  003e: goto 0x000f
+  0041: return nothing
+  0043: <eos>
+
+function TnTacticalVolume.PreSave  (script 78 bytes)
+  0000: if !(IsDefaultObject()) goto 0x000f
+  000d: return nothing
+  000f: if !(!obj'Engine.WorldInfo'.static.IsInEditor()) goto 0x0029
+  0027: return nothing
+  0029: if !(obj'Engine.WorldInfo'.static.IsUCC()) goto 0x0041
+  003f: return nothing
+  0041: FindTacticalPathNodes()
+  004b: return nothing
+  004d: <eos>
+
+function TnTacticalVolume.VolumeEncompassesLocation  (script 32 bytes)
+  0000: return V.EncompassesPoint(Loc)
+  0019: return return
+  001f: <eos>
+
+function TnTacticalVolume.FindTacticalPathNodes  (script 275 bytes)
+  0000: foreach AllActors(obj'Engine.PathNode', N) (end 0x009a)
+  0017: if !((((!N.IsDefaultObject() && (N.get_Outer() == get_Outer())) && obj'TnTacticalVolume'.static.VolumeEncompassesLocation(self, N.Location)) && NotEqual_InterfaceInterface(TnTacticalInterface(N), TnTacticalInterface(none)))) goto 0x0099
+  0087: NewNodes.Length[NewNodes] = N
+  0099: iternext
+  009a: iterpop
+  009b: if !((NewNodes.Length != self.TacticalPathNodes.Length)) goto 0x00b4
+  00ac: MarkAsModified = true
+  00b4: if !(!MarkAsModified) goto 0x00f2
+  00bf: foreach NewNodes(N,) (end 0x00f1)
+  00ce: if !((-1 == self.TacticalPathNodes.Find(N))) goto 0x00f0
+  00e5: MarkAsModified = true
+  00ed: goto 0x00f1
+  00f0: iternext
+  00f1: iterpop
+  00f2: if !(MarkAsModified) goto 0x0110
+  00fb: self.TacticalPathNodes = NewNodes
+  0106: MarkModified()
+  0110: return nothing
+  0112: <eos>
+
+function TnTacticalVolume.OnPostEditMove  (script 24 bytes)
+  0000: if !(!bFinished) goto 0x000d
+  000b: return nothing
+  000d: self.TacticalPathNodes.Length = 0
+  0015: return nothing
+  0017: <eos>
+
+function TnTacticalVolume.PostBeginPlay  (script 61 bytes)
+  0000: self.TacticalList.Length = 0
+  0008: foreach self.TacticalPathNodes(N,) (end 0x0039)
+  0017: self.TacticalList.AddItem(TnTacticalInterface(N).GetTactical())
+  0038: iternext
+  0039: iterpop
+  003a: return nothing
+  003c: <eos>
+
+function TnTacticalVolume.AssignToVolume  (script 21 bytes)
+  0000: self.AssignedControllers.Length[self.AssignedControllers] = C
+  0012: return nothing
+  0014: <eos>
+
+function TnTacticalVolume.RemoveFromVolume  (script 45 bytes)
+  0000: Index = self.AssignedControllers.Find(C)
+  0013: if !((Index >= 0)) goto 0x002a
+  001e: self.AssignedControllers.Remove(Index,1)
+  002a: return nothing
+  002c: <eos>
+
+function TnTacticalVolume.OnToggle  (script 82 bytes)
+  0000: if !(1[Action.InputLinks].bHasImpulse) goto 0x0044
+  001f: foreach self.AssignedControllers(C,) (end 0x0043)
+  002e: C.AssignToVolume(none)
+  0042: iternext
+  0043: iterpop
+  0044: OnToggle(Action)
+  004f: return nothing
+  0051: <eos>
+
+function TnTacticalVolume.Touch  (script 68 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: Enemy = Pawn(Other)
+  002a: if !((Enemy != none)) goto 0x0041
+  0035: TnTacticalVolume.RegisterEnemyWithAssignedControllers(Enemy, true)
+  0041: return nothing
+  0043: <eos>
+
+function TnTacticalVolume.UnTouch  (script 53 bytes)
+  0000: UnTouch(Other)
+  000b: Enemy = Pawn(Other)
+  001b: if !((Enemy != none)) goto 0x0032
+  0026: TnTacticalVolume.RegisterEnemyWithAssignedControllers(Enemy, false)
+  0032: return nothing
+  0034: <eos>
+
+function TnTacticalVolume.RegisterEnemyWithAssignedControllers  (script 130 bytes)
+  0000: if !(!self.AlertAssignedAiToEnemiesInVolume) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.AssignedControllers.Length)) goto 0x007f
+  0024: if !((I[self.AssignedControllers] != none)) goto 0x0054
+  0035: AiPawn = TnAiPawn(I[self.AssignedControllers].Pawn)
+  0054: if !((AiPawn != none)) goto 0x0075
+  005f: TnTacticalVolume.RegisterEnemyWithAiPawn(AiPawn, Enemy, EnemyTouch)
+  0075: AddAdd_PreInt(I)
+  007c: goto 0x0014
+  007f: return nothing
+  0081: <eos>
+
+function TnTacticalVolume.RegisterTouchingEnemiesWithAiPawn  (script 63 bytes)
+  0000: if !(!self.AlertAssignedAiToEnemiesInVolume) goto 0x000d
+  000b: return nothing
+  000d: foreach TouchingActors(obj'Engine.Pawn', Enemy) (end 0x003b)
+  0024: TnTacticalVolume.RegisterEnemyWithAiPawn(AiPawn, Enemy, AiPawnTouch)
+  003a: iternext
+  003b: iterpop
+  003c: return nothing
+  003e: <eos>
+
+function TnTacticalVolume.RegisterEnemyWithAiPawn  (script 156 bytes)
+  0000: C = TnAiController(AiPawn.Controller)
+  0019: if !((((AiPawn == Enemy) || (C == none)) || AiPawn.IsSameTeam(Enemy))) goto 0x0054
+  0052: return nothing
+  0054: if !(Touch) goto 0x0078
+  005d: C.SeeEnemy(Enemy)
+  0075: goto 0x0099
+  0078: C.UnregisterEnemy(Enemy.Controller)
+  0099: return nothing
+  009b: <eos>
+
+function TnTacticalVolume.GetTacticalPathNodeInsideVolume  (script 553 bytes)
+  0000: if !((self.TacticalPathNodes.Length == 0)) goto 0x007e
+  000c: LogInternal((((("Error: There are no tactical path nodes inside tactical volume" @ cast56(self)) @ "but") @ cast56(C)) @ "is asking for one."), , , )
+  007c: return none
+  007e: I = 0
+  0085: if !((I < self.TacticalPathNodes.Length)) goto 0x0181
+  0095: TacticalAirPathNode = TnTacticalAirPathNode(I[self.TacticalPathNodes])
+  00ab: if !(((((TacticalAirPathNode != none) && !TacticalAirPathNode.bBlocked) && C.CanVehicleFormFly()) && TnTacticalVolume.IsPathNodeAvailableForClaim(TacticalAirPathNode, TacticalAirPathNode.GetTactical(), C))) goto 0x0112
+  010c: return TacticalAirPathNode
+  0112: TacticalPathNode = TnTacticalPathNode(I[self.TacticalPathNodes])
+  0128: if !((((TacticalPathNode != none) && !TacticalPathNode.bBlocked) && TnTacticalVolume.IsPathNodeAvailableForClaim(TacticalPathNode, TacticalPathNode.GetTactical(), C))) goto 0x0177
+  0171: return TacticalPathNode
+  0177: AddAdd_PreInt(I)
+  017e: goto 0x0085
+  0181: LogInternal((("ERROR: Could not find available Tactical Node in" @ cast56(self)) @ "to path to.  Meaning all tactical positions might be claimed.  Put more tactical in the volume."), , , )
+  0220: return none
+  0222: return return
+  0228: <eos>
+
+function TnTacticalVolume.IsPathNodeAvailableForClaim  (script 95 bytes)
+  0000: if !(Point.IsOccupiedExcludeController(C)) goto 0x001d
+  001b: return false
+  001d: if !((Tactical == none)) goto 0x002a
+  0028: return true
+  002a: TacticalClaimer = Tactical._Claimer
+  003e: return ((TacticalClaimer == none) || (TacticalClaimer == C))
+  0058: return return
+  005e: <eos>
+
+function TnTacticalVolume.GetAssignedControllers  (script 13 bytes)
+  0000: return self.AssignedControllers
+  0006: return return
+  000c: <eos>

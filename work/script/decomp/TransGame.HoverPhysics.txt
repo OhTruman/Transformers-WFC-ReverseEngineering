@@ -1,0 +1,41 @@
+function HoverPhysics.MoveToTargetLocation  (script 285 bytes)
+  0000: if !((DeltaTime == 0.0)) goto 0x0011
+  000f: return nothing
+  0011: LocationToTarget = ((TargetLocation - RigidBody.get_Location()) * AxisMask)
+  003a: DistanceFromTarget = obj'Core.Math'.static.VSize(LocationToTarget)
+  0050: DesiredLinearVelocity = obj'Core.Math'.static.ClampLength((LocationToTarget / DeltaTime), obj'Core.Math'.static.FMin(obj'Core.Math'.static.Sqrt((MaxAcceleration * DistanceFromTarget)), MaxSpeed))
+  009c: DesiredLinearAcceleration = obj'Core.Math'.static.ClampLength(((DesiredLinearVelocity - RigidBody.get_LinearVelocity()) / DeltaTime), MaxAcceleration)
+  00dc: RigidBody.set_LinearVelocity((RigidBody.get_LinearVelocity() + ((DesiredLinearAcceleration * DeltaTime) * AxisMask)))
+  011a: return nothing
+  011c: <eos>
+
+function HoverPhysics.RotateToTargetOrientation  (script 308 bytes)
+  0000: if !((DeltaTime == 0.0)) goto 0x0011
+  000f: return nothing
+  0011: LocalDelta = (HoverPhysics.GetAxisWithAngleDelta(obj'Core.Math'.static.QuatFromRotator(TargetOrientation), RigidBody.get_RotationAsQuaternion()) * AxisMask)
+  0051: DistanceFromTarget = obj'Core.Math'.static.VSize(LocalDelta)
+  0067: DesiredLocalAngularVelocity = obj'Core.Math'.static.ClampLength((LocalDelta / DeltaTime), obj'Core.Math'.static.FMin(obj'Core.Math'.static.Sqrt((MaxAcceleration * DistanceFromTarget)), MaxSpeed))
+  00b3: DesiredLocalAngularAcceleration = obj'Core.Math'.static.ClampLength(((DesiredLocalAngularVelocity - RigidBody.get_LocalAngularVelocity()) / DeltaTime), MaxAcceleration)
+  00f3: RigidBody.set_LocalAngularVelocity((RigidBody.get_LocalAngularVelocity() + ((DesiredLocalAngularAcceleration * DeltaTime) * AxisMask)))
+  0131: return nothing
+  0133: <eos>
+
+function HoverPhysics.CalculateThrusterLinearContribution  (script 66 bytes)
+  0000: Contribution = ((LocalLinearAcceleration - LocalGravity) dot LocalDirection)
+  0019: return obj'Core.Math'.static.FClamp((Contribution / AccelerationLimit), 0.0, 1.0)
+  003b: return return
+  0041: <eos>
+
+function HoverPhysics.CalculateThrusterAngularContribution  (script 77 bytes)
+  0000: Contribution = ((obj'Core.Math'.static.Normal(LocalPosition) cross LocalDirection) dot LocalAngularAcceleration)
+  0024: return obj'Core.Math'.static.FClamp((Contribution / AccelerationLimit), 0.0, 1.0)
+  0046: return return
+  004c: <eos>
+
+function HoverPhysics.GetAxisWithAngleDelta  (script 153 bytes)
+  0000: if !((obj'Core.Math'.static.QuatDot(A, B) < cast3f(0))) goto 0x0043
+  0025: A = obj'Core.Math'.static.QuatNegate(A)
+  0043: Delta = obj'Core.Math'.static.QuatProduct(obj'Core.Math'.static.QuatInvert(B), A)
+  0079: return obj'Core.Math'.static.QuatToAxisWithAngle(Delta)
+  0092: return return
+  0098: <eos>

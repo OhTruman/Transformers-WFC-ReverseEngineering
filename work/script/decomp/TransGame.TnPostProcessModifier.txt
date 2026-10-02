@@ -1,0 +1,82 @@
+function TnPostProcessModifier.Activate  (script 114 bytes)
+  0000: self.Modification = PostProcessModification
+  000b: self.ActiveTimeRemaining = self.Modification.ActiveTime
+  0021: self.Lerper.Initialize(0.0, 1.0)
+  003e: self.Lerper.SetRampTime(self.Modification.RampInTime)
+  0061: GotoState('Active', , , )
+  006f: return nothing
+  0071: <eos>
+
+function TnPostProcessModifier.Deactivate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPostProcessModifier.Update  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPostProcessModifier.ModifyPostProcessSettings  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPostProcessModifier.Active.Deactivate  (script 39 bytes)
+  0000: if !(self.Modification.PersistentThroughResets) goto 0x0016
+  0014: return nothing
+  0016: GotoState('Inactive', , , )
+  0024: return nothing
+  0026: <eos>
+
+function TnPostProcessModifier.Active.Update  (script 156 bytes)
+  0000: self.Lerper.Update(DeltaTime)
+  0018: (self.ActiveTimeRemaining -= DeltaTime)
+  0024: if !((self.ActiveTimeRemaining <= cast3f(0))) goto 0x0099
+  0031: self.Lerper.Initialize(1.0, 0.0)
+  004e: self.Lerper.SetRampTime(self.Modification.RampOutTime)
+  0071: self.Lerper.SetTime(-self.ActiveTimeRemaining)
+  008b: GotoState('RampingDown', , , )
+  0099: return nothing
+  009b: <eos>
+
+function TnPostProcessModifier.Active.ModifyPostProcessSettings  (script 1980 bytes)
+  0000: Alpha = self.Lerper.GetValue()
+  0019: if !(self.Modification.Settings.bEnableBloom) goto 0x00e3
+  0038: Settings.bEnableBloom = true
+  004b: Settings.Bloom_Scale = obj'Core.Math'.static.Lerp(Settings.Bloom_Scale, self.Modification.Settings.Bloom_Scale, Alpha)
+  0097: Settings.Bloom_Threshold = obj'Core.Math'.static.Lerp(Settings.Bloom_Threshold, self.Modification.Settings.Bloom_Threshold, Alpha)
+  00e3: if !(self.Modification.Settings.bEnableDOF) goto 0x0485
+  0102: Settings.bEnableDOF = true
+  0115: Settings.DOFXScale = obj'Core.Math'.static.Lerp(Settings.DOFXScale, self.Modification.Settings.DOFXScale, Alpha)
+  0161: Settings.DOFYScale = obj'Core.Math'.static.Lerp(Settings.DOFYScale, self.Modification.Settings.DOFYScale, Alpha)
+  01ad: Settings.DOFAndBloomXScale = obj'Core.Math'.static.Lerp(Settings.DOFAndBloomXScale, self.Modification.Settings.DOFAndBloomXScale, Alpha)
+  01f9: Settings.DOFAndBloomYScale = obj'Core.Math'.static.Lerp(Settings.DOFAndBloomYScale, self.Modification.Settings.DOFAndBloomYScale, Alpha)
+  0245: Settings.DOF_FalloffExponent = obj'Core.Math'.static.Lerp(Settings.DOF_FalloffExponent, self.Modification.Settings.DOF_FalloffExponent, Alpha)
+  0291: Settings.DOF_BlurKernelSize = obj'Core.Math'.static.Lerp(Settings.DOF_BlurKernelSize, self.Modification.Settings.DOF_BlurKernelSize, Alpha)
+  02dd: Settings.DOF_MaxNearBlurAmount = obj'Core.Math'.static.Lerp(Settings.DOF_MaxNearBlurAmount, self.Modification.Settings.DOF_MaxNearBlurAmount, Alpha)
+  0329: Settings.DOF_MaxFarBlurAmount = obj'Core.Math'.static.Lerp(Settings.DOF_MaxFarBlurAmount, self.Modification.Settings.DOF_MaxFarBlurAmount, Alpha)
+  0375: Settings.DOF_FocusType = self.Modification.Settings.DOF_FocusType
+  03a1: Settings.DOF_FocusNearFalloff = obj'Core.Math'.static.Lerp(Settings.DOF_FocusNearFalloff, self.Modification.Settings.DOF_FocusNearFalloff, Alpha)
+  03ed: Settings.DOF_FocusFarFalloff = obj'Core.Math'.static.Lerp(Settings.DOF_FocusFarFalloff, self.Modification.Settings.DOF_FocusFarFalloff, Alpha)
+  0439: Settings.DOF_FocusDistance = obj'Core.Math'.static.Lerp(Settings.DOF_FocusDistance, self.Modification.Settings.DOF_FocusDistance, Alpha)
+  0485: if !(self.Modification.Settings.bEnableMotionBlur) goto 0x063f
+  04a4: Settings.bEnableMotionBlur = true
+  04b7: Settings.MotionBlur_MaxVelocity = obj'Core.Math'.static.Lerp(Settings.MotionBlur_MaxVelocity, self.Modification.Settings.MotionBlur_MaxVelocity, Alpha)
+  0503: Settings.MotionBlur_Amount = obj'Core.Math'.static.Lerp(Settings.MotionBlur_Amount, self.Modification.Settings.MotionBlur_Amount, Alpha)
+  054f: Settings.MotionBlur_CurveExponent = obj'Core.Math'.static.Lerp(Settings.MotionBlur_CurveExponent, self.Modification.Settings.MotionBlur_CurveExponent, Alpha)
+  059b: Settings.MotionBlur_AccumulationSoftness = obj'Core.Math'.static.Lerp(Settings.MotionBlur_AccumulationSoftness, self.Modification.Settings.MotionBlur_AccumulationSoftness, Alpha)
+  05e7: Settings.MotionBlur_NumSamples = self.Modification.Settings.MotionBlur_NumSamples
+  0613: Settings.MotionBlur_Technique = self.Modification.Settings.MotionBlur_Technique
+  063f: if !(self.Modification.Settings.bEnableSceneEffect) goto 0x07b9
+  065e: Settings.bEnableSceneEffect = true
+  0671: Settings.Scene_Desaturation = obj'Core.Math'.static.Lerp(Settings.Scene_Desaturation, self.Modification.Settings.Scene_Desaturation, Alpha)
+  06bd: Settings.Scene_HighLights = obj'Core.Math'.static.VLerp(Settings.Scene_HighLights, self.Modification.Settings.Scene_HighLights, Alpha)
+  0711: Settings.Scene_MidTones = obj'Core.Math'.static.VLerp(Settings.Scene_MidTones, self.Modification.Settings.Scene_MidTones, Alpha)
+  0765: Settings.Scene_Shadows = obj'Core.Math'.static.VLerp(Settings.Scene_Shadows, self.Modification.Settings.Scene_Shadows, Alpha)
+  07b9: return nothing
+  07bb: <eos>
+
+function TnPostProcessModifier.RampingDown.Update  (script 63 bytes)
+  0000: self.Lerper.Update(DeltaTime)
+  0018: if !(self.Lerper.IsDoneLerping()) goto 0x003c
+  002e: GotoState('Inactive', , , )
+  003c: return nothing
+  003e: <eos>

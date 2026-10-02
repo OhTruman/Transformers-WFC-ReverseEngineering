@@ -1,0 +1,55 @@
+function TnAiActionInteractWithShieldedPosition.OnSetUpConditions  (script 216 bytes)
+  0000: Interact = TnInteractBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateShieldedPosition', ExpectedEffects))
+  0028: if !((Interact == none)) goto 0x0035
+  0033: return false
+  0035: if !(Interact.IsInUse()) goto 0x004d
+  004b: return false
+  004d: if !(Interact.HotSpotPathNode.IsOccupiedExcludeController(self._TransformerController)) goto 0x0073
+  0071: return false
+  0073: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateShieldedPosition', Interact)
+  0095: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Interact.HotSpotPathNode)
+  00c0: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00d1: return return
+  00d7: <eos>
+
+function TnAiActionInteractWithShieldedPosition.OnIsValidForFutureExecution  (script 61 bytes)
+  0000: if !((get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition') == none)) goto 0x0025
+  0023: return false
+  0025: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0036: return return
+  003c: <eos>
+
+function TnAiActionInteractWithShieldedPosition.OnStart  (script 115 bytes)
+  0000: self._Interact = TnInteractBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateShieldedPosition', ExpectedEffects))
+  0028: self._Interact.InteractCommand(self._TransformerPawn, 0)
+  0042: SetCharacterState(1)
+  004d: self._TransformerController.StopMovement()
+  0060: return OnStart(ExpectedEffects)
+  006c: return return
+  0072: <eos>
+
+function TnAiActionInteractWithShieldedPosition.OnUpdate  (script 60 bytes)
+  0000: if !((self._Interact.IsInUse() == false)) goto 0x0024
+  0019: return Succeed()
+  0024: return OnUpdate(ExpectedEffects, DeltaTime)
+  0035: return return
+  003b: <eos>
+
+function TnAiActionInteractWithShieldedPosition.OnFinish  (script 33 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._Interact.ForceEndUse()
+  001e: return nothing
+  0020: <eos>
+
+function TnAiActionInteractWithShieldedPosition.GetDescriptionDetail  (script 251 bytes)
+  0000: EffectStatus = cast3d(obj'HM_Engine.HmGoap'.static.GetIntValue(obj'TnAiWorldStateShieldedPosition', self._Effects))
+  0025: ConditionStatus = cast3d(obj'HM_Engine.HmGoap'.static.GetIntValue(obj'TnAiWorldStateShieldedPosition', self._Preconditions))
+  004a: if !(((cast3a(EffectStatus) == cast3a(1)) && (cast3a(ConditionStatus) == cast3a(3)))) goto 0x0085
+  006c: return "DeployShieldedPosition"
+  0085: if !((cast3a(EffectStatus) == cast3a(1))) goto 0x00ad
+  0095: return "RaiseShieldedPosition"
+  00ad: if !((cast3a(EffectStatus) == cast3a(2))) goto 0x00d5
+  00bd: return "LowerShieldedPosition"
+  00d5: return "InteractWithShieldedPosition"
+  00f4: return return
+  00fa: <eos>

@@ -1,0 +1,23 @@
+function TnDataProvider_Weapon.CheckForErrors  (script 165 bytes)
+  0000: TnDataProvider_CharacterOption.CheckForErrors()
+  0006: ChassisRestrictions = obj'Core.Strings'.static.Split(self.ChassisRestriction, ",")
+  0027: foreach ChassisRestrictions(ChassisRestrictionIter,) (end 0x00a1)
+  0036: if !(!TnDataProvider_Weapon.ChassisExists(ChassisRestrictionIter)) goto 0x00a0
+  0046: LogInternal((((("Error: Weapon" @ cast57(self.Name)) @ "has ChassisRestriction") @ ChassisRestrictionIter) @ "which could not be found"), , , )
+  00a0: iternext
+  00a1: iterpop
+  00a2: return nothing
+  00a4: <eos>
+
+function TnDataProvider_Weapon.ChassisExists  (script 94 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetChassisProviders()
+  0019: foreach Providers(Provider,) (end 0x0054)
+  0028: Chassis = TnDataProvider_Chassis(Provider)
+  0038: if !((Chassis.UniqueId == ChassisName)) goto 0x0053
+  0050: iterpop
+  0051: return true
+  0053: iternext
+  0054: iterpop
+  0055: return false
+  0057: return return
+  005d: <eos>

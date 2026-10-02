@@ -1,0 +1,127 @@
+function TnTeamHandler.Initialize  (script 90 bytes)
+  0000: self.Game = NewGame
+  000b: if !((NewGame.GameReplicationInfo.Teams.Length == 0)) goto 0x0036
+  0029: SpawnTeams()
+  0033: goto 0x003c
+  0036: TnTeamHandler.CacheTeams()
+  003c: LogTeams("Creating teams", )
+  0057: return nothing
+  0059: <eos>
+
+function TnTeamHandler.CacheTeams  (script 188 bytes)
+  0000: GRI = self.Game.GameReplicationInfo
+  0014: self.Teams.Length = GRI.Teams.Length
+  002a: I = 0
+  0031: if !((I < GRI.Teams.Length)) goto 0x00b9
+  004a: if !((I[GRI.Teams] == none)) goto 0x0067
+  0064: goto 0x00af
+  0067: TeamIndex = I[GRI.Teams].TeamIndex
+  008a: TeamIndex[self.Teams] = TnTeamInfo(I[GRI.Teams])
+  00af: AddAdd_PreInt(I)
+  00b6: goto 0x0031
+  00b9: return nothing
+  00bb: <eos>
+
+function TnTeamHandler.SpawnTeams  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTeamHandler.PickTeam  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTeamHandler.ChangeTeam  (script 103 bytes)
+  0000: PRI = TnPlayerReplicationInfo(Other.PlayerReplicationInfo)
+  0019: if !((((PRI == none) || (NewTeamIndex < 0)) || (NewTeamIndex >= self.Teams.Length))) goto 0x0045
+  0043: return false
+  0045: SetTeam(NewTeamIndex, Other, PRI)
+  005e: return true
+  0060: return return
+  0066: <eos>
+
+function TnTeamHandler.SetTeam  (script 213 bytes)
+  0000: NewTeam = TeamIndex[self.Teams]
+  0011: OldTeam = PRI.Team
+  0025: if !((NewTeam == OldTeam)) goto 0x0036
+  0034: return nothing
+  0036: if !((OldTeam != none)) goto 0x0059
+  0041: OldTeam.RemoveFromTeam(C)
+  0059: NewTeam.AddToTeam(C)
+  0071: PRI.SetTeam(NewTeam)
+  0089: PC = PlayerController(C)
+  0099: if !(((PC != none) && (LocalPlayer(PC.Player) != none))) goto 0x00d2
+  00bf: PC.NotifyLocalPlayerTeamReceived()
+  00d2: return nothing
+  00d4: <eos>
+
+function TnTeamHandler.FindTeamByClass  (script 68 bytes)
+  0000: foreach self.Teams(Team,) (end 0x003a)
+  000f: if !(((Team != none) && (Team.get_Class() == Type))) goto 0x0039
+  0032: iterpop
+  0033: return Team
+  0039: iternext
+  003a: iterpop
+  003b: return none
+  003d: return return
+  0043: <eos>
+
+function TnTeamHandler.GetTeam  (script 19 bytes)
+  0000: return Index[self.Teams]
+  000c: return return
+  0012: <eos>
+
+function TnTeamHandler.DisbandTeams  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTeamHandler.AssignTeams  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTeamHandler.ForceToTeam  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTeamHandler.GetTeamMembers  (script 192 bytes)
+  0000: default=true
+  0005: if !((cast3a(Me.GetTeamNum()) == 255)) goto 0x003a
+  0021: if !(IncludeSelf) goto 0x0037
+  002a: TeamMembers.AddItem(Me)
+  0037: goto 0x00bd
+  003a: foreach Me.WorldInfo.AllPawns(obj'TnPawn', P, , ) (end 0x00bc)
+  0065: if !((cast3a(P.GetTeamNum()) == cast3a(Me.GetTeamNum()))) goto 0x00bb
+  0094: if !((IncludeSelf || (P != Me))) goto 0x00bb
+  00ae: TeamMembers.AddItem(P)
+  00bb: iternext
+  00bc: iterpop
+  00bd: return nothing
+  00bf: <eos>
+
+function TnTeamHandler.GetOpposingTeamMembers  (script 212 bytes)
+  0000: if !((cast3a(Me.GetTeamNum()) == 255)) goto 0x0068
+  001c: foreach Me.WorldInfo.AllPawns(obj'TnPawn', P, , ) (end 0x0064)
+  0047: if !((P != Me)) goto 0x0063
+  0056: OpposingTeamMembers.AddItem(P)
+  0063: iternext
+  0064: iterpop
+  0065: goto 0x00d1
+  0068: foreach Me.WorldInfo.AllPawns(obj'TnPawn', P, , ) (end 0x00d0)
+  0093: if !((cast3a(P.GetTeamNum()) != cast3a(Me.GetTeamNum()))) goto 0x00cf
+  00c2: OpposingTeamMembers.AddItem(P)
+  00cf: iternext
+  00d0: iterpop
+  00d1: return nothing
+  00d3: <eos>
+
+function TnTeamHandler.AreTeamsUnbalanced  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnTeamHandler.LogTeams  (script 83 bytes)
+  0000: nothing
+  0001: if !((PRI != none)) goto 0x002b
+  000c: PlayerName = ((" |" @ PRI.PlayerName) $ " ")
+  002b: LogInternal((((Log $ PlayerName) @ "|") @ cast56(get_Class())), 'DevTeams', , )
+  0050: return nothing
+  0052: <eos>

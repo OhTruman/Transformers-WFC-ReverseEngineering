@@ -1,0 +1,8 @@
+function TnAbilitySpawnAmmoCrate.OnDropInventory  (script 155 bytes)
+  0000: if !(((self.OwnerPawn == none) || (self.OwnerPawn.PlayerReplicationInfo == none))) goto 0x0023
+  0021: return nothing
+  0023: TnPlayerReplicationInfo(self.OwnerPawn.PlayerReplicationInfo).IncrementGameStat(1.0, 5650, 0)
+  0050: if !((DP.Instigator != none)) goto 0x0098
+  0064: TnDroppedPickup(DP).SetTeamNum(DP.Instigator.GetTeamNum())
+  0098: return nothing
+  009a: <eos>

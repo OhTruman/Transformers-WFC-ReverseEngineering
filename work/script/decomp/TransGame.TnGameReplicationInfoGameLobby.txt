@@ -1,0 +1,319 @@
+function TnGameReplicationInfoGameLobby.ReplicatedEvent  (script 188 bytes)
+  0000: if !((VarName == 'SelectedMapID')) goto 0x0080
+  0013: if !(obj'TnDataStore_MenuItems'.static.HasRequiredMapAssets(self.SelectedMapID)) goto 0x0037
+  002e: TnGameReplicationInfoGameLobby.UpdatePrestreaming()
+  0034: goto 0x007d
+  0037: PC = TnPlayerControllerGameLobby(TnWorldInfo(self.WorldInfo).GetLocalPlayerController())
+  005a: if !((PC != none)) goto 0x007d
+  0065: PC.ShowContentMissingMessageBox(self.SelectedMapID)
+  007d: goto 0x00ae
+  0080: if !(((VarName == 'LobbyStatusId') || (VarName == 'LobbyStatusParam'))) goto 0x00ae
+  00a8: TnGameReplicationInfoGameLobby.UpdateLobbyStatusString()
+  00ae: TnGameReplicationInfo.ReplicatedEvent(VarName)
+  00b9: return nothing
+  00bb: <eos>
+
+function TnGameReplicationInfoGameLobby.HostSetGoalScore  (script 25 bytes)
+  0000: self.SelectedGoalScore = HostGoalScore
+  000b: RefreshGameDataStore()
+  0016: return nothing
+  0018: <eos>
+
+function TnGameReplicationInfoGameLobby.HostRequestMapID  (script 31 bytes)
+  0000: if !((self.MapSelectionMethod != 1)) goto 0x000d
+  000b: return nothing
+  000d: SetMapId(NewMapId)
+  001c: return nothing
+  001e: <eos>
+
+function TnGameReplicationInfoGameLobby.HostRequestCheckpoint  (script 46 bytes)
+  0000: if !((self.MapSelectionMethod != 1)) goto 0x000d
+  000b: return nothing
+  000d: self.SelectedCheckpoint = NewCheckpointPath
+  0018: RefreshGameDataStore('SelectedCheckpoint')
+  002b: return nothing
+  002d: <eos>
+
+function TnGameReplicationInfoGameLobby.SetHostCanRequestGameStart  (script 52 bytes)
+  0000: if !((CanRequest != self.CanHostRequestGameStart)) goto 0x0031
+  0011: self.CanHostRequestGameStart = CanRequest
+  001e: RefreshGameDataStore('CanHostRequestGameStart')
+  0031: return nothing
+  0033: <eos>
+
+function TnGameReplicationInfoGameLobby.GetHostCanRequestGameStart  (script 14 bytes)
+  0000: return self.CanHostRequestGameStart
+  0007: return return
+  000d: <eos>
+
+function TnGameReplicationInfoGameLobby.SetMapId  (script 37 bytes)
+  0000: TnGameReplicationInfo.SetMapId(NewMapId)
+  000b: TnGameReplicationInfoGameLobby.UpdatePrestreaming()
+  0011: TnGameReplicationInfoGameLobby.DeselectInvalidCharacters()
+  0017: RefreshGameDataStore()
+  0022: return nothing
+  0024: <eos>
+
+function TnGameReplicationInfoGameLobby.ModifyURL  (script 97 bytes)
+  0000: OptionsURL = (((GetMapFilename() $ OptionsURL) $ "?MapId=") $ cast53(GetMapID()))
+  0030: if !((self.SelectedCheckpoint != "")) goto 0x005e
+  003c: OptionsURL = ((OptionsURL $ "?Checkpoint=") $ self.SelectedCheckpoint)
+  005e: return nothing
+  0060: <eos>
+
+function TnGameReplicationInfoGameLobby.ShouldPlayJoinAndLeaveSound  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnGameReplicationInfoGameLobby.AddPRI  (script 20 bytes)
+  0000: TnGameReplicationInfo.AddPRI(PRI)
+  000b: TnGameReplicationInfoGameLobby.UpdateVetos()
+  0011: return nothing
+  0013: <eos>
+
+function TnGameReplicationInfoGameLobby.UpdateVetos  (script 78 bytes)
+  0000: if !(self.AllowMapVeto) goto 0x004b
+  0009: self.RequiredVetos = obj'Core.Math'.static.Max(self.VetoQuarum, ((get_NumHumanPlayers() / 2) + 1))
+  0030: self.bForceNetUpdate = true
+  0038: RefreshGameDataStore('RequiredVetos')
+  004b: return nothing
+  004d: <eos>
+
+function TnGameReplicationInfoGameLobby.SetLobbyStatus  (script 68 bytes)
+  0000: nothing
+  0001: if !(((cast3a(self.LobbyStatusId) != cast3a(NewStatusId)) || (self.LobbyStatusParam != NewStatusParam))) goto 0x0041
+  0025: self.LobbyStatusId = NewStatusId
+  0030: self.LobbyStatusParam = NewStatusParam
+  003b: TnGameReplicationInfoGameLobby.UpdateLobbyStatusString()
+  0041: return nothing
+  0043: <eos>
+
+function TnGameReplicationInfoGameLobby.UpdateLobbyStatusString  (script 168 bytes)
+  0000: switch (self.LobbyStatusId)
+  0007: case 1: (next 0x002c)
+  000c: FormatString = ((self.LobbyStatusParam <= 1) ? self.WaitingForOnePlayerStatus : self.WaitingForPlayersStatus)
+  0029: goto 0x0068
+  002c: case 2: (next 0x003f)
+  0031: FormatString = self.WaitingForCharacterChoiceStatus
+  003c: goto 0x0068
+  003f: case 3: (next 0x0052)
+  0044: FormatString = self.WaitingForHostToStartStatus
+  004f: goto 0x0068
+  0052: case 4: (next 0x0065)
+  0057: FormatString = self.WaitingForBalancedTeamsStatus
+  0062: goto 0x0068
+  0065: default:
+  0068: self.LobbyStatus = obj'Core.Strings'.static.Repl(FormatString, "`p", cast53(self.LobbyStatusParam), )
+  008a: self.bForceNetUpdate = true
+  0092: RefreshGameDataStore('LobbyStatus')
+  00a5: return nothing
+  00a7: <eos>
+
+function TnGameReplicationInfoGameLobby.DeselectInvalidCharacters  (script 132 bytes)
+  0000: if !(!self._bIconicMode) goto 0x000d
+  000b: return nothing
+  000d: PlayableIconicCharacters = GetPlayableIconicCharacterNames()
+  001d: foreach self.PRIArray(PRI,) (end 0x0080)
+  002c: TnPRI = TnPlayerReplicationInfo(PRI)
+  003c: CharacterName = TnPRI.GetCharacterName()
+  0055: if !((PlayableIconicCharacters.Find(CharacterName) == -1)) goto 0x007f
+  006c: TnPRI.ClearCharacter()
+  007f: iternext
+  0080: iterpop
+  0081: return nothing
+  0083: <eos>
+
+function TnGameReplicationInfoGameLobby.GetPlayableIconicCharacterNames  (script 160 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: foreach Providers(Provider,) (end 0x006d)
+  0028: Map = TnDataProvider_MapInfo(Provider)
+  0038: if !((Map.MapId == GetMapID())) goto 0x006c
+  0055: PlayableCharacters = Map.CampaignCharacters
+  0069: goto 0x006d
+  006c: iternext
+  006d: iterpop
+  006e: if !((PlayableCharacters.Length == 0)) goto 0x0093
+  007a: PlayableCharacters = obj'TnPlayerController'.static.GetAllIconicCharacterNames()
+  0093: return PlayableCharacters
+  0099: return return
+  009f: <eos>
+
+function TnGameReplicationInfoGameLobby.GetMapFilename  (script 32 bytes)
+  0000: return obj'TnDataStore_MenuItems'.static.ConvertMapIdToMapFilename(self.SelectedMapID)
+  0019: return return
+  001f: <eos>
+
+function TnGameReplicationInfoGameLobby.OnEnterLobbyFromMap  (script 75 bytes)
+  0000: if !((((MapId == -1) || (self.MapSelectionMethod == 0)) || IsCampaignGame())) goto 0x0039
+  002b: TnGameReplicationInfoGameLobby.ChooseNextMap(MapId)
+  0036: goto 0x0048
+  0039: SetMapId(MapId)
+  0048: return nothing
+  004a: <eos>
+
+function TnGameReplicationInfoGameLobby.BeginIntermissionCountdown  (script 44 bytes)
+  0000: ResetCountdown(true, (self.HasStartedIntermissionTimer ? self.CurrentCountdown : self.LobbyIntermissionTime), )
+  0021: self.HasStartedIntermissionTimer = true
+  0029: return nothing
+  002b: <eos>
+
+function TnGameReplicationInfoGameLobby.HaltIntermissionCountdown  (script 20 bytes)
+  0000: ResetCountdown(false, self.CurrentCountdown, )
+  0011: return nothing
+  0013: <eos>
+
+function TnGameReplicationInfoGameLobby.BeginShortCountdown  (script 20 bytes)
+  0000: ResetCountdown(true, self.LowCountdownTickThreshold, )
+  0011: return nothing
+  0013: <eos>
+
+function TnGameReplicationInfoGameLobby.SubmitMapVeto  (script 112 bytes)
+  0000: if !((self.SelectedMapID != MapId)) goto 0x0011
+  000f: return nothing
+  0011: if !(!self.AllowMapVeto) goto 0x001e
+  001c: return nothing
+  001e: AddAdd_PreInt(self.MapVetos)
+  0025: self.bForceNetUpdate = true
+  002d: TnGameReplicationInfoGameLobby.NotifyMapVeto(PRI)
+  0038: if !((self.MapVetos >= self.RequiredVetos)) goto 0x005a
+  0047: self.AllowMapVeto = false
+  004f: TnGameReplicationInfoGameLobby.ChooseNextMap(self.SelectedMapID)
+  005a: RefreshGameDataStore('MapVetos')
+  006d: return nothing
+  006f: <eos>
+
+function TnGameReplicationInfoGameLobby.NotifyMapVeto  (script 65 bytes)
+  0000: GI = TnGameLobbyGame(self.WorldInfo.Game)
+  0019: if !((GI == none)) goto 0x0026
+  0024: return nothing
+  0026: GI.NotifyMapVeto(PRI)
+  003e: return nothing
+  0040: <eos>
+
+function TnGameReplicationInfoGameLobby.WithdrawMapVeto  (script 73 bytes)
+  0000: if !((!self.AllowMapVeto || (self.MapVetos <= 0))) goto 0x001a
+  0018: return nothing
+  001a: if !(((PRI != none) && PRI.HasSubmittedMapVeto)) goto 0x0046
+  0039: SubtractSubtract_PreInt(self.MapVetos)
+  0040: TnGameReplicationInfoGameLobby.UpdateVetos()
+  0046: return nothing
+  0048: <eos>
+
+function TnGameReplicationInfoGameLobby.GetCompatibleMaps  (script 155 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: foreach Providers(Provider,) (end 0x008d)
+  0028: Map = TnDataProvider_MapInfo(Provider)
+  0038: if !((Map.CompatibleGameTypes.Find(self.GameModeTag) == -1)) goto 0x005c
+  0058: iternext
+  0059: goto 0x008d
+  005c: if !(Map.IsProviderDisabled()) goto 0x0076
+  0072: iternext
+  0073: goto 0x008d
+  0076: CompatibleMaps.AddItem(Map.MapId)
+  008c: iternext
+  008d: iterpop
+  008e: return CompatibleMaps
+  0094: return return
+  009a: <eos>
+
+function TnGameReplicationInfoGameLobby.MapCanBePlayed  (script 173 bytes)
+  0000: if !((self.SelectedPlaylistID == -1)) goto 0x0011
+  000f: return true
+  0011: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  002a: if !((OnlineSub == none)) goto 0x0037
+  0035: return false
+  0037: PlaylistManager = OnlinePlaylistManager(OnlineSub.GetNamedInterface('PlaylistManager'))
+  005e: if !((PlaylistManager == none)) goto 0x006b
+  0069: return false
+  006b: PlaylistManager.GetContentIdsFromPlaylist(self.SelectedPlaylistID, ContentIds)
+  0088: return (ContentIds.Find(Map.DlcId) != -1)
+  00a6: return return
+  00ac: <eos>
+
+function TnGameReplicationInfoGameLobby.RandomMap  (script 113 bytes)
+  0000: if !((PreviousMapId == -1)) goto 0x0031
+  000f: NewMap = obj'Core.Random'.static.RandRangeInt(0, NumMaps)
+  002e: goto 0x0064
+  0031: NewMap = cast44((cast3f((PreviousMapId + obj'Core.Random'.static.RandRangeInt(1, NumMaps))) % cast3f(NumMaps)))
+  0064: return NewMap
+  006a: return return
+  0070: <eos>
+
+function TnGameReplicationInfoGameLobby.ChooseNextMap  (script 107 bytes)
+  0000: if !(((self.WorldInfo.Game != none) && self.WorldInfo.Game.get_IsAutomatedTesting())) goto 0x0042
+  0035: TnGameReplicationInfoGameLobby.SelectRandomMap(PreviousMapId)
+  0040: return nothing
+  0042: if !(IsCampaignGame()) goto 0x005d
+  004f: TnGameReplicationInfoGameLobby.SelectCampaignMap(PreviousMapId)
+  005a: goto 0x0068
+  005d: TnGameReplicationInfoGameLobby.SelectRandomMap(PreviousMapId)
+  0068: return nothing
+  006a: <eos>
+
+function TnGameReplicationInfoGameLobby.SelectCampaignMap  (script 114 bytes)
+  0000: foreach LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0034)
+  0017: Profile = TnProfileSettings(PC.ProfileSettings)
+  0030: goto 0x0034
+  0033: iternext
+  0034: iterpop
+  0035: if !((Profile == none)) goto 0x0042
+  0040: return nothing
+  0042: NextMap = Profile.GetNextAvailableCampaignMap(PreviousMapId)
+  0060: SetMapId(NextMap)
+  006f: return nothing
+  0071: <eos>
+
+function TnGameReplicationInfoGameLobby.SelectRandomMap  (script 363 bytes)
+  0000: CompatibleMapIds = TnGameReplicationInfoGameLobby.GetCompatibleMaps()
+  000c: if !((CompatibleMapIds.Length == 0)) goto 0x0065
+  0018: LogInternal("ERROR: No maps are compatible with the currently selected game mode.", , , )
+  0063: return nothing
+  0065: TnGameReplicationInfoGameLobby.PrintMapList(CompatibleMapIds)
+  0070: CurrentMapIndex = CompatibleMapIds.Find(PreviousMapId)
+  0083: NewMapIndex = RandomMap(CurrentMapIndex, CompatibleMapIds.Length)
+  009e: if !((CurrentMapIndex != -1)) goto 0x00d1
+  00ad: CurrentMapName = obj'TnDataStore_MenuItems'.static.ConvertMapIdToFriendlyName(CurrentMapIndex[CompatibleMapIds])
+  00d1: NewMapName = obj'TnDataStore_MenuItems'.static.ConvertMapIdToFriendlyName(NewMapIndex[CompatibleMapIds])
+  00f5: LogInternal(((((("Selecting map index" $ cast53(NewMapIndex)) @ NewMapName) @ "after playing map index:") @ cast53(CurrentMapIndex)) @ CurrentMapName), 'DevOnline', , )
+  0153: SetMapId(NewMapIndex[CompatibleMapIds])
+  0168: return nothing
+  016a: <eos>
+
+function TnGameReplicationInfoGameLobby.PrintMapList  (script 147 bytes)
+  0000: LogInternal("Compatible maps:", 'DevOnline', , )
+  001f: I = 0
+  0026: if !((I < MapIds.Length)) goto 0x0090
+  0036: LogInternal(((("   Compatible map[" $ cast53(I)) $ "]:") @ obj'TnDataStore_MenuItems'.static.ConvertMapIdToFriendlyName(I[MapIds])), 'DevOnline', , )
+  0086: AddAdd_PreInt(I)
+  008d: goto 0x0026
+  0090: return nothing
+  0092: <eos>
+
+function TnGameReplicationInfoGameLobby.AllPlayersHaveCharacter  (script 106 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x0060)
+  000f: TnPRI = TnPlayerReplicationInfo(PRI)
+  001f: if !((TnPRI == none)) goto 0x002e
+  002a: iternext
+  002b: goto 0x0060
+  002e: if !(TnPRI.bBot) goto 0x0044
+  0040: iternext
+  0041: goto 0x0060
+  0044: if !(!TnPRI.HasSelectedCharacter()) goto 0x005f
+  005c: iterpop
+  005d: return false
+  005f: iternext
+  0060: iterpop
+  0061: return true
+  0063: return return
+  0069: <eos>
+
+function TnGameReplicationInfoGameLobby.UpdatePrestreaming  (script 151 bytes)
+  0000: if !((cast3a(GetGameTeamStatus()) != cast3a(4))) goto 0x0094
+  0015: MapFilename = obj'TnDataStore_MenuItems'.static.ConvertMapIdToMapFilename(self.SelectedMapID)
+  0033: LogInternal(("Prestreaming" @ MapFilename), , , )
+  004d: GE = GameEngine(obj'Engine.Engine'.static.GetEngine())
+  006b: GE.UpdateMapPrestreaming(MapFilename)
+  0083: self.WorldInfo.bHighPriorityLoading = true
+  0094: return nothing
+  0096: <eos>

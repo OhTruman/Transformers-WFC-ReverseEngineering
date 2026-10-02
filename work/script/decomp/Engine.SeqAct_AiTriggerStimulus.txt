@@ -1,0 +1,37 @@
+function SeqAct_AiTriggerStimulus.Activated  (script 189 bytes)
+  0000: if !(!0[self.InputLinks].bHasImpulse) goto 0x001a
+  0018: return nothing
+  001a: if !((self.StimulusSource == none)) goto 0x0027
+  0025: return nothing
+  0027: if !((self.Targets.Length == 0)) goto 0x005d
+  0033: self.StimulusSource.TriggerStimulus(self.StimulusType, self.StimulusSource.Location, )
+  005a: goto 0x00ba
+  005d: foreach self.Targets(Target,) (end 0x00b9)
+  006c: C = SeqAct_AiTriggerStimulus.GetTargetController(Target)
+  007d: if !((C == none)) goto 0x008c
+  0088: iternext
+  0089: goto 0x00b9
+  008c: C.ReactToStimulus(self.StimulusSource, self.StimulusType, self.StimulusSource.Location, )
+  00b8: iternext
+  00b9: iterpop
+  00ba: return nothing
+  00bc: <eos>
+
+function SeqAct_AiTriggerStimulus.GetTargetController  (script 89 bytes)
+  0000: C = AIController(Target)
+  0010: if !((C != none)) goto 0x0021
+  001b: return C
+  0021: P = Pawn(Target)
+  0031: if !((P != none)) goto 0x0050
+  003c: return AIController(P.Controller)
+  0050: return none
+  0052: return return
+  0058: <eos>
+
+function SeqAct_AiTriggerStimulus.CheckForErrors  (script 82 bytes)
+  0000: PublishLinkedVariableValues()
+  000a: if !((self.StimulusSource == none)) goto 0x0049
+  0015: self.EmitCheckMessage(0, "StimulusSource must not be none", , )
+  0049: CheckForErrors()
+  004f: return nothing
+  0051: <eos>

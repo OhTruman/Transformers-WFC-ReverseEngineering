@@ -1,0 +1,133 @@
+function MatineeActor.ReplicatedEvent  (script 48 bytes)
+  0000: if !((self.ClientUpdateVariables.Find(VarName) != -1)) goto 0x0022
+  0017: self.ShouldUpdateClient = true
+  001f: goto 0x002d
+  0022: ReplicatedObject.ReplicatedEvent(VarName)
+  002d: return nothing
+  002f: <eos>
+
+function MatineeActor.ReplicatedEventsComplete  (script 32 bytes)
+  0000: if !(self.ShouldUpdateClient) goto 0x000f
+  0009: MatineeActor.ClientUpdate()
+  000f: self.ShouldUpdateClient = false
+  0017: ReplicatedObject.ReplicatedEventsComplete()
+  001d: return nothing
+  001f: <eos>
+
+function MatineeActor.ClientUpdate  (script 15 bytes)
+  0000: MatineeActor.ClientPopulateVariables()
+  0006: MatineeActor.ClientUpdateMatinee()
+  000c: return nothing
+  000e: <eos>
+
+function MatineeActor.ClientPopulateVariables  (script 432 bytes)
+  0000: if !((self.InterpAction == none)) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < 16)) goto 0x01ad
+  0020: In = I[self.MatineeVariables]
+  0031: if !((In.Actor == none)) goto 0x004a
+  0047: goto 0x01a3
+  004a: if !((self.InterpAction.VariableLinks.Length <= In.VariableIndex)) goto 0x00b7
+  006e: LogInternal("ERROR: Replicated invalid matinee var (var public out of range)", , , )
+  00b4: goto 0x01a3
+  00b7: if !((In.VariableIndex[self.InterpAction.VariableLinks].LinkedVariables.Length <= In.LinkIndex)) goto 0x013a
+  00f7: LogInternal("ERROR: Replicated invalid matinee var (link out of range)", , , )
+  0137: goto 0x01a3
+  013a: ObjectVar = SeqVar_Object(In.LinkIndex[In.VariableIndex[self.InterpAction.VariableLinks].LinkedVariables])
+  0180: ObjectVar.SetObjectValue(In.Actor)
+  01a3: AddAdd_PreInt(I)
+  01aa: goto 0x0014
+  01ad: return nothing
+  01af: <eos>
+
+function MatineeActor.ClientUpdateMatinee  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MatineeActor.ClientStartPlaying  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MatineeActor.ClientUpdatePosition  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MatineeActor.ClientStopPlaying  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MatineeActor.ClientReversePlayback  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MatineeActor.Update  (script 172 bytes)
+  0000: if !(MatineeActor.HasStartedPlaying()) goto 0x0012
+  0009: MatineeActor.SendMatineeVariables()
+  000f: goto 0x0021
+  0012: if !(MatineeActor.HasStoppedPlaying()) goto 0x0021
+  001b: MatineeActor.ClearMatineeVariables()
+  0021: self.bIsPlaying = self.InterpAction.bIsPlaying
+  0037: self.bReversePlayback = self.InterpAction.bReversePlayback
+  004d: self.bPaused = self.InterpAction.bPaused
+  0063: self.PlayRate = self.InterpAction.PlayRate
+  0077: self.Position = self.InterpAction.Position
+  008b: self.bIsCanceled = self.InterpAction.bIsCanceled
+  00a1: self.bForceNetUpdate = true
+  00a9: return nothing
+  00ab: <eos>
+
+function MatineeActor.HasStartedPlaying  (script 36 bytes)
+  0000: return (!self.bIsPlaying && self.InterpAction.bIsPlaying)
+  001d: return return
+  0023: <eos>
+
+function MatineeActor.HasStoppedPlaying  (script 36 bytes)
+  0000: return (self.bIsPlaying && !self.InterpAction.bIsPlaying)
+  001d: return return
+  0023: <eos>
+
+function MatineeActor.SendMatineeVariables  (script 521 bytes)
+  0000: MatineeActor.ClearMatineeVariables()
+  0006: I = 0
+  000d: if !((I < self.InterpAction.VariableLinks.Length)) goto 0x0206
+  0026: NumVariables = I[self.InterpAction.VariableLinks].LinkedVariables.Length
+  004c: J = 0
+  0053: if !((J < NumVariables)) goto 0x01fc
+  0062: ObjectVar = SeqVar_Object(J[I[self.InterpAction.VariableLinks].LinkedVariables])
+  0092: if !((ObjectVar == none)) goto 0x00a0
+  009d: goto 0x01f2
+  00a0: if !((SeqVar_Player(ObjectVar) != none)) goto 0x00b3
+  00b0: goto 0x01f2
+  00b3: AsActor = Actor(ObjectVar.GetObjectValue())
+  00d1: if !((AsActor == none)) goto 0x00df
+  00dc: goto 0x01f2
+  00df: C = Controller(AsActor)
+  00ef: if !((C != none)) goto 0x010e
+  00fa: AsActor = C.Pawn
+  010e: if !((((AsActor == none) || AsActor.bStatic) || AsActor.bNoDelete)) goto 0x0144
+  0141: goto 0x01f2
+  0144: if !((NumVars >= 16)) goto 0x0198
+  0150: LogInternal("ERROR: Replicating too many matinee variables.  Skipping some!", , , )
+  0195: goto 0x01f2
+  0198: MatineeVariable.VariableIndex = I
+  01ae: MatineeVariable.LinkIndex = J
+  01c4: MatineeVariable.Actor = AsActor
+  01da: NumVars[self.MatineeVariables] = MatineeVariable
+  01eb: AddAdd_PreInt(NumVars)
+  01f2: AddAdd_PreInt(J)
+  01f9: goto 0x0053
+  01fc: AddAdd_PreInt(I)
+  0203: goto 0x000d
+  0206: return nothing
+  0208: <eos>
+
+function MatineeActor.ClearMatineeVariables  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < 16)) goto 0x0051
+  0013: I[self.MatineeVariables].Actor = none
+  002b: I[self.MatineeVariables].VariableIndex = -1
+  0047: AddAdd_PreInt(I)
+  004e: goto 0x0007
+  0051: return nothing
+  0053: <eos>

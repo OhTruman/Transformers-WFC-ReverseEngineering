@@ -1,0 +1,38 @@
+function TnVehicleDeathPicker.FindActiveTypes  (script 99 bytes)
+  0000: switch (Owner.get_VehicleType())
+  0015: case 0: (next 0x001a)
+  001a: case 1: (next 0x0032)
+  001f: TnVehicleDeathPicker.AddCarDeathTypes(Owner, Types)
+  002f: goto 0x0060
+  0032: case 3: (next 0x004a)
+  0037: TnVehicleDeathPicker.AddTankDeathTypes(Owner, Types)
+  0047: goto 0x0060
+  004a: case 2: (next 0x005d)
+  004f: TnVehicleDeathPicker.AddPlaneDeathTypes(Types)
+  005a: goto 0x0060
+  005d: default:
+  0060: return nothing
+  0062: <eos>
+
+function TnVehicleDeathPicker.AddCarDeathTypes  (script 102 bytes)
+  0000: Types.AddItem(obj'TnDeathTypeCar')
+  000d: CarForm = TnCarForm(Owner._VehicleForm)
+  0026: if !((CarForm == none)) goto 0x0033
+  0031: return nothing
+  0033: Types.AddItem(((CarForm.get_LinearSpeed() > cast3f(50)) ? obj'TnDeathTypeMovingCar' : obj'TnDeathTypeStationaryCar'))
+  0063: return nothing
+  0065: <eos>
+
+function TnVehicleDeathPicker.AddTankDeathTypes  (script 102 bytes)
+  0000: Types.AddItem(obj'TnDeathTypeTank')
+  000d: TankForm = TnTankForm(Owner._VehicleForm)
+  0026: if !((TankForm == none)) goto 0x0033
+  0031: return nothing
+  0033: Types.AddItem(((TankForm.get_LinearSpeed() > cast3f(50)) ? obj'TnDeathTypeMovingTank' : obj'TnDeathTypeStationaryTank'))
+  0063: return nothing
+  0065: <eos>
+
+function TnVehicleDeathPicker.AddPlaneDeathTypes  (script 16 bytes)
+  0000: Types.AddItem(obj'TnDeathTypePlane')
+  000d: return nothing
+  000f: <eos>

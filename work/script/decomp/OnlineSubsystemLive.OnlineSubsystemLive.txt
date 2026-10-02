@@ -1,0 +1,1845 @@
+function OnlineSubsystemLive.OnLoginChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.OnLoginCancelled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.OnMutingChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.OnFriendsChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.Init  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.Exit  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.ShowLoginUI  (script 7 bytes)
+  0000: bShowOnlineOnly
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.Login  (script 22 bytes)
+  0000: LocalUserNum
+  0005: LoginName
+  000a: Password
+  000f: bWantsLocalOnly
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.LoginToOnlineService  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.AutoLogin  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.OnLoginFailed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddLoginFailedDelegate  (script 39 bytes)
+  0000: if !((self.LoginFailedDelegates.Find(LoginFailedDelegate) == -1)) goto 0x0024
+  0017: self.LoginFailedDelegates.AddItem(LoginFailedDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearLoginFailedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LoginFailedDelegates.Find(LoginFailedDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LoginFailedDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.Logout  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnLogoutCompleted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddLogoutCompletedDelegate  (script 39 bytes)
+  0000: if !((self.LogoutCompletedDelegates.Find(LogoutDelegate) == -1)) goto 0x0024
+  0017: self.LogoutCompletedDelegates.AddItem(LogoutDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearLogoutCompletedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LogoutCompletedDelegates.Find(LogoutDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LogoutCompletedDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetLoginStatus  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.GetPreviousLoginStatus  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.DidProfilesChange  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.GetLogoutErrorCode  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemLive.GetSecondaryLoginStatus  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemLive.GetSecondaryLogoutErrorCode  (script 10 bytes)
+  0000: return 0
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemLive.IsGuestLogin  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.IsLocalLogin  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.GetUniquePlayerId  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.GetPlayerNickname  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.CanPlayOnline  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.CanCommunicate  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.CanDownloadUserContent  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.CanPurchaseContent  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.CanViewPlayerProfiles  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.CanShowPresenceInformation  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.IsFriend  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.AreAnyFriends  (script 12 bytes)
+  0000: LocalUserNum
+  0005: Query
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.IsMuted  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ShowFriendsUI  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ShowFriendsInviteUI  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.IsInPartyChatSession  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ShowPartyChatSessionsUI  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.SendGameInviteToPartyChatMembers  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.AddLoginChangeDelegate  (script 39 bytes)
+  0000: if !((self.LoginChangeDelegates.Find(LoginDelegate) == -1)) goto 0x0024
+  0017: self.LoginChangeDelegates.AddItem(LoginDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearLoginChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LoginChangeDelegates.Find(LoginDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LoginChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.OnLoginStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddLoginStatusChangeDelegate  (script 183 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.PlayerLoginStatusDelegates].Delegates.Find(LoginStatusDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.PlayerLoginStatusDelegates].Delegates.AddItem(LoginStatusDelegate)
+  0067: goto 0x00b4
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddLoginStatusChangeDelegate()"))
+  00b4: return nothing
+  00b6: <eos>
+
+function OnlineSubsystemLive.ClearLoginStatusChangeDelegate  (script 195 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.PlayerLoginStatusDelegates].Delegates.Find(LoginStatusDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.PlayerLoginStatusDelegates].Delegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c0
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearLoginStatusChangeDelegate()"))
+  00c0: return nothing
+  00c2: <eos>
+
+function OnlineSubsystemLive.AddLoginCancelledDelegate  (script 39 bytes)
+  0000: if !((self.LoginCancelledDelegates.Find(CancelledDelegate) == -1)) goto 0x0024
+  0017: self.LoginCancelledDelegates.AddItem(CancelledDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearLoginCancelledDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LoginCancelledDelegates.Find(CancelledDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LoginCancelledDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.AddMutingChangeDelegate  (script 39 bytes)
+  0000: if !((self.MutingChangeDelegates.Find(MutingDelegate) == -1)) goto 0x0024
+  0017: self.MutingChangeDelegates.AddItem(MutingDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearMutingChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.MutingChangeDelegates.Find(MutingDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.MutingChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.AddFriendsChangeDelegate  (script 179 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.FriendsCache].FriendsChangeDelegates.Find(FriendsDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.FriendsCache].FriendsChangeDelegates.AddItem(FriendsDelegate)
+  0067: goto 0x00b0
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddFriendsChangeDelegate()"))
+  00b0: return nothing
+  00b2: <eos>
+
+function OnlineSubsystemLive.ClearFriendsChangeDelegate  (script 197 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.FriendsCache].FriendsChangeDelegates.Find(FriendsDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.FriendsCache].FriendsChangeDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c2
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearReadFriendsCompleteDelegate()"))
+  00c2: return nothing
+  00c4: <eos>
+
+function OnlineSubsystemLive.ShowFeedbackUI  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ShowGamerCardUI  (script 17 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: PlayerName
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.ShowMessagesUI  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ShowAchievementsUI  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ShowGuideUI  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.ShowPlayersUI  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ShowKeyboardUI  (script 37 bytes)
+  0000: LocalUserNum
+  0005: TitleText
+  000a: DescriptionText
+  000f: bIsPassword
+  0014: bShouldValidate
+  0019: DefaultText
+  001e: MaxResultLength
+  0023: nothing
+  0024: <eos>
+
+function OnlineSubsystemLive.OnKeyboardInputComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddKeyboardInputDoneDelegate  (script 39 bytes)
+  0000: if !((self.KeyboardInputDelegates.Find(InputDelegate) == -1)) goto 0x0024
+  0017: self.KeyboardInputDelegates.AddItem(InputDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearKeyboardInputDoneDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.KeyboardInputDelegates.Find(InputDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.KeyboardInputDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetKeyboardInputResults  (script 129 bytes)
+  0000: bWasCanceled = self.bWasKeyboardInputCanceled
+  000b: CleanString = self.KeyboardInputResults
+  0016: foreach self.UnsupportedUnicodeCharacters(Unicode,) (end 0x0058)
+  0025: CleanString = obj'Core.Strings'.static.Repl(CleanString, obj'Core.Strings'.static.Chr(Unicode), cast57('_'), )
+  0057: iternext
+  0058: iterpop
+  0059: bContainsUnsupportedCharacters = cast3d(((CleanString != self.KeyboardInputResults) ? 1 : 0))
+  0074: return CleanString
+  007a: return return
+  0080: <eos>
+
+function OnlineSubsystemLive.HasLinkConnection  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.NatDiscoverySucceeded  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.OnLinkStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddLinkStatusChangeDelegate  (script 71 bytes)
+  0000: if !((self.LinkStatusChangeDelegates.Find(LinkStatusDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.LinkStatusChangeDelegates.Length
+  0023: self.LinkStatusChangeDelegates.Length = (self.LinkStatusChangeDelegates.Length + 1)
+  0033: AddIndex[self.LinkStatusChangeDelegates] = LinkStatusDelegate
+  0044: return nothing
+  0046: <eos>
+
+function OnlineSubsystemLive.ClearLinkStatusChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.LinkStatusChangeDelegates.Find(LinkStatusDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.LinkStatusChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.OnExternalUIChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddExternalUIChangeDelegate  (script 71 bytes)
+  0000: if !((self.ExternalUIChangeDelegates.Find(ExternalUIDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.ExternalUIChangeDelegates.Length
+  0023: self.ExternalUIChangeDelegates.Length = (self.ExternalUIChangeDelegates.Length + 1)
+  0033: AddIndex[self.ExternalUIChangeDelegates] = ExternalUIDelegate
+  0044: return nothing
+  0046: <eos>
+
+function OnlineSubsystemLive.ClearExternalUIChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ExternalUIChangeDelegates.Find(ExternalUIDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ExternalUIChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetNetworkNotificationPosition  (script 13 bytes)
+  0000: return self.CurrentNotificationPosition
+  0006: return return
+  000c: <eos>
+
+function OnlineSubsystemLive.SetNetworkNotificationPosition  (script 7 bytes)
+  0000: NewPos
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnControllerChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddControllerChangeDelegate  (script 71 bytes)
+  0000: if !((self.ControllerChangeDelegates.Find(ControllerChangeDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.ControllerChangeDelegates.Length
+  0023: self.ControllerChangeDelegates.Length = (self.ControllerChangeDelegates.Length + 1)
+  0033: AddIndex[self.ControllerChangeDelegates] = ControllerChangeDelegate
+  0044: return nothing
+  0046: <eos>
+
+function OnlineSubsystemLive.ClearControllerChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ControllerChangeDelegates.Find(ControllerChangeDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ControllerChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.IsControllerConnected  (script 7 bytes)
+  0000: ControllerId
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnConnectionStatusChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddConnectionStatusChangeDelegate  (script 71 bytes)
+  0000: if !((self.ConnectionStatusChangeDelegates.Find(ConnectionStatusDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.ConnectionStatusChangeDelegates.Length
+  0023: self.ConnectionStatusChangeDelegates.Length = (self.ConnectionStatusChangeDelegates.Length + 1)
+  0033: AddIndex[self.ConnectionStatusChangeDelegates] = ConnectionStatusDelegate
+  0044: return nothing
+  0046: <eos>
+
+function OnlineSubsystemLive.ClearConnectionStatusChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ConnectionStatusChangeDelegates.Find(ConnectionStatusDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ConnectionStatusChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetNATType  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.GetHardwareDetails  (script 7 bytes)
+  0000: Details
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnStorageDeviceChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddStorageDeviceChangeDelegate  (script 44 bytes)
+  0000: if !((self.StorageDeviceChangeDelegates.Find(StorageDeviceChangeDelegate) == -1)) goto 0x0029
+  0017: self.StorageDeviceChangeDelegates.Length[self.StorageDeviceChangeDelegates] = StorageDeviceChangeDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemLive.ClearStorageDeviceChangeDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.StorageDeviceChangeDelegates.Find(StorageDeviceChangeDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.StorageDeviceChangeDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.OnFileIOComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ReadTitleFile  (script 7 bytes)
+  0000: FileToRead
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.AddReadTitleFileCompleteDelegate  (script 44 bytes)
+  0000: if !((self.ReadTitleFileCompleteDelegates.Find(ReadTitleFileCompleteDelegate) == -1)) goto 0x0029
+  0017: self.ReadTitleFileCompleteDelegates.Length[self.ReadTitleFileCompleteDelegates] = ReadTitleFileCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineSubsystemLive.ClearReadTitleFileCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadTitleFileCompleteDelegates.Find(ReadTitleFileCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadTitleFileCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetTitleFileContents  (script 12 bytes)
+  0000: Filename
+  0005: FileContents
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.GetTitleFileState  (script 76 bytes)
+  0000: FileIndex = self.TitleManagedFiles.Find('Filename',Filename)
+  001c: if !((FileIndex != -1)) goto 0x0042
+  002b: return FileIndex[self.TitleManagedFiles].AsyncState
+  0042: return 3
+  0045: return return
+  004b: <eos>
+
+function OnlineSubsystemLive.ReadUserFile  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.AddReadUserFileCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearReadUserFileCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.GetUserFileContents  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.WriteUserFile  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.AddWriteUserFileCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearWriteUserFileCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.GetUserFileState  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.UIStartupComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.OnInstallEnd  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.HasInstalledGame  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function OnlineSubsystemLive.OnFindOnlineGamesComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.GetGameSearch  (script 13 bytes)
+  0000: return self.GameSearch
+  0006: return return
+  000c: <eos>
+
+function OnlineSubsystemLive.CreateOnlineGame  (script 17 bytes)
+  0000: HostingPlayerNum
+  0005: SessionName
+  000a: NewGameSettings
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.OnCreateOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddCreateOnlineGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.CreateOnlineGameCompleteDelegates.Find(CreateOnlineGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.CreateOnlineGameCompleteDelegates.AddItem(CreateOnlineGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearCreateOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.CreateOnlineGameCompleteDelegates.Find(CreateOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.CreateOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.UpdateOnlineGame  (script 17 bytes)
+  0000: SessionName
+  0005: UpdatedGameSettings
+  000a: bShouldRefreshOnlineData
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.OnUpdateOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddUpdateOnlineGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.UpdateOnlineGameCompleteDelegates.Find(UpdateOnlineGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.UpdateOnlineGameCompleteDelegates.AddItem(UpdateOnlineGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearUpdateOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.UpdateOnlineGameCompleteDelegates.Find(UpdateOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.UpdateOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetGameSettings  (script 75 bytes)
+  0000: SessionIndex = self.Sessions.Find('SessionName',SessionName)
+  001c: if !((SessionIndex != -1)) goto 0x0042
+  002b: return SessionIndex[self.Sessions].GameSettings
+  0042: return none
+  0044: return return
+  004a: <eos>
+
+function OnlineSubsystemLive.DestroyOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnDestroyOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddDestroyOnlineGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.DestroyOnlineGameCompleteDelegates.Find(DestroyOnlineGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.DestroyOnlineGameCompleteDelegates.AddItem(DestroyOnlineGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearDestroyOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.DestroyOnlineGameCompleteDelegates.Find(DestroyOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DestroyOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.FindOnlineGames  (script 12 bytes)
+  0000: SearchingPlayerNum
+  0005: SearchSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.AddFindOnlineGamesCompleteDelegate  (script 39 bytes)
+  0000: if !((self.FindOnlineGamesCompleteDelegates.Find(FindOnlineGamesCompleteDelegate) == -1)) goto 0x0024
+  0017: self.FindOnlineGamesCompleteDelegates.AddItem(FindOnlineGamesCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearFindOnlineGamesCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.FindOnlineGamesCompleteDelegates.Find(FindOnlineGamesCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.FindOnlineGamesCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.CancelFindOnlineGames  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.OnCancelFindOnlineGamesComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddCancelFindOnlineGamesCompleteDelegate  (script 39 bytes)
+  0000: if !((self.CancelFindOnlineGamesCompleteDelegates.Find(CancelFindOnlineGamesCompleteDelegate) == -1)) goto 0x0024
+  0017: self.CancelFindOnlineGamesCompleteDelegates.AddItem(CancelFindOnlineGamesCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearCancelFindOnlineGamesCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.CancelFindOnlineGamesCompleteDelegates.Find(CancelFindOnlineGamesCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.CancelFindOnlineGamesCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.ReadPlatformSpecificSessionInfo  (script 12 bytes)
+  0000: DesiredGame
+  0005: PlatformSpecificInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ReadPlatformSpecificSessionInfoBySessionName  (script 12 bytes)
+  0000: SessionName
+  0005: PlatformSpecificInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.BindPlatformSpecificSessionToSearch  (script 17 bytes)
+  0000: SearchingPlayerNum
+  0005: SearchSettings
+  000a: PlatformSpecificInfo
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.FreeSearchResults  (script 7 bytes)
+  0000: Search
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.QueryNonAdvertisedData  (script 31 bytes)
+  0000: LogInternal("Ignored on Live", , , )
+  0016: return false
+  0018: return return
+  001e: <eos>
+
+function OnlineSubsystemLive.JoinOnlineGame  (script 17 bytes)
+  0000: PlayerNum
+  0005: SessionName
+  000a: DesiredGame
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.OnJoinOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddJoinOnlineGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.JoinOnlineGameCompleteDelegates.Find(JoinOnlineGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.JoinOnlineGameCompleteDelegates.AddItem(JoinOnlineGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearJoinOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.JoinOnlineGameCompleteDelegates.Find(JoinOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.JoinOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetResolvedConnectString  (script 12 bytes)
+  0000: SessionName
+  0005: ConnectInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.RegisterPlayer  (script 17 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: bWasInvited
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.OnRegisterPlayerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddRegisterPlayerCompleteDelegate  (script 39 bytes)
+  0000: if !((self.RegisterPlayerCompleteDelegates.Find(RegisterPlayerCompleteDelegate) == -1)) goto 0x0024
+  0017: self.RegisterPlayerCompleteDelegates.AddItem(RegisterPlayerCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearRegisterPlayerCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.RegisterPlayerCompleteDelegates.Find(RegisterPlayerCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.RegisterPlayerCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.UnregisterPlayer  (script 12 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnUnregisterPlayerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddUnregisterPlayerCompleteDelegate  (script 39 bytes)
+  0000: if !((self.UnregisterPlayerCompleteDelegates.Find(UnregisterPlayerCompleteDelegate) == -1)) goto 0x0024
+  0017: self.UnregisterPlayerCompleteDelegates.AddItem(UnregisterPlayerCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearUnregisterPlayerCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.UnregisterPlayerCompleteDelegates.Find(UnregisterPlayerCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.UnregisterPlayerCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.RecalculateSkillRating  (script 12 bytes)
+  0000: SessionName
+  0005: Players
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ReadProfileSettings  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ProfileSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnReadProfileSettingsBegin  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReadProfileSettingsBeginDelegate  (script 190 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ProfileCache].ReadBeginDelegates.Find(ReadProfileSettingsBeginDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ProfileCache].ReadBeginDelegates.AddItem(ReadProfileSettingsBeginDelegate)
+  0067: goto 0x00bb
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddReadProfileSettingsBeginDelegate()"))
+  00bb: return nothing
+  00bd: <eos>
+
+function OnlineSubsystemLive.ClearReadProfileSettingsBeginDelegate  (script 202 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ProfileCache].ReadBeginDelegates.Find(ReadProfileSettingsBeginDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ProfileCache].ReadBeginDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c7
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearReadProfileSettingsBeginDelegate()"))
+  00c7: return nothing
+  00c9: <eos>
+
+function OnlineSubsystemLive.OnReadProfileSettingsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReadProfileSettingsCompleteDelegate  (script 193 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ProfileCache].ReadDelegates.Find(ReadProfileSettingsCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ProfileCache].ReadDelegates.AddItem(ReadProfileSettingsCompleteDelegate)
+  0067: goto 0x00be
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to SetReadProfileSettingsCompleteDelegate()"))
+  00be: return nothing
+  00c0: <eos>
+
+function OnlineSubsystemLive.ClearReadProfileSettingsCompleteDelegate  (script 205 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ProfileCache].ReadDelegates.Find(ReadProfileSettingsCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ProfileCache].ReadDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00ca
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearReadProfileSettingsCompleteDelegate()"))
+  00ca: return nothing
+  00cc: <eos>
+
+function OnlineSubsystemLive.GetProfileSettings  (script 63 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0036
+  001d: return cast3a(LocalUserNum)[self.ProfileCache].Profile
+  0036: return none
+  0038: return return
+  003e: <eos>
+
+function OnlineSubsystemLive.WriteProfileSettings  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ProfileSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnWriteProfileSettingsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddWriteProfileSettingsCompleteDelegate  (script 194 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ProfileCache].WriteDelegates.Find(WriteProfileSettingsCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ProfileCache].WriteDelegates.AddItem(WriteProfileSettingsCompleteDelegate)
+  0067: goto 0x00bf
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddWriteProfileSettingsCompleteDelegate()"))
+  00bf: return nothing
+  00c1: <eos>
+
+function OnlineSubsystemLive.ClearWriteProfileSettingsCompleteDelegate  (script 206 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ProfileCache].WriteDelegates.Find(WriteProfileSettingsCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ProfileCache].WriteDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00cb
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearWriteProfileSettingsCompleteDelegate()"))
+  00cb: return nothing
+  00cd: <eos>
+
+function OnlineSubsystemLive.SetOnlineStatus  (script 22 bytes)
+  0000: LocalUserNum
+  0005: PresenceMode
+  000a: LocalizedStringSettings
+  000f: Properties
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.ShowInviteUI  (script 12 bytes)
+  0000: LocalUserNum
+  0005: InviteText
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ShowContentMarketplaceUI  (script 17 bytes)
+  0000: LocalUserNum
+  0005: CategoryMask
+  000a: OfferId
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.ShowMembershipMarketplaceUI  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ShowDeviceSelectionUI  (script 22 bytes)
+  0000: LocalUserNum
+  0005: SizeNeeded
+  000a: bForceShowUI
+  000f: bManageStorage
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.OnDeviceSelectionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddDeviceSelectionDoneDelegate  (script 274 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x00c3
+  001d: if !((cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates.Find(DeviceDelegate) == -1)) goto 0x00c0
+  0047: AddIndex = cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates.Length
+  0066: cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates.Length = (cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates.Length + 1)
+  009c: AddIndex[cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates] = DeviceDelegate
+  00c0: goto 0x010f
+  00c3: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to SetDeviceSelectionDoneDelegate()"))
+  010f: return nothing
+  0111: <eos>
+
+function OnlineSubsystemLive.ClearDeviceSelectionDoneDelegate  (script 197 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates.Find(DeviceDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.DeviceCache].DeviceSelectionDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c2
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearDeviceSelectionDoneDelegate()"))
+  00c2: return nothing
+  00c4: <eos>
+
+function OnlineSubsystemLive.GetDeviceSelectionResults  (script 12 bytes)
+  0000: LocalPlayerNum
+  0005: DeviceName
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.IsDeviceValid  (script 12 bytes)
+  0000: DeviceID
+  0005: SizeNeeded
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.UnlockAchievement  (script 12 bytes)
+  0000: LocalUserNum
+  0005: AchievementId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnUnlockAchievementComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddUnlockAchievementCompleteDelegate  (script 191 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.PerUserDelegates].AchievementDelegates.Find(UnlockAchievementCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.PerUserDelegates].AchievementDelegates.AddItem(UnlockAchievementCompleteDelegate)
+  0067: goto 0x00bc
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddUnlockAchievementCompleteDelegate()"))
+  00bc: return nothing
+  00be: <eos>
+
+function OnlineSubsystemLive.ClearUnlockAchievementCompleteDelegate  (script 203 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.PerUserDelegates].AchievementDelegates.Find(UnlockAchievementCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.PerUserDelegates].AchievementDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c8
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearUnlockAchievementCompleteDelegate()"))
+  00c8: return nothing
+  00ca: <eos>
+
+function OnlineSubsystemLive.UnlockGamerPicture  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PictureId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.UnlockAvatarAsset  (script 12 bytes)
+  0000: LocalUserNum
+  0005: AssetId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnProfileDataChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddProfileDataChangedDelegate  (script 193 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ProfileCache].ProfileDataChangedDelegates.Find(ProfileDataChangedDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ProfileCache].ProfileDataChangedDelegates.AddItem(ProfileDataChangedDelegate)
+  0067: goto 0x00be
+  006a: LogInternal((("Invalid user id (" $ cast52(LocalUserNum)) $ ") specified for AddProfileDataChangedDelegate()"), , , )
+  00be: return nothing
+  00c0: <eos>
+
+function OnlineSubsystemLive.ClearProfileDataChangedDelegate  (script 205 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ProfileCache].ProfileDataChangedDelegates.Find(ProfileDataChangedDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ProfileCache].ProfileDataChangedDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00ca
+  0074: LogInternal((("Invalid user id (" $ cast52(LocalUserNum)) $ ") specified for ClearProfileDataChangedDelegate()"), , , )
+  00ca: return nothing
+  00cc: <eos>
+
+function OnlineSubsystemLive.StartOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnStartOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddStartOnlineGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.StartOnlineGameCompleteDelegates.Find(StartOnlineGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.StartOnlineGameCompleteDelegates.AddItem(StartOnlineGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearStartOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.StartOnlineGameCompleteDelegates.Find(StartOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.StartOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.EndOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnEndOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddEndOnlineGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.EndOnlineGameCompleteDelegates.Find(EndOnlineGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.EndOnlineGameCompleteDelegates.AddItem(EndOnlineGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearEndOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.EndOnlineGameCompleteDelegates.Find(EndOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.EndOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.RegisterForArbitration  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnArbitrationRegistrationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddArbitrationRegistrationCompleteDelegate  (script 39 bytes)
+  0000: if !((self.ArbitrationRegistrationCompleteDelegates.Find(ArbitrationRegistrationCompleteDelegate) == -1)) goto 0x0024
+  0017: self.ArbitrationRegistrationCompleteDelegates.AddItem(ArbitrationRegistrationCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearArbitrationRegistrationCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ArbitrationRegistrationCompleteDelegates.Find(ArbitrationRegistrationCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ArbitrationRegistrationCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetArbitratedPlayers  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.AcceptGameInvite  (script 12 bytes)
+  0000: LocalUserNum
+  0005: SessionName
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ClearGameInvite  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.GetOnlineGameSearchResultForGameInvite  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.ReadFriendsList  (script 17 bytes)
+  0000: LocalUserNum
+  0005: Count
+  000a: StartingAt
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.OnReadFriendsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReadFriendsCompleteDelegate  (script 185 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.FriendsCache].ReadFriendsDelegates.Find(ReadFriendsCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.FriendsCache].ReadFriendsDelegates.AddItem(ReadFriendsCompleteDelegate)
+  0067: goto 0x00b6
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddReadFriendsCompleteDelegate()"))
+  00b6: return nothing
+  00b8: <eos>
+
+function OnlineSubsystemLive.ClearReadFriendsCompleteDelegate  (script 197 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.FriendsCache].ReadFriendsDelegates.Find(ReadFriendsCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.FriendsCache].ReadFriendsDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c2
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearReadFriendsCompleteDelegate()"))
+  00c2: return nothing
+  00c4: <eos>
+
+function OnlineSubsystemLive.GetFriendsList  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Friends
+  000a: Count
+  000f: StartingAt
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.OnGameInviteAccepted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddGameInviteAcceptedDelegate  (script 184 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.InviteCache].InviteDelegates.Find(GameInviteAcceptedDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.InviteCache].InviteDelegates.AddItem(GameInviteAcceptedDelegate)
+  0067: goto 0x00b5
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddGameInviteAcceptedDelegate()"))
+  00b5: return nothing
+  00b7: <eos>
+
+function OnlineSubsystemLive.ClearGameInviteAcceptedDelegate  (script 196 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.InviteCache].InviteDelegates.Find(GameInviteAcceptedDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.InviteCache].InviteDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c1
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearGameInviteAcceptedDelegate()"))
+  00c1: return nothing
+  00c3: <eos>
+
+function OnlineSubsystemLive.OnContentChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddContentChangeDelegate  (script 245 bytes)
+  0000: default=cast3d(255)
+  0008: if !((cast3a(LocalUserNum) == 255)) goto 0x0042
+  0016: if !((self.AnyContentChangeDelegates.Find(ContentDelegate) == -1)) goto 0x003f
+  002d: self.AnyContentChangeDelegates.Length[self.AnyContentChangeDelegates] = ContentDelegate
+  003f: goto 0x00f2
+  0042: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x00ac
+  005f: if !((cast3a(LocalUserNum)[self.ContentCache].ContentChangeDelegates.Find(ContentDelegate) == -1)) goto 0x00a9
+  0089: cast3a(LocalUserNum)[self.ContentCache].ContentChangeDelegates.AddItem(ContentDelegate)
+  00a9: goto 0x00f2
+  00ac: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddContentChangeDelegate()"))
+  00f2: return nothing
+  00f4: <eos>
+
+function OnlineSubsystemLive.ClearContentChangeDelegate  (script 262 bytes)
+  0000: default=cast3d(255)
+  0008: if !((cast3a(LocalUserNum) == 255)) goto 0x0047
+  0016: RemoveIndex = self.AnyContentChangeDelegates.Find(ContentDelegate)
+  0029: if !((RemoveIndex != -1)) goto 0x0044
+  0038: self.AnyContentChangeDelegates.Remove(RemoveIndex,1)
+  0044: goto 0x0103
+  0047: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x00bb
+  0064: RemoveIndex = cast3a(LocalUserNum)[self.ContentCache].ContentChangeDelegates.Find(ContentDelegate)
+  008a: if !((RemoveIndex != -1)) goto 0x00b8
+  0099: cast3a(LocalUserNum)[self.ContentCache].ContentChangeDelegates.Remove(RemoveIndex,1)
+  00b8: goto 0x0103
+  00bb: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearContentChangeDelegate()"))
+  0103: return nothing
+  0105: <eos>
+
+function OnlineSubsystemLive.OnReadContentComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReadContentComplete  (script 177 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ContentCache].ReadCompleteDelegates.Find(ReadContentCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ContentCache].ReadCompleteDelegates.AddItem(ReadContentCompleteDelegate)
+  0067: goto 0x00ae
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddReadContentComplete()"))
+  00ae: return nothing
+  00b0: <eos>
+
+function OnlineSubsystemLive.ClearReadContentComplete  (script 189 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ContentCache].ReadCompleteDelegates.Find(ReadContentCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ContentCache].ReadCompleteDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00ba
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearReadContentComplete()"))
+  00ba: return nothing
+  00bc: <eos>
+
+function OnlineSubsystemLive.ReadContentList  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnFlushContentComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddFlushContentComplete  (script 181 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ContentCache].FlushCompleteDelegates.Find(FlushContentCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ContentCache].FlushCompleteDelegates.AddItem(FlushContentCompleteDelegate)
+  0067: goto 0x00b2
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddFlushAllContentComplete()"))
+  00b2: return nothing
+  00b4: <eos>
+
+function OnlineSubsystemLive.ClearFlushContentComplete  (script 193 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ContentCache].FlushCompleteDelegates.Find(FlushContentCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ContentCache].FlushCompleteDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00be
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearFlushAllContentComplete()"))
+  00be: return nothing
+  00c0: <eos>
+
+function OnlineSubsystemLive.FlushAllContent  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.GetContentList  (script 12 bytes)
+  0000: LocalUserNum
+  0005: ContentList
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.QueryAvailableDownloads  (script 12 bytes)
+  0000: LocalUserNum
+  0005: CategoryMask
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnQueryAvailableDownloadsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddQueryAvailableDownloadsComplete  (script 189 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.ContentCache].QueryDownloadsDelegates.Find(QueryDownloadsDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.ContentCache].QueryDownloadsDelegates.AddItem(QueryDownloadsDelegate)
+  0067: goto 0x00ba
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddQueryAvailableDownloadsComplete()"))
+  00ba: return nothing
+  00bc: <eos>
+
+function OnlineSubsystemLive.ClearQueryAvailableDownloadsComplete  (script 201 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.ContentCache].QueryDownloadsDelegates.Find(QueryDownloadsDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.ContentCache].QueryDownloadsDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c6
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearQueryAvailableDownloadsComplete()"))
+  00c6: return nothing
+  00c8: <eos>
+
+function OnlineSubsystemLive.GetAvailableDownloadCounts  (script 167 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x005c
+  001d: NewDownloads = cast3a(LocalUserNum)[self.ContentCache].NewDownloadCount
+  003b: TotalDownloads = cast3a(LocalUserNum)[self.ContentCache].TotalDownloadCount
+  0059: goto 0x00a4
+  005c: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to GetAvailableDownloadCounts()"))
+  00a4: return nothing
+  00a6: <eos>
+
+function OnlineSubsystemLive.RegisterLocalTalker  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.UnregisterLocalTalker  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.RegisterRemoteTalker  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.UnregisterRemoteTalker  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.IsLocalPlayerTalking  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.IsRemotePlayerTalking  (script 7 bytes)
+  0000: PlayerID
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.IsHeadsetPresent  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.SetRemoteTalkerPriority  (script 17 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: Priority
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.MuteRemoteTalker  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.UnmuteRemoteTalker  (script 12 bytes)
+  0000: LocalUserNum
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnPlayerTalking  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddPlayerTalkingDelegate  (script 71 bytes)
+  0000: if !((self.TalkingDelegates.Find(TalkerDelegate) == -1)) goto 0x0044
+  0017: AddIndex = self.TalkingDelegates.Length
+  0023: self.TalkingDelegates.Length = (self.TalkingDelegates.Length + 1)
+  0033: AddIndex[self.TalkingDelegates] = TalkerDelegate
+  0044: return nothing
+  0046: <eos>
+
+function OnlineSubsystemLive.ClearPlayerTalkingDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.TalkingDelegates.Find(TalkerDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.TalkingDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.StartNetworkedVoice  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.StopNetworkedVoice  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.StartSpeechRecognition  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.StopSpeechRecognition  (script 7 bytes)
+  0000: LocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.GetRecognitionResults  (script 12 bytes)
+  0000: LocalUserNum
+  0005: Words
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnRecognitionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddRecognitionCompleteDelegate  (script 185 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.PerUserDelegates].SpeechRecognitionDelegates.Find(RecognitionDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.PerUserDelegates].SpeechRecognitionDelegates.AddItem(RecognitionDelegate)
+  0067: goto 0x00b6
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddRecognitionCompleteDelegate()"))
+  00b6: return nothing
+  00b8: <eos>
+
+function OnlineSubsystemLive.ClearRecognitionCompleteDelegate  (script 197 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.PerUserDelegates].SpeechRecognitionDelegates.Find(RecognitionDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.PerUserDelegates].SpeechRecognitionDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c2
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearRecognitionCompleteDelegate()"))
+  00c2: return nothing
+  00c4: <eos>
+
+function OnlineSubsystemLive.SelectVocabulary  (script 12 bytes)
+  0000: LocalUserNum
+  0005: VocabularyId
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.SetSpeechRecognitionObject  (script 12 bytes)
+  0000: LocalUserNum
+  0005: SpeechRecogObj
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ReadOnlineStats  (script 12 bytes)
+  0000: Players
+  0005: StatsRead
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ReadOnlineStatsForFriends  (script 12 bytes)
+  0000: LocalUserNum
+  0005: StatsRead
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.ReadOnlineStatsByRank  (script 17 bytes)
+  0000: StatsRead
+  0005: StartIndex
+  000a: NumToRead
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.ReadOnlineStatsByRankAroundPlayer  (script 17 bytes)
+  0000: LocalUserNum
+  0005: StatsRead
+  000a: NumRows
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.OnReadOnlineStatsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReadOnlineStatsCompleteDelegate  (script 86 bytes)
+  0000: self.__OnReadOnlineStatsComplete__Delegate = delegate.MulticastReadOnlineStatsComplete
+  000f: if !((self.ReadOnlineStatsCompleteDelegates.Find(ReadOnlineStatsCompleteDelegate) == -1)) goto 0x0053
+  0026: AddIndex = self.ReadOnlineStatsCompleteDelegates.Length
+  0032: self.ReadOnlineStatsCompleteDelegates.Length = (self.ReadOnlineStatsCompleteDelegates.Length + 1)
+  0042: AddIndex[self.ReadOnlineStatsCompleteDelegates] = ReadOnlineStatsCompleteDelegate
+  0053: return nothing
+  0055: <eos>
+
+function OnlineSubsystemLive.ClearReadOnlineStatsCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadOnlineStatsCompleteDelegates.Find(ReadOnlineStatsCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadOnlineStatsCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.MulticastReadOnlineStatsComplete  (script 79 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.ReadOnlineStatsCompleteDelegates.Length)) goto 0x004c
+  0017: Subscriber = Index[self.ReadOnlineStatsCompleteDelegates]
+  0028: OnReadOnlineStatsComplete(bWasSuccessful, StatsRead)
+  0042: AddAdd_Int(Index)
+  0049: goto 0x0007
+  004c: return nothing
+  004e: <eos>
+
+function OnlineSubsystemLive.FreeStats  (script 7 bytes)
+  0000: StatsRead
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.WriteOnlineStats  (script 17 bytes)
+  0000: SessionName
+  0005: Player
+  000a: StatsWrite
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.FlushOnlineStats  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.OnFlushOnlineStatsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddFlushOnlineStatsCompleteDelegate  (script 39 bytes)
+  0000: if !((self.FlushOnlineStatsDelegates.Find(FlushOnlineStatsCompleteDelegate) == -1)) goto 0x0024
+  0017: self.FlushOnlineStatsDelegates.AddItem(FlushOnlineStatsCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearFlushOnlineStatsCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.FlushOnlineStatsDelegates.Find(FlushOnlineStatsCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.FlushOnlineStatsDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.WriteOnlinePlayerScores  (script 17 bytes)
+  0000: SessionName
+  0005: LeaderboardId
+  000a: PlayerScores
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.AddFriend  (script 29 bytes)
+  0000: nothing
+  0001: return ShowFriendsInviteUI(LocalUserNum, NewFriend)
+  0016: return return
+  001c: <eos>
+
+function OnlineSubsystemLive.AddFriendByName  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function OnlineSubsystemLive.OnAddFriendByNameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddAddFriendByNameCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearAddFriendByNameCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AcceptFriendInvite  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.DenyFriendInvite  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.RemoveFriend  (script 29 bytes)
+  0000: return ShowGamerCardUI(LocalUserNum, FormerFriend, )
+  0016: return return
+  001c: <eos>
+
+function OnlineSubsystemLive.OnFriendInviteReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddFriendInviteReceivedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearFriendInviteReceivedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.SendMessageToFriend  (script 17 bytes)
+  0000: LocalUserNum
+  0005: Friend
+  000a: Message
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.SendGameInviteToFriend  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Friend
+  000a: Title
+  000f: Text
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.SendGameInviteToFriends  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Friends
+  000a: Title
+  000f: Text
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.OnReceivedGameInvite  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReceivedGameInviteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearReceivedGameInviteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.JoinFriendGame  (script 12 bytes)
+  0000: LocalUserNum
+  0005: Friend
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.OnJoinFriendGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddJoinFriendGameCompleteDelegate  (script 39 bytes)
+  0000: if !((self.JoinFriendGameCompleteDelegates.Find(JoinFriendGameCompleteDelegate) == -1)) goto 0x0024
+  0017: self.JoinFriendGameCompleteDelegates.AddItem(JoinFriendGameCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function OnlineSubsystemLive.ClearJoinFriendGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.JoinFriendGameCompleteDelegates.Find(JoinFriendGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.JoinFriendGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineSubsystemLive.GetFriendMessages  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.OnFriendMessageReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddFriendMessageReceivedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearFriendMessageReceivedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.OnFriendMessageChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddFriendMessageChangedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearFriendMessageChangedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.GetHostStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.RegisterHostStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.OnRegisterHostStatGuidComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddRegisterHostStatGuidCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.ClearRegisterHostStatGuidCompleteDelegateDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.GetClientStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.RegisterStatGuid  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.MuteAll  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.UnmuteAll  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.DeleteMessage  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.ReadAchievements  (script 22 bytes)
+  0000: LocalUserNum
+  0005: TitleId
+  000a: bShouldReadText
+  000f: bShouldReadImages
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.OnReadAchievementsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineSubsystemLive.AddReadAchievementsCompleteDelegate  (script 182 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x006a
+  001d: if !((cast3a(LocalUserNum)[self.PerUserDelegates].AchievementReadDelegates.Find(ReadAchievementsCompleteDelegate) == -1)) goto 0x0067
+  0047: cast3a(LocalUserNum)[self.PerUserDelegates].AchievementReadDelegates.AddItem(ReadAchievementsCompleteDelegate)
+  0067: goto 0x00b3
+  006a: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to AddReadAchievementsComplete()"))
+  00b3: return nothing
+  00b5: <eos>
+
+function OnlineSubsystemLive.ClearReadAchievementsCompleteDelegate  (script 202 bytes)
+  0000: if !(((cast3a(LocalUserNum) >= 0) && (cast3a(LocalUserNum) < 4))) goto 0x0074
+  001d: RemoveIndex = cast3a(LocalUserNum)[self.PerUserDelegates].AchievementReadDelegates.Find(ReadAchievementsCompleteDelegate)
+  0043: if !((RemoveIndex != -1)) goto 0x0071
+  0052: cast3a(LocalUserNum)[self.PerUserDelegates].AchievementReadDelegates.Remove(RemoveIndex,1)
+  0071: goto 0x00c7
+  0074: WarnInternal((("Invalid index (" $ cast52(LocalUserNum)) $ ") passed to ClearReadAchievementsCompleteDelegate()"))
+  00c7: return nothing
+  00c9: <eos>
+
+function OnlineSubsystemLive.GetAchievements  (script 17 bytes)
+  0000: LocalUserNum
+  0005: Achievements
+  000a: TitleId
+  000f: nothing
+  0010: <eos>
+
+function OnlineSubsystemLive.ShowCustomPlayersUI  (script 22 bytes)
+  0000: LocalUserNum
+  0005: Players
+  000a: Title
+  000f: Description
+  0014: nothing
+  0015: <eos>
+
+function OnlineSubsystemLive.AddPlayersToPlayerHistory  (script 10 bytes)
+  0000: nothing
+  0001: return true
+  0003: return return
+  0009: <eos>
+
+function OnlineSubsystemLive.DumpSessionState  (script 15 bytes)
+  0000: DumpSessionState()
+  0006: OnlineSubsystemLive.DumpLiveSessionState()
+  000c: return nothing
+  000e: <eos>
+
+function OnlineSubsystemLive.DumpLiveSessionState  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.DumpVoiceRegistration  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.PrintActiveTasks  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineSubsystemLive.PrintAsyncTasks  (script 13 bytes)
+  0000: PrintActiveTasks()
+  000a: return nothing
+  000c: <eos>
+
+function OnlineSubsystemLive.SetDebugSpewLevel  (script 7 bytes)
+  0000: DebugSpewLevel
+  0005: nothing
+  0006: <eos>
+
+function OnlineSubsystemLive.HasAsyncTasks  (script 17 bytes)
+  0000: return (self.AsyncTasks.Length > 0)
+  000a: return return
+  0010: <eos>
+
+function OnlineSubsystemLive.HasInvitableSessions  (script 190 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.Sessions.Length)) goto 0x00b5
+  0017: Session = Index[self.Sessions]
+  0028: if !((((Session.GameSettings != none) && Session.GameSettings.bAllowInvites) && ((Session.GameSettings.NumPublicConnections + Session.GameSettings.NumPrivateConnections) > Session.Registrants.Length))) goto 0x00ab
+  00a9: return true
+  00ab: AddAdd_Int(Index)
+  00b2: goto 0x0007
+  00b5: return false
+  00b7: return return
+  00bd: <eos>
+
+function OnlineSubsystemLive.GetDeferredGameInviteControllerId  (script 84 bytes)
+  0000: if !((cast3a(self.DelayedInviteUserMask) != 0)) goto 0x0047
+  000d: UserIndex = 0
+  0014: if !((UserIndex < 4)) goto 0x0047
+  0020: if !((((1 << UserIndex) & cast3a(self.DelayedInviteUserMask)) != 0)) goto 0x003d
+  0037: return UserIndex
+  003d: AddAdd_PreInt(UserIndex)
+  0044: goto 0x0014
+  0047: return -1
+  004d: return return
+  0053: <eos>
+
+function OnlineSubsystemLive.ResetDevelopmentLeaderboard  (script 12 bytes)
+  0000: LeaderboardId
+  0005: LocalUserNum
+  000a: nothing
+  000b: <eos>
+
+function OnlineSubsystemLive.LogoutOfOnlineService  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineSubsystemLive.CheckForInactiveControllerAcceptedInvite  (script 105 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI == none)) goto 0x0026
+  0024: return nothing
+  0026: foreach WI.LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x0065)
+  0046: if !((PC != none)) goto 0x0064
+  0051: PC.CheckForInactiveControllerAcceptedInvite()
+  0064: iternext
+  0065: iterpop
+  0066: return nothing
+  0068: <eos>

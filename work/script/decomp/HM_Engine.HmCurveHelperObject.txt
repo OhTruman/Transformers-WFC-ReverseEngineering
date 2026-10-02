@@ -1,0 +1,28 @@
+function HmCurveHelperObject.AutoSetCurveTangents  (script 7 bytes)
+  0000: curve
+  0005: nothing
+  0006: <eos>
+
+function HmCurveHelperObject.AutoSetCurveTangentsWithEnds  (script 33 bytes)
+  0000: AutoSetCurveTangents(curve)
+  000f: SetBeginEndTangents(curve)
+  001e: return nothing
+  0020: <eos>
+
+function HmCurveHelperObject.SetBeginEndTangents  (script 331 bytes)
+  0000: if !((curve.Points.Length < 3)) goto 0x001a
+  0018: return nothing
+  001a: UltimatePointIndex = (curve.Points.Length - 1)
+  0034: PenultimatePointIndex = (UltimatePointIndex - 1)
+  0042: 0[curve.Points].LeaveTangent = HmCurveHelperObject.CalcTermTangent(0[curve.Points].OutVal, 1[curve.Points].OutVal, 1[curve.Points].ArriveTangent)
+  00bd: UltimatePointIndex[curve.Points].ArriveTangent = HmCurveHelperObject.CalcTermTangent(PenultimatePointIndex[curve.Points].OutVal, UltimatePointIndex[curve.Points].OutVal, PenultimatePointIndex[curve.Points].LeaveTangent)
+  0148: return nothing
+  014a: <eos>
+
+function HmCurveHelperObject.CalcTermTangent  (script 98 bytes)
+  0000: ToSecondPoint = (SecondPoint - FirstPoint)
+  0012: NormalToSecondPoint = obj'Core.Math'.static.Normal(ToSecondPoint)
+  0028: HalfwayToTheOppositeTangent = ((NormalToSecondPoint * (NormalToSecondPoint dot OtherPointTangent)) - OtherPointTangent)
+  0048: return (OtherPointTangent + (HalfwayToTheOppositeTangent * cast3f(2)))
+  005b: return return
+  0061: <eos>

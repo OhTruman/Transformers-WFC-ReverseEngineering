@@ -1,0 +1,14 @@
+function TnHudDataObserverProgressBar.ProcessNewValue  (script 114 bytes)
+  0000: default=self.label
+  0009: if !((self.SavedValue != NewValue)) goto 0x006f
+  0018: self.SavedValue = NewValue
+  0023: AddStringValue(args, 0, NewLabel)
+  0038: AddNumberValue(args, 1, NewValue)
+  004d: Movie.Invoke(self.CallbackBindingName, args)
+  006f: return nothing
+  0071: <eos>
+
+function TnHudDataObserverProgressBar.HandleRemoval  (script 24 bytes)
+  0000: ProcessNewValue(Movie, 0.0, )
+  0015: return nothing
+  0017: <eos>

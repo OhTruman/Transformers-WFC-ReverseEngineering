@@ -1,0 +1,62 @@
+function TnTacticalPathNodeEvaluatorOutsideAim.CalculateAngleToTacticalPathNode  (script 185 bytes)
+  0000: EnemyToNode = (Tactical._Location - EnemyLocation)
+  001b: EnemyToNode.Z = 0.0
+  0031: EnemyToNode = obj'Core.Math'.static.Normal(EnemyToNode)
+  0047: EnemyRotation = cast39(EnemyRot)
+  0054: EnemyRotation.Z = 0.0
+  006a: EnemyRotation = obj'Core.Math'.static.Normal(EnemyRotation)
+  0080: DotProd = (EnemyRotation dot EnemyToNode)
+  0092: return (obj'Core.Math'.static.Acos(DotProd) * 57.2957802)
+  00b2: return return
+  00b8: <eos>
+
+function TnTacticalPathNodeEvaluatorOutsideAim.Score  (script 464 bytes)
+  0000: switch (self.Origin)
+  0007: case 0: (next 0x0023)
+  000c: OriginActor = Searcher.Enemy
+  0020: goto 0x0042
+  0023: case 1: (next 0x003f)
+  0028: OriginActor = Searcher._Friend
+  003c: goto 0x0042
+  003f: default:
+  0042: if !((OriginActor == none)) goto 0x0053
+  004d: return 1.0
+  0053: EnemyPlayerController = TnPlayerController(OriginActor.Controller)
+  006c: if !((((EnemyPlayerController != none) && (EnemyPlayerController.PlayerCamera != none)) && !EnemyPlayerController.IsDebugCameraActive())) goto 0x00c7
+  00a7: OriginLocation = EnemyPlayerController.PlayerCamera.Location
+  00c4: goto 0x00db
+  00c7: OriginLocation = OriginActor.Location
+  00db: Right = (vect(0,1,0) >> OriginActor.Rotation)
+  00ff: TacticalSide = (Right dot (Tactical._Location - OriginLocation))
+  0121: SearcherSide = (Right dot (Searcher.Pawn.Location - OriginLocation))
+  014c: Score = (((SearcherSide * TacticalSide) < cast3f(0)) ? 0.5 : 1.0)
+  0172: AngleToNode = TnTacticalPathNodeEvaluatorOutsideAim.CalculateAngleToTacticalPathNode(Tactical, OriginLocation, OriginActor.Rotation)
+  0196: return (((AngleToNode > (self.AimAngle * 0.5)) && (AngleToNode < cast3f(90))) ? Score : 0.0)
+  01c9: return return
+  01cf: <eos>
+
+function TnTacticalPathNodeEvaluatorOutsideAim.DrawDebug  (script 663 bytes)
+  0000: switch (self.Origin)
+  0007: case 0: (next 0x0023)
+  000c: OriginActor = Searcher.Enemy
+  0020: goto 0x0042
+  0023: case 1: (next 0x003f)
+  0028: OriginActor = Searcher._Friend
+  003c: goto 0x0042
+  003f: default:
+  0042: obj'Engine.Debug'.static.DrawCylinder(OriginActor.Location, (OriginActor.Location + vect(0,0,400)), 50.0, 10, obj'Core.Colors'.static.Green(), true)
+  009b: EnemyPlayerController = TnPlayerController(OriginActor.Controller)
+  00b4: if !((((EnemyPlayerController != none) && (EnemyPlayerController.PlayerCamera != none)) && !EnemyPlayerController.IsDebugCameraActive())) goto 0x010f
+  00ef: EnemyLocation = EnemyPlayerController.PlayerCamera.Location
+  010c: goto 0x0123
+  010f: EnemyLocation = OriginActor.Location
+  0123: Right = (vect(0,1,0) >> OriginActor.Rotation)
+  0147: obj'Engine.Debug'.static.DrawLine((EnemyLocation + (Right * cast3f(7000))), (EnemyLocation + (Right * cast3f(-7000))), obj'Core.Colors'.static.Green(), true)
+  0198: TempRot = OriginActor.Rotation
+  01ac: (TempRot.Yaw += cast44(((self.AimAngle * 0.5) * 182.0444489)))
+  01d3: obj'Engine.Debug'.static.DrawLine(EnemyLocation, (EnemyLocation + (cast39(TempRot) * cast3f(7000))), obj'Core.Colors'.static.Green(), true)
+  0216: TempRot = OriginActor.Rotation
+  022a: (TempRot.Yaw -= cast44(((self.AimAngle * 0.5) * 182.0444489)))
+  0251: obj'Engine.Debug'.static.DrawLine(EnemyLocation, (EnemyLocation + (cast39(TempRot) * cast3f(7000))), obj'Core.Colors'.static.Green(), true)
+  0294: return nothing
+  0296: <eos>

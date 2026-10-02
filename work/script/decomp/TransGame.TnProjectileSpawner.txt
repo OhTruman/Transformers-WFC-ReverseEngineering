@@ -1,0 +1,93 @@
+function TnProjectileSpawner.SpawnProjectile  (script 418 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: Mesh = FiringActor.FindComponent(obj'Engine.SkeletalMeshComponent')
+  0021: if !((Mesh == none)) goto 0x002e
+  002c: return none
+  002e: if !(!Mesh.GetSocketWorldLocationAndRotation(SocketName, SocketLocation, SocketRotation)) goto 0x00a9
+  0055: LogInternal(((("Error: could could not find socket" @ cast57(SocketName)) @ "to spawn projectile") @ cast56(ProjectileClass)), , , )
+  00a7: return none
+  00a9: Proj = FiringActor.Spawn(ProjectileClass, , , SocketLocation, , , , )
+  00d2: if !((Proj == none)) goto 0x00df
+  00dd: return none
+  00df: Target = TnProjectileSpawner.FindTarget(FiringActor)
+  00f0: if !(((cast3a(IgnoreSocketAxes) & 1) > 0)) goto 0x0112
+  0100: SocketRotation.Roll = 0
+  0112: if !(((cast3a(IgnoreSocketAxes) & 2) > 0)) goto 0x0135
+  0123: SocketRotation.Pitch = 0
+  0135: if !(((cast3a(IgnoreSocketAxes) & 4) > 0)) goto 0x0158
+  0146: SocketRotation.Yaw = 0
+  0158: Proj.Init(TnProjectileSpawner.FindAimDirection(SocketRotation, YawOffset, PitchOffset))
+  0180: TnProjectileSpawner.SetHomingTarget(Proj, Target, FiringActor)
+  0195: return Proj
+  019b: return return
+  01a1: <eos>
+
+function TnProjectileSpawner.SpawnProjectileAtTarget  (script 314 bytes)
+  0000: Mesh = FiringActor.FindComponent(obj'Engine.SkeletalMeshComponent')
+  001e: if !((Mesh == none)) goto 0x002b
+  0029: return none
+  002b: if !(!Mesh.GetSocketWorldLocationAndRotation(SocketName, SocketLocation, SocketRotation)) goto 0x00a6
+  0052: LogInternal(((("Error: could could not find socket" @ cast57(SocketName)) @ "to spawn projectile") @ cast56(ProjectileClass)), , , )
+  00a4: return none
+  00a6: Proj = FiringActor.Spawn(ProjectileClass, , , SocketLocation, , , , )
+  00cf: if !((Proj == none)) goto 0x00dc
+  00da: return none
+  00dc: Target = TnProjectileSpawner.FindTarget(FiringActor)
+  00ed: if !((Target == none)) goto 0x00fa
+  00f8: return none
+  00fa: Proj.Init(obj'Core.Math'.static.Normal((Target.Location - SocketLocation)))
+  012d: return Proj
+  0133: return return
+  0139: <eos>
+
+function TnProjectileSpawner.FindTarget  (script 148 bytes)
+  0000: FiringPawn = Pawn(FiringActor)
+  0010: if !(((FiringPawn != none) && (TnAiController(FiringPawn.Controller) != none))) goto 0x004e
+  0036: return FiringPawn.Controller.Enemy
+  004e: TargetPawns = TnProjectileSpawner.GetValidTargets(FiringActor)
+  005f: if !((TargetPawns.Length > 0)) goto 0x008b
+  006b: return obj'Core.Random'.static.RandomInt(TargetPawns.Length)[TargetPawns]
+  008b: return none
+  008d: return return
+  0093: <eos>
+
+function TnProjectileSpawner.GetValidTargets  (script 240 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'Engine.PlayerController', Player) (end 0x0064)
+  0039: if !((Player.Pawn != none)) goto 0x0063
+  004d: PawnTargets.AddItem(Player.Pawn)
+  0063: iternext
+  0064: iterpop
+  0065: CampaignGame = TnCampaignGameBase(WI.Game)
+  007e: if !((CampaignGame == none)) goto 0x008f
+  0089: return PawnTargets
+  008f: Teammates = CampaignGame.GetAiTeammates()
+  00a8: foreach Teammates(Teammate,) (end 0x00e2)
+  00b7: if !((Teammate.Pawn != none)) goto 0x00e1
+  00cb: PawnTargets.AddItem(Teammate.Pawn)
+  00e1: iternext
+  00e2: iterpop
+  00e3: return PawnTargets
+  00e9: return return
+  00ef: <eos>
+
+function TnProjectileSpawner.FindAimDirection  (script 147 bytes)
+  0000: RandomYawOffset = (((obj'Core.Random'.static.RandomFloat() - 0.5) * YawOffset) * 182.0444489)
+  002f: RandomPitchOffset = (obj'Core.Random'.static.RandomInRange(PitchOffset) * 182.0444489)
+  0054: Direction = (cast39(obj'Core.Math'.static.MakeRotator(cast44(RandomPitchOffset), cast44(RandomYawOffset), 0)) >> SocketRotation)
+  0086: return Direction
+  008c: return return
+  0092: <eos>
+
+function TnProjectileSpawner.SetHomingTarget  (script 117 bytes)
+  0000: HomingProjectile = TnProjectileHoming(Proj)
+  0010: if !((HomingProjectile != none)) goto 0x0035
+  001b: HomingProjectile.SetTarget(Target)
+  0033: return nothing
+  0035: MangaRocket = TnProjectileMangaRocket(Proj)
+  0045: if !((MangaRocket != none)) goto 0x0072
+  0050: MangaRocket.SetTarget(Target, Pawn(FiringActor))
+  0072: return nothing
+  0074: <eos>

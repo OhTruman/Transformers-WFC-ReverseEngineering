@@ -1,0 +1,18 @@
+function TnSeqAct_AddCompetitiveScore.Activated  (script 217 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x00d6
+  0017: P = TnPlayerPawn(I[self.Targets])
+  002d: if !((P != none)) goto 0x0054
+  0038: PC = TnPlayerController(P.Controller)
+  0051: goto 0x006a
+  0054: PC = TnPlayerController(I[self.Targets])
+  006a: if !((PC == none)) goto 0x0078
+  0075: goto 0x00cc
+  0078: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0091: if !((PRI == none)) goto 0x009f
+  009c: goto 0x00cc
+  009f: PRI._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventKismet', , , self.ScoreAmount, self.MultiplierAmount)
+  00cc: AddAdd_PreInt(I)
+  00d3: goto 0x0007
+  00d6: return nothing
+  00d8: <eos>

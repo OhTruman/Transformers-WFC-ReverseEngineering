@@ -1,0 +1,19 @@
+function TnWeaponPoseSlotLogic.UpdateServices  (script 177 bytes)
+  0000: OwnerServices = TnServiceProvider(SlotNode.SkelComponent.Owner)
+  0022: if !(NotEqual_InterfaceInterface(OwnerServices, TnServiceProvider(none))) goto 0x00ae
+  0036: if !(EqualEqual_InterfaceInterface(self._WeaponService, TnWeaponService(none))) goto 0x0072
+  004a: self._WeaponService = TnWeaponService(OwnerServices.GetService('TnWeaponService'))
+  0072: if !(EqualEqual_InterfaceInterface(self._AnimatorService, TnAnimatorService(none))) goto 0x00ae
+  0086: self._AnimatorService = TnAnimatorService(OwnerServices.GetService('TnAnimatorService'))
+  00ae: return nothing
+  00b0: <eos>
+
+function TnWeaponPoseSlotLogic.GetActivePoseName  (script 166 bytes)
+  0000: TnWeaponPoseSlotLogic.UpdateServices(SlotNode)
+  000b: if !((NotEqual_InterfaceInterface(self._AnimatorService, TnAnimatorService(none)) && self._AnimatorService.get_IsPlayingAnimation())) goto 0x0042
+  0038: return 'None'
+  0042: if !((EqualEqual_InterfaceInterface(self._WeaponService, TnWeaponService(none)) || (self._WeaponService.get_ActiveWeapon() == none))) goto 0x007c
+  0072: return 'None'
+  007c: return self._WeaponService.get_ActiveWeapon().get_PoseName()
+  009f: return return
+  00a5: <eos>

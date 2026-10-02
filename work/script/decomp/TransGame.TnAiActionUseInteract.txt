@@ -1,0 +1,86 @@
+function TnAiActionUseInteract.ExtractInteractFromWorldState  (script 69 bytes)
+  0000: SeqAction = SeqAct_TnAiUseInteract(obj)
+  0010: if !((SeqAction != none)) goto 0x0032
+  001b: Interact = SeqAction.Interact
+  002f: goto 0x0042
+  0032: Interact = TnInteractBase(obj)
+  0042: return nothing
+  0044: <eos>
+
+function TnAiActionUseInteract.OnInitialize  (script 97 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: BP = TnAiActionUseInteractBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateTransformerForm', cast3a(BP.RequiredForm), , , ))
+  005e: return nothing
+  0060: <eos>
+
+function TnAiActionUseInteract.OnSetUpConditions  (script 216 bytes)
+  0000: TnAiActionUseInteract.ExtractInteractFromWorldState(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateInteractedWith', ExpectedEffects), Interact, SeqAction)
+  002d: if !((((((Interact == none) || !Interact.get_AIEnabled()) || Interact.IsInUse()) || (TnMountableTurretBase(Interact) != none)) || Interact.HotSpotPathNode.IsOccupiedExcludeController(self._TransformerController))) goto 0x00a4
+  00a2: return false
+  00a4: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Interact.HotSpotPathNode)
+  00cf: return true
+  00d1: return return
+  00d7: <eos>
+
+function TnAiActionUseInteract.OnIsValidForFutureExecution  (script 168 bytes)
+  0000: SeqAction = SeqAct_TnAiUseInteract(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateInteractedWith', ExpectedEffects))
+  0028: if !(((SeqAction != none) && (SeqAction.Ended() || SeqAction.Aborted()))) goto 0x0090
+  0063: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateInteractedWith', false, none)
+  007d: self._TransformerController.bRotateTowardFocus = true
+  008e: return false
+  0090: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  00a1: return return
+  00a7: <eos>
+
+function TnAiActionUseInteract.OnStart  (script 472 bytes)
+  0000: TnAiActionUseInteract.ExtractInteractFromWorldState(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateInteractedWith', ExpectedEffects), self._Interact, self._SeqAction)
+  002d: self._Interact.EnableConditions(obj'TnInteractConditionWithinAngle', false)
+  0046: self._Interact.EnableConditions(obj'TnInteractConditionWithinDistance', false)
+  005f: InteractReady = self._Interact.IsUseableBy(self._TransformerPawn)
+  007e: self._Interact.EnableConditions(obj'TnInteractConditionWithinAngle', true)
+  0097: self._Interact.EnableConditions(obj'TnInteractConditionWithinDistance', true)
+  00b0: if !(!InteractReady) goto 0x00c6
+  00bb: return Fail()
+  00c6: BS = TnBuffService(self._TransformerPawn.GetService('TnBuffService'))
+  00ed: if !((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && self._TransformerPawn._IsCloaking)) goto 0x012e
+  0115: BS.RemoveBuff(obj'TnBuffCloakAi')
+  012e: self._TransformerController.bRotateTowardFocus = false
+  013f: self._TransformerController.StopMovement()
+  0152: self._Interact.InteractCommand(self._TransformerPawn, 0)
+  016c: self._Interact.SetFailedCallback(delegate.InteractFailed)
+  0188: self._Interact.SetFinishedCallback(delegate.InteractFinished)
+  01a4: self._TransformerPawn.SetAnchor(self._Interact.HotSpotPathNode)
+  01c5: return OnStart(ExpectedEffects)
+  01d1: return return
+  01d7: <eos>
+
+function TnAiActionUseInteract.OnUpdate  (script 144 bytes)
+  0000: if !(((self._SeqAction != none) && (self._SeqAction.Ended() || self._SeqAction.Aborted()))) goto 0x0055
+  003b: self._Interact.InteractCommand(self._TransformerPawn, 1)
+  0055: if !(!self._Interact.IsInUse()) goto 0x0078
+  006d: return Fail()
+  0078: return OnUpdate(ExpectedEffects, DeltaTime)
+  0089: return return
+  008f: <eos>
+
+function TnAiActionUseInteract.InteractFinished  (script 13 bytes)
+  0000: Succeed()
+  000a: return nothing
+  000c: <eos>
+
+function TnAiActionUseInteract.InteractFailed  (script 13 bytes)
+  0000: Fail()
+  000a: return nothing
+  000c: <eos>
+
+function TnAiActionUseInteract.OnFinish  (script 128 bytes)
+  0000: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0054
+  0010: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateInteractedWith', false, none)
+  002a: if !((self._SeqAction == self._TransformerController._ScriptedUseInteract)) goto 0x0052
+  0042: self._TransformerController._ScriptedUseInteract = none
+  0052: return nothing
+  0054: if !(self._Interact.IsInUse()) goto 0x007d
+  006a: self._Interact.ForceEndUse()
+  007d: return nothing
+  007f: <eos>

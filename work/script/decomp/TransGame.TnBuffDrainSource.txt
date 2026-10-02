@@ -1,0 +1,121 @@
+function TnBuffDrainSource.GetBP  (script 64 bytes)
+  0000: DataIndex = obj'Core.Math'.static.Min((self.Blueprints.Length - 1), obj'TnGame'.static.GetCurrentSkillDataIndex())
+  002d: return DataIndex[self.Blueprints]
+  0039: return return
+  003f: <eos>
+
+function TnBuffDrainSource.Apply  (script 174 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: self.CurrentBlueprint = TnBuffDrainSource.GetBP()
+  0021: Animator = TnAnimatorService(self.OwnerPawn.GetService('TnAnimatorService'))
+  0048: if !(NotEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x0087
+  005c: Animator.EnqueueLocalAnimation(self.Animation, delegate.None, delegate.None)
+  0087: self.OwnerPawn.SetSpeedMultiplier(self.CurrentBlueprint.SpeedMultiplier, self)
+  00ab: return nothing
+  00ad: <eos>
+
+function TnBuffDrainSource.ClientTickBuff  (script 31 bytes)
+  0000: TnBuffDrainSource.UpdateTargets(DeltaTime)
+  000b: TnBuffDrainSource.UpdateEffects()
+  0011: TnBuff.ClientTickBuff(DeltaTime)
+  001c: return nothing
+  001e: <eos>
+
+function TnBuffDrainSource.UpdateTargets  (script 298 bytes)
+  0000: LostTargets = self.Targets
+  000b: foreach self.OwnerPawn.WorldInfo.AllPawns(obj'TnPawn', Target, self.OwnerPawn.Location, self.CurrentBlueprint.Range) (end 0x010a)
+  0052: if !(TnBuffDrainSource.CanDrain(Target)) goto 0x0109
+  0060: TnBuffDrainSource.AddTarget(Target)
+  006b: LostTargets.RemoveItem(Target)
+  0078: Target.TakeDamage((self.CurrentBlueprint.DamagePerSecond * DeltaTime), self.OwnerPawn.Controller, Target.Location, vect(0,0,0), obj'TnDamageTypeDrain', , self.OwnerPawn)
+  00d6: self.OwnerPawn.HealDamage((TnBuffDrainSource.GetHealthPerSecond() * DeltaTime), self.OwnerPawn.Controller, obj'TnHealTypeDrain')
+  0109: iternext
+  010a: iterpop
+  010b: foreach LostTargets(Target,) (end 0x0126)
+  011a: TnBuffDrainSource.RemoveTarget(Target)
+  0125: iternext
+  0126: iterpop
+  0127: return nothing
+  0129: <eos>
+
+function TnBuffDrainSource.CanDrain  (script 116 bytes)
+  0000: if !(((Target == none) || Target.IsDead())) goto 0x0025
+  0023: return false
+  0025: if !((Target == self.OwnerPawn)) goto 0x0036
+  0034: return false
+  0036: if !(Target.IsSameTeam(self.OwnerPawn)) goto 0x0053
+  0051: return false
+  0053: return Target.LineOfSightTo(self.OwnerPawn, )
+  006d: return return
+  0073: <eos>
+
+function TnBuffDrainSource.GetHealthPerSecond  (script 68 bytes)
+  0000: if !(self.OwnerPawn.HasSkill(obj'TnSkillIncreaseDrainRate')) goto 0x002c
+  001b: return self.CurrentBlueprint.IncreasedHealthPerSecond
+  002c: return self.CurrentBlueprint.HealthPerSecond
+  003d: return return
+  0043: <eos>
+
+function TnBuffDrainSource.UpdateEffects  (script 267 bytes)
+  0000: if !(!self.OwnerPawn.IsLocallyControlled()) goto 0x001a
+  0018: return nothing
+  001a: if !((self.Targets.Length == 0)) goto 0x0028
+  0026: return nothing
+  0028: if !((self.OwnerPawn.Mesh != none)) goto 0x0067
+  003c: DrainLocation = self.OwnerPawn.Mesh.GetSocketWorldLocation('MeleeSocket_LeftHand')
+  0067: self.CurrentHitTarget = cast44((cast3f((self.CurrentHitTarget + 1)) % cast3f(self.Targets.Length)))
+  0083: if !((self.CurrentHitTarget[self.Targets] != none)) goto 0x00be
+  0094: DrainDirection = (self.CurrentHitTarget[self.Targets].Location - self.OwnerPawn.Location)
+  00be: self.OwnerPawn.PlayHit(1.0, none, DrainLocation, obj'TnHealTypeDrain', DrainDirection, THI)
+  00eb: self.OwnerPawn.PlaySound(self.HealSound, true, , , , )
+  0108: return nothing
+  010a: <eos>
+
+function TnBuffDrainSource.Unapply  (script 125 bytes)
+  0000: Animator = TnAnimatorService(self.OwnerPawn.GetRobotService('TnAnimatorService'))
+  0027: if !(NotEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x0060
+  003b: Animator.StopAnimation(, self.Animation.AnimName)
+  0060: self.OwnerPawn.RemoveSpeedMultiplier(self)
+  0074: TnBuff.Unapply()
+  007a: return nothing
+  007c: <eos>
+
+function TnBuffDrainSource.OnUnapplyOrOwnerDied  (script 62 bytes)
+  0000: Index = (self.Targets.Length - 1)
+  000f: if !((Index >= 0)) goto 0x0035
+  001a: TnBuffDrainSource.RemoveTarget(Index[self.Targets])
+  002b: SubtractSubtract_PreInt(Index)
+  0032: goto 0x000f
+  0035: TnBuff.OnUnapplyOrOwnerDied()
+  003b: return nothing
+  003d: <eos>
+
+function TnBuffDrainSource.AddTarget  (script 53 bytes)
+  0000: if !((self.Targets.Find(Target) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.Targets.AddItem(Target)
+  0026: TnBuffDrainSource.UpdateTargetBuff(Target, true)
+  0032: return nothing
+  0034: <eos>
+
+function TnBuffDrainSource.RemoveTarget  (script 63 bytes)
+  0000: Index = self.Targets.Find(Target)
+  0013: if !((Index == -1)) goto 0x0024
+  0022: return nothing
+  0024: self.Targets.Remove(Index,1)
+  0030: TnBuffDrainSource.UpdateTargetBuff(Target, false)
+  003c: return nothing
+  003e: <eos>
+
+function TnBuffDrainSource.UpdateTargetBuff  (script 159 bytes)
+  0000: if !((cast3a(self.OwnerPawn.Role) != cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: BuffService = TnBuffService(Target.GetService('TnBuffService'))
+  0042: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0058
+  0056: return nothing
+  0058: if !(Add) goto 0x0083
+  0061: BuffService.AddBuff(obj'TnBuffDrainTarget', 0, self.OwnerPawn)
+  0080: goto 0x009c
+  0083: BuffService.RemoveBuff(obj'TnBuffDrainTarget')
+  009c: return nothing
+  009e: <eos>

@@ -1,0 +1,16 @@
+function TnAnimNotify_HurtRadius.Notify  (script 306 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: A = AnimSeqInstigator.SkelComponent.Owner
+  0033: if !((A == none)) goto 0x0040
+  003e: return nothing
+  0040: if !(self.DrawDebug) goto 0x0098
+  0049: obj'Engine.Debug'.static.DrawSphere(AnimSeqInstigator.SkelComponent.GetSocketWorldLocation(self.SocketName), self.DamageRadius, 5, obj'Core.Colors'.static.Red(), )
+  0098: if !((cast3a(A.Role) == cast3a(3))) goto 0x012f
+  00b1: if !(self.EnableDamageHeightLimit) goto 0x00c8
+  00ba: HeightLimit = self.DamageHeightLimit
+  00c5: goto 0x00d3
+  00c8: HeightLimit = -1.0
+  00d3: A.HurtRadius(self.BaseDamage, self.DamageRadius, HeightLimit, self.DamageType, self.Momentum, (AnimSeqInstigator.SkelComponent.GetSocketWorldLocation(self.SocketName) + self.HurtOriginOffset), , , self.DoFullDamage)
+  012f: return nothing
+  0131: <eos>

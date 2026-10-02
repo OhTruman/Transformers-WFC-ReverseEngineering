@@ -1,0 +1,29 @@
+function TnAiActionTauntWithWeapon.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._TauntBlueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionTauntWithWeapon.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionTauntWithWeapon.OnBind  (script 44 bytes)
+  0000: TnAiActionPlayAnimation.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionTauntWithWeapon.OnInitialize  (script 30 bytes)
+  0000: TnAiActionPlayAnimation.OnInitialize(Blueprint)
+  000b: self._TauntBlueprint = TnAiActionTauntWithWeaponBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTauntWithWeapon.OnStart  (script 105 bytes)
+  0000: W = TnWeapon(get_InvManager().FindInventoryType(get_WeaponClass(), ))
+  002e: if !((W != none)) goto 0x0056
+  0039: get_InvManager().SetCurrentWeapon(W)
+  0056: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  0062: return return
+  0068: <eos>

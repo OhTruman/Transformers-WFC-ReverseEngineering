@@ -1,0 +1,8 @@
+function SeqAct_TnPawnFactory.AdjustSpawnLocation  (script 182 bytes)
+  0000: AsTnActorFactoryAI = TnActorFactoryAI(self.Factory)
+  0010: if !(((AsTnActorFactoryAI != none) && (cast3a(AsTnActorFactoryAI.StartingFormOverride) != cast3a(1)))) goto 0x00a3
+  0036: SpawnPoint.GetBoundingCylinder(SpawnPointCollisionRadius, SpawnPointCollisionHeight)
+  0053: return (AdjustSpawnLocation(SpawnPoint) + obj'Core.Math'.static.MakeVector(0.0, 0.0, obj'Core.Math'.static.Abs((AsTnActorFactoryAI.GetCollisionHeight() - SpawnPointCollisionHeight))))
+  00a3: return AdjustSpawnLocation(SpawnPoint)
+  00af: return return
+  00b5: <eos>

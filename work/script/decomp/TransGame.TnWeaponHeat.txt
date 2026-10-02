@@ -1,0 +1,168 @@
+function TnWeaponHeat.WeaponOverheatedObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeaponHeat.WeaponCooledObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeaponHeat.ResetHeatProperties  (script 43 bytes)
+  0000: SetHeatProperties(Properties, WeaponOwner, RunModifiers)
+  001a: GotoState('Cool', , , )
+  0028: return nothing
+  002a: <eos>
+
+function TnWeaponHeat.SetHeatProperties  (script 225 bytes)
+  0000: self.OwnerPawn = WeaponOwner
+  000b: self.HeatProperties.HeatMax = Properties.HeatMax
+  002c: self.HeatProperties.Modifiers.Length = 0
+  003f: if !(RunModifiers) goto 0x00de
+  0048: foreach Properties.Modifiers(CurrentMod,) (end 0x00dd)
+  0062: self.HeatProperties.Modifiers.Length[self.HeatProperties.Modifiers] = TnHeatModifier(CurrentMod.Clone(self, ))
+  009f: (self.HeatProperties.Modifiers.Length - 1)[self.HeatProperties.Modifiers].Initialize(TnPawn(WeaponOwner))
+  00dc: iternext
+  00dd: iterpop
+  00de: return nothing
+  00e0: <eos>
+
+function TnWeaponHeat.OnWeaponHeatEvent  (script 125 bytes)
+  0000: nothing
+  0001: foreach self.HeatProperties.Modifiers(Mod,) (end 0x0073)
+  001b: self.CurrentHeat = Mod.OnHeatEvent(Type, self.CurrentHeat, DeltaTime)
+  0043: if !(((self.OwnerPawn != none) && TnPawn(self.OwnerPawn).HeatCheatEnabled)) goto 0x0072
+  0067: self.CurrentHeat = 0.0
+  0072: iternext
+  0073: iterpop
+  0074: TnWeaponHeat.ClampHeatAndNotify()
+  007a: return nothing
+  007c: <eos>
+
+function TnWeaponHeat.SyncCurrentHeat  (script 20 bytes)
+  0000: self.CurrentHeat = SyncHeat
+  000b: TnWeaponHeat.ClampHeatAndNotify()
+  0011: return nothing
+  0013: <eos>
+
+function TnWeaponHeat.GetNormalizedHeat  (script 54 bytes)
+  0000: HeatMax = TnWeaponHeat.GetHeatMax()
+  000c: if !((HeatMax == cast3f(0))) goto 0x0022
+  0019: return 0.0
+  001f: goto 0x002f
+  0022: return (self.CurrentHeat / HeatMax)
+  002f: return return
+  0035: <eos>
+
+function TnWeaponHeat.GetCurrentHeat  (script 13 bytes)
+  0000: return self.CurrentHeat
+  0006: return return
+  000c: <eos>
+
+function TnWeaponHeat.GetHeatMax  (script 24 bytes)
+  0000: return self.HeatProperties.HeatMax
+  0011: return return
+  0017: <eos>
+
+function TnWeaponHeat.ClampHeatAndNotify  (script 62 bytes)
+  0000: HeatMax = TnWeaponHeat.GetHeatMax()
+  000c: self.CurrentHeat = obj'Core.Math'.static.FClamp(self.CurrentHeat, 0.0, HeatMax)
+  002c: CheckForStateChange(HeatMax)
+  003b: return nothing
+  003d: <eos>
+
+function TnWeaponHeat.IsOverheated  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnWeaponHeat.CheckForStateChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeaponHeat.Cool.BeginState  (script 9 bytes)
+  0000: TnWeaponHeat.NotifyWeaponCooledObservers()
+  0006: return nothing
+  0008: <eos>
+
+function TnWeaponHeat.Cool.IsOverheated  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnWeaponHeat.Cool.CheckForStateChange  (script 32 bytes)
+  0000: if !((self.CurrentHeat >= HeatMax)) goto 0x001d
+  000f: GotoState('Overheated', , , )
+  001d: return nothing
+  001f: <eos>
+
+function TnWeaponHeat.Overheated.BeginState  (script 9 bytes)
+  0000: TnWeaponHeat.NotifyWeaponOverheatedObservers()
+  0006: return nothing
+  0008: <eos>
+
+function TnWeaponHeat.Overheated.IsOverheated  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnWeaponHeat.Overheated.CheckForStateChange  (script 32 bytes)
+  0000: if !((self.CurrentHeat < HeatMax)) goto 0x001d
+  000f: GotoState('Cool', , , )
+  001d: return nothing
+  001f: <eos>
+
+function TnWeaponHeat.AddWeaponOverheatedObserver  (script 46 bytes)
+  0000: if !((self.WeaponOverheatedObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.WeaponOverheatedObservers.Length[self.WeaponOverheatedObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnWeaponHeat.RemoveWeaponOverheatedObserver  (script 49 bytes)
+  0000: Index = self.WeaponOverheatedObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.WeaponOverheatedObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnWeaponHeat.ClearWeaponOverheatedObservers  (script 11 bytes)
+  0000: self.WeaponOverheatedObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnWeaponHeat.NotifyWeaponOverheatedObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.WeaponOverheatedObservers.Length)) goto 0x0041
+  0017: N = I[self.WeaponOverheatedObservers]
+  0028: WeaponOverheatedObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>
+
+function TnWeaponHeat.AddWeaponCooledObserver  (script 46 bytes)
+  0000: if !((self.WeaponCooledObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.WeaponCooledObservers.Length[self.WeaponCooledObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnWeaponHeat.RemoveWeaponCooledObserver  (script 49 bytes)
+  0000: Index = self.WeaponCooledObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.WeaponCooledObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnWeaponHeat.ClearWeaponCooledObservers  (script 11 bytes)
+  0000: self.WeaponCooledObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnWeaponHeat.NotifyWeaponCooledObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.WeaponCooledObservers.Length)) goto 0x0041
+  0017: N = I[self.WeaponCooledObservers]
+  0028: WeaponCooledObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>

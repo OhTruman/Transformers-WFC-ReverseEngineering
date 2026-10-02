@@ -1,0 +1,66 @@
+function UIDataProvider_OnlineFriendMessages.OnRegister  (script 316 bytes)
+  0000: UIDataProvider_OnlinePlayerDataBase.OnRegister(InPlayer)
+  000b: if !((self.Player != none)) goto 0x0139
+  0016: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  002f: if !((OnlineSub != none)) goto 0x0139
+  003a: PlayerInterface = OnlineSub.PlayerInterface
+  004e: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0139
+  0062: PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChange)
+  007f: PlayerInterface.AddFriendMessageReceivedDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendMessageReceived)
+  00ac: PlayerInterface.AddFriendInviteReceivedDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendInviteReceived)
+  00d9: PlayerInterface.AddFriendMessageChangedDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendMessageChanged)
+  0106: PlayerInterface.AddReceivedGameInviteDelegate(cast3d(self.Player.ControllerId), delegate.OnGameInviteReceived)
+  0133: UIDataProvider_OnlineFriendMessages.ReadMessages()
+  0139: return nothing
+  013b: <eos>
+
+function UIDataProvider_OnlineFriendMessages.OnUnregister  (script 294 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x011d
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x011d
+  004c: PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChange)
+  0069: PlayerInterface.ClearFriendMessageReceivedDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendMessageReceived)
+  0096: PlayerInterface.ClearFriendInviteReceivedDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendInviteReceived)
+  00c3: PlayerInterface.ClearFriendMessageChangedDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendMessageChanged)
+  00f0: PlayerInterface.ClearReceivedGameInviteDelegate(cast3d(self.Player.ControllerId), delegate.OnGameInviteReceived)
+  011d: UIDataProvider_OnlinePlayerDataBase.OnUnregister()
+  0123: return nothing
+  0125: <eos>
+
+function UIDataProvider_OnlineFriendMessages.ReadMessages  (script 139 bytes)
+  0000: self.Messages.Length = 0
+  0008: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0021: if !((OnlineSub != none)) goto 0x007d
+  002c: PlayerInterface = OnlineSub.PlayerInterface
+  0040: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x007d
+  0054: PlayerInterface.GetFriendMessages(cast3d(self.Player.ControllerId), self.Messages)
+  007d: NotifyPropertyChanged()
+  0088: return nothing
+  008a: <eos>
+
+function UIDataProvider_OnlineFriendMessages.OnFriendInviteReceived  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriendMessages.ReadMessages()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriendMessages.OnFriendMessageReceived  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriendMessages.ReadMessages()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriendMessages.OnFriendMessageChanged  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriendMessages.ReadMessages()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriendMessages.OnLoginChange  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriendMessages.ReadMessages()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriendMessages.OnGameInviteReceived  (script 20 bytes)
+  0000: self.LastInviteFrom = InviterName
+  000b: UIDataProvider_OnlineFriendMessages.ReadMessages()
+  0011: return nothing
+  0013: <eos>

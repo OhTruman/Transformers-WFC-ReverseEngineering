@@ -1,0 +1,23 @@
+function TnPlayerLevelUpMessage.GetColoredString  (script 427 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: if !((RelatedPRI_1 != none)) goto 0x0060
+  0010: PlayerName = RelatedPRI_1.GetPlayerAlias()
+  0029: Specialty = obj'TnDataProvider_Specialty'.static.LocalizeSpecialty(TnPlayerReplicationInfo(RelatedPRI_1)._CurrentCharacter.Specialty)
+  0060: StringReplacements.Insert(0,3)
+  0069: 0[StringReplacements].SourceString = "`p"
+  0080: 0[StringReplacements].DestString = PlayerName
+  0098: 0[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(LocalPlayerPRI, RelatedPRI_1)
+  00c8: 1[StringReplacements].SourceString = "`l"
+  00df: 1[StringReplacements].DestString = cast53(OptionSwitch)
+  00f9: 1[StringReplacements].DestStringColor = obj'TnMessageTextColors'.static.default.NeutralColor
+  011a: 2[StringReplacements].SourceString = "`s"
+  0132: 2[StringReplacements].DestString = Specialty
+  014b: 2[StringReplacements].DestStringColor = obj'TnMessageTextColors'.static.default.NeutralColor
+  016d: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(default.LevelUpMessage, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  019e: return CS
+  01a4: return return
+  01aa: <eos>

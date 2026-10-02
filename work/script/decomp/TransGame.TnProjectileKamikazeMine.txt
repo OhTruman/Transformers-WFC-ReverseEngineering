@@ -1,0 +1,275 @@
+function TnProjectileKamikazeMine.set_SkelMeshComp  (script 14 bytes)
+  0000: self._SkelMeshComp = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnProjectileKamikazeMine.ReplicatedEvent  (script 99 bytes)
+  0000: if !((VarName == 'FoundTarget')) goto 0x0020
+  0013: OnFoundTarget()
+  001d: goto 0x0055
+  0020: if !((VarName == 'Instigator')) goto 0x003c
+  0033: TnProjectileKamikazeMine.ClientSetEnergonColor()
+  0039: goto 0x0055
+  003c: if !((VarName == 'bFadeOut')) goto 0x0055
+  004f: TnProjectileKamikazeMine.FadeOut()
+  0055: ReplicatedEvent(VarName)
+  0060: return nothing
+  0062: <eos>
+
+function TnProjectileKamikazeMine.UpdateData  (script 100 bytes)
+  0000: UpdateData()
+  0006: self.KamikazeData = TnProjectileDataKamikazeMine(self.Data)
+  0016: SetTimer(self.KamikazeData.LifeSpan, false, 'FadeOut', )
+  0032: self.LifeSpan = (self.KamikazeData.LifeSpan + self.FadeOutTime)
+  004d: self.Health = self.KamikazeData.Health
+  0061: return nothing
+  0063: <eos>
+
+function TnProjectileKamikazeMine.SetTeam  (script 14 bytes)
+  0000: self.Team = NewTeam
+  000b: return nothing
+  000d: <eos>
+
+function TnProjectileKamikazeMine.GetTeam  (script 13 bytes)
+  0000: return self.Team
+  0006: return return
+  000c: <eos>
+
+function TnProjectileKamikazeMine.ScriptGetTeamNum  (script 56 bytes)
+  0000: return ((self.Instigator == none) ? cast3d(self.Team.static.default.TeamIndex) : self.Instigator.GetTeamNum())
+  0031: return return
+  0037: <eos>
+
+function TnProjectileKamikazeMine.Init  (script 94 bytes)
+  0000: Init(Direction)
+  000b: TnProjectileKamikazeMine.ClientSetEnergonColor()
+  0011: if !((self.Instigator != none)) goto 0x0035
+  001c: InstigatorTeam = self.Instigator.GetTeam()
+  0035: if !((InstigatorTeam != none)) goto 0x005b
+  0040: SetTeam(class<TnTeamInfo>(InstigatorTeam.get_Class()))
+  005b: return nothing
+  005d: <eos>
+
+function TnProjectileKamikazeMine.ClientSetEnergonColor  (script 146 bytes)
+  0000: InstigatorPawn = TnPawn(self.Instigator)
+  0010: if !((InstigatorPawn != none)) goto 0x0055
+  001b: CharacterApplier = InstigatorPawn._CharacterApplier
+  002f: if !((CharacterApplier != none)) goto 0x0052
+  003a: CharacterApplier.ApplyColorsToMesh(self._SkelMeshComp)
+  0052: goto 0x008f
+  0055: if !((self.Team != none)) goto 0x008f
+  0060: self._SkelMeshComp.SetVectorParam(obj'TnCharacterApplier'.static.default.EnergonColorMaterialParamName, self.Team.static.default.EnergonColor)
+  008f: return nothing
+  0091: <eos>
+
+function TnProjectileKamikazeMine.GetTarget  (script 13 bytes)
+  0000: return self.Target
+  0006: return return
+  000c: <eos>
+
+function TnProjectileKamikazeMine.ShouldExplodeOnDamage  (script 75 bytes)
+  0000: if !(!TnProjectile.ShouldExplodeOnDamage(Damage, InstigatedBy, DamageType)) goto 0x001c
+  001a: return false
+  001c: (self.Health -= Damage)
+  0028: return ((self.Health <= cast3f(0)) || (DamageType == obj'TnDamageTypeFlashBang'))
+  0044: return return
+  004a: <eos>
+
+function TnProjectileKamikazeMine.Tick  (script 60 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((self.ShouldFadeOutOnInstigatorDeath && TnProjectileKamikazeMine.IsDead(self.Instigator))) goto 0x002a
+  0024: TnProjectileKamikazeMine.FadeOut()
+  002a: OnTick(DeltaTime)
+  0039: return nothing
+  003b: <eos>
+
+function TnProjectileKamikazeMine.OnTick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileKamikazeMine.Inactive.BeginState  (script 30 bytes)
+  0000: self._SkelMeshComp.PlayAnim(self.DormantIdleAnim, , , )
+  001b: return nothing
+  001d: <eos>
+
+function TnProjectileKamikazeMine.Inactive.HitWall  (script 55 bytes)
+  0000: self.HoverVelocity = (self.KamikazeData.HoverSpeed * HitNormal)
+  001b: self.Velocity = self.HoverVelocity
+  0026: GotoState('Hovering', , , )
+  0034: return nothing
+  0036: <eos>
+
+function TnProjectileKamikazeMine.Hovering.HitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileKamikazeMine.Hovering.BeginState  (script 34 bytes)
+  0000: self.BaseLocation = self.Location
+  000b: self.HoverTimer = self.KamikazeData.HoverTime
+  001f: return nothing
+  0021: <eos>
+
+function TnProjectileKamikazeMine.Hovering.GetGravityZ  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function TnProjectileKamikazeMine.Hovering.OnTick  (script 160 bytes)
+  0000: UpdateHoverPhysics(DeltaTime)
+  000b: (self.HoverTimer -= DeltaTime)
+  0017: if !((!self.CanSearchForTarget && (self.HoverTimer <= cast3f(0)))) goto 0x0054
+  0031: self._SkelMeshComp.PlayAnim(self.ActiveIdleAnim, , true, )
+  004c: self.CanSearchForTarget = true
+  0054: if !(self.CanSearchForTarget) goto 0x009d
+  005d: self._SkelMeshComp.SetRotation((self._SkelMeshComp.Rotation + (self.KamikazeData.HoverRotationRate * DeltaTime)))
+  0097: CheckForEnemy()
+  009d: return nothing
+  009f: <eos>
+
+function TnProjectileKamikazeMine.Hovering.UpdateHoverPhysics  (script 129 bytes)
+  0000: Distance = obj'Core.Math'.static.VSize((self.BaseLocation - self.Location))
+  001d: if !((Distance <= self.KamikazeData.HoverDistance.Min)) goto 0x004e
+  0040: self.Velocity = self.HoverVelocity
+  004b: goto 0x007e
+  004e: if !((Distance >= self.KamikazeData.HoverDistance.Max)) goto 0x007e
+  0071: self.Velocity = -self.HoverVelocity
+  007e: return nothing
+  0080: <eos>
+
+function TnProjectileKamikazeMine.Hovering.CheckForEnemy  (script 71 bytes)
+  0000: Enemy = TnProjectileKamikazeMine.FindEnemy()
+  000c: if !((Enemy == none)) goto 0x0019
+  0017: return nothing
+  0019: self.FoundTarget = true
+  0021: self.Target = Enemy
+  002c: OnFoundTarget()
+  0036: GotoState('Homing', , , )
+  0044: return nothing
+  0046: <eos>
+
+function TnProjectileKamikazeMine.Homing.GetGravityZ  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function TnProjectileKamikazeMine.Homing.OnTick  (script 123 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: if !(TnProjectileKamikazeMine.IsDead(self.Target)) goto 0x003f
+  0020: Explode(self.Location, vect(0,0,1))
+  003c: goto 0x0078
+  003f: HomingDirection = obj'Core.Math'.static.Normal((GetHomingLocation() - self.Location))
+  005d: self.Velocity = (self.KamikazeData.HomingVelocity * HomingDirection)
+  0078: return nothing
+  007a: <eos>
+
+function TnProjectileKamikazeMine.Homing.GetHomingLocation  (script 139 bytes)
+  0000: Services = TnServiceProvider(self.Target)
+  0010: if !(NotEqual_InterfaceInterface(Services, TnServiceProvider(none))) goto 0x004c
+  0024: TargetableService = TnTargetableService(Services.GetService('TnTargetableService'))
+  004c: if !(NotEqual_InterfaceInterface(TargetableService, TnTargetableService(none))) goto 0x0075
+  0060: return TargetableService.get_TargetableLocation()
+  0075: return self.Target.Location
+  0084: return return
+  008a: <eos>
+
+function TnProjectileKamikazeMine.FindEnemy  (script 56 bytes)
+  0000: foreach VisibleCollidingActors(obj'Engine.Pawn', PawnIter, TnProjectileKamikazeMine.GetSearchRadius(), , true) (end 0x002e)
+  0018: if !(TnProjectileKamikazeMine.IsEnemy(PawnIter)) goto 0x002d
+  0026: iterpop
+  0027: return PawnIter
+  002d: iternext
+  002e: iterpop
+  002f: return none
+  0031: return return
+  0037: <eos>
+
+function TnProjectileKamikazeMine.GetSearchRadius  (script 52 bytes)
+  0000: return self.SearchRadiusModifier.ModifyFloat(self.KamikazeData.SearchRadius, TnPawn(self.Instigator), )
+  002d: return return
+  0033: <eos>
+
+function TnProjectileKamikazeMine.IsEnemy  (script 280 bytes)
+  0000: if !(TnProjectileKamikazeMine.IsDead(Guy)) goto 0x0010
+  000e: return false
+  0010: if !((Guy == self.Instigator)) goto 0x0021
+  001f: return false
+  0021: if !(((self.Instigator != none) && self.Instigator.IsSameTeam(Guy))) goto 0x004b
+  0049: return false
+  004b: if !((((self.Team != none) && (Guy.GetTeam() != none)) && (self.Team == Guy.GetTeam().get_Class()))) goto 0x0099
+  0097: return false
+  0099: TnGuy = TnPawn(Guy)
+  00a9: if !((TnGuy != none)) goto 0x00db
+  00b4: BS = TnBuffService(TnGuy.GetService('TnBuffService'))
+  00db: if !((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasBuff(obj'TnBuffDisguise'))) goto 0x010f
+  010d: return false
+  010f: return true
+  0111: return return
+  0117: <eos>
+
+function TnProjectileKamikazeMine.IsDead  (script 119 bytes)
+  0000: if !(((A == none) || A.bDeleteMe)) goto 0x0021
+  001f: return true
+  0021: P = Pawn(A)
+  0031: if !(((P != none) && (P.IsDead() || P.IsDying()))) goto 0x006e
+  006c: return true
+  006e: return false
+  0070: return return
+  0076: <eos>
+
+function TnProjectileKamikazeMine.OnFoundTarget  (script 208 bytes)
+  0000: if !((none != HmProjectileMesh(self.Mesh).TargetFoundSound)) goto 0x003b
+  0019: PlaySound(HmProjectileMesh(self.Mesh).TargetFoundSound, true, , , , )
+  003b: if !((none != self._FlightSoundComponent)) goto 0x007b
+  0046: self._FlightSoundComponent.bAutoDestroy = true
+  0057: self._FlightSoundComponent.FadeOut(0.25, 0.0)
+  0074: self._FlightSoundComponent = none
+  007b: self._FlightSoundComponent = CreateAudioComponent(HmProjectileMesh(self.Mesh).SecondaryFlightSound, false, true, , , )
+  00a3: if !((none == self._FlightSoundComponent)) goto 0x00b0
+  00ae: return nothing
+  00b0: self._FlightSoundComponent.FadeIn(0.25, 1.0)
+  00cd: return nothing
+  00cf: <eos>
+
+function TnProjectileKamikazeMine.DestroyedBy  (script 69 bytes)
+  0000: TnProjectile.DestroyedBy(Killer)
+  000b: KillerPRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0024: if !((KillerPRI != none)) goto 0x0042
+  002f: KillerPRI.AddMineKill()
+  0042: return nothing
+  0044: <eos>
+
+function TnProjectileKamikazeMine.FadeOut  (script 17 bytes)
+  0000: GotoState('FadingOut', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnProjectileKamikazeMine.FadingOut.TakeDamage  (script 5 bytes)
+  0000: nothing
+  0001: nothing
+  0002: return nothing
+  0004: <eos>
+
+function TnProjectileKamikazeMine.FadingOut.TakeRadiusDamage  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileKamikazeMine.FadingOut.Explode  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileKamikazeMine.FadingOut.BeginState  (script 36 bytes)
+  0000: self.bFadeOut = true
+  0008: SetPhysics(0, , )
+  0016: self.FadeTimer = 0.0
+  0021: return nothing
+  0023: <eos>
+
+function TnProjectileKamikazeMine.FadingOut.OnTick  (script 88 bytes)
+  0000: (self.FadeTimer += DeltaTime)
+  000c: if !((self.FadeTimer >= self.FadeOutTime)) goto 0x0021
+  001b: DestroyActor()
+  001e: goto 0x0055
+  0021: self._SkelMeshComp.SetScale(obj'Core.Math'.static.Lerp(1.0, 0.01, (self.FadeTimer / self.FadeOutTime)))
+  0055: return nothing
+  0057: <eos>

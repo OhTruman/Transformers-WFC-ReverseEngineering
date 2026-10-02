@@ -1,0 +1,42 @@
+function TnAiMoveToClosestFriendRangeSensor.OnInitialize  (script 31 bytes)
+  0000: TnAiMoveToRangeSensor.OnInitialize()
+  0006: self._OwnerController._Friend = none
+  0016: TnAiMoveToClosestFriendRangeSensor.UpdateFriend()
+  001c: return nothing
+  001e: <eos>
+
+function TnAiMoveToClosestFriendRangeSensor.OnUpdate  (script 20 bytes)
+  0000: TnAiMoveToRangeSensor.OnUpdate(DeltaTime)
+  000b: TnAiMoveToClosestFriendRangeSensor.UpdateFriend()
+  0011: return nothing
+  0013: <eos>
+
+function TnAiMoveToClosestFriendRangeSensor.UpdateFriend  (script 75 bytes)
+  0000: if !(TnAiMoveToClosestFriendRangeSensor.IsValidFriend(self._OwnerController._Friend)) goto 0x0019
+  0017: return nothing
+  0019: self._OwnerController._Friend = TnAiMoveToClosestFriendRangeSensor.FindClosestPlayer()
+  002e: SetSubjectAndRange(self._OwnerController._Friend, 4)
+  0048: return nothing
+  004a: <eos>
+
+function TnAiMoveToClosestFriendRangeSensor.FindClosestPlayer  (script 232 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x00da)
+  0039: if !((TnAiMoveToClosestFriendRangeSensor.IsValidFriend(PC.Pawn) == false)) goto 0x0057
+  0053: iternext
+  0054: goto 0x00da
+  0057: CurrentPawn = TnPawn(PC.Pawn)
+  0070: CurrentDistSq = obj'Core.Math'.static.VSizeSq((self._OwnerPawn.Location - CurrentPawn.Location))
+  00a7: if !(((NearestPawn == none) || (CurrentDistSq < NearestDistSq))) goto 0x00d9
+  00c3: NearestPawn = CurrentPawn
+  00ce: NearestDistSq = CurrentDistSq
+  00d9: iternext
+  00da: iterpop
+  00db: return NearestPawn
+  00e1: return return
+  00e7: <eos>
+
+function TnAiMoveToClosestFriendRangeSensor.IsValidFriend  (script 70 bytes)
+  0000: return (((P != none) && (P.IsDying() == false)) && (P.IsDead() == false))
+  003f: return return
+  0045: <eos>

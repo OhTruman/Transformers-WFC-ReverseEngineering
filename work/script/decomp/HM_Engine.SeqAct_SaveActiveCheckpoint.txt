@@ -1,0 +1,64 @@
+function SeqAct_SaveActiveCheckpoint.CheckpointSaveCompleteCallback  (script 114 bytes)
+  0000: self.bIsDone = true
+  0008: if !((cast3a(Status) == cast3a(0))) goto 0x0026
+  0018: ActivateOutputLink(0)
+  0023: goto 0x0031
+  0026: ActivateOutputLink(1)
+  0031: HmWorldInfo(GetWorldInfo()).OnEndFileSave()
+  004e: obj'CheckpointManager'.static.GetInstance().CheckCheckpointFileExistence()
+  006f: return nothing
+  0071: <eos>
+
+function SeqAct_SaveActiveCheckpoint.GetGameResourcesDataStore  (script 62 bytes)
+  0000: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0019: return DataStoreManager.FindDataStore('GameResources', )
+  0037: return return
+  003d: <eos>
+
+function SeqAct_SaveActiveCheckpoint.ShouldSave  (script 98 bytes)
+  0000: DataStore = SeqAct_SaveActiveCheckpoint.GetGameResourcesDataStore()
+  000c: return (((DataStore != none) && DataStore.GetDataStoreBoolValue("CheckpointData.bShouldSave", bShouldSave)) && (bShouldSave != 0))
+  005b: return return
+  0061: <eos>
+
+function SeqAct_SaveActiveCheckpoint.WriteFilenameToDatastore  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SeqAct_SaveActiveCheckpoint.SaveActiveCheckpoint  (script 222 bytes)
+  0000: Game = HmGameInfo(GetWorldInfo().Game)
+  001e: if !(((Game == none) || !Game.ShouldSaveCheckpoints())) goto 0x0050
+  0043: ActivateOutputLink(1)
+  004e: return nothing
+  0050: foreach GetWorldInfo().LocalPlayerControllers(obj'HmPlayerController', PC) (end 0x0093)
+  0075: HmWorldInfo(GetWorldInfo()).OnBeginFileSave()
+  0092: iternext
+  0093: iterpop
+  0094: obj'CheckpointManager'.static.GetInstance().SaveActiveCheckpoint(HmWorldInfo(GetWorldInfo()).GetCurrentCheckpointIndex(), delegate.CheckpointSaveCompleteCallback)
+  00db: return nothing
+  00dd: <eos>
+
+function SeqAct_SaveActiveCheckpoint.Activated  (script 52 bytes)
+  0000: if !(GetWorldInfo().IsDemoBuild()) goto 0x001d
+  001b: return nothing
+  001d: self.bIsDone = false
+  0025: SeqAct_SaveActiveCheckpoint.InformPlayerOfHitCheckPoint()
+  002b: SeqAct_SaveActiveCheckpoint.SaveActiveCheckpoint()
+  0031: return nothing
+  0033: <eos>
+
+function SeqAct_SaveActiveCheckpoint.IsComplete  (script 14 bytes)
+  0000: return self.bIsDone
+  0007: return return
+  000d: <eos>
+
+function SeqAct_SaveActiveCheckpoint.InformPlayerOfHitCheckPoint  (script 137 bytes)
+  0000: P = 0[obj'Engine.Engine'.static.GetEngine().GamePlayers]
+  0024: if !((P != none)) goto 0x0086
+  002f: Controller = P.Actor
+  0043: if !((Controller != none)) goto 0x0086
+  004e: CPI = HmCheckpointPlayerInterface(Controller)
+  005e: if !(NotEqual_InterfaceInterface(CPI, HmCheckpointPlayerInterface(none))) goto 0x0086
+  0072: CPI.CheckPointHit()
+  0086: return nothing
+  0088: <eos>

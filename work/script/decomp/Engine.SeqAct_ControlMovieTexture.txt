@@ -1,0 +1,12 @@
+function SeqAct_ControlMovieTexture.Activated  (script 144 bytes)
+  0000: if !((self.MovieTexture != none)) goto 0x008d
+  000b: if !(0[self.InputLinks].bHasImpulse) goto 0x0037
+  0021: self.MovieTexture.Play()
+  0034: goto 0x008d
+  0037: if !(1[self.InputLinks].bHasImpulse) goto 0x0063
+  004d: self.MovieTexture.Stop()
+  0060: goto 0x008d
+  0063: if !(2[self.InputLinks].bHasImpulse) goto 0x008d
+  007a: self.MovieTexture.Pause()
+  008d: return nothing
+  008f: <eos>

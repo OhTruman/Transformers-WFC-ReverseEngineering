@@ -1,0 +1,27 @@
+function TnInteractAction.OnInteractEvent  (script 36 bytes)
+  0000: if !(EventMatchesTrigger(EventType)) goto 0x0021
+  0012: TriggerAction(Interact)
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractAction.EventMatchesTrigger  (script 49 bytes)
+  0000: return ((self.TriggerEventType == EventType) || (self.AllowSubclasses && ClassIsChildOf(EventType, self.TriggerEventType)))
+  002a: return return
+  0030: <eos>
+
+function TnInteractAction.TriggerAction  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractAction.WaitForCompletion  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnInteractAction.Cancel  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractAction.Cleanup  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

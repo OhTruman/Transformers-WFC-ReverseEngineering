@@ -1,0 +1,111 @@
+function NavigationCellNative.get_NeedsRebuild  (script 14 bytes)
+  0000: return self._NeedsRebuild
+  0007: return return
+  000d: <eos>
+
+function NavigationCellNative.set_NeedsRebuild  (script 16 bytes)
+  0000: self._NeedsRebuild = Value
+  000d: return nothing
+  000f: <eos>
+
+function NavigationCellNative.get_CellNormal  (script 13 bytes)
+  0000: return self._Normal
+  0006: return return
+  000c: <eos>
+
+function NavigationCellNative.get_HasBuiltEdges  (script 17 bytes)
+  0000: return (self._Edges.Length > 0)
+  000a: return return
+  0010: <eos>
+
+function NavigationCellNative.FindNeighbor  (script 7 bytes)
+  0000: Cell
+  0005: nothing
+  0006: <eos>
+
+function NavigationCellNative.BuildCellFromVertices  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function NavigationCellNative.IsPointWithinCell  (script 7 bytes)
+  0000: Point
+  0005: nothing
+  0006: <eos>
+
+function NavigationCellNative.IsActorInCell  (script 7 bytes)
+  0000: Testee
+  0005: nothing
+  0006: <eos>
+
+function NavigationCellNative.IsBoxInCell  (script 7 bytes)
+  0000: TestBox
+  0005: nothing
+  0006: <eos>
+
+function NavigationCellNative.DiscOverlapsCell  (script 12 bytes)
+  0000: Center
+  0005: Radius
+  000a: nothing
+  000b: <eos>
+
+function NavigationCellNative.GetPathWidthFromCell  (script 7 bytes)
+  0000: Cell
+  0005: nothing
+  0006: <eos>
+
+function NavigationCellNative.GetBoundingBox  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationCellNative.GetVertices  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationCellNative.PruneLinks  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function NavigationCellNative.WalkLine  (script 22 bytes)
+  0000: StartLocation
+  0005: EndLocation
+  000a: LineHalfWidth
+  000f: ResultingEndLocation
+  0014: nothing
+  0015: <eos>
+
+function NavigationCellNative.SetSmoothingDestination  (script 12 bytes)
+  0000: Destination
+  0005: C
+  000a: nothing
+  000b: <eos>
+
+function NavigationCellNative.ClearSmoothingDestination  (script 7 bytes)
+  0000: C
+  0005: nothing
+  0006: <eos>
+
+function NavigationCellNative.RegisterActors  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function NavigationCellNative.GetEdge  (script 54 bytes)
+  0000: if !(((EdgeIndex < 0) || (EdgeIndex >= self._Edges.Length))) goto 0x0023
+  001d: return DefaultEdge
+  0023: return EdgeIndex[self._Edges]
+  002f: return return
+  0035: <eos>
+
+function NavigationCellNative.DrawDebug  (script 478 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: if !(((((cast3a(DebugColor.A) == 0) && (cast3a(DebugColor.B) == 0)) && (cast3a(DebugColor.G) == 0)) && (cast3a(DebugColor.R) == 0))) goto 0x0082
+  0069: DebugColor = MakeColor(cast3d(255), 102, 0, )
+  0082: if !((!OnlyBorders || (0[self._Edges].Neighbor.Nav == none))) goto 0x00f4
+  00b2: obj'Debug'.static.DrawLine(0[self._Edges].Start, 0[self._Edges].End, DebugColor, Persistant)
+  00f4: if !((!OnlyBorders || (1[self._Edges].Neighbor.Nav == none))) goto 0x0166
+  0124: obj'Debug'.static.DrawLine(1[self._Edges].Start, 1[self._Edges].End, DebugColor, Persistant)
+  0166: if !((!OnlyBorders || (2[self._Edges].Neighbor.Nav == none))) goto 0x01db
+  0197: obj'Debug'.static.DrawLine(2[self._Edges].Start, 2[self._Edges].End, DebugColor, Persistant)
+  01db: return nothing
+  01dd: <eos>

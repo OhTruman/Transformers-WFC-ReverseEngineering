@@ -1,0 +1,78 @@
+function UIDataProvider_OnlineFriends.OnRegister  (script 610 bytes)
+  0000: if !((InPlayer == none)) goto 0x007e
+  000b: WarnInternal((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "No player available (probably running in editor). Cannot register data provider."))
+  007c: return nothing
+  007e: UIDataProvider_OnlinePlayerDataBase.OnRegister(InPlayer)
+  0089: if !((self.Player != none)) goto 0x025f
+  0094: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  00ad: if !((OnlineSub != none)) goto 0x0205
+  00b8: PlayerInterface = OnlineSub.PlayerInterface
+  00cc: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x018d
+  00e0: PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChange)
+  00fd: PlayerInterface.AddFriendsChangeDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendsChange)
+  012a: PlayerInterface.AddReceivedGameInviteDelegate(cast3d(self.Player.ControllerId), delegate.OnGameInviteRecieved)
+  0157: PlayerInterface.AddReadFriendsCompleteDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendsReadComplete)
+  0184: UIDataProvider_OnlineFriends.ReloadFriendList()
+  018a: goto 0x0202
+  018d: WarnInternal((("OnlineSubsystem does not support the player interface. Can't retrieve friends for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  0202: goto 0x025f
+  0205: WarnInternal((("No OnlineSubsystem present. Can't retrieve friends for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  025f: return nothing
+  0261: <eos>
+
+function UIDataProvider_OnlineFriends.OnUnregister  (script 249 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x00f0
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00f0
+  004c: PlayerInterface.ClearReadFriendsCompleteDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendsReadComplete)
+  0079: PlayerInterface.ClearFriendsChangeDelegate(cast3d(self.Player.ControllerId), delegate.OnFriendsChange)
+  00a6: PlayerInterface.ClearReceivedGameInviteDelegate(cast3d(self.Player.ControllerId), delegate.OnGameInviteRecieved)
+  00d3: PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChange)
+  00f0: UIDataProvider_OnlinePlayerDataBase.OnUnregister()
+  00f6: return nothing
+  00f8: <eos>
+
+function UIDataProvider_OnlineFriends.OnFriendsReadComplete  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriends.CopyFriendList()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriends.CopyFriendList  (script 133 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0077
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0077
+  004c: PlayerInterface.GetFriendsList(cast3d(self.Player.ControllerId), self.FriendsList, , )
+  0077: NotifyPropertyChanged()
+  0082: return nothing
+  0084: <eos>
+
+function UIDataProvider_OnlineFriends.OnFriendsChange  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriends.CopyFriendList()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriends.OnLoginChange  (script 25 bytes)
+  0000: if !((cast3a(LoginType) == cast3a(0))) goto 0x0016
+  0010: UIDataProvider_OnlineFriends.ReloadFriendList()
+  0016: return nothing
+  0018: <eos>
+
+function UIDataProvider_OnlineFriends.OnGameInviteRecieved  (script 9 bytes)
+  0000: UIDataProvider_OnlineFriends.CopyFriendList()
+  0006: return nothing
+  0008: <eos>
+
+function UIDataProvider_OnlineFriends.ReloadFriendList  (script 251 bytes)
+  0000: self.FriendsList.Length = 0
+  0008: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0021: if !((OnlineSub != none)) goto 0x00f8
+  002c: PlayerInterface = OnlineSub.PlayerInterface
+  0040: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00f8
+  0054: if !((cast3a(PlayerInterface.GetLoginStatus(cast3d(self.Player.ControllerId))) == cast3a(2))) goto 0x00f8
+  0083: if !((PlayerInterface.ReadFriendsList(cast3d(self.Player.ControllerId), , ) == false)) goto 0x00f8
+  00af: WarnInternal((("Can't retrieve friends for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  00ed: NotifyPropertyChanged()
+  00f8: return nothing
+  00fa: <eos>

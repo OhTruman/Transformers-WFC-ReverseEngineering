@@ -1,0 +1,13 @@
+function TnHudDataObserverSingleFlagCTF.CheckData  (script 196 bytes)
+  0000: if !((PC.Pawn == none)) goto 0x0016
+  0014: return nothing
+  0016: GRI = TnGameReplicationInfoMultiplayer(PC.WorldInfo.GRI)
+  0038: if !((cast3a(PC.GetTeamNum()) != GRI.get_AttackingTeam())) goto 0x00ac
+  0065: foreach PC.Pawn.TouchingActors(obj'TnDroppedPickupFlagBase', Flag) (end 0x00ab)
+  008e: FlagReturnTime = Flag.get_NormalizedTimeLeftToReturn()
+  00a7: goto 0x00ab
+  00aa: iternext
+  00ab: iterpop
+  00ac: ProcessNewValue(Movie, FlagReturnTime, )
+  00c1: return nothing
+  00c3: <eos>

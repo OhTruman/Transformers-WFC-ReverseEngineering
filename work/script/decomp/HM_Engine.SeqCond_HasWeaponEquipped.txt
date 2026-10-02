@@ -1,0 +1,11 @@
+function SeqCond_HasWeaponEquipped.Activated  (script 202 bytes)
+  0000: GetObjectVars(Targets, "Player")
+  0017: if !(((Targets.Length != 0) && (HmPlayerController(0[Targets]) != none))) goto 0x00c7
+  0037: P = HmPawn(HmPlayerController(0[Targets]).Pawn)
+  0057: if !((P != none)) goto 0x00c7
+  0062: if !((P.IsWeaponEquipped() && ClassIsChildOf(P.Weapon.get_Class(), self.WeaponClass))) goto 0x00b2
+  009a: 0[self.OutputLinks].bHasImpulse = true
+  00af: goto 0x00c7
+  00b2: 1[self.OutputLinks].bHasImpulse = true
+  00c7: return nothing
+  00c9: <eos>

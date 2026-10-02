@@ -1,0 +1,30 @@
+function SeqCond_HasInventory.GetObjVars  (script 20 bytes)
+  0000: nothing
+  0001: SeqCond_HasInventory.DefaultGetObjVars(objVars, inDesc)
+  0011: return nothing
+  0013: <eos>
+
+function SeqCond_HasInventory.DefaultGetObjVars  (script 24 bytes)
+  0000: nothing
+  0001: GetObjectVars(objVars, inDesc)
+  0015: return nothing
+  0017: <eos>
+
+function SeqCond_HasInventory.Activated  (script 279 bytes)
+  0000: 0[self.OutputLinks].bHasImpulse = false
+  0015: 1[self.OutputLinks].bHasImpulse = true
+  002a: GetObjVars(Targets, "Target")
+  0046: if !(((self.InventoryItemClass != none) && (Targets.Length != 0))) goto 0x0114
+  005f: I = 0
+  0066: if !((I < Targets.Length)) goto 0x0114
+  0076: if !((Controller(I[Targets]) != none)) goto 0x010a
+  008c: Iter = Controller(I[Targets]).Pawn
+  00ab: if !((Iter != none)) goto 0x010a
+  00b6: if !((Iter.InvManager.FindInventoryType(self.InventoryItemClass, ) != none)) goto 0x010a
+  00de: 0[self.OutputLinks].bHasImpulse = true
+  00f3: 1[self.OutputLinks].bHasImpulse = false
+  0108: return nothing
+  010a: AddAdd_Int(I)
+  0111: goto 0x0066
+  0114: return nothing
+  0116: <eos>

@@ -1,0 +1,9 @@
+function TnDeathModifierControlBone.OnStart  (script 187 bytes)
+  0000: SkelControl = SkelControlSingleBone(self._Owner.Mesh.FindSkelControl(self.NodeName))
+  002c: if !((SkelControl == none)) goto 0x0087
+  0037: LogInternal(((("ERROR: Could not find skel control" @ cast57(self.NodeName)) @ "for") @ self._Owner.get_FriendlyName()), , , )
+  0085: return nothing
+  0087: SkelControl.BoneScale = self.Scale
+  009b: SkelControl.SetSkelControlStrength(1.0, 0.0)
+  00b8: return nothing
+  00ba: <eos>

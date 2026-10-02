@@ -1,0 +1,21 @@
+function FailedConnect.GetFailSwitch  (script 77 bytes)
+  0000: if !((FailString ~= "NEEDPW")) goto 0x0014
+  0012: return 0
+  0014: if !((FailString ~= "WRONGPW")) goto 0x0029
+  0027: return 1
+  0029: if !((FailString ~= "GAMESTARTED")) goto 0x0043
+  0040: return 2
+  0043: return 3
+  0046: return return
+  004c: <eos>
+
+function FailedConnect.GetString  (script 49 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: Index = obj'Core.Math'.static.Clamp(Switch, 0, 3)
+  001e: return Index[default.FailMessage]
+  002a: return return
+  0030: <eos>

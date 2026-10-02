@@ -1,0 +1,35 @@
+function TnTacticalPathNodePickerSensor.OnInitialize  (script 33 bytes)
+  0000: self.TacticalPathNodePicker.Initialize(self._OwnerController, self.UseBasedTactical)
+  001e: return nothing
+  0020: <eos>
+
+function TnTacticalPathNodePickerSensor.OnUpdate  (script 72 bytes)
+  0000: if !(((obj'Engine.Engine'.static.GetWorldTime() - self.TacticalPathNodePicker._LastUpdateTime) > 0.25)) goto 0x0045
+  002d: obj'TnAiTacticalEvaluationScheduler'.static.RequestEvaluation(self.TacticalPathNodePicker)
+  0045: return nothing
+  0047: <eos>
+
+function TnTacticalPathNodePickerSensor.GetBestTacticalPathNode  (script 27 bytes)
+  0000: return self.TacticalPathNodePicker.get_BestNode()
+  0014: return return
+  001a: <eos>
+
+function TnTacticalPathNodePickerSensor.GetBestTacticalScore  (script 22 bytes)
+  0000: return self.TacticalPathNodePicker._BestScore
+  000f: return return
+  0015: <eos>
+
+function TnTacticalPathNodePickerSensor.ScoreTacticalPathNode  (script 32 bytes)
+  0000: return self.TacticalPathNodePicker.CalculateNodeScore(N)
+  0019: return return
+  001f: <eos>
+
+function TnTacticalPathNodePickerSensor.CanUseTactical  (script 32 bytes)
+  0000: return self.TacticalPathNodePicker.CanUseTactical(N)
+  0019: return return
+  001f: <eos>
+
+function TnTacticalPathNodePickerSensor.DisplayDebug  (script 27 bytes)
+  0000: self.TacticalPathNodePicker.DisplayBestTacticalDebug(HUD)
+  0018: return nothing
+  001a: <eos>

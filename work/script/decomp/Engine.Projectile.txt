@@ -1,0 +1,199 @@
+function Projectile.get_InstigatorPawn  (script 36 bytes)
+  0000: return ((self.InstigatorController != none) ? self.InstigatorController.Pawn : none)
+  001d: return return
+  0023: <eos>
+
+function Projectile.SetupProjectileData  (script 18 bytes)
+  0000: SetData(self.Data)
+  000f: return nothing
+  0011: <eos>
+
+function Projectile.SetData  (script 145 bytes)
+  0000: if !(ClassIsChildOf(PD.get_Class(), self.DataClassRequired)) goto 0x002f
+  0017: self.Data = PD
+  0022: UpdateData()
+  002c: goto 0x008e
+  002f: LogInternal(((((("ERROR: Invalid projectile data in" @ cast56(self)) $ ". Found:") @ cast56(PD.get_Class())) @ "Required:") @ cast56(self.DataClassRequired)), , , )
+  008e: return nothing
+  0090: <eos>
+
+function Projectile.SetMesh  (script 145 bytes)
+  0000: if !(ClassIsChildOf(PM.get_Class(), self.MeshClassRequired)) goto 0x002f
+  0017: self.Mesh = PM
+  0022: UpdateMesh()
+  002c: goto 0x008e
+  002f: LogInternal(((((("ERROR: Invalid projectile mesh in" @ cast56(self)) $ ". Found:") @ cast56(PM.get_Class())) @ "Required:") @ cast56(self.MeshClassRequired)), , , )
+  008e: return nothing
+  0090: <eos>
+
+function Projectile.UpdateData  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Projectile.UpdateMesh  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Projectile.EncroachingOn  (script 27 bytes)
+  0000: if !((BRUSH(Other) != none)) goto 0x0012
+  0010: return true
+  0012: return false
+  0014: return return
+  001a: <eos>
+
+function Projectile.PostBeginPlay  (script 36 bytes)
+  0000: self.bBegunPlay = true
+  0008: SetupProjectileData()
+  0012: SetMesh(self.Mesh)
+  0021: return nothing
+  0023: <eos>
+
+function Projectile.Init  (script 186 bytes)
+  0000: SetRotation(cast50(Direction))
+  000a: self.Velocity = (self.Data.InitialSpeed * Direction)
+  0025: if !((self.Instigator != none)) goto 0x0044
+  0030: self.InstigatorController = self.Instigator.Controller
+  0044: if !((((!self.bDeleteMe && (self.InstigatorController != none)) && (self.InstigatorController.ShotTarget != none)) && (self.InstigatorController.ShotTarget.Controller != none))) goto 0x00b7
+  0091: self.InstigatorController.ShotTarget.Controller.ReceiveProjectileWarning(self)
+  00b7: return nothing
+  00b9: <eos>
+
+function Projectile.GetTeamNum  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Projectile.CanSplash  (script 14 bytes)
+  0000: return self.bBegunPlay
+  0007: return return
+  000d: <eos>
+
+function Projectile.Reset  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>
+
+function Projectile.HurtRadius  (script 267 bytes)
+  0000: nothing
+  0001: default=((self.Instigator != none) ? self.Instigator.Controller : none)
+  0021: nothing
+  0022: if !(self.bHurtEntry) goto 0x002d
+  002b: return false
+  002d: bCausedDamage = false
+  0035: if !((InstigatedByController == none)) goto 0x004b
+  0040: InstigatedByController = self.InstigatorController
+  004b: if !(((self.ImpactedActor != none) && (self.ImpactedActor != self))) goto 0x00b7
+  0063: self.ImpactedActor.TakeRadiusDamage(InstigatedByController, DamageAmount, DamageRadius, DamageType, Momentum, HurtOrigin, true, self)
+  0096: if !((self.ImpactedActor != none)) goto 0x00b7
+  00a1: bCausedDamage = self.ImpactedActor.bProjTarget
+  00b7: bResult = Actor.HurtRadius(DamageAmount, DamageRadius, DamageHeightLimit, DamageType, Momentum, HurtOrigin, self.ImpactedActor, InstigatedByController, bDoFullDamage)
+  00f2: return (bResult || bCausedDamage)
+  0104: return return
+  010a: <eos>
+
+function Projectile.Touch  (script 160 bytes)
+  0000: if !(((Other == none) || Other.bDeleteMe)) goto 0x0021
+  001f: return nothing
+  0021: if !(((Other.StopsProjectile(self) && ((cast3a(self.Role) == cast3a(3)) || (self.bBegunPlay && self.bNetTemporary))) && !Projectile.ShouldIgnoreInstigator(Other))) goto 0x009d
+  0072: self.ImpactedActor = Other
+  007d: ProcessTouch(Other, HitLocation, HitNormal)
+  0096: self.ImpactedActor = none
+  009d: return nothing
+  009f: <eos>
+
+function Projectile.ShouldIgnoreInstigator  (script 51 bytes)
+  0000: if !(self.bBlockedByInstigator) goto 0x000b
+  0009: return false
+  000b: if !((Other == self.Instigator)) goto 0x001c
+  001a: return true
+  001c: return OnShouldIgnoreInstigator(Other)
+  002c: return return
+  0032: <eos>
+
+function Projectile.OnShouldIgnoreInstigator  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Projectile.ProcessTouch  (script 38 bytes)
+  0000: if !((Other != self.Instigator)) goto 0x0023
+  000f: Explode(HitLocation, HitNormal)
+  0023: return nothing
+  0025: <eos>
+
+function Projectile.HitWall  (script 184 bytes)
+  0000: self.ImpactedActor = Wall
+  000b: if !((!Wall.bStatic && !Wall.bWorldGeometry)) goto 0x009a
+  0035: if !((GetDamageRadius() == cast3f(0))) goto 0x009a
+  0047: Wall.TakeDamage(GetProjectileDamage(), self.InstigatorController, self.Location, (self.Data.MomentumTransfer * obj'Core.Math'.static.Normal(self.Velocity)), GetProjectileDamageType(), , self)
+  009a: Explode(self.Location, HitNormal)
+  00ae: self.ImpactedActor = none
+  00b5: return nothing
+  00b7: <eos>
+
+function Projectile.EncroachedBy  (script 55 bytes)
+  0000: HitWall(obj'Core.Math'.static.Normal((self.Location - Other.Location)), Other, HitInfo)
+  0034: return nothing
+  0036: <eos>
+
+function Projectile.GetDamageRadius  (script 22 bytes)
+  0000: return self.Data.DamageRadius
+  000f: return return
+  0015: <eos>
+
+function Projectile.GetProjectileDamageType  (script 22 bytes)
+  0000: return self.Data.DamageType
+  000f: return return
+  0015: <eos>
+
+function Projectile.Explode  (script 160 bytes)
+  0000: ProjectileDamage = GetProjectileDamage()
+  0010: if !(((ProjectileDamage >= cast3f(0)) && (GetDamageRadius() > cast3f(0)))) goto 0x0093
+  0031: if !((cast3a(self.Role) == cast3a(3))) goto 0x0051
+  0041: MakeNoise(1.0, )
+  0051: HurtRadius(ProjectileDamage, GetDamageRadius(), -1.0, GetProjectileDamageType(), self.Data.MomentumTransfer, HitLocation, none, self.InstigatorController, )
+  0093: DestroyProjectile()
+  009d: return nothing
+  009f: <eos>
+
+function Projectile.GetProjectileDamage  (script 22 bytes)
+  0000: return self.Data.Damage
+  000f: return return
+  0015: <eos>
+
+function Projectile.DestroyProjectile  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>
+
+function Projectile.RandSpin  (script 172 bytes)
+  0000: self.DesiredRotation = obj'Core.Random'.static.RotRand()
+  0013: self.RotationRate.Yaw = cast44((((spinRate * cast3f(2)) * obj'Core.Random'.static.FRand()) - spinRate))
+  0045: self.RotationRate.Pitch = cast44((((spinRate * cast3f(2)) * obj'Core.Random'.static.FRand()) - spinRate))
+  0077: self.RotationRate.Roll = cast44((((spinRate * cast3f(2)) * obj'Core.Random'.static.FRand()) - spinRate))
+  00a9: return nothing
+  00ab: <eos>
+
+function Projectile.IsStationary  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Projectile.FellOutOfWorld  (script 31 bytes)
+  0000: Explode(self.Location, vect(0,0,1))
+  001c: return nothing
+  001e: <eos>
+
+function Projectile.GetTimeToLocation  (script 47 bytes)
+  0000: return (obj'Core.Math'.static.VSize((TargetLoc - self.Location)) / self.Data.InitialSpeed)
+  0028: return return
+  002e: <eos>
+
+function Projectile.GetDamageType  (script 22 bytes)
+  0000: return default.Data.DamageType
+  000f: return return
+  0015: <eos>
+
+function Projectile.GetDamage  (script 22 bytes)
+  0000: return default.Data.Damage
+  000f: return return
+  0015: <eos>

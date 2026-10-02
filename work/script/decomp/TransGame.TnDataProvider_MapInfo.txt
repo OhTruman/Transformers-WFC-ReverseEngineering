@@ -1,0 +1,14 @@
+function TnDataProvider_MapInfo.IsProviderDisabled  (script 110 bytes)
+  0000: if !(!HasRequiredAssets()) goto 0x0011
+  000f: return true
+  0011: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  002a: GRI = TnGameReplicationInfoGameLobby(WI.GRI)
+  0043: if !((GRI == none)) goto 0x0050
+  004e: return true
+  0050: return !GRI.MapCanBePlayed(self)
+  0067: return return
+  006d: <eos>
+
+function TnDataProvider_MapInfo.HasRequiredAssets  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

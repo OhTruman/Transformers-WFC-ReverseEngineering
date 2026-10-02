@@ -1,0 +1,64 @@
+function TnInputCommandToBindingMapper.ExtractInputCommandsInString  (script 326 bytes)
+  0000: obj'Core.Strings'.static.ParseStringIntoArray(S, StringPiecesArray, "^", false)
+  0021: PieceIndex = 1
+  0028: if !((PieceIndex < StringPiecesArray.Length)) goto 0x0139
+  0038: if !((StringPiecesArray.Length <= 0)) goto 0x0047
+  0044: goto 0x012f
+  0047: SubStringPiecesArray = obj'Core.Strings'.static.Split(PieceIndex[StringPiecesArray], " ")
+  006e: SubStringPiecesArray = obj'Core.Strings'.static.Split(0[SubStringPiecesArray], ",")
+  0091: SubStringPiecesArray = obj'Core.Strings'.static.Split(0[SubStringPiecesArray], ".")
+  00b4: InputCommand = ("^" $ 0[SubStringPiecesArray])
+  00c6: InputCommandIndex = self.InputCommandToKeyBindings.Find('InputCommand',InputCommand)
+  00e2: if !((InputCommandIndex == -1)) goto 0x00f4
+  00f1: goto 0x012f
+  00f4: if !((ExtractedInputCommandToKeyBindings.Find('InputCommand',InputCommand) != -1)) goto 0x0117
+  0114: goto 0x012f
+  0117: ExtractedInputCommandToKeyBindings.Length[ExtractedInputCommandToKeyBindings] = InputCommandIndex[self.InputCommandToKeyBindings]
+  012f: AddAdd_Int(PieceIndex)
+  0136: goto 0x0028
+  0139: return ExtractedInputCommandToKeyBindings
+  013f: return return
+  0145: <eos>
+
+function TnInputCommandToBindingMapper.InputCommandToKeyBindingRemappedBasedControllerProfile  (script 280 bytes)
+  0000: PS = TnProfileSettings(PC.ProfileSettings)
+  0019: KeyString = InputCommandToKeyBinding.Key
+  002f: if !((PS == none)) goto 0x0040
+  003a: return KeyString
+  0040: if !((PS.GetUseAlternateControlScheme() && (InputCommandToKeyBinding.KeyAlt != ""))) goto 0x0085
+  006f: KeyString = InputCommandToKeyBinding.KeyAlt
+  0085: if !(PS.GetSwitchRightThumbstickAndB()) goto 0x010b
+  009b: if !((KeyString == "XboxTypeS_B")) goto 0x00d3
+  00b2: KeyString = "XboxTypeS_RightThumbstick"
+  00d3: if !((KeyString == "XboxTypeS_RightThumbstick")) goto 0x010b
+  00f8: KeyString = "XboxTypeS_B"
+  010b: return KeyString
+  0111: return return
+  0117: <eos>
+
+function TnInputCommandToBindingMapper.FindKeyToActionScriptBinding  (script 104 bytes)
+  0000: I = 0
+  0007: if !((I < self.KeyToActionScriptBindings.Length)) goto 0x005f
+  0017: if !((Key == I[self.KeyToActionScriptBindings].Key)) goto 0x0055
+  0037: ActionScript = I[self.KeyToActionScriptBindings].ActionScript
+  0053: return true
+  0055: AddAdd_Int(I)
+  005c: goto 0x0007
+  005f: return false
+  0061: return return
+  0067: <eos>
+
+function TnInputCommandToBindingMapper.TranslateCommandsInString  (script 154 bytes)
+  0000: ExtractedInputCommands = TnInputCommandToBindingMapper.ExtractInputCommandsInString(PC, S)
+  0016: OutputString = S
+  0021: foreach ExtractedInputCommands(InputCommandToKeyBinding,) (end 0x008c)
+  0030: Key = TnInputCommandToBindingMapper.InputCommandToKeyBindingRemappedBasedControllerProfile(PC, InputCommandToKeyBinding)
+  0046: if !(!TnInputCommandToBindingMapper.FindKeyToActionScriptBinding(Key, ActionScript)) goto 0x005f
+  005b: iternext
+  005c: goto 0x008c
+  005f: OutputString = obj'Core.Strings'.static.Repl(OutputString, InputCommandToKeyBinding.InputCommand, ActionScript, )
+  008b: iternext
+  008c: iterpop
+  008d: return OutputString
+  0093: return return
+  0099: <eos>

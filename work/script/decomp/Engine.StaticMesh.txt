@@ -1,0 +1,98 @@
+function StaticMesh.GetMaterial  (script 12 bytes)
+  0000: MaterialIndex
+  0005: LOD
+  000a: nothing
+  000b: <eos>
+
+function StaticMesh.GetNumLODs  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.GetNumElements  (script 7 bytes)
+  0000: LODIndex
+  0005: nothing
+  0006: <eos>
+
+function StaticMesh.GetNumVertices  (script 7 bytes)
+  0000: LODIndex
+  0005: nothing
+  0006: <eos>
+
+function StaticMesh.HasBodySetup  (script 16 bytes)
+  0000: return (self.BodySetup != none)
+  0009: return return
+  000f: <eos>
+
+function StaticMesh.HasPreCookedScale  (script 70 bytes)
+  0000: if !(!HasBodySetup()) goto 0x0011
+  000f: return false
+  0011: foreach self.BodySetup.PreCachedPhysScale(S,) (end 0x003c)
+  0029: if !((S == CookedScale)) goto 0x003b
+  0038: iterpop
+  0039: return true
+  003b: iternext
+  003c: iterpop
+  003d: return false
+  003f: return return
+  0045: <eos>
+
+function StaticMesh.IsCollidable  (script 87 bytes)
+  0000: if !(HasBodySetup()) goto 0x002d
+  000d: return ((self.UseSimpleLineCollision || self.UseSimpleBoxCollision) || self.UseSimpleRigidBodyCollision)
+  002a: goto 0x0050
+  002d: return ((!self.UseSimpleLineCollision || !self.UseSimpleBoxCollision) || !self.UseSimpleRigidBodyCollision)
+  0050: return return
+  0056: <eos>
+
+function StaticMesh.UsesPerPolygonRBCollision  (script 16 bytes)
+  0000: return !self.UseSimpleRigidBodyCollision
+  0009: return return
+  000f: <eos>
+
+function StaticMesh.FirstMaterialHasPhysicsMaterial  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.HasSmoothNormals  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.GenerateSmoothNormals  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.RemoveSmoothNormals  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.CheckForErrors  (script 171 bytes)
+  0000: CheckForErrors()
+  0006: if !((((self.BodySetup != none) && IsCollidable()) && (self.BodySetup.NumCollisionShapes() == 0))) goto 0x00a8
+  003b: EmitCheckMessage(0, (cast56(self) @ " Collision model has 0 collision shapes.  Either remove or create a new collision model."), , )
+  00a8: return nothing
+  00aa: <eos>
+
+function StaticMesh.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.HasValidLightMapCoordinateIndex  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.LightMapUVsWithinRange  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.LightMapUVsOverlap  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function StaticMesh.GenerateUVs  (script 27 bytes)
+  0000: LODIndex
+  0005: UVIndex
+  000a: bKeepExistingUVs
+  000f: MaxStretch
+  0014: NumPatches
+  0019: nothing
+  001a: <eos>

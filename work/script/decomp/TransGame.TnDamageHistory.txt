@@ -1,0 +1,79 @@
+function TnDamageHistory.get_Count  (script 14 bytes)
+  0000: return self.Records.Length
+  0007: return return
+  000d: <eos>
+
+function TnDamageHistory.get_TotalDamage  (script 53 bytes)
+  0000: foreach self.Records(R,) (end 0x0027)
+  000f: (TotalDamage += R.Damage)
+  0026: iternext
+  0027: iterpop
+  0028: return TotalDamage
+  002e: return return
+  0034: <eos>
+
+function TnDamageHistory.set_TotalDamage  (script 185 bytes)
+  0000: I = (self.Records.Length - 1)
+  000f: if !((I >= 0)) goto 0x009c
+  001a: (TotalDamage += I[self.Records].Damage)
+  0037: if !((TotalDamage > Value)) goto 0x0092
+  0046: (I[self.Records].Damage -= (TotalDamage - Value))
+  006a: if !((I[self.Records].Damage != cast3f(0))) goto 0x008f
+  0088: SubtractSubtract_PreInt(I)
+  008f: goto 0x009c
+  0092: SubtractSubtract_PreInt(I)
+  0099: goto 0x000f
+  009c: if !((I >= 0)) goto 0x00b6
+  00a7: self.Records.Remove(0,(I + 1))
+  00b6: return nothing
+  00b8: <eos>
+
+function TnDamageHistory.AddDamage  (script 228 bytes)
+  0000: if !((Damage == cast3f(0))) goto 0x000f
+  000d: return nothing
+  000f: if !(((self.Records.Length > 0) && ((self.Records.Length - 1)[self.Records].Damager == Damager))) goto 0x0065
+  0041: ((self.Records.Length - 1)[self.Records].Damage += Damage)
+  0062: goto 0x009e
+  0065: R.Damage = Damage
+  007b: R.Damager = Damager
+  0091: self.Records.AddItem(R)
+  009e: if !((self.Records.Length > 200)) goto 0x00e1
+  00ab: LogInternal("Error: Damage history has exceeded 200 records.", , , )
+  00e1: return nothing
+  00e3: <eos>
+
+function TnDamageHistory.Clear  (script 11 bytes)
+  0000: self.Records.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnDamageHistory.Aggregate  (script 242 bytes)
+  0000: self.Aggregates.Length = 0
+  0008: foreach self.Records(R,) (end 0x0086)
+  0017: I = self.Aggregates.Find('Damager',R.Damager)
+  003e: if !((I == -1)) goto 0x005d
+  004d: self.Aggregates.AddItem(R)
+  005a: goto 0x0085
+  005d: (I[self.Aggregates].Damage += R.Damage)
+  0085: iternext
+  0086: iterpop
+  0087: self.Sorter.__Compare__Delegate = delegate.CompareAggregates
+  009f: self.Sorter.SortArray(self.Aggregates.Length)
+  00b8: foreach self.Sorter.SortedIndices(I,) (end 0x00e4)
+  00d0: SortedAggregates.AddItem(I[self.Aggregates])
+  00e3: iternext
+  00e4: iterpop
+  00e5: return SortedAggregates
+  00eb: return return
+  00f1: <eos>
+
+function TnDamageHistory.CompareAggregates  (script 121 bytes)
+  0000: if !((A[self.Aggregates].Damage < B[self.Aggregates].Damage)) goto 0x0036
+  0031: return 1
+  0033: goto 0x0072
+  0036: if !((A[self.Aggregates].Damage > B[self.Aggregates].Damage)) goto 0x0070
+  0067: return -1
+  006d: goto 0x0072
+  0070: return 0
+  0072: return return
+  0078: <eos>

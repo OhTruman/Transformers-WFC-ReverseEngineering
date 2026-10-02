@@ -1,0 +1,29 @@
+function TnObjectiveMarkerTypeKingOfTheHill.ShouldDisplayMarker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnObjectiveMarkerTypeKingOfTheHill.GetLabelText  (script 77 bytes)
+  0000: if !((cast3a(Owner.GetTeamNum()) == cast3a(MarkerData.MarkerBase.GetTeamNum()))) goto 0x0040
+  003a: return self.DefendLabel
+  0040: return self.CaptureLabel
+  0046: return return
+  004c: <eos>
+
+function TnObjectiveMarkerTypeKingOfTheHill.GetMarkerSetup  (script 44 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: TnObjectiveMarkerTypeKingOfTheHill.SetupParameters(Owner, MarkerData)
+  001f: return self.MarkerSetup
+  0025: return return
+  002b: <eos>
+
+function TnObjectiveMarkerTypeKingOfTheHill.SetupParameters  (script 224 bytes)
+  0000: DefenderTeamIndex = MarkerData.MarkerBase.GetTeamNum()
+  0024: if !(((cast3a(Owner.GetTeamNum()) == cast3a(DefenderTeamIndex)) || (cast3a(DefenderTeamIndex) > 1))) goto 0x009a
+  0054: self.MarkerSetup.MatInst.SetScalarParameterValue('Neutral', 1.0, )
+  0081: self.MarkerSetup.LabelColor = self.FriendlyLabelColor
+  0097: goto 0x00dd
+  009a: self.MarkerSetup.MatInst.SetScalarParameterValue('Neutral', 0.0, )
+  00c7: self.MarkerSetup.LabelColor = self.NeutralLabelColor
+  00dd: return nothing
+  00df: <eos>

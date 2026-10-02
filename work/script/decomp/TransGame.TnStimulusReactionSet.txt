@@ -1,0 +1,24 @@
+function TnStimulusReactionSet.FindStimulusReaction  (script 497 bytes)
+  0000: if !((((Stimulus.Source == none) || (Stimulus.Type == none)) || (P == none))) goto 0x003d
+  003b: return none
+  003d: if !((Stimulus.Instigator != none)) goto 0x0086
+  0053: SameTeam = P.IsSameTeam(Stimulus.Instigator.Pawn)
+  0086: Index = 0
+  008d: if !((Index < self.StimulusReactionList.Length)) goto 0x01e8
+  009d: if !((Index[self.StimulusReactionList].StimulusType != Stimulus.Type)) goto 0x00cb
+  00c8: goto 0x01de
+  00cb: ReactionIndex = 0
+  00d2: if !((ReactionIndex < Index[self.StimulusReactionList].ReactionList.Length)) goto 0x01de
+  00f3: Reaction = ReactionIndex[Index[self.StimulusReactionList].ReactionList]
+  0115: if !((cast3a(Reaction.InstigatorType) != cast3a(0))) goto 0x0183
+  0130: if !((((cast3a(Reaction.InstigatorType) == cast3a(1)) && !SameTeam) || ((cast3a(Reaction.InstigatorType) == cast3a(2)) && SameTeam))) goto 0x0183
+  0180: goto 0x01d4
+  0183: if !((obj'Core.Math'.static.VSize((P.Location - Stimulus.Location)) <= Reaction.DistanceThreshold)) goto 0x01d4
+  01c3: return Reaction.ReactionAnims
+  01d4: AddAdd_Int(ReactionIndex)
+  01db: goto 0x00d2
+  01de: AddAdd_Int(Index)
+  01e5: goto 0x008d
+  01e8: return none
+  01ea: return return
+  01f0: <eos>

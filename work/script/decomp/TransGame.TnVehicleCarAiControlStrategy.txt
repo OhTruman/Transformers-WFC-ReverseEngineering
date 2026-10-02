@@ -1,0 +1,124 @@
+function TnVehicleCarAiControlStrategy.OnInitialize  (script 66 bytes)
+  0000: self.CarForm = TnCarForm(self._TransformerPawn._VehicleForm)
+  0019: if !((self.CarForm == none)) goto 0x0026
+  0024: return nothing
+  0026: self.Blueprint = self.CarForm.get_CarFormBlueprint()
+  003f: return nothing
+  0041: <eos>
+
+function TnVehicleCarAiControlStrategy.OnUpdate  (script 279 bytes)
+  0000: if !(!self.CarForm.get_IsBoosting()) goto 0x006c
+  0018: self.CarForm.UpdateAi(DeltaTime, CalculateFinalDesiredLocation(self.CarForm._RigidBody), self._DesiredRotation, ((cast3a(self._IsAvoiding) == cast3a(0)) || (cast3a(self._IsAvoiding) == cast3a(2))))
+  006c: self._IsAvoiding = 0
+  0074: if !(((!self.CarForm.get_IsBoosting() && self._BoundController.bRotateTowardFocus) && NotEqual_InterfaceInterface(self._BoundController.Focus, IFocusible(none)))) goto 0x0114
+  00bf: self._DesiredRotation = cast50((self._BoundController.Focus.GetFocalPoint() - self._TransformerPawn.Mesh.GetRBPosition()))
+  0102: self._DesiredRotation.Pitch = 0
+  0114: return nothing
+  0116: <eos>
+
+function TnVehicleCarAiControlStrategy.OnPostMoveToward  (script 435 bytes)
+  0000: Dest = DestTemp
+  000b: if !(!self._TransformerPawn._IsAvoidanceDisabledInVehicleForm) goto 0x017f
+  001f: self._IsAvoiding = self._TransformerPawn._ObstacleAvoidanceManager.ShouldAvoid(Dest, GoalActor, 2500.0, 75.0, true, SafeLocation)
+  005b: if !((cast3a(self._IsAvoiding) != cast3a(0))) goto 0x017f
+  006b: if !((cast3a(self._IsAvoiding) == cast3a(1))) goto 0x00f1
+  007b: self._DesiredLocation = SafeLocation
+  0086: self._DesiredRotation = CalculateRotation(SafeLocation)
+  009b: if !((self.CarForm.get_IsBoosting() && !obj'TnObstacleAvoidance'.static.IsPositionInFrontWithinAngle(self._TransformerPawn, SafeLocation, 35.0))) goto 0x00ee
+  00da: self.CarForm.set_BoostingInput(false)
+  00ee: goto 0x013d
+  00f1: if !((cast3a(self._IsAvoiding) == cast3a(2))) goto 0x013d
+  0101: self._DesiredLocation = self._TransformerPawn.Location
+  0115: self._DesiredRotation = self._TransformerPawn.Rotation
+  0129: self.CarForm.set_BoostingInput(false)
+  013d: if !(((self._BoundController != none) && (cast3a(self._BoundController._DebugMode) == cast3a(3)))) goto 0x017f
+  0163: self._TransformerPawn._ObstacleAvoidanceManager.DisplayDebug()
+  017f: if !(self.CarForm.get_IsBoosting()) goto 0x019e
+  0195: TnVehicleCarAiControlStrategy.CalculateDrivingInputs()
+  019b: goto 0x01b0
+  019e: self._DesiredRotation.Pitch = 0
+  01b0: return nothing
+  01b2: <eos>
+
+function TnVehicleCarAiControlStrategy.IsStuckInMoveToward  (script 164 bytes)
+  0000: if !((cast3a(self._IsAvoiding) == cast3a(2))) goto 0x001c
+  0010: ClearStuckTime()
+  001a: return false
+  001c: if !((self.CarForm.get_LinearSpeed() <= 5.0)) goto 0x0091
+  0039: IncrementStuckTime()
+  0043: if !(IsStuckTimedOut()) goto 0x008e
+  0050: return !obj'TnObstacleAvoidance'.static.IsPathClearToLocationOnNavMesh(self._TransformerPawn, self.CarForm.get_FormMovementCapabilities().CylinderRadius, self._DesiredLocation)
+  008e: goto 0x009b
+  0091: ClearStuckTime()
+  009b: return false
+  009d: return return
+  00a3: <eos>
+
+function TnVehicleCarAiControlStrategy.OnMoveTowardPoint  (script 33 bytes)
+  0000: self.CarForm.set_BoostingInput(TnVehicleCarAiControlStrategy.ShouldBoostToLocation(Dest))
+  001e: return nothing
+  0020: <eos>
+
+function TnVehicleCarAiControlStrategy.OnMoveTowardPath  (script 102 bytes)
+  0000: self.CarForm.set_BoostingInput(TnVehicleCarAiControlStrategy.ShouldBoost(obj'Core.Math'.static.Normal((self._PathFollower._TargetLocation - self._TransformerPawn.Location)), self._PathFollower.CalculateStraightDistance(self.Blueprint.BoostStopAngle)))
+  0063: return nothing
+  0065: <eos>
+
+function TnVehicleCarAiControlStrategy.OnMoveTowardActor  (script 42 bytes)
+  0000: self.CarForm.set_BoostingInput(TnVehicleCarAiControlStrategy.ShouldBoostToLocation(GoalActor.Location))
+  0027: return nothing
+  0029: <eos>
+
+function TnVehicleCarAiControlStrategy.ShouldBoostToLocation  (script 91 bytes)
+  0000: Direction = (Location - self._TransformerPawn.Location)
+  001b: Distance = obj'Core.Math'.static.VSize(Direction)
+  0031: Direction = (Direction / Distance)
+  0043: return TnVehicleCarAiControlStrategy.ShouldBoost(Direction, Distance)
+  0054: return return
+  005a: <eos>
+
+function TnVehicleCarAiControlStrategy.ShouldBoost  (script 236 bytes)
+  0000: if !(self._BoostOverride) goto 0x000b
+  0009: return true
+  000b: if !((self.CarForm.get_IsOnTheGround() == false)) goto 0x0038
+  0024: return self.CarForm.get_IsBoosting()
+  0038: CosAngleDelta = obj'Core.Math'.static.NormalizeDot2D(DirectionToTarget, cast39(self._TransformerPawn.Rotation))
+  0066: if !(self.CarForm.get_IsBoosting()) goto 0x00b5
+  007c: if !((DistanceToGoal < self.Blueprint.BoostStopDistance)) goto 0x0096
+  0094: return false
+  0096: if !((CosAngleDelta < self.Blueprint.BoostStopAngle)) goto 0x00b0
+  00ae: return false
+  00b0: return true
+  00b2: goto 0x00e5
+  00b5: return ((DistanceToGoal > self.Blueprint.BoostStartDistance) && (CosAngleDelta > self.Blueprint.BoostStartAngle))
+  00e5: return return
+  00eb: <eos>
+
+function TnVehicleCarAiControlStrategy.CalculateDrivingInputs  (script 52 bytes)
+  0000: self.CarForm.set_StrafeForwardBackInput(1.0)
+  0018: self.CarForm.set_SteeringInput(TnVehicleCarAiControlStrategy.CalculateSteering())
+  0031: return nothing
+  0033: <eos>
+
+function TnVehicleCarAiControlStrategy.CalculateSteering  (script 196 bytes)
+  0000: DirectionToTarget = obj'Core.Math'.static.Normal((self._DesiredLocation - self._TransformerPawn.Location))
+  0026: Right = cast39((self._TransformerPawn.Rotation + obj'Core.Math'.static.MakeRotatorDeg(0.0, 90.0, 0.0)))
+  0061: Steering = obj'Core.Math'.static.NormalizeDot2D(Right, DirectionToTarget)
+  0084: return (obj'Core.Math'.static.Sign(Steering) * (obj'Core.Math'.static.Abs(Steering) ** (1.0 / 4.0)))
+  00bd: return return
+  00c3: <eos>
+
+function TnVehicleCarAiControlStrategy.GetTargetOffset  (script 99 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x0011
+  000b: return 0.0
+  0011: return obj'Core.Math'.static.FClamp((self.CarForm.get_Speed() * self.Blueprint.TargetOffsetInSeconds), self.Blueprint.TargetOffsetMinDistance, self.Blueprint.TargetOffsetMaxDistance)
+  005c: return return
+  0062: <eos>
+
+function TnVehicleCarAiControlStrategy.AdjustLookAtTargetLocation  (script 145 bytes)
+  0000: Focus = IFocusible(cast36(self._BoundController.Focus))
+  001b: if !(((NotEqual_InterfaceInterface(Focus, IFocusible(none)) && self._BoundController.bRotateTowardFocus) && EqualEqual_InterfaceInterface(IFocusible(self._BoundController.Enemy), Focus))) goto 0x007e
+  0066: return self._BoundController.Enemy.Location
+  007e: return TnVehicleAiControlStrategy.AdjustLookAtTargetLocation(TargetLocation)
+  008a: return return
+  0090: <eos>

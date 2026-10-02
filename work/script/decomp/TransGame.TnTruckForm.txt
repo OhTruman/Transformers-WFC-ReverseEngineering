@@ -1,0 +1,214 @@
+function TnTruckForm.get_TruckFormBlueprint  (script 18 bytes)
+  0000: return TnTruckFormBlueprint(self._Blueprint)
+  000b: return return
+  0011: <eos>
+
+function TnTruckForm.get_RamState  (script 13 bytes)
+  0000: return self._RamState
+  0006: return return
+  000c: <eos>
+
+function TnTruckForm.get_VehicleType  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function TnTruckForm.get_IsUsingNitro  (script 18 bytes)
+  0000: return (self._NitroTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnTruckForm.get_TimeBetweenNitros  (script 20 bytes)
+  0000: return (8.0 * self.TimeBetweenNitrosModifier)
+  000d: return return
+  0013: <eos>
+
+function TnTruckForm.get_NitroSpeedScale  (script 20 bytes)
+  0000: return (1.5 * self.NitroSpeedScaleModifier)
+  000d: return return
+  0013: <eos>
+
+function TnTruckForm.get_NitroSteeringScale  (script 20 bytes)
+  0000: return (0.3 * self.NitroSteeringScaleModifier)
+  000d: return return
+  0013: <eos>
+
+function TnTruckForm.get_NitroDuration  (script 20 bytes)
+  0000: return (3.0 * self.NitroDurationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnTruckForm.get_MaxRamMass  (script 20 bytes)
+  0000: return (1000.0 * self.MaxRamMassModifier)
+  000d: return return
+  0013: <eos>
+
+function TnTruckForm.get_ExtraRamZVelocity  (script 34 bytes)
+  0000: return (get_TruckFormBlueprint().ExtraRamZVelocity * self.ExtraRamZVelocityModifier)
+  001b: return return
+  0021: <eos>
+
+function TnTruckForm.get_RamDamageToPlayerRobots  (script 34 bytes)
+  0000: return (get_TruckFormBlueprint().RamDamageToPlayerRobots * self.RamDamageToPlayerRobotsModifier)
+  001b: return return
+  0021: <eos>
+
+function TnTruckForm.get_RamDamageToAIRobots  (script 34 bytes)
+  0000: return (get_TruckFormBlueprint().RamDamageToAiRobots * self.RamDamageToAIRobotsModifier)
+  001b: return return
+  0021: <eos>
+
+function TnTruckForm.get_RamDamageToPlayerVehicles  (script 34 bytes)
+  0000: return (get_TruckFormBlueprint().RamDamageToPlayerVehicles * self.RamDamageToPlayerVehiclesModifier)
+  001b: return return
+  0021: <eos>
+
+function TnTruckForm.get_RamDamageToAIVehicles  (script 34 bytes)
+  0000: return (get_TruckFormBlueprint().RamDamageToAiVehicles * self.RamDamageToAIVehiclesModifier)
+  001b: return return
+  0021: <eos>
+
+function TnTruckForm.ReplicatedEvent  (script 42 bytes)
+  0000: if !((VarName == '_PlayRammingSound')) goto 0x001c
+  0013: TnTruckForm.ClientPlayRammingSound()
+  0019: goto 0x0027
+  001c: TnVehicleForm.ReplicatedEvent(VarName)
+  0027: return nothing
+  0029: <eos>
+
+function TnTruckForm.Driving.BeginState  (script 25 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: self._NitroTimeRemaining = 0.0
+  0016: return nothing
+  0018: <eos>
+
+function TnTruckForm.Driving.EndState  (script 28 bytes)
+  0000: EndState(NextStateName)
+  000b: StopNitro()
+  0011: self._RamState = 0
+  0019: return nothing
+  001b: <eos>
+
+function TnTruckForm.Driving.DoUpdate  (script 36 bytes)
+  0000: UpdateNitro(DeltaTime)
+  000b: UpdateRamState(DeltaTime)
+  0016: DoUpdate(DeltaTime)
+  0021: return nothing
+  0023: <eos>
+
+function TnTruckForm.Driving.UpdateNitro  (script 141 bytes)
+  0000: if !(((self._InputState._Dashing && !get_IsUsingNitro()) && CanUseSpecialMove())) goto 0x0048
+  0032: StartNitro()
+  0038: StartSpecialMoveCooldown(TnTruckForm.get_TimeBetweenNitros())
+  0048: if !(get_IsUsingNitro()) goto 0x008a
+  0055: self._NitroTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._NitroTimeRemaining - DeltaTime))
+  0077: if !((self._NitroTimeRemaining == cast3f(0))) goto 0x008a
+  0084: StopNitro()
+  008a: return nothing
+  008c: <eos>
+
+function TnTruckForm.Driving.StartNitro  (script 161 bytes)
+  0000: self._CarSimulation._SpeedScale = TnTruckForm.get_NitroSpeedScale()
+  0015: self._CarSimulation._SteeringScale = TnTruckForm.get_NitroSteeringScale()
+  002a: UpdateNitroCameraState(true)
+  0031: self._FxPlayer.Play(get_TruckFormBlueprint().RamFX)
+  005c: PlayForceFeedbackEvent(get_TruckFormBlueprint().NitroForceFeedback, )
+  007a: get_VehicleAudioComponent().PlayNitroSound()
+  0092: self._NitroTimeRemaining = TnTruckForm.get_NitroDuration()
+  009e: return nothing
+  00a0: <eos>
+
+function TnTruckForm.Driving.StopNitro  (script 96 bytes)
+  0000: self._CarSimulation._SpeedScale = 1.0
+  0014: self._CarSimulation._SteeringScale = 1.0
+  0028: UpdateNitroCameraState(false)
+  002f: self._FxPlayer.Stop(get_TruckFormBlueprint().RamFX)
+  0055: self._RammedPawns.Length = 0
+  005d: return nothing
+  005f: <eos>
+
+function TnTruckForm.Driving.UpdateNitroCameraState  (script 139 bytes)
+  0000: PC = TnPlayerController(self._OwnerPawn.Controller)
+  0019: if !((PC == none)) goto 0x0026
+  0024: return nothing
+  0026: C = TnCamera(PC.PlayerCamera)
+  003f: if !((C == none)) goto 0x004c
+  004a: return nothing
+  004c: if !(Enable) goto 0x0070
+  0055: C.AddPlayerCameraState(obj'TnPCS_Boosting')
+  006d: goto 0x0088
+  0070: C.RemovePlayerCameraState(obj'TnPCS_Boosting')
+  0088: return nothing
+  008a: <eos>
+
+function TnTruckForm.Driving.UpdateRamState  (script 51 bytes)
+  0000: if !((cast3a(GetRole()) != cast3a(3))) goto 0x0017
+  0015: return nothing
+  0017: self._RamState = (get_IsUsingNitro() ? 1 : 0)
+  0030: return nothing
+  0032: <eos>
+
+function TnTruckForm.Driving.OnRigidBodyCollision  (script 64 bytes)
+  0000: if !(!TnTruckForm.AttemptToRam(HitActor, 0[RigidCollisionData.ContactInfos].ContactPosition)) goto 0x003d
+  002d: OnRigidBodyCollision(RigidCollisionData, HitActor)
+  003d: return nothing
+  003f: <eos>
+
+function TnTruckForm.RigidBodyTrigger  (script 39 bytes)
+  0000: TnVehicleForm.RigidBodyTrigger(OtherActor)
+  000b: TnTruckForm.AttemptToRam(OtherActor, OtherActor.Location)
+  0024: return nothing
+  0026: <eos>
+
+function TnTruckForm.AttemptToRam  (script 353 bytes)
+  0000: if !((cast3a(GetRole()) != cast3a(3))) goto 0x0017
+  0015: return false
+  0017: if !(self._IsDead) goto 0x0022
+  0020: return false
+  0022: if !((cast3a(self._RamState) != cast3a(1))) goto 0x0034
+  0032: return false
+  0034: P = TnPawn(HitActor)
+  0044: if !((P == none)) goto 0x0051
+  004f: return false
+  0051: if !(self._OwnerPawn.WorldInfo.GRI.OnSameTeam(self._OwnerPawn, P)) goto 0x0085
+  0083: return false
+  0085: if !((P.Mass > TnTruckForm.get_MaxRamMass())) goto 0x00a0
+  009e: return false
+  00a0: if !((self._RammedPawns.Find(P) != -1)) goto 0x00b9
+  00b7: return false
+  00b9: self._RammedPawns.AddItem(P)
+  00c6: HitVelocity = self._RigidBody.get_LinearVelocity()
+  00e0: (HitVelocity.Z += TnTruckForm.get_ExtraRamZVelocity())
+  00f8: TnTruckForm.ServerPlayRammingSound()
+  00fe: P.Rammed(self._OwnerPawn)
+  0116: P.TakeDamage(TnTruckForm.CalculateRamDamage(P), self._OwnerPawn.GetController(), ContactPosition, HitVelocity, obj'TnDamageTypeRammed', , )
+  0158: return true
+  015a: return return
+  0160: <eos>
+
+function TnTruckForm.ServerPlayRammingSound  (script 24 bytes)
+  0000: self._PlayRammingSound = !self._PlayRammingSound
+  000f: TnTruckForm.ClientPlayRammingSound()
+  0015: return nothing
+  0017: <eos>
+
+function TnTruckForm.ClientPlayRammingSound  (script 27 bytes)
+  0000: get_VehicleAudioComponent().PlayRamSound()
+  0018: return nothing
+  001a: <eos>
+
+function TnTruckForm.CalculateRamDamage  (script 179 bytes)
+  0000: if !(HitPawn.get_IsInRobotForm()) goto 0x004b
+  0016: Ramage = ((TnPlayerController(HitPawn.GetController()) != none) ? TnTruckForm.get_RamDamageToPlayerRobots() : TnTruckForm.get_RamDamageToAIRobots())
+  0048: goto 0x007d
+  004b: Ramage = ((TnPlayerController(HitPawn.GetController()) != none) ? TnTruckForm.get_RamDamageToPlayerVehicles() : TnTruckForm.get_RamDamageToAIVehicles())
+  007d: Ramage = obj'TnValueTimesProductBuffModifier'.static.ModifyFloatSingle(Ramage, obj'TnBuffIncreaseRamDamage', self._OwnerPawn, )
+  00a6: return Ramage
+  00ac: return return
+  00b2: <eos>
+
+function TnTruckForm.Hovering.DoDash  (script 59 bytes)
+  0000: self._HoverSimulation.Dash(vect(1,0,0))
+  0020: get_VehicleAudioComponent().PlayBoosterSound()
+  0038: return nothing
+  003a: <eos>

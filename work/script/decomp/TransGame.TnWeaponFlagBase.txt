@@ -1,0 +1,41 @@
+function TnWeaponFlagBase.SetHomeBase  (script 14 bytes)
+  0000: self.HomeBase = NewHomeBase
+  000b: return nothing
+  000d: <eos>
+
+function TnWeaponFlagBase.DropFrom  (script 390 bytes)
+  0000: nothing
+  0001: self.HomeBase.OnObjectiveEvent(2, self.Instigator.PlayerReplicationInfo)
+  0024: SpotLocation = StartLocation
+  002f: BoxExtent = obj'Core.Math'.static.MakeVector(450.0, 450.0, 100.0)
+  0057: if !(!FindSpot(BoxExtent, SpotLocation)) goto 0x00a1
+  0070: LogInternal("ERROR: Find spot failed for dropping flag.", , , )
+  00a1: Pickup = TnGameObjectiveDroppedPickup(TnWeapon.DropFrom(SpotLocation, vect(0,0,0), rot(0,0,0)))
+  00d1: if !((Pickup == none)) goto 0x0148
+  00dc: LogInternal("ERROR: Could not drop flag as pickup, returning to base so game can continue.", , , )
+  0130: self.HomeBase.ReturnSpawnedObjective(none, 0)
+  0146: return none
+  0148: self.HomeBase.SetCurrentObjectiveHolder(Pickup, )
+  0161: Pickup.set_HomeBase(self.HomeBase)
+  0179: return Pickup
+  017f: return return
+  0185: <eos>
+
+function TnWeaponFlagBase.OnScore  (script 48 bytes)
+  0000: self.HomeBase.ReturnSpawnedObjective(self.Instigator.Controller, 3)
+  0023: DestroyWeapon()
+  002d: return nothing
+  002f: <eos>
+
+function TnWeaponFlagBase.FellOutOfWorld  (script 47 bytes)
+  0000: if !((self.HomeBase != none)) goto 0x0021
+  000b: self.HomeBase.ReturnSpawnedObjective(none, 0)
+  0021: FellOutOfWorld(dmgType)
+  002c: return nothing
+  002e: <eos>
+
+function TnWeaponFlagBase.DestroyWeapon  (script 39 bytes)
+  0000: DestroyActor()
+  0003: HmInventoryManager(self.Instigator.InvManager).EquipWeapon()
+  0024: return nothing
+  0026: <eos>

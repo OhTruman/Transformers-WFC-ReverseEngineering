@@ -1,0 +1,24 @@
+function TnBuffEmpGrenadeAiRobot.Apply  (script 162 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: TnBuffEmpGrenadeAiRobot.PlayAnimation(self.IntroLoopAnimation)
+  0020: PS = TnPhysicsService(BuffOwner.GetService('TnPhysicsService'))
+  0047: if !(NotEqual_InterfaceInterface(PS, TnPhysicsService(none))) goto 0x0071
+  005b: PS.set_Physics(1)
+  0071: if !((cast3a(BuffOwner.Role) == cast3a(3))) goto 0x009f
+  008a: BuffOwner.ExposeSelf(, )
+  009f: return nothing
+  00a1: <eos>
+
+function TnBuffEmpGrenadeAiRobot.Unapply  (script 20 bytes)
+  0000: TnBuff.Unapply()
+  0006: TnBuffEmpGrenadeAiRobot.PlayAnimation(self.OutroAnimation)
+  0011: return nothing
+  0013: <eos>
+
+function TnBuffEmpGrenadeAiRobot.PlayAnimation  (script 107 bytes)
+  0000: Animator = TnAnimatorService(self.OwnerPawn.GetService('TnAnimatorService'))
+  0027: if !(EqualEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x003d
+  003b: return nothing
+  003d: Animator.EnqueueLocalAnimation(Animation, delegate.None, delegate.None)
+  0068: return nothing
+  006a: <eos>

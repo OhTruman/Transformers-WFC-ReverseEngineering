@@ -1,0 +1,14 @@
+function TnGameRules_ScoreKingOfTheHill.GetGameType  (script 10 bytes)
+  0000: return 4
+  0003: return return
+  0009: <eos>
+
+function TnGameRules_ScoreKingOfTheHill.CheckEndGame  (script 90 bytes)
+  0000: Zones = self.WorldInfo.GetAllNavigationPoints(obj'TnKingOfTheHillZoneBase')
+  001e: foreach Zones(Zone,) (end 0x0041)
+  002d: Zone.Deactivate()
+  0040: iternext
+  0041: iterpop
+  0042: return CheckEndGame(Winner, Reason)
+  0053: return return
+  0059: <eos>

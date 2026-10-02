@@ -1,0 +1,292 @@
+function TnChargeWeapon.BeginFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnChargeWeapon.EndFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnChargeWeapon.Active.BeginState  (script 25 bytes)
+  0000: ClearPendingFire(0)
+  000b: BeginState(PreviousStateName)
+  0016: return nothing
+  0018: <eos>
+
+function TnChargeWeapon.Active.BeginFire  (script 142 bytes)
+  0000: if !(PlayNoAmmoWeaponEvent(FireModeNum)) goto 0x0021
+  0012: PlayWeaponEvent(22, 1, )
+  0021: IsWeaponLoaded = ((IsHeatBased() && !IsOverheating()) || (!IsHeatBased() && (self.AmmoClipCount > 0)))
+  0061: if !((IsWeaponLoaded && (TnChargeWeapon.GetTimeSinceLastCharge() >= GetFireInterval(0)))) goto 0x008b
+  0083: TnChargeWeapon.LocalSetChargeState(1)
+  008b: return nothing
+  008d: <eos>
+
+function TnChargeWeapon.IsCharging  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnChargeWeapon.IsWeaponFullyCharged  (script 96 bytes)
+  0000: if !(IsChargeStateAvailable(4)) goto 0x001d
+  000f: return (cast3a(self._ChargeState) == cast3a(4))
+  001d: if !(IsChargeStateAvailable(3)) goto 0x003a
+  002c: return (cast3a(self._ChargeState) == cast3a(3))
+  003a: if !(IsChargeStateAvailable(2)) goto 0x0057
+  0049: return (cast3a(self._ChargeState) == cast3a(2))
+  0057: return false
+  0059: return return
+  005f: <eos>
+
+function TnChargeWeapon.GetChargeDelay  (script 83 bytes)
+  0000: LogInternal(("ERROR: Why are you asking for a charge delay for state" @ cast52(ChargeState)), , , )
+  0046: return 0.0
+  004c: return return
+  0052: <eos>
+
+function TnChargeWeapon.GetChargeDrainRate  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function TnChargeWeapon.IsChargeStateAvailable  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnChargeWeapon.ShouldAutoReload  (script 40 bytes)
+  0000: return ((self.Instigator != none) && self.Instigator.IsLocallyControlled())
+  0021: return return
+  0027: <eos>
+
+function TnChargeWeapon.Charging.BeginState  (script 70 bytes)
+  0000: self.ChargeTime = 0.0
+  000b: self.CurrentFireMode = 0
+  0013: self.AmmoConsumedOnCurrentChargeShot = 0.0
+  001e: PlayWeaponEvent(9, 0, )
+  002d: self.WeaponHeat.OnWeaponHeatEvent(0, )
+  0043: return nothing
+  0045: <eos>
+
+function TnChargeWeapon.Charging.EndState  (script 207 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return nothing
+  000d: self.ChargeTime = 0.0
+  0018: self.TimeOfLastCharge = self.WorldInfo.TimeSeconds
+  002c: AllWeaponMeshesStopSoundEvent(9, )
+  0039: AllWeaponMeshesStopSoundEvent(10, )
+  0046: AllWeaponMeshesStopSoundEvent(11, )
+  0053: PlayWeaponEvent(12, 0, )
+  0062: self.WeaponHeat.OnWeaponHeatEvent(1, )
+  0078: if !((((self.Instigator.IsLocallyControlled() && !IsHeatBased()) && !HasAmmo(1, 1)) && HasAnyAmmo())) goto 0x00cc
+  00c2: Reload()
+  00cc: return nothing
+  00ce: <eos>
+
+function TnChargeWeapon.Charging.EndFire  (script 74 bytes)
+  0000: if !(self.Instigator.IsLocallyControlled()) goto 0x001c
+  0016: FireCharge()
+  001c: TnChargeWeapon.LocalSetChargeState(0)
+  0024: if !(IsHeatBased()) goto 0x0047
+  0031: self.WeaponHeat.OnWeaponHeatEvent(7, )
+  0047: return nothing
+  0049: <eos>
+
+function TnChargeWeapon.Charging.FireCharge  (script 98 bytes)
+  0000: switch (self._ChargeState)
+  0007: case 1: (next 0x000c)
+  000c: case 0: (next 0x0022)
+  0011: PlayWeaponEvent(22, 1, )
+  0020: return nothing
+  0022: case 2: (next 0x0032)
+  0027: self.CurrentFireMode = 0
+  002f: goto 0x0055
+  0032: case 3: (next 0x0042)
+  0037: self.CurrentFireMode = 1
+  003f: goto 0x0055
+  0042: case 4: (next 0x0052)
+  0047: self.CurrentFireMode = 2
+  004f: goto 0x0055
+  0052: default:
+  0055: FireAmmunition()
+  005f: return nothing
+  0061: <eos>
+
+function TnChargeWeapon.Charging.Tick  (script 75 bytes)
+  0000: TnWeapon.Tick(DeltaTime)
+  000b: if !((self.Instigator == none)) goto 0x0018
+  0016: return nothing
+  0018: (self.ChargeTime += DeltaTime)
+  0024: TnChargeWeapon.LocalSetChargeState(GetDesiredChargeState())
+  0030: if !(IsWeaponFullyCharged()) goto 0x0048
+  003d: UpdateChargeAmmo(DeltaTime)
+  0048: return nothing
+  004a: <eos>
+
+function TnChargeWeapon.Charging.GetDesiredChargeState  (script 158 bytes)
+  0000: ElapsedChargeTime = GetElapsedChargeTime()
+  0010: if !((IsChargeStateAvailable(4) && (ElapsedChargeTime >= GetChargeDelay(4)))) goto 0x003d
+  0037: return 4
+  003a: goto 0x0094
+  003d: if !((IsChargeStateAvailable(3) && (ElapsedChargeTime >= GetChargeDelay(3)))) goto 0x006a
+  0064: return 3
+  0067: goto 0x0094
+  006a: if !((IsChargeStateAvailable(2) && (ElapsedChargeTime >= GetChargeDelay(2)))) goto 0x0094
+  0091: return 2
+  0094: return 1
+  0097: return return
+  009d: <eos>
+
+function TnChargeWeapon.Charging.UpdateChargeAmmo  (script 136 bytes)
+  0000: if !(!ShouldConsumeAmmo()) goto 0x0011
+  000f: return nothing
+  0011: NewAmmoConsumedOnCurrentChargeShot = (self.AmmoConsumedOnCurrentChargeShot + (DeltaTime * GetChargeDrainRate()))
+  002f: AmmoConsumedThisFrame = (cast44(NewAmmoConsumedOnCurrentChargeShot) - cast44(self.AmmoConsumedOnCurrentChargeShot))
+  0045: self.AmmoConsumedOnCurrentChargeShot = NewAmmoConsumedOnCurrentChargeShot
+  0050: self.AmmoClipCount = obj'Core.Math'.static.Max((self.AmmoClipCount - AmmoConsumedThisFrame), 0)
+  006e: if !((self.AmmoClipCount == 0)) goto 0x0085
+  0079: EndFire(0)
+  0085: return nothing
+  0087: <eos>
+
+function TnChargeWeapon.Charging.TryPutDown  (script 27 bytes)
+  0000: TnChargeWeapon.LocalSetChargeState(0)
+  0008: PutDownWeapon()
+  0012: return true
+  0014: return return
+  001a: <eos>
+
+function TnChargeWeapon.Charging.IsCharging  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnChargeWeapon.Charging.IsAllowedToReload  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnChargeWeapon.Charging.OnReload  (script 17 bytes)
+  0000: TnChargeWeapon.LocalSetChargeState(0)
+  0008: OnReload()
+  000e: return nothing
+  0010: <eos>
+
+function TnChargeWeapon.Charging.WeaponOverheated  (script 17 bytes)
+  0000: TnChargeWeapon.LocalSetChargeState(0)
+  0008: TnWeapon.WeaponOverheated()
+  000e: return nothing
+  0010: <eos>
+
+function TnChargeWeapon.GetElapsedChargeTime  (script 13 bytes)
+  0000: return self.ChargeTime
+  0006: return return
+  000c: <eos>
+
+function TnChargeWeapon.GetTimeSinceLastCharge  (script 29 bytes)
+  0000: return (self.WorldInfo.TimeSeconds - self.TimeOfLastCharge)
+  0016: return return
+  001c: <eos>
+
+function TnChargeWeapon.GetHudMessage  (script 13 bytes)
+  0000: return self.HudMessage
+  0006: return return
+  000c: <eos>
+
+function TnChargeWeapon.OnMelee  (script 17 bytes)
+  0000: TnChargeWeapon.LocalSetChargeState(0)
+  0008: TnWeapon.OnMelee()
+  000e: return nothing
+  0010: <eos>
+
+function TnChargeWeapon.LocalSetChargeState  (script 36 bytes)
+  0000: if !(self.Instigator.IsLocallyControlled()) goto 0x0021
+  0016: TnChargeWeapon.ReplicateChargeState(DesiredChargeState)
+  0021: return nothing
+  0023: <eos>
+
+function TnChargeWeapon.ForceChargeState  (script 102 bytes)
+  0000: if !(self.Instigator.IsLocallyControlled()) goto 0x0058
+  0016: LogInternal("ERROR: Charge state should not be forced on local players", , , )
+  0056: return nothing
+  0058: TnChargeWeapon.SetChargeState(DesiredChargeState)
+  0063: return nothing
+  0065: <eos>
+
+function TnChargeWeapon.ReplicateChargeState  (script 152 bytes)
+  0000: if !((cast3a(self._ChargeState) == cast3a(DesiredChargeState))) goto 0x0015
+  0013: return nothing
+  0015: InstigatorPawn = TnPawn(self.Instigator)
+  0025: if !((InstigatorPawn == none)) goto 0x0032
+  0030: return nothing
+  0032: if !((cast3a(InstigatorPawn.Role) == cast3a(3))) goto 0x0066
+  004b: InstigatorPawn.ReplicateChargeWeaponState(DesiredChargeState)
+  0063: goto 0x008a
+  0066: if !((cast3a(self.Instigator.Role) == cast3a(2))) goto 0x008a
+  007f: TnChargeWeapon.ServerSetChargeState(DesiredChargeState)
+  008a: TnChargeWeapon.SetChargeState(DesiredChargeState)
+  0095: return nothing
+  0097: <eos>
+
+function TnChargeWeapon.ServerSetChargeState  (script 35 bytes)
+  0000: if !((cast3a(self._ChargeState) == cast3a(DesiredChargeState))) goto 0x0015
+  0013: return nothing
+  0015: TnChargeWeapon.ReplicateChargeState(DesiredChargeState)
+  0020: return nothing
+  0022: <eos>
+
+function TnChargeWeapon.SetChargeState  (script 136 bytes)
+  0000: if !((cast3a(self._ChargeState) == cast3a(DesiredChargeState))) goto 0x0015
+  0013: return nothing
+  0015: self._ChargeState = DesiredChargeState
+  0020: if !(((cast3a(DesiredChargeState) != cast3a(0)) && !IsCharging())) goto 0x0052
+  0041: GotoState('Charging', , , )
+  004f: goto 0x007f
+  0052: if !(((cast3a(DesiredChargeState) == cast3a(0)) && IsCharging())) goto 0x007f
+  0071: GotoState('Active', , , )
+  007f: TnChargeWeapon.UpdateChargeEffects()
+  0085: return nothing
+  0087: <eos>
+
+function TnChargeWeapon.GetChargeState  (script 13 bytes)
+  0000: return self._ChargeState
+  0006: return return
+  000c: <eos>
+
+function TnChargeWeapon.UpdateChargeEffects  (script 348 bytes)
+  0000: switch (self._ChargeState)
+  0007: case 1: (next 0x002d)
+  000c: WeaponEvent = 0
+  0014: MaterialGlowAmount = 0.0
+  001f: self.HudMessage = self.ChargingMessage
+  002a: goto 0x0107
+  002d: case 2: (next 0x005a)
+  0032: WeaponEvent = 1
+  003a: MaterialGlowAmount = (1.0 / 3.0)
+  004c: self.HudMessage = self.FullyChargedMessage
+  0057: goto 0x0107
+  005a: case 3: (next 0x00a1)
+  005f: WeaponEvent = 2
+  0067: MaterialGlowAmount = (2.0 / 3.0)
+  0079: self.HudMessage = self.FullyChargedMessage
+  0084: AllWeaponMeshesStopSoundEvent(9, )
+  0091: CurrentWeaponMeshPlaySoundEvent(10, )
+  009e: goto 0x0107
+  00a1: case 4: (next 0x00e1)
+  00a6: WeaponEvent = 3
+  00ae: MaterialGlowAmount = 1.0
+  00b9: self.HudMessage = self.FullyChargedMessage
+  00c4: AllWeaponMeshesStopSoundEvent(10, )
+  00d1: CurrentWeaponMeshPlaySoundEvent(11, )
+  00de: goto 0x0107
+  00e1: case 0: (next 0x0104)
+  00e6: WeaponEvent = 12
+  00ee: MaterialGlowAmount = 0.0
+  00f9: self.HudMessage = ""
+  0101: goto 0x0107
+  0104: default:
+  0107: WM = TnWeaponMesh(GetWeaponMesh())
+  011c: if !((WM != none)) goto 0x0159
+  0127: WM.StartMuzzleFlash(WeaponEvent)
+  013f: WM.SetMaterialParameter(1, MaterialGlowAmount)
+  0159: return nothing
+  015b: <eos>

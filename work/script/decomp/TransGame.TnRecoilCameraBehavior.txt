@@ -1,0 +1,57 @@
+function TnRecoilCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnRecoilCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.Owner = TnServiceProvider(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnRecoilCameraBehavior.Activate  (script 14 bytes)
+  0000: self.TimeSinceLastShot = 10000.0
+  000b: return nothing
+  000d: <eos>
+
+function TnRecoilCameraBehavior.CalculateLerpValue  (script 162 bytes)
+  0000: if !((self.Params.RecoilTime == cast3f(0))) goto 0x001e
+  0018: return 0.0
+  001e: CurrentPullBackTime = (self.TimeSinceLastShot - self.Params.RecoilDelay)
+  003b: LerpValue = (1.0 - obj'Core.Math'.static.Smoothstep(0.0, self.Params.RecoilTime, obj'Core.Math'.static.FClamp(CurrentPullBackTime, 0.0, self.Params.RecoilTime)))
+  0095: return LerpValue
+  009b: return return
+  00a1: <eos>
+
+function TnRecoilCameraBehavior.CheckForWeaponFire  (script 94 bytes)
+  0000: FiredWeapon = self.CameraActor.GetFiredWeapon()
+  0019: if !((FiredWeapon == none)) goto 0x0026
+  0024: return false
+  0026: self.TimeSinceLastShot = 0.0
+  0031: self.Params = FiredWeapon.GetRecoilCameraParams()
+  004a: TnRecoilCameraBehavior.ModifyParams(self.Params)
+  0055: return true
+  0057: return return
+  005d: <eos>
+
+function TnRecoilCameraBehavior.ModifyParams  (script 155 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self.Owner, TnServiceProvider(none))) goto 0x0016
+  0014: return nothing
+  0016: BuffService = TnBuffService(self.Owner.GetService('TnBuffService'))
+  003e: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0054
+  0052: return nothing
+  0054: RecoilBuff = BuffService.GetBuff(obj'TnBuffReduceRecoil')
+  0073: if !((RecoilBuff == none)) goto 0x0080
+  007e: return nothing
+  0080: RecoilBuff.ModifyRecoil(OutParams)
+  0098: return nothing
+  009a: <eos>
+
+function TnRecoilCameraBehavior.Update  (script 143 bytes)
+  0000: WasWeaponFired = TnRecoilCameraBehavior.CheckForWeaponFire()
+  000d: if !(WasWeaponFired) goto 0x004c
+  0016: (Result.OrbitRotation.Pitch += cast44((self.Params.PitchAdjustmentDeg * 182.0444489)))
+  004c: (self.TimeSinceLastShot += DeltaTime)
+  0058: (Result.Fov -= (self.Params.FovAdjustment * TnRecoilCameraBehavior.CalculateLerpValue()))
+  0082: return Result
+  0088: return return
+  008e: <eos>

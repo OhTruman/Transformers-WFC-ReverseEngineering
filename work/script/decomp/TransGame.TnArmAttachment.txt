@@ -1,0 +1,104 @@
+function TnArmAttachment.get_Mesh  (script 13 bytes)
+  0000: return self.ArmMesh
+  0006: return return
+  000c: <eos>
+
+function TnArmAttachment.Initialize  (script 239 bytes)
+  0000: self.Blueprint = Blueprint_
+  000b: self.OwnerMesh = OwnerMesh_
+  0016: self.WeaponService = WeaponService_
+  0021: if !(((self.Blueprint.Mesh == none) || (self.Blueprint.Animations == none))) goto 0x0051
+  004f: return nothing
+  0051: self.ArmMesh.SetSkeletalMesh(self.Blueprint.Mesh, )
+  0075: self.ArmMesh.AppendAnimSet(self.Blueprint.Animations)
+  0098: self.HandBoneControl = SkelControlSingleBone(self.OwnerMesh.FindSkelControl('HandSkelControl'))
+  00bf: if !((self.HandBoneControl != none)) goto 0x00de
+  00ca: self.HandBoneControl.BoneScale = 0.1
+  00de: GotoState('ArmEquipped', , , )
+  00ec: return nothing
+  00ee: <eos>
+
+function TnArmAttachment.ShouldAlwaysEquip  (script 118 bytes)
+  0000: ActiveWeapon = self.WeaponService.get_ActiveWeapon()
+  001a: if !((ActiveWeapon == none)) goto 0x0027
+  0025: return true
+  0027: if !(!ActiveWeapon.IsAttached()) goto 0x0041
+  003f: return true
+  0041: return (ActiveWeapon.IsHolstered() && !ActiveWeapon.IsEquipping())
+  006f: return return
+  0075: <eos>
+
+function TnArmAttachment.ShouldEquipArm  (script 53 bytes)
+  0000: return (TnArmAttachment.ShouldAlwaysEquip() || self.WeaponService.get_ActiveWeapon().IsArmRequired())
+  002e: return return
+  0034: <eos>
+
+function TnArmAttachment.ShouldEquipHand  (script 53 bytes)
+  0000: return (TnArmAttachment.ShouldAlwaysEquip() || self.WeaponService.get_ActiveWeapon().IsHandRequired())
+  002e: return return
+  0034: <eos>
+
+function TnArmAttachment.Update  (script 19 bytes)
+  0000: UpdateArm()
+  000a: TnArmAttachment.UpdateHand()
+  0010: return nothing
+  0012: <eos>
+
+function TnArmAttachment.UpdateArm  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnArmAttachment.UpdateHand  (script 86 bytes)
+  0000: if !((self.HandBoneControl == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(TnArmAttachment.ShouldEquipHand()) goto 0x0036
+  0016: self.HandBoneControl.SetSkelControlStrength(0.0, 0.0)
+  0033: goto 0x0053
+  0036: self.HandBoneControl.SetSkelControlStrength(1.0, 0.0)
+  0053: return nothing
+  0055: <eos>
+
+function TnArmAttachment.ArmEquipped.BeginState  (script 81 bytes)
+  0000: self.OwnerMesh.AttachComponentToSocket(self.ArmMesh, self.Blueprint.AttachSocket)
+  0028: self.ArmMesh.PlayAnim(self.Blueprint.EquipAnimation, , , )
+  004e: return nothing
+  0050: <eos>
+
+function TnArmAttachment.ArmEquipped.UpdateArm  (script 63 bytes)
+  0000: if !(self.OwnerMesh.HiddenGame) goto 0x0023
+  0012: GotoState('ArmUnequipped', , , )
+  0020: goto 0x003c
+  0023: if !(!TnArmAttachment.ShouldEquipArm()) goto 0x003c
+  002e: GotoState('ArmUnequipping', , , )
+  003c: return nothing
+  003e: <eos>
+
+function TnArmAttachment.ArmUnequipping.BeginState  (script 41 bytes)
+  0000: self.ArmMesh.PlayAnim(self.Blueprint.UnequipAnimation, , , )
+  0026: return nothing
+  0028: <eos>
+
+function TnArmAttachment.ArmUnequipping.EndState  (script 22 bytes)
+  0000: self.ArmMesh.StopAnim()
+  0013: return nothing
+  0015: <eos>
+
+function TnArmAttachment.ArmUnequipping.UpdateArm  (script 83 bytes)
+  0000: if !(TnArmAttachment.ShouldEquipArm()) goto 0x001a
+  0009: GotoState('ArmEquipped', , , )
+  0017: goto 0x0050
+  001a: if !(!self.ArmMesh.IsPlayingAnim(self.Blueprint.UnequipAnimation)) goto 0x0050
+  0042: GotoState('ArmUnequipped', , , )
+  0050: return nothing
+  0052: <eos>
+
+function TnArmAttachment.ArmUnequipped.BeginState  (script 27 bytes)
+  0000: self.OwnerMesh.DetachComponent(self.ArmMesh)
+  0018: return nothing
+  001a: <eos>
+
+function TnArmAttachment.ArmUnequipped.UpdateArm  (script 48 bytes)
+  0000: if !((!self.OwnerMesh.HiddenGame && TnArmAttachment.ShouldEquipArm())) goto 0x002d
+  001f: GotoState('ArmEquipped', , , )
+  002d: return nothing
+  002f: <eos>

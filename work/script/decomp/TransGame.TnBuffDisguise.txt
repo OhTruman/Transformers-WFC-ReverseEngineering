@@ -1,0 +1,66 @@
+function TnBuffDisguise.GetLocalPlayer  (script 62 bytes)
+  0000: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0036)
+  002e: iterpop
+  002f: return PC
+  0035: iternext
+  0036: iterpop
+  0037: return return
+  003d: <eos>
+
+function TnBuffDisguise.ShouldShowDisguise  (script 84 bytes)
+  0000: if !((LocalPC.Pawn == self.OwnerPawn)) goto 0x001a
+  0018: return true
+  001a: if !((cast3a(LocalPC.GetTeamNum()) != cast3a(self.OwnerPawn.GetTeamNum()))) goto 0x004b
+  0049: return true
+  004b: return false
+  004d: return return
+  0053: <eos>
+
+function TnBuffDisguise.GetDisguiseFaction  (script 96 bytes)
+  0000: if !((LocalPC.Pawn != self.OwnerPawn)) goto 0x002e
+  0018: return cast3a(LocalPC.GetTeamNum())
+  002e: return ((cast3a(LocalPC.get_CurrentCharacter().Faction) == 0) ? 1 : 0)
+  0059: return return
+  005f: <eos>
+
+function TnBuffDisguise.ChooseDisguisedName  (script 149 bytes)
+  0000: if !((LocalPC.Pawn == none)) goto 0x0016
+  0014: return nothing
+  0016: obj'TnTeamHandler'.static.GetTeamMembers(TnPawn(LocalPC.Pawn), Teammates, false)
+  0042: if !((Teammates.Length == 0)) goto 0x0050
+  004e: return nothing
+  0050: PawnToStealNameFrom = obj'Core.Random'.static.RandomInt(Teammates.Length)[Teammates]
+  0075: self.DisguisedName = PawnToStealNameFrom.PlayerReplicationInfo.PlayerName
+  0092: return nothing
+  0094: <eos>
+
+function TnBuffDisguise.GetDisguisedName  (script 13 bytes)
+  0000: return self.DisguisedName
+  0006: return return
+  000c: <eos>
+
+function TnBuffDisguise.Apply  (script 206 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: LocalPC = GetLocalPlayer()
+  002a: if !(!TnBuffDisguise.ShouldShowDisguise(LocalPC)) goto 0x003c
+  003a: return nothing
+  003c: DisguiseFaction = TnBuffDisguise.GetDisguiseFaction(LocalPC)
+  004d: BuffOwner.GetDisguisedColors(DisguiseFaction, DisguisePrimaryColor, DisguiseSecondaryColor, DisguiseEnergonColor)
+  0074: BuffOwner._CharacterApplier.SetColorOverride(DisguisePrimaryColor, DisguiseSecondaryColor, DisguiseEnergonColor)
+  009f: BuffOwner._CharacterApplier.ApplyColorsToCharacter(BuffOwner)
+  00c0: TnBuffDisguise.ChooseDisguisedName(LocalPC)
+  00cb: return nothing
+  00cd: <eos>
+
+function TnBuffDisguise.Unapply  (script 228 bytes)
+  0000: if !(((cast3a(self.OwnerPawn.Role) == cast3a(3)) && self.OwnerPawn.HasSkill(obj'TnSkillIncreaseDamageAfterDisguise'))) goto 0x0077
+  0036: BuffService = TnBuffService(self.OwnerPawn.GetService('TnBuffService'))
+  005d: BuffService.AddSelfBuff(obj'TnBuffIncreaseDamageAfterDisguise', 0)
+  0077: TnBuff.Unapply()
+  007d: LocalPC = GetLocalPlayer()
+  0092: if !(!TnBuffDisguise.ShouldShowDisguise(LocalPC)) goto 0x00a4
+  00a2: return nothing
+  00a4: self.OwnerPawn._CharacterApplier.ClearColorOverride()
+  00c0: self.OwnerPawn._CharacterApplier.ApplyColorsToCharacter(self.OwnerPawn)
+  00e1: return nothing
+  00e3: <eos>

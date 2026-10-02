@@ -1,0 +1,44 @@
+function TnStatisticsFormTable.TakeFormSample  (script 189 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: foreach Game.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x00b9)
+  0036: if !((PC.Pawn == none)) goto 0x004e
+  004a: iternext
+  004b: goto 0x00b9
+  004e: if !((PC.Pawn == none)) goto 0x0065
+  0062: iterpop
+  0063: return nothing
+  0065: TnStatisticsFormTable.UpdateFormForPlayer(Game, PC.Pawn.GetHumanReadableName(), GetTransformerName(PC), GetFormName(PC.Pawn), TimeInterval)
+  00b8: iternext
+  00b9: iterpop
+  00ba: return nothing
+  00bc: <eos>
+
+function TnStatisticsFormTable.UpdateFormForPlayer  (script 64 bytes)
+  0000: I = TnStatisticsFormTable.FindOrCreateWeaponSample(Game, PlayerName, Transformer, Form)
+  0020: (I[self.Samples].FormTime += TimeInterval)
+  003d: return nothing
+  003f: <eos>
+
+function TnStatisticsFormTable.FindOrCreateWeaponSample  (script 323 bytes)
+  0000: I = 0
+  0007: if !((I < self.Samples.Length)) goto 0x00bf
+  0017: if !((I[self.Samples].PlayerName != PlayerName)) goto 0x003a
+  0037: goto 0x00b5
+  003a: if !((I[self.Samples].Form != Form)) goto 0x005d
+  005a: goto 0x00b5
+  005d: if !((I[self.Samples].Transformer != Transformer)) goto 0x0080
+  007d: goto 0x00b5
+  0080: if !((I[self.Samples].Session_Id != Game.StatisticsSessionId)) goto 0x00af
+  00ac: goto 0x00b5
+  00af: return I
+  00b5: AddAdd_PreInt(I)
+  00bc: goto 0x0007
+  00bf: NewSample.Session_Id = Game.StatisticsSessionId
+  00de: NewSample.Form = Form
+  00f4: NewSample.PlayerName = PlayerName
+  010a: NewSample.Transformer = Transformer
+  0120: self.Samples.Length[self.Samples] = NewSample
+  0132: return (self.Samples.Length - 1)
+  013c: return return
+  0142: <eos>

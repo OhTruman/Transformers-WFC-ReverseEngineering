@@ -1,0 +1,123 @@
+function TnTraceSweeper.Initialize  (script 28 bytes)
+  0000: self.Owner = P
+  000b: GotoState('Inactive', , , )
+  0019: return nothing
+  001b: <eos>
+
+function TnTraceSweeper.BeginSweep  (script 50 bytes)
+  0000: self.SocketName = AttachToSocketName
+  000b: self.Extent = TraceExtent
+  0016: self.Duration = SweepDuration
+  0021: GotoState('Active', , , )
+  002f: return nothing
+  0031: <eos>
+
+function TnTraceSweeper.EndSweep  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTraceSweeper.Update  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTraceSweeper.NotifyHitActor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTraceSweeper.Inactive.BeginState  (script 19 bytes)
+  0000: self.HitActors.Length = 0
+  0008: self.HitComponents.Length = 0
+  0010: return nothing
+  0012: <eos>
+
+function TnTraceSweeper.Active.BeginState  (script 15 bytes)
+  0000: self.LastLocation = GetAttachmentLocation()
+  000c: return nothing
+  000e: <eos>
+
+function TnTraceSweeper.Active.GetAttachmentLocation  (script 75 bytes)
+  0000: if !((self.SocketName == 'None')) goto 0x0022
+  0013: return self.Owner.Location
+  0022: return self.Owner.Mesh.GetSocketWorldLocation(self.SocketName)
+  0044: return return
+  004a: <eos>
+
+function TnTraceSweeper.Active.AlreadyHitActor  (script 28 bytes)
+  0000: return (self.HitActors.Find(Victim) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnTraceSweeper.Active.AlreadyHitComponent  (script 28 bytes)
+  0000: return (self.HitComponents.Find(C) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnTraceSweeper.Active.Update  (script 168 bytes)
+  0000: self.CurrentLocation = GetAttachmentLocation()
+  000c: if !((obj'Core.Math'.static.VSize((self.LastLocation - self.CurrentLocation)) < 0.1)) goto 0x004a
+  002d: self.CurrentLocation = (self.LastLocation + cast39(self.Owner.Rotation))
+  004a: MultiTrace()
+  0050: self.LastLocation = self.CurrentLocation
+  005b: if !(self.bDrawGeneralExtentDebug) goto 0x0082
+  0064: DrawGeneralExtentDebug(self.CurrentLocation, (Impact.HitActor != none))
+  0082: (self.Duration -= DeltaTime)
+  008e: if !((self.Duration <= cast3f(0))) goto 0x00a5
+  009b: EndSweep()
+  00a5: return nothing
+  00a7: <eos>
+
+function TnTraceSweeper.Active.HasClearDirectTrace  (script 229 bytes)
+  0000: Radius = HitPawn.GetCollisionRadius()
+  0019: DirectTraceExtent = obj'Core.Math'.static.MakeVector(Radius, Radius, (HitPawn.GetCollisionHeight() * 0.5))
+  0056: Impact = PerformTrace(HitPawn.Location, self.Owner.Location, DirectTraceExtent)
+  0083: if !(self.bDrawDirectExtentDebug) goto 0x00ca
+  008c: DrawDirectExtentDebug(self.Owner.Location, HitPawn.Location, DirectTraceExtent, (Impact.HitActor == HitPawn))
+  00ca: return (Impact.HitActor == none)
+  00de: return return
+  00e4: <eos>
+
+function TnTraceSweeper.Active.MultiTrace  (script 310 bytes)
+  0000: self.Owner.MultiPointCheck(ImpactInfos, self.CurrentLocation, self.Extent, true, )
+  0024: I = 0
+  002b: if !((I < ImpactInfos.Length)) goto 0x0133
+  003b: if !((((I[ImpactInfos].HitActor == self.Owner) || AlreadyHitActor(I[ImpactInfos].HitActor)) || AlreadyHitComponent(I[ImpactInfos].HitInfo.HitComponent))) goto 0x00ab
+  00a8: goto 0x0129
+  00ab: P = Pawn(I[ImpactInfos].HitActor)
+  00cc: if !(((P != none) && !HasClearDirectTrace(P))) goto 0x00ec
+  00e9: goto 0x0129
+  00ec: self.HitActors.Length[self.HitActors] = I[ImpactInfos].HitActor
+  010f: NotifyHitActor(I[ImpactInfos])
+  0129: AddAdd_PreInt(I)
+  0130: goto 0x002b
+  0133: return nothing
+  0135: <eos>
+
+function TnTraceSweeper.Active.PerformTrace  (script 240 bytes)
+  0000: HitActor = self.Owner.Trace(HitLocation, HitNormal, none, TraceEnd, TraceStart, false, TraceExtent, true, HitInfo, )
+  0034: if !(((HitActor != none) && !AlreadyHitActor(HitActor))) goto 0x00e3
+  0051: self.HitActors.Length[self.HitActors] = HitActor
+  0063: Impact.HitActor = HitActor
+  0079: Impact.HitLocation = HitLocation
+  008f: Impact.HitNormal = HitNormal
+  00a5: Impact.RayDir = obj'Core.Math'.static.Normal((TraceEnd - TraceStart))
+  00cd: Impact.HitInfo = HitInfo
+  00e3: return Impact
+  00e9: return return
+  00ef: <eos>
+
+function TnTraceSweeper.Active.EndSweep  (script 17 bytes)
+  0000: GotoState('Inactive', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnTraceSweeper.Active.DrawGeneralExtentDebug  (script 83 bytes)
+  0000: obj'Engine.Debug'.static.DrawBox(BoneLocation, self.Extent, MakeColor(cast3d((bHit ? 255 : 0)), 0, cast3d((bHit ? 0 : 255)), ), bHit)
+  0050: return nothing
+  0052: <eos>
+
+function TnTraceSweeper.Active.DrawDirectExtentDebug  (script 113 bytes)
+  0000: OwnerToHitPawn = (EndLocation - StartLocation)
+  0012: CenterPoint = ((OwnerToHitPawn / cast3f(2)) + StartLocation)
+  002a: obj'Engine.Debug'.static.DrawOrientedBox(CenterPoint, cast50(OwnerToHitPawn), DirectTraceExtent, MakeColor(cast3d((HitTarget ? 255 : 0)), 200, 200, ), true)
+  006e: return nothing
+  0070: <eos>

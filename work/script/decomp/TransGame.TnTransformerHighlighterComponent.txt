@@ -1,0 +1,40 @@
+function TnTransformerHighlighterComponent.set_EnemyHighlightMaterial  (script 14 bytes)
+  0000: self._EnemyHighlightMaterial = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerHighlighterComponent.set_FriendlyHighlightMaterial  (script 14 bytes)
+  0000: self._FriendlyHighlightMaterial = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerHighlighterComponent.CanHighlight  (script 68 bytes)
+  0000: TransformerPawn = TnPawn(self.Owner)
+  0010: if !(((TransformerPawn != none) && TransformerPawn._IsCloaking)) goto 0x0031
+  002f: return false
+  0031: return TnHighlighterComponent.CanHighlight(HighLighter)
+  003d: return return
+  0043: <eos>
+
+function TnTransformerHighlighterComponent.CollectMeshes  (script 204 bytes)
+  0000: OwnerAsTnPawn = TnPawn(self.Owner)
+  0010: MCs.AddItem(OwnerAsTnPawn.get_RobotMeshComponent())
+  002b: MCs.AddItem(OwnerAsTnPawn.get_VehicleMeshComponent())
+  0046: Weap = TnWeapon(OwnerAsTnPawn.Weapon)
+  005f: if !((Weap != none)) goto 0x0083
+  006a: WeapMesh = Weap.GetWeaponMesh()
+  0083: if !((WeapMesh != none)) goto 0x00a7
+  008e: WeapSkelMesh = WeapMesh.GetAnimatedMeshComponent()
+  00a7: if !((WeapSkelMesh != none)) goto 0x00bf
+  00b2: MCs.AddItem(WeapSkelMesh)
+  00bf: return MCs
+  00c5: return return
+  00cb: <eos>
+
+function TnTransformerHighlighterComponent.ChooseHighlightMaterial  (script 54 bytes)
+  0000: if !(TnPawn(self.Owner).IsSameTeam(HighLighter)) goto 0x0029
+  0020: return self._FriendlyHighlightMaterial
+  0026: goto 0x002f
+  0029: return self._EnemyHighlightMaterial
+  002f: return return
+  0035: <eos>

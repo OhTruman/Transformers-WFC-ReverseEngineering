@@ -1,0 +1,47 @@
+function TnSeqAct_SpectateActor.__Constructor__TnSeqAct_SpectateActor_0  (script 14 bytes)
+  0000: self.SpectateActor = InSpectateActor
+  000b: return nothing
+  000d: <eos>
+
+function TnSeqAct_SpectateActor.Activated  (script 121 bytes)
+  0000: foreach self.Targets(Target,) (end 0x0075)
+  000f: Spectator = TnPlayerController(Target)
+  001f: if !((Spectator == none)) goto 0x005e
+  002a: P = TnPlayerPawn(Target)
+  003a: if !((P != none)) goto 0x005e
+  0045: Spectator = TnPlayerController(P.Controller)
+  005e: if !((Spectator != none)) goto 0x0074
+  0069: TnSeqAct_SpectateActor.ChooseSpectateActor(Spectator)
+  0074: iternext
+  0075: iterpop
+  0076: return nothing
+  0078: <eos>
+
+function TnSeqAct_SpectateActor.ChooseSpectateActor  (script 73 bytes)
+  0000: SpectateController = Controller(self.SpectateActor)
+  0010: if !((SpectateController != none)) goto 0x0036
+  001b: TnSeqAct_SpectateActor.SpectateActorSubject(Spectator, SpectateController.Pawn)
+  0034: return nothing
+  0036: TnSeqAct_SpectateActor.SpectateActorSubject(Spectator, self.SpectateActor)
+  0046: return nothing
+  0048: <eos>
+
+function TnSeqAct_SpectateActor.SpectateActorSubject  (script 113 bytes)
+  0000: if !((A == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(0[self.InputLinks].bHasImpulse) goto 0x004e
+  0023: Spectator.SpectateActorSubject(A)
+  003b: TnSeqAct_SpectateActor.SaveSpectateActorForJoinInProgress(Spectator, A)
+  004b: goto 0x006e
+  004e: Spectator.SpectateActorSubject(none)
+  0062: TnSeqAct_SpectateActor.SaveSpectateActorForJoinInProgress(Spectator, none)
+  006e: return nothing
+  0070: <eos>
+
+function TnSeqAct_SpectateActor.SaveSpectateActorForJoinInProgress  (script 88 bytes)
+  0000: if !((Spectator.WorldInfo != none)) goto 0x0036
+  0014: AsTnGame = TnGame(Spectator.WorldInfo.Game)
+  0036: if !((AsTnGame != none)) goto 0x0055
+  0041: AsTnGame._SpectateActor = A
+  0055: return nothing
+  0057: <eos>

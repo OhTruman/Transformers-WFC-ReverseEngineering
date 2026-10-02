@@ -1,0 +1,9 @@
+function TnAnimNotify_JumpToTime.Notify  (script 160 bytes)
+  0000: Seq = TnAnimJumpableSequence(AnimSeqInstigator)
+  0010: if !((Seq == none)) goto 0x0069
+  001b: LogInternal("Warn: Can only use JumpToTime notification on TnAnimJumpableSequences", , , )
+  0067: return nothing
+  0069: if !(Seq.CanJump()) goto 0x009d
+  0084: Seq.SetPosition(self.DestinationTime, false)
+  009d: return nothing
+  009f: <eos>

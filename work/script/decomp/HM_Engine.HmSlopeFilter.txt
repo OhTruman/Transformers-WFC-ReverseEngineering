@@ -1,0 +1,16 @@
+function HmSlopeFilter.Update  (script 69 bytes)
+  0000: MaxVariation = (self.MaxSlope * DeltaTime)
+  0012: self.CurrentValue = (self.CurrentValue + obj'Core.Math'.static.FClamp((TargetValue - self.CurrentValue), -MaxVariation, MaxVariation))
+  0042: return nothing
+  0044: <eos>
+
+function HmSlopeFilter.GetValue  (script 13 bytes)
+  0000: return self.CurrentValue
+  0006: return return
+  000c: <eos>
+
+function HmSlopeFilter.Reset  (script 15 bytes)
+  0000: nothing
+  0001: self.CurrentValue = ResetValue
+  000c: return nothing
+  000e: <eos>

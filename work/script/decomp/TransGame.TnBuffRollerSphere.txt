@@ -1,0 +1,7 @@
+function TnBuffRollerSphere.Apply  (script 93 bytes)
+  0000: TnApplier = TnPawn(Applier)
+  0010: if !(((TnApplier != none) && TnApplier.HasSkill(obj'TnSkillRollerSphereDot'))) goto 0x0045
+  0038: self.BuffsToApply.AddItem(obj'TnBuffDotRollerSphere')
+  0045: TnBuffMultiBuff.Apply(Level, BuffOwner, Applier)
+  005a: return nothing
+  005c: <eos>

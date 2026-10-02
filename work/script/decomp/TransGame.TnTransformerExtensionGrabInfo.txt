@@ -1,0 +1,18 @@
+function TnTransformerExtensionGrabInfo.set_GrabVictimReactionAnimation  (script 14 bytes)
+  0000: self._GrabVictimReactionAnimation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerExtensionGrabInfo.set_GrabVictimCameraAnimation  (script 14 bytes)
+  0000: self._GrabVictimCameraAnimation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformerExtensionGrabInfo.ApplyTransformerExtension  (script 72 bytes)
+  0000: AsTnAiPawn = TnAiPawn(P)
+  0010: if !((AsTnAiPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: AsTnAiPawn._GrabVictimReactionAnimation = self._GrabVictimReactionAnimation
+  0031: AsTnAiPawn._GrabVictimCameraAnimation = self._GrabVictimCameraAnimation
+  0045: return nothing
+  0047: <eos>

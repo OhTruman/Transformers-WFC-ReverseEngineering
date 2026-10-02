@@ -1,0 +1,21 @@
+function TnStatisticsBackendPartyTable.RecordParties  (script 378 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0026: ReservationInterface = OnlineSub.ReservationInterface
+  003a: Parties = ReservationInterface.GetReservations()
+  0054: if !((Parties == none)) goto 0x0061
+  005f: return nothing
+  0061: P = 0
+  0068: if !((P < Parties.Parties.Length)) goto 0x0177
+  0081: M = 0
+  0088: if !((M < P[Parties.Parties].Members.Length)) goto 0x016d
+  00b2: PartyMember.Member = OnlineSub.UniqueNetIdToString(M[P[Parties.Parties].Members].NetId)
+  0106: PartyMember.Leader = OnlineSub.UniqueNetIdToString(0[P[Parties.Parties].Members].NetId)
+  0156: self.PartyMembers.AddItem(PartyMember)
+  0163: AddAdd_PreInt(M)
+  016a: goto 0x0088
+  016d: AddAdd_PreInt(P)
+  0174: goto 0x0068
+  0177: return nothing
+  0179: <eos>

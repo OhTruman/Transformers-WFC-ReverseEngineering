@@ -1,0 +1,18 @@
+function TnStatisticsGameStatTable.RecordStats  (script 290 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: foreach Game.WorldInfo.AllControllers(obj'Engine.PlayerController', PC) (end 0x011e)
+  0036: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  004f: PRI.GetGameStats(GameStats)
+  0067: foreach GameStats(Stat,) (end 0x011c)
+  0076: S.Session_Id = Game.StatisticsSessionId
+  0095: S.PlayerName = PC.GetHumanReadableName()
+  00b9: S.StatName = obj'TnOnlineConstantMapping'.static.IdToString(Stat.StatId)
+  00ed: S.Value = Stat.Value
+  010e: self.Stats.AddItem(S)
+  011b: iternext
+  011c: iterpop
+  011d: iternext
+  011e: iterpop
+  011f: return nothing
+  0121: <eos>

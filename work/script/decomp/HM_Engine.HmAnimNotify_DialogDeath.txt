@@ -1,0 +1,19 @@
+function HmAnimNotify_DialogDeath.Notify  (script 325 bytes)
+  0000: if !(((AnimSeqInstigator.SkelComponent == none) || (AnimSeqInstigator.SkelComponent.Owner == none))) goto 0x0035
+  0033: return nothing
+  0035: if !((AnimSeqInstigator.NodeTotalWeight < self.MinWeight)) goto 0x004f
+  004d: return nothing
+  004f: DialogInterface = HmDialogInterface(AnimSeqInstigator.SkelComponent.Owner)
+  0071: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0087
+  0085: return nothing
+  0087: if !((none != self.SoundEvent)) goto 0x0125
+  0092: P = HmPawn(AnimSeqInstigator.SkelComponent.Owner)
+  00b4: if !((none != P)) goto 0x0105
+  00bf: WI = HmWorldInfo(P.WorldInfo)
+  00d8: WI._DialogEventManager.Play(P, self.SoundEvent, , , true, )
+  0102: goto 0x0122
+  0105: DialogInterface.PlayDialogEvent(self.SoundEvent, , , true, )
+  0122: goto 0x0142
+  0125: DialogInterface.PlayDialog(self.SoundCue, , , true, )
+  0142: return nothing
+  0144: <eos>

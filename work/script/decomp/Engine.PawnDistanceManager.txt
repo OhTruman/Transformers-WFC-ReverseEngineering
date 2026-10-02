@@ -1,0 +1,66 @@
+function PawnDistanceManager.PawnsInDistance  (script 22 bytes)
+  0000: BaseClass
+  0005: P
+  000a: PawnToCheck
+  000f: MaxDistance
+  0014: nothing
+  0015: <eos>
+
+function PawnDistanceManager.Update  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PawnDistanceManager.Initialize  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PawnDistanceManager.AddPawn  (script 64 bytes)
+  0000: if !(((self.RegisteredPawns.Find(NewPawn) == -1) && (self.PawnsToAdd.Find(NewPawn) == -1))) goto 0x003d
+  0030: self.PawnsToAdd.AddItem(NewPawn)
+  003d: return nothing
+  003f: <eos>
+
+function PawnDistanceManager.RemovePawn  (script 26 bytes)
+  0000: self.PawnsToRemove.AddItem(RemovePawn)
+  000d: Update()
+  0017: return nothing
+  0019: <eos>
+
+function PawnDistanceManager.ForceRemovePawn  (script 42 bytes)
+  0000: self.RegisteredPawns.RemoveItem(RemovePawn)
+  000d: self.PawnsToAdd.RemoveItem(RemovePawn)
+  001a: self.PawnsToRemove.RemoveItem(RemovePawn)
+  0027: return nothing
+  0029: <eos>
+
+function PawnDistanceManager.ForceRemoveAllPawns  (script 27 bytes)
+  0000: self.RegisteredPawns.Length = 0
+  0008: self.PawnsToAdd.Length = 0
+  0010: self.PawnsToRemove.Length = 0
+  0018: return nothing
+  001a: <eos>
+
+function PawnDistanceManager.GetDistanceSquared  (script 162 bytes)
+  0000: FirstIndex = self.RegisteredPawns.Find(FirstPawn)
+  0013: if !((FirstIndex == -1)) goto 0x0040
+  0022: self.PawnsToAdd.AddItem(FirstPawn)
+  002f: return PawnDistanceManager.CalculateSquaredDistance(FirstPawn, SecondPawn)
+  0040: SecondIndex = self.RegisteredPawns.Find(SecondPawn)
+  0053: if !((SecondIndex == -1)) goto 0x0080
+  0062: self.PawnsToAdd.AddItem(FirstPawn)
+  006f: return PawnDistanceManager.CalculateSquaredDistance(FirstPawn, SecondPawn)
+  0080: return ((FirstIndex * self.RegisteredPawns.Length) + SecondIndex)[self.DistancesTable]
+  009b: return return
+  00a1: <eos>
+
+function PawnDistanceManager.GetDistance  (script 39 bytes)
+  0000: return obj'Core.Math'.static.Sqrt(GetDistanceSquared(FirstPawn, SecondPawn))
+  0020: return return
+  0026: <eos>
+
+function PawnDistanceManager.CalculateSquaredDistance  (script 87 bytes)
+  0000: if !(((FirstPawn == none) || (SecondPawn == none))) goto 0x001e
+  0018: return 1000000000.0
+  001e: return obj'Core.Math'.static.VSizeSq((FirstPawn.Location - SecondPawn.Location))
+  0050: return return
+  0056: <eos>

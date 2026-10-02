@@ -1,0 +1,18 @@
+function TnGoapWorldPropertiesCostModulator.DoCalculateAdditionalCost  (script 195 bytes)
+  0000: if !((self.WorldStateProperties.Length == 0)) goto 0x0012
+  000c: return 0.0
+  0012: PawnController = TnAiController(Controller_)
+  0022: if !((PawnController == none)) goto 0x0033
+  002d: return 0.0
+  0033: I = 0
+  003a: if !((I < self.WorldStateProperties.Length)) goto 0x00b6
+  004a: if !((I[self.WorldStateProperties] == none)) goto 0x0061
+  005b: return 0.0
+  0061: WorldStateProperty = I[self.WorldStateProperties].GetWorldStateProperty()
+  0080: if !(!PawnController.AiWorldState.ConditionMet(WorldStateProperty)) goto 0x00ac
+  00a6: return 0.0
+  00ac: AddAdd_PreInt(I)
+  00b3: goto 0x003a
+  00b6: return self.Cost
+  00bc: return return
+  00c2: <eos>

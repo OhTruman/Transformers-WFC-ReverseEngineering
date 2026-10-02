@@ -1,0 +1,20 @@
+function TnHudDataObserverVehicleAbilityType.CheckData  (script 167 bytes)
+  0000: if !((PC.get_TransformerPawn() == none)) goto 0x001b
+  0019: return nothing
+  001b: switch (PC.get_TransformerPawn().get_VehicleType())
+  003e: case 0: (next 0x0051)
+  0043: AbilityType = "Car"
+  004e: goto 0x0090
+  0051: case 1: (next 0x0066)
+  0056: AbilityType = "Truck"
+  0063: goto 0x0090
+  0066: case 2: (next 0x0079)
+  006b: AbilityType = "Jet"
+  0076: goto 0x0090
+  0079: case 3: (next 0x008d)
+  007e: AbilityType = "Tank"
+  008a: goto 0x0090
+  008d: default:
+  0090: ProcessNewValue(Movie, AbilityType)
+  00a4: return nothing
+  00a6: <eos>

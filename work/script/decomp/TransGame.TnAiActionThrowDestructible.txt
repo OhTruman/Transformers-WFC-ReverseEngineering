@@ -1,0 +1,58 @@
+function TnAiActionThrowDestructible.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionThrowDestructibleBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionThrowDestructible.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._GrabAttackerService = TnGrabAttackerService(GetService('TnGrabAttackerService', 2))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionThrowDestructible.OnSetUpConditions  (script 198 bytes)
+  0000: Destructible = TnDestructibleActor(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateGrabbedObject'))
+  0028: if !((Destructible == none)) goto 0x0035
+  0033: return false
+  0035: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  005d: if !((Target == none)) goto 0x006a
+  0068: return false
+  006a: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateGrabbedObject', Destructible)
+  008c: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateLockedOnTarget', Target)
+  00ae: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00bf: return return
+  00c5: <eos>
+
+function TnAiActionThrowDestructible.OnStart  (script 154 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateGrabbedObject', ExpectedEffects))
+  0028: self._ActivatedTimer.Start(delegate.ThrowDestructible, self._Blueprint.ReleaseTime, )
+  0053: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.FailCallback, delegate.FailCallback)
+  0087: return OnStart(ExpectedEffects)
+  0093: return return
+  0099: <eos>
+
+function TnAiActionThrowDestructible.OnUpdate  (script 89 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Succeed()
+  0029: self._ActivatedTimer.Tick(DeltaTime)
+  0041: return OnUpdate(ExpectedEffects, DeltaTime)
+  0052: return return
+  0058: <eos>
+
+function TnAiActionThrowDestructible.OnFinish  (script 91 bytes)
+  0000: OnFinish(CurrentState)
+  000b: TnAiActionThrowDestructible.ThrowDestructible()
+  0011: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateLockedOnTarget', false, )
+  002b: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateGrabbedObject', false, )
+  0045: self._ActivatedTimer.Clear()
+  0058: return nothing
+  005a: <eos>
+
+function TnAiActionThrowDestructible.ThrowDestructible  (script 89 bytes)
+  0000: if !((self._GrabAttackerService.get_IsActive() == false)) goto 0x001c
+  001a: return nothing
+  001c: self._GrabAttackerService.AbortGrab()
+  0030: self._TransformerPawn.PlaySound(self._Blueprint.ThrowSound, , , , , )
+  0056: return nothing
+  0058: <eos>

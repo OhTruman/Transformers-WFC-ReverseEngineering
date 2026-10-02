@@ -1,0 +1,81 @@
+function TnAiActionRocketBarrageDeathBlossom.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionRocketBarrageDeathBlossomBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionRocketBarrageDeathBlossom.OnBind  (script 105 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AudioService = TnAudioService(GetService('TnAudioService', 2))
+  0026: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0046: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0066: return nothing
+  0068: <eos>
+
+function TnAiActionRocketBarrageDeathBlossom.OnSetUpConditions  (script 227 bytes)
+  0000: Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !((self._TransformerPawn.Weapon == none)) goto 0x004b
+  0049: return false
+  004b: if !((get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy') == false)) goto 0x0070
+  006e: return false
+  0070: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x0088
+  0086: return false
+  0088: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(8))) goto 0x00a9
+  00a7: return false
+  00a9: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Target)
+  00cb: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00dc: return return
+  00e2: <eos>
+
+function TnAiActionRocketBarrageDeathBlossom.OnStart  (script 262 bytes)
+  0000: Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: if !(!TnAiActionRocketBarrageDeathBlossom.HasEnoughRoom()) goto 0x0054
+  0049: return Fail()
+  0054: self._AudioService.PlaySoundEvent(self.RocketBarrageDialog)
+  006d: SetCharacterState(1)
+  0078: self._TransformerController.MoveTarget = none
+  0088: self._TransformerController.Focus = IFocusible(Target)
+  00a1: get_WeaponAimer().AimAtTarget(IFocusible(Target))
+  00c3: self._AcrobaticsService.Hover()
+  00d7: self._Firing = false
+  00df: self._TimeUntilNextRocket = self._Blueprint.RocketDelay
+  00f3: return OnStart(ExpectedEffects)
+  00ff: return return
+  0105: <eos>
+
+function TnAiActionRocketBarrageDeathBlossom.OnUpdate  (script 352 bytes)
+  0000: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(8))) goto 0x002a
+  001f: return Fail()
+  002a: if !((!self._Firing && (cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(3)))) goto 0x0092
+  0056: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.SucceedCallback, delegate.FailCallback)
+  008a: self._Firing = true
+  0092: if !(self._Firing) goto 0x0148
+  009b: (self._TimeUntilNextRocket -= DeltaTime)
+  00a7: if !((self._TimeUntilNextRocket <= 0.0)) goto 0x0148
+  00b6: obj'TnProjectileSpawner'.static.SpawnProjectile(self._TransformerPawn, obj'TnProjectileForwardMangaRocket', self._SocketIndex[self._Blueprint.SocketNames], 0.0, self._Blueprint.RocketPitchOffset, 2)
+  00fc: self._SocketIndex = cast44((cast3f((self._SocketIndex + 1)) % cast3f(self._Blueprint.SocketNames.Length)))
+  0121: self._TimeUntilNextRocket = obj'Core.Random'.static.RandomInRange(self._Blueprint.RocketInterval)
+  0148: return OnUpdate(ExpectedEffects, DeltaTime)
+  0159: return return
+  015f: <eos>
+
+function TnAiActionRocketBarrageDeathBlossom.HasEnoughRoom  (script 176 bytes)
+  0000: Bounds = self._TransformerPawn.CollisionComponent.GetBounds()
+  0022: TraceHeight = self._AcrobaticsService.get_JumpHeight()
+  003c: TraceEnd = self._TransformerPawn.Location
+  0050: (TraceEnd.Z += TraceHeight)
+  0067: return (self._TransformerPawn.Trace(HitLocation, HitNormal, none, TraceEnd, self._TransformerPawn.Location, , Bounds.BoxExtent, , , ) == none)
+  00a9: return return
+  00af: <eos>
+
+function TnAiActionRocketBarrageDeathBlossom.OnFinish  (script 74 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0033
+  001b: get_WeaponAimer().Reset()
+  0033: self._AcrobaticsService.Fall()
+  0047: return nothing
+  0049: <eos>

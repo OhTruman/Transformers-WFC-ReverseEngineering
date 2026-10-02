@@ -1,0 +1,88 @@
+function TnAiActionShootingStrafeFromHover.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionShootingStrafeFromHover.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnBind  (script 76 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0049: return nothing
+  004b: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionShootingStrafeFromHoverBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnSetUpConditions  (script 85 bytes)
+  0000: if !((self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))) == false)) goto 0x003d
+  003b: return false
+  003d: return OnSetUpConditions(ExpectedEffects, Conditions)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnIsValidForFutureExecution  (script 85 bytes)
+  0000: if !((self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))) == false)) goto 0x003d
+  003b: return false
+  003d: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnStart  (script 159 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0050
+  0045: return Succeed()
+  0050: self._TimeRemaining = self._Blueprint.Duration
+  0064: self._TransformerController.StopMovement()
+  0077: SetCharacterState(256)
+  0086: TnAiActionShootingStrafeFromHover.ActivateShooting()
+  008c: return OnStart(ExpectedEffects)
+  0098: return return
+  009e: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnUpdate  (script 268 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0028
+  001d: return Succeed()
+  0028: (self._TimeRemaining -= DeltaTime)
+  0034: if !((self._TimeRemaining < 0.0)) goto 0x004e
+  0043: return Fail()
+  004e: if !(((get_WeaponShooter().get_ActiveWeapon() == none) || get_WeaponShooter().get_ActiveWeapon().IsOverheating())) goto 0x00a2
+  0097: return Fail()
+  00a2: if !((get_WeaponAimer().get_OwnerIsAiming() && !get_WeaponShooter().IsFiring())) goto 0x00f4
+  00dc: get_WeaponShooter().StartFire()
+  00f4: return OnUpdate(ExpectedEffects, DeltaTime)
+  0105: return return
+  010b: <eos>
+
+function TnAiActionShootingStrafeFromHover.OnFinish  (script 120 bytes)
+  0000: OnFinish(CurrentState)
+  000b: TnAiActionShootingStrafeFromHover.DeactivateShooting()
+  0011: self._AcrobaticsService.Fall()
+  0025: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateHover', false, )
+  0044: if !((cast3a(CurrentState) != cast3a(3))) goto 0x0056
+  0054: return nothing
+  0056: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  0075: return nothing
+  0077: <eos>
+
+function TnAiActionShootingStrafeFromHover.ActivateShooting  (script 130 bytes)
+  0000: self._TransformerController.Enemy = Pawn(self._Target)
+  0019: self._TransformerController.Focus = IFocusible(self._Target)
+  0032: get_WeaponShooter().Activate(get_WeaponClass(), delegate.FailCallback)
+  005d: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  007f: return nothing
+  0081: <eos>
+
+function TnAiActionShootingStrafeFromHover.DeactivateShooting  (script 75 bytes)
+  0000: get_WeaponShooter().StopFire()
+  0018: get_WeaponShooter().Deactivate()
+  0030: get_WeaponAimer().Reset()
+  0048: return nothing
+  004a: <eos>

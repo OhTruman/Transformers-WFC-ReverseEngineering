@@ -1,0 +1,35 @@
+function AnimSequence.SortNotifies  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function AnimSequence.GetRawAnimationData  (script 13 bytes)
+  0000: return self.RawAnimData
+  0006: return return
+  000c: <eos>
+
+function AnimSequence.FindNotifiesOfType  (script 82 bytes)
+  0000: foreach self.Notifies(NE,) (end 0x0044)
+  000f: if !(ClassIsChildOf(NE.Notify.get_Class(), NotifyClass)) goto 0x0043
+  0031: FoundNotifies.Length[FoundNotifies] = NE
+  0043: iternext
+  0044: iterpop
+  0045: return FoundNotifies
+  004b: return return
+  0051: <eos>
+
+function AnimSequence.CheckForErrors  (script 266 bytes)
+  0000: if !(((self.CompressedTrackOffsets.Length == 0) || (self.CompressedTrackOffsets.Length == 0))) goto 0x005c
+  001a: get_Outer().EmitCheckMessage(0, (("Sequence" @ cast57(self.SequenceName)) @ "has no compressed data"), , )
+  005c: foreach self.Notifies(NotifyEvent,) (end 0x0106)
+  006b: if !((NotifyEvent.Notify == none)) goto 0x00e7
+  0081: EmitCheckMessage(0, (("Missing anim notify object, please remove the empty notify from the '" $ cast57(self.SequenceName)) $ "'"), , )
+  00e4: goto 0x0105
+  00e7: NotifyEvent.Notify.CheckForErrors()
+  0105: iternext
+  0106: iterpop
+  0107: return nothing
+  0109: <eos>
+
+function AnimSequence.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

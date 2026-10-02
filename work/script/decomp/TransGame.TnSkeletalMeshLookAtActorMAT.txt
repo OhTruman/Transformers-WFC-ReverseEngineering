@@ -1,0 +1,44 @@
+function TnSkeletalMeshLookAtActorMAT.PostBeginPlay  (script 168 bytes)
+  0000: PostBeginPlay()
+  0006: RegisterReplicatedObject(self._TargetTracker, '_TargetTracker')
+  001e: self._TargetTracker.Initialize(self.SkeletalMeshComponent)
+  0036: self._TargetTracker.RegisterIkControl(0, 'LookAtTarget')
+  0054: NeutralLookAtLocation = (self.Location + (vect(1000,0,0) >> self.Rotation))
+  0076: self._TargetTracker.DisableTracking(0)
+  008b: self._TargetTracker.SetIkControlLookAtTarget(0, NeutralLookAtLocation)
+  00a5: return nothing
+  00a7: <eos>
+
+function TnSkeletalMeshLookAtActorMAT.OnStreamedOut  (script 33 bytes)
+  0000: UnregisterReplicatedObject(self._TargetTracker, '_TargetTracker')
+  0018: OnStreamedOut()
+  001e: return nothing
+  0020: <eos>
+
+function TnSkeletalMeshLookAtActorMAT.StartLookAtTracking  (script 61 bytes)
+  0000: self._TargetTracker._Target = A
+  0014: self._TargetTracker._LockTargetLocation = false
+  0025: self._TargetTracker.EnableTracking(0)
+  003a: return nothing
+  003c: <eos>
+
+function TnSkeletalMeshLookAtActorMAT.StopLookAtTracking  (script 57 bytes)
+  0000: self._TargetTracker._Target = none
+  0010: self._TargetTracker._LockTargetLocation = false
+  0021: self._TargetTracker.DisableTracking(0)
+  0036: return nothing
+  0038: <eos>
+
+function TnSkeletalMeshLookAtActorMAT.LockLookAtTracking  (script 94 bytes)
+  0000: self._TargetTracker._Target = A
+  0014: self._TargetTracker.set_TargetLocation(A.Location)
+  0035: self._TargetTracker._LockTargetLocation = true
+  0046: self._TargetTracker.EnableTracking(0)
+  005b: return nothing
+  005d: <eos>
+
+function TnSkeletalMeshLookAtActorMAT.Tick  (script 38 bytes)
+  0000: Tick(DeltaTime)
+  000b: self._TargetTracker.Update(DeltaTime)
+  0023: return nothing
+  0025: <eos>

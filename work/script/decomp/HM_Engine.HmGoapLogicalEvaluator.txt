@@ -1,0 +1,74 @@
+function HmGoapLogicalEvaluator.Evaluate  (script 747 bytes)
+  0000: if !((self.Action == none)) goto 0x0019
+  000b: self.Action = HmGoapAction(get_Outer())
+  0019: foreach self.Inputs(LogicalInput,) (end 0x02ae)
+  0028: switch (LogicalInput.Type)
+  003a: case 1: (next 0x00d1)
+  003f: Values.Insert(0,1)
+  0047: 0[Values].Pair.Effect = LogicalInput.Prop
+  0075: 0[Values].Value = HmGoapLogicalEvaluator.SatisfiesAnyConditions(ConditionsToSatisfy, 0[Values].Pair.Effect, 0[Values].Pair.Condition)
+  00ce: goto 0x02ad
+  00d1: case 3: (next 0x01d3)
+  00d6: R = 0[Values]
+  00e3: Values.Remove(0,1)
+  00eb: L = 0[Values]
+  00f8: Values.Remove(0,1)
+  0100: NewValue.Value = (L.Value || R.Value)
+  0139: if !(!NewValue.Value) goto 0x015a
+  014f: SatisfiedPairs.Length = 0
+  0157: goto 0x01bb
+  015a: if !(L.Value) goto 0x018c
+  016e: HmGoapLogicalEvaluator.AddSatisfied(SatisfiedPairs, L.Pair)
+  0189: goto 0x01bb
+  018c: if !(R.Value) goto 0x01bb
+  01a0: HmGoapLogicalEvaluator.AddSatisfied(SatisfiedPairs, R.Pair)
+  01bb: Values.Insert(0,1)
+  01c3: 0[Values] = NewValue
+  01d0: goto 0x02ad
+  01d3: case 2: (next 0x02aa)
+  01d8: R = 0[Values]
+  01e5: Values.Remove(0,1)
+  01ed: L = 0[Values]
+  01fa: Values.Remove(0,1)
+  0202: NewValue.Value = (L.Value && R.Value)
+  023b: if !(!NewValue.Value) goto 0x025c
+  0251: SatisfiedPairs.Length = 0
+  0259: goto 0x0292
+  025c: HmGoapLogicalEvaluator.AddSatisfied(SatisfiedPairs, L.Pair)
+  0277: HmGoapLogicalEvaluator.AddSatisfied(SatisfiedPairs, R.Pair)
+  0292: Values.Insert(0,1)
+  029a: 0[Values] = NewValue
+  02a7: goto 0x02ad
+  02aa: default:
+  02ad: iternext
+  02ae: iterpop
+  02af: RemainingConditions = ConditionsToSatisfy
+  02ba: HmGoapLogicalEvaluator.BuildArrays(SatisfiedPairs, RemainingConditions, AchievableEffects)
+  02cf: return (AchievableEffects.Properties.Length > 0)
+  02e4: return return
+  02ea: <eos>
+
+function HmGoapLogicalEvaluator.AddSatisfied  (script 86 bytes)
+  0000: if !(((Pair.Effect.Type == none) || (Pair.Condition.Type == none))) goto 0x0046
+  0044: return nothing
+  0046: SatisfiedPairs.AddItem(Pair)
+  0053: return nothing
+  0055: <eos>
+
+function HmGoapLogicalEvaluator.BuildArrays  (script 189 bytes)
+  0000: foreach SatisfiedPairs(Pair,) (end 0x00b9)
+  000f: obj'HmGoap'.static.SetProperty(AchievableEffects, Pair.Effect)
+  0037: obj'HmGoap'.static.SetSubject(AchievableEffects, Pair.Condition.Type, Pair.Condition.Subject)
+  0085: obj'HmGoap'.static.ClearProperty(RemainingConditions, Pair.Condition.Type)
+  00b8: iternext
+  00b9: iterpop
+  00ba: return nothing
+  00bc: <eos>
+
+function HmGoapLogicalEvaluator.SatisfiesAnyConditions  (script 114 bytes)
+  0000: ReturnVal = true
+  0008: if !(obj'HmGoap'.static.GetProperty(Condition, Effect.Type, ConditionsToSatisfy)) goto 0x0064
+  0038: ReturnVal = (Effect.Value == Condition.Value)
+  0064: return ReturnVal
+  006b: return return
+  0071: <eos>

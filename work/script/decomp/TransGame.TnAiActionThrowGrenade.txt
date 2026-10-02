@@ -1,0 +1,53 @@
+function TnAiActionThrowGrenade.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionThrowGrenadeBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionThrowGrenade.OnBind  (script 54 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._Grenade = get_InvManager().FindOrCreateInventory(self._Blueprint.GrenadeClass, true)
+  0033: return nothing
+  0035: <eos>
+
+function TnAiActionThrowGrenade.OnSetUpConditions  (script 210 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x004d
+  004b: return false
+  004d: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x0071
+  006f: return false
+  0071: if !((cast3a(self._TransformerController.GetEnemyNearestRange()) != cast3a(self._Blueprint.AttackRange))) goto 0x009d
+  009b: return false
+  009d: if !(!self._Grenade.HasAmmo(0, )) goto 0x00ba
+  00b8: return false
+  00ba: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00cb: return return
+  00d1: <eos>
+
+function TnAiActionThrowGrenade.OnStart  (script 140 bytes)
+  0000: self._Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: self._TransformerController.Focus = IFocusible(self._Target)
+  0057: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  0079: return OnStart(ExpectedEffects)
+  0085: return return
+  008b: <eos>
+
+function TnAiActionThrowGrenade.IsGrenadeReady  (script 78 bytes)
+  0000: if !(((Grenade == none) || (Grenade.get_Class() != self._Blueprint.GrenadeClass))) goto 0x002e
+  002c: return false
+  002e: return get_InvManager().IsWeaponActive()
+  0047: return return
+  004d: <eos>
+
+function TnAiActionThrowGrenade.OnUpdate  (script 134 bytes)
+  0000: get_WeaponAimer().AimAtLocation((self._Target.Location + vect(0,0,400)))
+  0035: if !(get_WeaponAimer().get_OwnerIsAiming()) goto 0x006e
+  0050: self._Grenade.TossGrenade()
+  0063: return Fail()
+  006e: return OnUpdate(ExpectedEffects, DeltaTime)
+  007f: return return
+  0085: <eos>

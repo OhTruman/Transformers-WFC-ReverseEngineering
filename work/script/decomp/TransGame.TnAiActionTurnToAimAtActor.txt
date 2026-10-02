@@ -1,0 +1,33 @@
+function TnAiActionTurnToAimAtActor.OnSetUpConditions  (script 86 bytes)
+  0000: Target = IFocusible(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateFacingActor', ExpectedEffects))
+  0028: if !(EqualEqual_InterfaceInterface(Target, IFocusible(none))) goto 0x003e
+  003c: return false
+  003e: return OnSetUpConditions(ExpectedEffects, Conditions)
+  004f: return return
+  0055: <eos>
+
+function TnAiActionTurnToAimAtActor.OnStart  (script 138 bytes)
+  0000: self._Target = IFocusible(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateFacingActor', ExpectedEffects))
+  0028: SetCharacterState(0)
+  0033: self._TransformerController.Focus = self._Target
+  0047: get_WeaponAimer().AimAtTarget(self._Target)
+  0064: self._TransformerController.StopMovement()
+  0077: return OnStart(ExpectedEffects)
+  0083: return return
+  0089: <eos>
+
+function TnAiActionTurnToAimAtActor.OnUpdate  (script 62 bytes)
+  0000: if !(get_WeaponAimer().get_OwnerIsAiming()) goto 0x0026
+  001b: return Succeed()
+  0026: return OnUpdate(ExpectedEffects, DeltaTime)
+  0037: return return
+  003d: <eos>
+
+function TnAiActionTurnToAimAtActor.OnFinish  (script 93 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: get_WeaponAimer().Reset()
+  0035: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateFacingActor', true, cast36(self._Target))
+  005a: return nothing
+  005c: <eos>

@@ -1,0 +1,20 @@
+function HmVirtualizableInputGameViewportClient.SetOverrideInputs  (script 16 bytes)
+  0000: self.bOverrideInput = Override
+  000d: return nothing
+  000f: <eos>
+
+function HmVirtualizableInputGameViewportClient.ResetVirtualInputs  (script 22 bytes)
+  0000: self.InputMemory.Reset()
+  0013: return nothing
+  0015: <eos>
+
+function HmVirtualizableInputGameViewportClient.SetVirtualInput  (script 41 bytes)
+  0000: default=1.0
+  0009: self.InputMemory.SetValue(InputName, Value)
+  0026: return nothing
+  0028: <eos>
+
+function HmVirtualizableInputGameViewportClient.GetVirtualInputValue  (script 32 bytes)
+  0000: return self.InputMemory.GetValue(InputName)
+  0019: return return
+  001f: <eos>

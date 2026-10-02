@@ -1,0 +1,74 @@
+function TnAiActionShieldedPositionAttack.get_AnimatorService  (script 13 bytes)
+  0000: return self._AnimatorService
+  0006: return return
+  000c: <eos>
+
+function TnAiActionShieldedPositionAttack.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionShieldedPositionAttackBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionShieldedPositionAttack.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionShieldedPositionAttack.OnSetUpConditions  (script 147 bytes)
+  0000: Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: if !((Interact == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateShieldedPosition', Interact)
+  0057: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x007b
+  0079: return false
+  007b: return OnSetUpConditions(ExpectedEffects, Conditions)
+  008c: return return
+  0092: <eos>
+
+function TnAiActionShieldedPositionAttack.OnIsValidForFutureExecution  (script 77 bytes)
+  0000: Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: if !((Interact == none)) goto 0x0035
+  0033: return false
+  0035: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0046: return return
+  004c: <eos>
+
+function TnAiActionShieldedPositionAttack.OnStart  (script 175 bytes)
+  0000: self._Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: SetCharacterState(0)
+  0033: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  0055: self._TransformerController.StopMovement()
+  0068: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAnimationComplete, delegate.FailCallback)
+  009c: return OnStart(ExpectedEffects)
+  00a8: return return
+  00ae: <eos>
+
+function TnAiActionShieldedPositionAttack.OnFinish  (script 67 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateWeaponOverheated', true, )
+  0040: return nothing
+  0042: <eos>
+
+function TnAiActionShieldedPositionAttack.OnAnimationComplete  (script 62 bytes)
+  0000: if !(self._TransformerController.AiWorldState.GetBoolValue(obj'TnAiWorldStateTargetIsDead')) goto 0x0031
+  0024: Succeed()
+  002e: goto 0x003b
+  0031: Fail()
+  003b: return nothing
+  003d: <eos>
+
+function TnAiActionShieldedPositionAttack.DoCalculateAdditionalCost  (script 215 bytes)
+  0000: if !((self._TransformerController.Enemy == none)) goto 0x006b
+  0014: LogInternal(("ERROR: EngineTeam - TransformerController.Enemy was none in " $ cast57(GetFuncName())), , , )
+  0065: return 0.0
+  006b: Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0093: return (TnAiActionShieldedPositionAttack.IsEnemyInFront(Interact.Rotation, Interact.Location) ? DoCalculateAdditionalCost(Context, ExpectedEffects) : 20.0)
+  00d0: return return
+  00d6: <eos>
+
+function TnAiActionShieldedPositionAttack.IsEnemyInFront  (script 65 bytes)
+  0000: return ((cast39(InteractRotation) dot obj'Core.Math'.static.Normal((self._TransformerController.Enemy.Location - InteractLocation))) > -0.5)
+  003a: return return
+  0040: <eos>

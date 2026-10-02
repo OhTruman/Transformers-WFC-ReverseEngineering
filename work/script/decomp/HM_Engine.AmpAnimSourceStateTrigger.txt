@@ -1,0 +1,37 @@
+function AmpAnimSourceStateTrigger.FindTriggerIndex  (script 151 bytes)
+  0000: I = 0
+  0007: if !((I < self.Children.Length)) goto 0x0079
+  0017: if !((I[self.Children].Name == 'Default')) goto 0x0046
+  003b: DefaultIndex = I
+  0046: if !((I[self.Children].Name != StateName)) goto 0x0069
+  0066: goto 0x006f
+  0069: return I
+  006f: AddAdd_PreInt(I)
+  0076: goto 0x0007
+  0079: if !((DefaultIndex == -1)) goto 0x008a
+  0088: return 0
+  008a: return DefaultIndex
+  0090: return return
+  0096: <eos>
+
+function AmpAnimSourceStateTrigger.OnArriveFromState  (script 20 bytes)
+  0000: self.LastArrivalState = AmpAnimSourceStateTrigger.FindTriggerIndex(StateName)
+  0011: return nothing
+  0013: <eos>
+
+function AmpAnimSourceStateTrigger.OnCeaseRelevant  (script 10 bytes)
+  0000: self.LastArrivalState = 0
+  0007: return nothing
+  0009: <eos>
+
+function AmpAnimSourceStateTrigger.ChildGetDesiredSelection  (script 120 bytes)
+  0000: CurSel = GetCurrentSelection()
+  0010: if !((CurSel == 0)) goto 0x0021
+  001b: return self.LastArrivalState
+  0021: CurrentBlendChild = GetCurrentSelection()[self.Children]
+  0037: CurrentChild = CurrentBlendChild.Anim
+  004d: if !(WillSubtreeComplete(CurrentChild, DeltaTime)) goto 0x006b
+  0064: self.LastArrivalState = 0
+  006b: return self.LastArrivalState
+  0071: return return
+  0077: <eos>

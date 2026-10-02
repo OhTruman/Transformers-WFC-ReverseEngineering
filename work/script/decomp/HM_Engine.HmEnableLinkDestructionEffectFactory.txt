@@ -1,0 +1,20 @@
+function HmEnableLinkDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmEnableLinkDestructionEffectFactory.DoCreateInstance  (script 97 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmEnableLinkDestructionEffect', nothing, AttachTreeCallback)
+  0018: Effect._DestructionTrigger = self.DestructionTrigger
+  002c: Effect._PieceName = self.PieceName
+  0040: Effect._StateName = self.StateName
+  0054: return Effect
+  005a: return return
+  0060: <eos>
+
+function HmEnableLinkDestructionEffectFactory.CheckForErrors  (script 90 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.PieceName == 'None')) goto 0x0057
+  0019: EmitCheckMessage(1, (cast56(self) @ "has an empty piece name. This won't work."), , )
+  0057: return nothing
+  0059: <eos>

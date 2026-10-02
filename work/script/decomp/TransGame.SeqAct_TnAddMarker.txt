@@ -1,0 +1,22 @@
+function SeqAct_TnAddMarker.Activated  (script 93 bytes)
+  0000: Activated()
+  0006: GRI = TnGameReplicationInfoGameBase(TnWorldInfo(GetWorldInfo()).GRI)
+  0029: foreach self.MarkerActors(ActorIter,) (end 0x0059)
+  0038: GRI.AddObjectiveMarker("", ActorIter, self.ObjectiveType, )
+  0058: iternext
+  0059: iterpop
+  005a: return nothing
+  005c: <eos>
+
+function SeqAct_TnAddMarker.CheckForErrors  (script 260 bytes)
+  0000: CheckForErrors()
+  0006: PublishLinkedVariableValues()
+  0010: Index = 0
+  0017: if !((Index < self.MarkerActors.Length)) goto 0x0101
+  0027: A = Index[self.MarkerActors]
+  0038: if !(((A != none) && (cast3a(A.RemoteRole) != cast3a(1)))) goto 0x00f7
+  005e: A.EmitCheckMessage(0, (((("Warning:" @ cast56(self)) @ "Adding objective marker to an actor") @ cast56(A)) @ "which is not replicated to clients, it will not show up clients"), , )
+  00f7: AddAdd_PreInt(Index)
+  00fe: goto 0x0017
+  0101: return nothing
+  0103: <eos>

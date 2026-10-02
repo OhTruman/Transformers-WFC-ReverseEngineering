@@ -1,0 +1,257 @@
+function TnDialogManager.set_HealthLowThreshold  (script 14 bytes)
+  0000: self._HealthLowThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDialogManager.set_HealthLowIdleDialogFrequency  (script 14 bytes)
+  0000: self._HealthLowIdleDialogFrequency = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDialogManager.set_TeammateDialogNotifyDistance  (script 14 bytes)
+  0000: self._TeammateDialogNotifyDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnDialogManager.Initialize  (script 14 bytes)
+  0000: self.OwnerPawn = _OwnerPawn
+  000b: return nothing
+  000d: <eos>
+
+function TnDialogManager.PlayDialog  (script 70 bytes)
+  0000: if !((self.OwnerPawn != none)) goto 0x0043
+  000b: HmWorldInfo(self.OwnerPawn.WorldInfo)._DialogEventManager.Play(self.OwnerPawn, Dialog, , , , )
+  0043: return nothing
+  0045: <eos>
+
+function TnDialogManager.GetDNI  (script 109 bytes)
+  0000: if !((P != none)) goto 0x0060
+  000b: SP = TnServiceProvider(P.Controller)
+  0024: if !(NotEqual_InterfaceInterface(SP, TnServiceProvider(none))) goto 0x0060
+  0038: DNI = TnDialogNotificationService(SP.GetService('TnDialogNotificationService'))
+  0060: return DNI
+  0066: return return
+  006c: <eos>
+
+function TnDialogManager.DialogRegisterEnemy  (script 54 bytes)
+  0000: if !((P == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self._Enemies.Find(P) != -1)) goto 0x0026
+  0024: return nothing
+  0026: self._Enemies.AddItem(P)
+  0033: return nothing
+  0035: <eos>
+
+function TnDialogManager.DialogUnregisterEnemy  (script 49 bytes)
+  0000: Index = self._Enemies.Find(P)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self._Enemies.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnDialogManager.DialogUnregisterAllEnemies  (script 16 bytes)
+  0000: self._Enemies.Remove(0,self._Enemies.Length)
+  000d: return nothing
+  000f: <eos>
+
+function TnDialogManager.DialogNotify  (script 79 bytes)
+  0000: switch (NotifyType)
+  0007: case 4: (next 0x001d)
+  000c: PlayDialog(self.RevivedTeammateDialog)
+  001b: return nothing
+  001d: case 6: (next 0x0033)
+  0022: PlayDialog(self.FiredHealGrenadeDialog)
+  0031: return nothing
+  0033: case 3: (next 0x0049)
+  0038: PlayDialog(self.BlindDialog)
+  0047: return nothing
+  0049: default:
+  004c: return nothing
+  004e: <eos>
+
+function TnDialogManager.DialogNotifyFromEnemy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDialogManager.DialogNotifyFromTeammate  (script 167 bytes)
+  0000: switch (NotifyType)
+  0007: case 0: (next 0x001d)
+  000c: PlayDialog(self.TeammateKilledDialog)
+  001b: return nothing
+  001d: case 1: (next 0x0033)
+  0022: PlayDialog(self.TeammateSpawnedDialog)
+  0031: return nothing
+  0033: case 9: (next 0x0049)
+  0038: PlayDialog(self.HealedCompletelyDialog)
+  0047: return nothing
+  0049: case 10: (next 0x005f)
+  004e: PlayDialog(self.InflictedFriendlyFireFromGunDialog)
+  005d: return nothing
+  005f: case 11: (next 0x0075)
+  0064: PlayDialog(self.InflictedFriendlyFireFromRocketDialog)
+  0073: return nothing
+  0075: case 12: (next 0x008b)
+  007a: PlayDialog(self.InflictedFriendlyFireFromMeleeDialog)
+  0089: return nothing
+  008b: case 13: (next 0x00a1)
+  0090: PlayDialog(self.InflictedFriendlyFireFromExplosiveDialog)
+  009f: return nothing
+  00a1: default:
+  00a4: return nothing
+  00a6: <eos>
+
+function TnDialogManager.DialogBroadcastNotifyToEnemies  (script 124 bytes)
+  0000: Index = 0
+  0007: if !((Index < self._Enemies.Length)) goto 0x0079
+  0017: P = Index[self._Enemies]
+  0028: EnemyDNI = GetDNI(P)
+  003d: if !(NotEqual_InterfaceInterface(EnemyDNI, TnDialogNotificationService(none))) goto 0x006f
+  0051: EnemyDNI.DialogNotifyFromEnemy(NotifyType, self.OwnerPawn)
+  006f: AddAdd_PreInt(Index)
+  0076: goto 0x0007
+  0079: return nothing
+  007b: <eos>
+
+function TnDialogManager.DialogBroadcastNotifyToCloseTeammates  (script 451 bytes)
+  0000: ComparisonDistanceSq = (self._TeammateDialogNotifyDistance * self._TeammateDialogNotifyDistance)
+  0012: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  002b: foreach WI.AllControllers(obj'Engine.Controller', C) (end 0x01bf)
+  004b: if !(((((C.Pawn == none) || C.Pawn.IsDying()) || C.Pawn.IsDead()) || !C.Pawn.IsSameTeam(self.OwnerPawn))) goto 0x00cd
+  00c9: iternext
+  00ca: goto 0x01bf
+  00cd: if !((self.OwnerPawn == C.Pawn)) goto 0x00e9
+  00e5: iternext
+  00e6: goto 0x01bf
+  00e9: ServiceProvider = TnServiceProvider(C)
+  00f9: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x0111
+  010d: iternext
+  010e: goto 0x01bf
+  0111: FriendDNI = TnDialogNotificationService(ServiceProvider.GetService('TnDialogNotificationService'))
+  0139: if !(EqualEqual_InterfaceInterface(FriendDNI, TnDialogNotificationService(none))) goto 0x0151
+  014d: iternext
+  014e: goto 0x01bf
+  0151: DistanceSq = obj'Core.Math'.static.VSizeSq((C.Pawn.Location - self.OwnerPawn.Location))
+  0191: if !((DistanceSq < ComparisonDistanceSq)) goto 0x01be
+  01a0: FriendDNI.DialogNotifyFromTeammate(NotifyType, self.OwnerPawn)
+  01be: iternext
+  01bf: iterpop
+  01c0: return nothing
+  01c2: <eos>
+
+function TnDialogManager.PlaySpawnedDialog  (script 30 bytes)
+  0000: PlayDialog(self.SpawnedDialog)
+  000f: DialogBroadcastNotifyToCloseTeammates(1)
+  001b: return nothing
+  001d: <eos>
+
+function TnDialogManager.PlayTransformDialog  (script 57 bytes)
+  0000: switch (TargetForm)
+  0007: case 0: (next 0x001d)
+  000c: PlayDialog(self.TransformToRobotDialog)
+  001b: return nothing
+  001d: case 1: (next 0x0033)
+  0022: PlayDialog(self.TransformToVehicleDialog)
+  0031: return nothing
+  0033: default:
+  0036: return nothing
+  0038: <eos>
+
+function TnDialogManager.PlayTargetKilledDialog  (script 243 bytes)
+  0000: if !(KilledByHeadshot) goto 0x0026
+  0009: PlayDialog(self.TargetKilledByHeadshotDialog)
+  0018: DialogBroadcastNotifyToCloseTeammates(14)
+  0024: return nothing
+  0026: DamageClass = class<TnDamageType>(DamageType)
+  0036: if !((DamageClass != none)) goto 0x00e1
+  0041: switch (DamageClass.static.GetDialogDamageCategory())
+  0056: case 1: (next 0x0078)
+  005b: PlayDialog(self.TargetKilledByGunDialog)
+  006a: DialogBroadcastNotifyToCloseTeammates(15)
+  0076: return nothing
+  0078: case 2: (next 0x009a)
+  007d: PlayDialog(self.TargetKilledByRocketDialog)
+  008c: DialogBroadcastNotifyToCloseTeammates(16)
+  0098: return nothing
+  009a: case 3: (next 0x00bc)
+  009f: PlayDialog(self.TargetKilledByExplosiveDialog)
+  00ae: DialogBroadcastNotifyToCloseTeammates(18)
+  00ba: return nothing
+  00bc: case 4: (next 0x00de)
+  00c1: PlayDialog(self.TargetKilledByMeleeDialog)
+  00d0: DialogBroadcastNotifyToCloseTeammates(17)
+  00dc: return nothing
+  00de: default:
+  00e1: PlayDialog(self.TargetKilledDialog)
+  00f0: return nothing
+  00f2: <eos>
+
+function TnDialogManager.UpdateHealthDialog  (script 145 bytes)
+  0000: if !((DeltaTime == 0.0)) goto 0x0011
+  000f: return nothing
+  0011: if !((NormalizedHealth <= self._HealthLowThreshold)) goto 0x0086
+  0020: if !(!self.bBelowHealthThreshold) goto 0x004f
+  002b: PlayDialog(self.HealthIsLowDialog)
+  003a: self.bBelowHealthThreshold = true
+  0042: self.HealthLowTime = 0.0
+  004d: return nothing
+  004f: (self.HealthLowTime += DeltaTime)
+  005b: if !((self.HealthLowTime >= self._HealthLowIdleDialogFrequency)) goto 0x0084
+  006a: PlayDialog(self.HealthIsLowIdleDialog)
+  0079: self.HealthLowTime = 0.0
+  0084: return nothing
+  0086: self.bBelowHealthThreshold = false
+  008e: return nothing
+  0090: <eos>
+
+function TnDialogManager.PlayFriendlyFireDialog  (script 351 bytes)
+  0000: InstigatorDNI = GetDNI(InstigatorPawn)
+  0015: DamageClass = class<TnDamageType>(DamageType)
+  0025: if !((DamageClass != none)) goto 0x015c
+  0030: switch (DamageClass.static.GetDialogDamageCategory())
+  0045: case 1: (next 0x008a)
+  004a: PlayDialog(self.TeammateFriendlyFireFromGunDialog)
+  0059: if !(NotEqual_InterfaceInterface(InstigatorDNI, TnDialogNotificationService(none))) goto 0x0088
+  006d: InstigatorDNI.DialogNotifyFromTeammate(10, self.OwnerPawn)
+  0088: return nothing
+  008a: case 2: (next 0x00cf)
+  008f: PlayDialog(self.TeammateFriendlyFireFromRocketDialog)
+  009e: if !(NotEqual_InterfaceInterface(InstigatorDNI, TnDialogNotificationService(none))) goto 0x00cd
+  00b2: InstigatorDNI.DialogNotifyFromTeammate(11, self.OwnerPawn)
+  00cd: return nothing
+  00cf: case 3: (next 0x0114)
+  00d4: PlayDialog(self.TeammateFriendlyFireFromExplosiveDialog)
+  00e3: if !(NotEqual_InterfaceInterface(InstigatorDNI, TnDialogNotificationService(none))) goto 0x0112
+  00f7: InstigatorDNI.DialogNotifyFromTeammate(13, self.OwnerPawn)
+  0112: return nothing
+  0114: case 4: (next 0x0159)
+  0119: PlayDialog(self.TeammateFriendlyFireFromMeleeDialog)
+  0128: if !(NotEqual_InterfaceInterface(InstigatorDNI, TnDialogNotificationService(none))) goto 0x0157
+  013c: InstigatorDNI.DialogNotifyFromTeammate(12, self.OwnerPawn)
+  0157: return nothing
+  0159: default:
+  015c: return nothing
+  015e: <eos>
+
+function TnDialogManager.PlayDownedDialog  (script 42 bytes)
+  0000: DialogBroadcastNotifyToEnemies(2)
+  000c: DialogBroadcastNotifyToCloseTeammates(2)
+  0018: PlayDialog(self.DownedDialog)
+  0027: return nothing
+  0029: <eos>
+
+function TnDialogManager.PlayRevivedDialog  (script 18 bytes)
+  0000: PlayDialog(self.RevivedDialog)
+  000f: return nothing
+  0011: <eos>
+
+function TnDialogManager.PlayKilledDialog  (script 45 bytes)
+  0000: PlayDialog(self.VerbalKilledDialog)
+  000f: PlayDialog(self.KilledDialog)
+  001e: DialogBroadcastNotifyToCloseTeammates(0)
+  002a: return nothing
+  002c: <eos>
+
+function TnDialogManager.PlayRetreatBeginDialog  (script 18 bytes)
+  0000: PlayDialog(self.RetreatBeginDialog)
+  000f: return nothing
+  0011: <eos>

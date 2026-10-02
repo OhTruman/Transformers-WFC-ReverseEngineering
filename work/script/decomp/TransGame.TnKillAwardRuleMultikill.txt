@@ -1,0 +1,15 @@
+function TnKillAwardRuleMultikill.CheckRule  (script 148 bytes)
+  0000: MultiKillLevel = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).get_MultiKillLevel()
+  0027: switch (MultiKillLevel)
+  002e: case 2: (next 0x004e)
+  0033: Killer.NotifyXpEvent(obj'TnXpEventTypeMultiKill2')
+  004b: goto 0x0091
+  004e: case 3: (next 0x006e)
+  0053: Killer.NotifyXpEvent(obj'TnXpEventTypeMultiKill3')
+  006b: goto 0x0091
+  006e: case 4: (next 0x008e)
+  0073: Killer.NotifyXpEvent(obj'TnXpEventTypeMultiKill4')
+  008b: goto 0x0091
+  008e: default:
+  0091: return nothing
+  0093: <eos>

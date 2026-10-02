@@ -1,0 +1,197 @@
+function TnTransformingWorldActor.OnPostEditChange  (script 72 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((PropertyName == 'InitialTransformState')) goto 0x0027
+  001e: TnTransformingWorldActor.SetInitialTransformState()
+  0024: goto 0x0045
+  0027: if !((PropertyName == 'Gates')) goto 0x0045
+  003a: TnTransformingWorldActor.SetValuesForState(self.InitialTransformState)
+  0045: return nothing
+  0047: <eos>
+
+function TnTransformingWorldActor.SetGateNodeState  (script 234 bytes)
+  0000: foreach self.Gates(Gate,) (end 0x00e6)
+  000f: if !((Gate.Node == none)) goto 0x0029
+  0025: iternext
+  0026: goto 0x00e6
+  0029: if !((Gate.Node.get_Gated() == false)) goto 0x006c
+  004d: Gate.Node.set_Gated(true)
+  006c: if !((cast3a(TransformState) == cast3a(0))) goto 0x00b2
+  007c: Gate.Node.bGateOpen = (cast3a(Gate.Behavior) == cast3a(1))
+  00af: goto 0x00e5
+  00b2: Gate.Node.bGateOpen = (cast3a(Gate.Behavior) == cast3a(0))
+  00e5: iternext
+  00e6: iterpop
+  00e7: return nothing
+  00e9: <eos>
+
+function TnTransformingWorldActor.SetValuesForState  (script 131 bytes)
+  0000: TnTransformingWorldActor.SetGateNodeState(EndPoint)
+  000b: if !((cast3a(EndPoint) == cast3a(0))) goto 0x003b
+  001b: get_SequenceNode().SetNormalizedPosition(0.0)
+  0038: goto 0x0058
+  003b: get_SequenceNode().SetNormalizedPosition(1.0)
+  0058: self.SkeletalMeshComponent.ForceSkelUpdate()
+  006b: self.SkeletalMeshComponent.UpdateRBBonesFromSpaceBases(false, true)
+  0080: return nothing
+  0082: <eos>
+
+function TnTransformingWorldActor.SetInitialTransformState  (script 165 bytes)
+  0000: TnTransformingWorldActor.SetValuesForState(self.InitialTransformState)
+  000b: if !((cast3a(self.InitialTransformState) == cast3a(0))) goto 0x0038
+  001b: self.InitialState = 'Untransformed'
+  002a: AnimPercentage = 0.0
+  0035: goto 0x0052
+  0038: self.InitialState = 'Transformed'
+  0047: AnimPercentage = 1.0
+  0052: self.SkeletalMeshComponent.ForceSkelUpdate()
+  0065: self.SkeletalMeshComponent.UpdateRBBonesFromSpaceBases(false, true)
+  007a: LightmappedMeshComponent = HmInterpolatedLightMappedSkeletalMeshComponent(self.SkeletalMeshComponent)
+  008a: LightmappedMeshComponent.SetInterpolationPercentage(AnimPercentage)
+  00a2: return nothing
+  00a4: <eos>
+
+function TnTransformingWorldActor.get_SequenceNode  (script 27 bytes)
+  0000: return AnimNodeSequence(self.SkeletalMeshComponent.Animations)
+  0014: return return
+  001a: <eos>
+
+function TnTransformingWorldActor.ReplicatedEvent  (script 46 bytes)
+  0000: if !((VarName == 'DesiredTransformState')) goto 0x0020
+  0013: OnDesiredStateChanged()
+  001d: goto 0x002b
+  0020: ReplicatedEvent(VarName)
+  002b: return nothing
+  002d: <eos>
+
+function TnTransformingWorldActor.SetDesiredTransformState  (script 24 bytes)
+  0000: self.DesiredTransformState = NewDesiredState
+  000b: OnDesiredStateChanged()
+  0015: return nothing
+  0017: <eos>
+
+function TnTransformingWorldActor.IsTransforming  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnTransformingWorldActor.OnToggle  (script 107 bytes)
+  0000: switch (Toggle.GetActionInputType())
+  0015: case 0: (next 0x0029)
+  001a: SetDesiredTransformState(1)
+  0026: goto 0x0068
+  0029: case 1: (next 0x003d)
+  002e: SetDesiredTransformState(0)
+  003a: goto 0x0068
+  003d: case 2: (next 0x0065)
+  0042: SetDesiredTransformState(((cast3a(self.DesiredTransformState) == cast3a(1)) ? 0 : 1))
+  0062: goto 0x0068
+  0065: default:
+  0068: return nothing
+  006a: <eos>
+
+function TnTransformingWorldActor.OnDesiredStateChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformingWorldActor.Untransformed.BeginState  (script 11 bytes)
+  0000: TnTransformingWorldActor.SetValuesForState(0)
+  0008: return nothing
+  000a: <eos>
+
+function TnTransformingWorldActor.Untransformed.OnDesiredStateChanged  (script 33 bytes)
+  0000: if !((cast3a(self.DesiredTransformState) == cast3a(1))) goto 0x001e
+  0010: GotoState('Transforming', , , )
+  001e: return nothing
+  0020: <eos>
+
+function TnTransformingWorldActor.Transforming.OnToggle  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformingWorldActor.Transforming.BeginState  (script 59 bytes)
+  0000: get_SequenceNode().PlayAnim(false, 1.0, 0.0)
+  0023: TriggerStimulus(obj'TnStimulusType_WorldTransformation', self.Location, )
+  0038: return nothing
+  003a: <eos>
+
+function TnTransformingWorldActor.Transforming.IsTransforming  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnTransformingWorldActor.Transforming.Tick  (script 72 bytes)
+  0000: Tick(DeltaTime)
+  000b: Pos = get_SequenceNode().GetNormalizedPosition()
+  002a: if !((Pos >= cast3f(1))) goto 0x0045
+  0037: GotoState('Transformed', , , )
+  0045: return nothing
+  0047: <eos>
+
+function TnTransformingWorldActor.Transforming.OnDesiredStateChanged  (script 33 bytes)
+  0000: if !((cast3a(self.DesiredTransformState) == cast3a(0))) goto 0x001e
+  0010: GotoState('Untransforming', , , )
+  001e: return nothing
+  0020: <eos>
+
+function TnTransformingWorldActor.Untransforming.OnToggle  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformingWorldActor.Untransforming.BeginState  (script 78 bytes)
+  0000: get_SequenceNode().PlayAnim(false, -1.0, get_SequenceNode().GetAnimPlaybackLength())
+  0036: TriggerStimulus(obj'TnStimulusType_WorldTransformation', self.Location, )
+  004b: return nothing
+  004d: <eos>
+
+function TnTransformingWorldActor.Untransforming.IsTransforming  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnTransformingWorldActor.Untransforming.Tick  (script 72 bytes)
+  0000: Tick(DeltaTime)
+  000b: Pos = get_SequenceNode().GetNormalizedPosition()
+  002a: if !((Pos <= cast3f(0))) goto 0x0045
+  0037: GotoState('Untransformed', , , )
+  0045: return nothing
+  0047: <eos>
+
+function TnTransformingWorldActor.Untransforming.OnDesiredStateChanged  (script 33 bytes)
+  0000: if !((cast3a(self.DesiredTransformState) == cast3a(1))) goto 0x001e
+  0010: GotoState('Transforming', , , )
+  001e: return nothing
+  0020: <eos>
+
+function TnTransformingWorldActor.Transformed.BeginState  (script 11 bytes)
+  0000: TnTransformingWorldActor.SetValuesForState(1)
+  0008: return nothing
+  000a: <eos>
+
+function TnTransformingWorldActor.Transformed.OnDesiredStateChanged  (script 33 bytes)
+  0000: if !((cast3a(self.DesiredTransformState) == cast3a(0))) goto 0x001e
+  0010: GotoState('Untransforming', , , )
+  001e: return nothing
+  0020: <eos>
+
+function TnTransformingWorldActor.CheckForErrors  (script 686 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.SkeletalMeshComponent.AnimSets.Length == 0)) goto 0x0062
+  001b: EmitCheckMessage(0, "Transforming world actors must have an animset assigned", , )
+  0062: Sequence = AnimNodeSequence(self.SkeletalMeshComponent.Animations)
+  007b: if !((Sequence == none)) goto 0x00db
+  0086: EmitCheckMessage(0, "Transforming world actors must have a sequence node as it's animation", , )
+  00db: if !((Sequence.AnimSeqName == 'None')) goto 0x013e
+  00f7: EmitCheckMessage(0, "Transforming world actors must have a sequence name set", , )
+  013e: if !((self.SkeletalMeshComponent.FindAnimSequence(Sequence.AnimSeqName) == none)) goto 0x01cb
+  0165: EmitCheckMessage(0, (("Failed to find sequence '" $ cast57(Sequence.AnimSeqName)) $ "' in any of the animsets assigned to it"), , )
+  01cb: foreach self.Gates(Gate,) (end 0x02aa)
+  01da: if !((Gate.Node == none)) goto 0x0231
+  01f0: EmitCheckMessage(0, "Empty gate node entry in the gate node array.", , )
+  022d: iternext
+  022e: goto 0x02aa
+  0231: if !(!Gate.Node.get_Gated()) goto 0x02a9
+  0254: EmitCheckMessage(0, (("Can't control a non-gated navigation point '" $ cast56(Gate.Node)) $ "'"), , )
+  02a9: iternext
+  02aa: iterpop
+  02ab: return nothing
+  02ad: <eos>

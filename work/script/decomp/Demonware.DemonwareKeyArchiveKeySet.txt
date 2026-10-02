@@ -1,0 +1,27 @@
+function DemonwareKeyArchiveKeySet.Init  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareKeyArchiveKeySet.RefreshValues  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function DemonwareKeyArchiveKeySet.GetStatsInterface  (script 54 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: return OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  002f: return return
+  0035: <eos>
+
+function DemonwareKeyArchiveKeySet.GetPRI  (script 112 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'Engine.PlayerController', PC) (end 0x0066)
+  0039: if !(!PC.IsLocalPlayerController()) goto 0x0055
+  0051: iternext
+  0052: goto 0x0066
+  0055: iterpop
+  0056: return PC.PlayerReplicationInfo
+  0065: iternext
+  0066: iterpop
+  0067: return none
+  0069: return return
+  006f: <eos>

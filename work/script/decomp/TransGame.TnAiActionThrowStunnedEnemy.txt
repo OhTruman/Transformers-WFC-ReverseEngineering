@@ -1,0 +1,73 @@
+function TnAiActionThrowStunnedEnemy.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionThrowStunnedEnemyBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionThrowStunnedEnemy.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._GrabAttackerService = TnGrabAttackerService(GetService('TnGrabAttackerService', 2))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionThrowStunnedEnemy.OnSetUpConditions  (script 145 bytes)
+  0000: Target = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateEnemyStunned', Target)
+  0057: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateGrabbedObject', Target)
+  0079: return OnSetUpConditions(ExpectedEffects, Conditions)
+  008a: return return
+  0090: <eos>
+
+function TnAiActionThrowStunnedEnemy.OnStart  (script 282 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: if !((self._Target._RobotForm != none)) goto 0x0092
+  0052: self._Target._RobotForm.set_FallingAnimSetOverride(cast3a(self._Target.get_Size())[self._Blueprint.FallingAnimSets])
+  0092: SetCharacterState(((256 | 1) | 8))
+  00a8: self._ActivatedTimer.Start(delegate.ThrowEnemy, self._Blueprint.ReleaseTime, )
+  00d3: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAnimationComplete, delegate.OnAnimationComplete)
+  0107: return OnStart(ExpectedEffects)
+  0113: return return
+  0119: <eos>
+
+function TnAiActionThrowStunnedEnemy.OnUpdate  (script 48 bytes)
+  0000: self._ActivatedTimer.Tick(DeltaTime)
+  0018: return OnUpdate(ExpectedEffects, DeltaTime)
+  0029: return return
+  002f: <eos>
+
+function TnAiActionThrowStunnedEnemy.OnAnimationComplete  (script 54 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0029
+  001d: SucceedCallback()
+  0027: return nothing
+  0029: FailCallback()
+  0033: return nothing
+  0035: <eos>
+
+function TnAiActionThrowStunnedEnemy.OnFinish  (script 249 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._ActivatedTimer.Clear()
+  001e: self._AnimatorService.StopAnimation(, )
+  0034: TnAiActionThrowStunnedEnemy.ThrowEnemy()
+  003a: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateGrabbedObject', false, )
+  0054: self._TransformerPawn.SetPhysics(2, , )
+  006b: StunnedEnemy = TnPawn(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateEnemyStunned'))
+  0093: if !((StunnedEnemy == none)) goto 0x00a0
+  009e: return nothing
+  00a0: BuffService = TnBuffService(StunnedEnemy.GetService('TnBuffService'))
+  00c7: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x00dd
+  00db: return nothing
+  00dd: BuffService.RemoveBuff(obj'TnBuffFlashBang')
+  00f6: return nothing
+  00f8: <eos>
+
+function TnAiActionThrowStunnedEnemy.ThrowEnemy  (script 67 bytes)
+  0000: if !((self._GrabAttackerService.get_IsActive() == false)) goto 0x001c
+  001a: return nothing
+  001c: self._GrabAttackerService.Throw(cast39(self._TransformerPawn.Rotation))
+  0040: return nothing
+  0042: <eos>

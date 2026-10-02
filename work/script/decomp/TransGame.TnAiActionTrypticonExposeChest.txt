@@ -1,0 +1,17 @@
+function TnAiActionTrypticonExposeChest.OnBind  (script 25 bytes)
+  0000: TnAiActionPlayAnimation.OnBind()
+  0006: self._Trypticon = TnTrypticonPawn(self._TransformerPawn)
+  0016: return nothing
+  0018: <eos>
+
+function TnAiActionTrypticonExposeChest.OnStart  (script 38 bytes)
+  0000: self._Trypticon.ExposeChest()
+  0013: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  001f: return return
+  0025: <eos>
+
+function TnAiActionTrypticonExposeChest.OnFinish  (script 33 bytes)
+  0000: TnAiActionEmote.OnFinish(CurrentState)
+  000b: self._Trypticon.HideChest()
+  001e: return nothing
+  0020: <eos>

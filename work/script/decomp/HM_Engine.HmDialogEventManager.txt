@@ -1,0 +1,175 @@
+function HmDialogEventManager.Initialize  (script 76 bytes)
+  0000: self._Disabled = 0
+  0007: self.DisabledTimer = 0.0
+  0012: self.DialogPlaybackGroups.Length = 0
+  001a: if !((none == self.DefaultDialogGroup)) goto 0x0039
+  0025: self.DefaultDialogGroup = new(self, nothing, obj'Engine.HmSoundEventDialogGroup', nothing, AttachTreeCallback)
+  0039: HmDialogEventManager.FindPlaybackGroupIndex(self.DefaultDialogGroup, GroupIndex)
+  0049: return nothing
+  004b: <eos>
+
+function HmDialogEventManager.Play  (script 226 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !(((none == Target) || (none == SoundEvent))) goto 0x0037
+  0035: return nothing
+  0037: if !((cast3a(Target.WorldInfo.NetMode) == cast3a(3))) goto 0x005b
+  0059: return nothing
+  005b: if !((self.DisabledTimer > 0.0)) goto 0x006c
+  006a: return nothing
+  006c: DialogGroup = SoundEvent.DialogGroup
+  0080: if !((none == DialogGroup)) goto 0x0096
+  008b: DialogGroup = self.DefaultDialogGroup
+  0096: HmDialogEventManager.CleanupDialogPlaybackGroups()
+  009c: if !((false == HmDialogEventManager.CanPlayDialog(SoundEvent, DialogGroup))) goto 0x00b4
+  00b2: return nothing
+  00b4: HmDialogEventManager.PlayInternal(Target, SoundEvent, DialogGroup, Replicate, Type, Deactivate, DialogCallback)
+  00df: return nothing
+  00e1: <eos>
+
+function HmDialogEventManager.EnableGroup  (script 57 bytes)
+  0000: if !((none == DialogGroup)) goto 0x000d
+  000b: return nothing
+  000d: HmDialogEventManager.FindPlaybackGroupIndex(DialogGroup, GroupIndex)
+  001d: GroupIndex[self.DialogPlaybackGroups].Disabled = false
+  0036: return nothing
+  0038: <eos>
+
+function HmDialogEventManager.DisableGroup  (script 68 bytes)
+  0000: if !((none == DialogGroup)) goto 0x000d
+  000b: return nothing
+  000d: HmDialogEventManager.FindPlaybackGroupIndex(DialogGroup, GroupIndex)
+  001d: HmDialogEventManager.StopAllDialogOnGroup(DialogGroup)
+  0028: GroupIndex[self.DialogPlaybackGroups].Disabled = true
+  0041: return nothing
+  0043: <eos>
+
+function HmDialogEventManager.DisablePlayback  (script 106 bytes)
+  0000: if !(bDisable) goto 0x0014
+  0009: self.DisabledTimer = 1.0
+  0014: foreach self.DialogPlaybackGroups(PlaybackGroup,) (end 0x003a)
+  0023: HmDialogEventManager.StopAllDialogOnGroup(PlaybackGroup.DialogGroup)
+  0039: iternext
+  003a: iterpop
+  003b: if !(bDisable) goto 0x004e
+  0044: AddAdd_Int(self._Disabled)
+  004b: goto 0x0067
+  004e: SubtractSubtract_Int(self._Disabled)
+  0055: if !((self._Disabled < 0)) goto 0x0067
+  0060: self._Disabled = 0
+  0067: return nothing
+  0069: <eos>
+
+function HmDialogEventManager.Tick  (script 174 bytes)
+  0000: GroupIndex = 0
+  0007: if !((GroupIndex < self.DialogPlaybackGroups.Length)) goto 0x007a
+  0017: (GroupIndex[self.DialogPlaybackGroups].RetriggerTimer -= DeltaTime)
+  0034: if !((GroupIndex[self.DialogPlaybackGroups].RetriggerTimer < 0.0)) goto 0x0070
+  0054: GroupIndex[self.DialogPlaybackGroups].RetriggerTimer = 0.0
+  0070: AddAdd_Int(GroupIndex)
+  0077: goto 0x0007
+  007a: if !((0 == self._Disabled)) goto 0x00ab
+  0085: (self.DisabledTimer -= DeltaTime)
+  0091: if !((self.DisabledTimer < 0.0)) goto 0x00ab
+  00a0: self.DisabledTimer = 0.0
+  00ab: return nothing
+  00ad: <eos>
+
+function HmDialogEventManager.PlayInternal  (script 272 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none != DialogGroup)) goto 0x00df
+  0028: HmDialogEventManager.FindPlaybackGroupIndex(DialogGroup, GroupIndex)
+  0038: HmDialogEventManager.AddSortedPlaybackInstance(GroupIndex[self.DialogPlaybackGroups].PlaybackInstances, Target, SoundEvent)
+  005e: if !(((GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Length >= DialogGroup.InstanceLimit) || (0 == DialogGroup.InstanceLimit))) goto 0x00c8
+  009e: GroupIndex[self.DialogPlaybackGroups].RetriggerTimer = DialogGroup.GetRetriggerDelay()
+  00c8: DialogGroup = DialogGroup.ParentDialogGroup
+  00dc: goto 0x001d
+  00df: Target.PlayDialogEvent(SoundEvent, Replicate, Type, Deactivate, DialogCallback)
+  010d: return nothing
+  010f: <eos>
+
+function HmDialogEventManager.CanPlayDialog  (script 318 bytes)
+  0000: if !((none != DialogGroup)) goto 0x0135
+  000b: HmDialogEventManager.FindPlaybackGroupIndex(DialogGroup, GroupIndex)
+  001b: if !(GroupIndex[self.DialogPlaybackGroups].Disabled) goto 0x0037
+  0035: return false
+  0037: if !((GroupIndex[self.DialogPlaybackGroups].RetriggerTimer > 0.0)) goto 0x0059
+  0057: return false
+  0059: if !(((GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Length >= DialogGroup.InstanceLimit) && (DialogGroup.InstanceLimit != 0))) goto 0x011e
+  0099: PlayBackInstance = 0[GroupIndex[self.DialogPlaybackGroups].PlaybackInstances]
+  00b7: if !((SoundEvent.DialogPriority <= PlayBackInstance.SoundEvent.DialogPriority)) goto 0x00e5
+  00e3: return false
+  00e5: PlayBackInstance.Target.StopDialog(, )
+  0105: GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Remove(0,1)
+  011e: DialogGroup = DialogGroup.ParentDialogGroup
+  0132: goto 0x0000
+  0135: return true
+  0137: return return
+  013d: <eos>
+
+function HmDialogEventManager.CleanupDialogPlaybackGroups  (script 258 bytes)
+  0000: GroupIndex = 0
+  0007: if !((GroupIndex < self.DialogPlaybackGroups.Length)) goto 0x00ff
+  0017: InstanceIndex = (GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Length - 1)
+  0037: if !((InstanceIndex >= 0)) goto 0x00f5
+  0042: Instance = InstanceIndex[GroupIndex[self.DialogPlaybackGroups].PlaybackInstances]
+  0064: if !((none == Instance.Target)) goto 0x009a
+  007a: GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Remove(InstanceIndex,1)
+  0097: goto 0x00eb
+  009a: if !((false == Instance.Target.GetIsDialogPlayingEvent(Instance.SoundEvent))) goto 0x00eb
+  00ce: GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Remove(InstanceIndex,1)
+  00eb: SubtractSubtract_Int(InstanceIndex)
+  00f2: goto 0x0037
+  00f5: AddAdd_Int(GroupIndex)
+  00fc: goto 0x0007
+  00ff: return nothing
+  0101: <eos>
+
+function HmDialogEventManager.FindPlaybackGroupIndex  (script 81 bytes)
+  0000: GroupIndex = 0
+  0007: if !((GroupIndex < self.DialogPlaybackGroups.Length)) goto 0x0043
+  0017: if !((GroupIndex[self.DialogPlaybackGroups].DialogGroup == DialogGroup)) goto 0x0039
+  0037: return nothing
+  0039: AddAdd_Int(GroupIndex)
+  0040: goto 0x0007
+  0043: HmDialogEventManager.CreateDialogPlaybackGroup(DialogGroup)
+  004e: return nothing
+  0050: <eos>
+
+function HmDialogEventManager.CreateDialogPlaybackGroup  (script 74 bytes)
+  0000: Group.DialogGroup = DialogGroup
+  0016: Group.RetriggerTimer = DialogGroup.GetInitialDelay()
+  003a: self.DialogPlaybackGroups.AddItem(Group)
+  0047: return nothing
+  0049: <eos>
+
+function HmDialogEventManager.AddSortedPlaybackInstance  (script 174 bytes)
+  0000: Instance.SoundEvent = SoundEvent
+  0016: Instance.Target = Target
+  002c: Index = 0
+  0033: if !((Index < PlaybackInstances.Length)) goto 0x009e
+  0043: if !((SoundEvent.DialogPriority < Index[PlaybackInstances].SoundEvent.DialogPriority)) goto 0x0094
+  0075: PlaybackInstances.Insert(Index,1)
+  0081: Index[PlaybackInstances] = Instance
+  0092: return nothing
+  0094: AddAdd_Int(Index)
+  009b: goto 0x0033
+  009e: PlaybackInstances.AddItem(Instance)
+  00ab: return nothing
+  00ad: <eos>
+
+function HmDialogEventManager.StopAllDialogOnGroup  (script 139 bytes)
+  0000: HmDialogEventManager.CleanupDialogPlaybackGroups()
+  0006: HmDialogEventManager.FindPlaybackGroupIndex(DialogGroup, GroupIndex)
+  0016: if !((GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Length > 0)) goto 0x0082
+  0033: 0[GroupIndex[self.DialogPlaybackGroups].PlaybackInstances].Target.StopDialog(, )
+  0066: GroupIndex[self.DialogPlaybackGroups].PlaybackInstances.Remove(0,1)
+  007f: goto 0x0016
+  0082: return true
+  0084: return return
+  008a: <eos>

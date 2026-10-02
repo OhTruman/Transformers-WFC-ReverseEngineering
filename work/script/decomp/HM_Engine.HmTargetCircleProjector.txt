@@ -1,0 +1,15 @@
+function HmTargetCircleProjector.ProjectToTargetCircle  (script 102 bytes)
+  0000: CameraDotToward = (CameraToTarget dot CameraForward)
+  0012: if !((obj'Core.Math'.static.Abs(CameraDotToward) > cast3f(0))) goto 0x0051
+  002a: return (CameraForward * (obj'Core.Math'.static.VSizeSq(CameraToTarget) / CameraDotToward))
+  0051: return vect(0,0,0)
+  005f: return return
+  0065: <eos>
+
+function HmTargetCircleProjector.GetTargetCircleCoords  (script 93 bytes)
+  0000: TargetPointOnCircle = HmTargetCircleProjector.ProjectToTargetCircle(CameraForward, CameraToTarget)
+  0016: ResultPosition.X = (TargetPointOnCircle dot TargetRight)
+  0033: ResultPosition.Y = (TargetPointOnCircle dot TargetUp)
+  0050: return ResultPosition
+  0056: return return
+  005c: <eos>

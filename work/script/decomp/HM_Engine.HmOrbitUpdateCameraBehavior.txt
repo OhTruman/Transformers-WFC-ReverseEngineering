@@ -1,0 +1,14 @@
+function HmOrbitUpdateCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitUpdateCameraBehavior.Update  (script 164 bytes)
+  0000: ToAnchor = (self.AnchorPoint.Location - Result.Location)
+  0026: if !((obj'Core.Math'.static.VSize(ToAnchor) > 1.0)) goto 0x0076
+  0040: Result.OrbitRotation = cast50((self.AnchorPoint.Location - Result.Location))
+  0073: goto 0x0097
+  0076: Result.OrbitRotation = Result.Rotation
+  0097: return Result
+  009d: return return
+  00a3: <eos>

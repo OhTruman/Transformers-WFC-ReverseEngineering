@@ -1,0 +1,7 @@
+function TnBuffExplodeOnDeathBase.Explode  (script 140 bytes)
+  0000: if !((cast3a(self.OwnerPawn.Role) < cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: ExplosionOrigin = self.OwnerPawn.Mesh.GetSocketWorldLocation('TargetingSocket')
+  0046: self.OwnerPawn.HurtRadius(self.Damage, self.DamageRadius, -1.0, self.DamageType, self.DamageMomentum, ExplosionOrigin, self.OwnerPawn, self.OwnerController, !self.UseDamageFalloff)
+  0089: return nothing
+  008b: <eos>

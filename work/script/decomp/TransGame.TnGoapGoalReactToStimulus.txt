@@ -1,0 +1,31 @@
+function TnGoapGoalReactToStimulus.Initialize  (script 50 bytes)
+  0000: Initialize(Blueprint)
+  000b: BP = TnGoapGoalReactToStimulusBlueprint(Blueprint)
+  001b: self.StimulusConditionSet = BP.StimulusConditionSet
+  002f: return nothing
+  0031: <eos>
+
+function TnGoapGoalReactToStimulus.PopulateGoals  (script 788 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: AiC = TnAiController(self.BoundController)
+  0027: if !((AiC == none)) goto 0x0034
+  0032: return false
+  0034: MostRecentStimulus = AiC._MostRecentStimulus
+  0048: if !(((MostRecentStimulus.Source == none) || (MostRecentStimulus.Type == none))) goto 0x0078
+  0076: return false
+  0078: StimulusIndex = self.StimulusConditionSet.StimulusConditions.Find('StimulusType',MostRecentStimulus.Type)
+  00a8: if !((StimulusIndex == -1)) goto 0x00b9
+  00b7: return false
+  00b9: if !((((TnPawn(AiC.Pawn) != none) && (TnPawn(AiC.Pawn)._RobotForm != none)) && !TnPawn(AiC.Pawn)._RobotForm.get_IsOnTheGround())) goto 0x0129
+  0127: return false
+  0129: if !(((!MostRecentStimulus.Type.static.SatisfiesTeamConditions(MostRecentStimulus.Instigator, AiC, StimulusIndex[self.StimulusConditionSet.StimulusConditions].InstigatorType) || (obj'Core.Random'.static.RandomFloat() > StimulusIndex[self.StimulusConditionSet.StimulusConditions].Probability)) || (obj'Core.Math'.static.VSize((AiC.Pawn.Location - MostRecentStimulus.Location)) > StimulusIndex[self.StimulusConditionSet.StimulusConditions].DistanceThreshold))) goto 0x0216
+  0214: return false
+  0216: Obstacle = AiC.Pawn.TraceSight(HitLocation, HitNormal, none, MostRecentStimulus.Location, , false, , , )
+  0258: if !(((((Obstacle != none) && (HmDestructibleSpawnedChunk(Obstacle) == none)) && (Obstacle != MostRecentStimulus.Source)) && !((MostRecentStimulus.Type == obj'TnStimulusType_WorldTransformation') && (TnTransformingWorldActor(Obstacle) != none)))) goto 0x02c3
+  02c1: return false
+  02c3: obj'HM_Engine.HmGoap'.static.SetProperty(out_PopulatedGoals, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateStimulusReaction', 1, , , ))
+  02f7: AiC._ActiveStimulus = MostRecentStimulus
+  030b: return true
+  030d: return return
+  0313: <eos>

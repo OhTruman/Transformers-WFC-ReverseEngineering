@@ -1,0 +1,73 @@
+function HmStatisticsPublisher.AppendToPayload  (script 7 bytes)
+  0000: Value
+  0005: nothing
+  0006: <eos>
+
+function HmStatisticsPublisher.PublishTables  (script 178 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((obj'Engine.GameEngine'.static.GetOnlineSubsystem() == none)) goto 0x0028
+  0026: return nothing
+  0028: BeginPublishCollection(Collection)
+  0037: foreach Tables(Table,) (end 0x009a)
+  0046: if !(!ShouldPublish(Table)) goto 0x005e
+  005a: iternext
+  005b: goto 0x009a
+  005e: BeginPublishTable(Table)
+  006d: PublishedRows = HmStatisticsPublisher.ProcessRows(Table)
+  007e: EndPublishTable(Table, PublishedRows)
+  0092: AddAdd_PreInt(PublishedTables)
+  0099: iternext
+  009a: iterpop
+  009b: EndPublishCollection(Collection, PublishedTables)
+  00af: return nothing
+  00b1: <eos>
+
+function HmStatisticsPublisher.ProcessRows  (script 7 bytes)
+  0000: Table
+  0005: nothing
+  0006: <eos>
+
+function HmStatisticsPublisher.IsTableEmpty  (script 7 bytes)
+  0000: Table
+  0005: nothing
+  0006: <eos>
+
+function HmStatisticsPublisher.ShouldPublish  (script 25 bytes)
+  0000: if !(HmStatisticsPublisher.IsTableEmpty(Table)) goto 0x0010
+  000e: return false
+  0010: return true
+  0012: return return
+  0018: <eos>
+
+function HmStatisticsPublisher.ProcessReplacements  (script 129 bytes)
+  0000: CleanString = Value
+  000b: foreach self.Replacements(R,) (end 0x0052)
+  001a: CleanString = obj'Core.Strings'.static.Repl(CleanString, R.Source, R.Replacement, )
+  0051: iternext
+  0052: iterpop
+  0053: CleanString = obj'Core.Strings'.static.Repl(CleanString, "
+", "&#10;", )
+  0074: return CleanString
+  007a: return return
+  0080: <eos>
+
+function HmStatisticsPublisher.BeginPublishCollection  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStatisticsPublisher.BeginPublishTable  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStatisticsPublisher.ProcessRow  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStatisticsPublisher.EndPublishTable  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStatisticsPublisher.EndPublishCollection  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

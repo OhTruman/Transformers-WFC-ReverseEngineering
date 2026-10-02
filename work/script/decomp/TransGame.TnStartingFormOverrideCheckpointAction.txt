@@ -1,0 +1,10 @@
+function TnStartingFormOverrideCheckpointAction.Process  (script 103 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI == none)) goto 0x0026
+  0024: return nothing
+  0026: CampaignGame = TnCampaignGameBase(WI.Game)
+  003f: if !((CampaignGame == none)) goto 0x004c
+  004a: return nothing
+  004c: CampaignGame.set_PendingStartingFormOverride(self.StartingFormOverride)
+  0064: return nothing
+  0066: <eos>

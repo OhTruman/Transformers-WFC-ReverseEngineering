@@ -1,0 +1,57 @@
+function TnProjectileAreaOfEffect.UpdateData  (script 25 bytes)
+  0000: UpdateData()
+  0006: self.AreaOfEffectData = TnProjectileDataAreaOfEffect(self.Data)
+  0016: return nothing
+  0018: <eos>
+
+function TnProjectileAreaOfEffect.DestroyProjectile  (script 94 bytes)
+  0000: self.LifeSpan = self.AreaOfEffectData.LifeSpanAOE
+  0014: self.CylinderComponent.SetCylinderSize(self.AreaOfEffectData.CollisionRadiusAOE, self.AreaOfEffectData.CollisionRadiusAOE)
+  0043: SetDrawScale(self.AreaOfEffectData.DrawScaleAOE)
+  005b: return nothing
+  005d: <eos>
+
+function TnProjectileAreaOfEffect.Tick  (script 72 bytes)
+  0000: if !(IsExploding()) goto 0x003a
+  000d: foreach TouchingActors(obj'Engine.Actor', A) (end 0x0039)
+  0024: InsideAreaOfEffect(A, DeltaTime)
+  0038: iternext
+  0039: iterpop
+  003a: Tick(DeltaTime)
+  0045: return nothing
+  0047: <eos>
+
+function TnProjectileAreaOfEffect.Touch  (script 57 bytes)
+  0000: if !(IsExploding()) goto 0x001c
+  000d: EnteredAreaOfEffect(Other)
+  001c: Touch(Other, OtherComp, HitLocation, HitNormal)
+  0036: return nothing
+  0038: <eos>
+
+function TnProjectileAreaOfEffect.UnTouch  (script 42 bytes)
+  0000: if !(IsExploding()) goto 0x001c
+  000d: ExitedAreaOfEffect(Other)
+  001c: UnTouch(Other)
+  0027: return nothing
+  0029: <eos>
+
+function TnProjectileAreaOfEffect.Destroyed  (script 49 bytes)
+  0000: foreach TouchingActors(obj'Engine.Actor', A) (end 0x0027)
+  0017: ExitedAreaOfEffect(A)
+  0026: iternext
+  0027: iterpop
+  0028: Destroyed()
+  002e: return nothing
+  0030: <eos>
+
+function TnProjectileAreaOfEffect.InsideAreaOfEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileAreaOfEffect.EnteredAreaOfEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnProjectileAreaOfEffect.ExitedAreaOfEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

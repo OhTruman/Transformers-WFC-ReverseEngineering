@@ -1,0 +1,218 @@
+function Camera.ModifyPostProcessSettings  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Camera.IsMatineeCameraActive  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Camera.InitializeFor  (script 116 bytes)
+  0000: self.CameraCache.POV.Fov = self.DefaultFOV
+  0021: self.PCOwner = PC
+  002c: SetViewTarget(PC.ViewTarget, )
+  0045: SetDesiredColorScale(self.WorldInfo.DefaultColorScale, 5.0)
+  0062: UpdateCamera(0.0)
+  0071: return nothing
+  0073: <eos>
+
+function Camera.GetFOVAngle  (script 50 bytes)
+  0000: if !(self.bLockedFOV) goto 0x000f
+  0009: return self.LockedFOV
+  000f: return self.CameraCache.POV.Fov
+  002b: return return
+  0031: <eos>
+
+function Camera.GetAspectRatio  (script 13 bytes)
+  0000: return self.ConstrainedAspectRatio
+  0006: return return
+  000c: <eos>
+
+function Camera.SetFOV  (script 61 bytes)
+  0000: if !(((NewFOV < cast3f(1)) || (NewFOV > cast3f(170)))) goto 0x0027
+  001d: self.bLockedFOV = false
+  0025: return nothing
+  0027: self.bLockedFOV = true
+  002f: self.LockedFOV = NewFOV
+  003a: return nothing
+  003c: <eos>
+
+function Camera.GetCameraViewPoint  (script 69 bytes)
+  0000: OutCamLoc = self.CameraCache.POV.Location
+  0021: OutCamRot = self.CameraCache.POV.Rotation
+  0042: return nothing
+  0044: <eos>
+
+function Camera.SetDesiredColorScale  (script 164 bytes)
+  0000: if !(!self.bEnableColorScaling) goto 0x0055
+  000b: self.bEnableColorScaling = true
+  0013: self.ColorScale.X = 1.0
+  0029: self.ColorScale.Y = 1.0
+  003f: self.ColorScale.Z = 1.0
+  0055: if !((NewColorScale != self.ColorScale)) goto 0x00a1
+  0064: self.OriginalColorScale = self.ColorScale
+  006f: self.DesiredColorScale = NewColorScale
+  007a: self.ColorScaleInterpStartTime = self.WorldInfo.TimeSeconds
+  008e: self.ColorScaleInterpDuration = InterpTime
+  0099: self.bEnableColorScaleInterp = true
+  00a1: return nothing
+  00a3: <eos>
+
+function Camera.UpdateCamera  (script 837 bytes)
+  0000: if !(self.bEnableColorScaleInterp) goto 0x0079
+  0009: BlendPct = obj'Core.Math'.static.FClamp((TimeSince(self.ColorScaleInterpStartTime) / self.ColorScaleInterpDuration), 0.0, 1.0)
+  003a: self.ColorScale = obj'Core.Math'.static.VLerp(self.OriginalColorScale, self.DesiredColorScale, BlendPct)
+  0062: if !((BlendPct == 1.0)) goto 0x0079
+  0071: self.bEnableColorScaleInterp = false
+  0079: self.bConstrainAspectRatio = false
+  0081: self.bCamOverridePostProcess = false
+  0089: Camera.CheckViewTarget(self.ViewTarget)
+  0094: UpdateViewTarget(self.ViewTarget, DeltaTime)
+  00a8: NewPOV = self.ViewTarget.POV
+  00be: self.ConstrainedAspectRatio = self.ViewTarget.AspectRatio
+  00d4: if !((self.PendingViewTarget.Target != none)) goto 0x0337
+  00ea: (self.BlendTimeToGo -= DeltaTime)
+  00f6: Camera.CheckViewTarget(self.PendingViewTarget)
+  0101: UpdateViewTarget(self.PendingViewTarget, DeltaTime)
+  0115: if !((self.BlendTimeToGo > cast3f(0))) goto 0x02d1
+  0122: DurationPct = (1.0 - (self.BlendTimeToGo / self.BlendParams.BlendTime))
+  0146: switch (self.BlendParams.BlendFunction)
+  0158: case 0: (next 0x0180)
+  015d: BlendPct = obj'Core.Math'.static.Lerp(0.0, 1.0, DurationPct)
+  017d: goto 0x027d
+  0180: case 1: (next 0x01ba)
+  0185: BlendPct = obj'Core.Math'.static.FCubicInterp(0.0, 0.0, 1.0, 0.0, DurationPct)
+  01b7: goto 0x027d
+  01ba: case 2: (next 0x01fa)
+  01bf: BlendPct = obj'Core.Math'.static.FInterpEaseIn(0.0, 1.0, DurationPct, self.BlendParams.BlendExp)
+  01f7: goto 0x027d
+  01fa: case 3: (next 0x023a)
+  01ff: BlendPct = obj'Core.Math'.static.FInterpEaseOut(0.0, 1.0, DurationPct, self.BlendParams.BlendExp)
+  0237: goto 0x027d
+  023a: case 4: (next 0x027a)
+  023f: BlendPct = obj'Core.Math'.static.FInterpEaseInOut(0.0, 1.0, DurationPct, self.BlendParams.BlendExp)
+  0277: goto 0x027d
+  027a: default:
+  027d: NewPOV = Camera.BlendViewTargets(self.ViewTarget, self.PendingViewTarget, BlendPct)
+  0298: self.ConstrainedAspectRatio = obj'Core.Math'.static.Lerp(self.ViewTarget.AspectRatio, self.PendingViewTarget.AspectRatio, BlendPct)
+  02ce: goto 0x0337
+  02d1: self.ViewTarget = self.PendingViewTarget
+  02dc: self.PendingViewTarget.Target = none
+  02ee: self.PendingViewTarget.Controller = none
+  0300: self.BlendTimeToGo = 0.0
+  030b: NewPOV = self.PendingViewTarget.POV
+  0321: self.ConstrainedAspectRatio = self.PendingViewTarget.AspectRatio
+  0337: Camera.FillCameraCache(NewPOV)
+  0342: return nothing
+  0344: <eos>
+
+function Camera.BlendViewTargets  (script 291 bytes)
+  0000: POV.Location = obj'Core.Math'.static.VLerp(A.POV.Location, B.POV.Location, Alpha)
+  005f: POV.Fov = obj'Core.Math'.static.Lerp(A.POV.Fov, B.POV.Fov, Alpha)
+  00b6: POV.Rotation = obj'Core.Math'.static.RLerp(A.POV.Rotation, B.POV.Rotation, Alpha, true)
+  0116: return POV
+  011c: return return
+  0122: <eos>
+
+function Camera.FillCameraCache  (script 56 bytes)
+  0000: self.CameraCache.TimeStamp = self.WorldInfo.TimeSeconds
+  001f: self.CameraCache.POV = NewPOV
+  0035: return nothing
+  0037: <eos>
+
+function Camera.CheckViewTarget  (script 7 bytes)
+  0000: VT
+  0005: nothing
+  0006: <eos>
+
+function Camera.UpdateViewTarget  (script 946 bytes)
+  0000: OrigPOV = OutVT.POV
+  0016: OutVT.POV.Fov = self.DefaultFOV
+  0037: CamActor = CameraActor(OutVT.Target)
+  0052: if !((CamActor != none)) goto 0x0108
+  005d: CamActor.GetCameraView(DeltaTime, OutVT.POV)
+  0085: self.bConstrainAspectRatio = (self.bConstrainAspectRatio || CamActor.bConstrainAspectRatio)
+  00a6: OutVT.AspectRatio = CamActor.AspectRatio
+  00c5: self.bCamOverridePostProcess = CamActor.bCamOverridePostProcess
+  00db: self.CamPostProcessSettings = CamActor.CamOverridePostProcess
+  00ef: self.bKeepExistingPostProcessHeightFogs = CamActor.bKeepExistingPostProcessHeightFogs
+  0105: goto 0x0385
+  0108: if !((OutVT.Target != none)) goto 0x0385
+  011e: if !(((Pawn(OutVT.Target) == none) || !Pawn(OutVT.Target).CalcCamera(DeltaTime, OutVT.POV.Location, OutVT.POV.Rotation, OutVT.POV.Fov))) goto 0x0385
+  01b9: bDoNotApplyModifiers = true
+  01c1: switch (self.CameraStyle)
+  01c8: case 'Fixed': (next 0x01ed)
+  01d4: OutVT.POV = OrigPOV
+  01ea: goto 0x0385
+  01ed: case 'ThirdPerson': (next 0x01f9)
+  01f9: case 'FreeCam': (next 0x031f)
+  0205: Loc = OutVT.Target.Location
+  0224: Rot = OutVT.Target.Rotation
+  0243: if !((self.CameraStyle == 'FreeCam')) goto 0x026a
+  0256: Rot = self.PCOwner.Rotation
+  026a: (Loc += (self.FreeCamOffset >> Rot))
+  027e: Pos = (Loc - (cast39(Rot) * self.FreeCamDistance))
+  0299: HitActor = Trace(HitLocation, HitNormal, none, Pos, Loc, false, vect(12,12,12), , , )
+  02c8: OutVT.POV.Location = ((HitActor == none) ? Pos : HitLocation)
+  02fb: OutVT.POV.Rotation = Rot
+  031c: goto 0x0385
+  031f: case 'FirstPerson': (next 0x032b)
+  032b: default:
+  032e: OutVT.Target.GetActorEyesViewPoint(OutVT.POV.Location, OutVT.POV.Rotation)
+  0382: goto 0x0385
+  0385: if !(!bDoNotApplyModifiers) goto 0x03af
+  0390: ApplyCameraModifiers(DeltaTime, OutVT.POV)
+  03af: return nothing
+  03b1: <eos>
+
+function Camera.SetViewTarget  (script 12 bytes)
+  0000: NewViewTarget
+  0005: TransitionParams
+  000a: nothing
+  000b: <eos>
+
+function Camera.ProcessViewRotation  (script 115 bytes)
+  0000: ModifierIdx = 0
+  0007: if !((ModifierIdx < self.ModifierList.Length)) goto 0x0070
+  0017: if !((ModifierIdx[self.ModifierList] != none)) goto 0x0066
+  0028: if !(ModifierIdx[self.ModifierList].ProcessViewRotation(self.ViewTarget.Target, DeltaTime, OutViewRotation, OutDeltaRot)) goto 0x0066
+  0063: goto 0x0070
+  0066: AddAdd_Int(ModifierIdx)
+  006d: goto 0x0007
+  0070: return nothing
+  0072: <eos>
+
+function Camera.ApplyCameraModifiers  (script 127 bytes)
+  0000: ModifierIdx = 0
+  0007: if !((ModifierIdx < self.ModifierList.Length)) goto 0x007c
+  0017: if !(((ModifierIdx[self.ModifierList] != none) && !ModifierIdx[self.ModifierList].IsDisabled())) goto 0x0072
+  0048: if !(ModifierIdx[self.ModifierList].ModifyCamera(self, DeltaTime, OutPOV)) goto 0x0072
+  006f: goto 0x007c
+  0072: AddAdd_Int(ModifierIdx)
+  0079: goto 0x0007
+  007c: return nothing
+  007e: <eos>
+
+function Camera.AllowPawnRotation  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Camera.DisplayDebug  (script 620 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0037: Canvas.DrawTextNormal(((("Camera Style:" $ cast57(self.CameraStyle)) @ "main ViewTarget:") $ cast56(self.ViewTarget.Target)), , , )
+  008d: (out_YPos += out_YL)
+  0099: Canvas.SetPos(4.0, out_YPos)
+  00b6: Canvas.DrawTextNormal(((((("CamLoc:" $ cast58(self.CameraCache.POV.Location)) @ "CamRot:") $ cast59(self.CameraCache.POV.Rotation)) @ "FOV:") $ cast55(self.CameraCache.POV.Fov)), , , )
+  0145: (out_YPos += out_YL)
+  0151: Canvas.SetPos(4.0, out_YPos)
+  016e: Canvas.DrawTextNormal(("AspectRatio:" $ cast55(self.ConstrainedAspectRatio)), , , )
+  019b: (out_YPos += out_YL)
+  01a7: Canvas.SetPos(4.0, out_YPos)
+  01c4: if !((self.ViewTarget.Target != none)) goto 0x0269
+  01da: self.ViewTarget.Target.GetActorEyesViewPoint(EyesLoc, EyesRot)
+  0202: Canvas.DrawTextNormal(((("EyesLoc:" $ cast58(EyesLoc)) @ "EyesRot:") $ cast59(EyesRot)), , , )
+  0240: (out_YPos += out_YL)
+  024c: Canvas.SetPos(4.0, out_YPos)
+  0269: return nothing
+  026b: <eos>

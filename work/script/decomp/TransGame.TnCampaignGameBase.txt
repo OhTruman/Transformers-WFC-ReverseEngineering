@@ -1,0 +1,71 @@
+function TnCampaignGameBase.set_PendingStartingFormOverride  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCampaignGameBase.get_AiSquad  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function TnCampaignGameBase.set_AiSquad  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCampaignGameBase.PostBeginPlay  (script 47 bytes)
+  0000: TnGame.PostBeginPlay()
+  0006: if !(get_IsAutomatedTesting()) goto 0x002c
+  0013: get_TransTestingPolicy().HandleEnterGame(self)
+  002c: return nothing
+  002e: <eos>
+
+function TnCampaignGameBase.IsCampaignGame  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnCampaignGameBase.GetDifficultyBuffLevel  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnCampaignGameBase.GetDifficultyBuffs  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnCampaignGameBase.GetAiTeammates  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnCampaignGameBase.GetAiSquad  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnCampaignGameBase.CanTargetSnap  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnCampaignGameBase.ShouldShowProgressLossMessageFor  (script 43 bytes)
+  0000: if !(PC.IsDead()) goto 0x0018
+  0016: return false
+  0018: return TnGame.ShouldShowProgressLossMessageFor(PC)
+  0024: return return
+  002a: <eos>
+
+function TnCampaignGameBase.ShouldAnnounceKill  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnCampaignGameBase.GetQuitGameMessage  (script 79 bytes)
+  0000: TnGame.GetQuitGameMessage(QuittingPlayer, Title, Message)
+  0015: Message = "$UIText.MessagePrompts.LeaveGameSaveDataConfirm"
+  004c: return nothing
+  004e: <eos>
+
+function TnCampaignGameBase.StartCompleteMission  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCampaignGameBase.EndCompleteMission  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

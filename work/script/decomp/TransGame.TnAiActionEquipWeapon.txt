@@ -1,0 +1,40 @@
+function TnAiActionEquipWeapon.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionEquipWeapon.set_WeaponClass  (script 70 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Effects, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._OverrideWeaponClass, , , ))
+  0043: return nothing
+  0045: <eos>
+
+function TnAiActionEquipWeapon.OnInitialize  (script 162 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionEquipWeaponBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateTransformerForm', cast3a(self._Blueprint.RequiredForm), , , ))
+  005e: obj'HM_Engine.HmGoap'.static.SetProperty(self._Effects, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._Blueprint.WeaponClass, , , ))
+  009f: return nothing
+  00a1: <eos>
+
+function TnAiActionEquipWeapon.OnBind  (script 39 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._PlanningUtil.CreateInventory(self._TransformerPawn, TnAiActionEquipWeapon.get_WeaponClass())
+  0024: return nothing
+  0026: <eos>
+
+function TnAiActionEquipWeapon.OnStart  (script 133 bytes)
+  0000: self._Weapon = TnWeapon(get_InvManager().FindInventoryType(TnAiActionEquipWeapon.get_WeaponClass(), ))
+  002a: if !(self._PlanningUtil.WeaponIsReady(self._TransformerController, self._Weapon)) goto 0x0055
+  004a: return Succeed()
+  0055: get_InvManager().SetCurrentWeapon(self._Weapon)
+  0072: return TnAiActionIdle.OnStart(ExpectedEffects)
+  007e: return return
+  0084: <eos>
+
+function TnAiActionEquipWeapon.OnUpdate  (script 67 bytes)
+  0000: if !(self._PlanningUtil.WeaponIsReady(self._TransformerController, self._Weapon)) goto 0x002b
+  0020: return Succeed()
+  002b: return OnUpdate(ExpectedEffects, DeltaTime)
+  003c: return return
+  0042: <eos>

@@ -1,0 +1,40 @@
+function HmGoapPlanningStatePool.get_Size  (script 13 bytes)
+  0000: return self._Size
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanningStatePool.get_Capacity  (script 14 bytes)
+  0000: return self.States.Length
+  0007: return return
+  000d: <eos>
+
+function HmGoapPlanningStatePool.set_Capacity  (script 15 bytes)
+  0000: self.States.Length = Value
+  000c: return nothing
+  000e: <eos>
+
+function HmGoapPlanningStatePool.get_IsFull  (script 25 bytes)
+  0000: return (self._Size >= get_Capacity())
+  0012: return return
+  0018: <eos>
+
+function HmGoapPlanningStatePool.Reset  (script 10 bytes)
+  0000: self._Size = 0
+  0007: return nothing
+  0009: <eos>
+
+function HmGoapPlanningStatePool.Allocate  (script 95 bytes)
+  0000: if !((self._Size >= get_Capacity())) goto 0x0048
+  0014: LogInternal("Error: Ran out of states in the planning pool", , , )
+  0048: AddAdd_PreInt(self._Size)
+  004f: return (self._Size - 1)
+  0058: return return
+  005e: <eos>
+
+function HmGoapPlanningStatePool.FreeLastAllocated  (script 94 bytes)
+  0000: if !((self._Size == 0)) goto 0x0054
+  000b: LogInternal("Error: Someone is trying to free more planning states than exist", , , )
+  0052: return nothing
+  0054: SubtractSubtract_PreInt(self._Size)
+  005b: return nothing
+  005d: <eos>

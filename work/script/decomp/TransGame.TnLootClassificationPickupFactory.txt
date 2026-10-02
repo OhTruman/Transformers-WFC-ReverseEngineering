@@ -1,0 +1,23 @@
+function TnLootClassificationPickupFactory.SetupNewLootType  (script 76 bytes)
+  0000: self.InventoryType = TnGame(self.WorldInfo.Game)._PickupRewardManager.GetSingleRewardType(self.LootClassification)
+  0035: InitializePickup()
+  003f: Reset()
+  0049: return nothing
+  004b: <eos>
+
+function TnLootClassificationPickupFactory.SetInitialState  (script 9 bytes)
+  0000: TnLootClassificationPickupFactory.SetupNewLootType()
+  0006: return nothing
+  0008: <eos>
+
+function TnLootClassificationPickupFactory.Sleeping.EndState  (script 20 bytes)
+  0000: EndState(NextStateName)
+  000b: TnLootClassificationPickupFactory.SetupNewLootType()
+  0011: return nothing
+  0013: <eos>
+
+function TnLootClassificationPickupFactory.SetLootClassification  (script 20 bytes)
+  0000: self.LootClassification = NewLootClassification
+  000b: TnLootClassificationPickupFactory.SetupNewLootType()
+  0011: return nothing
+  0013: <eos>

@@ -1,0 +1,51 @@
+function TnAbilitySpawnSentry.ServerTriggerAbility  (script 89 bytes)
+  0000: if !((self.ActiveSentry != none)) goto 0x001e
+  000b: self.ActiveSentry.Kill()
+  001e: if !((self.SpawnDelay == cast3f(0))) goto 0x0034
+  002b: TnAbilitySpawnSentry.SpawnSentry()
+  0031: goto 0x0050
+  0034: self.OwnerPawn.SetTimer(self.SpawnDelay, false, 'SpawnSentry', self)
+  0050: TnAbility.ServerTriggerAbility()
+  0056: return nothing
+  0058: <eos>
+
+function TnAbilitySpawnSentry.SpawnSentry  (script 332 bytes)
+  0000: if !(IsOwnerDead()) goto 0x000f
+  000d: return nothing
+  000f: DesiredSpawnLocation = (self.OwnerPawn.Location + (obj'Core.Math'.static.MakeVector(0.0, 0.0, self.SpawnHeight) >> self.OwnerPawn.Rotation))
+  0058: if !((self.OwnerPawn.Trace(HitLoc, HitNorm, none, DesiredSpawnLocation, self.OwnerPawn.Location, , self.PlacementTraceExtents, , , ) != none)) goto 0x009c
+  0091: DesiredSpawnLocation = HitLoc
+  009c: SentryController = self.PawnFactory.SpawnWithoutFail(obj'TnAiSentryController', obj'TnSentryPawnAbility', DesiredSpawnLocation, self.OwnerPawn.Rotation, TnAbilitySpawnSentry.GetBlueprint())
+  00d8: SentryPawn = TnSentryPawnAbility(SentryController.Pawn)
+  00f1: SentryPawn.SetInstigator(self.OwnerPawn)
+  0109: SentryController._KillOwner = self.OwnerPawn.Controller
+  0126: self.ActiveSentry = SentryPawn
+  0131: self.OwnerPawn.AddActorToBeDestroyedOnDeath(SentryPawn)
+  0149: return nothing
+  014b: <eos>
+
+function TnAbilitySpawnSentry.GetBlueprint  (script 79 bytes)
+  0000: if !(self.OwnerPawn.HasSkill(obj'TnSkillRocketSentry')) goto 0x0021
+  001b: return self.RocketBlueprint
+  0021: if !(self.OwnerPawn.HasSkill(obj'TnSkillRepairSentry')) goto 0x0042
+  003c: return self.RepairBlueprint
+  0042: return self.DefaultBlueprint
+  0048: return return
+  004e: <eos>
+
+function TnAbilitySpawnSentry.ServerCanStartCooldown  (script 118 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return false
+  000d: if !(self.OwnerPawn.IsTimerActive('SpawnSentry', self)) goto 0x002f
+  002d: return false
+  002f: if !((((self.ActiveSentry == none) || self.ActiveSentry.bDeleteMe) || (self.ActiveSentry.GetHealth() <= cast3f(0)))) goto 0x006d
+  006b: return true
+  006d: return false
+  006f: return return
+  0075: <eos>
+
+function TnAbilitySpawnSentry.ForceEndAbility  (script 33 bytes)
+  0000: if !((self.ActiveSentry != none)) goto 0x001e
+  000b: self.ActiveSentry.Kill()
+  001e: return nothing
+  0020: <eos>

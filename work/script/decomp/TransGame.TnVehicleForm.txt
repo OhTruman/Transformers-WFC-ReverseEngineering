@@ -1,0 +1,625 @@
+function TnVehicleForm.ReplicatedEvent  (script 30 bytes)
+  0000: if !((VarName == '_PhysicsState')) goto 0x001b
+  0013: self._ReceivedNewVehicleState = true
+  001b: return nothing
+  001d: <eos>
+
+function TnVehicleForm.get_FriendlyName  (script 15 bytes)
+  0000: return cast56(self._Blueprint)
+  0008: return return
+  000e: <eos>
+
+function TnVehicleForm.get_SoundEventSet  (script 36 bytes)
+  0000: return ((self._Blueprint == none) ? none : self._Blueprint.SoundEventSet)
+  001d: return return
+  0023: <eos>
+
+function TnVehicleForm.get_FxPlayer  (script 13 bytes)
+  0000: return self._FxPlayer
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_FxPlayer  (script 14 bytes)
+  0000: self._FxPlayer = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_VehiclePhysicsState  (script 13 bytes)
+  0000: return self._PhysicsState
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_VehiclePhysicsState  (script 14 bytes)
+  0000: self._PhysicsState = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_VehicleMeshComponent  (script 13 bytes)
+  0000: return self._MeshComponent
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_VehicleMeshComponent  (script 14 bytes)
+  0000: self._MeshComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_VehicleTargetableComponent  (script 13 bytes)
+  0000: return self._TargetableComponent
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_VehicleTargetableComponent  (script 14 bytes)
+  0000: self._TargetableComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_VehicleAudioComponent  (script 13 bytes)
+  0000: return self._AudioComponent
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_VehicleAudioComponent  (script 14 bytes)
+  0000: self._AudioComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.set_VehicleLightEnvironmentComponent  (script 14 bytes)
+  0000: self._LightEnvironmentComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.set_BodyImpactComponent  (script 14 bytes)
+  0000: self._BodyImpactComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.set_VehicleForceFeedbackWaveform  (script 14 bytes)
+  0000: self._ForceFeedbackWaveform = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_Animator  (script 13 bytes)
+  0000: return self._Animator
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_Animator  (script 14 bytes)
+  0000: self._Animator = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.set_AdditiveAnimator  (script 14 bytes)
+  0000: self._AdditiveAnimator = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_DeathPlayer  (script 13 bytes)
+  0000: return self._DeathPlayer
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_DeathPlayer  (script 14 bytes)
+  0000: self._DeathPlayer = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_OwnerPawn  (script 13 bytes)
+  0000: return self._OwnerPawn
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.get_Blueprint  (script 13 bytes)
+  0000: return self._Blueprint
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.get_FormMovementCapabilities  (script 13 bytes)
+  0000: return self._MovementCapabilities
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_FormMovementCapabilities  (script 14 bytes)
+  0000: self._MovementCapabilities = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_FormType  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function TnVehicleForm.get_EncompassCylinderRadius  (script 13 bytes)
+  0000: return self._EncompassCylinderRadius
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.get_EnergyDeathMaterial  (script 22 bytes)
+  0000: return self._Blueprint.EnergyDeathMaterial
+  000f: return return
+  0015: <eos>
+
+function TnVehicleForm.get_CanSwitchWeapons  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnVehicleForm.get_DeathMotionController  (script 13 bytes)
+  0000: return self._DeathMotionController
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_DeathMotionController  (script 14 bytes)
+  0000: self._DeathMotionController = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_RigidBody  (script 13 bytes)
+  0000: return self._RigidBody
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.set_RigidBody  (script 14 bytes)
+  0000: self._RigidBody = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.get_Speed  (script 28 bytes)
+  0000: return self._RigidBody.get_ForwardSpeed()
+  0015: return return
+  001b: <eos>
+
+function TnVehicleForm.get_LinearSpeed  (script 28 bytes)
+  0000: return self._RigidBody.get_LinearSpeed()
+  0015: return return
+  001b: <eos>
+
+function TnVehicleForm.get_FxAllowed  (script 36 bytes)
+  0000: return (self._FxAllowed && !self._OwnerPawn._IsCloaking)
+  001d: return return
+  0023: <eos>
+
+function TnVehicleForm.set_FxAllowed  (script 16 bytes)
+  0000: self._FxAllowed = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnVehicleForm.get_PhysicsDeltaTime  (script 13 bytes)
+  0000: return self._PhysicsDeltaTime
+  0006: return return
+  000c: <eos>
+
+function TnVehicleForm.get_CollisionExtent  (script 75 bytes)
+  0000: return obj'Core.Math'.static.MakeVector(self._MovementCapabilities.CylinderRadius, self._MovementCapabilities.CylinderRadius, self._MovementCapabilities.CylinderHeight)
+  0044: return return
+  004a: <eos>
+
+function TnVehicleForm.get_IsOnTheGround  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnVehicleForm.get_MotionIsKeyframed  (script 42 bytes)
+  0000: return (!self._OwnerPawn.IsLocallyControlled() && !self._IsDead)
+  0023: return return
+  0029: <eos>
+
+function TnVehicleForm.set_ReceivedNewVehicleState  (script 16 bytes)
+  0000: self._ReceivedNewVehicleState = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnVehicleForm.get_ViewRotation  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnVehicleForm.set_ViewRotation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleForm.get_VehicleType  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnVehicleForm.set_BoostingInput  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleForm.get_IsBoosting  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnVehicleForm.ServerSetVehiclePhysicsState  (script 22 bytes)
+  0000: self._PhysicsState = PhysicsState
+  000b: self._ReceivedNewVehicleState = true
+  0013: return nothing
+  0015: <eos>
+
+function TnVehicleForm.PostConstruct  (script 28 bytes)
+  0000: self._RigidBody = IRigidBody(new(self, nothing, obj'TnRigidBodyMesh', nothing, DeltaTime))
+  0019: return nothing
+  001b: <eos>
+
+function TnVehicleForm.OnGetService  (script 141 bytes)
+  0000: switch (Type)
+  0007: case 'TnAnimatorService': (next 0x0021)
+  0013: Service = self._Animator
+  001e: goto 0x0058
+  0021: case 'TnAdditiveAnimatorService': (next 0x003b)
+  002d: Service = self._AdditiveAnimator
+  0038: goto 0x0058
+  003b: case 'TnTargetableService': (next 0x0055)
+  0047: Service = self._TargetableComponent
+  0052: goto 0x0058
+  0055: default:
+  0058: if !((Service != none)) goto 0x0080
+  0063: self._Services.Add(Type, Service)
+  0080: return Service
+  0086: return return
+  008c: <eos>
+
+function TnVehicleForm.OnRegisterReplicatedObjects  (script 87 bytes)
+  0000: OwningActor.RegisterReplicatedObject(self._Animator._AnimationPlayer, 'VehicleAnimationPlayer')
+  002a: OwningActor.RegisterReplicatedObject(self._AdditiveAnimator._AnimationPlayer, 'VehicleAdditiveAnimationPlayer')
+  0054: return nothing
+  0056: <eos>
+
+function TnVehicleForm.OnUnregisterReplicatedObjects  (script 87 bytes)
+  0000: OwningActor.UnregisterReplicatedObject(self._Animator._AnimationPlayer, 'VehicleAnimationPlayer')
+  002a: OwningActor.UnregisterReplicatedObject(self._AdditiveAnimator._AnimationPlayer, 'VehicleAdditiveAnimationPlayer')
+  0054: return nothing
+  0056: <eos>
+
+function TnVehicleForm.Initialize  (script 1033 bytes)
+  0000: self._OwnerPawn = OwnerPawn_
+  000b: self._Blueprint = Blueprint_
+  0016: if !(((self._OwnerPawn == none) || (self._Blueprint == none))) goto 0x0030
+  002e: return nothing
+  0030: PEMC = self._OwnerPawn.FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  004e: self._FxPlayer.Initialize(self._OwnerPawn, PEMC, self._MeshComponent)
+  0070: self._OwnerPawn.AttachComponent(self._MeshComponent)
+  0088: self._MeshComponent.SetPhysicsAsset(self._Blueprint.PhysicsAsset, )
+  00aa: self._MeshComponent.SetHasPhysicsAssetInstance((self._Blueprint.PhysicsAsset != none))
+  00ce: self._MeshComponent.SetSkeletalMesh(self._Blueprint.SkeletalMesh, )
+  00f0: self._MeshComponent.SetBlockRigidBody(false)
+  0104: self._MeshComponent.SetHidden(true)
+  0118: foreach self._Blueprint.AnimSets(AS,) (end 0x0149)
+  0130: self._MeshComponent.AppendAnimSet(AS)
+  0148: iternext
+  0149: iterpop
+  014a: self._MeshComponent.SetAnimTreeTemplate(self._Blueprint.AnimTree)
+  016b: self._OwnerPawn.DetachComponent(self._MeshComponent)
+  0183: if !((self._Blueprint.AudioComp != none)) goto 0x01c0
+  0197: self._AudioComponent = HmVehicleAudioComponent(self._Blueprint.AudioComp.Clone(, ))
+  01c0: if !((get_SoundEventSet() != none)) goto 0x01f6
+  01d0: self._BodyImpactComponent.SetBodyImpactProperties(get_SoundEventSet().BodyImpactProperties)
+  01f6: if !((self._Blueprint.TargetingBlueprint != none)) goto 0x0243
+  020a: self._TargetableComponent = TnTargetableComponent(self._Blueprint.TargetingBlueprint.TargetableComponent.Clone(self._OwnerPawn, ))
+  0240: goto 0x0284
+  0243: if !((self._Blueprint.TargetableComp != none)) goto 0x0284
+  0257: self._TargetableComponent = TnTargetableComponent(self._Blueprint.TargetableComp.Clone(self._OwnerPawn, ))
+  0284: self._Animator.Initialize(self._MeshComponent, 'Custom')
+  02a5: self._AdditiveAnimator.Initialize(self._MeshComponent, 'AdditiveSlot')
+  02c6: self._RigidBody.Initialize(self._MeshComponent)
+  02df: if !(NotEqual_InterfaceInterface(self._DeathMotionController, TnVehicleDeathMotionController(none))) goto 0x033c
+  02f3: self._DeathMotionController.Initialize(self._OwnerPawn, self._RigidBody)
+  0311: self._DeathPlayer.Initialize(self._OwnerPawn, self._Blueprint.DeathBlueprint, self._DeathMotionController)
+  033c: TnVehicleForm.CalculateCylinderBounds(self._MovementCapabilities.CylinderRadius, self._MovementCapabilities.CylinderHeight, self._EncompassCylinderRadius)
+  0367: OnInitialize()
+  0371: CharacterMaterialService = TnCharacterMaterialService(self._OwnerPawn.GetService('TnCharacterMaterialService'))
+  0398: CharacterMaterialService.AddMesh(0, self._MeshComponent, )
+  03b4: CharacterMaterialService.AddMesh(1, self._MeshComponent, self._Blueprint.BuffMaterials)
+  03dd: CharacterMaterialService.AddMesh(2, self._MeshComponent, self._Blueprint.BuffMaterials)
+  0406: return nothing
+  0408: <eos>
+
+function TnVehicleForm.Shutdown  (script 13 bytes)
+  0000: OnShutdown()
+  000a: return nothing
+  000c: <eos>
+
+function TnVehicleForm.CalculateCylinderBounds  (script 320 bytes)
+  0000: Bounds = self._MeshComponent.CalculateComponentSpaceAABB()
+  0019: Size = (Bounds.Max - Bounds.Min)
+  0041: CylinderHeight = (Size.Z * 0.5)
+  005e: CylinderRadius = (obj'Core.Math'.static.FMax(Size.X, Size.Y) * 0.5)
+  0096: OuterCylinderRadius = (obj'Core.Math'.static.Sqrt(((Size.X * Size.X) + (Size.Y * Size.Y))) * 0.5)
+  00f4: self._MeshTranslation = (-(Bounds.Max + Bounds.Min) * 0.5)
+  0125: self._MeshComponent.SetTranslation(self._MeshTranslation)
+  013d: return nothing
+  013f: <eos>
+
+function TnVehicleForm.SetTransformMeshOffset  (script 34 bytes)
+  0000: self._MeshComponent.SetTranslation((self._MeshTranslation + Offset))
+  001f: return nothing
+  0021: <eos>
+
+function TnVehicleForm.OnActivate  (script 634 bytes)
+  0000: self._OwnerPawn.AttachComponent(self._MeshComponent)
+  0018: self._OwnerPawn.Mesh = self._MeshComponent
+  002c: self._OwnerPawn.AttachComponent(self._LightEnvironmentComponent)
+  0044: if !((none != self._OwnerPawn.get_VehicleMeshComponent())) goto 0x0083
+  005d: self._OwnerPawn.get_VehicleMeshComponent().SetLightEnvironment(self._LightEnvironmentComponent)
+  0083: if !((none != self._OwnerPawn.get_RobotMeshComponent())) goto 0x00c2
+  009c: self._OwnerPawn.get_RobotMeshComponent().SetLightEnvironment(self._LightEnvironmentComponent)
+  00c2: self._OwnerPawn.AttachComponent(self._AudioComponent)
+  00da: self._OwnerPawn.AttachComponent(self._BodyImpactComponent)
+  00f2: self._OwnerPawn.AttachComponent(self._TargetableComponent)
+  010a: self._OwnerPawn._BodyImpactComponent = self._BodyImpactComponent
+  011e: self._OwnerPawn.CylinderComponent.SetCylinderSize(self._MovementCapabilities.CylinderRadius, self._MovementCapabilities.CylinderHeight)
+  015a: self._MeshComponent.SetComponentRBFixed(false)
+  016e: Velocity = obj'Core.Math'.static.ClampLength(self._OwnerPawn.Velocity, 3500.0)
+  019a: Rotation = self._OwnerPawn.Rotation
+  01ae: if !(((cast3a(self._OwnerPawn.Physics) == cast3a(10)) && !get_MotionIsKeyframed())) goto 0x0243
+  01d8: self._MeshComponent.SetRBPosition((self._OwnerPawn.Location + (self._MeshComponent.Translation >> Rotation)), )
+  0212: self._MeshComponent.SetRBRotation(Rotation, )
+  022b: self._MeshComponent.SetLinearVelocity(Velocity)
+  0243: OnTeleport(self._OwnerPawn.Rotation)
+  025b: self._OwnerPawn.Velocity = Velocity
+  026f: self._FxAllowed = false
+  0277: return nothing
+  0279: <eos>
+
+function TnVehicleForm.OnDeactivate  (script 51 bytes)
+  0000: self._OwnerPawn.DetachComponent(self._MeshComponent)
+  0018: self._OwnerPawn.DetachComponent(self._AudioComponent)
+  0030: return nothing
+  0032: <eos>
+
+function TnVehicleForm.OnBeginPlay  (script 22 bytes)
+  0000: self._AudioComponent.PlayEnterSound()
+  0013: return nothing
+  0015: <eos>
+
+function TnVehicleForm.OnEndPlay  (script 145 bytes)
+  0000: if !(get_MotionIsKeyframed()) goto 0x0033
+  000d: self._OwnerPawn.Velocity = (self._PhysicsState.LinearVelocity * 0.1)
+  0033: self._AudioComponent.PlayExitSound()
+  0046: self._OwnerPawn.DetachComponent(self._TargetableComponent)
+  005e: self._OwnerPawn.DetachComponent(self._BodyImpactComponent)
+  0076: self._OwnerPawn.DetachComponent(self._LightEnvironmentComponent)
+  008e: return nothing
+  0090: <eos>
+
+function TnVehicleForm.RigidBodyCollisionOccurred  (script 602 bytes)
+  0000: if !((RigidCollisionData.ContactSpeed >= cast3f(1200))) goto 0x00a4
+  001c: I = 0
+  0023: if !((I < RigidCollisionData.ContactInfos.Length)) goto 0x00a4
+  003e: self._FxPlayer.PlaySingleEffect(obj'FX_Transformers_p.FX.Spark_Transformer_FX', I[RigidCollisionData.ContactInfos].ContactPosition, cast50(I[RigidCollisionData.ContactInfos].ContactNormal))
+  009a: AddAdd_PreInt(I)
+  00a1: goto 0x0023
+  00a4: if !(self._IsDead) goto 0x00c0
+  00ad: self._OwnerPawn.Gib()
+  00c0: if !((((!self._CollidedThisFrame && !get_MotionIsKeyframed()) && (TnPawn(HitActor) != none)) && (obj'Core.Math'.static.Abs(obj'Core.Math'.static.Normal(RigidCollisionData.TotalNormalForceVector).Z) > 0.866))) goto 0x0197
+  012b: self._RigidBody.ApplyLinearVelocity(((obj'Core.Math'.static.Normal(((self._OwnerPawn.Location - HitActor.Location) * vect(1,1,0))) * cast3f(2000)) - self._RigidBody.get_LinearVelocity()))
+  0197: OnRigidBodyCollision(RigidCollisionData, HitActor)
+  01ab: PC = TnPlayerController(self._OwnerPawn.Controller)
+  01c4: if !((PC != none)) goto 0x024f
+  01cf: LocalParams = self._Blueprint.ShakeParams
+  01e3: SpeedNormalized = (RigidCollisionData.ContactSpeed / self._Blueprint.ShakeParamsSpeed)
+  0209: (LocalParams.Intensity *= SpeedNormalized)
+  0220: (LocalParams.Roll *= SpeedNormalized)
+  0237: PC.StartCameraShake(LocalParams)
+  024f: self._CollidedThisFrame = true
+  0257: return nothing
+  0259: <eos>
+
+function TnVehicleForm.PlayForceFeedbackEvent  (script 341 bytes)
+  0000: default=1.0
+  0009: C = PlayerController(self._OwnerPawn.Controller)
+  0022: if !((C == none)) goto 0x002f
+  002d: return nothing
+  002f: self._ForceFeedbackWaveform.Samples.Length = 1
+  0040: 0[self._ForceFeedbackWaveform.Samples].LeftAmplitude = cast43(((cast3f(100) * EventParams.Amount) * Scale))
+  007b: 0[self._ForceFeedbackWaveform.Samples].RightAmplitude = cast43(((cast3f(100) * EventParams.Amount) * Scale))
+  00b6: 0[self._ForceFeedbackWaveform.Samples].LeftFunction = EventParams.Type
+  00e2: 0[self._ForceFeedbackWaveform.Samples].RightFunction = EventParams.Type
+  010e: 0[self._ForceFeedbackWaveform.Samples].Duration = EventParams.Duration
+  013a: C.ClientPlayForceFeedbackWaveform(self._ForceFeedbackWaveform)
+  0152: return nothing
+  0154: <eos>
+
+function TnVehicleForm.OnRigidBodyCollision  (script 242 bytes)
+  0000: if !((RigidCollisionData.ContactSpeed > cast3f(500))) goto 0x005d
+  001c: PlayForceFeedbackEvent(self._Blueprint.CollisionForceFeedback, obj'Core.Math'.static.FMin(1.0, (RigidCollisionData.ContactSpeed / cast3f(2000))))
+  005d: HitP = TnAiPawn(HitActor)
+  006d: if !(((HitP == none) || HitP.get_IsInVehicleForm())) goto 0x0092
+  0090: return nothing
+  0092: if !((TnAiController(HitP.Controller) != none)) goto 0x00ef
+  00ab: TnAiController(HitP.Controller).NotifyBump(self._OwnerPawn, (self._OwnerPawn.Location - HitActor.Location))
+  00ef: return nothing
+  00f1: <eos>
+
+function TnVehicleForm.RigidBodyTrigger  (script 56 bytes)
+  0000: Destructible = HmDestructibleActorBase(OtherActor)
+  0010: if !((Destructible == none)) goto 0x001d
+  001b: return nothing
+  001d: Destructible.ApplyDestructionTrigger(obj'HM_Engine.HmTouchDestructionTrigger')
+  0035: return nothing
+  0037: <eos>
+
+function TnVehicleForm.OnAdjustDamage  (script 47 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x0011
+  000b: return inDamage
+  0011: return (inDamage * GetDamageMultiplier(Attacker))
+  0028: return return
+  002e: <eos>
+
+function TnVehicleForm.GetDamageMultiplier  (script 70 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x0011
+  000b: return 1.0
+  0011: return ((Instigator == self._OwnerPawn) ? self._Blueprint.SelfDamageMultiplier : self._Blueprint.DamageMultiplier)
+  003f: return return
+  0045: <eos>
+
+function TnVehicleForm.Teleport  (script 263 bytes)
+  0000: Location = LocationTemp
+  000b: Rotation = RotationTemp
+  0016: LinearVelocity = obj'Core.Math'.static.ClampLength(LinearVelocityTemp, 3500.0)
+  0039: if !((cast3a(self._OwnerPawn.Physics) == cast3a(10))) goto 0x00b4
+  0052: self._MeshComponent.SetRBPosition((Location + (self._MeshComponent.Translation >> Rotation)), )
+  0083: self._MeshComponent.SetRBRotation(Rotation, )
+  009c: self._MeshComponent.SetLinearVelocity(LinearVelocity)
+  00b4: if !(((cast3a(GetRole()) == cast3a(3)) && get_MotionIsKeyframed())) goto 0x00f5
+  00d8: self._TeleportPending = true
+  00e0: TnVehicleForm.ClientTeleport(Location, Rotation, LinearVelocity)
+  00f5: OnTeleport(Rotation)
+  0104: return nothing
+  0106: <eos>
+
+function TnVehicleForm.ClientTeleport  (script 132 bytes)
+  0000: if !((cast3a(self._OwnerPawn.Physics) == cast3a(10))) goto 0x007b
+  0019: self._MeshComponent.SetRBPosition((Location + (self._MeshComponent.Translation >> Rotation)), )
+  004a: self._MeshComponent.SetRBRotation(Rotation, )
+  0063: self._MeshComponent.SetLinearVelocity(LinearVelocity)
+  007b: TnVehicleForm.ServerTeleportComplete()
+  0081: return nothing
+  0083: <eos>
+
+function TnVehicleForm.ServerTeleportComplete  (script 11 bytes)
+  0000: self._TeleportPending = false
+  0008: return nothing
+  000a: <eos>
+
+function TnVehicleForm.OnUpdate  (script 280 bytes)
+  0000: self._PhysicsDeltaTime = obj'Engine.Engine'.static.GetCurrentWorldInfo().PredictNextPhysicsUpdateTime(DeltaTime)
+  002c: if !(((self._OwnerPawn == none) || (self._Blueprint == none))) goto 0x0046
+  0044: return nothing
+  0046: TnVehicleForm.UpdateSpecialMoveCooldown(DeltaTime)
+  0051: if !((cast3a(self._OwnerPawn.Physics) == cast3a(10))) goto 0x00bd
+  006a: if !(get_MotionIsKeyframed()) goto 0x009e
+  0077: TnVehicleForm.ExtrapolateVehiclePhysicsState(self._PhysicsDeltaTime)
+  0082: self._RigidBody.Update(self._PhysicsDeltaTime)
+  009b: goto 0x00bd
+  009e: self._RigidBody.Update(self._PhysicsDeltaTime)
+  00b7: TnVehicleForm.PackVehiclePhysicsState()
+  00bd: self._Animator.Update(DeltaTime)
+  00d5: self._AdditiveAnimator.Update(DeltaTime)
+  00ed: self._DeathPlayer.Tick(DeltaTime)
+  0105: self._ReceivedNewVehicleState = false
+  010d: self._CollidedThisFrame = false
+  0115: return nothing
+  0117: <eos>
+
+function TnVehicleForm.ExtrapolateVehiclePhysicsState  (script 442 bytes)
+  0000: self._MeshComponent.SetLinearVelocity(vect(0,0,0))
+  0020: self._MeshComponent.SetAngularVelocity(vect(0,0,0))
+  0040: if !(self._TeleportPending) goto 0x004b
+  0049: return nothing
+  004b: if !(self._ReceivedNewVehicleState) goto 0x0105
+  0054: self._MeshComponent.SetRBPosition((self._PhysicsState.Location - ((self._PhysicsState.LinearVelocity * 0.1) * DeltaTime)), )
+  0098: self._MeshComponent.SetRBRotationQuat(obj'Core.Math'.static.QuatProduct(obj'Core.Math'.static.QuatFromAxisWithAngle(((-self._PhysicsState.AngularVelocity * 0.001) * DeltaTime)), self._PhysicsState.Rotation), )
+  0102: goto 0x01b7
+  0105: self._MeshComponent.SetRBPosition((self._MeshComponent.GetRBPosition() + ((self._PhysicsState.LinearVelocity * 0.1) * DeltaTime)), )
+  014c: self._MeshComponent.SetRBRotationQuat(obj'Core.Math'.static.QuatProduct(obj'Core.Math'.static.QuatFromAxisWithAngle(((self._PhysicsState.AngularVelocity * 0.001) * DeltaTime)), self._MeshComponent.GetRBRotationQuat()), )
+  01b7: return nothing
+  01b9: <eos>
+
+function TnVehicleForm.OnGetWeaponSockets  (script 22 bytes)
+  0000: return self._Blueprint.WeaponSockets
+  000f: return return
+  0015: <eos>
+
+function TnVehicleForm.Boost  (script 14 bytes)
+  0000: set_BoostingInput(true)
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleForm.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleForm.OnShutdown  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleForm.OnTeleport  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleForm.PackVehiclePhysicsState  (script 217 bytes)
+  0000: if !((cast3a(self._OwnerPawn.Physics) != cast3a(10))) goto 0x001b
+  0019: return nothing
+  001b: self._PhysicsState.Location = self._RigidBody.get_Location()
+  0040: self._PhysicsState.LinearVelocity = (self._RigidBody.get_LinearVelocity() * (1.0 / 0.1))
+  0073: self._PhysicsState.Rotation = self._RigidBody.get_RotationAsQuaternion()
+  0098: self._PhysicsState.AngularVelocity = (self._RigidBody.get_AngularVelocity() * (1.0 / 0.001))
+  00cb: TnVehicleForm.ServerSetVehiclePhysicsState(self._PhysicsState)
+  00d6: return nothing
+  00d8: <eos>
+
+function TnVehicleForm.PausePhysics  (script 26 bytes)
+  0000: self._OwnerPawn.SetPhysics(0, , )
+  0017: return nothing
+  0019: <eos>
+
+function TnVehicleForm.UnpausePhysics  (script 26 bytes)
+  0000: self._OwnerPawn.SetPhysics(10, , )
+  0017: return nothing
+  0019: <eos>
+
+function TnVehicleForm.OnPlayDeath  (script 80 bytes)
+  0000: self._DeathPlayer.Activate()
+  0013: if !((self._Blueprint.DeathSound != none)) goto 0x004d
+  0027: self._OwnerPawn.PlaySound(self._Blueprint.DeathSound, true, , , , )
+  004d: return nothing
+  004f: <eos>
+
+function TnVehicleForm.OnPlayGib  (script 63 bytes)
+  0000: if !((get_VehicleMeshComponent() != none)) goto 0x0029
+  0010: get_VehicleMeshComponent().SetAnimTreeTemplate(none)
+  0029: self._DeathPlayer.Deactivate()
+  003c: return nothing
+  003e: <eos>
+
+function TnVehicleForm.AddDefaultSkeletalGibTemplates  (script 42 bytes)
+  0000: foreach self._Blueprint.DefaultSkeletalGibTemplate(T,) (end 0x0026)
+  0018: Templates.AddItem(T)
+  0025: iternext
+  0026: iterpop
+  0027: return nothing
+  0029: <eos>
+
+function TnVehicleForm.StartSpecialMoveCooldown  (script 76 bytes)
+  0000: self._TimeBeforeNextSpecialMove = Duration
+  000b: self._IsSpecialMoveCoolingDown = true
+  0013: HUD = TnVehicleForm.GetHud()
+  001f: if !((HUD != none)) goto 0x0049
+  002a: HUD.SetAbilityResource(2, Duration, 0.0)
+  0049: return nothing
+  004b: <eos>
+
+function TnVehicleForm.UpdateSpecialMoveCooldown  (script 93 bytes)
+  0000: if !(!self._IsSpecialMoveCoolingDown) goto 0x000d
+  000b: return nothing
+  000d: (self._TimeBeforeNextSpecialMove -= DeltaTime)
+  0019: if !((self._TimeBeforeNextSpecialMove <= cast3f(0))) goto 0x005a
+  0026: self._IsSpecialMoveCoolingDown = false
+  002e: HUD = TnVehicleForm.GetHud()
+  003a: if !((HUD != none)) goto 0x005a
+  0045: HUD.SetAbilityResourceReady(2)
+  005a: return nothing
+  005c: <eos>
+
+function TnVehicleForm.GetHud  (script 65 bytes)
+  0000: PC = TnPlayerController(self._OwnerPawn.Controller)
+  0019: if !((PC == none)) goto 0x0026
+  0024: return none
+  0026: return TnHUD(PC.myHUD)
+  003a: return return
+  0040: <eos>
+
+function TnVehicleForm.CanUseSpecialMove  (script 16 bytes)
+  0000: return !self._IsSpecialMoveCoolingDown
+  0009: return return
+  000f: <eos>
+
+function TnVehicleForm.OnMapHitComponentToIndex  (script 9 bytes)
+  0000: return 0
+  0002: return return
+  0008: <eos>
+
+function TnVehicleForm.OnMapIndexToHitComponent  (script 13 bytes)
+  0000: return self._MeshComponent
+  0006: return return
+  000c: <eos>

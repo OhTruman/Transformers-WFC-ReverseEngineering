@@ -1,0 +1,34 @@
+function HmGoapPlannerStats.IncrementPlansRequested  (script 10 bytes)
+  0000: AddAdd_PreInt(self.PlansRequested)
+  0007: return nothing
+  0009: <eos>
+
+function HmGoapPlannerStats.IncrementCantFindPlan  (script 10 bytes)
+  0000: AddAdd_PreInt(self.CantFindPlan)
+  0007: return nothing
+  0009: <eos>
+
+function HmGoapPlannerStats.IncrementFoundHigherCostPlan  (script 10 bytes)
+  0000: AddAdd_PreInt(self.FoundHigherCostPlan)
+  0007: return nothing
+  0009: <eos>
+
+function HmGoapPlannerStats.IncrementFoundPlan  (script 10 bytes)
+  0000: AddAdd_PreInt(self.FoundPlan)
+  0007: return nothing
+  0009: <eos>
+
+function HmGoapPlannerStats.Update  (script 254 bytes)
+  0000: CurWorldSecond = cast44(WorldTime)
+  000d: if !((CurWorldSecond != self.LastUpdateWorldSecond)) goto 0x00fb
+  001c: UpdatePixCounter(cast3f(self.PlansRequested), "GOAP Plans requested / s")
+  0047: UpdatePixCounter(cast3f(self.CantFindPlan), "GOAP Failed to find plan / s")
+  0076: UpdatePixCounter(cast3f(self.FoundHigherCostPlan), "GOAP Found higher cost plan / s")
+  00a8: UpdatePixCounter(cast3f(self.FoundPlan), "GOAP Found new plan / s")
+  00d2: self.LastUpdateWorldSecond = cast44(WorldTime)
+  00df: self.PlansRequested = 0
+  00e6: self.CantFindPlan = 0
+  00ed: self.FoundHigherCostPlan = 0
+  00f4: self.FoundPlan = 0
+  00fb: return nothing
+  00fd: <eos>

@@ -1,0 +1,20 @@
+function HmWiggler3CameraBehavior.Activate  (script 35 bytes)
+  0000: if !((self.WiggleData == none)) goto 0x000d
+  000b: return nothing
+  000d: self.WiggleData.ResetTarget()
+  0020: return nothing
+  0022: <eos>
+
+function HmWiggler3CameraBehavior.Update  (script 314 bytes)
+  0000: if !((self.WiggleData == none)) goto 0x0011
+  000b: return Result
+  0011: TotalRotation = (Result.Rotation + Result.RotationAdjustment)
+  003a: obj'Core.Math'.static.GetAxes(TotalRotation, Forward, Right, Up)
+  0059: self.WiggleData.UpdateTranslationAdjust(DeltaTime)
+  0071: TranslationAdjust = self.WiggleData.GetTranslationAdjust(self.ScaleAdjust)
+  008f: (Result.LocationAdjustment += (((Right * TranslationAdjust.X) + (Up * TranslationAdjust.Y)) + (Forward * TranslationAdjust.Z)))
+  00ea: self.WiggleData.UpdateRotationAdjust(DeltaTime)
+  0102: (Result.RotationAdjustment += self.WiggleData.GetRotationAdjust(self.ScaleAdjust))
+  012d: return Result
+  0133: return return
+  0139: <eos>

@@ -1,0 +1,25 @@
+function TnInteractActionMeleeWeapon.TriggerAction  (script 198 bytes)
+  0000: TnInteractAction.TriggerAction(Interact)
+  000b: User = Interact.GetCurrentUser()
+  0024: if !(((User == none) || (User.InvManager == none))) goto 0x0047
+  0045: return nothing
+  0047: MeleeService = TnMeleeService(User.GetService('TnMeleeService'))
+  006e: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0084
+  0082: return nothing
+  0084: TnInteractActionMeleeWeapon.CheckForMeleeWeapon(User)
+  008f: if !(self.Equip) goto 0x00af
+  0098: MeleeService.EquipMeleeWeapon()
+  00ac: goto 0x00c3
+  00af: MeleeService.UnequipMeleeWeapon()
+  00c3: return nothing
+  00c5: <eos>
+
+function TnInteractActionMeleeWeapon.CheckForMeleeWeapon  (script 217 bytes)
+  0000: IM = TnInventoryManager(User.InvManager)
+  0019: MeleeWeapon = TnMeleeWeapon(IM.FindInventoryType(self.MeleeWeaponClass, ))
+  003d: if !(((MeleeWeapon == none) && self.Equip)) goto 0x0077
+  0053: MeleeWeapon = TnMeleeWeapon(IM.CreateInventory(self.MeleeWeaponClass, true))
+  0077: if !((MeleeWeapon == none)) goto 0x00d6
+  0082: LogInternal(((((("ERROR: " $ User.get_FriendlyName()) @ "does not have a") @ cast56(self.MeleeWeaponClass)) @ "to use for") @ cast56(get_Outer())), , , )
+  00d6: return nothing
+  00d8: <eos>

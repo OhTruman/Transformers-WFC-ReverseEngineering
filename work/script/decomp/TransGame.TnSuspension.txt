@@ -1,0 +1,106 @@
+function TnSuspension.get_HasContact  (script 14 bytes)
+  0000: return self._HasContact
+  0007: return return
+  000d: <eos>
+
+function TnSuspension.get_Force  (script 38 bytes)
+  0000: return (self._HasContact ? self._Spring._Force : 0.0)
+  001f: return return
+  0025: <eos>
+
+function TnSuspension.get_Spring  (script 13 bytes)
+  0000: return self._Spring
+  0006: return return
+  000c: <eos>
+
+function TnSuspension.get_Length  (script 47 bytes)
+  0000: return (self._HasContact ? self._Spring._Length : self._Spring._RestingLength)
+  0028: return return
+  002e: <eos>
+
+function TnSuspension.get_HitActor  (script 13 bytes)
+  0000: return self._HitActor
+  0006: return return
+  000c: <eos>
+
+function TnSuspension.get_RestingLength  (script 22 bytes)
+  0000: return self._Spring._RestingLength
+  000f: return return
+  0015: <eos>
+
+function TnSuspension.get_ContactNormal  (script 13 bytes)
+  0000: return self._ContactNormal
+  0006: return return
+  000c: <eos>
+
+function TnSuspension.Initialize  (script 433 bytes)
+  0000: if !((SuspensionBlueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: self._Owner = Owner
+  0018: self._Blueprint = SuspensionBlueprint
+  0023: self._WheelRadius = WheelRadius
+  002e: self._Spring.Initialize(SuspensionBlueprint.RestingLength, SuspensionBlueprint.Stiffness, SuspensionBlueprint.Damping, Mass)
+  0070: Weight = (Mass * -self._Owner.GetGravityZ())
+  0092: if !((self._Graph.get_NumDataSets() == 0)) goto 0x01ae
+  00ab: self._Graph.AddDataSet("Length", MakeColor(0, cast3d(255), cast3d(255), 128), obj'Core.Math'.static.MakeFloatRange(0.0, SuspensionBlueprint.RestingLength))
+  0102: self._Graph.AddDataSet("Force", MakeColor(cast3d(255), cast3d(255), 0, 128), obj'Core.Math'.static.MakeFloatRange((-Weight * 0.5), (Weight * cast3f(2))))
+  015e: self._Graph.AddDataSet("Velocity", MakeColor(cast3d(255), 0, cast3d(255), 128), obj'Core.Math'.static.MakeFloatRange(-300.0, 300.0))
+  01ae: return nothing
+  01b0: <eos>
+
+function TnSuspension.Reset  (script 22 bytes)
+  0000: self._Spring.Reset()
+  0013: return nothing
+  0015: <eos>
+
+function TnSuspension.Update  (script 673 bytes)
+  0000: TraceBegin = MountingPoint
+  000b: TraceEnd = (MountingPoint + (Direction * (self._Blueprint.RestingLength + self._WheelRadius)))
+  0034: self._HitActor = none
+  003b: self._ContactNormal = vect(0,0,0)
+  004e: if !(self._Owner.MultiTrace(ImpactInfos, none, TraceEnd, TraceBegin, , self._Owner.32, )) goto 0x017d
+  0081: I = 0
+  0088: if !((I < ImpactInfos.Length)) goto 0x017d
+  0098: HitComponent = I[ImpactInfos].HitInfo.HitComponent
+  00bf: if !(((((HitComponent != none) && HitComponent.BlockRigidBody) && (cast3a(HitComponent.RBChannel) != cast3a(6))) || (WorldInfo(I[ImpactInfos].HitActor) != none))) goto 0x0173
+  011c: self._HitActor = I[ImpactInfos].HitActor
+  0138: HitPosition = I[ImpactInfos].HitLocation
+  0154: self._ContactNormal = I[ImpactInfos].HitNormal
+  0170: goto 0x017d
+  0173: AddAdd_PreInt(I)
+  017a: goto 0x0088
+  017d: if !((self._HitActor != none)) goto 0x01c7
+  0188: SuspensionLength = obj'Core.Math'.static.FMax(0.0, (obj'Core.Math'.static.VSize((HitPosition - TraceBegin)) - self._WheelRadius))
+  01bc: self._HasContact = true
+  01c4: goto 0x01e3
+  01c7: SuspensionLength = self._Blueprint.RestingLength
+  01db: self._HasContact = false
+  01e3: self._Spring.Update(DeltaTime, SuspensionLength, (-Direction.Z * self._Owner.GetGravityZ()))
+  0227: self._Graph.AddSample(0, get_Length())
+  0245: self._Graph.AddSample(1, get_Force())
+  0263: self._Graph.AddSample(2, self._Spring._Velocity)
+  0286: self._Graph.Update(DeltaTime)
+  029e: return nothing
+  02a0: <eos>
+
+function TnSuspension.DisplayDebug  (script 244 bytes)
+  0000: SuspensionWidth = 20
+  0008: Gap = 10
+  0010: HistoryWidth = ((Width - SuspensionWidth) - Gap)
+  0029: Flip = (X < (HudCanvas.ClipX * 0.5))
+  004c: SuspensionX = (Flip ? ((X + cast3f(HistoryWidth)) + cast3f(Gap)) : X)
+  0079: HistoryX = (Flip ? X : ((X + cast3f(SuspensionWidth)) + cast3f(Gap)))
+  00a6: TnSuspension.DrawSuspension(HudCanvas, SuspensionX, Y, SuspensionWidth, Height)
+  00c5: self._Graph.Draw(HudCanvas, HistoryX, Y, HistoryWidth, Height)
+  00f1: return nothing
+  00f3: <eos>
+
+function TnSuspension.DrawSuspension  (script 217 bytes)
+  0000: HudCanvas.SetDrawColor(128, 128, 128, cast3d(255))
+  001d: HudCanvas.SetPos(X, Y)
+  003a: HudCanvas.DrawRect(cast3f(Width), cast3f(Height), )
+  005c: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  007f: HudCanvas.SetPos(X, Y)
+  009c: HudCanvas.DrawRect(cast3f(Width), (cast3f(Height) * (get_Length() / get_RestingLength())), )
+  00d6: return nothing
+  00d8: <eos>

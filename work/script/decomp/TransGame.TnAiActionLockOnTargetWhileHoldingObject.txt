@@ -1,0 +1,8 @@
+function TnAiActionLockOnTargetWhileHoldingObject.OnSetUpConditions  (script 111 bytes)
+  0000: Destructible = TnDestructibleActor(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateGrabbedObject'))
+  0028: if !((Destructible == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateGrabbedObject', Destructible)
+  0057: return TnAiActionLockOnTarget.OnSetUpConditions(ExpectedEffects, Conditions)
+  0068: return return
+  006e: <eos>

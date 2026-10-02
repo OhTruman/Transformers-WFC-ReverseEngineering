@@ -1,0 +1,9 @@
+function TnHudDataObserverHealth.CheckData  (script 127 bytes)
+  0000: TransformerPawn = TnPawn(PC.Pawn)
+  0019: if !((TransformerPawn != none)) goto 0x003d
+  0024: NewHealth = TransformerPawn.GetHealth()
+  003d: if !(((NewHealth > 0.0) && (NewHealth < 1.0))) goto 0x0068
+  005d: NewHealth = 1.0
+  0068: ProcessNewValue(Movie, NewHealth)
+  007c: return nothing
+  007e: <eos>

@@ -1,0 +1,36 @@
+function TnTeamDrafterPrivateSnakeDraft.PreDraft  (script 27 bytes)
+  0000: self.PartyCollection.GetAllMembers(self.Players)
+  0018: return nothing
+  001a: <eos>
+
+function TnTeamDrafterPrivateSnakeDraft.PostDraft  (script 11 bytes)
+  0000: self.Players.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnTeamDrafterPrivateSnakeDraft.GetSortCount  (script 14 bytes)
+  0000: return self.Players.Length
+  0007: return return
+  000d: <eos>
+
+function TnTeamDrafterPrivateSnakeDraft.GetLevel  (script 78 bytes)
+  0000: PRI = GetPRIForPlayer(PlayerIndex[self.Players].NetId)
+  0026: if !((PRI != none)) goto 0x0045
+  0031: return PRI.GetPlayerLevel()
+  0045: return 0
+  0047: return return
+  004d: <eos>
+
+function TnTeamDrafterPrivateSnakeDraft.GetScore  (script 80 bytes)
+  0000: PRI = GetPRIForPlayer(PlayerIndex[self.Players].NetId)
+  0026: if !((PRI != none)) goto 0x0047
+  0031: return cast44(PRI.GetScore())
+  0047: return 0
+  0049: return return
+  004f: <eos>
+
+function TnTeamDrafterPrivateSnakeDraft.AssignToTeam  (script 64 bytes)
+  0000: self.PartyCollection.SetTeamForPlayer(PlayerIndex[self.Players].NetId, TeamIndex)
+  002e: AddAdd_Int(cast3a(TeamIndex)[self.TeamCounts])
+  003d: return nothing
+  003f: <eos>

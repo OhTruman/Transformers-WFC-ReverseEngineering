@@ -1,0 +1,15 @@
+function TnStatisticsCheatTable.RecordCheat  (script 358 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: C.Session_Id = Game.StatisticsSessionId
+  002c: C.PlayerName = Cheater.GetHumanReadableName()
+  0050: C.CheatName = CheatName
+  0066: C.WorldTime = Game.WorldInfo.TimeSeconds
+  008e: C.ActiveCheckpoint = GetActiveCheckpoint()
+  00a9: if !((Cheater.Pawn != none)) goto 0x0156
+  00bd: C.CheatLocationX = Cheater.Pawn.Location.X
+  00f0: C.CheatLocationY = Cheater.Pawn.Location.Y
+  0123: C.CheatLocationZ = Cheater.Pawn.Location.Z
+  0156: self.Cheats.AddItem(C)
+  0163: return nothing
+  0165: <eos>

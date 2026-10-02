@@ -1,0 +1,39 @@
+function TnAiActionReactionAnimation.get_AnimatorService  (script 13 bytes)
+  0000: return self._AnimatorService
+  0006: return return
+  000c: <eos>
+
+function TnAiActionReactionAnimation.OnInitialize  (script 103 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionReactionAnimationBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Effects, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateReaction', (cast3a(self._Blueprint.Reaction) + cast3a(6)), , true, ))
+  0064: return nothing
+  0066: <eos>
+
+function TnAiActionReactionAnimation.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionReactionAnimation.OnStart  (script 259 bytes)
+  0000: ReactAnim = TnReactionAnimation(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateReaction', ExpectedEffects))
+  0028: if !((ReactAnim != none)) goto 0x0093
+  0033: Params.AnimName = ReactAnim.AnimationName
+  0052: Params.BlendInTime = ReactAnim.BlendInTime
+  0071: Params.BlendOutTime = ReactAnim.BlendOutTime
+  0090: goto 0x00a7
+  0093: Params = self._Blueprint.Params
+  00a7: SetCharacterState(1)
+  00b2: self._TransformerController.StopMovement()
+  00c5: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.SucceedCallback, delegate.FailCallback)
+  00f0: return OnStart(ExpectedEffects)
+  00fc: return return
+  0102: <eos>
+
+function TnAiActionReactionAnimation.OnFinish  (script 83 bytes)
+  0000: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateReaction', (cast3a(self._Blueprint.Reaction) + cast3a(6)), none)
+  002f: self._AnimatorService.StopAnimation(, )
+  0045: OnFinish(CurrentState)
+  0050: return nothing
+  0052: <eos>

@@ -1,0 +1,56 @@
+function TnStatsActionScriptBinding.Initialize  (script 39 bytes)
+  0000: Initialize(NewOwnerMovie)
+  000b: self.StatsDataStore = obj'TnDataStore_OnlineStats'.static.GetStatsDataStore()
+  0024: return nothing
+  0026: <eos>
+
+function TnStatsActionScriptBinding.LoadStatsCenteredOnPlayer  (script 60 bytes)
+  0000: self.StatsDataStore.SetCurrentStats(ViewName, 2)
+  001a: self.StatsDataStore.RefreshStats(cast3d(GetPlayerNum()))
+  0039: return nothing
+  003b: <eos>
+
+function TnStatsActionScriptBinding.LoadStatsPlayer  (script 60 bytes)
+  0000: self.StatsDataStore.SetCurrentStats(ViewName, 1)
+  001a: self.StatsDataStore.RefreshStats(cast3d(GetPlayerNum()))
+  0039: return nothing
+  003b: <eos>
+
+function TnStatsActionScriptBinding.LoadStatsFriends  (script 60 bytes)
+  0000: self.StatsDataStore.SetCurrentStats(ViewName, 3)
+  001a: self.StatsDataStore.RefreshStats(cast3d(GetPlayerNum()))
+  0039: return nothing
+  003b: <eos>
+
+function TnStatsActionScriptBinding.LoadStatsTopRanked  (script 60 bytes)
+  0000: self.StatsDataStore.SetCurrentStats(ViewName, 4)
+  001a: self.StatsDataStore.RefreshStats(cast3d(GetPlayerNum()))
+  0039: return nothing
+  003b: <eos>
+
+function TnStatsActionScriptBinding.ShowStatsGamerCardUI  (script 39 bytes)
+  0000: self.StatsDataStore.ShowGamercard(cast3d(GetPlayerNum()), Index)
+  0024: return nothing
+  0026: <eos>
+
+function TnStatsActionScriptBinding.GetChallengeManager  (script 59 bytes)
+  0000: PC = TnStatsActionScriptBinding.GetLocalPlayerController()
+  000c: Profile = TnProfileSettings(PC.ProfileSettings)
+  0025: return Profile.ChallengeManager
+  0034: return return
+  003a: <eos>
+
+function TnStatsActionScriptBinding.GetChallengeValue  (script 35 bytes)
+  0000: return cast44(TnStatsActionScriptBinding.GetChallengeManager().GetValue(ChallengeId))
+  001c: return return
+  0022: <eos>
+
+function TnStatsActionScriptBinding.GetChallengeLevel  (script 33 bytes)
+  0000: return TnStatsActionScriptBinding.GetChallengeManager().GetChallengeLevel(ChallengeId)
+  001a: return return
+  0020: <eos>
+
+function TnStatsActionScriptBinding.GetLocalPlayerController  (script 46 bytes)
+  0000: return TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo()).GetLocalPlayerController()
+  0027: return return
+  002d: <eos>

@@ -1,0 +1,16 @@
+function TnGameRules_ReportGameProgressTime.Tick  (script 191 bytes)
+  0000: Tick(DeltaTime)
+  000b: NumSecondsLeft = GetRemainingTime()
+  001b: I = self.Sounds.Find('NumSecondsLeft',NumSecondsLeft)
+  0037: if !((I == -1)) goto 0x0048
+  0046: return nothing
+  0048: BroadcastLocalizedMessage(obj'TnGameProgressAnnouncementMessage', I[self.Sounds].MessageSwitch, , , )
+  0070: if !((I[self.Sounds].NotifyGame && (none != self.WorldInfo.Game))) goto 0x00bc
+  00a0: self.WorldInfo.Game.NotifyGameNearlyComplete()
+  00bc: return nothing
+  00be: <eos>
+
+function TnGameRules_ReportGameProgressTime.GetRemainingTime  (script 31 bytes)
+  0000: return self.WorldInfo.GRI.RemainingTime
+  0018: return return
+  001e: <eos>

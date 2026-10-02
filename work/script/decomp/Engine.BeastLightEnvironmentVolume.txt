@@ -1,0 +1,7 @@
+function BeastLightEnvironmentVolume.CheckForErrors  (script 177 bytes)
+  0000: kMaxAllowedSamplePoints = 80000
+  000b: N = self.BoxSampleGenerator.get_NumPoints()
+  0024: if !((N > kMaxAllowedSamplePoints)) goto 0x00ae
+  0033: EmitCheckMessage(0, ((((("Light volume has too many sample points. " $ cast53(N)) $ " exeeces maximum of ") $ cast53(kMaxAllowedSamplePoints)) $ " by ") $ cast53((N - kMaxAllowedSamplePoints))), , )
+  00ae: return nothing
+  00b0: <eos>

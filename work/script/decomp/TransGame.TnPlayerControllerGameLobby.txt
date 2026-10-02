@@ -1,0 +1,40 @@
+function TnPlayerControllerGameLobby.InitializeUIController  (script 160 bytes)
+  0000: nothing
+  0001: TnPlayerController.InitializeUIController(UIControllerClass, UseInGameLobby)
+  0012: if !((LocalPlayer(self.Player) != none)) goto 0x009d
+  0022: if !((self.WorldInfo == none)) goto 0x002f
+  002d: return nothing
+  002f: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0048: if !((GRI == none)) goto 0x0055
+  0053: return nothing
+  0055: if !(!obj'TnDataStore_MenuItems'.static.HasRequiredMapAssets(GRI.GetMapID())) goto 0x009d
+  0080: ShowContentMissingMessageBox(GRI.GetMapID())
+  009d: return nothing
+  009f: <eos>
+
+function TnPlayerControllerGameLobby.ShowContentMissingMessageBox  (script 434 bytes)
+  0000: if !(((self.UIController == none) || (self.ContentMissingMessageBox != none))) goto 0x001a
+  0018: return nothing
+  001a: self.ContentMissingMessageBox = self.UIController.ShowPopupUI("$UIText.MessagePrompts.LobbyInvalidMapTitle", "$UIText.MessagePrompts.LobbyInvalidMapMessage", false)
+  0090: if !(self.WorldInfo.IsConsoleBuild(1)) goto 0x0150
+  00a8: self.ContentMissingMessageBox.SetAButton("$UIText.MessagePrompts.ShowContentMarketplaceButton", delegate.ConfirmShowMarketplace, cast53(MapId), true)
+  0101: self.ContentMissingMessageBox.SetBButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ContentMissingMessageBoxContinue, , true)
+  014d: goto 0x019c
+  0150: self.ContentMissingMessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ContentMissingMessageBoxContinue, , true)
+  019c: self.ContentMissingMessageBox.Show()
+  01af: return nothing
+  01b1: <eos>
+
+function TnPlayerControllerGameLobby.ConfirmShowMarketplace  (script 106 bytes)
+  0000: self.ContentMissingMessageBox = none
+  0007: LP = LocalPlayer(self.Player)
+  0017: PlayerInterface = OnlinePlayerInterfaceEx(cast36(self.OnlineSub.PlayerInterface))
+  0032: OfferId = 0
+  0039: PlayerInterface.ShowContentMarketplaceUI(cast3d(LP.ControllerId), -1, OfferId)
+  0067: return nothing
+  0069: <eos>
+
+function TnPlayerControllerGameLobby.ContentMissingMessageBoxContinue  (script 10 bytes)
+  0000: self.ContentMissingMessageBox = none
+  0007: return nothing
+  0009: <eos>

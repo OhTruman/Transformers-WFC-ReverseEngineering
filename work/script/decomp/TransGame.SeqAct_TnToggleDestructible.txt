@@ -1,0 +1,23 @@
+function SeqAct_TnToggleDestructible.Activated  (script 232 bytes)
+  0000: Activated()
+  0006: foreach self.Targets(Target,) (end 0x00e4)
+  0015: Destructible = TnDestructibleActor(Target)
+  0025: if !((Destructible == none)) goto 0x0079
+  0030: LogInternal(((("ERROR: Non-destructible" @ cast56(Target)) @ "listed in targets for") @ cast56(self)), , , )
+  0075: iternext
+  0076: goto 0x00e4
+  0079: switch (GetActionInputType())
+  0085: case 0: (next 0x009e)
+  008a: Destructible._Invulnerable = false
+  009b: goto 0x00e3
+  009e: case 1: (next 0x00b7)
+  00a3: Destructible._Invulnerable = true
+  00b4: goto 0x00e3
+  00b7: case 2: (next 0x00e0)
+  00bc: Destructible._Invulnerable = !Destructible._Invulnerable
+  00dd: goto 0x00e3
+  00e0: default:
+  00e3: iternext
+  00e4: iterpop
+  00e5: return nothing
+  00e7: <eos>

@@ -1,0 +1,15 @@
+function TnStimulusReactionGrenade.GetAnimation  (script 170 bytes)
+  0000: AxisDir = obj'Core.Math'.static.GetXYDirection(P.Rotation, (P.Location - StimulusLocation))
+  003c: if !((cast3a(AxisDir) == cast3a(0))) goto 0x006e
+  004c: AxisDir = cast3d(obj'Core.Random'.static.RandRangeInt(2, (3 + 1)))
+  006e: switch (AxisDir)
+  0075: case 1: (next 0x0080)
+  007a: return self.AnimReactionFront
+  0080: case 2: (next 0x008b)
+  0085: return self.AnimReactionLeft
+  008b: case 3: (next 0x0096)
+  0090: return self.AnimReactionRight
+  0096: default:
+  0099: return 'None'
+  00a3: return return
+  00a9: <eos>

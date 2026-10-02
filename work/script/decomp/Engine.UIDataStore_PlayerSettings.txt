@@ -1,0 +1,19 @@
+function UIDataStore_PlayerSettings.GetPlayerOwner  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIDataStore_PlayerSettings.ClearDataProviders  (script 69 bytes)
+  0000: I = 0
+  0007: if !((I < self.PlayerSettings.Length)) goto 0x003a
+  0017: I[self.PlayerSettings].CleanupDataProvider()
+  0030: AddAdd_Int(I)
+  0037: goto 0x0007
+  003a: self.PlayerSettings.Length = 0
+  0042: return nothing
+  0044: <eos>
+
+function UIDataStore_PlayerSettings.NotifyGameSessionEnded  (script 15 bytes)
+  0000: UIDataStore_PlayerSettings.ClearDataProviders()
+  0006: return true
+  0008: return return
+  000e: <eos>

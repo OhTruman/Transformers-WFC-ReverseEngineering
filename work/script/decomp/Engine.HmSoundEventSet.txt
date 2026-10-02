@@ -1,0 +1,20 @@
+function HmSoundEventSet.FindSoundCue  (script 7 bytes)
+  0000: Event
+  0005: nothing
+  0006: <eos>
+
+function HmSoundEventSet.PostLoad  (script 216 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.BodyImpactProperties.Length)) goto 0x00cf
+  0017: if !((cast3a(Index[self.BodyImpactProperties].BodyPart) == cast3a(0))) goto 0x005e
+  0038: Index[self.BodyImpactProperties].BodyPart = 4
+  0051: MarkModified()
+  005b: goto 0x00c5
+  005e: if !(((cast3a(Index[self.BodyImpactProperties].BodyPart) == cast3a(2)) || (cast3a(Index[self.BodyImpactProperties].BodyPart) == cast3a(1)))) goto 0x00c5
+  00a2: Index[self.BodyImpactProperties].BodyPart = 3
+  00bb: MarkModified()
+  00c5: AddAdd_Int(Index)
+  00cc: goto 0x0007
+  00cf: PostLoad()
+  00d5: return nothing
+  00d7: <eos>

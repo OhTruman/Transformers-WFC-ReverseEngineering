@@ -1,0 +1,19 @@
+function TnAiActionNavigatingIdleFacingEnemy.OnStart  (script 36 bytes)
+  0000: TnAiActionNavigatingIdleFacingEnemy.UpdateFocus()
+  0006: SetCharacterState(0)
+  0011: return OnStart(ExpectedEffects)
+  001d: return return
+  0023: <eos>
+
+function TnAiActionNavigatingIdleFacingEnemy.OnUpdate  (script 30 bytes)
+  0000: TnAiActionNavigatingIdleFacingEnemy.UpdateFocus()
+  0006: return OnUpdate(ExpectedEffects, DeltaTime)
+  0017: return return
+  001d: <eos>
+
+function TnAiActionNavigatingIdleFacingEnemy.UpdateFocus  (script 59 bytes)
+  0000: if !((self._TransformerController.Enemy == none)) goto 0x0016
+  0014: return nothing
+  0016: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  0038: return nothing
+  003a: <eos>

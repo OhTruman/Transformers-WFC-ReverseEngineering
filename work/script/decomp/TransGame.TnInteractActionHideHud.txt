@@ -1,0 +1,9 @@
+function TnInteractActionHideHud.TriggerAction  (script 104 bytes)
+  0000: User = Interact.GetCurrentUser()
+  0019: if !((User == none)) goto 0x0026
+  0024: return nothing
+  0026: PC = TnPlayerController(User.Controller)
+  003f: if !((PC != none)) goto 0x0065
+  004a: PC.SetHudVisible(!self.HideHud)
+  0065: return nothing
+  0067: <eos>

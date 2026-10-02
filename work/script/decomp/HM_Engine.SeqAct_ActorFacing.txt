@@ -1,0 +1,28 @@
+function SeqAct_ActorFacing.Activated  (script 397 bytes)
+  0000: self.TestPassed = false
+  0008: if !(((self.ActorToTest == none) || (self.TargetToFace == none))) goto 0x0022
+  0020: return nothing
+  0022: Player = Actor(self.ActorToTest)
+  0032: Target = Actor(self.TargetToFace)
+  0042: if !(((Player != none) && (Target != none))) goto 0x0138
+  005a: playerLoc = Player.Location
+  006e: playerLoc.Z = 0.0
+  0084: TargetLoc = Target.Location
+  0098: TargetLoc.Z = 0.0
+  00ae: playerRot = cast39(Player.Rotation)
+  00c4: playerRot.Z = 0.0
+  00da: Angle = (obj'Core.Math'.static.Acos((obj'Core.Math'.static.Normal((TargetLoc - playerLoc)) dot playerRot)) * 57.2957802)
+  0118: if !((Angle < cast3f((self.TestAngle / 2)))) goto 0x0135
+  012d: self.TestPassed = true
+  0135: goto 0x018a
+  0138: LogInternal("SeqAct_ActorFacing:  Could not perform facing check - cast to actor failed.", , , )
+  018a: return nothing
+  018c: <eos>
+
+function SeqAct_ActorFacing.Deactivated  (script 57 bytes)
+  0000: if !(self.TestPassed) goto 0x0021
+  0009: 0[self.OutputLinks].bHasImpulse = true
+  001e: goto 0x0036
+  0021: 1[self.OutputLinks].bHasImpulse = true
+  0036: return nothing
+  0038: <eos>

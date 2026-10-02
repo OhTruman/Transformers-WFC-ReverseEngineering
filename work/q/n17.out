@@ -1,0 +1,47 @@
+=== asm 0x829ebbe0 46
+  829ebbe0  mfspr r12,LR
+  829ebbe4  stw r12,-0x8(r1) ->Stack[-0x8]
+  829ebbe8  std r31,-0x10(r1) ->Stack[-0x10]
+  829ebbec  stwu r1,-0x80(r1) ->Stack[-0x80]
+  829ebbf0  or r31,r3,r3
+  829ebbf4  li r4,0x8
+  829ebbf8  li r3,0xd8
+  829ebbfc  bl 0x82b19590 ->82b19590
+  829ebc00  cmplwi cr6,r3,0x0
+  829ebc04  beq cr6,0x829ebc6c ->829ebc6c
+  829ebc08  lis r11,0x408
+  829ebc0c  lis r9,-0x7de0
+  829ebc10  ori r8,r11,0x4084
+  829ebc14  lis r7,-0x7d48
+  829ebc18  li r10,0x4000
+  829ebc1c  lis r6,-0x7d64
+  829ebc20  lis r5,-0x7d61
+  829ebc24  subi r11,r9,0x768c
+  829ebc28  addi r9,r7,0x4490
+  829ebc2c  rldimi r10,r8,0x20,0x0
+  829ebc30  subi r8,r6,0x38d0
+  829ebc34  stw r9,0x64(r1) ->82b84490 ->Stack[-0x1c]
+  829ebc38  subi r7,r5,0x4a68
+  829ebc3c  lis r4,-0x7e00
+  829ebc40  stw r8,0x5c(r1) ->829bc730 ->Stack[-0x24]
+  829ebc44  stw r7,0x54(r1) ->829eb598 ->Stack[-0x2c]
+  829ebc48  or r8,r31,r31
+  829ebc4c  addi r9,r4,0xc1c ->82000c1c
+  829ebc50  addi r7,r11,0x2 ->821f8976
+  829ebc54  li r6,0x6
+  829ebc58  li r5,0x51d8
+  829ebc5c  li r4,0x0
+  829ebc60  bl 0x82b35698 ->82b35698
+  829ebc64  or r31,r3,r3
+  829ebc68  b 0x829ebc70 ->829ebc70
+  829ebc6c  li r31,0x0
+  829ebc70  or r3,r31,r31
+  829ebc74  bl 0x82b35330 ->82b35330
+  829ebc78  or r3,r31,r31
+  829ebc7c  addi r1,r1,0x80
+  829ebc80  lwz r12,-0x8(r1) ->Stack[-0x8]
+  829ebc84  mtspr LR,r12
+  829ebc88  ld r31,-0x10(r1) ->Stack[-0x10]
+  829ebc8c  blr
+  829ebc90  mfspr r12,LR
+  829ebc94  stw r12,-0x8(r1) ->Stack[-0x8]

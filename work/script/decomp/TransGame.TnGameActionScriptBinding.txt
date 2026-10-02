@@ -1,0 +1,187 @@
+function TnGameActionScriptBinding.SetHasWatchedIntroMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnGameActionScriptBinding.HasWatchedIntroMovie  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnGameActionScriptBinding.GetLanguageCode  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnGameActionScriptBinding.GetRegionCode  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnGameActionScriptBinding.IsHost  (script 42 bytes)
+  0000: WI = TnGameActionScriptBinding.GetWorldInfo()
+  000c: return (cast3a(WI.NetMode) != cast3a(3))
+  0023: return return
+  0029: <eos>
+
+function TnGameActionScriptBinding.GetWorldInfo  (script 46 bytes)
+  0000: return TnWorldInfo(obj'Engine.Engine'.static.GetEngine().GetCurrentWorldInfo())
+  0027: return return
+  002d: <eos>
+
+function TnGameActionScriptBinding.QuitToMainMenu  (script 53 bytes)
+  0000: PC = GetPlayerController()
+  0010: PC.UIController.ShowCustomPopupUI(obj'TnQuitMessageBox', true)
+  0032: return nothing
+  0034: <eos>
+
+function TnGameActionScriptBinding.ExitGame  (script 316 bytes)
+  0000: PC = GetPlayerController()
+  0010: MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.ExitGameMessage", false)
+  0087: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmExitGame, , false)
+  00d3: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  0115: MessageBox.bShowDefaultButtons = false
+  0126: MessageBox.Show()
+  0139: return nothing
+  013b: <eos>
+
+function TnGameActionScriptBinding.ConfirmExitGame  (script 72 bytes)
+  0000: MessageBox.SetIconType(1, )
+  0016: PC = GetPlayerController()
+  0026: PC.ConsoleCommand("quit", )
+  0045: return nothing
+  0047: <eos>
+
+function TnGameActionScriptBinding.RestartChapter  (script 447 bytes)
+  0000: PC = GetPlayerController()
+  0010: GameClass = class<TnGame>(PC.WorldInfo.GetGameClass())
+  0037: if !((PC != none)) goto 0x0056
+  0042: PC._CheckpointOverrideCharacterData = EmptyCharacterData
+  0056: if !(((GameClass != none) && GameClass.static.ShouldShowProgressLossMessageFor(PC))) goto 0x01b3
+  007e: MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.RestartChapterTitle", "$UIText.MessagePrompts.LeaveGameSaveDataConfirm", false)
+  00fe: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmRestartChapter, , false)
+  014a: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  018c: MessageBox.bShowDefaultButtons = false
+  019d: MessageBox.Show()
+  01b0: goto 0x01bc
+  01b3: TnGameActionScriptBinding.ConfirmRestartChapter(none, "")
+  01bc: return nothing
+  01be: <eos>
+
+function TnGameActionScriptBinding.ConfirmRestartChapter  (script 95 bytes)
+  0000: PC = GetPlayerController()
+  0010: obj'TnMoviePlayer'.static.StartLoadFromCheckpointLoadingMovie(cast3a(PC.GetTeamNum()))
+  0038: PC.ConsoleCommand("reloadmap", )
+  005c: return nothing
+  005e: <eos>
+
+function TnGameActionScriptBinding.ApplyProfileSettings  (script 38 bytes)
+  0000: PC = GetPlayerController()
+  0010: PC.UpdateLocalCacheOfProfileSettings()
+  0023: return nothing
+  0025: <eos>
+
+function TnGameActionScriptBinding.GetCheckpoints  (script 121 bytes)
+  0000: SortedCheckpoints = TnGameActionScriptBinding.GetWorldInfo().GetSortedCheckPoints()
+  001a: CheckpointCsv = ""
+  0022: foreach SortedCheckpoints(CP,) (end 0x006b)
+  0031: if !((CheckpointCsv != "")) goto 0x004d
+  003d: CheckpointCsv = (CheckpointCsv $ ",")
+  004d: CheckpointCsv = (CheckpointCsv $ cast57(CP.Tag))
+  006a: iternext
+  006b: iterpop
+  006c: return CheckpointCsv
+  0072: return return
+  0078: <eos>
+
+function TnGameActionScriptBinding.GetGameInfo  (script 66 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetEngine().GetCurrentWorldInfo()
+  0027: return TnGame(WI.Game)
+  003b: return return
+  0041: <eos>
+
+function TnGameActionScriptBinding.AllowCheats  (script 63 bytes)
+  0000: GI = TnGameActionScriptBinding.GetGameInfo()
+  000c: return ((GI != none) ? GI.AllowCheats(GetPlayerController()) : false)
+  0038: return return
+  003e: <eos>
+
+function TnGameActionScriptBinding.SkipToCheckpoint  (script 83 bytes)
+  0000: if !(!TnGameActionScriptBinding.IsHost()) goto 0x000d
+  000b: return nothing
+  000d: PC = GetPlayerController()
+  001d: PC.ConsoleCommand(("SkipToCheckpoint " $ CheckpointName), )
+  0050: return nothing
+  0052: <eos>
+
+function TnGameActionScriptBinding.LoadSavedCheckpoint  (script 180 bytes)
+  0000: if !(!TnGameActionScriptBinding.IsHost()) goto 0x000d
+  000b: return nothing
+  000d: PS = TnProfileSettings(GetPlayerController().ProfileSettings)
+  002b: I = PS.GetCheckpointMissionComplete(CheckpointIndex)
+  0049: if !((I != -1)) goto 0x0073
+  0058: obj'TnGame'.static.OpenSoloGameLobby(I)
+  0070: goto 0x00b1
+  0073: obj'TnMoviePlayer'.static.StartLoadFromCheckpointLoadingMovie(CheckpointIndex)
+  008b: obj'HM_Engine.CheckpointManager'.static.GetInstance().LoadAndRestartFromCheckpoint(CheckpointIndex)
+  00b1: return nothing
+  00b3: <eos>
+
+function TnGameActionScriptBinding.GetCheckpointFileStatus  (script 48 bytes)
+  0000: return cast3a(obj'HM_Engine.CheckpointManager'.static.GetInstance().GetCheckpointFileStatus(CheckpointIndex))
+  0029: return return
+  002f: <eos>
+
+function TnGameActionScriptBinding.RestartPlayerFromLastCheckpoint  (script 418 bytes)
+  0000: PC = GetPlayerController()
+  0010: GameClass = class<TnGame>(PC.WorldInfo.GetGameClass())
+  0037: if !(((GameClass != none) && GameClass.static.ShouldShowProgressLossMessageFor(PC))) goto 0x0192
+  005f: MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.CheckpointRestart", "$UIText.MessagePrompts.CheckpointRestartConfirm", false)
+  00dd: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmRestartPlayerFromLastCheckpoint, , )
+  0129: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  016b: MessageBox.bShowDefaultButtons = false
+  017c: MessageBox.Show()
+  018f: goto 0x019f
+  0192: ConfirmRestartPlayerFromLastCheckpoint(none, "")
+  019f: return nothing
+  01a1: <eos>
+
+function TnGameActionScriptBinding.ConfirmRestartPlayerFromLastCheckpoint  (script 316 bytes)
+  0000: if !(!TnGameActionScriptBinding.IsHost()) goto 0x000d
+  000b: return nothing
+  000d: CM = TnCheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  0039: if !((CM.GetActiveCheckpoint() != none)) goto 0x00e3
+  0052: PC = GetPlayerController()
+  0062: if !((PC == none)) goto 0x006f
+  006d: return nothing
+  006f: UIC = PC.UIController
+  0083: if !((UIC == none)) goto 0x0090
+  008e: return nothing
+  0090: UIC.OnClearPause()
+  00a3: obj'TnMoviePlayer'.static.StartLoadFromCheckpointLoadingMovie(cast3a(PC.GetTeamNum()))
+  00cb: CM.RestartFromActiveCheckpoint()
+  00de: return nothing
+  00e0: goto 0x0139
+  00e3: LogInternal("Error: RestartPlayerFromLastCheckpoint called but there is no active checkpoint", , , )
+  0139: return nothing
+  013b: <eos>
+
+function TnGameActionScriptBinding.SetGameDifficulty  (script 63 bytes)
+  0000: if !(!TnGameActionScriptBinding.IsHost()) goto 0x000d
+  000b: return nothing
+  000d: G = TnGameActionScriptBinding.GetGameInfo()
+  0019: if !((G != none)) goto 0x003c
+  0024: G.set_GameDifficulty(Difficulty)
+  003c: return nothing
+  003e: <eos>
+
+function TnGameActionScriptBinding.GetGameDifficulty  (script 65 bytes)
+  0000: if !(!TnGameActionScriptBinding.IsHost()) goto 0x000d
+  000b: return 0
+  000d: G = TnGameActionScriptBinding.GetGameInfo()
+  0019: if !((G == none)) goto 0x0026
+  0024: return 0
+  0026: return G.get_GameDifficulty()
+  003a: return return
+  0040: <eos>
+
+function TnGameActionScriptBinding.PlayMovie  (script 7 bytes)
+  0000: MovieName
+  0005: nothing
+  0006: <eos>

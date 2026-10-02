@@ -1,0 +1,90 @@
+function TnAiActionMeleePlanningUtil.get_AttackDestination  (script 13 bytes)
+  0000: return self._AttackDestination
+  0006: return return
+  000c: <eos>
+
+function TnAiActionMeleePlanningUtil.set_MaxEnemySizeRadius  (script 14 bytes)
+  0000: self._MaxEnemySizeRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionMeleePlanningUtil.PopulatePreconditions  (script 178 bytes)
+  0000: if !(!PopulatePreconditions(Action, ExpectedEffects, Conditions)) goto 0x001c
+  001a: return false
+  001c: P = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0044: if !((P == none)) goto 0x0051
+  004f: return false
+  0051: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', P)
+  0073: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateFacingActor', P)
+  0095: self._AttackDestination = P.Location
+  00a9: return true
+  00ab: return return
+  00b1: <eos>
+
+function TnAiActionMeleePlanningUtil.PlanStart  (script 76 bytes)
+  0000: P = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((P == none)) goto 0x0035
+  0033: return nothing
+  0035: self._AttackDestination = P.Location
+  0049: return nothing
+  004b: <eos>
+
+function TnAiActionMeleePlanningUtil.AttackDestinationValid  (script 259 bytes)
+  0000: Enemy = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((((((Enemy == none) || !IsEnemyInAssignedTacticalVolume(Enemy, TransformerController)) || (IsEnemyFlyingPlane(Enemy) && !IsInPlaneForm(TransformerController.Pawn))) || !IsEnemyMeleeableSentry(Enemy)) || !IsEnemySmallEnoughToMelee(Enemy))) goto 0x00af
+  00ad: return false
+  00af: if !(CheckAttackDestinationDistance) goto 0x00fa
+  00b8: DistanceSq = obj'Core.Math'.static.VSizeSq((Enemy.Location - self._AttackDestination))
+  00e6: return (DistanceSq < (AttackDestinationDistanceThreshold * AttackDestinationDistanceThreshold))
+  00fa: return true
+  00fc: return return
+  0102: <eos>
+
+function TnAiActionMeleePlanningUtil.IsEnemyInAssignedTacticalVolume  (script 70 bytes)
+  0000: V = TransformerController.GetTacticalVolume()
+  0019: if !((V != none)) goto 0x003d
+  0024: return V.EncompassesActorLocation(Enemy)
+  003d: return true
+  003f: return return
+  0045: <eos>
+
+function TnAiActionMeleePlanningUtil.IsInPlaneForm  (script 106 bytes)
+  0000: PlanePawn = TnPawn(P)
+  0010: if !(((PlanePawn != none) && (cast3a(PlanePawn.get_VehicleType()) == cast3a(2)))) goto 0x0054
+  003b: PlaneForm = TnPlaneForm(PlanePawn._VehicleForm)
+  0054: if !((PlaneForm != none)) goto 0x0061
+  005f: return true
+  0061: return false
+  0063: return return
+  0069: <eos>
+
+function TnAiActionMeleePlanningUtil.IsEnemyFlyingPlane  (script 180 bytes)
+  0000: EnemyPlane = TnPawn(Enemy)
+  0010: if !(((EnemyPlane != none) && (cast3a(EnemyPlane.get_VehicleType()) == cast3a(2)))) goto 0x0054
+  003b: EnemyPlaneForm = TnPlaneForm(EnemyPlane._CurrentForm)
+  0054: if !(((EnemyPlaneForm != none) && (EnemyPlaneForm.get_IsBoosting() || (!EnemyPlaneForm.get_IsBoosting() && EnemyPlane.get_IsAirborne())))) goto 0x00ab
+  00a9: return true
+  00ab: return false
+  00ad: return return
+  00b3: <eos>
+
+function TnAiActionMeleePlanningUtil.IsEnemyMeleeableSentry  (script 52 bytes)
+  0000: SentryEnemy = TnSentryPawn(Enemy)
+  0010: if !((SentryEnemy == none)) goto 0x001d
+  001b: return true
+  001d: return SentryEnemy._IsValidMeleeTarget
+  002d: return return
+  0033: <eos>
+
+function TnAiActionMeleePlanningUtil.IsEnemySmallEnoughToMelee  (script 34 bytes)
+  0000: return (Enemy.GetCollisionRadius() < self._MaxEnemySizeRadius)
+  001b: return return
+  0021: <eos>
+
+function TnAiActionMeleePlanningUtil.AddWeaponToInventory  (script 114 bytes)
+  0000: MeleeWeapon = TnWeapon(P.InvManager.FindInventoryType(WeaponClass, false))
+  002d: if !((MeleeWeapon == none)) goto 0x0065
+  0038: MeleeWeapon = TnWeapon(P.InvManager.CreateInventory(WeaponClass, ))
+  0065: return MeleeWeapon
+  006b: return return
+  0071: <eos>

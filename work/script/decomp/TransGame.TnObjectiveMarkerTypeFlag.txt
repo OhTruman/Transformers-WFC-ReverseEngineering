@@ -1,0 +1,15 @@
+function TnObjectiveMarkerTypeFlag.GetLabelText  (script 194 bytes)
+  0000: IsAttacking = (cast3a(Owner.GetTeamNum()) == TnGameReplicationInfoMultiplayer(Owner.WorldInfo.GRI).get_AttackingTeam())
+  0048: switch (GetObjectiveState(Owner, MarkerData.MarkerBase))
+  0069: case 0: (next 0x0084)
+  006e: return (IsAttacking ? self.CaptureLabel : self.DefendLabel)
+  0084: case 1: (next 0x009f)
+  0089: return (IsAttacking ? self.CaptureLabel : self.ReturnLabel)
+  009f: case 3: (next 0x00aa)
+  00a4: return self.KillLabel
+  00aa: case 2: (next 0x00b5)
+  00af: return self.EscortLabel
+  00b5: default:
+  00b8: return ""
+  00bb: return return
+  00c1: <eos>

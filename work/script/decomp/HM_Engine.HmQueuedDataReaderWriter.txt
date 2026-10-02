@@ -1,0 +1,65 @@
+function HmQueuedDataReaderWriter.WriteDataCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmQueuedDataReaderWriter.ReadDataCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmQueuedDataReaderWriter.DeleteDataCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmQueuedDataReaderWriter.SaveData  (script 27 bytes)
+  0000: Filename
+  0005: Data
+  000a: Description
+  000f: WriteDataCompleteCallback
+  0014: IconName
+  0019: nothing
+  001a: <eos>
+
+function HmQueuedDataReaderWriter.LoadData  (script 12 bytes)
+  0000: Filename
+  0005: ReadDataCompleteCallback
+  000a: nothing
+  000b: <eos>
+
+function HmQueuedDataReaderWriter.DeleteData  (script 12 bytes)
+  0000: Filename
+  0005: DeleteDataCompleteCallback
+  000a: nothing
+  000b: <eos>
+
+function HmQueuedDataReaderWriter.GetJobCount  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmQueuedDataReaderWriter.CallCallbackForFirstJob  (script 317 bytes)
+  0000: if !((self.ReaderWriterJobs.Length > 0)) goto 0x013a
+  000c: Job = 0[self.ReaderWriterJobs]
+  0019: if !((cast3a(Job.Type) == cast3a(0))) goto 0x0075
+  0034: WriteDelegate = Job.WriteDataCompleteCallback
+  004a: if !(IsCallable(WriteDelegate)) goto 0x0072
+  005c: WriteDataCompleteDelegate(cast3d(Status))
+  0072: goto 0x013a
+  0075: if !((cast3a(Job.Type) == cast3a(1))) goto 0x00e1
+  0090: ReadDelegate = Job.ReadDataCompleteCallback
+  00a6: if !(IsCallable(ReadDelegate)) goto 0x00de
+  00b8: ReadDataCompleteDelegate(cast3d(Status), Job.Data)
+  00de: goto 0x013a
+  00e1: if !((cast3a(Job.Type) == cast3a(2))) goto 0x013a
+  00fc: DeleteDelegate = Job.DeleteDataCompleteCallback
+  0112: if !(IsCallable(DeleteDelegate)) goto 0x013a
+  0124: DeleteDataCompleteDelegate(cast3e(Status))
+  013a: return nothing
+  013c: <eos>
+
+function HmQueuedDataReaderWriter.DeleteAllJobs  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmQueuedDataReaderWriter.OnPieSessionEnding  (script 13 bytes)
+  0000: DeleteAllJobs()
+  000a: return nothing
+  000c: <eos>

@@ -1,0 +1,28 @@
+function TnDeathModifier.get_Owner  (script 13 bytes)
+  0000: return self._Owner
+  0006: return return
+  000c: <eos>
+
+function TnDeathModifier.Start  (script 106 bytes)
+  0000: self._Owner = OwnerPawn
+  000b: if !((self.Delay.Max > 0.0)) goto 0x005d
+  0025: self.DelayTimer.Start(delegate.OnStart, obj'Core.Random'.static.RandomInRange(self.Delay), )
+  005a: goto 0x0067
+  005d: OnStart()
+  0067: return nothing
+  0069: <eos>
+
+function TnDeathModifier.Tick  (script 66 bytes)
+  0000: self.DelayTimer.Tick(DeltaTime)
+  0018: if !(!self.DelayTimer.IsActive()) goto 0x003f
+  0030: OnTick(DeltaTime)
+  003f: return nothing
+  0041: <eos>
+
+function TnDeathModifier.OnTick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDeathModifier.OnStart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

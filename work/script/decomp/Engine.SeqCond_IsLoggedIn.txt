@@ -1,0 +1,14 @@
+function SeqCond_IsLoggedIn.CheckLogins  (script 173 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0099
+  0024: PlayerInt = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInt, OnlinePlayerInterface(none))) goto 0x0099
+  004c: Count = 0
+  0053: if !((Count < self.NumNeededLoggedIn)) goto 0x0099
+  0062: if !((cast3a(PlayerInt.GetLoginStatus(cast3d(Count))) >= cast3a(1))) goto 0x008f
+  0088: AddAdd_Int(LoggedInCount)
+  008f: AddAdd_Int(Count)
+  0096: goto 0x0053
+  0099: return (LoggedInCount >= self.NumNeededLoggedIn)
+  00a6: return return
+  00ac: <eos>

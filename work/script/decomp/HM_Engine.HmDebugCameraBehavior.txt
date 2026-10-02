@@ -1,0 +1,35 @@
+function HmDebugCameraBehavior.Update  (script 504 bytes)
+  0000: SpeedModifier = 0.5
+  000b: if !((CI.PressedKeys.Find('XboxTypeS_RightTrigger') != -1)) goto 0x003f
+  0031: SpeedModifier = 1.0
+  003c: goto 0x0070
+  003f: if !((CI.PressedKeys.Find('XboxTypeS_LeftTrigger') != -1)) goto 0x0070
+  0065: SpeedModifier = 0.0
+  0070: (Result.Rotation.Pitch += cast44(((CI.RightStickInputY * obj'Core.Math'.static.LerpFloatRange(self.PitchSpeed, SpeedModifier)) * DeltaTime)))
+  00c5: (Result.Rotation.Yaw += cast44(((CI.RightStickInputX * obj'Core.Math'.static.LerpFloatRange(self.YawSpeed, SpeedModifier)) * DeltaTime)))
+  011a: (Result.Location += (((CI.LeftStickInputY * obj'Core.Math'.static.LerpFloatRange(self.ForwardSpeed, SpeedModifier)) * DeltaTime) * cast39(Result.Rotation)))
+  0176: StrafeDirection = (vect(0,1,0) >> Result.Rotation)
+  019c: (Result.Location += (((CI.LeftStickInputX * obj'Core.Math'.static.LerpFloatRange(self.StrafeSpeed, SpeedModifier)) * DeltaTime) * StrafeDirection))
+  01eb: return Result
+  01f1: return return
+  01f7: <eos>
+
+function HmDebugCameraBehavior.SetPitchSpeed  (script 14 bytes)
+  0000: self.PitchSpeed = R
+  000b: return nothing
+  000d: <eos>
+
+function HmDebugCameraBehavior.SetYawSpeed  (script 14 bytes)
+  0000: self.YawSpeed = R
+  000b: return nothing
+  000d: <eos>
+
+function HmDebugCameraBehavior.SetForwardSpeed  (script 14 bytes)
+  0000: self.ForwardSpeed = R
+  000b: return nothing
+  000d: <eos>
+
+function HmDebugCameraBehavior.SetStrafeSpeed  (script 14 bytes)
+  0000: self.StrafeSpeed = R
+  000b: return nothing
+  000d: <eos>

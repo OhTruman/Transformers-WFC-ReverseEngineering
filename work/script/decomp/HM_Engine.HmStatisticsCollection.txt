@@ -1,0 +1,60 @@
+function HmStatisticsCollection.StartWrite  (script 126 bytes)
+  0000: if !((self.Publishers.Length != self.PublisherTypeNames.Length)) goto 0x0017
+  0011: HmStatisticsCollection.CreatePublishers()
+  0017: HmStatisticsCollection.GetTables(TableRefs, Filter)
+  0027: if !((TableRefs.Length == 0)) goto 0x0035
+  0033: return nothing
+  0035: foreach self.Publishers(Publisher,) (end 0x005e)
+  0044: Publisher.PublishTables(self, TableRefs)
+  005d: iternext
+  005e: iterpop
+  005f: foreach TableRefs(Table,) (end 0x007a)
+  006e: HmStatisticsCollection.EmptyTable(Table)
+  0079: iternext
+  007a: iterpop
+  007b: return nothing
+  007d: <eos>
+
+function HmStatisticsCollection.GetTables  (script 193 bytes)
+  0000: foreach self.Tables(TableName,) (end 0x00bd)
+  000f: Table = HmStatisticsCollection.GetTableByName(TableName)
+  0020: if !((Table == none)) goto 0x006c
+  002b: LogInternal(("ERROR: Failed to find statistics table named " $ cast57(TableName)), , , )
+  0068: iternext
+  0069: goto 0x00bd
+  006c: if !((cast3a(Filter) == cast3a(0))) goto 0x00af
+  007c: if !((cast3a(Table.TableType) == cast3a(1))) goto 0x0099
+  0095: iternext
+  0096: goto 0x00bd
+  0099: if !(Table.WriteToDemonware) goto 0x00af
+  00ab: iternext
+  00ac: goto 0x00bd
+  00af: TableRefs.AddItem(Table)
+  00bc: iternext
+  00bd: iterpop
+  00be: return nothing
+  00c0: <eos>
+
+function HmStatisticsCollection.CreatePublishers  (script 166 bytes)
+  0000: foreach self.PublisherTypeNames(TypeName,) (end 0x00a2)
+  000f: FoundType = FindObject(TypeName, obj'Core.Class')
+  0029: Type = class<HmStatisticsPublisher>(FoundType)
+  0039: if !((Type == none)) goto 0x008b
+  0044: LogInternal(("ERROR: Failed to create statistics publisher of type " $ TypeName), , , )
+  0087: iternext
+  0088: goto 0x00a2
+  008b: self.Publishers.AddItem(new(self, nothing, Type, nothing, AttachTreeCallback))
+  00a1: iternext
+  00a2: iterpop
+  00a3: return nothing
+  00a5: <eos>
+
+function HmStatisticsCollection.GetTableByName  (script 7 bytes)
+  0000: TableName
+  0005: nothing
+  0006: <eos>
+
+function HmStatisticsCollection.EmptyTable  (script 7 bytes)
+  0000: Table
+  0005: nothing
+  0006: <eos>

@@ -1,0 +1,26 @@
+function TnAiActionTurretPlayEmpReaction.OnInitialize  (script 30 bytes)
+  0000: TnAiActionTurretScanForEnemies.OnInitialize(Blueprint)
+  000b: self.EMPBlueprint = TnAiActionTurretPlayEMPReactionBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTurretPlayEmpReaction.OnStart  (script 39 bytes)
+  0000: self._TimeRemaining = self.EMPBlueprint.ReactionDuration
+  0014: return TnAiActionTurretScanForEnemies.OnStart(ExpectedEffects)
+  0020: return return
+  0026: <eos>
+
+function TnAiActionTurretPlayEmpReaction.OnUpdate  (script 62 bytes)
+  0000: (self._TimeRemaining -= DeltaTime)
+  000c: if !((self._TimeRemaining <= 0.0)) goto 0x0026
+  001b: return Succeed()
+  0026: return TnAiActionTurretScanForEnemies.OnUpdate(ExpectedEffects, DeltaTime)
+  0037: return return
+  003d: <eos>
+
+function TnAiActionTurretPlayEmpReaction.OnFinish  (script 62 bytes)
+  0000: TnAiActionTurretScanForEnemies.OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x003b
+  001b: get_CurrentWorldState().SetIntValue(obj'TnAiWorldStateReaction', 11, )
+  003b: return nothing
+  003d: <eos>

@@ -1,0 +1,53 @@
+function TnAiActionShootFromTurret.OnSetUpConditions  (script 289 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: Turret = self._TransformerController.GetUsableScriptedTurret()
+  0041: if !((Turret == none)) goto 0x007e
+  004c: Turret = obj'TnInteractHelper'.static.FindBestTurret(self._TransformerController, 5000.0, Target, get_WeaponClass())
+  007e: if !(((Turret == none) || (Turret.WeaponClass != get_WeaponClass()))) goto 0x00aa
+  00a8: return false
+  00aa: if !((obj'TnInteractHelper'.static.TurretCanShootTarget(Turret, Target) == false)) goto 0x00cf
+  00cd: return false
+  00cf: if !(Turret.PlayerRequestingTurret()) goto 0x00e7
+  00e5: return false
+  00e7: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateTurret', Turret)
+  0109: return TnAiActionShootAtTarget.OnSetUpConditions(ExpectedEffects, Conditions)
+  011a: return return
+  0120: <eos>
+
+function TnAiActionShootFromTurret.OnIsValidForFutureExecution  (script 208 bytes)
+  0000: Enemy = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !(!self._TransformerController.IsDangerous(Enemy)) goto 0x0047
+  0045: return false
+  0047: Turret = TnMountableTurretBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTurret', Conditions))
+  006f: if !((Turret == none)) goto 0x007c
+  007a: return false
+  007c: if !(!obj'TnInteractHelper'.static.TurretCanShootTarget(Turret, Enemy)) goto 0x00a0
+  009e: return false
+  00a0: if !(Turret.PlayerRequestingTurret()) goto 0x00b8
+  00b6: return false
+  00b8: return TnAiActionShootAtTarget.OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  00c9: return return
+  00cf: <eos>
+
+function TnAiActionShootFromTurret.OnStart  (script 59 bytes)
+  0000: self._Turret = TnMountableTurretBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTurret'))
+  0028: return TnAiActionShootAtTarget.OnStart(ExpectedEffects)
+  0034: return return
+  003a: <eos>
+
+function TnAiActionShootFromTurret.OnUpdate  (script 175 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(self._Target)) goto 0x0028
+  001d: return Succeed()
+  0028: if !(!obj'TnInteractHelper'.static.TurretCanShootTarget(self._Turret, self._Target)) goto 0x0055
+  004a: return Fail()
+  0055: if !(self._Turret.PlayerRequestingTurret()) goto 0x0076
+  006b: return Fail()
+  0076: self._TransformerPawn.SetAnchor(self._Turret.HotSpotPathNode)
+  0097: return TnAiActionShootAtTarget.OnUpdate(ExpectedEffects, DeltaTime)
+  00a8: return return
+  00ae: <eos>
+
+function TnAiActionShootFromTurret.DoCalculateAdditionalCost  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>

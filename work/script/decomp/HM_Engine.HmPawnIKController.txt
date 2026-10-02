@@ -1,0 +1,135 @@
+function HmPawnIKController.GetSkelControl  (script 83 bytes)
+  0000: if !(((Handle.Index < 0) || (Handle.Index >= self.SkelControls.Length))) goto 0x0035
+  0033: return none
+  0035: return Handle.Index[self.SkelControls]
+  004c: return return
+  0052: <eos>
+
+function HmPawnIKController.AddIKControl  (script 213 bytes)
+  0000: Handle.Index = -1
+  0016: if !((Mesh != none)) goto 0x00c8
+  0021: AnimTree = AnimTree(Mesh.Animations)
+  003a: if !((AnimTree != none)) goto 0x00c8
+  0045: Handle = FindIKControl(ControlName)
+  005a: if !((Handle.Index >= 0)) goto 0x0076
+  0070: return Handle
+  0076: SkelControl = AnimTree.FindSkelControl(ControlName)
+  0094: if !((SkelControl != none)) goto 0x00c8
+  009f: Handle.Index = self.SkelControls.Length
+  00b6: self.SkelControls.Length[self.SkelControls] = SkelControl
+  00c8: return Handle
+  00ce: return return
+  00d4: <eos>
+
+function HmPawnIKController.FindIKControl  (script 123 bytes)
+  0000: Handle.Index = -1
+  0016: I = 0
+  001d: if !((I < self.SkelControls.Length)) goto 0x006e
+  002d: if !((I[self.SkelControls].ControlName == ControlName)) goto 0x0064
+  004b: Handle.Index = I
+  0061: goto 0x006e
+  0064: AddAdd_PreInt(I)
+  006b: goto 0x001d
+  006e: return Handle
+  0074: return return
+  007a: <eos>
+
+function HmPawnIKController.ActivateIKControl  (script 116 bytes)
+  0000: SkelControl = GetSkelControl(Handle)
+  0015: if !((SkelControl == none)) goto 0x0022
+  0020: return false
+  0022: if !((SkelControl.StrengthTarget > cast3f(0))) goto 0x003a
+  0038: return false
+  003a: SkelControl.BlendTimeToGo = SkelControl.BlendInTime
+  0057: SkelControl.SetSkelControlActive(true)
+  006b: return true
+  006d: return return
+  0073: <eos>
+
+function HmPawnIKController.DeactivateIKControl  (script 116 bytes)
+  0000: SkelControl = GetSkelControl(Handle)
+  0015: if !((SkelControl == none)) goto 0x0022
+  0020: return false
+  0022: if !((SkelControl.StrengthTarget == cast3f(0))) goto 0x003a
+  0038: return false
+  003a: SkelControl.BlendTimeToGo = SkelControl.BlendOutTime
+  0057: SkelControl.SetSkelControlActive(false)
+  006b: return true
+  006d: return return
+  0073: <eos>
+
+function HmPawnIKController.SetIKTargetInstantly  (script 90 bytes)
+  0000: SkelControl = GetSkelControl(Handle)
+  0015: if !((SkelControlLookAt(SkelControl) != none)) goto 0x0057
+  0025: SkelControlLookAt(SkelControl).DesiredTargetLocation = Target
+  003e: SkelControlLookAt(SkelControl).TargetLocation = Target
+  0057: return nothing
+  0059: <eos>
+
+function HmPawnIKController.SetIKTarget  (script 120 bytes)
+  0000: SkelControl = GetSkelControl(Handle)
+  0015: if !((SkelControlLookAt(SkelControl) != none)) goto 0x0041
+  0025: SkelControlLookAt(SkelControl).DesiredTargetLocation = Target
+  003e: goto 0x006f
+  0041: if !((HmSkelControlRollLimb(SkelControl) != none)) goto 0x006d
+  0051: HmSkelControlRollLimb(SkelControl).DesiredEffectorLocation = Target
+  006a: goto 0x006f
+  006d: return false
+  006f: return true
+  0071: return return
+  0077: <eos>
+
+function HmPawnIKController.SetSingleBoneRoll  (script 88 bytes)
+  0000: SkelControl = SkelControlSingleBone(GetSkelControl(Handle))
+  001a: if !((SkelControl == none)) goto 0x0027
+  0025: return false
+  0027: SkelControl.BoneRotation.Roll = cast44((Roll * 182.0444489))
+  004f: return true
+  0051: return return
+  0057: <eos>
+
+function HmPawnIKController.SetIKBlendWeight  (script 108 bytes)
+  0000: SkelControl = GetSkelControl(Handle)
+  0015: if !((SkelControl == none)) goto 0x0022
+  0020: return false
+  0022: if !((SkelControl.BlendTimeToGo > cast3f(0))) goto 0x004f
+  0038: SkelControl.StrengthTarget = Weight
+  004c: goto 0x0063
+  004f: SkelControl.ControlStrength = Weight
+  0063: return true
+  0065: return return
+  006b: <eos>
+
+function HmPawnIKController.CalculateMaxLimbReach  (script 186 bytes)
+  0000: SkelControl = HmSkelControlRollLimb(GetSkelControl(Handle))
+  001a: if !((SkelControl == none)) goto 0x002b
+  0025: return 0.0
+  002b: minAngleRadians = (SkelControl.MinLowerAngle * (3.1415927 / cast3f(180)))
+  004c: hx = (UpperLimbLength + (LowerLimbLength * obj'Core.Math'.static.Cos(minAngleRadians)))
+  0070: hy = (LowerLimbLength * obj'Core.Math'.static.Sin(minAngleRadians))
+  008d: return obj'Core.Math'.static.Sqrt(((hx * hx) + (hy * hy)))
+  00b3: return return
+  00b9: <eos>
+
+function HmPawnIKController.SetLerpRate  (script 109 bytes)
+  0000: SkelControl = GetSkelControl(Handle)
+  0015: if !((SkelControlLookAt(SkelControl) != none)) goto 0x0041
+  0025: SkelControlLookAt(SkelControl).TargetLocationInterpSpeed = LerpRate
+  003e: goto 0x006a
+  0041: if !((HmSkelControlRollLimb(SkelControl) != none)) goto 0x006a
+  0051: HmSkelControlRollLimb(SkelControl).EffectorLocationInterpSpeed = LerpRate
+  006a: return nothing
+  006c: <eos>
+
+function HmPawnIKController.Tick  (script 153 bytes)
+  0000: I = 0
+  0007: if !((I < self.SkelControls.Length)) goto 0x0096
+  0017: if !((SkelControlLookAt(I[self.SkelControls]) != none)) goto 0x0053
+  002d: SkelControlLookAt(I[self.SkelControls]).InterpolateTargetLocation(dt)
+  0050: goto 0x008c
+  0053: if !((HmSkelControlRollLimb(I[self.SkelControls]) != none)) goto 0x008c
+  0069: HmSkelControlRollLimb(I[self.SkelControls]).InterpolateEffectorLocation(dt)
+  008c: AddAdd_PreInt(I)
+  0093: goto 0x0007
+  0096: return nothing
+  0098: <eos>

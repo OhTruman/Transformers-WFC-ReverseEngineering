@@ -1,0 +1,17 @@
+function TnSeqAct_AddScore.Activated  (script 329 bytes)
+  0000: if !((self.Targets.Length == 0)) goto 0x0050
+  000c: LogInternal("Error: Missing Target for Add Score, no score will be added", , , )
+  004e: return nothing
+  0050: I = 0
+  0057: if !((I < self.Targets.Length)) goto 0x0146
+  0067: C = Controller(I[self.Targets])
+  007d: if !((C == none)) goto 0x00a7
+  0088: C = Pawn(I[self.Targets]).Controller
+  00a7: if !((C == none)) goto 0x0104
+  00b2: LogInternal((("Error: Invalid target" @ cast56(I[self.Targets])) @ "for Add Score, expecting players"), , , )
+  0101: goto 0x013c
+  0104: C.WorldInfo.Game.ScoreObjective(C.PlayerReplicationInfo, self.Score)
+  013c: AddAdd_PreInt(I)
+  0143: goto 0x0057
+  0146: return nothing
+  0148: <eos>

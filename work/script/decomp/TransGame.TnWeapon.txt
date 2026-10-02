@@ -1,0 +1,1322 @@
+function TnWeapon.get_PoseName  (script 75 bytes)
+  0000: WM = TnWeaponMesh(GetWeaponMesh())
+  0015: if !(((WM != none) && IsFineAiming())) goto 0x003e
+  002f: return WM.FineAimPose
+  003e: return self._PoseName
+  0044: return return
+  004a: <eos>
+
+function TnWeapon.get_Stance  (script 113 bytes)
+  0000: PawnInstigator = TnPawn(self.Instigator)
+  0010: if !(((PawnInstigator != none) && PawnInstigator._IsDowned)) goto 0x0032
+  002f: return 4
+  0032: AiPawnInstigator = TnAiPawn(self.Instigator)
+  0042: if !(((AiPawnInstigator != none) && AiPawnInstigator._HunkerDown)) goto 0x0064
+  0061: return 5
+  0064: return self._Stance
+  006a: return return
+  0070: <eos>
+
+function TnWeapon.set_Stance  (script 14 bytes)
+  0000: self._Stance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnWeapon.get_ShouldLeadTarget  (script 14 bytes)
+  0000: return self._ShouldLeadTarget
+  0007: return return
+  000d: <eos>
+
+function TnWeapon.get_ShouldAimBelowTarget  (script 14 bytes)
+  0000: return self._ShouldAimBelowTarget
+  0007: return return
+  000d: <eos>
+
+function TnWeapon.get_HoldWhileOwnerDying  (script 14 bytes)
+  0000: return self._HoldWhileOwnerDying
+  0007: return return
+  000d: <eos>
+
+function TnWeapon.set_HoldWhileOwnerDying  (script 16 bytes)
+  0000: self._HoldWhileOwnerDying = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnWeapon.get_IsVehicleWeapon  (script 21 bytes)
+  0000: return (cast3a(self.WeaponType) == cast3a(6))
+  000e: return return
+  0014: <eos>
+
+function TnWeapon.get_IsRobotWeapon  (script 21 bytes)
+  0000: return (cast3a(self.WeaponType) != cast3a(6))
+  000e: return return
+  0014: <eos>
+
+function TnWeapon.get_IsRepairWeapon  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnWeapon.get_IsFiringEffects  (script 14 bytes)
+  0000: return self.bIsFiring
+  0007: return return
+  000d: <eos>
+
+function TnWeapon.ReplicatedEvent  (script 107 bytes)
+  0000: switch (VarName)
+  0007: case 'Instigator': (next 0x002b)
+  0013: if !((self.Data != default.Data)) goto 0x0028
+  0022: TnWeapon.InitializeFromInstigator()
+  0028: goto 0x005d
+  002b: case 'WeaponDataType': (next 0x0045)
+  0037: TnWeapon.SetWeaponDataType(self.WeaponDataType)
+  0042: goto 0x005d
+  0045: case 'MountedTurret': (next 0x005a)
+  0051: TnWeapon.AttachToMountedWeapon()
+  0057: goto 0x005d
+  005a: default:
+  005d: ReplicatedEvent(VarName)
+  0068: return nothing
+  006a: <eos>
+
+function TnWeapon.AttachToMountedWeapon  (script 79 bytes)
+  0000: if !(!self.IsAttachPending) goto 0x000d
+  000b: return nothing
+  000d: WM = GetWeaponMesh()
+  001d: if !(((WM != none) && WM.IsAttached())) goto 0x0042
+  0040: return nothing
+  0042: AttachWeapon()
+  004c: return nothing
+  004e: <eos>
+
+function TnWeapon.IsArmRequired  (script 57 bytes)
+  0000: WM = TnWeaponMesh(GetWeaponMesh())
+  0015: return ((WM != none) && WM.IsArmRequired)
+  0032: return return
+  0038: <eos>
+
+function TnWeapon.IsHandRequired  (script 57 bytes)
+  0000: WM = TnWeaponMesh(GetWeaponMesh())
+  0015: return ((WM != none) && WM.IsHandRequired)
+  0032: return return
+  0038: <eos>
+
+function TnWeapon.SetMultiplayerData  (script 14 bytes)
+  0000: self.MultiplayerData = MultiplayerData_
+  000b: return nothing
+  000d: <eos>
+
+function TnWeapon.GetWeaponDataByType  (script 63 bytes)
+  0000: switch (Type)
+  0007: case 1: (next 0x0012)
+  000c: return self.PlayerData
+  0012: case 2: (next 0x001d)
+  0017: return self.AiData
+  001d: case 3: (next 0x0028)
+  0022: return self.MultiplayerData
+  0028: case 4: (next 0x0033)
+  002d: return self.SurvivalData
+  0033: default:
+  0036: return none
+  0038: return return
+  003e: <eos>
+
+function TnWeapon.SetWeaponDataType  (script 35 bytes)
+  0000: self.WeaponDataType = Type
+  000b: SetData(TnWeapon.GetWeaponDataByType(Type))
+  0020: return nothing
+  0022: <eos>
+
+function TnWeapon.UpdateData  (script 196 bytes)
+  0000: self.CurrentSpread = GetInitialSpread()
+  0010: InitializeFireInterval()
+  001a: AsTnData = TnWeaponData(self.Data)
+  002a: TransformerPawn = TnPawn(self.Instigator)
+  003a: HeatProps = AsTnData.HeatProperties
+  004e: self.WeaponHeat.ResetHeatProperties(HeatProps, TransformerPawn, ((self.Instigator != none) && self.Instigator.IsLocallyControlled()))
+  008b: if !((TransformerPawn != none)) goto 0x009c
+  0096: TnWeapon.InitializeFromInstigator()
+  009c: if !((self.WeaponMeshTemplate != none)) goto 0x00bb
+  00a7: SetPickupMeshes(TnWeaponMesh(self.WeaponMeshTemplate))
+  00bb: UpdateData()
+  00c1: return nothing
+  00c3: <eos>
+
+function TnWeapon.CreateWeaponMeshes  (script 196 bytes)
+  0000: CreateWeaponMeshes()
+  0006: WeaponMesh = TnWeaponMesh(GetWeaponMesh())
+  001b: if !((WeaponMesh == none)) goto 0x0028
+  0026: return nothing
+  0028: Mesh = WeaponMesh.GetAnimatedMeshComponent()
+  0041: if !((Mesh == none)) goto 0x004e
+  004c: return nothing
+  004e: self.Defragger.AddDefragMesh(Mesh)
+  0066: if !(Mesh.GetScalarParam('EmissiveIntensity', EmmisiveIntensity)) goto 0x00c1
+  008a: self.AmmoMaterialRamper.Range.Min = EmmisiveIntensity
+  00a9: self.AmmoMaterialRamper.AddDefragMesh(Mesh)
+  00c1: return nothing
+  00c3: <eos>
+
+function TnWeapon.SetPickupMeshes  (script 110 bytes)
+  0000: DesiredPickupMesh = WeaponMesh.GetValidPickupMesh()
+  0019: if !((DesiredPickupMesh != none)) goto 0x005d
+  0024: ClonedPickup = PrimitiveComponent(DesiredPickupMesh.Clone(self, ))
+  0044: self.DroppedPickupMesh = ClonedPickup
+  004f: self.PickupFactoryMesh = ClonedPickup
+  005a: goto 0x006b
+  005d: self.DroppedPickupMesh = none
+  0064: self.PickupFactoryMesh = none
+  006b: return nothing
+  006d: <eos>
+
+function TnWeapon.IsHeatBased  (script 43 bytes)
+  0000: return (TnWeaponData(self.Data).HeatProperties.HeatMax > cast3f(0))
+  0024: return return
+  002a: <eos>
+
+function TnWeapon.InitializeFromInstigator  (script 183 bytes)
+  0000: TransformerPawn = TnPawn(self.Instigator)
+  0010: if !((TransformerPawn == none)) goto 0x0069
+  001b: LogInternal(("Error: Weapon instigator is none, cannot InitializeOwnerAnimator" @ cast56(self)), , , )
+  0067: return nothing
+  0069: TnWeapon.InitializeOwnerAnimator(TransformerPawn)
+  0074: if !((TransformerPawn.HasSkill(self.IncreaseAmmoSkill) && self.IsEffectedByIncreaseAmmoSkill)) goto 0x00b4
+  009a: self.AmmoIncrease = self.IncreaseAmmoSkill.static.GetAmmoIncrease(self)
+  00b4: return nothing
+  00b6: <eos>
+
+function TnWeapon.InitializeOwnerAnimator  (script 288 bytes)
+  0000: if !((self.OwnerAnimator != none)) goto 0x000d
+  000b: return nothing
+  000d: if !(get_IsVehicleWeapon()) goto 0x006b
+  001a: AnimatorService = TnAnimatorService(TransformerPawn.GetVehicleService('TnAnimatorService'))
+  0041: AdditiveAnimatorService = TnAnimatorService(TransformerPawn.GetVehicleService('TnAdditiveAnimatorService'))
+  0068: goto 0x00b9
+  006b: AnimatorService = TnAnimatorService(TransformerPawn.GetRobotService('TnAnimatorService'))
+  0092: AdditiveAnimatorService = TnAnimatorService(TransformerPawn.GetRobotService('TnAdditiveAnimatorService'))
+  00b9: if !((TnWeaponData(self.Data).OwnerAnimations != none)) goto 0x011d
+  00d2: self.OwnerAnimator = TnWeaponOwnerAnimator(TnWeaponData(self.Data).OwnerAnimations.Clone(self, ))
+  0100: self.OwnerAnimator.Initialize(AnimatorService, AdditiveAnimatorService)
+  011d: return nothing
+  011f: <eos>
+
+function TnWeapon.GivenTo  (script 164 bytes)
+  0000: nothing
+  0001: GivenTo(ThisPawn, bDoNotActivate)
+  0012: if !((TnPlayerPawn(ThisPawn) != none)) goto 0x008e
+  0022: if !((self.WorldInfo.GetGameClass() != none)) goto 0x0078
+  003b: WDT = class<TnGame>(self.WorldInfo.GetGameClass()).static.DesiredWeaponDataType()
+  0067: WD = TnWeapon.GetWeaponDataByType(WDT)
+  0078: if !((WD == none)) goto 0x008b
+  0083: WDT = 1
+  008b: goto 0x0096
+  008e: WDT = 2
+  0096: TnWeapon.SetWeaponDataType(WDT)
+  00a1: return nothing
+  00a3: <eos>
+
+function TnWeapon.ItemRemovedFromInvManager  (script 36 bytes)
+  0000: ItemRemovedFromInvManager()
+  0006: TnWeapon.RemoveSpeedMultiplier()
+  000c: self.OwnerAnimator = none
+  0013: GotoState('Inactive', , , )
+  0021: return nothing
+  0023: <eos>
+
+function TnWeapon.CanBeCycledTo  (script 121 bytes)
+  0000: if !(self.ExcludeFromWeaponCycling) goto 0x000b
+  0009: return false
+  000b: if !((self.Owner == none)) goto 0x0018
+  0016: return true
+  0018: if !((get_IsRobotWeapon() && TnPawn(self.Owner).get_IsInRobotForm())) goto 0x0044
+  0042: return true
+  0044: if !((get_IsVehicleWeapon() && TnPawn(self.Owner).get_IsInVehicleForm())) goto 0x0070
+  006e: return true
+  0070: return false
+  0072: return return
+  0078: <eos>
+
+function TnWeapon.SetupInitialAmmo  (script 24 bytes)
+  0000: if !(!IsHeatBased()) goto 0x0015
+  000f: SetupInitialAmmo()
+  0015: return nothing
+  0017: <eos>
+
+function TnWeapon.IsReserveAmmoFull  (script 25 bytes)
+  0000: return (self.ReserveAmmoCount == GetMaxAmmoCount())
+  0012: return return
+  0018: <eos>
+
+function TnWeapon.FillReserveAmmo  (script 90 bytes)
+  0000: MaxAmmoCount = GetMaxAmmoCount()
+  0010: ClientSyncAmmo(self.AmmoClipCount, MaxAmmoCount, true)
+  0025: self.ReserveAmmoCount = MaxAmmoCount
+  0030: self.HideAmmoHud = false
+  0038: if !(!HasAmmo(self.CurrentFireMode, )) goto 0x0057
+  004d: Reload()
+  0057: return nothing
+  0059: <eos>
+
+function TnWeapon.AddAmmo  (script 27 bytes)
+  0000: self.HideAmmoHud = false
+  0008: return AddAmmo(Amount)
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.OnAmmoAdded  (script 189 bytes)
+  0000: TotalAdded = (ClipAmountAdded + ReserveAmountAdded)
+  0012: if !(((self.Instigator == none) || (TotalAdded <= 0))) goto 0x002c
+  002a: return nothing
+  002c: self.AmmoMaterialRamper.StartFadeOut()
+  003f: if !(!DisplayInHud) goto 0x004c
+  004a: return nothing
+  004c: PC = TnPlayerController(self.Instigator.Controller)
+  0065: if !((PC == none)) goto 0x0072
+  0070: return nothing
+  0072: H = TnHUD(PC.myHUD)
+  008b: if !((H == none)) goto 0x0098
+  0096: return nothing
+  0098: H.NotifyAmmoAdded(TotalAdded, cast56(self.get_Class()))
+  00ba: return nothing
+  00bc: <eos>
+
+function TnWeapon.GetInitialReserveAmmoCount  (script 21 bytes)
+  0000: return (GetInitialReserveAmmoCount() + self.AmmoIncrease)
+  000e: return return
+  0014: <eos>
+
+function TnWeapon.GetMaxAmmoCount  (script 21 bytes)
+  0000: return (GetMaxAmmoCount() + self.AmmoIncrease)
+  000e: return return
+  0014: <eos>
+
+function TnWeapon.GetTransferAmmoAmount  (script 20 bytes)
+  0000: return (self.AmmoClipCount + self.ReserveAmmoCount)
+  000d: return return
+  0013: <eos>
+
+function TnWeapon.SetupAmmoForDefaultPlayerPickup  (script 132 bytes)
+  0000: TnD = TnWeaponData(self.PlayerData)
+  0010: if !((TnD == none)) goto 0x001d
+  001b: return nothing
+  001d: PickupAmount = TnD.DefaultPickupAmount
+  0031: self.AmmoClipCount = obj'Core.Math'.static.Min(PickupAmount, TnD.MaxAmmoClipCount)
+  0055: self.ReserveAmmoCount = obj'Core.Math'.static.Clamp((PickupAmount - self.AmmoClipCount), 0, TnD.MaxAmmoCount)
+  0081: return nothing
+  0083: <eos>
+
+function TnWeapon.HasAnyAmmo  (script 32 bytes)
+  0000: if !(IsHeatBased()) goto 0x0012
+  000d: return true
+  000f: goto 0x0019
+  0012: return HasAnyAmmo()
+  0019: return return
+  001f: <eos>
+
+function TnWeapon.HasAmmo  (script 43 bytes)
+  0000: nothing
+  0001: if !(IsHeatBased()) goto 0x0013
+  000e: return true
+  0010: goto 0x0024
+  0013: return HasAmmo(FireModeNum, Amount)
+  0024: return return
+  002a: <eos>
+
+function TnWeapon.GetBurstDataForRangeInternal  (script 88 bytes)
+  0000: switch (Range)
+  0007: case 2: (next 0x000c)
+  000c: case 3: (next 0x0022)
+  0011: return Ranges.ShortRange
+  0022: case 4: (next 0x0038)
+  0027: return Ranges.MediumRange
+  0038: case 5: (next 0x003d)
+  003d: default:
+  0040: return Ranges.LongRange
+  0051: return return
+  0057: <eos>
+
+function TnWeapon.GetBurstDataForRange  (script 38 bytes)
+  0000: return TnWeapon.GetBurstDataForRangeInternal(Range, TnWeaponData(self.Data).BurstRanges)
+  001f: return return
+  0025: <eos>
+
+function TnWeapon.ShouldApplyFineAimTargetFocus  (script 28 bytes)
+  0000: return TnWeaponData(self.Data).bShouldApplyFineAimTargetFocus
+  0015: return return
+  001b: <eos>
+
+function TnWeapon.GetFineAimTargetFocusParams  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).FineAimTargetFocusParams
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.InitializeFireInterval  (script 154 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: self.FireIntervalLerper.Initialize(WD.FireIntervalModifier.IntervalRange.Min, WD.FireIntervalModifier.IntervalRange.Max)
+  006b: self.FireIntervalLerper.SetRampTime(WD.FireIntervalModifier.RampTime)
+  0097: return nothing
+  0099: <eos>
+
+function TnWeapon.GetInitialSpread  (script 136 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: if !((cast3a(WD.PerShotSpreadModifier.Start) == cast3a(0))) goto 0x005c
+  0034: return WD.PerShotSpreadModifier.Modifier.Min
+  0059: goto 0x0081
+  005c: return WD.PerShotSpreadModifier.Modifier.Max
+  0081: return return
+  0087: <eos>
+
+function TnWeapon.GetFireIntervalDeltaTime  (script 31 bytes)
+  0000: return (self.bIsFiring ? DeltaTime : -DeltaTime)
+  0018: return return
+  001e: <eos>
+
+function TnWeapon.UpdateFireInterval  (script 37 bytes)
+  0000: self.FireIntervalLerper.Update(GetFireIntervalDeltaTime(DeltaTime))
+  0022: return nothing
+  0024: <eos>
+
+function TnWeapon.Tick  (script 352 bytes)
+  0000: if !((self.OwnerAnimator != none)) goto 0x0023
+  000b: self.OwnerAnimator.Tick(DeltaTime)
+  0023: self.Defragger.Update(DeltaTime)
+  003b: self.AmmoMaterialRamper.Update(DeltaTime)
+  0053: TnWeapon.CooldownSpread(DeltaTime)
+  005e: UpdateFireInterval(DeltaTime)
+  006d: if !(IsHeatBased()) goto 0x00f1
+  007a: self.WeaponHeat.OnWeaponHeatEvent(4, DeltaTime)
+  0094: Heat = self.WeaponHeat.GetNormalizedHeat()
+  00ad: foreach self._WeaponMeshes(WM,) (end 0x00f0)
+  00bc: WeapMesh = TnWeaponMesh(WM)
+  00cc: if !((WeapMesh != none)) goto 0x00ef
+  00d7: WeapMesh.SetWeaponGlow(Heat)
+  00ef: iternext
+  00f0: iterpop
+  00f1: Tick(DeltaTime)
+  00fc: P = TnPawn(self.Instigator)
+  010c: if !((P == none)) goto 0x0119
+  0117: return nothing
+  0119: foreach self.TurretSkelControls(SC,) (end 0x015c)
+  0128: SC.DesiredBoneRotation = (P._VehicleForm.get_ViewRotation() - self.Rotation)
+  015b: iternext
+  015c: iterpop
+  015d: return nothing
+  015f: <eos>
+
+function TnWeapon.OnPostEditChange  (script 13 bytes)
+  0000: InitializeFireInterval()
+  000a: return nothing
+  000c: <eos>
+
+function TnWeapon.IsOwnerLocalPlayerController  (script 71 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return false
+  000d: if !((self.Instigator.Controller == none)) goto 0x0023
+  0021: return false
+  0023: return self.Instigator.Controller.IsLocalPlayerController()
+  0040: return return
+  0046: <eos>
+
+function TnWeapon.IsFineAiming  (script 14 bytes)
+  0000: return self._IsFineAiming
+  0007: return return
+  000d: <eos>
+
+function TnWeapon.StartFineAim  (script 44 bytes)
+  0000: if !(!IsOwnerLocalPlayerController()) goto 0x0011
+  000f: return nothing
+  0011: self._IsFineAiming = true
+  0019: PlayWeaponEvent(15, 1, 15)
+  0029: return nothing
+  002b: <eos>
+
+function TnWeapon.StopFineAim  (script 57 bytes)
+  0000: if !(!IsOwnerLocalPlayerController()) goto 0x0011
+  000f: return nothing
+  0011: self._IsFineAiming = false
+  0019: AllWeaponMeshesStopSoundEvent(15, )
+  0026: PlayWeaponEvent(16, 1, 16)
+  0036: return nothing
+  0038: <eos>
+
+function TnWeapon.GetNormalizedFiringRate  (script 268 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: if !((WD.FireIntervalModifier.IntervalRange.Max == WD.FireIntervalModifier.IntervalRange.Min)) goto 0x0071
+  005d: return cast3f((IsFiring() ? 1 : 0))
+  0071: FiringRate = GetFireInterval(0)
+  0083: (FiringRate -= WD.FireIntervalModifier.IntervalRange.Min)
+  00ae: (FiringRate /= (WD.FireIntervalModifier.IntervalRange.Max - WD.FireIntervalModifier.IntervalRange.Min))
+  00ff: return FiringRate
+  0105: return return
+  010b: <eos>
+
+function TnWeapon.GetNormalizedWeaponHeat  (script 27 bytes)
+  0000: return self.WeaponHeat.GetNormalizedHeat()
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.GetCurrentWeaponHeat  (script 27 bytes)
+  0000: return self.WeaponHeat.GetCurrentHeat()
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.GetCurrentFFWaveform  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).FireFFWaveform
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.GetRecoilCameraParams  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).RecoilCameraParams
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.GetWeaponFiredCameraShakeParams  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).CameraShakeParams
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.GetDesiredFiringRange  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).DesiredFiringRange
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.EquipInstantly  (script 33 bytes)
+  0000: AttachWeapon()
+  000a: ClearTimer('DetachWeapon', )
+  001e: return nothing
+  0020: <eos>
+
+function TnWeapon.InstantFire  (script 15 bytes)
+  0000: InstantFire()
+  0006: TnWeapon.IncrementSpread()
+  000c: return nothing
+  000e: <eos>
+
+function TnWeapon.OnPreServerFire  (script 45 bytes)
+  0000: if !((TnPlayerPawn(self.Instigator) != none)) goto 0x002a
+  0010: TnPawn(self.Instigator).ExposeSelf(, )
+  002a: return nothing
+  002c: <eos>
+
+function TnWeapon.ServerImpact  (script 31 bytes)
+  0000: TnWeapon.OnPreServerFire()
+  0006: ServerImpact(ImpactFireMode, Impact, UpdateFlashImpact)
+  001c: return nothing
+  001e: <eos>
+
+function TnWeapon.ServerFireProjectile  (script 30 bytes)
+  0000: TnWeapon.OnPreServerFire()
+  0006: ServerFireProjectile(ProjectileFireMode, StartLocation, AimDirection)
+  001b: return nothing
+  001d: <eos>
+
+function TnWeapon.ProjectileFire  (script 31 bytes)
+  0000: retval = ProjectileFire()
+  000c: TnWeapon.IncrementSpread()
+  0012: return retval
+  0018: return return
+  001e: <eos>
+
+function TnWeapon.GetAiProjectileInitialSpeed  (script 104 bytes)
+  0000: if !((cast3a(cast3a(self.CurrentFireMode)[self.Data.WeaponFireTypes]) != cast3a(1))) goto 0x0027
+  0021: return 0.0
+  0027: ProjectileClass = class<TnProjectile>(GetProjectileClass())
+  003c: if !((ProjectileClass == none)) goto 0x004d
+  0047: return 0.0
+  004d: return ProjectileClass.static.GetAiProjectileInitialSpeed()
+  0061: return return
+  0067: <eos>
+
+function TnWeapon.DetachWeapon  (script 106 bytes)
+  0000: self._IsFineAiming = false
+  0008: ClearTimer('DetachWeapon', )
+  001c: if !(IsHeatBased()) goto 0x0061
+  0029: self.WeaponHeat.RemoveWeaponOverheatedObserver(delegate.WeaponOverheated)
+  0045: self.WeaponHeat.RemoveWeaponCooledObserver(delegate.WeaponCooled)
+  0061: DetachWeapon()
+  0067: return nothing
+  0069: <eos>
+
+function TnWeapon.DetachWeaponAndHolster  (script 55 bytes)
+  0000: PawnInstigator = TnPlayerPawn(self.Instigator)
+  0010: if !((PawnInstigator != none)) goto 0x002e
+  001b: PawnInstigator.HolsterWeapon()
+  002e: DetachWeaponAndHolster()
+  0034: return nothing
+  0036: <eos>
+
+function TnWeapon.AttachWeapon  (script 165 bytes)
+  0000: if !(((cast3a(self.WeaponType) == cast3a(7)) && (self.MountedTurret == none))) goto 0x0027
+  001d: self.IsAttachPending = true
+  0025: return nothing
+  0027: self.IsAttachPending = false
+  002f: AttachWeapon()
+  0035: if !(IsHeatBased()) goto 0x007a
+  0042: self.WeaponHeat.AddWeaponOverheatedObserver(delegate.WeaponOverheated)
+  005e: self.WeaponHeat.AddWeaponCooledObserver(delegate.WeaponCooled)
+  007a: if !((TnPlayerPawn(self.Instigator) != none)) goto 0x00a2
+  008a: TnPlayerPawn(self.Instigator).UnholsterWeapon()
+  00a2: return nothing
+  00a4: <eos>
+
+function TnWeapon.IsAttached  (script 50 bytes)
+  0000: return ((GetWeaponMesh() != none) && GetWeaponMesh().IsAttached())
+  002b: return return
+  0031: <eos>
+
+function TnWeapon.MountedSockets  (script 51 bytes)
+  0000: if !((cast3a(self.WeaponType) == cast3a(7))) goto 0x0026
+  0010: MountedSockets.AddItem(self.MountedTurret.WeaponAttachSocket)
+  0026: return MountedSockets
+  002c: return return
+  0032: <eos>
+
+function TnWeapon.AttachWeaponActor  (script 111 bytes)
+  0000: if !((cast3a(self.WeaponType) == cast3a(7))) goto 0x0061
+  0010: SetLocation(self.Instigator.Location)
+  0021: SetRotation(self.Instigator.Rotation)
+  0032: SetBase(self.MountedTurret, , self.MountedTurret.BaseMesh, self.MountedTurret.WeaponAttachSocket)
+  005e: goto 0x006c
+  0061: AttachWeaponActor(SocketName)
+  006c: return nothing
+  006e: <eos>
+
+function TnWeapon.AttachWeaponMeshes  (script 107 bytes)
+  0000: if !((cast3a(self.WeaponType) == cast3a(7))) goto 0x0058
+  0010: foreach self._WeaponMeshes(WM,) (end 0x0054)
+  001f: WM.Attach(self.Instigator, self.MountedTurret.BaseMesh, self.MountedTurret.WeaponAttachSocket)
+  0053: iternext
+  0054: iterpop
+  0055: goto 0x0068
+  0058: AttachWeaponMeshes(NewWeaponOwner, Sockets)
+  0068: return nothing
+  006a: <eos>
+
+function TnWeapon.SetMountedTurret  (script 14 bytes)
+  0000: self.MountedTurret = Turret
+  000b: return nothing
+  000d: <eos>
+
+function TnWeapon.IsHolstered  (script 14 bytes)
+  0000: return self._IsHolstered
+  0007: return return
+  000d: <eos>
+
+function TnWeapon.SetHolstered  (script 47 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0023)
+  000f: WM.SetHolstered()
+  0022: iternext
+  0023: iterpop
+  0024: self._IsHolstered = true
+  002c: return nothing
+  002e: <eos>
+
+function TnWeapon.SetUnholstered  (script 47 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0023)
+  000f: WM.SetUnholstered()
+  0022: iternext
+  0023: iterpop
+  0024: self._IsHolstered = false
+  002c: return nothing
+  002e: <eos>
+
+function TnWeapon.CooldownSpread  (script 352 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: if !((WD.PerShotSpreadModifier.Cooldown > cast3f(0))) goto 0x014d
+  0031: CooldownMagnitude = (WD.PerShotSpreadModifier.Modifier.Max - TnWeaponData(self.Data).PerShotSpreadModifier.Modifier.Min)
+  0086: (CooldownMagnitude *= (DeltaTime / WD.PerShotSpreadModifier.Cooldown))
+  00ad: if !((cast3a(WD.PerShotSpreadModifier.Start) == cast3a(0))) goto 0x00e0
+  00d1: (self.CurrentSpread -= CooldownMagnitude)
+  00dd: goto 0x00ec
+  00e0: (self.CurrentSpread += CooldownMagnitude)
+  00ec: self.CurrentSpread = obj'Core.Math'.static.FClamp(self.CurrentSpread, WD.PerShotSpreadModifier.Modifier.Min, WD.PerShotSpreadModifier.Modifier.Max)
+  014a: goto 0x015d
+  014d: self.CurrentSpread = GetInitialSpread()
+  015d: return nothing
+  015f: <eos>
+
+function TnWeapon.IncrementSpread  (script 206 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: StepDirection = ((cast3a(WD.PerShotSpreadModifier.Start) == cast3a(0)) ? 1.0 : -1.0)
+  0046: (self.CurrentSpread += (WD.PerShotSpreadModifier.ModifierChangePerShot * StepDirection))
+  006d: self.CurrentSpread = obj'Core.Math'.static.FClamp(self.CurrentSpread, WD.PerShotSpreadModifier.Modifier.Min, WD.PerShotSpreadModifier.Modifier.Max)
+  00cb: return nothing
+  00cd: <eos>
+
+function TnWeapon.GetCurrentSpreadModifier  (script 118 bytes)
+  0000: Spread = self.CurrentSpread
+  000b: Index = obj'TnGame'.static.GetCurrentSkillDataIndex()
+  0024: if !((Index < self.SpreadMultipliers.Length)) goto 0x0046
+  0034: (Spread *= Index[self.SpreadMultipliers])
+  0046: return obj'TnValueTimesProductBuffModifier'.static.ModifyFloatSingle(Spread, obj'TnBuffDecreaseWeaponSpread', TnPawn(self.Instigator), )
+  006f: return return
+  0075: <eos>
+
+function TnWeapon.GetFineAimSpreadModifier  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).FineAimSpreadModifier
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.AddSpread  (script 266 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: if !(((WD.NumShotsToFire <= 1) || (WD.SpreadPattern.Length == 0))) goto 0x0047
+  003b: return AddSpread(BaseAim)
+  0047: InitialSpread = GetInitialSpread()
+  0057: SpreadModifier = ((InitialSpread == cast3f(0)) ? 1.0 : (GetSpread() / InitialSpread))
+  0082: obj'Core.Math'.static.GetAxes(BaseAim, X, Y, Z)
+  00a1: Spread = self.SingleFireCounter[WD.SpreadPattern]
+  00bb: return cast50(((X + ((Spread.X * SpreadModifier) * Y)) + ((Spread.Y * SpreadModifier) * Z)))
+  0103: return return
+  0109: <eos>
+
+function TnWeapon.BeginSingleFire  (script 16 bytes)
+  0000: BeginSingleFire()
+  0006: self.SingleFireCounter = 0
+  000d: return nothing
+  000f: <eos>
+
+function TnWeapon.SingleFireAction  (script 16 bytes)
+  0000: SingleFireAction()
+  0006: AddAdd_PreInt(self.SingleFireCounter)
+  000d: return nothing
+  000f: <eos>
+
+function TnWeapon.GetFireInterval  (script 150 bytes)
+  0000: Modifier = self.FireIntervalLerper.GetValue()
+  0019: Pawn = HmPawn(self.Instigator)
+  0029: if !((Pawn != none)) goto 0x004e
+  0034: (Modifier *= Pawn.GetFireIntervalModifier())
+  004e: Index = obj'TnGame'.static.GetCurrentSkillDataIndex()
+  0067: if !((Index < self.FireIntervalMultipliers.Length)) goto 0x0089
+  0077: (Modifier *= Index[self.FireIntervalMultipliers])
+  0089: return Modifier
+  008f: return return
+  0095: <eos>
+
+function TnWeapon.GetMasterBuffer  (script 18 bytes)
+  0000: return TnPawn(self.Instigator)
+  000b: return return
+  0011: <eos>
+
+function TnWeapon.ModifyDamage  (script 196 bytes)
+  0000: FireLocation = ((self.Instigator != none) ? self.Instigator.Location : self.Location)
+  0026: HitDistance = obj'Core.Math'.static.VSize((HitActor.Location - FireLocation))
+  004c: (Damage *= TnWeapon.GetRangeDamageModifier(HitDistance))
+  005e: Index = obj'TnGame'.static.GetCurrentSkillDataIndex()
+  0077: if !((Index < self.InstantHitDamageMultipliers.Length)) goto 0x0099
+  0087: (Damage *= Index[self.InstantHitDamageMultipliers])
+  0099: return self.DamageModifier.ModifyFloat(Damage, GetMasterBuffer(), )
+  00bd: return return
+  00c3: <eos>
+
+function TnWeapon.GetRangeDamageModifier  (script 213 bytes)
+  0000: WD = TnWeaponData(self.Data)
+  0010: if !((WD.RangeDamageModifiers.Length < 1)) goto 0x002b
+  0025: return 1.0
+  002b: I = 0
+  0032: if !((I < (WD.RangeDamageModifiers.Length - 1))) goto 0x00a1
+  004e: if !((HitDistance <= I[WD.RangeDamageModifiers].Range)) goto 0x0097
+  0077: return I[WD.RangeDamageModifiers].Modifier
+  0097: AddAdd_PreInt(I)
+  009e: goto 0x0032
+  00a1: return (WD.RangeDamageModifiers.Length - 1)[WD.RangeDamageModifiers].Modifier
+  00ce: return return
+  00d4: <eos>
+
+function TnWeapon.OnPlayFireEffects  (script 124 bytes)
+  0000: OnPlayFireEffects(FireModeNum, Impact)
+  0010: self.bIsFiring = true
+  0018: WM = TnWeaponMesh(GetWeaponMesh())
+  002d: if !((WM != none)) goto 0x004b
+  0038: WM.IncreaseHeat()
+  004b: PawnInstigator = TnPawn(self.Instigator)
+  005b: if !((PawnInstigator != none)) goto 0x0079
+  0066: PawnInstigator.PlayWeaponFireEffects()
+  0079: return nothing
+  007b: <eos>
+
+function TnWeapon.StopFireEffects  (script 22 bytes)
+  0000: StopFireEffects(FireModeNum)
+  000b: self.bIsFiring = false
+  0013: return nothing
+  0015: <eos>
+
+function TnWeapon.PlayWeaponEvent  (script 46 bytes)
+  0000: default=8
+  0006: TnWeapon.ComputeWeaponSoundEvent(AnimEvent, SoundEvent)
+  0016: PlayWeaponEvent(AnimEvent, MeshForAction, SoundEvent)
+  002b: return nothing
+  002d: <eos>
+
+function TnWeapon.IsLowOnAmmo  (script 76 bytes)
+  0000: WM = TnWeaponMesh(GetWeaponMesh())
+  0015: if !((WM == none)) goto 0x0022
+  0020: return false
+  0022: return !HasAmmo(self.CurrentFireMode, (WM.LowAmmoThreshold + 1))
+  0045: return return
+  004b: <eos>
+
+function TnWeapon.ComputeWeaponSoundEvent  (script 125 bytes)
+  0000: if !(((cast3a(SoundEvent) != cast3a(8)) || !IsOwnerLocalPlayerController())) goto 0x0023
+  0021: return nothing
+  0023: if !(TnWeapon.IsLowOnAmmo()) goto 0x007a
+  002c: if !((cast3a(AnimEvent) == cast3a(1))) goto 0x0047
+  003c: SoundEvent = 19
+  0044: goto 0x007a
+  0047: if !((cast3a(AnimEvent) == cast3a(2))) goto 0x0062
+  0057: SoundEvent = 20
+  005f: goto 0x007a
+  0062: if !((cast3a(AnimEvent) == cast3a(3))) goto 0x007a
+  0072: SoundEvent = 21
+  007a: return nothing
+  007c: <eos>
+
+function TnWeapon.Active.BeginState  (script 29 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !(self.bAimedWeapon) goto 0x001a
+  0014: TnWeapon.InitializeSkelControl()
+  001a: return nothing
+  001c: <eos>
+
+function TnWeapon.Active.Tick  (script 18 bytes)
+  0000: global.Tick(DeltaTime)
+  000f: return nothing
+  0011: <eos>
+
+function TnWeapon.Inactive.BeginState  (script 29 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !(self.bAimedWeapon) goto 0x001a
+  0014: TnWeapon.DisableSkelControl()
+  001a: return nothing
+  001c: <eos>
+
+function TnWeapon.ShouldPutDownImmediately  (script 81 bytes)
+  0000: if !((self.InvManager == none)) goto 0x000d
+  000b: return false
+  000d: W = TnWeapon(self.InvManager.PendingWeapon)
+  0026: return ((W != none) && (cast3a(W.WeaponType) == cast3a(3)))
+  004a: return return
+  0050: <eos>
+
+function TnWeapon.TimeWeaponPutDown  (script 103 bytes)
+  0000: if !(ShouldPutDownImmediately()) goto 0x005e
+  000d: SetTimer(((self.PutDownImmediatelyDetachDelay > cast3f(0)) ? self.PutDownImmediatelyDetachDelay : 0.01), false, 'DetachWeaponAndHolster', )
+  0034: SetTimer(((self.PutDownImmediatelyTime > cast3f(0)) ? self.PutDownImmediatelyTime : 0.01), false, 'WeaponIsDown', )
+  005b: goto 0x0064
+  005e: TimeWeaponPutDown()
+  0064: return nothing
+  0066: <eos>
+
+function TnWeapon.WeaponPuttingDown.BeginFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.WeaponPuttingDown.BeginState  (script 44 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !((self.OwnerAnimator != none)) goto 0x0029
+  0016: self.OwnerAnimator.OnUnequip()
+  0029: return nothing
+  002b: <eos>
+
+function TnWeapon.WeaponPuttingDown.EndState  (script 107 bytes)
+  0000: EndState(NextStateName)
+  000b: SetHidden(true)
+  0016: TnWeapon.RemoveSpeedMultiplier()
+  001c: ClearTimer('DetachWeaponAndHolster', )
+  0030: if !(((cast3a(self.WeaponType) == cast3a(5)) && (self.Owner != none))) goto 0x0068
+  004d: Pawn(self.Owner).TossWeapon(self, , )
+  0068: return nothing
+  006a: <eos>
+
+function TnWeapon.SetGroundSpeedMultiplier  (script 55 bytes)
+  0000: P = TnPawn(self.Instigator)
+  0010: if !((P != none)) goto 0x0034
+  001b: P.SetSpeedMultiplier(NewGroundSpeedMultiplier, self)
+  0034: return nothing
+  0036: <eos>
+
+function TnWeapon.RemoveSpeedMultiplier  (script 50 bytes)
+  0000: P = TnPawn(self.Instigator)
+  0010: if !((P != none)) goto 0x002f
+  001b: P.RemoveSpeedMultiplier(self)
+  002f: return nothing
+  0031: <eos>
+
+function TnWeapon.IsEquipping  (script 21 bytes)
+  0000: return IsInState('WeaponEquipping', )
+  000e: return return
+  0014: <eos>
+
+function TnWeapon.PlayEquipAnimation  (script 33 bytes)
+  0000: if !((self.OwnerAnimator != none)) goto 0x001e
+  000b: self.OwnerAnimator.OnEquip()
+  001e: return nothing
+  0020: <eos>
+
+function TnWeapon.WeaponEquipping.BeginState  (script 24 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: PlayEquipAnimation()
+  0015: return nothing
+  0017: <eos>
+
+function TnWeapon.WeaponEquipping.WeaponEquipped  (script 34 bytes)
+  0000: TnWeapon.SetGroundSpeedMultiplier(TnWeaponData(self.Data).GroundSpeedMultiplier)
+  0019: WeaponEquipped()
+  001f: return nothing
+  0021: <eos>
+
+function TnWeapon.GetCurrentLocationAndRotation  (script 136 bytes)
+  0000: WM = GetWeaponMesh()
+  0010: if !((WM != none)) goto 0x0070
+  001b: if !(WM.IsAttached()) goto 0x006d
+  0031: CurrentLocation = TnWeaponMesh(WM).get_Location()
+  004f: CurrentRotation = TnWeaponMesh(WM).get_Rotation()
+  006d: goto 0x0085
+  0070: GetCurrentLocationAndRotation(PawnInstigator, CurrentLocation, CurrentRotation)
+  0085: return nothing
+  0087: <eos>
+
+function TnWeapon.DropFrom  (script 344 bytes)
+  0000: nothing
+  0001: InstigatorIsPlayer = (TnPlayerPawn(self.Instigator) != none)
+  0015: foreach self._WeaponMeshes(WM,) (end 0x003d)
+  0024: TnWeaponMesh(WM).SetUnholstered()
+  003c: iternext
+  003d: iterpop
+  003e: if !((self.OwnerAnimator != none)) goto 0x005c
+  0049: self.OwnerAnimator.OnDrop()
+  005c: DP = TnDroppedPickup(DropFrom(StartLocation, StartVelocity, StartRotation))
+  007c: if !((DP != none)) goto 0x014b
+  0087: DP.SetImpactSound(self.DropSound)
+  009f: if !((DP.Inventory != none)) goto 0x00d0
+  00b3: DP.Inventory.SetHidden(true)
+  00d0: W = TnWeapon(DP.Inventory)
+  00e9: if !((W != none)) goto 0x014b
+  00f4: W.AmmoIncrease = 0
+  0104: if !(InstigatorIsPlayer) goto 0x0138
+  010d: W.AmmoClipCount = self.AmmoClipCount
+  0121: W.ReserveAmmoCount = self.ReserveAmmoCount
+  0135: goto 0x014b
+  0138: W.SetupAmmoForDefaultPlayerPickup()
+  014b: return DP
+  0151: return return
+  0157: <eos>
+
+function TnWeapon.IsWithinTargetSnapRangeSq  (script 109 bytes)
+  0000: return ((RangeToTargetSq > obj'Core.Math'.static.Square(TnWeaponData(self.Data).TargetSnapRange.Min)) && (RangeToTargetSq < obj'Core.Math'.static.Square(TnWeaponData(self.Data).TargetSnapRange.Max)))
+  0066: return return
+  006c: <eos>
+
+function TnWeapon.GetPhysicalFireStartLoc  (script 19 bytes)
+  0000: nothing
+  0001: return GetMuzzleLoc()
+  000c: return return
+  0012: <eos>
+
+function TnWeapon.GetNumShotsToFire  (script 27 bytes)
+  0000: return TnWeaponData(self.Data).NumShotsToFire
+  0014: return return
+  001a: <eos>
+
+function TnWeapon.ShouldConsumeAmmo  (script 148 bytes)
+  0000: MB = GetMasterBuffer()
+  0010: if !(((MB != none) && (cast3a(self.WeaponType) != cast3a(4)))) goto 0x0086
+  002d: BS = TnBuffService(MB.GetService('TnBuffService'))
+  0054: if !(NotEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x0086
+  0068: if !(BS.HasBuff(obj'TnBuffLockAmmoClip')) goto 0x0086
+  0084: return false
+  0086: return ShouldConsumeAmmo()
+  008d: return return
+  0093: <eos>
+
+function TnWeapon.ConsumeAmmo  (script 128 bytes)
+  0000: if !(IsHeatBased()) goto 0x0037
+  000d: self.WeaponHeat.OnWeaponHeatEvent(((cast3a(FireModeNum) == 0) ? 2 : 3), )
+  0034: goto 0x007d
+  0037: if !((TnGame(self.WorldInfo.Game) != none)) goto 0x0072
+  0050: TnGame(self.WorldInfo.Game).NotifyShotFired(self)
+  0072: ConsumeAmmo(FireModeNum)
+  007d: return nothing
+  007f: <eos>
+
+function TnWeapon.ConsumeAllAmmo  (script 27 bytes)
+  0000: self.ReserveAmmoCount = 0
+  0007: self.AmmoClipCount = 0
+  000e: SyncAmmoToClient()
+  0018: return nothing
+  001a: <eos>
+
+function TnWeapon.BeginFire  (script 49 bytes)
+  0000: if !(IsHeatBased()) goto 0x0023
+  000d: self.WeaponHeat.OnWeaponHeatEvent(0, )
+  0023: BeginFire(FireModeNum)
+  002e: return nothing
+  0030: <eos>
+
+function TnWeapon.EndFire  (script 49 bytes)
+  0000: if !(IsHeatBased()) goto 0x0023
+  000d: self.WeaponHeat.OnWeaponHeatEvent(1, )
+  0023: EndFire(FireModeNum)
+  002e: return nothing
+  0030: <eos>
+
+function TnWeapon.WeaponReloading.BeginState  (script 50 bytes)
+  0000: if !((self.OwnerAnimator != none)) goto 0x0024
+  000b: self.OwnerAnimator.OnReload(TnWeapon.GetReloadSpeed())
+  0024: BeginState(PreviousStateName)
+  002f: return nothing
+  0031: <eos>
+
+function TnWeapon.WeaponReloading.EndState  (script 24 bytes)
+  0000: InitializeFireInterval()
+  000a: EndState(NextStateName)
+  0015: return nothing
+  0017: <eos>
+
+function TnWeapon.GetReloadTime  (script 22 bytes)
+  0000: return (GetReloadTime() / TnWeapon.GetReloadSpeed())
+  000f: return return
+  0015: <eos>
+
+function TnWeapon.GetReloadSpeed  (script 94 bytes)
+  0000: WM = TnWeaponMesh(GetWeaponMesh())
+  0015: if !((WM != none)) goto 0x0039
+  0020: ReloadSpeed = WM.GetReloadSpeed()
+  0039: if !((ReloadSpeed <= cast3f(0))) goto 0x0051
+  0046: ReloadSpeed = 1.0
+  0051: return ReloadSpeed
+  0057: return return
+  005d: <eos>
+
+function TnWeapon.WeaponOverheated  (script 17 bytes)
+  0000: GotoState('Overheated', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnWeapon.WeaponCooled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.IsOverheating  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnWeapon.ServerSyncWeaponheat  (script 27 bytes)
+  0000: self.WeaponHeat.SyncCurrentHeat(CurrentHeat)
+  0018: return nothing
+  001a: <eos>
+
+function TnWeapon.OverheatEndComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.Overheated.BeginFire  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.Overheated.IsOverheating  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnWeapon.Overheated.BeginState  (script 129 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: if !((self.OwnerAnimator != none)) goto 0x0029
+  0016: self.OwnerAnimator.OnBeginOverheat()
+  0029: PlayWeaponEvent(13, 1, )
+  0038: self.WeaponHeat.OnWeaponHeatEvent(5, )
+  004e: UpdateAiWorldStateWeaponOverheated(true)
+  0055: if !((cast3a(self.Role) != cast3a(3))) goto 0x007e
+  0065: TnWeapon.ServerSyncWeaponheat(self.WeaponHeat.GetCurrentHeat())
+  007e: return nothing
+  0080: <eos>
+
+function TnWeapon.Overheated.EndState  (script 43 bytes)
+  0000: EndState(NextStateName)
+  000b: self.WeaponHeat.OnWeaponHeatEvent(6, )
+  0021: UpdateAiWorldStateWeaponOverheated(false)
+  0028: return nothing
+  002a: <eos>
+
+function TnWeapon.Overheated.WeaponCooled  (script 55 bytes)
+  0000: if !((self.OwnerAnimator != none)) goto 0x002a
+  000b: self.OwnerAnimator.OnEndOverheat(delegate.OverheatEndComplete)
+  0027: goto 0x0034
+  002a: OverheatEndComplete()
+  0034: return nothing
+  0036: <eos>
+
+function TnWeapon.Overheated.OverheatEndComplete  (script 108 bytes)
+  0000: if !(((cast3a(self.WeaponType) == cast3a(5)) && (TnAiPawn(self.Owner) == none))) goto 0x0032
+  0022: ForceEndFire()
+  002c: DestroyActor()
+  002f: goto 0x0069
+  0032: if !((cast3a(self.Role) != cast3a(3))) goto 0x005b
+  0042: TnWeapon.ServerSyncWeaponheat(self.WeaponHeat.GetCurrentHeat())
+  005b: GotoState('Active', , , )
+  0069: return nothing
+  006b: <eos>
+
+function TnWeapon.Overheated.UpdateAiWorldStateWeaponOverheated  (script 97 bytes)
+  0000: P = Pawn(self.Owner)
+  0010: if !((P != none)) goto 0x0034
+  001b: C = TnAiController(P.Controller)
+  0034: if !((C != none)) goto 0x005e
+  003f: C.SetWorldStateBool(obj'TnAiWorldStateWeaponOverheated', IsOverheated, )
+  005e: return nothing
+  0060: <eos>
+
+function TnWeapon.IsBurstWeapon  (script 30 bytes)
+  0000: return (TnWeaponData(self.Data).ShotsPerBurst > 0)
+  0017: return return
+  001d: <eos>
+
+function TnWeapon.FireAmmunition  (script 122 bytes)
+  0000: if !((self.OwnerAnimator != none)) goto 0x001e
+  000b: self.OwnerAnimator.OnFireAmmunition()
+  001e: if !((Pawn(self.Owner) != none)) goto 0x006a
+  002e: PC = TnPlayerController(Pawn(self.Owner).Controller)
+  004c: if !((PC != none)) goto 0x006a
+  0057: PC.OnFireAmmunition()
+  006a: AddAdd_PreInt(self._BurstCount)
+  0071: FireAmmunition()
+  0077: return nothing
+  0079: <eos>
+
+function TnWeapon.StillFiring  (script 59 bytes)
+  0000: if !(IsBurstWeapon()) goto 0x0028
+  000d: return (self._BurstCount < TnWeaponData(self.Data).ShotsPerBurst)
+  0028: return StillFiring(FireMode)
+  0034: return return
+  003a: <eos>
+
+function TnWeapon.OnBeginStateWeaponFiring  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.WeaponFiring.BeginState  (script 31 bytes)
+  0000: self._BurstCount = 0
+  0007: OnBeginStateWeaponFiring()
+  0011: BeginState(PreviousStateName)
+  001c: return nothing
+  001e: <eos>
+
+function TnWeapon.WeaponFiring.LeaveWeaponFireState  (script 39 bytes)
+  0000: if !(IsBurstWeapon()) goto 0x001e
+  000d: GotoState('BurstDelaying', , , )
+  001b: goto 0x0024
+  001e: LeaveWeaponFireState()
+  0024: return nothing
+  0026: <eos>
+
+function TnWeapon.WeaponFiring.EndState  (script 104 bytes)
+  0000: if !(((NextStateName != 'Overheated') && (NextStateName != 'WeaponReloading'))) goto 0x0051
+  0028: if !((cast3a(self.Role) != cast3a(3))) goto 0x0047
+  0038: StopFireEffects(self.CurrentFireMode)
+  0047: ServerClearFlashes()
+  0051: ClearTimer('RefireCheckTimer', )
+  0065: return nothing
+  0067: <eos>
+
+function TnWeapon.ServerClearFlashes  (script 23 bytes)
+  0000: ClearFlashCount()
+  000a: ClearFlashImpact()
+  0014: return nothing
+  0016: <eos>
+
+function TnWeapon.EndOfBurstDelay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.BurstDelaying.BeginState  (script 36 bytes)
+  0000: SetTimer(TnWeaponData(self.Data).BurstDelay, false, 'EndOfBurstDelay', )
+  0021: return nothing
+  0023: <eos>
+
+function TnWeapon.BurstDelaying.EndState  (script 23 bytes)
+  0000: ClearTimer('EndOfBurstDelay', )
+  0014: return nothing
+  0016: <eos>
+
+function TnWeapon.BurstDelaying.EndOfBurstDelay  (script 17 bytes)
+  0000: GotoState('Active', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnWeapon.Jam  (script 24 bytes)
+  0000: self.AmmoClipCount = 0
+  0007: GotoState('Jammed', , , )
+  0015: return nothing
+  0017: <eos>
+
+function TnWeapon.IsJammed  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnWeapon.Jammed.IsAllowedToReload  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnWeapon.Jammed.IsJammed  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnWeapon.RestartWeaponSoundsFromTransform  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnWeapon.GetHudMessage  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnWeapon.DisplayDebug  (script 235 bytes)
+  0000: DisplayDebug(HUD, out_YL, out_YPos)
+  0015: (out_YPos += out_YL)
+  0021: HUD.Canvas.SetPos(4.0, out_YPos)
+  0047: HUD.Canvas.DrawTextNormal(("Spread:" @ cast55(GetSpread())), false, , )
+  007d: (out_YPos += out_YL)
+  0089: HUD.Canvas.SetPos(4.0, out_YPos)
+  00af: HUD.Canvas.DrawTextNormal(("Hud Message:" @ GetHudMessage()), false, , )
+  00e8: return nothing
+  00ea: <eos>
+
+function TnWeapon.GetReticuleType  (script 32 bytes)
+  0000: if !((cast3a(self.WeaponType) == cast3a(7))) goto 0x0013
+  0010: return 1
+  0013: return self.ReticuleType
+  0019: return return
+  001f: <eos>
+
+function TnWeapon.GetPickupMesh  (script 45 bytes)
+  0000: if !((default.WeaponMeshTemplate == none)) goto 0x000d
+  000b: return none
+  000d: return TnWeaponMesh(default.WeaponMeshTemplate).GetValidPickupMesh()
+  0026: return return
+  002c: <eos>
+
+function TnWeapon.OnMelee  (script 54 bytes)
+  0000: TnWM = TnWeaponMesh(GetWeaponMesh())
+  0015: if !((TnWM != none)) goto 0x0033
+  0020: TnWM.ResetHeat()
+  0033: return nothing
+  0035: <eos>
+
+function TnWeapon.CurrentWeaponMeshSetMaterialParameter  (script 75 bytes)
+  0000: WM = GetWeaponMesh()
+  0010: TnWM = TnWeaponMesh(WM)
+  0020: if !((TnWM != none)) goto 0x0048
+  002b: TnWM.SetMaterialParameter(Type, Value)
+  0048: return nothing
+  004a: <eos>
+
+function TnWeapon.InitializeSkelControl  (script 172 bytes)
+  0000: if !((self.TurretSkelControls.Length != 0)) goto 0x000e
+  000c: return nothing
+  000e: foreach self._WeaponMeshes(WM,) (end 0x00a8)
+  001d: SC = HmSkelControl_TurretConstrained(WM.GetAnimatedMeshComponent().FindSkelControl('WeaponControl'))
+  0052: if !((SC == none)) goto 0x0061
+  005d: iternext
+  005e: goto 0x00a8
+  0061: SC.DesiredBoneRotation = obj'Core.Math'.static.MakeRotator(0, 0, 0)
+  0086: SC.SetSkelControlActive(true)
+  009a: self.TurretSkelControls.AddItem(SC)
+  00a7: iternext
+  00a8: iterpop
+  00a9: return nothing
+  00ab: <eos>
+
+function TnWeapon.DisableSkelControl  (script 90 bytes)
+  0000: foreach self.TurretSkelControls(SC,) (end 0x0049)
+  000f: SC.DesiredBoneRotation = obj'Core.Math'.static.MakeRotator(0, 0, 0)
+  0034: SC.SetSkelControlActive(false)
+  0048: iternext
+  0049: iterpop
+  004a: self.TurretSkelControls.Remove(0,self.TurretSkelControls.Length)
+  0057: return nothing
+  0059: <eos>
+
+function TnWeapon.AnnouncePickup  (script 137 bytes)
+  0000: AnnouncePickup(Other)
+  000b: TnWeapon.ClientStartDefragFadeIn()
+  0011: TnWorldInfo(self.WorldInfo)._DialogEventManager.Play(TnPawn(Other), self.PickupObtainedDialog, , , , )
+  0045: TnWM = TnWeaponMesh(self.WeaponMeshTemplate)
+  0055: if !((none != TnWM)) goto 0x0086
+  0060: Other.PlaySound(TnWM.PickupSound, , , , , )
+  0086: return nothing
+  0088: <eos>
+
+function TnWeapon.ClientStartDefragFadeIn  (script 22 bytes)
+  0000: self.Defragger.StartFadeIn()
+  0013: return nothing
+  0015: <eos>
+
+function TnWeapon.InitializeForDrop  (script 72 bytes)
+  0000: PickupMesh = GetPickupMesh()
+  0010: if !((PickupMesh == none)) goto 0x001d
+  001b: return nothing
+  001d: self.DroppedPickupMesh = PrimitiveComponent(PickupMesh.Clone(self, ))
+  003d: self.bUseAccurateDropLocationAndRotation = false
+  0045: return nothing
+  0047: <eos>
+
+function TnWeapon.PickupWhenTouched  (script 92 bytes)
+  0000: if !((P.InvManager != none)) goto 0x003e
+  0014: HasWeapon = (P.InvManager.FindInventoryType(get_Class(), false) != none)
+  003e: return (HasWeapon && PickupWhenTouched(P))
+  0055: return return
+  005b: <eos>
+
+function TnWeapon.PlayDialogNotify  (script 178 bytes)
+  0000: if !((P == none)) goto 0x000d
+  000b: return nothing
+  000d: SP = TnServiceProvider(P.Controller)
+  0026: if !(EqualEqual_InterfaceInterface(SP, TnServiceProvider(none))) goto 0x003c
+  003a: return nothing
+  003c: DNI = TnDialogNotificationService(SP.GetService('TnDialogNotificationService'))
+  0064: if !(EqualEqual_InterfaceInterface(DNI, TnDialogNotificationService(none))) goto 0x007a
+  0078: return nothing
+  007a: DNI.DialogNotify(NotifyType, TnPawn(P.Controller.Enemy))
+  00af: return nothing
+  00b1: <eos>
+
+function TnWeapon.CreatePickupFactoryMesh  (script 126 bytes)
+  0000: PickupMeshComp = GetPickupMesh()
+  0010: if !((PickupMeshComp == none)) goto 0x001d
+  001b: return none
+  001d: ClonedPMC = PrimitiveComponent(PickupMeshComp.Clone(PF, ))
+  0041: ClonedPMC.SetRotation(default.SpawnOffsetAngle)
+  0059: ClonedPMC.SetScale(default.PickupScale)
+  0071: return ClonedPMC
+  0077: return return
+  007d: <eos>
+
+function TnWeapon.PostInstantiateFromPickupFactory  (script 13 bytes)
+  0000: SetupAmmoForDefaultPlayerPickup()
+  000a: return nothing
+  000c: <eos>
+
+function TnWeapon.TryDroppedPickupFirstSpawn  (script 38 bytes)
+  0000: return Spawn(SpawnedPickupClass, , , StartLocation, StartRotation, , true, )
+  001f: return return
+  0025: <eos>
+
+function TnWeapon.ShouldDestroyOnDrop  (script 31 bytes)
+  0000: if !(!HasAnyAmmo()) goto 0x0011
+  000f: return true
+  0011: return ShouldDestroyOnDrop()
+  0018: return return
+  001e: <eos>
+
+function TnWeapon.HideAmmoHudUntilFilled  (script 11 bytes)
+  0000: self.HideAmmoHud = true
+  0008: return nothing
+  000a: <eos>
+
+function TnWeapon.ShouldHideAmmoHud  (script 29 bytes)
+  0000: return (IsHeatBased() || self.HideAmmoHud)
+  0016: return return
+  001c: <eos>

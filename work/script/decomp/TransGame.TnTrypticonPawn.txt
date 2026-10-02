@@ -1,0 +1,490 @@
+function TnTrypticonPawn.get_TargetableLocation  (script 18 bytes)
+  0000: return GetTargetableLocation()
+  000b: return return
+  0011: <eos>
+
+function TnTrypticonPawn.ReplicatedEvent  (script 128 bytes)
+  0000: if !((VarName == 'ShoulderCannonsInCooldown')) goto 0x0036
+  0013: if !(self.ShoulderCannonsInCooldown) goto 0x0029
+  001c: ShoulderCannonsStopFiring()
+  0026: goto 0x0033
+  0029: ShoulderCannonsStartFiring()
+  0033: goto 0x007d
+  0036: if !((VarName == 'LeftShoulderCannonDamaged')) goto 0x0054
+  0049: TnTrypticonPawn.PlayShoulderCannonDamaged(0)
+  0051: goto 0x007d
+  0054: if !((VarName == 'RightShoulderCannonDamaged')) goto 0x0072
+  0067: TnTrypticonPawn.PlayShoulderCannonDamaged(1)
+  006f: goto 0x007d
+  0072: TnAiPawn.ReplicatedEvent(VarName)
+  007d: return nothing
+  007f: <eos>
+
+function TnTrypticonPawn.PostBeginPlay  (script 135 bytes)
+  0000: self._Services.Add('TnSentryGroupService', self.Sentries)
+  0021: self._Services.Add('TnTargetableService', self)
+  003e: TnAiPawn.PostBeginPlay()
+  0044: self._Services.Remove('TnCharacterMaterialService')
+  0060: if !((self._RobotForm != none)) goto 0x0084
+  006b: self.Mesh = self._RobotForm.get_RobotMeshComponent()
+  0084: return nothing
+  0086: <eos>
+
+function TnTrypticonPawn.ApplyCharacter  (script 81 bytes)
+  0000: TnAiPawn.ApplyCharacter(CD)
+  000b: if !((cast3a(self.Role) == cast3a(3))) goto 0x002d
+  001b: TnTrypticonPawn.SpawnChestDestructibles()
+  0021: TnTrypticonPawn.SpawnHeadMortar()
+  0027: TnTrypticonPawn.SpawnBackDestructibles()
+  002d: self._ParticleEffectManagerComponent = FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  0042: EnableIkTracking(0)
+  004e: return nothing
+  0050: <eos>
+
+function TnTrypticonPawn.SetContent  (script 14 bytes)
+  0000: self.Content = Content_
+  000b: return nothing
+  000d: <eos>
+
+function TnTrypticonPawn.SpawnChestDestructibles  (script 241 bytes)
+  0000: self.LeftChestDestructible = TnTrypticonPawn.SpawnDestructible(self.Content.LeftChestDestructible)
+  001a: self.LeftChestDestructible.AttachToPawn(self, self.Content.LeftChestSocket, 0)
+  003d: self.LeftChestDestructible.AddObjectiveMarker(obj'TnObjectiveMarkerTypeDestructible')
+  0055: self.LeftChestDestructible._Invulnerable = true
+  0066: self.LeftChestDestructible._ShouldBeHighlighted = false
+  0077: self.RightChestDestructible = TnTrypticonPawn.SpawnDestructible(self.Content.RightChestDestructible)
+  0091: self.RightChestDestructible.AttachToPawn(self, self.Content.RightChestSocket, 0)
+  00b4: self.RightChestDestructible.AddObjectiveMarker(obj'TnObjectiveMarkerTypeDestructible')
+  00cc: self.RightChestDestructible._Invulnerable = true
+  00dd: self.RightChestDestructible._ShouldBeHighlighted = false
+  00ee: return nothing
+  00f0: <eos>
+
+function TnTrypticonPawn.SpawnHeadMortar  (script 64 bytes)
+  0000: self.HeadMortar = TnTrypticonPawn.SpawnDestructible(self.Content.HeadMortarBlueprint)
+  001a: self.HeadMortar.AttachToPawn(self, self.Content.HeadMortarSocket, 0)
+  003d: return nothing
+  003f: <eos>
+
+function TnTrypticonPawn.SpawnBackDestructibles  (script 111 bytes)
+  0000: Index = 0
+  0007: if !((Index < 3)) goto 0x006c
+  0013: Index[self.BackDestructibles] = TnTrypticonPawn.SpawnDestructible(self.Content.BackDestructible)
+  0033: Index[self.BackDestructibles].AttachToPawn(self, Index[self.Content.BackSockets], 0)
+  0062: AddAdd_PreInt(Index)
+  0069: goto 0x0007
+  006c: return nothing
+  006e: <eos>
+
+function TnTrypticonPawn.SpawnDestructible  (script 83 bytes)
+  0000: if !((DestructibleBlueprint != none)) goto 0x0046
+  000b: Destructible = obj'Engine.Allocation'.static.SpawnActor(obj'TnSpawnableDestructibleActor', self, self, , , true)
+  002e: Destructible.SetDestructibleBlueprint(DestructibleBlueprint)
+  0046: return Destructible
+  004c: return return
+  0052: <eos>
+
+function TnTrypticonPawn.PossessedBy  (script 79 bytes)
+  0000: TnAiPawn.PossessedBy(C, bVehicleTransition)
+  0011: C.bRotateTowardFocus = false
+  0022: C.bGodMode = true
+  0033: self.PlanRunner = self._BoundController.GetGoapPlanRunner()
+  004c: return nothing
+  004e: <eos>
+
+function TnTrypticonPawn.SetStage  (script 132 bytes)
+  0000: TnTrypticonPawn.EnterStage(Stage)
+  000b: self.StanceObserved = cast3a(Stage)[self.Stages].Stance
+  0029: self.AimProfileObserved = ((cast3a(self.StanceObserved) == cast3a(0)) ? 1 : 2)
+  0045: TnTrypticonPawn.SetActionSet(cast3a(Stage)[self.Stages].ActionSet)
+  0063: TnTrypticonPawn.SetGoalSet(cast3a(Stage)[self.Stages].GoalSet)
+  0081: return nothing
+  0083: <eos>
+
+function TnTrypticonPawn.EnterStage  (script 107 bytes)
+  0000: if !((cast3a(Stage) == cast3a(self.CurrentStage))) goto 0x0015
+  0013: return nothing
+  0015: if !((cast3a(Stage) == cast3a(0))) goto 0x002e
+  0025: TnTrypticonPawn.EnterStage1A()
+  002b: goto 0x005d
+  002e: if !((cast3a(Stage) == cast3a(1))) goto 0x0047
+  003e: TnTrypticonPawn.EnterStage1B()
+  0044: goto 0x005d
+  0047: if !((cast3a(Stage) == cast3a(2))) goto 0x005d
+  0057: TnTrypticonPawn.EnterStage2()
+  005d: self.CurrentStage = Stage
+  0068: return nothing
+  006a: <eos>
+
+function TnTrypticonPawn.EnterStage1A  (script 150 bytes)
+  0000: self.Content.ShoulderCannons.ApplyTransformerExtension(self)
+  001d: self.Sentries.__Killed__Delegate = delegate.OnShoulderCannonDestroyed
+  0035: self.Sentries.ForEachSentry(delegate.InitializeShoulderCannon)
+  0051: self.LeftShoulderCannon = self.Sentries.GetSentry(TnTrypticonPawn.GetSentryAttachSocketName(0))
+  0072: self.RightShoulderCannon = self.Sentries.GetSentry(TnTrypticonPawn.GetSentryAttachSocketName(1))
+  0093: return nothing
+  0095: <eos>
+
+function TnTrypticonPawn.InitializeShoulderCannon  (script 61 bytes)
+  0000: SentryController = TnAiSentryController(Sentry.Controller)
+  0019: if !((SentryController == none)) goto 0x0026
+  0024: return nothing
+  0026: SentryController.SetDormant(true)
+  003a: return nothing
+  003c: <eos>
+
+function TnTrypticonPawn.EnterStage1B  (script 101 bytes)
+  0000: TnTrypticonPawn.ActivateDestructible(self.LeftChestDestructible, self.Content.ChestDestructiblePieceName, 'HitReaction_ExposedRibs_L')
+  0022: TnTrypticonPawn.ActivateDestructible(self.RightChestDestructible, self.Content.ChestDestructiblePieceName, 'HitReaction_ExposedRibs_R')
+  0044: self.OnDestructibleDestroyed = delegate.ChestDestructibleDestroyed
+  0053: self.OnAllDestructiblesDestroyed = delegate.AllChestDestructiblesDestroyed
+  0062: return nothing
+  0064: <eos>
+
+function TnTrypticonPawn.EnterStage2  (script 217 bytes)
+  0000: self.HeadMortar.ApplyDestructionTrigger(obj'HM_Engine.HmNotificationDestructionTrigger')
+  0018: self.Content.TailSentries.ApplyTransformerExtension(self)
+  0035: self.Sentries.ForEachSentry(delegate.InitializeTailSentry)
+  0051: Index = 0
+  0058: if !((Index < 3)) goto 0x008c
+  0064: Index[self.BackDestructibles].ApplyDestructionTrigger(obj'HM_Engine.HmNotificationDestructionTrigger')
+  0082: AddAdd_PreInt(Index)
+  0089: goto 0x0058
+  008c: if !((self.Content.ExposeBackDelay <= cast3f(0))) goto 0x00ab
+  00a2: TnTrypticonPawn.ExposeBack()
+  00a8: goto 0x00d6
+  00ab: self.ExposeBackTimer.Start(delegate.ExposeBack, self.Content.ExposeBackDelay, )
+  00d6: return nothing
+  00d8: <eos>
+
+function TnTrypticonPawn.InitializeTailSentry  (script 61 bytes)
+  0000: SentryController = TnAiSentryController(Sentry.Controller)
+  0019: if !((SentryController == none)) goto 0x0026
+  0024: return nothing
+  0026: SentryController.SetDormant(true)
+  003a: return nothing
+  003c: <eos>
+
+function TnTrypticonPawn.SetActionSet  (script 93 bytes)
+  0000: if !((ActionSet != none)) goto 0x005a
+  000b: NewSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapActionSet', self)
+  002a: NewSet.InitializeFromTemplate(ActionSet)
+  0042: self.PlanRunner.ReplaceActionSet(NewSet)
+  005a: return nothing
+  005c: <eos>
+
+function TnTrypticonPawn.SetGoalSet  (script 93 bytes)
+  0000: if !((GoalSet != none)) goto 0x005a
+  000b: NewSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapGoalSet', self)
+  002a: NewSet.InitializeFromTemplate(GoalSet)
+  0042: self.PlanRunner.ReplaceGoalSet(NewSet)
+  005a: return nothing
+  005c: <eos>
+
+function TnTrypticonPawn.OnShoulderCannonDestroyed  (script 113 bytes)
+  0000: if !((cast3a(self.CurrentStage) != cast3a(0))) goto 0x0012
+  0010: return nothing
+  0012: if !((ShoulderCannon.AttachSocketName == 'LeftShoulder')) goto 0x004a
+  002e: TnTrypticonPawn.PlayReactionAnimation('HitReaction_Stun_L', 3)
+  003f: TnTrypticonPawn.QueueReactionEvent(5)
+  0047: goto 0x0063
+  004a: TnTrypticonPawn.PlayReactionAnimation('HitReaction_Stun_R', 3)
+  005b: TnTrypticonPawn.QueueReactionEvent(6)
+  0063: TnTrypticonPawn.StopShoulderCannonCooldown(ShoulderCannon)
+  006e: return nothing
+  0070: <eos>
+
+function TnTrypticonPawn.ShoulderCannonsStartFiring  (script 33 bytes)
+  0000: TnTrypticonPawn.StopShoulderCannonCooldown(self.LeftShoulderCannon)
+  000b: TnTrypticonPawn.StopShoulderCannonCooldown(self.RightShoulderCannon)
+  0016: self.ShoulderCannonsInCooldown = false
+  001e: return nothing
+  0020: <eos>
+
+function TnTrypticonPawn.ShoulderCannonsStopFiring  (script 33 bytes)
+  0000: TnTrypticonPawn.PlayShoulderCannonCooldown(self.LeftShoulderCannon)
+  000b: TnTrypticonPawn.PlayShoulderCannonCooldown(self.RightShoulderCannon)
+  0016: self.ShoulderCannonsInCooldown = true
+  001e: return nothing
+  0020: <eos>
+
+function TnTrypticonPawn.PlayShoulderCannonCooldown  (script 218 bytes)
+  0000: if !(((self._ParticleEffectManagerComponent == none) || (Sentry == none))) goto 0x001a
+  0018: return nothing
+  001a: SentryWeapon = HmWeapon(Sentry.Weapon)
+  0033: if !((SentryWeapon == none)) goto 0x0040
+  003e: return nothing
+  0040: WeaponMesh = SentryWeapon.GetWeaponMesh()
+  0059: if !((WeaponMesh == none)) goto 0x0066
+  0064: return nothing
+  0066: I = 0
+  006d: if !((I < WeaponMesh.MuzzleFlashSockets.Length)) goto 0x00d7
+  0086: self._ParticleEffectManagerComponent.PlayEffect(Sentry.Mesh, I[WeaponMesh.MuzzleFlashSockets], self.Content.ShoulderCannonCooldownFX, , , , )
+  00cd: AddAdd_PreInt(I)
+  00d4: goto 0x006d
+  00d7: return nothing
+  00d9: <eos>
+
+function TnTrypticonPawn.StopShoulderCannonCooldown  (script 216 bytes)
+  0000: if !(((self._ParticleEffectManagerComponent == none) || (Sentry == none))) goto 0x001a
+  0018: return nothing
+  001a: SentryWeapon = HmWeapon(Sentry.Weapon)
+  0033: if !((SentryWeapon == none)) goto 0x0040
+  003e: return nothing
+  0040: WeaponMesh = SentryWeapon.GetWeaponMesh()
+  0059: if !((WeaponMesh == none)) goto 0x0066
+  0064: return nothing
+  0066: I = 0
+  006d: if !((I < WeaponMesh.MuzzleFlashSockets.Length)) goto 0x00d5
+  0086: self._ParticleEffectManagerComponent.StopEffect(Sentry.Mesh, I[WeaponMesh.MuzzleFlashSockets], self.Content.ShoulderCannonCooldownFX, , )
+  00cb: AddAdd_PreInt(I)
+  00d2: goto 0x006d
+  00d5: return nothing
+  00d7: <eos>
+
+function TnTrypticonPawn.PlayShoulderCannonDamaged  (script 154 bytes)
+  0000: if !((cast3a(Sentry) == cast3a(0))) goto 0x0027
+  0010: ShoulderCannonDamageSocket = self.Content.LeftShoulderCannonDamageSocket
+  0024: goto 0x003b
+  0027: ShoulderCannonDamageSocket = self.Content.RightShoulderCannonDamageSocket
+  003b: self._ParticleEffectManagerComponent.StopEffect(self.Mesh, ShoulderCannonDamageSocket, self.Content.ShoulderCannonDamageFX, , )
+  0068: self._ParticleEffectManagerComponent.PlayEffect(self.Mesh, ShoulderCannonDamageSocket, self.Content.ShoulderCannonDamageFX, , , , )
+  0097: return nothing
+  0099: <eos>
+
+function TnTrypticonPawn.Tick  (script 129 bytes)
+  0000: if !(((self._BoundController != none) && !self._BoundController.get_IsInitialized())) goto 0x0027
+  0025: return nothing
+  0027: TnTrypticonPawn.CheckForReactionCompletion()
+  002d: TnTrypticonPawn.CheckForDestroyedDestructibles()
+  0033: self.ExposeBackTimer.Tick(DeltaTime)
+  004b: if !((cast3a(self.Role) == cast3a(3))) goto 0x0073
+  005b: set_IkTarget(self.Controller.Enemy)
+  0073: TnAiPawn.Tick(DeltaTime)
+  007e: return nothing
+  0080: <eos>
+
+function TnTrypticonPawn.QueueReactionEvent  (script 22 bytes)
+  0000: self.IsWaitingForReactionToComplete = true
+  0008: self.PendingEvent = ReactionEvent
+  0013: return nothing
+  0015: <eos>
+
+function TnTrypticonPawn.CheckForReactionCompletion  (script 83 bytes)
+  0000: if !(!self.IsWaitingForReactionToComplete) goto 0x000d
+  000b: return nothing
+  000d: if !((self._BoundController.GetWorldStateInt(obj'TnAiWorldStateReaction') != 9)) goto 0x002e
+  002c: return nothing
+  002e: self.IsWaitingForReactionToComplete = false
+  0036: TnTrypticonPawn.SetActionSet(self.IdleActionSet)
+  0041: TriggerKismetEvent(self.PendingEvent)
+  0050: return nothing
+  0052: <eos>
+
+function TnTrypticonPawn.ExposeChest  (script 142 bytes)
+  0000: self.AiDestructibleTargetIndex = obj'Core.Random'.static.RandomInt(self.ActiveDestructibles.Length)
+  001f: Index = 0
+  0026: if !((Index < self.ActiveDestructibles.Length)) goto 0x008b
+  0036: Index[self.ActiveDestructibles].Destructible.ApplyDestructionTrigger(obj'TnCustomDestructionTriggerA')
+  005f: Index[self.ActiveDestructibles].Destructible._Invulnerable = false
+  0081: AddAdd_PreInt(Index)
+  0088: goto 0x0026
+  008b: return nothing
+  008d: <eos>
+
+function TnTrypticonPawn.HideChest  (script 122 bytes)
+  0000: self.AiDestructibleTargetIndex = -1
+  000b: Index = 0
+  0012: if !((Index < self.ActiveDestructibles.Length)) goto 0x0077
+  0022: Index[self.ActiveDestructibles].Destructible.ApplyDestructionTrigger(obj'TnCustomDestructionTriggerB')
+  004b: Index[self.ActiveDestructibles].Destructible._Invulnerable = true
+  006d: AddAdd_PreInt(Index)
+  0074: goto 0x0012
+  0077: return nothing
+  0079: <eos>
+
+function TnTrypticonPawn.ChestDestructibleDestroyed  (script 98 bytes)
+  0000: self.AiDestructibleTargetIndex = -1
+  000b: Data.Destructible.ApplyDestructionTrigger(obj'TnCustomDestructionTriggerB')
+  002e: TnTrypticonPawn.PlayReactionAnimation(Data.ReactionAnimation, 3)
+  0046: if !((self.ActiveDestructibles.Length == 2)) goto 0x005f
+  0053: TriggerKismetEvent(7)
+  005f: return nothing
+  0061: <eos>
+
+function TnTrypticonPawn.AllChestDestructiblesDestroyed  (script 31 bytes)
+  0000: TnTrypticonPawn.SetGoalSet(self.Content.WoundedGoalSet)
+  0014: TnTrypticonPawn.QueueReactionEvent(8)
+  001c: return nothing
+  001e: <eos>
+
+function TnTrypticonPawn.ExposeBack  (script 124 bytes)
+  0000: TriggerKismetEvent(9)
+  000c: Index = 0
+  0013: if !((Index < 3)) goto 0x0049
+  001f: TnTrypticonPawn.ActivateDestructible(Index[self.BackDestructibles], self.Content.BackDestructiblePieceName, )
+  003f: AddAdd_PreInt(Index)
+  0046: goto 0x0013
+  0049: TnTrypticonPawn.ExposeBackDestructible(self.ExposedBackDestructibleIndex)
+  0054: self.AiDestructibleTargetIndex = 0
+  005b: self.OnDestructibleDestroyed = delegate.BackDestructibleDestroyed
+  006a: self.OnAllDestructiblesDestroyed = delegate.AllBackDestructiblesDestroyed
+  0079: return nothing
+  007b: <eos>
+
+function TnTrypticonPawn.ExposeBackDestructible  (script 90 bytes)
+  0000: if !(((Index >= 3) || (Index < 0))) goto 0x001b
+  0019: return nothing
+  001b: Index[self.BackDestructibles].ApplyDestructionTrigger(obj'HM_Engine.HmNotificationDestructionTrigger')
+  0039: Index[self.BackDestructibles].AddObjectiveMarker(obj'TnObjectiveMarkerTypeDestructible')
+  0057: return nothing
+  0059: <eos>
+
+function TnTrypticonPawn.BackDestructibleDestroyed  (script 139 bytes)
+  0000: TnTrypticonPawn.RemoveMarker(Data.Destructible)
+  0016: if !((self.ActiveDestructibles.Length == 3)) goto 0x003f
+  0023: TriggerKismetEvent(10)
+  002f: TnTrypticonPawn.ExposeBackDestructible(AddAdd_PreInt(self.ExposedBackDestructibleIndex))
+  003c: goto 0x0088
+  003f: if !((self.ActiveDestructibles.Length == (3 - 1))) goto 0x006b
+  004f: TriggerKismetEvent(11)
+  005b: TnTrypticonPawn.ExposeBackDestructible(AddAdd_PreInt(self.ExposedBackDestructibleIndex))
+  0068: goto 0x0088
+  006b: if !((self.ActiveDestructibles.Length == (3 - 2))) goto 0x0088
+  007c: TriggerKismetEvent(12)
+  0088: return nothing
+  008a: <eos>
+
+function TnTrypticonPawn.AllBackDestructiblesDestroyed  (script 22 bytes)
+  0000: self._BoundController.SuspendPlanRunner()
+  0013: return nothing
+  0015: <eos>
+
+function TnTrypticonPawn.RemoveMarker  (script 46 bytes)
+  0000: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(A, obj'TnObjectiveMarkerTypeDestructible')
+  002b: return nothing
+  002d: <eos>
+
+function TnTrypticonPawn.ActivateDestructible  (script 114 bytes)
+  0000: default='None'
+  000d: Data.Destructible = Destructible
+  0023: Data.Piece = Destructible.GetPiece(PieceName)
+  004c: Data.ReactionAnimation = ReactionAnimation
+  0062: self.ActiveDestructibles.AddItem(Data)
+  006f: return nothing
+  0071: <eos>
+
+function TnTrypticonPawn.CheckForDestroyedDestructibles  (script 52 bytes)
+  0000: if !((self.ActiveDestructibles.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: TnTrypticonPawn.RemoveDestroyedDestructibles()
+  0014: if !((self.ActiveDestructibles.Length > 0)) goto 0x0022
+  0020: return nothing
+  0022: AllDestructiblesDestroyed()
+  0031: return nothing
+  0033: <eos>
+
+function TnTrypticonPawn.RemoveDestroyedDestructibles  (script 116 bytes)
+  0000: Index = (self.ActiveDestructibles.Length - 1)
+  000f: if !((Index >= 0)) goto 0x0071
+  001a: if !(Index[self.ActiveDestructibles].Piece.IsInFinalState()) goto 0x0067
+  0041: DestructibleDestroyed(Index[self.ActiveDestructibles])
+  005b: self.ActiveDestructibles.Remove(Index,1)
+  0067: SubtractSubtract_PreInt(Index)
+  006e: goto 0x000f
+  0071: return nothing
+  0073: <eos>
+
+function TnTrypticonPawn.DestructibleDestroyed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTrypticonPawn.AllDestructiblesDestroyed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTrypticonPawn.TriggerTaunt  (script 58 bytes)
+  0000: Animation = ((cast3a(self.StanceObserved) == cast3a(0)) ? 'Taunt_Roar_Standing' : 'Taunt_Roar_Crouch')
+  002a: TnTrypticonPawn.PlayReactionAnimation(Animation, 1)
+  0037: return nothing
+  0039: <eos>
+
+function TnTrypticonPawn.PlayReactionAnimation  (script 143 bytes)
+  0000: ReactionAnimation = obj'Engine.Allocation'.static.CreateObject(obj'TnReactionAnimation', self)
+  001f: if !((ReactionAnimation == none)) goto 0x002c
+  002a: return nothing
+  002c: ReactionAnimation.BlendInTime = 0.3
+  0040: ReactionAnimation.BlendOutTime = 0.3
+  0054: ReactionAnimation.AnimationName = AnimationName
+  0068: self._BoundController.SetWorldStateInt(obj'TnAiWorldStateReaction', cast3a(Type), ReactionAnimation)
+  008c: return nothing
+  008e: <eos>
+
+function TnTrypticonPawn.TriggerKismetEvent  (script 40 bytes)
+  0000: self.Controller.TriggerEventClass(obj'TnSeqEvent_TrypticonEvents', self.Controller, cast3a(TrypticonEvent), )
+  0025: return nothing
+  0027: <eos>
+
+function TnTrypticonPawn.SetVolume  (script 41 bytes)
+  0000: cast3a(TV)[self.TailAttackTriggerVolumes] = Trigger
+  0013: cast3a(TV)[self.TailAttackDamageVolumes] = Damage
+  0026: return nothing
+  0028: <eos>
+
+function TnTrypticonPawn.GetTriggerVolume  (script 21 bytes)
+  0000: return cast3a(TV)[self.TailAttackTriggerVolumes]
+  000e: return return
+  0014: <eos>
+
+function TnTrypticonPawn.GetDamageVolume  (script 21 bytes)
+  0000: return cast3a(TV)[self.TailAttackDamageVolumes]
+  000e: return return
+  0014: <eos>
+
+function TnTrypticonPawn.GetTargetLocation  (script 84 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(((self.Controller != none) && (self.Controller.Enemy != none))) goto 0x003b
+  0023: return self.Controller.Enemy.Location
+  003b: return TnAiPawn.GetTargetLocation(RequestedBy, bRequestAlternateLoc)
+  004d: return return
+  0053: <eos>
+
+function TnTrypticonPawn.GetTargetableLocation  (script 165 bytes)
+  0000: if !((((self.ActiveDestructibles.Length > 0) && (self.AiDestructibleTargetIndex < self.ActiveDestructibles.Length)) && (self.AiDestructibleTargetIndex != -1))) goto 0x0097
+  002f: DestructibleLocation = self.AiDestructibleTargetIndex[self.ActiveDestructibles].Destructible.Location
+  0054: (DestructibleLocation += (obj'Core.Random'.static.RandomFloat(self.Content.SpreadDistance) * obj'Core.Random'.static.RandomUnitVector()))
+  0091: return DestructibleLocation
+  0097: return TnAiPawn.GetTargetableLocation()
+  009e: return return
+  00a4: <eos>
+
+function TnTrypticonPawn.GetSentryAttachSocketName  (script 47 bytes)
+  0000: switch (Sentry)
+  0007: case 0: (next 0x0016)
+  000c: return 'LeftShoulder'
+  0016: case 1: (next 0x0025)
+  001b: return 'RightShoulder'
+  0025: default:
+  0028: return return
+  002e: <eos>
+
+function TnTrypticonPawn.KillAttachedSentry  (script 33 bytes)
+  0000: self.Sentries.KillAttachedSentry(TnTrypticonPawn.GetSentryAttachSocketName(Sentry))
+  001e: return nothing
+  0020: <eos>
+
+function TnTrypticonPawn.DamageAttachedSentry  (script 103 bytes)
+  0000: self.Sentries.DamageAttachedSentry(TnTrypticonPawn.GetSentryAttachSocketName(Sentry), Damage, obj'TnDamageTypeEnergon')
+  0028: if !((cast3a(Sentry) == cast3a(0))) goto 0x004a
+  0038: self.LeftShoulderCannonDamaged = !self.LeftShoulderCannonDamaged
+  0047: goto 0x0059
+  004a: self.RightShoulderCannonDamaged = !self.RightShoulderCannonDamaged
+  0059: TnTrypticonPawn.PlayShoulderCannonDamaged(Sentry)
+  0064: return nothing
+  0066: <eos>
+
+function TnTrypticonPawn.AddAttachedSentryObjectiveMarker  (script 38 bytes)
+  0000: self.Sentries.AddAttachedSentryObjectiveMarker(TnTrypticonPawn.GetSentryAttachSocketName(Sentry), obj'TnObjectiveMarkerTypeOmegaSentry')
+  0023: return nothing
+  0025: <eos>

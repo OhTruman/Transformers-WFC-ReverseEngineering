@@ -1,0 +1,18 @@
+function TnAutoPlayAnimNodeSequence.OnInit  (script 17 bytes)
+  0000: OnInit()
+  0006: self.bPlaying = false
+  000e: return nothing
+  0010: <eos>
+
+function TnAutoPlayAnimNodeSequence.OnBecomeRelevant  (script 35 bytes)
+  0000: OnBecomeRelevant()
+  0006: PlayAnim(self.bLooping, self.Rate, self.CurrentTime)
+  0020: return nothing
+  0022: <eos>
+
+function TnAutoPlayAnimNodeSequence.OnCeaseRelevant  (script 35 bytes)
+  0000: StopAnim()
+  000a: SetPosition(0.0, false)
+  001a: OnCeaseRelevant()
+  0020: return nothing
+  0022: <eos>

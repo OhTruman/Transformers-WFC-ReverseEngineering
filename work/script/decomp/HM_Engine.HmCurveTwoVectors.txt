@@ -1,0 +1,47 @@
+function HmCurveTwoVectors.Evaluate  (script 43 bytes)
+  0000: nothing
+  0001: return obj'Core.Math'.static.EvalCurveTwoVectors(self.curve, InputValue, DefaultOutput)
+  0024: return return
+  002a: <eos>
+
+function HmCurveTwoVectors.Build  (script 740 bytes)
+  0000: if !((Outputs.Length < 1)) goto 0x000e
+  000c: return false
+  000e: self.curve.Points.Length = Outputs.Length
+  0026: EndIndex = (Outputs.Length - 1)
+  0035: InputIncrement = (1.0 / cast3f(EndIndex))
+  0049: CurrentIndex = 0
+  0050: if !((CurrentIndex <= EndIndex)) goto 0x00c6
+  005f: CurrentIndex[self.curve.Points].InVal = (InputIncrement * cast3f(CurrentIndex))
+  008f: CurrentIndex[self.curve.Points].OutVal = CurrentIndex[Outputs]
+  00bc: AddAdd_PreInt(CurrentIndex)
+  00c3: goto 0x0050
+  00c6: pt = 0[self.curve.Points]
+  00de: SetCurvePointTangents(pt, vect(0,0,0), vect(0,0,0))
+  0107: 0[self.curve.Points] = pt
+  011f: pt = EndIndex[self.curve.Points]
+  013b: SetCurvePointTangents(pt, vect(0,0,0), vect(0,0,0))
+  0164: EndIndex[self.curve.Points] = pt
+  0180: CurrentIndex = 1
+  0187: if !((CurrentIndex < EndIndex)) goto 0x02db
+  0196: PreviousIndex = (CurrentIndex - 1)
+  01a4: NextIndex = (CurrentIndex + 1)
+  01b2: Tangent1 = ((NextIndex[self.curve.Points].OutVal.v1 - PreviousIndex[self.curve.Points].OutVal.v1) / 2.0)
+  0219: Tangent2 = ((NextIndex[self.curve.Points].OutVal.v2 - PreviousIndex[self.curve.Points].OutVal.v2) / 2.0)
+  0280: pt = CurrentIndex[self.curve.Points]
+  029c: SetCurvePointTangents(pt, Tangent1, Tangent2)
+  02b5: CurrentIndex[self.curve.Points] = pt
+  02d1: AddAdd_PreInt(CurrentIndex)
+  02d8: goto 0x0187
+  02db: return true
+  02dd: return return
+  02e3: <eos>
+
+function HmCurveTwoVectors.SetCurvePointTangents  (script 154 bytes)
+  0000: Point.ArriveTangent.v1 = Tangent1
+  0021: Point.LeaveTangent.v1 = Tangent1
+  0042: Point.ArriveTangent.v2 = Tangent2
+  0063: Point.LeaveTangent.v2 = Tangent2
+  0084: Point.InterpMode = 3
+  0097: return nothing
+  0099: <eos>

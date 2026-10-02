@@ -1,0 +1,46 @@
+function TnWeaponBeam.UpdateData  (script 25 bytes)
+  0000: self.BeamData = TnWeaponDataBeam(self.Data)
+  0010: TnWeapon.UpdateData()
+  0016: return nothing
+  0018: <eos>
+
+function TnWeaponBeam.WeaponFiring.EndState  (script 24 bytes)
+  0000: StopBeam()
+  000a: EndState(NextStateName)
+  0015: return nothing
+  0017: <eos>
+
+function TnWeaponBeam.StopBeam  (script 41 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x001c
+  0010: StopFireEffects(0)
+  001c: ServerClearFlashes()
+  0026: return nothing
+  0028: <eos>
+
+function TnWeaponBeam.ProcessInstantHit  (script 33 bytes)
+  0000: ProcessBeamHit(Impact, GetFireInterval(FiringMode))
+  001e: return nothing
+  0020: <eos>
+
+function TnWeaponBeam.ProcessBeamHit  (script 189 bytes)
+  0000: if !((Impact.HitActor == none)) goto 0x0018
+  0016: return nothing
+  0018: Damage = ModifyDamage((self.BeamData.DamagePerSecond * DeltaTime), Impact.HitActor)
+  004d: Impact.HitActor.TakeDamage(Damage, self.Instigator.Controller, Impact.HitLocation, vect(0,0,0), self.BeamData.DamageType, Impact.HitInfo, self)
+  00ba: return nothing
+  00bc: <eos>
+
+function TnWeaponBeam.GetWeaponEventForFireMode  (script 10 bytes)
+  0000: return 9
+  0003: return return
+  0009: <eos>
+
+function TnWeaponBeam.StopFireEffects  (script 94 bytes)
+  0000: AllWeaponMeshesStopSoundEvent(9, )
+  000d: PlayWeaponEvent(12, 0, 12)
+  001d: CurrentWeaponMeshStartMuzzleFlash(12, )
+  002a: if !(!self.bSuppressTracerEffects) goto 0x0050
+  0035: CurrentWeaponMeshPlayTracerEffect(12, self.Instigator.FlashImpact, )
+  0050: TnWeapon.StopFireEffects(FireModeNum)
+  005b: return nothing
+  005d: <eos>

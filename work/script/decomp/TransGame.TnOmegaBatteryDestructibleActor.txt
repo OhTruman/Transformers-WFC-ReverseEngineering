@@ -1,0 +1,26 @@
+function TnOmegaBatteryDestructibleActor.get_IsCorrupted  (script 14 bytes)
+  0000: return self._IsCorrupted
+  0007: return return
+  000d: <eos>
+
+function TnOmegaBatteryDestructibleActor.TakeDamage  (script 68 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(TnOmegaBatteryDestructibleActor.CanCorruptFromDamageType(DamageType)) goto 0x0018
+  0010: self._IsCorrupted = true
+  0018: TnDestructibleActor.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0041: return nothing
+  0043: <eos>
+
+function TnOmegaBatteryDestructibleActor.CanCorruptFromDamageType  (script 63 bytes)
+  0000: if !((class<HmDamageType>(DamageType).static.default.DestructionTrigger != obj'TnCorruptionDestructionTrigger')) goto 0x001f
+  001d: return false
+  001f: return self.DestructibleComponent.CanAcceptDamageFromTrigger(obj'TnCorruptionDestructionTrigger')
+  0038: return return
+  003e: <eos>
+
+function TnOmegaBatteryDestructibleActor.Corrupt  (script 40 bytes)
+  0000: self._IsCorrupted = true
+  0008: self.DestructibleComponent.NotifyTrigger(100.0, obj'TnCorruptionDestructionTrigger')
+  0025: return nothing
+  0027: <eos>

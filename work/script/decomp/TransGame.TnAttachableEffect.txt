@@ -1,0 +1,20 @@
+function TnAttachableEffect.Play  (script 311 bytes)
+  0000: if !((self.EffectTemplate == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(((Instigator == none) || (SkelMeshComponent == none))) goto 0x0027
+  0025: return nothing
+  0027: if !(!SkelMeshComponent.GetSocketWorldLocationAndRotation(self.AttachmentSocket, SpawnLocation, SpawnRotation)) goto 0x00af
+  004e: LogInternal(((("ERROR: Could not spawn attachable effect on " @ cast57(self.AttachmentSocket)) @ "socket for") @ Instigator.GetHumanReadableName()), , , )
+  00ad: return nothing
+  00af: if !(!Instigator.EffectIsRelevant(SpawnLocation, false, self.MaxPlayDistance)) goto 0x00d4
+  00d2: return nothing
+  00d4: NewEmitter = SpawnParticleEmitter(Instigator, SpawnLocation, SpawnRotation)
+  00f8: NewEmitter.SetTemplate(self.EffectTemplate, true)
+  0111: NewEmitter.SetBase(Instigator, , SkelMeshComponent, self.AttachmentSocket)
+  0134: return nothing
+  0136: <eos>
+
+function TnAttachableEffect.SpawnParticleEmitter  (script 51 bytes)
+  0000: return Instigator.Spawn(obj'Engine.EmitterSpawnable', Instigator, , Location, Rotation, , , )
+  002c: return return
+  0032: <eos>

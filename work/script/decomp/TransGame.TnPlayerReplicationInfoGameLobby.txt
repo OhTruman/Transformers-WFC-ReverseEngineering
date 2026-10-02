@@ -1,0 +1,46 @@
+function TnPlayerReplicationInfoGameLobby.CopyPropertiesTo  (script 65 bytes)
+  0000: TnPlayerReplicationInfo.CopyPropertiesTo(PRI)
+  000b: TnPRI = TnPlayerReplicationInfoGameLobby(PRI)
+  001b: if !((TnPRI == none)) goto 0x0028
+  0026: return nothing
+  0028: TnPRI.HasSubmittedMapVeto = self.HasSubmittedMapVeto
+  003e: return nothing
+  0040: <eos>
+
+function TnPlayerReplicationInfoGameLobby.SetTeam  (script 25 bytes)
+  0000: TnPlayerReplicationInfo.SetTeam(NewTeam)
+  000b: MenuSetReady(false)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerReplicationInfoGameLobby.Destroyed  (script 84 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(self.WorldInfo.GRI)
+  0019: if !((self.HasSubmittedMapVeto && (LobbyGRI != none))) goto 0x004b
+  002f: LobbyGRI.WithdrawMapVeto(self)
+  0043: self.HasSubmittedMapVeto = false
+  004b: Destroyed()
+  0051: return nothing
+  0053: <eos>
+
+function TnPlayerReplicationInfoGameLobby.SubmitMapVeto  (script 64 bytes)
+  0000: if !(self.HasSubmittedMapVeto) goto 0x000b
+  0009: return nothing
+  000b: LobbyGRI = TnGameReplicationInfoGameLobby(self.WorldInfo.GRI)
+  0024: TnPlayerReplicationInfoGameLobby.ServerSubmitMapVeto(LobbyGRI.GetMapID())
+  003d: return nothing
+  003f: <eos>
+
+function TnPlayerReplicationInfoGameLobby.ServerSubmitMapVeto  (script 93 bytes)
+  0000: LobbyGRI = TnGameReplicationInfoGameLobby(self.WorldInfo.GRI)
+  0019: if !(((LobbyGRI == none) || self.HasSubmittedMapVeto)) goto 0x0031
+  002f: return nothing
+  0031: self.HasSubmittedMapVeto = true
+  0039: self.bForceNetUpdate = true
+  0041: LobbyGRI.SubmitMapVeto(self, MapId)
+  005a: return nothing
+  005c: <eos>
+
+function TnPlayerReplicationInfoGameLobby.ShouldResetScore  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

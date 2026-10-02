@@ -1,0 +1,76 @@
+function TnSentry.CheckForErrors  (script 1701 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.SightRadius < self.MaxAttackRange)) goto 0x009e
+  0015: EmitCheckMessage(0, "The SightRadius must be greater than or equal to the MaxAttackRange so that the sentry can properly see what it can shoot", , )
+  009e: if !((self.Destructible == none)) goto 0x00ea
+  00a9: EmitCheckMessage(0, "You must specify a destructible for all turrets", , )
+  00e8: return nothing
+  00ea: foreach self.Destructible.PieceBlueprints(PieceStateBlueprint,) (end 0x0129)
+  0102: if !((PieceStateBlueprint.PieceName == self.TurretPieceName)) goto 0x0128
+  011a: TurretPieceStateBlueprint = PieceStateBlueprint
+  0125: goto 0x0129
+  0128: iternext
+  0129: iterpop
+  012a: if !((TurretPieceStateBlueprint == none)) goto 0x01a2
+  0135: EmitCheckMessage(0, (("The destructible does not contain a piece named" @ cast57(self.TurretPieceName)) @ "and will not function correctly"), , )
+  01a0: return nothing
+  01a2: if !((TurretPieceStateBlueprint.StateBlueprints.Length <= 0)) goto 0x0224
+  01b7: EmitCheckMessage(0, "The destructible's turret piece does not contain any states and will not function correctly", , )
+  0222: return nothing
+  0224: StateBlueprint = 0[TurretPieceStateBlueprint.StateBlueprints]
+  023a: if !((StateBlueprint.EffectFactories.Length == 0)) goto 0x02c5
+  024f: EmitCheckMessage(0, "The destructible's initial turret state does not contain any effects and will not function correctly", , )
+  02c3: return nothing
+  02c5: foreach StateBlueprint.EffectFactories(Factory,) (end 0x0300)
+  02dd: MeshFactory = HmAnimatedMeshDestructionEffectFactory(Factory)
+  02ed: if !((MeshFactory == none)) goto 0x02fc
+  02f8: iternext
+  02f9: goto 0x0300
+  02fc: goto 0x0300
+  02ff: iternext
+  0300: iterpop
+  0301: if !((MeshFactory == none)) goto 0x0394
+  030c: EmitCheckMessage(0, "The destructible's initial turret state does not contain a valid animated mesh factory and will not function correctly", , )
+  0392: return nothing
+  0394: TnSentry.CheckForInitialAnimSequence(MeshFactory)
+  039f: TurretComp = MeshFactory.GetComponentTemplate()
+  03b8: AnimTreeTemplate = TurretComp.AnimTreeTemplate
+  03cc: if !((AnimTreeTemplate == none)) goto 0x045c
+  03d7: EmitCheckMessage(0, "The destructible's initial turret state does not contain a valid anim tree template and will not function correctly", , )
+  045a: return nothing
+  045c: if !((AnimTreeTemplate.FindSkelControl(self.YawSkelControlName) == none)) goto 0x050b
+  047a: EmitCheckMessage(0, (("The destructible's initial turret state does not contain yaw skeletal control named" @ cast57(self.YawSkelControlName)) @ "and will not function correctly"), , )
+  0509: return nothing
+  050b: if !((AnimTreeTemplate.FindSkelControl(self.PitchSkelControlName) == none)) goto 0x05bc
+  0529: EmitCheckMessage(0, (("The destructible's initial turret state does not contain pitch skeletal control named" @ cast57(self.PitchSkelControlName)) @ "and will not function correctly"), , )
+  05ba: return nothing
+  05bc: if !((TurretComp.GetSocketByName(self.WeaponSocketName) == none)) goto 0x0667
+  05da: EmitCheckMessage(0, (("The destructible's initial turret state does not contain a weapon socket named " @ cast57(self.WeaponSocketName)) @ "and will not function correctly"), , )
+  0665: return nothing
+  0667: if !((self.WeaponClass == none)) goto 0x06a2
+  0672: EmitCheckMessage(0, "Weapon class must be specified", , )
+  06a0: return nothing
+  06a2: return nothing
+  06a4: <eos>
+
+function TnSentry.CheckForInitialAnimSequence  (script 325 bytes)
+  0000: if !((self.ActivateSequenceName != 'None')) goto 0x00a1
+  0013: if !(!TnSentry.HasAnimSequence(MeshFactory, self.ActivateSequenceName)) goto 0x00a1
+  0028: EmitCheckMessage(0, ("The initial state's component template does not contain an animset with the activation sequence:" @ cast57(self.ActivateSequenceName)), , )
+  00a1: if !((self.DeactivateSequenceName != 'None')) goto 0x0142
+  00b4: if !(!TnSentry.HasAnimSequence(MeshFactory, self.DeactivateSequenceName)) goto 0x0142
+  00c9: EmitCheckMessage(0, ("The initial state's component template does not contain an animset with the activation sequence:" @ cast57(self.DeactivateSequenceName)), , )
+  0142: return nothing
+  0144: <eos>
+
+function TnSentry.HasAnimSequence  (script 93 bytes)
+  0000: SkelComp = MeshFactory.GetComponentTemplate()
+  0019: foreach SkelComp.AnimSets(AnimSet,) (end 0x0053)
+  0031: if !((AnimSet.FindAnimSequence(AnimSequenceName) != none)) goto 0x0052
+  004f: iterpop
+  0050: return true
+  0052: iternext
+  0053: iterpop
+  0054: return false
+  0056: return return
+  005c: <eos>

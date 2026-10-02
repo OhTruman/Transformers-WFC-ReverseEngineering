@@ -1,0 +1,22 @@
+function SeqAct_TnUnlockAchievement.Activated  (script 159 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x009c
+  0017: P = TnPlayerPawn(I[self.Targets])
+  002d: if !((P != none)) goto 0x0054
+  0038: PC = TnPlayerController(P.Controller)
+  0051: goto 0x006a
+  0054: PC = TnPlayerController(I[self.Targets])
+  006a: if !((PC == none)) goto 0x0078
+  0075: goto 0x0092
+  0078: PC.ClientUnlockAchievement(cast3a(self.Achievement))
+  0092: AddAdd_PreInt(I)
+  0099: goto 0x0007
+  009c: return nothing
+  009e: <eos>
+
+function SeqAct_TnUnlockAchievement.CheckForErrors  (script 73 bytes)
+  0000: CheckForErrors()
+  0006: if !((cast3a(self.Achievement) == cast3a(0))) goto 0x0046
+  0016: EmitCheckMessage(0, "You must set a valid achievement", , )
+  0046: return nothing
+  0048: <eos>

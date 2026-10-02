@@ -1,0 +1,89 @@
+function TnAiActionStimulusReaction.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionStimulusReactionBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionStimulusReaction.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionStimulusReaction.OnSetUpConditions  (script 376 bytes)
+  0000: ActiveStimulus = self._TransformerController._ActiveStimulus
+  0014: if !(((ActiveStimulus.Source == none) || (ActiveStimulus.Type == none))) goto 0x0044
+  0042: return false
+  0044: if !((self._TransformerPawn.get_IsInVehicleForm() || self._TransformerPawn.get_IsInteracting())) goto 0x0087
+  0072: self._TransformerController.ResetActiveStimulus()
+  0085: return false
+  0087: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateTurret') != 0)) goto 0x00bf
+  00aa: self._TransformerController.ResetActiveStimulus()
+  00bd: return false
+  00bf: if !((self._Blueprint.RequireStance && (self._TransformerPawn.WeaponTypeObserved != cast3a(self._Blueprint.Stance)))) goto 0x010b
+  00f6: self._TransformerController.ResetActiveStimulus()
+  0109: return false
+  010b: if !(((cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(8)) && (cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(7)))) goto 0x0160
+  014b: self._TransformerController.ResetActiveStimulus()
+  015e: return false
+  0160: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0171: return return
+  0177: <eos>
+
+function TnAiActionStimulusReaction.OnStart  (script 356 bytes)
+  0000: self._ActiveStimulus = self._TransformerController._ActiveStimulus
+  0014: if !(((self._ActiveStimulus.Source == none) || (self._ActiveStimulus.Type == none))) goto 0x004d
+  0042: return Fail()
+  004d: self._Reaction = self._Blueprint.StimulusReactionSet.FindStimulusReaction(self._ActiveStimulus, self._TransformerController.Pawn)
+  0082: if !(((self._Reaction == none) || (self._Reaction.GetAnimation(self._TransformerPawn, self._ActiveStimulus.Source.Location) == 'None'))) goto 0x00d9
+  00ce: return Fail()
+  00d9: SetCharacterState(512)
+  00e8: self._AnimDelay = (self._Reaction.get_AnimDelayMax() * obj'Core.Random'.static.RandomFloat())
+  0117: self._AnimPlaying = false
+  011f: if !((self._ActiveStimulus.Type == obj'TnStimulusType_Grenade')) goto 0x0151
+  0139: self._TransformerController.PlayDialogEvent(self.TargetFiredGrenadeDialog)
+  0151: return OnStart(ExpectedEffects)
+  015d: return return
+  0163: <eos>
+
+function TnAiActionStimulusReaction.OnUpdate  (script 115 bytes)
+  0000: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x0021
+  0016: return Fail()
+  0021: (self._AnimDelay -= DeltaTime)
+  002d: if !(((TnAiActionStimulusReaction.CanPlayReaction() && (self._AnimDelay <= 0.0)) && (self._AnimPlaying == false))) goto 0x005b
+  0055: TnAiActionStimulusReaction.PlayReaction()
+  005b: return OnUpdate(ExpectedEffects, DeltaTime)
+  006c: return return
+  0072: <eos>
+
+function TnAiActionStimulusReaction.OnFinish  (script 112 bytes)
+  0000: self._TransformerController.ResetActiveStimulus()
+  0013: self._TransformerPawn.set_LockIkTargetLocation(false)
+  0027: self._TransformerPawn.DisableIkTracking(0)
+  003c: if !((cast3a(CurrentState) != cast3a(3))) goto 0x004e
+  004c: return nothing
+  004e: get_CurrentWorldState().SetIntValue(obj'TnAiWorldStateStimulusReaction', 1, )
+  006d: return nothing
+  006f: <eos>
+
+function TnAiActionStimulusReaction.CanPlayReaction  (script 36 bytes)
+  0000: return (cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(8))
+  001d: return return
+  0023: <eos>
+
+function TnAiActionStimulusReaction.PlayReaction  (script 284 bytes)
+  0000: Params = self._Blueprint.Params
+  0014: Params.AnimName = self._Reaction.GetAnimation(self._TransformerPawn, self._ActiveStimulus.Location)
+  004d: if !((Params.AnimName == 'None')) goto 0x006d
+  006b: return false
+  006d: if !(self._Reaction.get_RequiresRootMotion()) goto 0x00a9
+  0083: Params.RootMotionMode = 3
+  0096: Params.RootMotionRotationMode = 1
+  00a9: self._TransformerPawn.set_IkTargetLocation(self._ActiveStimulus.Location)
+  00cc: self._TransformerPawn.set_LockIkTargetLocation(true)
+  00e0: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.SucceedCallback, delegate.FailCallback)
+  010b: self._AnimPlaying = true
+  0113: return true
+  0115: return return
+  011b: <eos>

@@ -1,0 +1,35 @@
+function TnPacejkaCurve.Initialize  (script 262 bytes)
+  0000: self.Extremum = Extremum_
+  000b: self.Asymptote = Asymptote_
+  0016: self.curve.InterpMethod = 1
+  0029: self.curve.Points.Length = 0
+  003c: self.curve.Points.AddItem(TnPacejkaCurve.MakeCurvePoint(0.0, 0.0, ((self.Extremum.Y * cast3f(2)) / self.Extremum.X)))
+  0087: self.curve.Points.AddItem(TnPacejkaCurve.MakeCurvePoint(self.Extremum.X, self.Extremum.Y, 0.0))
+  00c5: self.curve.Points.AddItem(TnPacejkaCurve.MakeCurvePoint(self.Asymptote.X, self.Asymptote.Y, 0.0))
+  0103: return nothing
+  0105: <eos>
+
+function TnPacejkaCurve.sample  (script 79 bytes)
+  0000: return (obj'Core.Math'.static.Sign(X) * obj'Core.Math'.static.EvalCurveFloat(self.curve, obj'Core.Math'.static.Abs(X), 0.0))
+  0048: return return
+  004e: <eos>
+
+function TnPacejkaCurve.GetExtremum  (script 13 bytes)
+  0000: return self.Extremum
+  0006: return return
+  000c: <eos>
+
+function TnPacejkaCurve.GetAsymptote  (script 13 bytes)
+  0000: return self.Asymptote
+  0006: return return
+  000c: <eos>
+
+function TnPacejkaCurve.MakeCurvePoint  (script 120 bytes)
+  0000: Point.InVal = X
+  0016: Point.OutVal = Y
+  002c: Point.ArriveTangent = Gradient
+  0042: Point.LeaveTangent = Gradient
+  0058: Point.InterpMode = 1
+  006b: return Point
+  0071: return return
+  0077: <eos>

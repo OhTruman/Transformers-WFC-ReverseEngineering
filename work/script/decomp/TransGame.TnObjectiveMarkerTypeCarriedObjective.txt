@@ -1,0 +1,62 @@
+function TnObjectiveMarkerTypeCarriedObjective.ShouldDisplayMarker  (script 31 bytes)
+  0000: return (Owner != MarkerData.MarkerBase)
+  0018: return return
+  001e: <eos>
+
+function TnObjectiveMarkerTypeCarriedObjective.GetMarkerSetup  (script 48 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: SetupParameters(Owner, MarkerData)
+  0023: return self.MarkerSetup
+  0029: return return
+  002f: <eos>
+
+function TnObjectiveMarkerTypeCarriedObjective.GetObjectiveState  (script 84 bytes)
+  0000: if !((TnGameObjectiveWeaponPickupFactory(MarkerBase) != none)) goto 0x0013
+  0010: return 0
+  0013: if !((TnGameObjectiveDroppedPickup(MarkerBase) != none)) goto 0x0026
+  0023: return 1
+  0026: return (Owner.IsSameTeam(Pawn(MarkerBase)) ? 2 : 3)
+  004d: return return
+  0053: <eos>
+
+function TnObjectiveMarkerTypeCarriedObjective.GetPulse  (script 52 bytes)
+  0000: T = (self.PulseFrequency - (CurrentTime % self.PulseFrequency))
+  0019: return ((T / self.PulseFrequency) ** self.PulseExpPower)
+  002d: return return
+  0033: <eos>
+
+function TnObjectiveMarkerTypeCarriedObjective.SetupParameters  (script 534 bytes)
+  0000: IsAttacking = (cast3a(Owner.GetTeamNum()) == TnGameReplicationInfoMultiplayer(Owner.WorldInfo.GRI).get_AttackingTeam())
+  0048: Opacity = 1.0
+  0053: switch (GetObjectiveState(Owner, MarkerData.MarkerBase))
+  0074: case 0: (next 0x00a9)
+  0079: if !(IsAttacking) goto 0x0090
+  0082: NeutralValue = 0.0
+  008d: goto 0x009b
+  0090: NeutralValue = 1.0
+  009b: FlashingValue = 0.0
+  00a6: goto 0x0140
+  00a9: case 1: (next 0x00de)
+  00ae: if !(IsAttacking) goto 0x00c5
+  00b7: FlashingValue = 1.0
+  00c2: goto 0x00d0
+  00c5: FlashingValue = 0.0
+  00d0: NeutralValue = 0.0
+  00db: goto 0x0140
+  00de: case 2: (next 0x00fc)
+  00e3: NeutralValue = 1.0
+  00ee: FlashingValue = 0.0
+  00f9: goto 0x0140
+  00fc: case 3: (next 0x013d)
+  0101: NeutralValue = 0.0
+  010c: FlashingValue = 0.0
+  0117: Opacity = TnObjectiveMarkerTypeCarriedObjective.GetPulse(Owner.WorldInfo.TimeSeconds)
+  013a: goto 0x0140
+  013d: default:
+  0140: self.MarkerSetup.MatInst.SetScalarParameterValue('Neutral', NeutralValue, )
+  016d: self.MarkerSetup.MatInst.SetScalarParameterValue('Flashing', FlashingValue, )
+  019a: self.MarkerSetup.MatInst.SetScalarParameterValue('PingOpacity', Opacity, )
+  01c7: self.MarkerSetup.LabelColor = ((NeutralValue == cast3f(1)) ? self.FriendlyLabelColor : self.EnemyLabelColor)
+  01f1: (self.MarkerSetup.LabelColor.A *= Opacity)
+  0213: return nothing
+  0215: <eos>

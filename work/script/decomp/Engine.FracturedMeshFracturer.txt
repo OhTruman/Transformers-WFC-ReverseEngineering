@@ -1,0 +1,277 @@
+function FracturedMeshFracturer.SpawnPart  (script 27 bytes)
+  0000: ChunkIndex
+  0005: InitialVel
+  000a: InitialAngVel
+  000f: RelativeScale
+  0014: bExplosion
+  0019: nothing
+  001a: <eos>
+
+function FracturedMeshFracturer.SpawnPartMulti  (script 27 bytes)
+  0000: ChunkIndices
+  0005: InitialVel
+  000a: InitialAngVel
+  000f: RelativeScale
+  0014: bExplosion
+  0019: nothing
+  001a: <eos>
+
+function FracturedMeshFracturer.RecreatePhysState  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FracturedMeshFracturer.GetFracturedMeshPhysMaterial  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FracturedMeshFracturer.Initialize  (script 52 bytes)
+  0000: self.Owner = NewOwner
+  000b: self.FracturedStaticMeshComponent = NewMeshComponent
+  0016: self.SkinnedComponent = NewSkinnedComponent
+  0021: ResetHealth()
+  002b: FracturedMeshFracturer.ResetVisibility()
+  0031: return nothing
+  0033: <eos>
+
+function FracturedMeshFracturer.GetSkinnedComponent  (script 13 bytes)
+  0000: return self.SkinnedComponent
+  0006: return return
+  000c: <eos>
+
+function FracturedMeshFracturer.ResetHealth  (script 522 bytes)
+  0000: FracMesh = FracturedStaticMesh(self.FracturedStaticMeshComponent.StaticMesh)
+  0019: self.ChunkHealth.Length = self.FracturedStaticMeshComponent.GetNumFragments()
+  0033: I = 0
+  003a: if !((I < self.ChunkHealth.Length)) goto 0x0207
+  004a: if !(self.FracturedStaticMeshComponent.IsFragmentVisible(I)) goto 0x01fd
+  0065: if !(FracMesh.bUniformFragmentHealth) goto 0x00bb
+  0077: I[self.ChunkHealth] = cast44(obj'Core.Math'.static.FClamp((self.ChunkHealthScale * 1.0), FracMesh.FragmentMinHealth, FracMesh.FragmentMaxHealth))
+  00b8: goto 0x01fd
+  00bb: ChunkBox = self.FracturedStaticMeshComponent.GetFragmentBox(I)
+  00d9: Extent = (ChunkBox.Max - ChunkBox.Min)
+  0101: MaxArea = (Extent.X * Extent.Y)
+  0129: MaxArea = cast3f(obj'Core.Math'.static.Max(cast44(MaxArea), cast44((Extent.X * Extent.Z))))
+  0167: MaxArea = cast3f(obj'Core.Math'.static.Max(cast44(MaxArea), cast44((Extent.Y * Extent.Z))))
+  01a5: I[self.ChunkHealth] = cast44(obj'Core.Math'.static.FClamp((((self.ChunkHealthScale * FracMesh.FragmentHealthScale) * MaxArea) * 0.001), FracMesh.FragmentMinHealth, FracMesh.FragmentMaxHealth))
+  01fd: AddAdd_Int(I)
+  0204: goto 0x003a
+  0207: return nothing
+  0209: <eos>
+
+function FracturedMeshFracturer.BreakOffIsolatedIslands  (script 27 bytes)
+  0000: FragmentVis
+  0005: IgnoreFrags
+  000a: ChunkDir
+  000f: DisableCollWithPart
+  0014: bWantPhysChunks
+  0019: nothing
+  001a: <eos>
+
+function FracturedMeshFracturer.SpawnDeferredParts  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FracturedMeshFracturer.IsFracturedByDamageType  (script 79 bytes)
+  0000: if !((self.FracturedByDamageType.Length == 0)) goto 0x000e
+  000c: return true
+  000e: I = 0
+  0015: if !((I < self.FracturedByDamageType.Length)) goto 0x0046
+  0025: if !((dmgType == I[self.FracturedByDamageType])) goto 0x003c
+  003a: return true
+  003c: AddAdd_Int(I)
+  0043: goto 0x0015
+  0046: return false
+  0048: return return
+  004e: <eos>
+
+function FracturedMeshFracturer.FractureEffectIsRelevant  (script 648 bytes)
+  0000: bWantPhysChunksAndParticles = 1
+  0008: FinalMinDistance = (self.FractureCullMinDistance * self.Owner.WorldInfo.MyFractureManager.GetFSMFractureCullDistanceScale())
+  003a: FinalCullDistance = (self.FractureCullMaxDistance * self.Owner.WorldInfo.MyFractureManager.GetFSMFractureCullDistanceScale())
+  006c: if !((EffectInstigator == none)) goto 0x007c
+  0077: return true
+  0079: goto 0x0281
+  007c: if !((cast3a(self.Owner.WorldInfo.NetMode) == cast3a(1))) goto 0x00a5
+  009e: return bForceDedicated
+  00a5: if !(((cast3a(self.Owner.WorldInfo.NetMode) == cast3a(2)) && (self.Owner.WorldInfo.Game.NumPlayers > 1))) goto 0x013a
+  00ef: if !(bForceDedicated) goto 0x00fa
+  00f8: return true
+  00fa: if !((((EffectInstigator != none) && EffectInstigator.IsHumanControlled()) && EffectInstigator.IsLocallyControlled())) goto 0x0137
+  0135: return true
+  0137: goto 0x015f
+  013a: if !(((EffectInstigator != none) && EffectInstigator.IsHumanControlled())) goto 0x015f
+  015d: return true
+  015f: foreach self.Owner.LocalPlayerControllers(obj'PlayerController', P) (end 0x0225)
+  017f: if !((P.ViewTarget != none)) goto 0x0224
+  0193: if !(((P.Pawn == EffectInstigator) && (EffectInstigator != none))) goto 0x01be
+  01b8: iterpop
+  01b9: return true
+  01bb: goto 0x0224
+  01be: if !(self.Owner.CheckMaxEffectDistance(P, self.Owner.Location, FinalMinDistance)) goto 0x01ef
+  01ec: iterpop
+  01ed: return true
+  01ef: bResult = self.Owner.CheckMaxEffectDistance(P, self.Owner.Location, FinalCullDistance)
+  0221: goto 0x0225
+  0224: iternext
+  0225: iterpop
+  0226: if !(bResult) goto 0x0277
+  022f: if !(((self.Owner.WorldInfo.TimeSeconds - self.Owner.GetLastRenderTime()) < 0.5)) goto 0x026a
+  0265: return true
+  0267: goto 0x0274
+  026a: bWantPhysChunksAndParticles = 0
+  0272: return true
+  0274: goto 0x0281
+  0277: bWantPhysChunksAndParticles = 0
+  027f: return false
+  0281: return return
+  0287: <eos>
+
+function FracturedMeshFracturer.TakeDamage  (script 1760 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(((((((DamageType != none) && !DamageType.static.default.bCausesFracture) || !FracturedMeshFracturer.IsFracturedByDamageType(DamageType)) || (HitInfo.Item == self.FracturedStaticMeshComponent.GetCoreFragmentIndex())) || !self.FracturedStaticMeshComponent.IsFragmentVisible(HitInfo.Item)) || !self.FracturedStaticMeshComponent.IsFragmentDestroyable(HitInfo.Item))) goto 0x00b5
+  00b3: return nothing
+  00b5: if !((EventInstigator != none)) goto 0x00d7
+  00c0: InstigatorPawn = EventInstigator.Pawn
+  00d4: goto 0x00f6
+  00d7: if !((DamageCauser != none)) goto 0x00f6
+  00e2: InstigatorPawn = DamageCauser.Instigator
+  00f6: if !(!FracturedMeshFracturer.FractureEffectIsRelevant(false, InstigatorPawn, bWantPhysChunksAndParticles)) goto 0x010e
+  010c: return nothing
+  010e: if !((RB_LineImpulseActor(DamageCauser) != none)) goto 0x0139
+  011e: HitInfo.Item[self.ChunkHealth] = 0
+  0136: goto 0x016a
+  0139: (HitInfo.Item[self.ChunkHealth] -= cast44(self.Owner.WorldInfo.FracturedMeshWeaponDamage))
+  016a: if !((HitInfo.Item[self.ChunkHealth] <= 0)) goto 0x06dd
+  0186: FracMesh = FracturedStaticMesh(self.FracturedStaticMeshComponent.StaticMesh)
+  019f: FractureSettings = self.Owner.WorldInfo.GetWorldFractureSettings()
+  01c1: FragmentVis = self.FracturedStaticMeshComponent.GetVisibleFragments()
+  01da: TotalVisible = self.FracturedStaticMeshComponent.GetNumVisibleFragments()
+  01f3: if !((cast3a(self.Owner.Physics) == cast3a(10))) goto 0x0219
+  020c: if !((TotalVisible == 1)) goto 0x0219
+  0217: return nothing
+  0219: if !((TotalVisible == FragmentVis.Length)) goto 0x0299
+  0229: if !((self.FracturedStaticMeshComponent.LoseChunkOutsideMaterialOverride != none)) goto 0x0254
+  023d: LoseChunkOutsideMat = self.FracturedStaticMeshComponent.LoseChunkOutsideMaterialOverride
+  0251: goto 0x0268
+  0254: LoseChunkOutsideMat = FracMesh.LoseChunkOutsideMaterial
+  0268: if !((LoseChunkOutsideMat != none)) goto 0x0299
+  0273: self.FracturedStaticMeshComponent.SetMaterial(FracMesh.OutsideMaterialIndex, LoseChunkOutsideMat)
+  0299: HitInfo.Item[FragmentVis] = 0
+  02b2: ChunkDir = self.FracturedStaticMeshComponent.GetFragmentAverageExteriorNormal(HitInfo.Item)
+  02db: MomentumDir = obj'Core.Math'.static.Normal(Momentum)
+  02f1: if !(((obj'Core.Math'.static.VSize(ChunkDir) < 0.01) || ((MomentumDir dot ChunkDir) > -0.2))) goto 0x032f
+  0323: (ChunkDir += MomentumDir)
+  032f: ChunkDir.Z = cast3f(obj'Core.Math'.static.Max(cast44(ChunkDir.Z), 0))
+  0360: (ChunkDir.Z /= FracMesh.ChunkLinHorizontalScale)
+  0380: ChunkDir = obj'Core.Math'.static.Normal(ChunkDir)
+  0396: PhysChance = (FractureSettings.bEnableChanceOfPhysicsChunkOverride ? FractureSettings.ChanceOfPhysicsChunkOverride : FracMesh.NormalChanceOfPhysicsChunk)
+  03d0: if !(((((cast3a(bWantPhysChunksAndParticles) == 1) && FracMesh.bSpawnPhysicsChunks) && (obj'Core.Random'.static.FRand() < PhysChance)) && !self.FracturedStaticMeshComponent.IsNoPhysFragment(HitInfo.Item))) goto 0x0506
+  0432: PartScale = (FracMesh.NormalPhysicsChunkScaleMin + (obj'Core.Random'.static.FRand() * (FracMesh.NormalPhysicsChunkScaleMax - FracMesh.NormalPhysicsChunkScaleMin)))
+  0473: FracPart = SpawnPart(HitInfo.Item, ((ChunkDir * FracMesh.ChunkLinVel) + self.Owner.Velocity), (obj'Core.Random'.static.VRand() * FracMesh.ChunkAngVel), PartScale, false)
+  04d9: if !((FracPart != none)) goto 0x0506
+  04e4: FracPart.FracturedStaticMeshComponent.DisableRBCollisionWithSMC(self.FracturedStaticMeshComponent, true)
+  0506: if !((cast3a(bWantPhysChunksAndParticles) == 1)) goto 0x0618
+  0513: if !((self.OverrideFragmentDestroyEffects.Length > 0)) goto 0x053f
+  051f: EffectPSys = obj'Core.Random'.static.Rand(self.OverrideFragmentDestroyEffects.Length)[self.OverrideFragmentDestroyEffects]
+  053c: goto 0x0583
+  053f: if !((FracMesh.FragmentDestroyEffects.Length > 0)) goto 0x0583
+  0554: EffectPSys = obj'Core.Random'.static.Rand(FracMesh.FragmentDestroyEffects.Length)[FracMesh.FragmentDestroyEffects]
+  0583: if !(((EffectPSys != none) && (self.Owner.WorldInfo.MyFractureManager != none))) goto 0x0618
+  05ad: ChunkBox = self.FracturedStaticMeshComponent.GetFragmentBox(HitInfo.Item)
+  05d6: self.Owner.WorldInfo.MyFractureManager.SpawnChunkDestroyEffect(EffectPSys, ChunkBox, ChunkDir, FracMesh.FragmentDestroyEffectScale)
+  0618: if !(((self.FracturedStaticMeshComponent.GetCoreFragmentIndex() == -1) && !FracMesh.bFixIsolatedChunks)) goto 0x06a6
+  064b: 0[IgnoreFrags] = HitInfo.Item
+  0663: if !((FracPart != none)) goto 0x067b
+  066e: 0[NoCollParts] = FracPart
+  067b: FracturedMeshFracturer.BreakOffIsolatedIslands(FragmentVis, IgnoreFrags, ChunkDir, NoCollParts, ((cast3a(bWantPhysChunksAndParticles) == 1) ? true : false))
+  06a6: self.FracturedStaticMeshComponent.SetVisibleFragments(FragmentVis)
+  06be: if !((cast3a(self.Owner.Physics) == cast3a(10))) goto 0x06dd
+  06d7: FracturedMeshFracturer.RecreatePhysState()
+  06dd: return nothing
+  06df: <eos>
+
+function FracturedMeshFracturer.GetChunksInRadius  (script 17 bytes)
+  0000: ChunksInRadius
+  0005: Origin
+  000a: Radius
+  000f: nothing
+  0010: <eos>
+
+function FracturedMeshFracturer.TakeRadiusDamage  (script 304 bytes)
+  0000: FracturedMeshFracturer.GetChunksInRadius(ChunksInRadius, HurtOrigin, DamageRadius)
+  0015: I = 0
+  001c: if !((I < ChunksInRadius.Length)) goto 0x012d
+  002c: Dir = (I[ChunksInRadius].Location - HurtOrigin)
+  004f: Dist = obj'Core.Math'.static.VSize(Dir)
+  0065: Dir = obj'Core.Math'.static.Normal(Dir)
+  007b: if !(bFullDamage) goto 0x0092
+  0084: DamageScale = 1.0
+  008f: goto 0x00ab
+  0092: DamageScale = (1.0 - (Dist / DamageRadius))
+  00ab: if !((DamageScale > 0.0)) goto 0x0123
+  00ba: HitInfo.Item = I[ChunksInRadius].Index
+  00e1: TakeDamage((DamageScale * BaseDamage), InstigatedBy, HurtOrigin, ((DamageScale * Momentum) * Dir), DamageType, HitInfo, DamageCauser)
+  0123: AddAdd_Int(I)
+  012a: goto 0x001c
+  012d: return nothing
+  012f: <eos>
+
+function FracturedMeshFracturer.Explode  (script 456 bytes)
+  0000: FracMesh = FracturedStaticMesh(self.FracturedStaticMeshComponent.StaticMesh)
+  0019: FragmentVis = self.FracturedStaticMeshComponent.GetVisibleFragments()
+  0032: I = 0
+  0039: if !((I < FragmentVis.Length)) goto 0x0185
+  0049: if !(((cast3a(I[FragmentVis]) != 0) && (I != self.FracturedStaticMeshComponent.GetCoreFragmentIndex()))) goto 0x017b
+  007b: SpawnDir = self.FracturedStaticMeshComponent.GetFragmentAverageExteriorNormal(I)
+  0099: PartScale = (FracMesh.ExplosionPhysicsChunkScaleMin + (obj'Core.Random'.static.FRand() * (FracMesh.ExplosionPhysicsChunkScaleMax - FracMesh.ExplosionPhysicsChunkScaleMin)))
+  00da: FracPart = SpawnPart(I, (((0.5 * SpawnDir) * FracMesh.ChunkLinVel) + self.Owner.Velocity), ((0.5 * obj'Core.Random'.static.VRand()) * FracMesh.ChunkAngVel), PartScale, true)
+  0143: if !((FracPart != none)) goto 0x016d
+  014e: FracPart.FracturedStaticMeshComponent.SetRBCollidesWithChannel(12, false)
+  016d: I[FragmentVis] = 0
+  017b: AddAdd_Int(I)
+  0182: goto 0x0039
+  0185: if !((cast3a(self.Owner.Physics) == cast3a(10))) goto 0x01ad
+  019e: self.Owner.DestroyActor()
+  01aa: goto 0x01c5
+  01ad: self.FracturedStaticMeshComponent.SetVisibleFragments(FragmentVis)
+  01c5: return nothing
+  01c7: <eos>
+
+function FracturedMeshFracturer.BreakOffPartsInRadius  (script 22 bytes)
+  0000: Origin
+  0005: Radius
+  000a: RBStrength
+  000f: bWantPhysChunksAndParticles
+  0014: nothing
+  0015: <eos>
+
+function FracturedMeshFracturer.ResetVisibility  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FracturedMeshFracturer.HideOneFragment  (script 151 bytes)
+  0000: FragmentVis = self.FracturedStaticMeshComponent.GetVisibleFragments()
+  0019: I = 0
+  0020: if !((I < FragmentVis.Length)) goto 0x0094
+  0030: if !(((cast3a(I[FragmentVis]) != 0) && (I != self.FracturedStaticMeshComponent.GetCoreFragmentIndex()))) goto 0x008a
+  0062: I[FragmentVis] = 0
+  0070: self.FracturedStaticMeshComponent.SetVisibleFragments(FragmentVis)
+  0088: return nothing
+  008a: AddAdd_Int(I)
+  0091: goto 0x0020
+  0094: return nothing
+  0096: <eos>
+
+function FracturedMeshFracturer.HideFragmentsToMaximizeMemoryUsage  (script 162 bytes)
+  0000: Incr = 4
+  0008: FragmentVis = self.FracturedStaticMeshComponent.GetVisibleFragments()
+  0021: I = 0
+  0028: if !((I < FragmentVis.Length)) goto 0x0087
+  0038: if !(((cast3a(I[FragmentVis]) != 0) && (I != self.FracturedStaticMeshComponent.GetCoreFragmentIndex()))) goto 0x0078
+  006a: I[FragmentVis] = 0
+  0078: (I += Incr)
+  0084: goto 0x0028
+  0087: self.FracturedStaticMeshComponent.SetVisibleFragments(FragmentVis)
+  009f: return nothing
+  00a1: <eos>

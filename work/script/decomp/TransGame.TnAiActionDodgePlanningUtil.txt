@@ -1,0 +1,89 @@
+function TnAiActionDodgePlanningUtil.GetDodgeDirection  (script 451 bytes)
+  0000: TnAiActionDodgePlanningUtil.GetNavigationCellAnchor(P)
+  000b: if !((self._AnchorCell == none)) goto 0x0019
+  0016: return 0
+  0019: if !(obj'Core.Random'.static.RandomBool()) goto 0x00a2
+  002f: ClearLeft = TnAiActionDodgePlanningUtil.CheckDodgeAvailable(P, DodgeService, 1, DodgeTraceDistance)
+  004c: if !((ClearLeft >= 1.0)) goto 0x0082
+  005b: DodgeDistance = (DodgeTraceDistance - P.CylinderComponent.CollisionRadius)
+  007f: return 1
+  0082: ClearRight = TnAiActionDodgePlanningUtil.CheckDodgeAvailable(P, DodgeService, 2, DodgeTraceDistance)
+  009f: goto 0x0112
+  00a2: ClearRight = TnAiActionDodgePlanningUtil.CheckDodgeAvailable(P, DodgeService, 2, DodgeTraceDistance)
+  00bf: if !((ClearRight >= 1.0)) goto 0x00f5
+  00ce: DodgeDistance = (DodgeTraceDistance - P.CylinderComponent.CollisionRadius)
+  00f2: return 2
+  00f5: ClearLeft = TnAiActionDodgePlanningUtil.CheckDodgeAvailable(P, DodgeService, 1, DodgeTraceDistance)
+  0112: if !(((ClearLeft < DodgeTraceMinimumThreshold) && (ClearRight < DodgeTraceMinimumThreshold))) goto 0x0138
+  0132: return 0
+  0135: goto 0x01b9
+  0138: if !((ClearLeft > ClearRight)) goto 0x017a
+  0147: DodgeDistance = TnAiActionDodgePlanningUtil.CalcDodgeDistance(ClearLeft, DodgeTraceDistance, P.CylinderComponent.CollisionRadius)
+  0174: return 1
+  0177: goto 0x01b9
+  017a: if !((ClearRight > ClearLeft)) goto 0x01b9
+  0189: DodgeDistance = TnAiActionDodgePlanningUtil.CalcDodgeDistance(ClearRight, DodgeTraceDistance, P.CylinderComponent.CollisionRadius)
+  01b6: return 2
+  01b9: return 0
+  01bc: return return
+  01c2: <eos>
+
+function TnAiActionDodgePlanningUtil.GetNavigateDodgeDirection  (script 395 bytes)
+  0000: XYDir1 = obj'Core.Math'.static.GetXYDirection(P.Rotation, VecDir)
+  002c: DCDir1 = obj'Engine.Actor'.static.GetDoubleClickDir(XYDir1)
+  004a: obj'Core.Math'.static.GetAxes(P.Rotation, X, Y, Z)
+  0072: if !((obj'Core.Math'.static.VSize(VecDir) < (DodgeTraceDistance * DodgeTraceMinimumThreshold))) goto 0x0096
+  0093: return 0
+  0096: switch (XYDir1)
+  009d: case 0: (next 0x00cf)
+  00a2: AngleDeg = (obj'Core.Math'.static.RadianAngleBetweenNonUnitVectors(VecDir, X) * 57.2957802)
+  00cc: goto 0x016c
+  00cf: case 1: (next 0x0103)
+  00d4: AngleDeg = (obj'Core.Math'.static.RadianAngleBetweenNonUnitVectors(VecDir, -X) * 57.2957802)
+  0100: goto 0x016c
+  0103: case 2: (next 0x0135)
+  0108: AngleDeg = (obj'Core.Math'.static.RadianAngleBetweenNonUnitVectors(VecDir, Y) * 57.2957802)
+  0132: goto 0x016c
+  0135: case 3: (next 0x0169)
+  013a: AngleDeg = (obj'Core.Math'.static.RadianAngleBetweenNonUnitVectors(VecDir, -Y) * 57.2957802)
+  0166: goto 0x016c
+  0169: default:
+  016c: if !((AngleDeg > AngleThreshold)) goto 0x017e
+  017b: return 0
+  017e: return DCDir1
+  0184: return return
+  018a: <eos>
+
+function TnAiActionDodgePlanningUtil.GetNavigationCellAnchor  (script 137 bytes)
+  0000: if !(P.ValidAnchor()) goto 0x0032
+  0016: self._AnchorCell = NavigationCell(P.Anchor)
+  002f: goto 0x0086
+  0032: P.SetAnchor(P.GetBestAnchor(P, P.Location, true, ))
+  006d: self._AnchorCell = NavigationCell(P.Anchor)
+  0086: return nothing
+  0088: <eos>
+
+function TnAiActionDodgePlanningUtil.CanDodgeInDirection  (script 127 bytes)
+  0000: TnAiActionDodgePlanningUtil.GetNavigationCellAnchor(P)
+  000b: if !((self._AnchorCell == none)) goto 0x0018
+  0016: return false
+  0018: ClearPercent = TnAiActionDodgePlanningUtil.CheckDodgeAvailable(P, DodgeService, InDodgeDirection, DodgeTraceDistance)
+  0038: if !((ClearPercent < DodgeTraceMinimumThreshold)) goto 0x0049
+  0047: return false
+  0049: DodgeDistance = TnAiActionDodgePlanningUtil.CalcDodgeDistance(ClearPercent, DodgeTraceDistance, P.CylinderComponent.CollisionRadius)
+  0076: return true
+  0078: return return
+  007e: <eos>
+
+function TnAiActionDodgePlanningUtil.CheckDodgeAvailable  (script 207 bytes)
+  0000: EndLocation = (P.Location + (DodgeService.CalculateDodgeDirection(InDodgeDirection) * DodgeTraceDistance))
+  0036: self._AnchorCell.WalkLine(P.Location, EndLocation, P.CylinderComponent.CollisionRadius, WalkResultLocation)
+  0078: TracePercent = obj'Core.Math'.static.FClamp((obj'Core.Math'.static.VSize2D((WalkResultLocation - P.Location)) / DodgeTraceDistance), 0.0, 1.0)
+  00c2: return TracePercent
+  00c8: return return
+  00ce: <eos>
+
+function TnAiActionDodgePlanningUtil.CalcDodgeDistance  (script 27 bytes)
+  0000: return ((TracePercent * DodgeTraceDistance) - PawnRadius)
+  0014: return return
+  001a: <eos>

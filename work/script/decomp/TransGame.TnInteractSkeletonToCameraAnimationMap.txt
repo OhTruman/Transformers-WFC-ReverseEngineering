@@ -1,0 +1,12 @@
+function TnInteractSkeletonToCameraAnimationMap.FindCameraAnimation  (script 203 bytes)
+  0000: UserSkeleton = User.GetInteractSkeletonType()
+  0019: foreach self.Mapping(entry,) (end 0x0072)
+  0028: if !((entry.SkeletonType == UserSkeleton)) goto 0x0071
+  0042: iterpop
+  0043: return obj'Core.Random'.static.Rand(entry.CameraAnimations.Length)[entry.CameraAnimations]
+  0071: iternext
+  0072: iterpop
+  0073: LogInternal(("Error: Could not find Camera Animation mapping to skeleton type" @ cast56(UserSkeleton)), , , )
+  00c2: return none
+  00c4: return return
+  00ca: <eos>

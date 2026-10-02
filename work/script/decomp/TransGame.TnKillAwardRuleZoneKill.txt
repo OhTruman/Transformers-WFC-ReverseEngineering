@@ -1,0 +1,12 @@
+function TnKillAwardRuleZoneKill.ConditionMet  (script 131 bytes)
+  0000: KilledPawn = Killed.Pawn
+  0014: foreach KilledPawn.TouchingActors(obj'Engine.Volume', V) (end 0x0079)
+  0034: Zone = TnKingOfTheHillZoneBase(V.GetAssociatedActor())
+  0052: if !(((Zone != none) && Zone.get_IsActive())) goto 0x0078
+  0075: iterpop
+  0076: return true
+  0078: iternext
+  0079: iterpop
+  007a: return false
+  007c: return return
+  0082: <eos>

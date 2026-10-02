@@ -1,0 +1,15 @@
+function HmAnimatedMeshDestructionEffect.OnComponentMadeVisible  (script 165 bytes)
+  0000: SkeletalComponent = SkeletalMeshComponent(Component)
+  0010: Sequence = AnimNodeSequence(SkeletalComponent.FindAnimNode('TheSequence'))
+  0037: if !((SkeletalComponent.PhysicsAsset != none)) goto 0x0073
+  004b: SkeletalComponent.SetHasPhysicsAssetInstance(true)
+  005f: SkeletalComponent.InitComponentRBPhys(true)
+  0073: if !((Sequence != none)) goto 0x00a2
+  007e: Sequence.PlayAnim(Sequence.bLooping, , )
+  00a2: return nothing
+  00a4: <eos>
+
+function HmAnimatedMeshDestructionEffect.OnComponentMadeInvisible  (script 28 bytes)
+  0000: SkeletalMeshComponent(Component).SetHasPhysicsAssetInstance(false)
+  0019: return nothing
+  001b: <eos>

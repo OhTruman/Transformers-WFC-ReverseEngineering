@@ -1,0 +1,33 @@
+function TnAbilityBarrier.ServerTriggerAbility  (script 59 bytes)
+  0000: TnAbility.ServerTriggerAbility()
+  0006: if !((self.SpawnDelay == cast3f(0))) goto 0x001c
+  0013: TnAbilityBarrier.SpawnBarrier()
+  0019: goto 0x0038
+  001c: self.OwnerPawn.SetTimer(self.SpawnDelay, false, 'SpawnBarrier', self)
+  0038: return nothing
+  003a: <eos>
+
+function TnAbilityBarrier.SpawnBarrier  (script 224 bytes)
+  0000: if !(IsOwnerDead()) goto 0x000f
+  000d: return nothing
+  000f: self.Barrier = self.OwnerPawn.Spawn(obj'TnBarrierSpawnable', , , (self.OwnerPawn.Location + (self.BarrierOffset >> self.OwnerPawn.Rotation)), (self.OwnerPawn.Rotation + self.BarrierRotation), , , )
+  006e: self.BarrierBP.BarrierHealth = obj'TnValuePlusSumBuffModifier'.static.ModifyFloatSingle(self.BarrierBP.BarrierHealth, obj'TnBuffIncreaseBarrierHealth', self.OwnerPawn, )
+  00ad: self.Barrier.SetBlueprint(self.BarrierBP)
+  00c5: self.OwnerPawn.AddActorToBeDestroyedOnDeath(self.Barrier)
+  00dd: return nothing
+  00df: <eos>
+
+function TnAbilityBarrier.ForceEndAbility  (script 33 bytes)
+  0000: if !((self.Barrier != none)) goto 0x001e
+  000b: self.Barrier.ForceFadeout()
+  001e: return nothing
+  0020: <eos>
+
+function TnAbilityBarrier.ServerCanStartCooldown  (script 83 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return false
+  000d: if !(self.OwnerPawn.IsTimerActive('SpawnBarrier', self)) goto 0x002f
+  002d: return false
+  002f: return ((self.Barrier == none) || self.Barrier.bDeleteMe)
+  004c: return return
+  0052: <eos>

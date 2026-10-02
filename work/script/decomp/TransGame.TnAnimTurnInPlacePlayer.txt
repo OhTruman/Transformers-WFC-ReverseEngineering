@@ -1,0 +1,11 @@
+function TnAnimTurnInPlacePlayer.PlayTransition  (script 225 bytes)
+  0000: TransitionIndex = self.Transitions.Find('TransName',TransitionName)
+  001c: if !((TransitionIndex == -1)) goto 0x006e
+  002b: LogInternal(("TnAnimTurnInPlacePlayer: Transition not found for" @ cast57(TransitionName)), , , )
+  006c: return nothing
+  006e: AnimName = TransitionIndex[self.Transitions].Chooser.ChooseSequence(TnPawn(self.SkelComponent.Owner))
+  00ab: if !((AnimName != self.AnimSeqName)) goto 0x00c9
+  00ba: SetAnim(AnimName)
+  00c9: PlayAnim(false, self.Rate, 0.0)
+  00de: return nothing
+  00e0: <eos>

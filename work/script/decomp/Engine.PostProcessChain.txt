@@ -1,0 +1,84 @@
+function PostProcessChain.CheckForErrors  (script 176 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.Effects.Length > 0)) goto 0x00ad
+  0012: I = 0
+  0019: if !((I < (self.Effects.Length - 1))) goto 0x00ad
+  002c: if !((I[self.Effects].get_Class() == obj'UberPostProcessEffect')) goto 0x00a3
+  0048: EmitCheckMessage(0, "UberPostProcessEffect can only be placed at the end of a post process chain", , )
+  00a3: AddAdd_Int(I)
+  00aa: goto 0x0019
+  00ad: return nothing
+  00af: <eos>
+
+function PostProcessChain.FindPostProcessEffect  (script 103 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.Effects.Length)) goto 0x005e
+  0017: if !(((idx[self.Effects] != none) && (idx[self.Effects].EffectName == EffectName))) goto 0x0054
+  0048: return idx[self.Effects]
+  0054: AddAdd_Int(idx)
+  005b: goto 0x0007
+  005e: return none
+  0060: return return
+  0066: <eos>
+
+function PostProcessChain.RemoveAllEffects  (script 18 bytes)
+  0000: self.Effects.Remove(0,self.Effects.Length)
+  000d: return nothing
+  000f: return nothing
+  0011: <eos>
+
+function PostProcessChain.AddPostProcessChain  (script 75 bytes)
+  0000: I = 0
+  0007: if !((I < Chain.Effects.Length)) goto 0x0048
+  0020: AddPostProcessEffect(I[Chain.Effects])
+  003e: AddAdd_PreInt(I)
+  0045: goto 0x0007
+  0048: return nothing
+  004a: <eos>
+
+function PostProcessChain.RemovePostProcessChain  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < self.Effects.Length)) goto 0x0051
+  0017: if !(Chain.HasPostProcessEffect(I[self.Effects])) goto 0x0047
+  0038: self.Effects.Remove(I,1)
+  0044: goto 0x004e
+  0047: AddAdd_PreInt(I)
+  004e: goto 0x0007
+  0051: return nothing
+  0053: <eos>
+
+function PostProcessChain.HasPostProcessChain  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < Chain.Effects.Length)) goto 0x004f
+  0020: if !(!HasPostProcessEffect(I[Chain.Effects])) goto 0x0045
+  0043: return false
+  0045: AddAdd_PreInt(I)
+  004c: goto 0x0007
+  004f: return true
+  0051: return return
+  0057: <eos>
+
+function PostProcessChain.AddPostProcessEffect  (script 21 bytes)
+  0000: self.Effects.Length[self.Effects] = Effect
+  0012: return nothing
+  0014: <eos>
+
+function PostProcessChain.AddPostProcessEffectToFront  (script 24 bytes)
+  0000: self.Effects.Insert(0,1)
+  0008: 0[self.Effects] = Effect
+  0015: return nothing
+  0017: <eos>
+
+function PostProcessChain.RemovePostProcessEffect  (script 126 bytes)
+  0000: Index = self.Effects.Find(Effect)
+  0013: if !((-1 == Index)) goto 0x006f
+  0022: LogInternal(((("WARN:" @ "Could not find ") @ cast56(Effect)) @ " in post process chain"), 'PostProcessChain', , )
+  006c: goto 0x007b
+  006f: self.Effects.Remove(Index,1)
+  007b: return nothing
+  007d: <eos>
+
+function PostProcessChain.HasPostProcessEffect  (script 28 bytes)
+  0000: return (-1 != self.Effects.Find(Effect))
+  0015: return return
+  001b: <eos>

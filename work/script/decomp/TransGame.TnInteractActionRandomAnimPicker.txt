@@ -1,0 +1,44 @@
+function TnInteractActionRandomAnimPicker.__Constructor__TnInteractActionRandomAnimPicker_0  (script 36 bytes)
+  0000: self._InAnim = InAnim
+  000b: self._LoopAnim = LoopAnim
+  0016: self._OutAnim = OutAnim
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractActionRandomAnimPicker.InitializeAction  (script 92 bytes)
+  0000: if !((Emotes.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: self._InAnim = InAnim
+  0019: self._LoopAnim = LoopAnim
+  0024: self._OutAnim = OutAnim
+  002f: self._Emotes = Emotes
+  003a: self.Index = obj'Core.Random'.static.RandomInt(self._Emotes.Length)
+  0059: return nothing
+  005b: <eos>
+
+function TnInteractActionRandomAnimPicker.TriggerAction  (script 366 bytes)
+  0000: if !((self._Emotes.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: User = Interact.GetCurrentUser()
+  0027: if !((User == none)) goto 0x0034
+  0032: return nothing
+  0034: if !((self._Emotes.Length == 0)) goto 0x0042
+  0040: return nothing
+  0042: if !((self.Index >= self._Emotes.Length)) goto 0x0059
+  0052: self.Index = 0
+  0059: SubSet = self.Index[self._Emotes]
+  006a: AnimatorService = TnAnimatorService(User.GetService('TnAnimatorService'))
+  0091: if !(EqualEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x00a7
+  00a5: return nothing
+  00a7: TnInteractActionRandomAnimPicker.SetAnimation(self._InAnim, SubSet.InAnimation, AnimatorService.GetAnimationLength(SubSet.InAnimation))
+  00e6: TnInteractActionRandomAnimPicker.SetAnimation(self._LoopAnim, SubSet.LoopAnimation, AnimatorService.GetAnimationLength(SubSet.LoopAnimation))
+  0125: TnInteractActionRandomAnimPicker.SetAnimation(self._OutAnim, SubSet.OutAnimation, AnimatorService.GetAnimationLength(SubSet.OutAnimation))
+  0164: AddAdd_Int(self.Index)
+  016b: return nothing
+  016d: <eos>
+
+function TnInteractActionRandomAnimPicker.SetAnimation  (script 43 bytes)
+  0000: Action.Animation = AnimName
+  0014: Action.Length = Length
+  0028: return nothing
+  002a: <eos>

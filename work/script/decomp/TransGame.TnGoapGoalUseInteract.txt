@@ -1,0 +1,34 @@
+function TnGoapGoalUseInteract.set_InteractPriority  (script 14 bytes)
+  0000: self._InteractPriority = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapGoalUseInteract.Initialize  (script 50 bytes)
+  0000: Initialize(Blueprint)
+  000b: BP = TnGoapGoalUseInteractBlueprint(Blueprint)
+  001b: self._InteractPriority = BP._InteractPriority
+  002f: return nothing
+  0031: <eos>
+
+function TnGoapGoalUseInteract.PopulateGoals  (script 177 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: Action = TnAiController(self.BoundController)._ScriptedUseInteract
+  0030: if !((Action == none)) goto 0x003d
+  003b: return false
+  003d: if !((cast3a(Action._InteractPriority) != cast3a(self._InteractPriority))) goto 0x005b
+  0059: return false
+  005b: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateInteractedWith', Action)
+  007d: TnAiController(self.BoundController).AiWorldState.SetSubject(obj'TnAiWorldStateInteractedWith', Action)
+  00a8: return true
+  00aa: return return
+  00b0: <eos>
+
+function TnGoapGoalUseInteract.VerifyRunningDesiredEffects  (script 125 bytes)
+  0000: RunningAction = SeqAct_TnAiUseInteract(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateInteractedWith', RunningDesiredEffects))
+  0028: CurrentAction = SeqAct_TnAiUseInteract(TnAiController(self.BoundController).AiWorldState.GetSubject(obj'TnAiWorldStateInteractedWith'))
+  0059: if !((RunningAction != CurrentAction)) goto 0x006a
+  0068: return false
+  006a: return VerifyRunningDesiredEffects(RunningDesiredEffects)
+  0076: return return
+  007c: <eos>

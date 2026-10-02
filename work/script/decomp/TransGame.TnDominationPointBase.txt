@@ -1,0 +1,184 @@
+function TnDominationPointBase.get_NormalizedCaptureTime  (script 20 bytes)
+  0000: return (self.CurrentCaptureTime / self.CaptureTime)
+  000d: return return
+  0013: <eos>
+
+function TnDominationPointBase.get_BeingCaptured  (script 18 bytes)
+  0000: return (self.CurrentCaptureTime > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnDominationPointBase.PostBeginPlay  (script 170 bytes)
+  0000: TnGameObjective.PostBeginPlay()
+  0006: self.PointMesh.StopAnim()
+  0019: self.PointMesh.PlayAnim(self.DeactivatedLoopAnim, , true, )
+  0034: if !((cast3a(self.Role) != cast3a(3))) goto 0x0046
+  0044: return nothing
+  0046: if !(!self.WorldInfo.Game.HasRule(obj'TnGameRules_ScoreDomination')) goto 0x007d
+  006c: self.InitialState = 'Inactive'
+  007b: return nothing
+  007d: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker("", self, obj'TnObjectiveMarkerTypeDomination', )
+  00a7: return nothing
+  00a9: <eos>
+
+function TnDominationPointBase.Touch  (script 39 bytes)
+  0000: self.AreaTracker.OnTouch(Other)
+  0018: TnDominationPointBase.AdjustHud(Other, true)
+  0024: return nothing
+  0026: <eos>
+
+function TnDominationPointBase.UnTouch  (script 39 bytes)
+  0000: self.AreaTracker.OnUntouch(Other)
+  0018: TnDominationPointBase.AdjustHud(Other, false)
+  0024: return nothing
+  0026: <eos>
+
+function TnDominationPointBase.AdjustHud  (script 143 bytes)
+  0000: P = TnPlayerPawn(A)
+  0010: if !(((P == none) || (P.Controller == none))) goto 0x0033
+  0031: return nothing
+  0033: if !(Add) goto 0x0066
+  003c: TnPlayerController(P.Controller).AddHudObserver(obj'TnHudDataObserverDominationCapture', self)
+  0063: goto 0x008c
+  0066: TnPlayerController(P.Controller).RemoveHudObserver(obj'TnHudDataObserverDominationCapture')
+  008c: return nothing
+  008e: <eos>
+
+function TnDominationPointBase.Tick  (script 152 bytes)
+  0000: Tick(DeltaTime)
+  000b: (self.CapturingAnnouncementTimer -= DeltaTime)
+  0017: if !((self.CapturingAnnouncementTimer < 0.0)) goto 0x0031
+  0026: self.CapturingAnnouncementTimer = 0.0
+  0031: TnDominationPointBase.UpdateAnimState(false)
+  0038: if !((cast3a(self.Role) != cast3a(3))) goto 0x004a
+  0048: return nothing
+  004a: if !((self.AreaTracker.GetNumOccupyingActors() > 0)) goto 0x0071
+  0063: TnDominationPointBase.UpdateOccupiers(DeltaTime)
+  006e: goto 0x007c
+  0071: self.CurrentCaptureTime = 0.0
+  007c: if !((cast3a(self.DefenderTeamIndex) != 255)) goto 0x0095
+  008a: TnDominationPointBase.UpdateScoring(DeltaTime)
+  0095: return nothing
+  0097: <eos>
+
+function TnDominationPointBase.UpdateOccupiers  (script 585 bytes)
+  0000: OcuppyingAttackers = self.AreaTracker.GetActorsWithFilter(delegate.CheckNotOnDefendingTeam)
+  0022: if !((OcuppyingAttackers.Length == 0)) goto 0x0045
+  002e: self.ClaimingTeam = cast3d(255)
+  0038: self.CurrentCaptureTime = 0.0
+  0043: return nothing
+  0045: if !((cast3a(self.DefenderTeamIndex) == 255)) goto 0x00a6
+  0053: HandlingNoDefendingTeam = true
+  005b: self.DefenderTeamIndex = cast3d(((cast3a(0[OcuppyingAttackers].GetTeamNum()) == 0) ? 1 : 0))
+  0084: OcuppyingAttackers = self.AreaTracker.GetActorsWithFilter(delegate.CheckNotOnDefendingTeam)
+  00a6: OccupyingDefenders = self.AreaTracker.GetActorsWithFilter(delegate.CheckOnDefendingTeam)
+  00c8: if !((OccupyingDefenders.Length == 0)) goto 0x0181
+  00d4: if !(((!HandlingNoDefendingTeam && (self.CurrentCaptureTime == cast3f(0))) && (self.CapturingAnnouncementTimer <= 0.0))) goto 0x0135
+  00ff: BroadcastLocalizedMessage(obj'TnDominationMessage', TnDominationPointBase.TranslateMessageSwitch(((cast3a(self.DefenderTeamIndex) == 0) ? 3 : 2)), , , )
+  012a: self.CapturingAnnouncementTimer = self.CapturingAnnouncementTime
+  0135: if !((cast3a(self.ClaimingTeam) != cast3a(self.DefenderTeamIndex))) goto 0x016b
+  0148: self.CurrentCaptureTime = (DeltaTime * cast3f(OcuppyingAttackers.Length))
+  015d: self.ClaimingTeam = self.DefenderTeamIndex
+  0168: goto 0x0181
+  016b: (self.CurrentCaptureTime += (DeltaTime * cast3f(OcuppyingAttackers.Length)))
+  0181: if !((self.CurrentCaptureTime >= self.CaptureTime)) goto 0x0233
+  0190: SetTeam(cast3a(0[OcuppyingAttackers].GetTeamNum()))
+  01b1: foreach OcuppyingAttackers(A,) (end 0x022f)
+  01c0: P = TnPlayerPawn(A)
+  01d0: PRI = ((P != none) ? TnPlayerReplicationInfo(P.PlayerReplicationInfo) : none)
+  01f7: if !((PRI != none)) goto 0x022e
+  0202: PRI.AddDominationPointCapture()
+  0215: PRI.AddScore(self.PersonalScoreAmount, )
+  022e: iternext
+  022f: iterpop
+  0230: goto 0x0246
+  0233: if !(HandlingNoDefendingTeam) goto 0x0246
+  023c: self.DefenderTeamIndex = cast3d(255)
+  0246: return nothing
+  0248: <eos>
+
+function TnDominationPointBase.UpdateScoring  (script 86 bytes)
+  0000: (self.CurrentScoreTime += DeltaTime)
+  000c: if !((self.CurrentScoreTime >= self.ScoreInterval)) goto 0x0053
+  001b: TnGame(self.WorldInfo.Game).ScoreTeamObjective(cast3a(self.DefenderTeamIndex), self.ScoreAmount)
+  0048: self.CurrentScoreTime = 0.0
+  0053: return nothing
+  0055: <eos>
+
+function TnDominationPointBase.CheckOnDefendingTeam  (script 93 bytes)
+  0000: P = Pawn(A)
+  0010: return (((cast3a(A.GetTeamNum()) == cast3a(self.DefenderTeamIndex)) && (P != none)) && !P.IsDead())
+  0056: return return
+  005c: <eos>
+
+function TnDominationPointBase.CheckNotOnDefendingTeam  (script 93 bytes)
+  0000: P = Pawn(A)
+  0010: return (((cast3a(A.GetTeamNum()) != cast3a(self.DefenderTeamIndex)) && (P != none)) && !P.IsDead())
+  0056: return return
+  005c: <eos>
+
+function TnDominationPointBase.DefendingTeamChanged  (script 355 bytes)
+  0000: if !((cast3a(self.DefenderTeamIndex) == 255)) goto 0x0026
+  000e: MeshColor = 0[self.CaptureColor]
+  001b: ChangeMeshColor = true
+  0023: goto 0x00cb
+  0026: if !(self.PointMesh.IsPlayingAnim(self.DeactivatedLoopAnim)) goto 0x0095
+  0041: self.PointMesh.StopAnim()
+  0054: self.PointMesh.PlayAnim(cast3a(self.DefenderTeamIndex)[self.CaptureAnims], , true, )
+  0077: MeshColor = cast3a(self.DefenderTeamIndex)[self.CaptureColor]
+  008a: ChangeMeshColor = true
+  0092: goto 0x00cb
+  0095: self.PointMesh.StopAnim()
+  00a8: self.PointMesh.PlayAnim(self.DeactivateAnim, , , )
+  00c3: self.PlayingDeactivate = true
+  00cb: if !(ChangeMeshColor) goto 0x0102
+  00d4: foreach self.MaterialParamNames(ParamName,) (end 0x0101)
+  00e3: self.PointMesh.SetVectorParam(ParamName, MeshColor)
+  0100: iternext
+  0101: iterpop
+  0102: if !((cast3a(self.Role) != cast3a(3))) goto 0x0114
+  0112: return nothing
+  0114: self.CurrentCaptureTime = 0.0
+  011f: self.CurrentScoreTime = 0.0
+  012a: BroadcastLocalizedMessage(obj'TnDominationMessage', TnDominationPointBase.TranslateMessageSwitch(((cast3a(self.DefenderTeamIndex) == 0) ? 0 : 1)), , , )
+  0155: self.CapturingAnnouncementTimer = 0.0
+  0160: return nothing
+  0162: <eos>
+
+function TnDominationPointBase.UpdateAnimState  (script 161 bytes)
+  0000: if !((!self.PlayingDeactivate || self.PointMesh.IsPlayingAnim(self.DeactivateAnim))) goto 0x002a
+  0028: return nothing
+  002a: self.PointMesh.StopAnim()
+  003d: self.PointMesh.PlayAnim(cast3a(self.DefenderTeamIndex)[self.CaptureAnims], , true, )
+  0060: foreach self.MaterialParamNames(ParamName,) (end 0x0095)
+  006f: self.PointMesh.SetVectorParam(ParamName, cast3a(self.DefenderTeamIndex)[self.CaptureColor])
+  0094: iternext
+  0095: iterpop
+  0096: self.PlayingDeactivate = false
+  009e: return nothing
+  00a0: <eos>
+
+function TnDominationPointBase.TranslateMessageSwitch  (script 26 bytes)
+  0000: return (cast3a(MessageType) + (10 * self.PointNumber))
+  0013: return return
+  0019: <eos>
+
+function TnDominationPointBase.Inactive.Touch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDominationPointBase.Inactive.UnTouch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnDominationPointBase.Inactive.BeginState  (script 14 bytes)
+  0000: SetHidden(true)
+  000b: return nothing
+  000d: <eos>
+
+function TnDominationPointBase.CheckForErrors  (script 100 bytes)
+  0000: TnGameObjective.CheckForErrors()
+  0006: if !(((self.PointNumber < 0) || (self.PointNumber > 4))) goto 0x0061
+  001f: EmitCheckMessage(0, ("Domination point has invalid PointNumber:" @ cast53(self.PointNumber)), , )
+  0061: return nothing
+  0063: <eos>

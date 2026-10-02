@@ -1,0 +1,23 @@
+function TnBuffPickup.GetApplier  (script 13 bytes)
+  0000: return Pickuper
+  0006: return return
+  000c: <eos>
+
+function TnBuffPickup.GivenTo  (script 157 bytes)
+  0000: nothing
+  0001: if !(EqualEqual_InterfaceInterface(TnServiceProvider(ThisPawn), TnServiceProvider(none))) goto 0x001c
+  001a: return nothing
+  001c: BuffService = TnBuffService(TnServiceProvider(ThisPawn).GetService('TnBuffService'))
+  0049: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x005f
+  005d: return nothing
+  005f: BuffService.AddBuff(self.BuffClass, 0, GetApplier(ThisPawn))
+  0088: PickedUpBy(ThisPawn)
+  0097: DestroyActor()
+  009a: return nothing
+  009c: <eos>
+
+function TnBuffPickup.AnnouncePickup  (script 75 bytes)
+  0000: AnnouncePickup(Other)
+  000b: TnWorldInfo(Other.WorldInfo)._DialogEventManager.Play(TnPawn(Other), self.PickupObtainedDialog, , , , )
+  0048: return nothing
+  004a: <eos>

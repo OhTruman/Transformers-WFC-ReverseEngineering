@@ -1,0 +1,62 @@
+function TnSpawnCluster.get_Faction  (script 29 bytes)
+  0000: return 0[self.SpawnPoints].GetTeamNum()
+  0016: return return
+  001c: <eos>
+
+function TnSpawnCluster.get_CenterPoint  (script 13 bytes)
+  0000: return self._CenterPoint
+  0006: return return
+  000c: <eos>
+
+function TnSpawnCluster.GetSpawnPoint  (script 44 bytes)
+  0000: if !((self.SpawnIterator >= self.SpawnPoints.Length)) goto 0x0017
+  0010: self.SpawnIterator = 0
+  0017: return AddAdd_Int(self.SpawnIterator)[self.SpawnPoints]
+  0025: return return
+  002b: <eos>
+
+function TnSpawnCluster.PreSave  (script 24 bytes)
+  0000: if !(IsDefaultObject()) goto 0x000f
+  000d: return nothing
+  000f: TnSpawnCluster.PopulateSpawnPoints()
+  0015: return nothing
+  0017: <eos>
+
+function TnSpawnCluster.PopulateSpawnPoints  (script 318 bytes)
+  0000: GetComponentsBoundingBox(BoundingBox)
+  000f: self._CenterPoint = (BoundingBox.Min + ((BoundingBox.Max - BoundingBox.Min) / 2.0))
+  0050: foreach AllActors(obj'TnTeamPlayerStartBase', N) (end 0x00c5)
+  0067: if !(((!N.IsDefaultObject() && (N.get_Outer() == get_Outer())) && EncompassesPoint(N.Location))) goto 0x00c4
+  00b2: NewNodes.Length[NewNodes] = N
+  00c4: iternext
+  00c5: iterpop
+  00c6: if !((NewNodes.Length != self.SpawnPoints.Length)) goto 0x00df
+  00d7: MarkAsModified = true
+  00df: if !(!MarkAsModified) goto 0x011d
+  00ea: foreach NewNodes(N,) (end 0x011c)
+  00f9: if !((-1 == self.SpawnPoints.Find(N))) goto 0x011b
+  0110: MarkAsModified = true
+  0118: goto 0x011c
+  011b: iternext
+  011c: iterpop
+  011d: if !(MarkAsModified) goto 0x013b
+  0126: self.SpawnPoints = NewNodes
+  0131: MarkModified()
+  013b: return nothing
+  013d: <eos>
+
+function TnSpawnCluster.CheckForErrors  (script 236 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.SpawnPoints.Length == 0)) goto 0x0047
+  0012: EmitCheckMessage(0, "No Spawn points within spawn cluster.", , )
+  0047: SavedTeamNum = cast3d(255)
+  0051: foreach self.SpawnPoints(Point,) (end 0x00e8)
+  0060: TeamNum = Point.GetTeamNum()
+  0079: if !(((cast3a(SavedTeamNum) != 255) && (cast3a(SavedTeamNum) != cast3a(TeamNum)))) goto 0x00dc
+  009c: EmitCheckMessage(0, "Spawn points from more then one faction found", , )
+  00d9: goto 0x00e8
+  00dc: SavedTeamNum = TeamNum
+  00e7: iternext
+  00e8: iterpop
+  00e9: return nothing
+  00eb: <eos>

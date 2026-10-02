@@ -1,0 +1,11 @@
+function SeqCond_NetMode.Activated  (script 108 bytes)
+  0000: WI = GetWorldInfo()
+  0010: if !((WI == none)) goto 0x001d
+  001b: return nothing
+  001d: I = 0
+  0024: if !((I < 4)) goto 0x0069
+  0030: I[self.OutputLinks].bHasImpulse = (I == cast3a(WI.NetMode))
+  005f: AddAdd_PreInt(I)
+  0066: goto 0x0024
+  0069: return nothing
+  006b: <eos>

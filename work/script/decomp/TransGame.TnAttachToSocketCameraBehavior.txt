@@ -1,0 +1,20 @@
+function TnAttachToSocketCameraBehavior.SetActor  (script 266 bytes)
+  0000: P = TnPawn(A)
+  0010: if !((P == none)) goto 0x0071
+  001b: LogInternal((("ERROR:" @ cast56(A)) @ "is not a valid TnPawn for Attach to socket camera behavior"), , , )
+  006f: return nothing
+  0071: self.AttachMesh = P.get_RobotMeshComponent()
+  008a: if !((self.AttachMesh == none)) goto 0x0107
+  0095: LogInternal("ERROR:  Attempting to use attach to socket camera behavior on an actor with no skeletal mesh, whadaya doin?", , , )
+  0107: return nothing
+  0109: <eos>
+
+function TnAttachToSocketCameraBehavior.Update  (script 212 bytes)
+  0000: if !(!self.AttachMesh.GetSocketWorldLocationAndRotation(self.SocketName, SocketLoc, SocketRot)) goto 0x009b
+  0027: LogInternal((((("ERROR:  Could not find socket," @ cast57(self.SocketName)) @ ", on mesh,") @ cast56(self.AttachMesh)) @ "for attach to socket camera behavior."), , , )
+  0095: return Result
+  009b: Result.Location = SocketLoc
+  00b1: Result.Rotation = SocketRot
+  00c7: return Result
+  00cd: return return
+  00d3: <eos>

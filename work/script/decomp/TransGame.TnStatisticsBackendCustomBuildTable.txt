@@ -1,0 +1,49 @@
+function TnStatisticsBackendCustomBuildTable.RecordBuild  (script 622 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(((self.Capacity > 0) && (self.Builds.Length >= self.Capacity))) goto 0x002c
+  002a: return nothing
+  002c: if !((PC.PlayerReplicationInfo == none)) goto 0x0042
+  0040: return nothing
+  0042: Stat.Id = obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(PC.PlayerReplicationInfo.UniqueId)
+  007d: Character = PC.get_CurrentCharacter()
+  0096: I = 0
+  009d: if !((I < Character.WeaponTypes.Length)) goto 0x0102
+  00b8: if !((I > 0)) goto 0x00d3
+  00c3: ConcatEqual_StrStr(Weapons, ",")
+  00d3: ConcatEqual_StrStr(Weapons, cast56(I[Character.WeaponTypes]))
+  00f8: AddAdd_PreInt(I)
+  00ff: goto 0x009d
+  0102: Stat.Wep = Weapons
+  0118: I = 0
+  011f: if !((I < Character.Skills.Length)) goto 0x0184
+  013a: if !((I > 0)) goto 0x0155
+  0145: ConcatEqual_StrStr(Skills, ",")
+  0155: ConcatEqual_StrStr(Skills, cast56(I[Character.Skills]))
+  017a: AddAdd_PreInt(I)
+  0181: goto 0x011f
+  0184: Stat.Skl = Skills
+  019a: I = 0
+  01a1: if !((I < Character.Abilities.Length)) goto 0x0206
+  01bc: if !((I > 0)) goto 0x01d7
+  01c7: ConcatEqual_StrStr(Abilities, ",")
+  01d7: ConcatEqual_StrStr(Abilities, cast56(I[Character.Abilities]))
+  01fc: AddAdd_PreInt(I)
+  0203: goto 0x01a1
+  0206: Stat.Abl = Abilities
+  021c: Stat.Spec = Character.Specialty
+  023d: Stat.Chs = cast56(Character.ChassisType)
+  0260: TnStatisticsBackendCustomBuildTable.AddUniqueBuild(Stat)
+  026b: return nothing
+  026d: <eos>
+
+function TnStatisticsBackendCustomBuildTable.AddUniqueBuild  (script 75 bytes)
+  0000: I = 0
+  0007: if !((I < self.Builds.Length)) goto 0x003b
+  0017: if !((I[self.Builds] == Stat)) goto 0x0031
+  002f: return nothing
+  0031: AddAdd_PreInt(I)
+  0038: goto 0x0007
+  003b: self.Builds.AddItem(Stat)
+  0048: return nothing
+  004a: <eos>

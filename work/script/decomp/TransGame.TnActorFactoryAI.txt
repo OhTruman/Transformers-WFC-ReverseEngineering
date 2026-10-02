@@ -1,0 +1,84 @@
+function TnActorFactoryAI.GetPawnClass  (script 39 bytes)
+  0000: if !((self.AiCharacterDefinitionTemplate != none)) goto 0x001a
+  000b: return self.AiCharacterDefinitionTemplate.PawnClass
+  001a: return self.PawnClass
+  0020: return return
+  0026: <eos>
+
+function TnActorFactoryAI.CreateActorFromScript  (script 22 bytes)
+  0000: Location
+  0005: Rotation
+  000a: Scale
+  000f: Scale3D
+  0014: nothing
+  0015: <eos>
+
+function TnActorFactoryAI.GetActorBlueprint  (script 33 bytes)
+  0000: return self.AiCharacterDefinitionTemplate.AiCharacterDataResolved.ChassisType
+  001a: return return
+  0020: <eos>
+
+function TnActorFactoryAI.SpawnCharacter  (script 138 bytes)
+  0000: default=1.0
+  0009: default=vect(1,1,1)
+  001a: CharacterDefinition.RuntimeCheckForErrors()
+  002d: self.AiCharacterDefinitionTemplate = CharacterDefinition
+  0038: self.FactionTeam = FactionTeamClass
+  0043: self.PlaySpawnAnimation = PlaySpawnAnim
+  0050: self.AlertToPlayer = PlayerAlert
+  005d: self.PawnClass = PawnType
+  0068: return TnActorFactoryAI.CreateActorFromScript(Location, Rotation, Scale, Scale3D)
+  0083: return return
+  0089: <eos>
+
+function TnActorFactoryAI.CheckForErrors  (script 212 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.AiCharacterDefinitionTemplate == none)) goto 0x0056
+  0011: get_Outer().EmitCheckMessage(0, (cast56(self) @ "does not have an Ai Character Definition!"), , )
+  0056: if !(((self.FactionTeam.static.default.TeamIndex != 0) && (self.FactionTeam.static.default.TeamIndex != 1))) goto 0x00d1
+  0080: get_Outer().EmitCheckMessage(0, (cast56(self) @ "Faction is not Autobot or Decepticon, please pick one"), , )
+  00d1: return nothing
+  00d3: <eos>
+
+function TnActorFactoryAI.PostCreateActor  (script 602 bytes)
+  0000: P = TnAiPawn(NewActor)
+  0010: C = TnAiController(P.Controller)
+  0029: if !(((C == none) && P.IsPendingKill())) goto 0x004e
+  004c: return nothing
+  004e: if !(((C == none) && (P.IsDead() || P.IsDying()))) goto 0x008b
+  0089: return nothing
+  008b: if !((C == none)) goto 0x0114
+  0096: LogInternal((("Error: AI " @ cast56(P)) @ "trying to post create actor without a controller.  check the log to see if it's been unpossessed"), , , )
+  0114: WI = C.WorldInfo
+  0128: if !((none != self.DialogCharacterOverride)) goto 0x0151
+  0133: HmDialogInterface(P).SetDialogCharacter(self.DialogCharacterOverride)
+  0151: C.SetTeam(self.FactionTeam.static.default.TeamIndex)
+  0172: C.set_ShouldPlaySpawnAnimation(self.PlaySpawnAnimation)
+  018b: C.InitializeFromTemplate(self.AiCharacterDefinitionTemplate, self.StartingFormOverride)
+  01a8: if !(self.AlertToPlayer) goto 0x0241
+  01b1: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x0240)
+  01d1: if !(WI.GRI.OnSameTeam(PC, P)) goto 0x021e
+  01fa: C.SeeTeammate(PC.Pawn)
+  021b: goto 0x023f
+  021e: C.SeeEnemy(PC.Pawn)
+  023f: iternext
+  0240: iterpop
+  0241: P.DownedEnabled = self.DownedEnabled
+  0257: return nothing
+  0259: <eos>
+
+function TnActorFactoryAI.GetPreviewSkelMesh  (script 88 bytes)
+  0000: if !((self.AiCharacterDefinitionTemplate == none)) goto 0x000d
+  000b: return none
+  000d: if !((self.AiCharacterDefinitionTemplate.AiCharacterDataResolved.ChassisType == none)) goto 0x002e
+  002c: return none
+  002e: return self.AiCharacterDefinitionTemplate.AiCharacterDataResolved.ChassisType.SkelMesh
+  0051: return return
+  0057: <eos>
+
+function TnActorFactoryAI.GetCollisionHeight  (script 103 bytes)
+  0000: if !(((self.AiCharacterDefinitionTemplate == none) || (self.AiCharacterDefinitionTemplate.AiCharacterDataResolved.ChassisType == none))) goto 0x0032
+  002c: return 0.0
+  0032: return self.AiCharacterDefinitionTemplate.AiCharacterDataResolved.ChassisType.Collision.CollisionHeight
+  0060: return return
+  0066: <eos>

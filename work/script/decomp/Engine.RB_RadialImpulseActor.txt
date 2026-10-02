@@ -1,0 +1,13 @@
+function RB_RadialImpulseActor.OnToggle  (script 73 bytes)
+  0000: if !(0[inAction.InputLinks].bHasImpulse) goto 0x0046
+  001f: self.ImpulseComponent.FireImpulse(self.Location)
+  0037: AddAdd_Byte(self.ImpulseCount)
+  003e: self.bForceNetUpdate = true
+  0046: return nothing
+  0048: <eos>
+
+function RB_RadialImpulseActor.ReplicatedEvent  (script 46 bytes)
+  0000: if !((VarName == 'ImpulseCount')) goto 0x002b
+  0013: self.ImpulseComponent.FireImpulse(self.Location)
+  002b: return nothing
+  002d: <eos>

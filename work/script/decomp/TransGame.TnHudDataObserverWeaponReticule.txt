@@ -1,0 +1,8 @@
+function TnHudDataObserverWeaponReticule.CheckData  (script 140 bytes)
+  0000: if !(((PC.Pawn != none) && (TnWeapon(PC.Pawn.Weapon) != none))) goto 0x006b
+  0038: ReticuleType = TnWeapon(PC.Pawn.Weapon).GetReticuleType()
+  0068: goto 0x0073
+  006b: ReticuleType = 0
+  0073: ProcessNewValue(Movie, cast3c(ReticuleType))
+  0089: return nothing
+  008b: <eos>

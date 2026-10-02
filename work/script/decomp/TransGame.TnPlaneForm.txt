@@ -1,0 +1,437 @@
+function TnPlaneForm.get_PlaneFormBlueprint  (script 18 bytes)
+  0000: return TnPlaneFormBlueprint(self._Blueprint)
+  000b: return return
+  0011: <eos>
+
+function TnPlaneForm.set_HoverPlaneSimulation  (script 14 bytes)
+  0000: self._HoverSimulation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneForm.set_PlaneSimulation  (script 14 bytes)
+  0000: self._PlaneSimulation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneForm.get_InputState  (script 13 bytes)
+  0000: return self._InputState
+  0006: return return
+  000c: <eos>
+
+function TnPlaneForm.set_StrafeForwardBackInput  (script 23 bytes)
+  0000: self._InputState._StrafeForwardBack = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnPlaneForm.set_StrafeRightLeftInput  (script 23 bytes)
+  0000: self._InputState._StrafeRightLeft = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnPlaneForm.set_YawInput  (script 23 bytes)
+  0000: self._InputState._Yaw = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnPlaneForm.set_PitchInput  (script 23 bytes)
+  0000: self._InputState._Pitch = Value
+  0014: return nothing
+  0016: <eos>
+
+function TnPlaneForm.set_BoostingInput  (script 25 bytes)
+  0000: self._InputState._Boosting = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnPlaneForm.set_AscendingInput  (script 25 bytes)
+  0000: self._InputState._Ascending = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnPlaneForm.set_DescendingInput  (script 25 bytes)
+  0000: self._InputState._Descending = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnPlaneForm.set_RollingInput  (script 25 bytes)
+  0000: self._InputState._Rolling = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnPlaneForm.get_ViewRotation  (script 22 bytes)
+  0000: return self._InputState._ViewRotation
+  000f: return return
+  0015: <eos>
+
+function TnPlaneForm.set_ViewRotation  (script 27 bytes)
+  0000: self._InputState.set_ViewRotation(Value)
+  0018: return nothing
+  001a: <eos>
+
+function TnPlaneForm.get_IsBoosting  (script 14 bytes)
+  0000: return self._Boosting
+  0007: return return
+  000d: <eos>
+
+function TnPlaneForm.get_VehicleType  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function TnPlaneForm.get_CanSwitchWeapons  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlaneForm.get_CanRoll  (script 18 bytes)
+  0000: return CanUseSpecialMove()
+  000b: return return
+  0011: <eos>
+
+function TnPlaneForm.get_CanAnchor  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnPlaneForm.get_TimeBetweenRolls  (script 20 bytes)
+  0000: return (1.2 * self.TimeBetweenRollsModifier)
+  000d: return return
+  0013: <eos>
+
+function TnPlaneForm.get_ReturnToHoverCrashSpeed  (script 34 bytes)
+  0000: return (get_PlaneFormBlueprint().ReturnToHoverCrashSpeed * self.ReturnToHoverCrashSpeedModifier)
+  001b: return return
+  0021: <eos>
+
+function TnPlaneForm.PostConstruct  (script 34 bytes)
+  0000: TnVehicleForm.PostConstruct()
+  0006: self._DeathMotionController = TnVehicleDeathMotionController(new(self, nothing, obj'TnPlaneDeathMotionController', nothing, DeltaTime))
+  001f: return nothing
+  0021: <eos>
+
+function TnPlaneForm.OnTeleport  (script 27 bytes)
+  0000: self._InputState.set_ViewRotation(Rotation)
+  0018: return nothing
+  001a: <eos>
+
+function TnPlaneForm.OnRegisterReplicatedObjects  (script 47 bytes)
+  0000: TnVehicleForm.OnRegisterReplicatedObjects(OwningActor)
+  000b: OwningActor.RegisterReplicatedObject(self._InputState, 'PlaneInputState')
+  002c: return nothing
+  002e: <eos>
+
+function TnPlaneForm.OnUnregisterReplicatedObjects  (script 47 bytes)
+  0000: TnVehicleForm.OnUnregisterReplicatedObjects(OwningActor)
+  000b: OwningActor.UnregisterReplicatedObject(self._InputState, 'PlaneInputState')
+  002c: return nothing
+  002e: <eos>
+
+function TnPlaneForm.OnInitialize  (script 693 bytes)
+  0000: self._HoverSimulation.Initialize(self._OwnerPawn, self._RigidBody, get_PlaneFormBlueprint().HoverVehicleBlueprint)
+  0030: self._PlaneSimulation.Initialize(self._OwnerPawn, self._RigidBody, get_PlaneFormBlueprint().FlyingVehicleBlueprint)
+  0060: self._HoverSimulation._MaxLinearSpeedModifier = self.MaxHoverLinearSpeedModifier
+  0074: self._HoverSimulation._MaxAngularVelocityModifier = self.MaxHoverAngularVelocityModifier
+  0088: self._HoverSimulation._StopLinearDampingModifier = self.HoverStopLinearDampingModifier
+  009c: self._HoverSimulation._DefaultLinearDampingModifier = self.HoverDefaultLinearDampingModifier
+  00b0: self._HoverSimulation._AiMaxLinearSpeedModifier = self.HoverAiMaxLinearSpeedModifier
+  00c4: self._HoverSimulation._AiMaxLinearAccelerationModifier = self.HoverAiMaxLinearAccelerationModifier
+  00d8: self._HoverSimulation._AiMaxAngularSpeedModifier = self.HoverAiMaxAngularSpeedModifier
+  00ec: self._HoverSimulation._AiMaxAngularAccelerationModifier = self.HoverAiMaxAngularAccelerationModifier
+  0100: self._HoverSimulation._DriftDurationModifier = self.HoverDriftDurationModifier
+  0114: self._HoverSimulation._DashDurationModifier = self.HoverDashDurationModifier
+  0128: self._HoverSimulation._RollDurationModifier = self.HoverRollDurationModifier
+  013c: self._HoverSimulation._DashAcclerationModifier = self.HoverDashAcclerationModifier
+  0150: self._HoverSimulation._DashSpeedModifier = self.HoverDashSpeedModifier
+  0164: self._HoverSimulation._RollLinearSpeedModifier = self.HoverRollLinearSpeedModifier
+  0178: self._HoverSimulation._RollLinearAccelerationModifier = self.HoverRollLinearAccelerationModifier
+  018c: self._HoverSimulation._RollAngularAccelerationModifier = self.HoverRollAngularAccelerationModifier
+  01a0: self._HoverSimulation._DefaultAngularDampingModifier = self.HoverDefaultAngularDampingModifier
+  01b4: self._HoverSimulation._TurnRateModifier = self.HoverTurnRateModifier
+  01c8: self._PlaneSimulation._DefaultAngularDampingModifier = self.PlaneDefaultAngularDampingModifier
+  01dc: self._PlaneSimulation._MaxAISpeedModifier = self.PlaneMaxAISpeedModifier
+  01f0: self._PlaneSimulation._MaxAiAccelerationModifier = self.PlaneMaxAiAccelerationModifier
+  0204: self._PlaneSimulation._MaxAiTurnSpeedModifier = self.PlaneMaxAiTurnSpeedModifier
+  0218: self._PlaneSimulation._MaxAiTurnAccelerationModifier = self.PlaneMaxAiTurnAccelerationModifier
+  022c: self._PlaneSimulation._RollDurationModifier = self.PlaneRollDurationModifier
+  0240: self._PlaneSimulation._MaxAccelerationModifier = self.PlaneMaxAccelerationModifier
+  0254: self._PlaneSimulation._MaxSpeedModifier = self.PlaneMaxSpeedModifier
+  0268: self._PlaneSimulation._RollAngularAccelerationModifier = self.PlaneRollAngularAccelerationModifier
+  027c: self._PlaneSimulation._RollAngularSpeedModifier = self.PlaneRollAngularSpeedModifier
+  0290: self._PlaneSimulation._DragCoefficientModifier = self.PlaneDragCoefficientModifier
+  02a4: GotoState('Inactive', , , )
+  02b2: return nothing
+  02b4: <eos>
+
+function TnPlaneForm.OnActivate  (script 83 bytes)
+  0000: TnVehicleForm.OnActivate()
+  0006: self._OwnerPawn.bIsFlying = true
+  0017: if !(self._InputState._Boosting) goto 0x003a
+  0029: GotoState('Flying', , , )
+  0037: goto 0x0048
+  003a: GotoState('Hovering', , , )
+  0048: self._IsDamaged = false
+  0050: return nothing
+  0052: <eos>
+
+function TnPlaneForm.OnDeactivate  (script 87 bytes)
+  0000: TnVehicleForm.OnDeactivate()
+  0006: self._OwnerPawn.bIsFlying = false
+  0017: if !(self._IsDamaged) goto 0x0046
+  0020: self._FxPlayer.Stop(get_PlaneFormBlueprint().DamagedFX)
+  0046: GotoState('Inactive', , , )
+  0054: return nothing
+  0056: <eos>
+
+function TnPlaneForm.OnUpdate  (script 304 bytes)
+  0000: TnVehicleForm.OnUpdate(DeltaTime)
+  000b: if !((cast3a(self._OwnerPawn.Role) >= cast3a(2))) goto 0x003b
+  0024: self._OwnerPawn.SetBase(none, , , )
+  003b: self._InputState.Update()
+  004e: UpdateFx()
+  0058: if !(((self._IsDead || (get_PlaneFormBlueprint() == none)) || (cast3a(self._OwnerPawn.Physics) != cast3a(10)))) goto 0x0090
+  008e: return nothing
+  0090: if !((AIController(self._OwnerPawn.Controller) == none)) goto 0x00c2
+  00a9: OnUpdatePlayer(self._PhysicsDeltaTime, get_ViewRotation())
+  00c2: if !((!self._IsDamaged && (self._OwnerPawn.GetNormalizedHealth() <= get_PlaneFormBlueprint().DamagedThreshold))) goto 0x012d
+  00fa: self._FxPlayer.Play(get_PlaneFormBlueprint().DamagedFX)
+  0125: self._IsDamaged = true
+  012d: return nothing
+  012f: <eos>
+
+function TnPlaneForm.UpdateAi  (script 45 bytes)
+  0000: if !(self._IsDead) goto 0x000b
+  0009: return nothing
+  000b: OnUpdateAi(self._PhysicsDeltaTime, DesiredLocation, DesiredFacingRotation, StopAtTargetLocation)
+  002a: return nothing
+  002c: <eos>
+
+function TnPlaneForm.OnUpdatePlayer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlaneForm.OnUpdateAi  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlaneForm.UpdateFx  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlaneForm.Inactive.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlaneForm.Hovering.BeginState  (script 60 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: self._HoverSimulation.Activate()
+  001e: self._HoverSimulation.Drift()
+  0031: self._Boosting = false
+  0039: return nothing
+  003b: <eos>
+
+function TnPlaneForm.Hovering.EndState  (script 20 bytes)
+  0000: EndState(NextStateName)
+  000b: StopHoverFx()
+  0011: return nothing
+  0013: <eos>
+
+function TnPlaneForm.Hovering.OnUpdateAi  (script 209 bytes)
+  0000: UpdateBoosting()
+  0006: if !((self._InputState._Rolling && (obj'Core.Math'.static.Abs(self._InputState._StrafeRightLeft) > 0.5))) goto 0x00a6
+  003d: self._HoverSimulation.Roll(obj'Core.Math'.static.MakeVector(0.0, obj'Core.Math'.static.Sign(self._InputState._StrafeRightLeft), 0.0))
+  008e: get_VehicleAudioComponent().PlayRollSound()
+  00a6: self._HoverSimulation.UpdateFromLocationAndRotation(DeltaTime, DesiredLocation, DesiredFacingRotation, StopAtTargetLocation)
+  00ce: return nothing
+  00d0: <eos>
+
+function TnPlaneForm.Hovering.OnUpdatePlayer  (script 89 bytes)
+  0000: UpdateBoosting()
+  0006: UpdateDashing()
+  000c: UpdateRolling(DeltaTime)
+  0017: UpdateSounds()
+  001d: self._HoverSimulation.Update(DeltaTime, self._InputState._StrafeForwardBack, self._InputState._StrafeRightLeft, DesiredRotation)
+  0056: return nothing
+  0058: <eos>
+
+function TnPlaneForm.Hovering.PlayHoverFx  (script 71 bytes)
+  0000: self._HoverFx = self._FxPlayer.Play(get_PlaneFormBlueprint().HoverFX)
+  002c: get_VehicleAudioComponent().PlayBoosterSound()
+  0044: return nothing
+  0046: <eos>
+
+function TnPlaneForm.Hovering.StopHoverFx  (script 73 bytes)
+  0000: self._FxPlayer.Stop(get_PlaneFormBlueprint().HoverFX)
+  0026: get_VehicleAudioComponent().StopBoosterSound()
+  003e: self._HoverFx.Length = 0
+  0046: return nothing
+  0048: <eos>
+
+function TnPlaneForm.Hovering.UpdateFx  (script 430 bytes)
+  0000: if !((!get_FxAllowed() && (self._HoverFx.Length > 0))) goto 0x0023
+  001d: StopHoverFx()
+  0023: if !((get_FxAllowed() && (self._HoverFx.Length == 0))) goto 0x0044
+  003e: PlayHoverFx()
+  0044: Params = get_PlaneFormBlueprint().HoverFX
+  005d: self._SmoothLocalLinearAcceleration = obj'Core.Math'.static.VLerp(self._SmoothLocalLinearAcceleration, self._RigidBody.get_LocalLinearAcceleration(), 0.3)
+  0094: self._SmoothLocalAngularAcceleration = obj'Core.Math'.static.VLerp(self._SmoothLocalAngularAcceleration, self._RigidBody.get_LocalAngularAcceleration(), 0.3)
+  00cb: LocalGravity = self._RigidBody.RotateToLocalSpace(self._RigidBody.get_Gravity())
+  00f9: I = 0
+  0100: if !((I < self._HoverFx.Length)) goto 0x018e
+  0110: FxAmount = CalculateBoosterFxAmount(I[Params].Socket, LocalGravity)
+  0137: LargestContribution = obj'Core.Math'.static.FMax(obj'Core.Math'.static.VSize(FxAmount), LargestContribution)
+  015d: I[self._HoverFx].SetVectorParameter('Size', FxAmount)
+  0184: AddAdd_PreInt(I)
+  018b: goto 0x0100
+  018e: get_VehicleAudioComponent().set_BoosterAmount(LargestContribution)
+  01ab: return nothing
+  01ad: <eos>
+
+function TnPlaneForm.Hovering.CalculateBoosterFxAmount  (script 327 bytes)
+  0000: Socket = get_VehicleMeshComponent().GetSocketByName(SocketName)
+  0023: if !((Socket == none)) goto 0x003c
+  002e: return vect(0,0,0)
+  003c: LocalLocation = self._RigidBody.TransformToLocalSpace(get_VehicleMeshComponent().GetSocketWorldLocation(SocketName))
+  0073: LocalDirection = self._RigidBody.RotateToLocalSpace(-cast39(get_VehicleMeshComponent().GetSocketWorldRotation(SocketName)))
+  00ae: LocalScale = Socket.RelativeScale
+  00c2: LinearContribution = obj'HoverPhysics'.static.CalculateThrusterLinearContribution(LocalDirection, LocalGravity, self._SmoothLocalLinearAcceleration, 3000.0)
+  00ef: AngularContribution = obj'HoverPhysics'.static.CalculateThrusterAngularContribution(LocalLocation, LocalDirection, self._SmoothLocalAngularAcceleration, 6.0)
+  011c: return (obj'Core.Math'.static.FMin(1.0, (LinearContribution + AngularContribution)) * LocalScale)
+  0140: return return
+  0146: <eos>
+
+function TnPlaneForm.Hovering.UpdateBoosting  (script 94 bytes)
+  0000: if !(((self._InputState._Boosting && !self._HoverSimulation.get_IsDrifting()) || ((self._OwnerPawn != none) && self._OwnerPawn._ForceJetBoostInput))) goto 0x005b
+  004d: GotoState('Flying', , , )
+  005b: return nothing
+  005d: <eos>
+
+function TnPlaneForm.Hovering.UpdateDashing  (script 277 bytes)
+  0000: if !(self._InputState._Ascending) goto 0x0060
+  0012: self._HoverSimulation.Dash(vect(0,0,1))
+  0032: if !(!self.IsAscending) goto 0x005d
+  003d: get_VehicleAudioComponent().PlayAscendSound()
+  0055: self.IsAscending = true
+  005d: goto 0x0089
+  0060: if !(self.IsAscending) goto 0x0089
+  0069: get_VehicleAudioComponent().StopAscendSound()
+  0081: self.IsAscending = false
+  0089: if !(self._InputState._Descending) goto 0x00e9
+  009b: self._HoverSimulation.Dash(vect(0,0,-1))
+  00bb: if !(!self.IsDescending) goto 0x00e6
+  00c6: get_VehicleAudioComponent().PlayDescendSound()
+  00de: self.IsDescending = true
+  00e6: goto 0x0112
+  00e9: if !(self.IsDescending) goto 0x0112
+  00f2: get_VehicleAudioComponent().StopDescendSound()
+  010a: self.IsDescending = false
+  0112: return nothing
+  0114: <eos>
+
+function TnPlaneForm.Hovering.UpdateRolling  (script 230 bytes)
+  0000: if !(!CanUseSpecialMove()) goto 0x0011
+  000f: return nothing
+  0011: if !(!self._InputState._Rolling) goto 0x0027
+  0025: return nothing
+  0027: if !((obj'Core.Math'.static.Abs(self._InputState._StrafeRightLeft) < 0.5)) goto 0x004c
+  004a: return nothing
+  004c: self._HoverSimulation.Roll(obj'Core.Math'.static.MakeVector(0.0, obj'Core.Math'.static.Sign(self._InputState._StrafeRightLeft), 0.0))
+  009d: StartSpecialMoveCooldown(TnPlaneForm.get_TimeBetweenRolls())
+  00ad: get_VehicleAudioComponent().PlayRollSound()
+  00c5: PlayForceFeedbackEvent(get_PlaneFormBlueprint().RollForceFeedback, )
+  00e3: return nothing
+  00e5: <eos>
+
+function TnPlaneForm.Hovering.UpdateSounds  (script 123 bytes)
+  0000: if !((self._InputState._StrafeForwardBack > 0.01)) goto 0x0031
+  0018: get_VehicleAudioComponent()._EngineLoadState = 1
+  002e: goto 0x0078
+  0031: if !((self._InputState._StrafeForwardBack < -0.01)) goto 0x0062
+  0049: get_VehicleAudioComponent()._EngineLoadState = 2
+  005f: goto 0x0078
+  0062: get_VehicleAudioComponent()._EngineLoadState = 0
+  0078: return nothing
+  007a: <eos>
+
+function TnPlaneForm.Flying.BeginState  (script 41 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: self._PlaneSimulation.Reset()
+  001e: self._Boosting = true
+  0026: return nothing
+  0028: <eos>
+
+function TnPlaneForm.Flying.EndState  (script 20 bytes)
+  0000: EndState(NextStateName)
+  000b: StopBoostFx()
+  0011: return nothing
+  0013: <eos>
+
+function TnPlaneForm.Flying.OnUpdatePlayer  (script 77 bytes)
+  0000: UpdateBoosting()
+  0006: UpdateRolling(DeltaTime)
+  0011: self._PlaneSimulation.Update(DeltaTime, DesiredRotation, self._InputState._Yaw, self._InputState._Pitch)
+  004a: return nothing
+  004c: <eos>
+
+function TnPlaneForm.Flying.OnUpdateAi  (script 49 bytes)
+  0000: UpdateBoosting()
+  0006: self._PlaneSimulation.UpdateFromLocationAndRotation(DeltaTime, DesiredLocation, DesiredRotation, StopAtTargetLocation)
+  002e: return nothing
+  0030: <eos>
+
+function TnPlaneForm.Flying.OnRigidBodyCollision  (script 109 bytes)
+  0000: TnVehicleForm.OnRigidBodyCollision(RigidCollisionData, HitActor)
+  0010: if !((TnAiController(self._OwnerPawn.Controller) != none)) goto 0x002b
+  0029: return nothing
+  002b: if !(((RigidCollisionData.ContactSpeed > TnPlaneForm.get_ReturnToHoverCrashSpeed()) && !self._OwnerPawn._ForceJetBoostInput)) goto 0x006a
+  005c: GotoState('Hovering', , , )
+  006a: return nothing
+  006c: <eos>
+
+function TnPlaneForm.Flying.UpdateFx  (script 71 bytes)
+  0000: if !((!get_FxAllowed() && (self._BoostFx.Length > 0))) goto 0x0023
+  001d: StopBoostFx()
+  0023: if !((get_FxAllowed() && (self._BoostFx.Length == 0))) goto 0x0044
+  003e: PlayBoostFx()
+  0044: return nothing
+  0046: <eos>
+
+function TnPlaneForm.Flying.PlayBoostFx  (script 66 bytes)
+  0000: self._BoostFx = self._FxPlayer.Play(self._Blueprint.BoostFx)
+  0027: get_VehicleAudioComponent().PlayBoostSound()
+  003f: return nothing
+  0041: <eos>
+
+function TnPlaneForm.Flying.StopBoostFx  (script 68 bytes)
+  0000: self._FxPlayer.Stop(self._Blueprint.BoostFx)
+  0021: get_VehicleAudioComponent().StopBoostSound()
+  0039: self._BoostFx.Length = 0
+  0041: return nothing
+  0043: <eos>
+
+function TnPlaneForm.Flying.UpdateBoosting  (script 72 bytes)
+  0000: if !((!self._InputState._Boosting && ((self._OwnerPawn == none) || !self._OwnerPawn._ForceJetBoostInput))) goto 0x0045
+  0037: GotoState('Hovering', , , )
+  0045: return nothing
+  0047: <eos>
+
+function TnPlaneForm.Flying.UpdateRolling  (script 230 bytes)
+  0000: if !(!CanUseSpecialMove()) goto 0x0011
+  000f: return nothing
+  0011: if !(!self._InputState._Rolling) goto 0x0027
+  0025: return nothing
+  0027: if !((obj'Core.Math'.static.Abs(self._InputState._StrafeRightLeft) < 0.5)) goto 0x004c
+  004a: return nothing
+  004c: self._PlaneSimulation.Roll(obj'Core.Math'.static.MakeVector(0.0, obj'Core.Math'.static.Sign(self._InputState._StrafeRightLeft), 0.0))
+  009d: StartSpecialMoveCooldown(TnPlaneForm.get_TimeBetweenRolls())
+  00ad: get_VehicleAudioComponent().PlayRollSound()
+  00c5: PlayForceFeedbackEvent(get_PlaneFormBlueprint().RollForceFeedback, )
+  00e3: return nothing
+  00e5: <eos>
+
+function TnPlaneForm.Flying.OnDisplayDebug  (script 232 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: ScreenCenter = obj'Core.Math'.static.MakeVector2D((Canvas.ClipX * 0.5), (Canvas.ClipY * 0.5))
+  0057: Canvas.SetPos((ScreenCenter.X - cast3f(100)), (ScreenCenter.Y + cast3f(200)))
+  0096: Canvas.DrawTextNormal((("ForwardSpeed: " $ cast53(cast44((self._RigidBody.get_ForwardSpeed() * 0.0223694)))) $ " MPH"), , , )
+  00e5: return nothing
+  00e7: <eos>

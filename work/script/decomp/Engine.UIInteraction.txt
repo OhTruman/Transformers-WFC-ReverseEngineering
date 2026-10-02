@@ -1,0 +1,100 @@
+function UIInteraction.GetPlayerCount  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIInteraction.GetPlayerIndex  (script 7 bytes)
+  0000: ControllerId
+  0005: nothing
+  0006: <eos>
+
+function UIInteraction.GetPlayerControllerId  (script 7 bytes)
+  0000: PlayerIndex
+  0005: nothing
+  0006: <eos>
+
+function UIInteraction.GetDataStoreClient  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function UIInteraction.GetLocalPlayer  (script 143 bytes)
+  0000: UIController = obj'UIRoot'.static.GetCurrentUIController()
+  0019: if !((((UIController != none) && (PlayerIndex >= 0)) && (PlayerIndex < UIController.get_Outer().get_Outer().GamePlayers.Length))) goto 0x0082
+  005a: Result = PlayerIndex[UIController.get_Outer().get_Outer().GamePlayers]
+  0082: return Result
+  0088: return return
+  008e: <eos>
+
+function UIInteraction.NotifyPlayerAdded  (script 71 bytes)
+  0000: if !(((PlayerIndex >= 0) && (PlayerIndex < 4))) goto 0x0044
+  0019: Empty.CurrentRepeatKey = 'None'
+  0033: PlayerIndex[self.AxisInputEmulation] = Empty
+  0044: return nothing
+  0046: <eos>
+
+function UIInteraction.NotifyPlayerRemoved  (script 283 bytes)
+  0000: if !(((PlayerIndex >= 0) && (PlayerIndex < 4))) goto 0x0118
+  0019: PlayerCount = UIInteraction.GetPlayerCount()
+  0025: assert((PlayerCount < 4))
+  0032: I = PlayerIndex
+  003d: if !((I < PlayerCount)) goto 0x00ed
+  004c: NextPlayerIndex = (I + 1)
+  005a: I[self.AxisInputEmulation].NextRepeatTime = NextPlayerIndex[self.AxisInputEmulation].NextRepeatTime
+  0087: I[self.AxisInputEmulation].CurrentRepeatKey = NextPlayerIndex[self.AxisInputEmulation].CurrentRepeatKey
+  00b4: I[self.AxisInputEmulation].bEnabled = NextPlayerIndex[self.AxisInputEmulation].bEnabled
+  00e3: AddAdd_Int(I)
+  00ea: goto 0x003d
+  00ed: Empty.CurrentRepeatKey = 'None'
+  0107: PlayerCount[self.AxisInputEmulation] = Empty
+  0118: return nothing
+  011a: <eos>
+
+function UIInteraction.SetMousePosition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function UIInteraction.GetLoginStatus  (script 145 bytes)
+  0000: Result = 0
+  0008: if !((ControllerId != -1)) goto 0x0084
+  0017: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0030: if !((OnlineSub != none)) goto 0x0084
+  003b: PlayerInterface = OnlineSub.PlayerInterface
+  004f: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0084
+  0063: Result = PlayerInterface.GetLoginStatus(cast3d(ControllerId))
+  0084: return Result
+  008a: return return
+  0090: <eos>
+
+function UIInteraction.HasLinkConnection  (script 117 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0067
+  0024: SystemInterface = OnlineSub.SystemInterface
+  0038: if !(NotEqual_InterfaceInterface(SystemInterface, OnlineSystemInterface(none))) goto 0x0067
+  004c: bResult = SystemInterface.HasLinkConnection()
+  0067: return bResult
+  006e: return return
+  0074: <eos>
+
+function UIInteraction.IsLoggedIn  (script 87 bytes)
+  0000: nothing
+  0001: LoginStatus = GetLoginStatus(ControllerId)
+  0016: bResult = ((cast3a(LoginStatus) == cast3a(2)) || ((cast3a(LoginStatus) == cast3a(1)) && !bRequireOnlineLogin))
+  0049: return bResult
+  0050: return return
+  0056: <eos>
+
+function UIInteraction.CanPlayOnline  (script 138 bytes)
+  0000: Result = 0
+  0008: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0021: if !((OnlineSub != none)) goto 0x0075
+  002c: PlayerInterface = OnlineSub.PlayerInterface
+  0040: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0075
+  0054: Result = PlayerInterface.CanPlayOnline(cast3d(ControllerId))
+  0075: return (cast3a(Result) != cast3a(0))
+  0083: return return
+  0089: <eos>
+
+function UIInteraction.NotifyGameSessionEnded  (script 33 bytes)
+  0000: if !((self.DataStoreManager != none)) goto 0x001e
+  000b: self.DataStoreManager.NotifyGameSessionEnded()
+  001e: return nothing
+  0020: <eos>

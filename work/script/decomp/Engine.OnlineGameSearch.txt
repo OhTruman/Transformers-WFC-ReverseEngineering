@@ -1,0 +1,28 @@
+function OnlineGameSearch.SetSkillOverride  (script 85 bytes)
+  0000: self.ManualSkillOverride.LeaderboardId = LeaderboardId
+  0016: self.ManualSkillOverride.Players = Players
+  002c: self.ManualSkillOverride.Mus.Length = 0
+  003f: self.ManualSkillOverride.Sigmas.Length = 0
+  0052: return nothing
+  0054: <eos>
+
+function OnlineGameSearch.SortSearchResults  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineGameSearch.DumpContextsAndProperties  (script 391 bytes)
+  0000: LogInternal("Search contexts:", 'DevOnline', , )
+  001f: foreach self.LocalizedSettings(Context,) (end 0x00db)
+  002e: if !((IsWildcardStringSetting(Context.Id) == false)) goto 0x0099
+  004e: LogInternal(((("0x" $ ToHex(Context.Id)) $ " = ") $ cast53(Context.ValueIndex)), 'DevOnline', , )
+  0096: goto 0x00da
+  0099: LogInternal(("Using wildcard for 0x%" $ ToHex(Context.Id)), 'DevOnline', , )
+  00da: iternext
+  00db: iterpop
+  00dc: LogInternal("Search properties:", 'DevOnline', , )
+  00fd: foreach self.Properties(Prop,) (end 0x0183)
+  010c: LogInternal(((((("0x" $ ToHex(Prop.PropertyId)) $ " (") $ cast52(Prop.Data.Type)) $ ") = ") $ GetSettingsDataAsString(Prop.Data)), 'DevOnline', , )
+  0182: iternext
+  0183: iterpop
+  0184: return nothing
+  0186: <eos>

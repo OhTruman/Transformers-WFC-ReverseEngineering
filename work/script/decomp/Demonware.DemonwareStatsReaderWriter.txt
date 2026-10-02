@@ -1,0 +1,69 @@
+function DemonwareStatsReaderWriter.OnReadComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareStatsReaderWriter.AddReadCompleteDelegate  (script 39 bytes)
+  0000: if !((self.ReadCompleteDelegates.Find(ReadCompleteDelegate) == -1)) goto 0x0024
+  0017: self.ReadCompleteDelegates.AddItem(ReadCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareStatsReaderWriter.ClearReadCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadCompleteDelegates.Find(ReadCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareStatsReaderWriter.OnFlushComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareStatsReaderWriter.AddFlushCompleteDelegate  (script 39 bytes)
+  0000: if !((self.FlushCompleteDelegates.Find(FlushCompleteDelegate) == -1)) goto 0x0024
+  0017: self.FlushCompleteDelegates.AddItem(FlushCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareStatsReaderWriter.ClearFlushCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.FlushCompleteDelegates.Find(FlushCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.FlushCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareStatsReaderWriter.WriteOnlineStats  (script 12 bytes)
+  0000: Player
+  0005: StatsWrite
+  000a: nothing
+  000b: <eos>
+
+function DemonwareStatsReaderWriter.FlushOnlineStats  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function DemonwareStatsReaderWriter.ReadOnlineStats  (script 12 bytes)
+  0000: Players
+  0005: StatsRead
+  000a: nothing
+  000b: <eos>
+
+function DemonwareStatsReaderWriter.ReadOnlineStatsForFriends  (script 12 bytes)
+  0000: StatsRead
+  0005: Friends
+  000a: nothing
+  000b: <eos>
+
+function DemonwareStatsReaderWriter.ReadOnlineStatsByRank  (script 17 bytes)
+  0000: StatsRead
+  0005: StartIndex
+  000a: NumToRead
+  000f: nothing
+  0010: <eos>
+
+function DemonwareStatsReaderWriter.ReadOnlineStatsByRankAroundPlayer  (script 12 bytes)
+  0000: StatsRead
+  0005: NumRows
+  000a: nothing
+  000b: <eos>

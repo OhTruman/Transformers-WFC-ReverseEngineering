@@ -1,0 +1,22 @@
+function TnDisableTransformingVolume.Touch  (script 169 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: P = TnPawn(Other)
+  002a: if !(((P == none) || (cast3a(P.GetRole()) != cast3a(3)))) goto 0x0057
+  0055: return nothing
+  0057: P.DisableTransforming()
+  006a: P.DisableJumping()
+  007d: if !(P.get_IsInRobotForm()) goto 0x00a6
+  0093: P.DisableAbilities()
+  00a6: return nothing
+  00a8: <eos>
+
+function TnDisableTransformingVolume.UnTouch  (script 132 bytes)
+  0000: UnTouch(Other)
+  000b: P = TnPawn(Other)
+  001b: if !(((P == none) || (cast3a(P.GetRole()) != cast3a(3)))) goto 0x0048
+  0046: return nothing
+  0048: P.EnableTransforming()
+  005b: P.EnableJumping()
+  006e: P.EnableAbilities()
+  0081: return nothing
+  0083: <eos>

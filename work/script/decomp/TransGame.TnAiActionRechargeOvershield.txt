@@ -1,0 +1,21 @@
+function TnAiActionRechargeOvershield.OnInitialize  (script 30 bytes)
+  0000: TnAiActionPlayAnimation.OnInitialize(Blueprint)
+  000b: self._RechargeBlueprint = TnAiActionRechargeOvershieldBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionRechargeOvershield.OnSetUpConditions  (script 141 bytes)
+  0000: if !((cast3a(cast3d(self._TransformerController.AiWorldState.GetIntValue(obj'TnAiWorldStateHealthStatus'))) == cast3a(0))) goto 0x0030
+  002e: return false
+  0030: if !(((self._TransformerPawn.WorldInfo.TimeSeconds - self._TransformerPawn._HealthMonitor._TimeWhenWasLastHealthy) < self._RechargeBlueprint.DelayTillRecharge)) goto 0x0075
+  0073: return false
+  0075: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0086: return return
+  008c: <eos>
+
+function TnAiActionRechargeOvershield.OnFinish  (script 82 bytes)
+  0000: TnAiActionPlayAnimation.OnFinish(CurrentState)
+  000b: self._TransformerPawn.SetHealth(self._TransformerPawn.HealthMax)
+  002c: self._TransformerController.AiWorldState.SetIntValue(obj'TnAiWorldStateHealthStatus', 0, )
+  004f: return nothing
+  0051: <eos>

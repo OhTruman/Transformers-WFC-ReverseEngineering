@@ -1,0 +1,11 @@
+function TnTacticalPathNodeEvaluatorHotSpot.Score  (script 45 bytes)
+  0000: return (IsFactionHotSpot(Tactical, cast3a(SearcherTeamNum)) ? 1.0 : 0.0)
+  0026: return return
+  002c: <eos>
+
+function TnTacticalPathNodeEvaluatorHotSpot.IsFactionHotSpot  (script 96 bytes)
+  0000: if !((TeamIndex < 0)) goto 0x000d
+  000b: return false
+  000d: return (Tactical.get_IsHotSpot() && (Tactical.get_HotSpotAllFactions() || (cast3a(Tactical._HotSpotFaction) == cast3a(cast3d(TeamIndex)))))
+  0059: return return
+  005f: <eos>

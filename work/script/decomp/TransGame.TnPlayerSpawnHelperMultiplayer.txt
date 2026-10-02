@@ -1,0 +1,19 @@
+function TnPlayerSpawnHelperMultiplayer.CheckReadySpawn  (script 86 bytes)
+  0000: if !(!PC.CanRestartPlayer()) goto 0x001a
+  0018: return false
+  001a: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0033: if !(!PRI.HasSelectedCharacter()) goto 0x004d
+  004b: return false
+  004d: return true
+  004f: return return
+  0055: <eos>
+
+function TnPlayerSpawnHelperMultiplayer.FindSpawnPoint  (script 35 bytes)
+  0000: return (self.Game.FindInitialPlayerStart(PC) != none)
+  001c: return return
+  0022: <eos>
+
+function TnPlayerSpawnHelperMultiplayer.TrySpawn  (script 32 bytes)
+  0000: return self.Game.TrySpawnPlayer(PC)
+  0019: return return
+  001f: <eos>

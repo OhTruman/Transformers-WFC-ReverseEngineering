@@ -1,0 +1,59 @@
+function TnAiActionDodge.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionDodgeBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionDodge.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._DodgeService = TnDodgeService(GetService('TnDodgeService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionDodge.OnSetUpConditions  (script 115 bytes)
+  0000: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x0018
+  0016: return false
+  0018: if !((self._DodgeService.get_IsDodging() || (self._DodgeService.get_CanDodge() == false))) goto 0x004d
+  004b: return false
+  004d: if !((TnAiActionDodge.CanDodge() == false)) goto 0x005b
+  0059: return false
+  005b: return OnSetUpConditions(ExpectedEffects, Conditions)
+  006c: return return
+  0072: <eos>
+
+function TnAiActionDodge.OnStart  (script 129 bytes)
+  0000: Direction = TnAiActionDodge.GetDodgeDirection(MaxDistance)
+  0011: if !((cast3a(Direction) == cast3a(0))) goto 0x002c
+  0021: return Fail()
+  002c: SetCharacterState((1 | 8))
+  003b: self._DodgeService.set_MaxDodgeDistance(MaxDistance)
+  0054: self._DodgeService.Dodge(Direction, )
+  006e: return OnStart(ExpectedEffects)
+  007a: return return
+  0080: <eos>
+
+function TnAiActionDodge.OnUpdate  (script 61 bytes)
+  0000: if !((self._DodgeService.get_IsDodging() == false)) goto 0x0025
+  001a: return Succeed()
+  0025: return OnUpdate(ExpectedEffects, DeltaTime)
+  0036: return return
+  003c: <eos>
+
+function TnAiActionDodge.OnFinish  (script 88 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: self._TransformerController.Pawn.Acceleration = vect(0,0,0)
+  0042: self._TransformerController.ClearDamageThreatHistory()
+  0055: return nothing
+  0057: <eos>
+
+function TnAiActionDodge.CanDodge  (script 27 bytes)
+  0000: return (cast3a(TnAiActionDodge.GetDodgeDirection(DodgeDistance)) != cast3a(0))
+  0014: return return
+  001a: <eos>
+
+function TnAiActionDodge.GetDodgeDirection  (script 70 bytes)
+  0000: return self._PlanningUtil.GetDodgeDirection(self._TransformerPawn, self._DodgeService, self._Blueprint.DodgeTraceDistance, self._Blueprint.DodgeTraceMinimumThreshold, DodgeDistance)
+  003f: return return
+  0045: <eos>

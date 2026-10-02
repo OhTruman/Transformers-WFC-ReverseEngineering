@@ -1,0 +1,597 @@
+function TnCarSimulation.get_SpeedScale  (script 13 bytes)
+  0000: return self._SpeedScale
+  0006: return return
+  000c: <eos>
+
+function TnCarSimulation.set_SpeedScale  (script 14 bytes)
+  0000: self._SpeedScale = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_SteeringScale  (script 13 bytes)
+  0000: return self._SteeringScale
+  0006: return return
+  000c: <eos>
+
+function TnCarSimulation.set_SteeringScale  (script 14 bytes)
+  0000: self._SteeringScale = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_Accelerator  (script 13 bytes)
+  0000: return self._Accelerator
+  0006: return return
+  000c: <eos>
+
+function TnCarSimulation.set_Accelerator  (script 14 bytes)
+  0000: self._Accelerator = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_Steering  (script 20 bytes)
+  0000: return (self._Steering * self._SteeringScale)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_Steering  (script 14 bytes)
+  0000: self._Steering = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollControl  (script 13 bytes)
+  0000: return self._RollControl
+  0006: return return
+  000c: <eos>
+
+function TnCarSimulation.set_RollControl  (script 14 bytes)
+  0000: self._RollControl = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_Drifting  (script 14 bytes)
+  0000: return self._Drifting
+  0007: return return
+  000d: <eos>
+
+function TnCarSimulation.set_Drifting  (script 16 bytes)
+  0000: self._Drifting = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnCarSimulation.get_WheelAssemblies  (script 13 bytes)
+  0000: return self._WheelAssemblies
+  0006: return return
+  000c: <eos>
+
+function TnCarSimulation.set_WheelAssemblies  (script 14 bytes)
+  0000: self._WheelAssemblies = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_IsOnTheGround  (script 14 bytes)
+  0000: return self._AnyWheelOnTheGround
+  0007: return return
+  000d: <eos>
+
+function TnCarSimulation.get_BoostScale  (script 89 bytes)
+  0000: return (1.0 - ((obj'Core.Math'.static.FClamp(cast39(self._Owner.Rotation).Z, TnCarSimulation.get_SineBoostScaleStartAngle(), TnCarSimulation.get_SineBoostScaleStopAngle()) - TnCarSimulation.get_SineBoostScaleStartAngle()) / (TnCarSimulation.get_SineBoostScaleStopAngle() - TnCarSimulation.get_SineBoostScaleStartAngle())))
+  0052: return return
+  0058: <eos>
+
+function TnCarSimulation.get_SlipAngle  (script 92 bytes)
+  0000: return obj'Core.Math'.static.Atan(obj'Core.Math'.static.Abs(self._RigidBody.get_LocalLinearVelocity().Y), self._RigidBody.get_LocalLinearVelocity().X)
+  0055: return return
+  005b: <eos>
+
+function TnCarSimulation.get_NormalizedJumpTimeRemaining  (script 21 bytes)
+  0000: return (self._JumpTimeRemaining / TnCarSimulation.get_JumpBoostDuration())
+  000e: return return
+  0014: <eos>
+
+function TnCarSimulation.get_MaxSpeed  (script 36 bytes)
+  0000: return ((self._SpeedScale * self._Blueprint.MaxSpeed) * self._MaxSpeedModifier)
+  001d: return return
+  0023: <eos>
+
+function TnCarSimulation.get_JumpedThisFrame  (script 21 bytes)
+  0000: return (self._JumpTimeRemaining == TnCarSimulation.get_JumpBoostDuration())
+  000e: return return
+  0014: <eos>
+
+function TnCarSimulation.get_CanRoll  (script 19 bytes)
+  0000: return (TnCarSimulation.get_RollDuration() > cast3f(0))
+  000c: return return
+  0012: <eos>
+
+function TnCarSimulation.set_SineBoostScaleStartAngleModifier  (script 14 bytes)
+  0000: self._SineBoostScaleStartAngleModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_SineBoostScaleStartAngle  (script 20 bytes)
+  0000: return (0.5 * self._SineBoostScaleStartAngleModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_SineBoostScaleStopAngleModifier  (script 14 bytes)
+  0000: self._SineBoostScaleStopAngleModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_SineBoostScaleStopAngle  (script 20 bytes)
+  0000: return (0.866 * self._SineBoostScaleStopAngleModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_JumpBoostDurationModifier  (script 14 bytes)
+  0000: self._JumpBoostDurationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_JumpBoostDuration  (script 20 bytes)
+  0000: return (0.7 * self._JumpBoostDurationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_RollDurationModifier  (script 14 bytes)
+  0000: self._RollDurationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollDuration  (script 29 bytes)
+  0000: return (self._Blueprint.RollDuration * self._RollDurationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnCarSimulation.set_DefaultLinearDampingModifier  (script 14 bytes)
+  0000: self._DefaultLinearDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_DefaultLinearDamping  (script 20 bytes)
+  0000: return (0.0 * self._DefaultLinearDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_JumpLinearVelocityModifier  (script 14 bytes)
+  0000: self._JumpLinearVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_JumpLinearVelocity  (script 30 bytes)
+  0000: return (self._Blueprint.JumpLinearVelocity * self._JumpLinearVelocityModifier)
+  0017: return return
+  001d: <eos>
+
+function TnCarSimulation.set_JumpAngularVelocityModifier  (script 14 bytes)
+  0000: self._JumpAngularVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_JumpAngularVelocity  (script 29 bytes)
+  0000: return (self._Blueprint.JumpAngularVelocity * self._JumpAngularVelocityModifier)
+  0016: return return
+  001c: <eos>
+
+function TnCarSimulation.set_RollHorizontalLinearVelocityModifier  (script 14 bytes)
+  0000: self._RollHorizontalLinearVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollHorizontalLinearVelocity  (script 20 bytes)
+  0000: return (1200.0 * self._RollHorizontalLinearVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_RollVerticalLinearVelocityModifier  (script 14 bytes)
+  0000: self._RollVerticalLinearVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollVerticalLinearVelocity  (script 20 bytes)
+  0000: return (1000.0 * self._RollVerticalLinearVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_RollAngularVelocityModifier  (script 14 bytes)
+  0000: self._RollAngularVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollAngularVelocity  (script 20 bytes)
+  0000: return (100.0 * self._RollAngularVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_TerminalVelocityModifier  (script 14 bytes)
+  0000: self._TerminalVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_TerminalVelocity  (script 20 bytes)
+  0000: return (3500.0 * self._TerminalVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_LandingTraceDistanceModifier  (script 14 bytes)
+  0000: self._LandingTraceDistanceModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_LandingTraceDistance  (script 20 bytes)
+  0000: return (1000.0 * self._LandingTraceDistanceModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_LandingVelocityModifier  (script 14 bytes)
+  0000: self._LandingVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_LandingVelocity  (script 20 bytes)
+  0000: return (2000.0 * self._LandingVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_AngularDampingModifier  (script 14 bytes)
+  0000: self._AngularDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_AngularDamping  (script 29 bytes)
+  0000: return (self._Blueprint.AngularDamping * self._AngularDampingModifier)
+  0016: return return
+  001c: <eos>
+
+function TnCarSimulation.set_MaxAccelerationModifier  (script 14 bytes)
+  0000: self._MaxAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_MaxAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.MaxAcceleration * self._MaxAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnCarSimulation.set_MaxSpeedModifier  (script 14 bytes)
+  0000: self._MaxSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.set_LowSpeedBoostScaleModifier  (script 14 bytes)
+  0000: self._LowSpeedBoostScaleModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_LowSpeedBoostScale  (script 20 bytes)
+  0000: return (8.0 * self._LowSpeedBoostScaleModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_LowSpeedBoostThresholdModifier  (script 14 bytes)
+  0000: self._LowSpeedBoostThresholdModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_LowSpeedBoostThreshold  (script 20 bytes)
+  0000: return (0.5 * self._LowSpeedBoostThresholdModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_MaxExtraAccelerationModifier  (script 14 bytes)
+  0000: self._MaxExtraAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_MaxExtraAcceleration  (script 20 bytes)
+  0000: return (5000.0 * self._MaxExtraAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_AirControlStrafeAccelerationModifier  (script 14 bytes)
+  0000: self._AirControlStrafeAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_AirControlStrafeAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.AirControlStrafeAcceleration * self._AirControlStrafeAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnCarSimulation.set_AirControlTurnAccelerationModifier  (script 14 bytes)
+  0000: self._AirControlTurnAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_AirControlTurnAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.AirControlTurnAcceleration * self._AirControlTurnAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnCarSimulation.set_PitchForwardLimitModifier  (script 14 bytes)
+  0000: self._PitchForwardLimitModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_PitchForwardLimit  (script 20 bytes)
+  0000: return (-25.0 * self._PitchForwardLimitModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_PitchForwardAccelerationModifier  (script 14 bytes)
+  0000: self._PitchForwardAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_PitchForwardAcceleration  (script 20 bytes)
+  0000: return (3.0 * self._PitchForwardAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_RollAngularAccelerationModifier  (script 14 bytes)
+  0000: self._RollAngularAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollAngularAcceleration  (script 20 bytes)
+  0000: return (100.0 * self._RollAngularAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_RollLinearAccelerationModifier  (script 14 bytes)
+  0000: self._RollLinearAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollLinearAcceleration  (script 20 bytes)
+  0000: return (1000.0 * self._RollLinearAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.set_RollCorrectionAngularAccelerationModifier  (script 14 bytes)
+  0000: self._RollCorrectionAngularAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCarSimulation.get_RollCorrectionAngularAcceleration  (script 20 bytes)
+  0000: return (50.0 * self._RollCorrectionAngularAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnCarSimulation.Initialize  (script 65 bytes)
+  0000: self._Owner = Owner
+  000b: self._RigidBody = RigidBody
+  0016: self._Blueprint = Blueprint
+  0021: self._ChassisOffset = ChassisOffset
+  002c: TnCarSimulation.CreateWheelAssemblies()
+  0032: TnCarSimulation.InitializeFromBlueprint()
+  0038: TnCarSimulation.AddBlueprintObservers()
+  003e: return nothing
+  0040: <eos>
+
+function TnCarSimulation.Shutdown  (script 45 bytes)
+  0000: TnCarSimulation.RemoveBlueprintObservers()
+  0006: foreach self._WheelAssemblies(WheelAssembly,) (end 0x0029)
+  0015: WheelAssembly.Shutdown()
+  0028: iternext
+  0029: iterpop
+  002a: return nothing
+  002c: <eos>
+
+function TnCarSimulation.Activate  (script 40 bytes)
+  0000: self._JumpTimeRemaining = 0.0
+  000b: self._RigidBody.set_LinearDamping(TnCarSimulation.get_DefaultLinearDamping())
+  0025: return nothing
+  0027: <eos>
+
+function TnCarSimulation.Jump  (script 141 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: self._JumpTimeRemaining = TnCarSimulation.get_JumpBoostDuration()
+  002c: self._RollDirection = 0.0
+  0037: self._RigidBody.ApplyLocalLinearVelocity(TnCarSimulation.get_JumpLinearVelocity())
+  0051: self._RigidBody.ApplyLocalAngularVelocity(obj'Core.Math'.static.MakeVector(0.0, -TnCarSimulation.get_JumpAngularVelocity(), 0.0))
+  008a: return nothing
+  008c: <eos>
+
+function TnCarSimulation.Roll  (script 315 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: if !((TnCarSimulation.get_RollDuration() <= cast3f(0))) goto 0x0030
+  002e: return nothing
+  0030: self._RollDirection = obj'Core.Math'.static.Sign(self._RollControl)
+  004e: JumpVelocity = self._RigidBody.RotateToWorldSpaceYaw(obj'Core.Math'.static.MakeVector(0.0, (self._RollDirection * TnCarSimulation.get_RollHorizontalLinearVelocity()), (TnCarSimulation.get_RollVerticalLinearVelocity() - self._RigidBody.get_LinearVelocity().Z)))
+  00b4: if !(TnCarSimulation.get_JumpedThisFrame()) goto 0x00d3
+  00bd: JumpVelocity.Z = 0.0
+  00d3: self._JumpTimeRemaining = TnCarSimulation.get_RollDuration()
+  00df: self._RigidBody.ApplyLocalAngularVelocity(obj'Core.Math'.static.MakeVector((-self._RollDirection * TnCarSimulation.get_RollAngularVelocity()), 0.0, 0.0))
+  011f: self._RigidBody.ApplyLinearVelocity(JumpVelocity)
+  0138: return nothing
+  013a: <eos>
+
+function TnCarSimulation.Update  (script 222 bytes)
+  0000: if !((((EqualEqual_InterfaceInterface(self._RigidBody, IRigidBody(none)) || (self._Blueprint == none)) || (self._Blueprint == none)) || (self._Blueprint.IsValid() == false))) goto 0x004b
+  0049: return nothing
+  004b: self._JumpTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._JumpTimeRemaining - DeltaTime))
+  006d: TnCarSimulation.UpdateWheelAssemblies(DeltaTime)
+  0078: TnCarSimulation.UpdateTerminalVelocity()
+  007e: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x009e
+  009c: return nothing
+  009e: TnCarSimulation.UpdateAngularDamping(DeltaTime)
+  00a9: if !(!TnCarSimulation.UpdateRolling()) goto 0x00ca
+  00b4: TnCarSimulation.UpdateAirControl(DeltaTime, CameraRotation)
+  00c4: TnCarSimulation.UpdateLeveling()
+  00ca: TnCarSimulation.UpdateDrag()
+  00d0: TnCarSimulation.UpdateBoost(DeltaTime)
+  00db: return nothing
+  00dd: <eos>
+
+function TnCarSimulation.UpdateWheelAssemblies  (script 66 bytes)
+  0000: foreach self._WheelAssemblies(WheelAssembly,) (end 0x0038)
+  000f: WheelAssembly.Update(DeltaTime, get_Steering(), self._Drifting)
+  0037: iternext
+  0038: iterpop
+  0039: TnCarSimulation.UpdateTouching()
+  003f: return nothing
+  0041: <eos>
+
+function TnCarSimulation.UpdateTerminalVelocity  (script 250 bytes)
+  0000: if !(self._AnyWheelOnTheGround) goto 0x000b
+  0009: return nothing
+  000b: DistanceToGround = self._Owner.TraceLength(vect(0,0,-1), TnCarSimulation.get_LandingTraceDistance())
+  0037: TerminalVelocityValue = obj'Core.Math'.static.Lerp(TnCarSimulation.get_LandingVelocity(), TnCarSimulation.get_TerminalVelocity(), obj'Core.Math'.static.FMin(1.0, (DistanceToGround / TnCarSimulation.get_LandingTraceDistance())))
+  0071: if !((self._RigidBody.get_LinearVelocity().Z > -TerminalVelocityValue)) goto 0x009e
+  009c: return nothing
+  009e: self._RigidBody.ApplyLinearVelocity(obj'Core.Math'.static.MakeVector(0.0, 0.0, (-self._RigidBody.get_LinearVelocity().Z - TerminalVelocityValue)))
+  00f7: return nothing
+  00f9: <eos>
+
+function TnCarSimulation.UpdateAngularDamping  (script 108 bytes)
+  0000: DampingScale = 1.0
+  000b: if !(self._AnyWheelOnTheGround) goto 0x0048
+  0014: InverseSteering = (1.0 - obj'Core.Math'.static.Abs(get_Steering()))
+  0036: DampingScale = (InverseSteering * InverseSteering)
+  0048: self._RigidBody.set_AngularDamping((DampingScale * TnCarSimulation.get_AngularDamping()))
+  0069: return nothing
+  006b: <eos>
+
+function TnCarSimulation.UpdateDrag  (script 101 bytes)
+  0000: if !(!get_IsOnTheGround()) goto 0x0011
+  000f: return nothing
+  0011: self._RigidBody.ApplyLinearAcceleration((-obj'Core.Math'.static.Normal(self._RigidBody.get_LinearVelocity()) * TnCarSimulation.CalculateDragAcceleration(self._RigidBody.get_LinearSpeed())))
+  0062: return nothing
+  0064: <eos>
+
+function TnCarSimulation.UpdateBoost  (script 183 bytes)
+  0000: if !(!get_IsOnTheGround()) goto 0x0011
+  000f: return nothing
+  0011: DragAccelerationAtMaxSpeed = TnCarSimulation.CalculateDragAcceleration(get_MaxSpeed())
+  0027: Acceleration = (obj'Core.Math'.static.Lerp(TnCarSimulation.get_MaxAcceleration(), DragAccelerationAtMaxSpeed, (self._RigidBody.get_ForwardSpeed() / get_MaxSpeed())) + TnCarSimulation.CalculateExtraBoostAcceleration())
+  006b: self._RigidBody.ApplyLocalLinearAcceleration(obj'Core.Math'.static.MakeVector(((Acceleration * get_BoostScale()) * self._Accelerator), 0.0, 0.0))
+  00b4: return nothing
+  00b6: <eos>
+
+function TnCarSimulation.CalculateDragAcceleration  (script 107 bytes)
+  0000: return ((obj'Core.Math'.static.Square(Speed) * -self._RigidBody.get_Gravity().Z) / obj'Core.Math'.static.Square(obj'Core.Math'.static.FMax(1.0, self._Owner.GetTerminalVelocity())))
+  0064: return return
+  006a: <eos>
+
+function TnCarSimulation.CalculateExtraBoostAcceleration  (script 217 bytes)
+  0000: AccelerationBoostAtZeroSpeed = (TnCarSimulation.get_MaxAcceleration() * TnCarSimulation.get_LowSpeedBoostScale())
+  0014: ZeroAccelerationBoostSpeed = (get_MaxSpeed() * TnCarSimulation.get_LowSpeedBoostThreshold())
+  002c: A = (AccelerationBoostAtZeroSpeed / (ZeroAccelerationBoostSpeed * ZeroAccelerationBoostSpeed))
+  0045: B = ((-2.0 * AccelerationBoostAtZeroSpeed) / ZeroAccelerationBoostSpeed)
+  005e: C = AccelerationBoostAtZeroSpeed
+  0069: ClampedSpeed = obj'Core.Math'.static.FClamp(self._RigidBody.get_ForwardSpeed(), 0.0, ZeroAccelerationBoostSpeed)
+  0098: return obj'Core.Math'.static.FMin(((((A * ClampedSpeed) * ClampedSpeed) + (B * ClampedSpeed)) + C), TnCarSimulation.get_MaxExtraAcceleration())
+  00d2: return return
+  00d8: <eos>
+
+function TnCarSimulation.UpdateAirControl  (script 277 bytes)
+  0000: if !((self._AnyWheelOnTheGround == true)) goto 0x000e
+  000c: return nothing
+  000e: self._RigidBody.ApplyLinearAcceleration(self._RigidBody.RotateToWorldSpaceYaw(obj'Core.Math'.static.MakeVector(0.0, (get_Steering() * TnCarSimulation.get_AirControlStrafeAcceleration()), 0.0)))
+  0065: self._RigidBody.ApplyAngularAcceleration(obj'Core.Math'.static.MakeVector(0.0, 0.0, (get_Steering() * TnCarSimulation.get_AirControlTurnAcceleration())))
+  00a8: if !((cast3f(self._RigidBody.get_Rotation().Pitch) > (TnCarSimulation.get_PitchForwardLimit() * 182.0444489))) goto 0x0112
+  00db: self._RigidBody.ApplyLocalAngularAcceleration(obj'Core.Math'.static.MakeVector(0.0, TnCarSimulation.get_PitchForwardAcceleration(), 0.0))
+  0112: return nothing
+  0114: <eos>
+
+function TnCarSimulation.UpdateRolling  (script 200 bytes)
+  0000: if !(((self._JumpTimeRemaining == 0.0) || (obj'Core.Math'.static.Abs(self._RollDirection) != 1.0))) goto 0x002d
+  002b: return false
+  002d: self._RigidBody.ApplyLocalAngularAcceleration(obj'Core.Math'.static.MakeVector((-self._RollDirection * TnCarSimulation.get_RollAngularAcceleration()), 0.0, 0.0))
+  006d: self._RigidBody.ApplyLinearAcceleration(self._RigidBody.RotateToWorldSpaceYaw(obj'Core.Math'.static.MakeVector(0.0, (self._RollDirection * TnCarSimulation.get_RollLinearAcceleration()), 0.0)))
+  00bf: return true
+  00c1: return return
+  00c7: <eos>
+
+function TnCarSimulation.UpdateLeveling  (script 368 bytes)
+  0000: Up = (vect(0,0,1) >> self._RigidBody.get_Rotation())
+  002a: ShouldAutoLevel = ((obj'Core.Math'.static.Abs(self._RollControl) > 0.1) && ((obj'Core.Math'.static.Sign(self._RollControl) != obj'Core.Math'.static.Sign(cast3f(self._RigidBody.get_Rotation().Roll))) || (obj'Core.Math'.static.Abs(cast3f(self._RigidBody.get_Rotation().Roll)) < (cast3f(45) * 182.0444489))))
+  00d9: if !(ShouldAutoLevel) goto 0x016d
+  00e2: self._RigidBody.ApplyLocalAngularAcceleration((obj'Core.Math'.static.MakeVector((obj'Core.Math'.static.Sign(cast3f(self._RigidBody.get_Rotation().Roll)) * TnCarSimulation.get_RollCorrectionAngularAcceleration()), 0.0, 0.0) * (-0.5 * (Up.Z - cast3f(1)))))
+  016d: return nothing
+  016f: <eos>
+
+function TnCarSimulation.CreateWheelAssemblies  (script 54 bytes)
+  0000: I = 0
+  0007: if !((I < 4)) goto 0x0033
+  0013: self._WheelAssemblies.AddItem(new(self, nothing, obj'TnWheelAssembly', nothing, DeltaTime))
+  0029: AddAdd_PreInt(I)
+  0030: goto 0x0007
+  0033: return nothing
+  0035: <eos>
+
+function TnCarSimulation.UpdateTouching  (script 77 bytes)
+  0000: self._AnyWheelOnTheGround = false
+  0008: self._AllWheelsOnTheGround = true
+  0010: foreach self._WheelAssemblies(WheelAssembly,) (end 0x0049)
+  001f: if !(WheelAssembly.get_IsTouchingTheGround()) goto 0x0040
+  0035: self._AnyWheelOnTheGround = true
+  003d: goto 0x0048
+  0040: self._AllWheelsOnTheGround = false
+  0048: iternext
+  0049: iterpop
+  004a: return nothing
+  004c: <eos>
+
+function TnCarSimulation.AddBlueprintObservers  (script 173 bytes)
+  0000: if !((obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor() == false)) goto 0x0029
+  0027: return nothing
+  0029: self._Blueprint.AddAssetChangedObserver(delegate.OnCarPhysicsBlueprintChanged)
+  0045: I = 0
+  004c: if !((I < 4)) goto 0x00aa
+  0058: if !((I[self._Blueprint.WheelPhysicsBlueprints] == none)) goto 0x0075
+  0072: goto 0x00a0
+  0075: I[self._Blueprint.WheelPhysicsBlueprints].AddAssetChangedObserver(delegate.OnWheelPhysicsBlueprintChanged)
+  00a0: AddAdd_PreInt(I)
+  00a7: goto 0x004c
+  00aa: return nothing
+  00ac: <eos>
+
+function TnCarSimulation.RemoveBlueprintObservers  (script 186 bytes)
+  0000: if !((obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor() == false)) goto 0x0029
+  0027: return nothing
+  0029: if !((self._Blueprint == none)) goto 0x0036
+  0034: return nothing
+  0036: self._Blueprint.RemoveAssetChangedObserver(delegate.OnCarPhysicsBlueprintChanged)
+  0052: I = 0
+  0059: if !((I < 4)) goto 0x00b7
+  0065: if !((I[self._Blueprint.WheelPhysicsBlueprints] == none)) goto 0x0082
+  007f: goto 0x00ad
+  0082: I[self._Blueprint.WheelPhysicsBlueprints].RemoveAssetChangedObserver(delegate.OnWheelPhysicsBlueprintChanged)
+  00ad: AddAdd_PreInt(I)
+  00b4: goto 0x0059
+  00b7: return nothing
+  00b9: <eos>
+
+function TnCarSimulation.OnCarPhysicsBlueprintChanged  (script 9 bytes)
+  0000: TnCarSimulation.InitializeFromBlueprint()
+  0006: return nothing
+  0008: <eos>
+
+function TnCarSimulation.InitializeFromBlueprint  (script 160 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: self._RigidBody.set_LocalCenterOfMass((self._Blueprint.CenterOfMass - obj'Core.Math'.static.MakeVector(0.0, 0.0, self._ChassisOffset)))
+  0053: self._RigidBody.set_Mass(self._Blueprint.Mass)
+  0075: self._RigidBody.set_LocalInertiaTensor(self._Blueprint.InertiaTensor)
+  0097: TnCarSimulation.InitializeWheelAssemblies()
+  009d: return nothing
+  009f: <eos>
+
+function TnCarSimulation.OnWheelPhysicsBlueprintChanged  (script 9 bytes)
+  0000: TnCarSimulation.InitializeWheelAssemblies()
+  0006: return nothing
+  0008: <eos>
+
+function TnCarSimulation.InitializeWheelAssemblies  (script 123 bytes)
+  0000: MassShare = (self._Blueprint.Mass / cast3f(4))
+  001a: I = 0
+  0021: if !((I < 4)) goto 0x0078
+  002d: I[self._WheelAssemblies].Initialize(self._Owner, self._RigidBody, I[self._Blueprint.WheelPhysicsBlueprints], MassShare, self._ChassisOffset)
+  006e: AddAdd_PreInt(I)
+  0075: goto 0x0021
+  0078: return nothing
+  007a: <eos>

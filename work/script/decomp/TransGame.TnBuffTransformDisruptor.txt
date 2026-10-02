@@ -1,0 +1,18 @@
+function TnBuffTransformDisruptor.Apply  (script 260 bytes)
+  0000: DesiredForm = ((cast3a(BuffOwner.get_FormType()) == cast3a(0)) ? 1 : 0)
+  002a: if !((cast3a(BuffOwner.Role) == cast3a(3))) goto 0x005b
+  0043: BuffOwner.ForceIntoForm(DesiredForm)
+  005b: BuffOwner.DisableTransforming()
+  006e: TnApplier = TnPawn(Applier)
+  007e: if !(((TnApplier != none) && TnApplier.HasSkill(obj'TnSkillTransformDisruptorDot'))) goto 0x00ec
+  00a6: BS = TnBuffService(BuffOwner.GetService('TnBuffService'))
+  00cd: BS.AddBuff(obj'TnBuffDotFromTransformDisruptor', 0, Applier)
+  00ec: TnBuff.Apply(Level, BuffOwner, Applier)
+  0101: return nothing
+  0103: <eos>
+
+function TnBuffTransformDisruptor.Unapply  (script 28 bytes)
+  0000: self.OwnerPawn.EnableTransforming()
+  0013: TnBuff.Unapply()
+  0019: return nothing
+  001b: <eos>

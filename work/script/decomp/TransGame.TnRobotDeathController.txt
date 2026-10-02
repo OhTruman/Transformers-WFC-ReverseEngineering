@@ -1,0 +1,87 @@
+function TnRobotDeathController.set_BoneVelocityTracker  (script 14 bytes)
+  0000: self._BoneVelocityTracker = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRobotDeathController.Initialize  (script 78 bytes)
+  0000: self._Owner = Owner
+  000b: self._Collision = TnCollisionService(Owner.GetService('TnCollisionService'))
+  0032: self._Mesh = Owner.get_RobotMeshComponent()
+  004b: return nothing
+  004d: <eos>
+
+function TnRobotDeathController.Activate  (script 360 bytes)
+  0000: if !(TnRobotDeathController.ShouldPlayAnimation(Animation)) goto 0x00ec
+  000e: self._Collision.PushCollisionMode(2)
+  0024: if !((cast3a(self._Owner.WorldInfo.NetMode) != cast3a(0))) goto 0x005b
+  0046: self._Mesh.SetActorCollision(true, false)
+  005b: self._BoneVelocityTracker.Initialize(self._Mesh)
+  0073: self._BoneVelocityTracker.Activate()
+  0086: AnimationParams = TnRobotDeathController.CreateAnimationParams(Animation)
+  0097: Animator = TnAnimatorService(self._Owner.GetService('TnAnimatorService'))
+  00be: Animator.EnqueueLocalAnimation(AnimationParams, delegate.AnimationComplete, delegate.AnimationComplete)
+  00e9: goto 0x0165
+  00ec: Ragdoll(0.0, 0.0)
+  0100: self._Mesh.AddLinearVelocity((self._Owner.TearOffMomentum * self._Owner.Mass), , )
+  0133: self._Mesh.AddAngularVelocity((obj'Core.Math'.static.Normal(self._Owner.TearOffMomentum) * cast3f(10)))
+  0165: return nothing
+  0167: <eos>
+
+function TnRobotDeathController.ShouldPlayAnimation  (script 144 bytes)
+  0000: if !((Animation.AnimationName == 'None')) goto 0x0020
+  001e: return false
+  0020: if !(Animation.AlwaysPlay) goto 0x0036
+  0034: return true
+  0036: KilledByDamageType = class<TnDamageType>(self._Owner.get_LastTakeHitInfo().DamageType)
+  005f: if !(((KilledByDamageType != none) && (cast3a(KilledByDamageType.static.default.DeathType) != cast3a(0)))) goto 0x0087
+  0085: return false
+  0087: return true
+  0089: return return
+  008f: <eos>
+
+function TnRobotDeathController.CreateAnimationParams  (script 153 bytes)
+  0000: Params.AnimName = Animation.AnimationName
+  0021: Params.RootMotionMode = Animation.RootMotionMode
+  0042: Params.BlendInTime = Animation.BlendInTime
+  0063: Params.BlendOutTime = 0.0
+  0079: Params.Priority = 1
+  008c: return Params
+  0092: return return
+  0098: <eos>
+
+function TnRobotDeathController.AnimationComplete  (script 23 bytes)
+  0000: Ragdoll(0.0, 0.0)
+  0014: return nothing
+  0016: <eos>
+
+function TnRobotDeathController.Ragdoll  (script 113 bytes)
+  0000: if !((self._Mesh.PhysicsWeight > cast3f(0))) goto 0x0018
+  0016: return nothing
+  0018: self._RagdollBlendTime = BlendTime
+  0023: if !((RandomDelay == cast3f(0))) goto 0x0039
+  0030: TnRobotDeathController.StartBlendingToRagdoll()
+  0036: goto 0x006e
+  0039: self._RagdollDelayTimer.Start(delegate.StartBlendingToRagdoll, obj'Core.Random'.static.RandomFloat(RandomDelay), )
+  006e: return nothing
+  0070: <eos>
+
+function TnRobotDeathController.StartBlendingToRagdoll  (script 132 bytes)
+  0000: self._Collision.PushCollisionMode(3)
+  0016: self._IsBlendingToRagdoll = (self._RagdollBlendTime > cast3f(0))
+  0027: self._Mesh.PhysicsWeight = cast3f((self._IsBlendingToRagdoll ? 0 : 1))
+  0045: if !(self._BoneVelocityTracker.IsInitialized()) goto 0x0081
+  005b: self._BoneVelocityTracker.CopyVelocitiesToRagdoll()
+  006e: self._BoneVelocityTracker.Deactivate()
+  0081: return nothing
+  0083: <eos>
+
+function TnRobotDeathController.Tick  (script 186 bytes)
+  0000: self._RagdollDelayTimer.Tick(DeltaTime)
+  0018: if !(self._BoneVelocityTracker.IsInitialized()) goto 0x0046
+  002e: self._BoneVelocityTracker.Tick(DeltaTime)
+  0046: if !(self._IsBlendingToRagdoll) goto 0x00b7
+  004f: (self._Mesh.PhysicsWeight += (DeltaTime / self._RagdollBlendTime))
+  006b: self._Mesh.PhysicsWeight = obj'Core.Math'.static.FClamp(self._Mesh.PhysicsWeight, 0.0, 1.0)
+  009d: self._IsBlendingToRagdoll = (self._Mesh.PhysicsWeight < cast3f(1))
+  00b7: return nothing
+  00b9: <eos>

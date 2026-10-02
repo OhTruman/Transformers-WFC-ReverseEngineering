@@ -1,0 +1,34 @@
+function TnCollectableAchievementItem.PostBeginPlay  (script 157 bytes)
+  0000: TnDestructibleActor.PostBeginPlay()
+  0006: if !((cast3a(self.Role) != cast3a(3))) goto 0x0018
+  0016: return nothing
+  0018: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0089)
+  0038: AtLeastOnePlayer = true
+  0040: if !((!PC.IsLocalPlayerController() || !PC._AchievementManager.IsBitNumberSetOnAchivement(self.AssociatedAchievement, self.CollectableIndex))) goto 0x0088
+  0085: iterpop
+  0086: return nothing
+  0088: iternext
+  0089: iterpop
+  008a: SetHidden(AtLeastOnePlayer)
+  009a: return nothing
+  009c: <eos>
+
+function TnCollectableAchievementItem.OnDamage  (script 133 bytes)
+  0000: TnDestructibleActor.OnDamage(PieceHandle, NormalizedHealth, NormalizedAccumulatedDamage)
+  0015: if !((NormalizedHealth > 0.0)) goto 0x0026
+  0024: return nothing
+  0026: PC = TnPlayerController(self.LastHitInstigator)
+  0036: if !((PC == none)) goto 0x0043
+  0041: return nothing
+  0043: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0081)
+  0063: PC.ClientSetBitOnAchievement(self.AssociatedAchievement, self.CollectableIndex)
+  0080: iternext
+  0081: iterpop
+  0082: return nothing
+  0084: <eos>
+
+function TnCollectableAchievementItem.CheckForErrors  (script 89 bytes)
+  0000: if !(((self.CollectableIndex < 0) || (self.CollectableIndex >= 25))) goto 0x0056
+  0019: EmitCheckMessage(0, "Invalid Collectable Index, this will not work", , )
+  0056: return nothing
+  0058: <eos>

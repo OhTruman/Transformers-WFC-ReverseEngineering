@@ -1,0 +1,25 @@
+function TnTacticalInvalidator.IsValidTactical  (script 151 bytes)
+  0000: if !((TacticalToCheck == none)) goto 0x000d
+  000b: return false
+  000d: Index = self.InvalidPoints.Find('TacticalPoint',TacticalToCheck)
+  0029: if !((Index == -1)) goto 0x003a
+  0038: return true
+  003a: if !((obj'Engine.Engine'.static.GetWorldTime() < (Index[self.InvalidPoints].InvalidateTimeStamp + Index[self.InvalidPoints].InvalidDuration))) goto 0x0082
+  0080: return false
+  0082: self.InvalidPoints.Remove(Index,1)
+  008e: return true
+  0090: return return
+  0096: <eos>
+
+function TnTacticalInvalidator.InvalidateTactical  (script 181 bytes)
+  0000: if !((InvalidTactical == none)) goto 0x000d
+  000b: return nothing
+  000d: Index = self.InvalidPoints.Find('TacticalPoint',InvalidTactical)
+  0029: if !((Index == -1)) goto 0x006c
+  0038: Index = self.InvalidPoints.Length
+  0044: self.InvalidPoints.Insert(Index,1)
+  0050: Index[self.InvalidPoints].TacticalPoint = InvalidTactical
+  006c: Index[self.InvalidPoints].InvalidDuration = InvalidDuration
+  0088: Index[self.InvalidPoints].InvalidateTimeStamp = obj'Engine.Engine'.static.GetWorldTime()
+  00b2: return nothing
+  00b4: <eos>

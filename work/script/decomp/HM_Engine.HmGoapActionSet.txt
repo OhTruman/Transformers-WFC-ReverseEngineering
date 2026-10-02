@@ -1,0 +1,84 @@
+function HmGoapActionSet.InitializeFromTemplate  (script 249 bytes)
+  0000: foreach TemplateSet.Actions(Action,) (end 0x003b)
+  0018: self.Actions.AddItem(HmGoapAction(Action.Clone(self, )))
+  003a: iternext
+  003b: iterpop
+  003c: foreach TemplateSet.ActionBlueprints(Blueprint,) (end 0x00f5)
+  0054: if !((Blueprint == none)) goto 0x00a7
+  005f: LogInternal(("Error: Skipping a deprecated blueprint in action set" @ cast56(TemplateSet)), , , )
+  00a3: iternext
+  00a4: goto 0x00f5
+  00a7: NewAction = obj'Engine.Allocation'.static.CreateObject(Blueprint.actionClass, self)
+  00cf: NewAction.Initialize(Blueprint)
+  00e7: self.Actions.AddItem(NewAction)
+  00f4: iternext
+  00f5: iterpop
+  00f6: return nothing
+  00f8: <eos>
+
+function HmGoapActionSet.Add  (script 16 bytes)
+  0000: self.Actions.AddItem(Action)
+  000d: return nothing
+  000f: <eos>
+
+function HmGoapActionSet.Bind  (script 55 bytes)
+  0000: foreach self.Actions(Action,) (end 0x0033)
+  000f: if !((Action != none)) goto 0x0032
+  001a: Action.Bind(InController)
+  0032: iternext
+  0033: iterpop
+  0034: return nothing
+  0036: <eos>
+
+function HmGoapActionSet.Unbind  (script 39 bytes)
+  0000: foreach self.Actions(Action,) (end 0x0023)
+  000f: Action.Unbind()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function HmGoapActionSet.GetActionOverrides  (script 81 bytes)
+  0000: I = 0
+  0007: if !((I < self.ActionBlueprints.Length)) goto 0x0044
+  0017: I[self.ActionBlueprints].AddOverrides(ActionOverrides, OuterObject)
+  003a: AddAdd_PreInt(I)
+  0041: goto 0x0007
+  0044: return ActionOverrides
+  004a: return return
+  0050: <eos>
+
+function HmGoapActionSet.ApplyActionOverrides  (script 130 bytes)
+  0000: I = 0
+  0007: if !((I < ActionOverrides.Length)) goto 0x007f
+  0017: I[ActionOverrides].Initialize()
+  0030: A = 0
+  0037: if !((A < self.Actions.Length)) goto 0x0075
+  0047: A[self.Actions].ApplyOverride(I[ActionOverrides])
+  006b: AddAdd_PreInt(A)
+  0072: goto 0x0037
+  0075: AddAdd_PreInt(I)
+  007c: goto 0x0007
+  007f: return nothing
+  0081: <eos>
+
+function HmGoapActionSet.CheckForErrors  (script 236 bytes)
+  0000: if !(((self.ActionBlueprints.Length > 0) && (self.Actions.Length > 0))) goto 0x007d
+  001a: EmitCheckMessage(0, "Actions, cannot be added to this actions set.  Please use action blueprints instead", , )
+  007d: foreach self.Actions(Action,) (end 0x00af)
+  008c: if !((Action == none)) goto 0x009b
+  0097: iternext
+  0098: goto 0x00af
+  009b: Action.CheckForErrors()
+  00ae: iternext
+  00af: iterpop
+  00b0: foreach self.ActionBlueprints(Blueprint,) (end 0x00e2)
+  00bf: if !((Blueprint == none)) goto 0x00ce
+  00ca: iternext
+  00cb: goto 0x00e2
+  00ce: Blueprint.CheckForErrors()
+  00e1: iternext
+  00e2: iterpop
+  00e3: CheckForErrors()
+  00e9: return nothing
+  00eb: <eos>

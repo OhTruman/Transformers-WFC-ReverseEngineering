@@ -1,0 +1,27 @@
+function TnAiActionExtinguishBackpack.OnSetUpConditions  (script 79 bytes)
+  0000: DeathImminent = cast3d(get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDeathImminent'))
+  0025: if !((cast3a(DeathImminent) != cast3a(2))) goto 0x0037
+  0035: return false
+  0037: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0048: return return
+  004e: <eos>
+
+function TnAiActionExtinguishBackpack.OnStart  (script 115 bytes)
+  0000: ShieldService = TnShieldService(GetService('TnShieldService', 0))
+  0020: if !(NotEqual_InterfaceInterface(ShieldService, TnShieldService(none))) goto 0x0048
+  0034: ShieldService.StopShield()
+  0048: get_InvManager().UnEquipWeapon()
+  0060: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  006c: return return
+  0072: <eos>
+
+function TnAiActionExtinguishBackpack.OnFinish  (script 167 bytes)
+  0000: TnAiActionPlayAnimation.OnFinish(CurrentState)
+  000b: if !((!self._TransformerPawn.IsDying() && !self._TransformerPawn.IsDead())) goto 0x0078
+  003d: self._TransformerPawn.Health = -1.0
+  0051: self._TransformerPawn.Died(none, obj'TnDamageTypeBruteBackpack', self._TransformerPawn.Location)
+  0078: if !((cast3a(CurrentState) == cast3a(3))) goto 0x00a4
+  0088: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateDeathImminent', 0, )
+  00a2: return nothing
+  00a4: return nothing
+  00a6: <eos>

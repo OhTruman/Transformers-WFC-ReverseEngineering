@@ -1,0 +1,76 @@
+function TnWoundedPlayer.Initialize  (script 167 bytes)
+  0000: if !((Blueprint_ == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Owner = Owner_
+  0018: self.Mesh = Mesh_
+  0023: self.Blueprint = Blueprint_
+  002e: self.BlendNode = AnimNodeAdditiveBlending(Mesh_.FindAnimNode(self.BlendNodeName))
+  0051: self.Stages = self.Blueprint.Stages
+  0065: self.Stages.Insert(0,1)
+  006d: 0[self.Stages].HealthThreshold = 3.4028234663852886e+38
+  0085: 0[self.Stages].AdditiveBlendTarget = 0.0
+  009d: self.ActiveStage = 0
+  00a4: return nothing
+  00a6: <eos>
+
+function TnWoundedPlayer.Tick  (script 66 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: Stage = TnWoundedPlayer.FindActiveStage()
+  0019: if !((Stage != self.ActiveStage)) goto 0x003f
+  0028: self.ActiveStage = Stage
+  0033: TnWoundedPlayer.UpdateAnimation()
+  0039: TnWoundedPlayer.UpdateEffects()
+  003f: return nothing
+  0041: <eos>
+
+function TnWoundedPlayer.FindActiveStage  (script 179 bytes)
+  0000: if !(TnWoundedPlayer.IsDisabled()) goto 0x000b
+  0009: return 0
+  000b: Health = self.Owner.GetNormalizedHealth()
+  0024: Index = 0
+  002b: if !(((Index + 1) < self.Stages.Length)) goto 0x00a6
+  003e: Min = (Index + 1)[self.Stages].HealthThreshold
+  005d: Max = Index[self.Stages].HealthThreshold
+  0079: if !(((Min < Health) && (Health <= Max))) goto 0x009c
+  0099: goto 0x00a6
+  009c: AddAdd_PreInt(Index)
+  00a3: goto 0x002b
+  00a6: return Index
+  00ac: return return
+  00b2: <eos>
+
+function TnWoundedPlayer.IsDisabled  (script 203 bytes)
+  0000: if !((self.Owner._IsDowned || self.Owner.IsDying())) goto 0x002c
+  002a: return true
+  002c: if !(EqualEqual_InterfaceInterface(self._WeaponService, TnWeaponService(none))) goto 0x0067
+  0040: self._WeaponService = TnWeaponService(self.Owner.GetService('TnWeaponService'))
+  0067: if !((NotEqual_InterfaceInterface(self._WeaponService, TnWeaponService(none)) && (self._WeaponService.get_ActiveWeapon() != none))) goto 0x00c2
+  0097: return (cast3a(self._WeaponService.get_ActiveWeapon().get_Stance()) != cast3a(0))
+  00c2: return false
+  00c4: return return
+  00ca: <eos>
+
+function TnWoundedPlayer.UpdateAnimation  (script 69 bytes)
+  0000: if !((self.BlendNode != none)) goto 0x0042
+  000b: self.BlendNode.SetBlendTarget(self.ActiveStage[self.Stages].AdditiveBlendTarget, self.Blueprint.AdditiveBlendTime)
+  0042: return nothing
+  0044: <eos>
+
+function TnWoundedPlayer.UpdateEffects  (script 280 bytes)
+  0000: foreach self.ActiveEffects(PSC,) (end 0x003b)
+  000f: PSC.DeactivateSystem()
+  0022: self.Mesh.DetachComponent(PSC)
+  003a: iternext
+  003b: iterpop
+  003c: self.ActiveEffects.Length = 0
+  0044: foreach self.ActiveStage[self.Stages].Effects(Effect,) (end 0x0114)
+  0064: PSC = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmParticleSystemComponent', self.Owner)
+  0087: PSC.SetTemplate(Effect.Template)
+  00aa: PSC.ActivateSystem()
+  00be: self.Mesh.AttachComponentToSocketWithOffsets(PSC, Effect.SocketName, Effect.RelativeLocation, Effect.RelativeRotation)
+  0106: self.ActiveEffects.AddItem(PSC)
+  0113: iternext
+  0114: iterpop
+  0115: return nothing
+  0117: <eos>

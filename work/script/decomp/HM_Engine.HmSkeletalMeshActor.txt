@@ -1,0 +1,168 @@
+function HmSkeletalMeshActor.get_DialogComponent  (script 13 bytes)
+  0000: return self.DialogComp
+  0006: return return
+  000c: <eos>
+
+function HmSkeletalMeshActor.PostBeginPlay  (script 118 bytes)
+  0000: if !((((self.SkeletalMeshComponent != none) && (self.SkeletalMeshComponent.SkeletalMesh != none)) && (self.SkeletalMeshComponent.SkeletalMesh.SoundEventSet != none))) goto 0x0073
+  0040: self.BodyImpactComponent.SetBodyImpactProperties(self.SkeletalMeshComponent.SkeletalMesh.SoundEventSet.BodyImpactProperties)
+  0073: return nothing
+  0075: <eos>
+
+function HmSkeletalMeshActor.Destroyed  (script 45 bytes)
+  0000: if !(!self.WorldInfo.IsInEditor()) goto 0x0024
+  0018: StopDialog(false, false)
+  0024: Destroyed()
+  002a: return nothing
+  002c: <eos>
+
+function HmSkeletalMeshActor.TakeDamage  (script 336 bytes)
+  0000: nothing
+  0001: nothing
+  0002: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: if !(((((cast3a(self.Physics) == cast3a(10)) && self.bDamageAppliesImpulse) && (DamageType != none)) && (DamageType.static.default.KDamageImpulse > cast3f(0)))) goto 0x014d
+  006b: if !((obj'Core.Math'.static.VSize(Momentum) < 0.001)) goto 0x00b0
+  0085: LogInternal("Zero momentum to KActor.TakeDamage", , , )
+  00ae: return nothing
+  00b0: CheckHitInfo(HitInfo, self.SkeletalMeshComponent, obj'Core.Math'.static.Normal(Momentum), HitLocation)
+  00d9: ApplyImpulse = (obj'Core.Math'.static.Normal(Momentum) * DamageType.static.default.KDamageImpulse)
+  00ff: if !((HitInfo.HitComponent != none)) goto 0x014d
+  0115: HitInfo.HitComponent.AddLinearImpulse(ApplyImpulse, HitLocation, HitInfo.BoneName)
+  014d: return nothing
+  014f: <eos>
+
+function HmSkeletalMeshActor.PlayFootStepSound  (script 43 bytes)
+  0000: if !((self.FootstepComp != none)) goto 0x0028
+  000b: self.FootstepComp.PlayFootStep(FootDown, Type)
+  0028: return nothing
+  002a: <eos>
+
+function HmSkeletalMeshActor.FindPhysicalMaterial  (script 58 bytes)
+  0000: if !((self.FootstepComp != none)) goto 0x0031
+  000b: return self.FootstepComp.FindPhysicalMaterial(PhysMaterial, HitLocation, HitNormal)
+  002e: goto 0x0033
+  0031: return false
+  0033: return return
+  0039: <eos>
+
+function HmSkeletalMeshActor.EnablePhysicalMaterialOverride  (script 44 bytes)
+  0000: if !((self.FootstepComp != none)) goto 0x0029
+  000b: self.FootstepComp.EnablePhysicalMaterialOverride(Enable, PhysMaterial)
+  0029: return nothing
+  002b: <eos>
+
+function HmSkeletalMeshActor.PlayBodyGroundImpactSound  (script 53 bytes)
+  0000: if !((self.BodyImpactComponent != none)) goto 0x002c
+  000b: return self.BodyImpactComponent.PlaySoundFromGroundImpact(BodyPart, ImpactWeight)
+  0029: goto 0x002e
+  002c: return false
+  002e: return return
+  0034: <eos>
+
+function HmSkeletalMeshActor.PlayDialog  (script 91 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: self.DialogComp.Play(SoundCue, Replicate, Type, Deactivate, DialogCallback)
+  0058: return nothing
+  005a: <eos>
+
+function HmSkeletalMeshActor.PlayDialogEvent  (script 92 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: PlayDialog(FindSoundCue(SoundEvent), Replicate, Type, Deactivate, DialogCallback)
+  0059: return nothing
+  005b: <eos>
+
+function HmSkeletalMeshActor.StopDialog  (script 57 bytes)
+  0000: default=false
+  0005: default=true
+  000a: if !((none == self.DialogComp)) goto 0x0017
+  0015: return nothing
+  0017: self.DialogComp.Stop(ConversationOnly, Replicate)
+  0036: return nothing
+  0038: <eos>
+
+function HmSkeletalMeshActor.GetIsDialogPlaying  (script 45 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return self.DialogComp.GetIsPlaying(SoundCueTarget)
+  0026: return return
+  002c: <eos>
+
+function HmSkeletalMeshActor.GetIsDialogPlayingEvent  (script 46 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return GetIsDialogPlaying(FindSoundCue(SoundEvent))
+  0027: return return
+  002d: <eos>
+
+function HmSkeletalMeshActor.SetDialogCharacter  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_DialogCharacter(DialogCharacter)
+  0023: return nothing
+  0025: <eos>
+
+function HmSkeletalMeshActor.SetDialogSocketName  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_SocketName(_SocketName)
+  0023: return nothing
+  0025: <eos>
+
+function HmSkeletalMeshActor.FindSoundCue  (script 116 bytes)
+  0000: if !((((self.SkeletalMeshComponent != none) && (self.SkeletalMeshComponent.SkeletalMesh != none)) && (self.SkeletalMeshComponent.SkeletalMesh.SoundEventSet != none))) goto 0x006b
+  0040: return self.SkeletalMeshComponent.SkeletalMesh.SoundEventSet.FindSoundCue(Event)
+  006b: return none
+  006d: return return
+  0073: <eos>
+
+function HmSkeletalMeshActor.PlaySoundEvent  (script 56 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: PlaySound(FindSoundCue(InSoundEvent), bNotReplicated, bNoRepToOwner, bStopWhenOwnerDestroyed, SoundLocation, )
+  0035: return nothing
+  0037: <eos>
+
+function HmSkeletalMeshActor.GetDialogCharacters  (script 140 bytes)
+  0000: DialogCharacters.Length = 0
+  0008: if !((none != self.DialogCharacterOverride)) goto 0x0023
+  0013: DialogCharacters.AddItem(self.DialogCharacterOverride)
+  0020: goto 0x0089
+  0023: if !((((self.SkeletalMeshComponent != none) && (self.SkeletalMeshComponent.SkeletalMesh != none)) && (self.SkeletalMeshComponent.SkeletalMesh.SoundEventSet != none))) goto 0x0089
+  0063: DialogCharacters = self.SkeletalMeshComponent.SkeletalMesh.SoundEventSet.DialogCharacters
+  0089: return nothing
+  008b: <eos>
+
+function HmSkeletalMeshActor.SetIsBodyImpactsActivated  (script 39 bytes)
+  0000: if !((none != self.BodyImpactComponent)) goto 0x0024
+  000b: self.BodyImpactComponent.SetIsActivated(IsBodyImpactsActivated)
+  0024: return nothing
+  0026: <eos>
+
+function HmSkeletalMeshActor.GetMinimumBodyImpactSpeedThreshold  (script 47 bytes)
+  0000: if !((none != self.BodyImpactComponent)) goto 0x0022
+  000b: return self.BodyImpactComponent.GetMinimumBodyImpactSpeedThreshold()
+  001f: goto 0x0028
+  0022: return 0.0
+  0028: return return
+  002e: <eos>
+
+function HmSkeletalMeshActor.HandleRigidBodyCollision  (script 48 bytes)
+  0000: if !((none != self.BodyImpactComponent)) goto 0x002d
+  000b: self.BodyImpactComponent.HandleRigidBodyCollision(ContactInfos, ContactIndex, ContactSpeed)
+  002d: return nothing
+  002f: <eos>
+
+function HmSkeletalMeshActor.RigidBodyCollision  (script 46 bytes)
+  0000: HmSkeletalMeshActor.HandleRigidBodyCollision(RigidCollisionData.ContactInfos, ContactIndex, RigidCollisionData.ContactSpeed)
+  002b: return nothing
+  002d: <eos>

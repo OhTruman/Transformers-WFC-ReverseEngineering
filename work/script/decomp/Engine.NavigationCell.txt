@@ -1,0 +1,171 @@
+function NavigationCell.get_VertexIdentifiers  (script 13 bytes)
+  0000: return self._VertexIdentifiers
+  0006: return return
+  000c: <eos>
+
+function NavigationCell.set_VertexIdentifiers  (script 14 bytes)
+  0000: self._VertexIdentifiers = Value
+  000b: return nothing
+  000d: <eos>
+
+function NavigationCell.get_EditUtil  (script 60 bytes)
+  0000: if !((self._EditUtil == none)) goto 0x002f
+  000b: self._EditUtil = new(nothing, nothing, obj'NavigationCellEditUtil', nothing, GetRemoteRole)
+  001f: self._EditUtil._Cell = self
+  002f: return self._EditUtil
+  0035: return return
+  003b: <eos>
+
+function NavigationCell.get_NumberOfRegisteredActors  (script 14 bytes)
+  0000: return self._RegisteredActors.Length
+  0007: return return
+  000d: <eos>
+
+function NavigationCell.get_IsTacticalCell  (script 14 bytes)
+  0000: return self._IsTacticalCell
+  0007: return return
+  000d: <eos>
+
+function NavigationCell.set_IsTacticalCell  (script 16 bytes)
+  0000: self._IsTacticalCell = Value
+  000d: return nothing
+  000f: <eos>
+
+function NavigationCell.BuildEditorData  (script 64 bytes)
+  0000: get_EditUtil()._Cell = self
+  0015: get_EditUtil().Initialize(NavMesh)
+  0032: UpdateRendering()
+  003d: return nothing
+  003f: <eos>
+
+function NavigationCell.BuildCellFromVertices  (script 845 bytes)
+  0000: EditorEdges = get_EditUtil().get_EditorEdges()
+  001e: if !((EditorEdges.Length == 0)) goto 0x002c
+  002a: return nothing
+  002c: if !((((0[EditorEdges].Start == none) || (1[EditorEdges].Start == none)) || (2[EditorEdges].Start == none))) goto 0x007b
+  0079: return nothing
+  007b: if !((((0[EditorEdges].Start.Location == vect(0,0,0)) && (1[EditorEdges].Start.Location == vect(0,0,0))) && (2[EditorEdges].Start.Location == vect(0,0,0)))) goto 0x0109
+  0107: return nothing
+  0109: self._Edges.Length = 0
+  0111: self._Edges.Insert(0,3)
+  011a: idx = 0
+  0121: if !((idx < EditorEdges.Length)) goto 0x031c
+  0131: idx[self._Edges].Start = idx[EditorEdges].Start.Location
+  0167: idx[self._Edges].StartIsInner = !idx[EditorEdges].Start.IsBorderVertex()
+  01a5: idx[self._Edges].End = idx[EditorEdges].End.Location
+  01db: idx[self._Edges].EndIsInner = !idx[EditorEdges].End.IsBorderVertex()
+  0219: idx[self._Edges].Normal = obj'Core.Math'.static.Normal(idx[EditorEdges].Normal)
+  0251: idx[self._Edges].Neighbor.Nav = idx[EditorEdges].Neighbor
+  0289: if !((idx[self._Edges].Neighbor.Nav == none)) goto 0x02cc
+  02b0: idx[self._Edges].Border = true
+  02c9: goto 0x0312
+  02cc: idx[self._Edges].Neighbor.Guid = idx[EditorEdges].Neighbor.GetNavGuid()
+  0312: AddAdd_PreInt(idx)
+  0319: goto 0x0121
+  031c: self._Normal = get_EditUtil().GetNormal()
+  033a: self.bCanPathThrough = true
+  0342: self._NeedsRebuild = false
+  034a: return nothing
+  034c: <eos>
+
+function NavigationCell.ClearCrossLevelNavReferences  (script 185 bytes)
+  0000: MyOuterMost = GetOutermost()
+  0010: idx = 0
+  0017: if !((idx < self._Edges.Length)) goto 0x00b6
+  0027: if !(((idx[self._Edges].Neighbor.Nav != none) && (MyOuterMost != idx[self._Edges].Neighbor.Nav.GetOutermost()))) goto 0x00ac
+  0089: idx[self._Edges].Neighbor.Nav = none
+  00ac: AddAdd_PreInt(idx)
+  00b3: goto 0x0017
+  00b6: return nothing
+  00b8: <eos>
+
+function NavigationCell.PreSave  (script 47 bytes)
+  0000: if !((self._EditUtil == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(IsDefaultObject()) goto 0x001c
+  001a: return nothing
+  001c: BuildCellFromVertices()
+  0026: NavigationCell.ClearCrossLevelNavReferences()
+  002c: return nothing
+  002e: <eos>
+
+function NavigationCell.UpdateRendering  (script 193 bytes)
+  0000: nothing
+  0001: if !((self._RenderProxy != none)) goto 0x0020
+  000c: self._RenderProxy.ForceUpdate(false)
+  0020: if !((self._RenderSolidProxy != none)) goto 0x003f
+  002b: self._RenderSolidProxy.ForceUpdate(false)
+  003f: if !((self._NavProxy != none)) goto 0x00a2
+  004a: self._NavProxy.GoodTexture = (self._IsTacticalCell ? self.TacticalIcon : self.NormalIcon)
+  006e: self._NavProxy.Scale = cast3f((self._IsTacticalCell ? 3 : 5))
+  008e: self._NavProxy.ForceUpdate(false)
+  00a2: if !(UpdateNeighbors) goto 0x00be
+  00ab: self._EditUtil.UpdateNeighborRendering()
+  00be: return nothing
+  00c0: <eos>
+
+function NavigationCell.RegisterActor  (script 63 bytes)
+  0000: if !((A.get_Outer() != get_Outer())) goto 0x0016
+  0014: return nothing
+  0016: if !((self._RegisteredActors.Find(A) != -1)) goto 0x002f
+  002d: return nothing
+  002f: self._RegisteredActors.AddItem(A)
+  003c: return nothing
+  003e: <eos>
+
+function NavigationCell.ClearRegisteredActors  (script 11 bytes)
+  0000: self._RegisteredActors.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function NavigationCell.IsRegistered  (script 28 bytes)
+  0000: return (self._RegisteredActors.Find(A) != -1)
+  0015: return return
+  001b: <eos>
+
+function NavigationCell.GetRegisteredActor  (script 37 bytes)
+  0000: if !((Index >= self._RegisteredActors.Length)) goto 0x0012
+  0010: return none
+  0012: return Index[self._RegisteredActors]
+  001e: return return
+  0024: <eos>
+
+function NavigationCell.RegisterActors  (script 148 bytes)
+  0000: ClearRegisteredActors()
+  000a: foreach obj'Engine'.static.GetCurrentWorldInfo().AllActors(obj'Actor', A) (end 0x0090)
+  0038: RegisterInterface = NavigationCellRegisterInterface(A)
+  0048: if !(EqualEqual_InterfaceInterface(RegisterInterface, NavigationCellRegisterInterface(none))) goto 0x0060
+  005c: iternext
+  005d: goto 0x0090
+  0060: if !(!RegisterInterface.ShouldRegister(self)) goto 0x007e
+  007a: iternext
+  007b: goto 0x0090
+  007e: RegisterActor(cast36(RegisterInterface))
+  008f: iternext
+  0090: iterpop
+  0091: return nothing
+  0093: <eos>
+
+function NavigationCell.OnPostEditMove  (script 51 bytes)
+  0000: if !(!bFinished) goto 0x000d
+  000b: return nothing
+  000d: get_EditUtil().RepositionCellToCentroid()
+  0025: UpdateRendering()
+  0030: return nothing
+  0032: <eos>
+
+function NavigationCell.CheckForErrors  (script 334 bytes)
+  0000: NavigationPoint.CheckForErrors()
+  0006: foreach self._Edges(Edge,) (end 0x00c1)
+  0015: if !((!Edge.Border && (obj'Core.Math'.static.VSize((Edge.Start - Edge.End)) < cast3f((440 * 2))))) goto 0x00c0
+  006a: EmitCheckMessage(1, "Cell has an inner Edge that is to narrow, for vehicles to move through", , )
+  00c0: iternext
+  00c1: iterpop
+  00c2: foreach self._RegisteredActors(A,) (end 0x014a)
+  00d1: if !((A.get_Outer() != get_Outer())) goto 0x0149
+  00e5: EmitCheckMessage(0, "Cell has actors from another layer registered in it.  Please rebuild auto emotes!", , )
+  0146: goto 0x014a
+  0149: iternext
+  014a: iterpop
+  014b: return nothing
+  014d: <eos>

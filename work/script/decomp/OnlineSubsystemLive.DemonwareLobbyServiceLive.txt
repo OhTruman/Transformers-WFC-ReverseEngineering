@@ -1,0 +1,110 @@
+function DemonwareLobbyServiceLive.StartEnumeratingServers  (script 7 bytes)
+  0000: InLocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function DemonwareLobbyServiceLive.OnServerEnumerationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyServiceLive.ConnectToEnumeratedServers  (script 7 bytes)
+  0000: InLocalUserNum
+  0005: nothing
+  0006: <eos>
+
+function DemonwareLobbyServiceLive.UnregisterLSPAddress  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DemonwareLobbyServiceLive.DisconnectFromLobbyServiceGateway  (script 15 bytes)
+  0000: DisconnectFromLobbyServiceGateway()
+  0006: DemonwareLobbyServiceLive.UnregisterLSPAddress()
+  000c: return nothing
+  000e: <eos>
+
+function DemonwareLobbyServiceLive.GetLocalPlayerUserNum  (script 108 bytes)
+  0000: WI = obj'Engine.GameEngine'.static.GetCurrentWorldInfo()
+  0019: LocalPlayerNum = 255
+  0021: foreach WI.LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x005e)
+  0041: LocalPlayerNum = PC.GetLocalUserNum()
+  005a: goto 0x005e
+  005d: iternext
+  005e: iterpop
+  005f: return LocalPlayerNum
+  0065: return return
+  006b: <eos>
+
+function DemonwareLobbyServiceLive.AllowedToAutoConnect  (script 71 bytes)
+  0000: self.LoggedInPlayerNum = cast3d(DemonwareLobbyServiceLive.GetLocalPlayerUserNum())
+  000e: return ((cast3a(self.LoggedInPlayerNum) != 255) && (cast3a(self.PlayerInterface.GetLoginStatus(self.LoggedInPlayerNum)) == cast3a(2)))
+  0040: return return
+  0046: <eos>
+
+function DemonwareLobbyServiceLive.OnPrimaryLoginChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareLobbyServiceLive.NotConnected.Login  (script 23 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: self.LoggedInPlayerNum = LocalUserNum
+  000e: return true
+  0010: return return
+  0016: <eos>
+
+function DemonwareLobbyServiceLive.Connected.BeginState  (script 109 bytes)
+  0000: self.PlayerInterface.AddLoginChangeDelegate(delegate.OnPrimaryLoginChange)
+  001d: self.OnlineSub.DownloadIniFiles()
+  0030: StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  004b: StatsInterface.ReadKeyArchive()
+  005f: BeginState(PreviousStateName)
+  006a: return nothing
+  006c: <eos>
+
+function DemonwareLobbyServiceLive.Connected.EndState  (script 43 bytes)
+  0000: EndState(NextStateName)
+  000b: self.PlayerInterface.ClearLoginChangeDelegate(delegate.OnPrimaryLoginChange)
+  0028: return nothing
+  002a: <eos>
+
+function DemonwareLobbyServiceLive.Connected.OnPrimaryLoginChange  (script 94 bytes)
+  0000: if !((cast3a(LocalUserNum) != cast3a(self.LoggedInPlayerNum))) goto 0x0015
+  0013: return nothing
+  0015: if !((cast3a(LoginType) != cast3a(0))) goto 0x0027
+  0025: return nothing
+  0027: if !((cast3a(self.PlayerInterface.GetLoginStatus(self.LoggedInPlayerNum)) == cast3a(2))) goto 0x004d
+  004b: return nothing
+  004d: GotoState('NotConnected', , , )
+  005b: return nothing
+  005d: <eos>
+
+function DemonwareLobbyServiceLive.Connecting.ConnectToLobbyServiceGateway  (script 54 bytes)
+  0000: if !((self.ServerIps.Length == 0)) goto 0x001f
+  000c: return StartEnumeratingServers(InLocalUserNum)
+  001c: goto 0x002f
+  001f: return ConnectToEnumeratedServers(InLocalUserNum)
+  002f: return return
+  0035: <eos>
+
+function DemonwareLobbyServiceLive.Connecting.OnServerEnumerationComplete  (script 36 bytes)
+  0000: if !(!bWasSuccessful) goto 0x0017
+  000b: HandleConnectionFailure()
+  0015: return nothing
+  0017: AttemptConnect()
+  0021: return nothing
+  0023: <eos>
+
+function DemonwareLobbyServiceLive.Connecting.HandleConnectionFailure  (script 99 bytes)
+  0000: if !((self.ServerIps.Length == 0)) goto 0x0014
+  000c: HandleConnectionFailure()
+  0012: return nothing
+  0014: LogInternal("Attempting to immediately connect to next server...", 'DevDemonware', , )
+  0056: AttemptConnect()
+  0060: return nothing
+  0062: <eos>
+
+function DemonwareLobbyServiceLive.GetUniquePlayerId  (script 42 bytes)
+  0000: return OnlineSubsystemLive(self.OnlineSub).GetUniquePlayerId(LocalUserNum, PlayerID)
+  0023: return return
+  0029: <eos>

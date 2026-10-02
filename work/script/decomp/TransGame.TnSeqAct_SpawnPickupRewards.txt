@@ -1,0 +1,14 @@
+function TnSeqAct_SpawnPickupRewards.Activated  (script 367 bytes)
+  0000: if !((self.Targets.Length == 0)) goto 0x0056
+  000c: LogInternal((("Error: No targets specified in" @ cast56(self)) @ "no rewards will be spawned"), , , )
+  0054: return nothing
+  0056: if !((0[self.Targets] == none)) goto 0x00b8
+  0063: LogInternal((("Error: First target specified in" @ cast56(self)) @ "is none, no rewards will be spawned"), , , )
+  00b6: return nothing
+  00b8: A = Actor(0[self.Targets])
+  00ca: if !((A == none)) goto 0x0133
+  00d5: LogInternal((("Error: First target specified in" @ cast56(self)) @ "is not and acotr, no rewards will be spawned"), , , )
+  0131: return nothing
+  0133: TnGame(GetWorldInfo().Game)._PickupRewardManager.SpawnPickupRewards(A, self.LootClassificationToSpawn)
+  016c: return nothing
+  016e: <eos>

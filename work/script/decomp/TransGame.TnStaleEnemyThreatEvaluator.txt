@@ -1,0 +1,16 @@
+function TnStaleEnemyThreatEvaluator.__Constructor__TnStaleEnemyThreatEvaluator_0  (script 25 bytes)
+  0000: self._TimeTillStale = TimeTillStale
+  000b: self._StaleScore = StaleScore
+  0016: return nothing
+  0018: <eos>
+
+function TnStaleEnemyThreatEvaluator.OnCalculateThreatLevel  (script 110 bytes)
+  0000: TimeDifference = (obj'Engine.Engine'.static.GetWorldTime() - self._OwnerController._EnemyChangedTime)
+  0029: if !((self._OwnerController.Enemy == Threat)) goto 0x0061
+  0041: if !((TimeDifference > self._TimeTillStale)) goto 0x0059
+  0050: return self._StaleScore
+  0056: goto 0x0061
+  0059: return -self._StaleScore
+  0061: return 0.0
+  0067: return return
+  006d: <eos>

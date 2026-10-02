@@ -1,0 +1,75 @@
+=== asm 0x827bb340 40
+  827bb340  b 0x826f0088 ->826f0088
+  827bb348  lfs f0,0xcc(r3)
+  827bb34c  fadds f13,f1,f0
+  827bb350  stfs f13,0xcc(r3)
+  827bb354  blr
+  827bb358  li r9,0x8
+  827bb35c  addi r11,r4,0x60
+  827bb360  subi r10,r3,0x4
+  827bb364  mtspr CTR,r9
+  827bb368  lwzu r9,0x4(r11)
+  827bb36c  stwu r9,0x4(r10)
+  827bb370  bdnz 0x827bb368 ->827bb368
+  827bb374  blr
+  827bb378  lis r11,-0x7df4
+  827bb37c  lis r10,-0x7c8b
+  827bb380  addi r4,r11,0x47d4 ->820c47d4
+  827bb384  addi r3,r10,0x558 ->83750558
+  827bb388  b 0x826f0088 ->826f0088
+  827bb390  mfspr r12,LR
+  827bb394  stw r12,-0x8(r1) ->Stack[-0x8]
+  827bb398  std r31,-0x10(r1) ->Stack[-0x10]
+  827bb39c  stwu r1,-0x60(r1) ->Stack[-0x60]
+  827bb3a0  or r31,r4,r4
+  827bb3a4  bl 0x828b11d0 ->828b11d0
+  827bb3a8  or r4,r31,r31
+  827bb3ac  bl 0x82a305f8 ->82a305f8
+  827bb3b0  addi r1,r1,0x60
+  827bb3b4  lwz r12,-0x8(r1) ->Stack[-0x8]
+  827bb3b8  mtspr LR,r12
+  827bb3bc  ld r31,-0x10(r1) ->Stack[-0x10]
+  827bb3c0  blr
+  827bb3c8  b 0x830c1ba0 ->830c1ba0
+  827bb3d0  b 0x830c1ba8 ->830c1ba8
+  827bb3d8  b 0x830c1bb0 ->830c1bb0
+  827bb3e0  mfspr r12,LR
+  827bb3e4  stw r12,-0x8(r1) ->Stack[-0x8]
+  827bb3e8  std r31,-0x10(r1) ->Stack[-0x10]
+  827bb3ec  stwu r1,-0x60(r1) ->Stack[-0x60]
+  827bb3f0  lis r11,-0x7df4
+  827bb3f4  or r31,r3,r3
+=== asm 0x8281f2c0 30
+  8281f2c0  lfd f30,-0x30(r1) ->Stack[-0x30]
+  8281f2c4  lfd f31,-0x28(r1) ->Stack[-0x28]
+  8281f2c8  b 0x830ead2c ->830ead2c
+  8281f2d8  mfspr r12,LR
+  8281f2dc  bl 0x830eacdc ->830eacdc
+  8281f2e0  subi r31,r1,0x80
+  8281f2e4  stwu r1,-0x80(r1) ->Stack[-0x80]
+  8281f2e8  lis r11,-0x7df4
+  8281f2ec  or r30,r4,r4
+  8281f2f0  cmplwi cr6,r4,0x10
+  8281f2f4  addi r29,r11,0x47d4
+  8281f2f8  beq cr6,0x8281f324 ->8281f324
+  8281f2fc  lis r11,-0x7c8b
+  8281f300  or r4,r29,r29 ->820c47d4
+  8281f304  addi r3,r11,0x558 ->83750558
+  8281f308  bl 0x826f0088 ->826f0088
+  8281f30c  or r11,r3,r3
+  8281f310  subi r3,r30,0x10
+  8281f314  subi r4,r11,0x10
+  8281f318  bl 0x826eccc8 ->826eccc8
+  8281f31c  cmplwi cr6,r3,0x0
+  8281f320  bne cr6,0x8281f328 ->8281f328
+  8281f324  li r30,0x10
+  8281f328  lwz r11,0x9c(r30) ->000000ac
+  8281f32c  li r5,0x1
+  8281f330  li r4,0x4
+  8281f334  addi r11,r11,0x10
+  8281f338  addi r30,r11,0x40
+  8281f33c  or r3,r30,r30
+  8281f340  bl 0x8281ebc8 ->8281ebc8
+=== refs 0x820c4030
+=== refs 0x820c4032
+=== refs 0x82193114

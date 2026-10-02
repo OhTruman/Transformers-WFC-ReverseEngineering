@@ -1,0 +1,72 @@
+function TnKnockbackPlayer.get_KnockbackForceThreshold  (script 13 bytes)
+  0000: return self._KnockbackForceThreshold
+  0006: return return
+  000c: <eos>
+
+function TnKnockbackPlayer.set_KnockbackForceThreshold  (script 14 bytes)
+  0000: self._KnockbackForceThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnKnockbackPlayer.Initialize  (script 50 bytes)
+  0000: self.Pawn = P
+  000b: self.KnockbackAnimParams = AnimParams
+  0016: self._KnockbackForceThreshold = ForceThreshold
+  0021: GotoState('Stopped', , , )
+  002f: return nothing
+  0031: <eos>
+
+function TnKnockbackPlayer.IsPlayingKnockback  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnKnockbackPlayer.PlayKnockback  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKnockbackPlayer.AbortKnockback  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKnockbackPlayer.AnimComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnKnockbackPlayer.Stopped.PlayKnockback  (script 57 bytes)
+  0000: if !((self.KnockbackAnimParams.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: if !((obj'Core.Math'.static.VSize(Momentum) > self._KnockbackForceThreshold)) goto 0x0036
+  0028: GotoState('KnockedBack', , , )
+  0036: return nothing
+  0038: <eos>
+
+function TnKnockbackPlayer.KnockedBack.BeginState  (script 218 bytes)
+  0000: AnimatorService = TnAnimatorService(self.Pawn.GetRobotService('TnAnimatorService'))
+  0027: if !(EqualEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x003d
+  003b: return nothing
+  003d: if !((TnWeapon(self.Pawn.Weapon) == none)) goto 0x0058
+  0056: return nothing
+  0058: if !((cast3a(TnWeapon(self.Pawn.Weapon).get_Stance()) >= self.KnockbackAnimParams.Length)) goto 0x0088
+  0086: return nothing
+  0088: AnimatorService.EnqueueReplicatedAnimation(cast3a(TnWeapon(self.Pawn.Weapon).get_Stance())[self.KnockbackAnimParams], delegate.AnimComplete, delegate.AnimComplete)
+  00d7: return nothing
+  00d9: <eos>
+
+function TnKnockbackPlayer.KnockedBack.AnimComplete  (script 17 bytes)
+  0000: GotoState('Stopped', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnKnockbackPlayer.KnockedBack.IsPlayingKnockback  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnKnockbackPlayer.KnockedBack.AbortKnockback  (script 119 bytes)
+  0000: AnimatorService = TnAnimatorService(self.Pawn.GetRobotService('TnAnimatorService'))
+  0027: if !(NotEqual_InterfaceInterface(AnimatorService, TnAnimatorService(none))) goto 0x0066
+  003b: AnimatorService.EnqueueReplicatedAnimation(StopParams, delegate.None, delegate.None)
+  0066: GotoState('Stopped', , , )
+  0074: return nothing
+  0076: <eos>

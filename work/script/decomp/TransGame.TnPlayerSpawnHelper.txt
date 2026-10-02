@@ -1,0 +1,104 @@
+function TnPlayerSpawnHelper.Initialize  (script 14 bytes)
+  0000: self.Game = OwningGame
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerSpawnHelper.Login  (script 14 bytes)
+  0000: TnPlayerSpawnHelper.InsertNewPlayer(PC)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerSpawnHelper.SeamlessTravel  (script 14 bytes)
+  0000: TnPlayerSpawnHelper.InsertNewPlayer(PC)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerSpawnHelper.Logout  (script 14 bytes)
+  0000: TnPlayerSpawnHelper.RemovePlayer(PC)
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerSpawnHelper.RestartingMatch  (script 93 bytes)
+  0000: I = 0
+  0007: if !((I < self.Players.Length)) goto 0x005a
+  0017: RestartingMatchOnPlayer(I[self.Players].PC)
+  0037: I[self.Players].GameState = 0
+  0050: AddAdd_PreInt(I)
+  0057: goto 0x0007
+  005a: return nothing
+  005c: <eos>
+
+function TnPlayerSpawnHelper.AllPlayersInGame  (script 77 bytes)
+  0000: I = 0
+  0007: if !((I < self.Players.Length)) goto 0x0044
+  0017: if !((cast3a(I[self.Players].GameState) != cast3a(3))) goto 0x003a
+  0038: return false
+  003a: AddAdd_PreInt(I)
+  0041: goto 0x0007
+  0044: return true
+  0046: return return
+  004c: <eos>
+
+function TnPlayerSpawnHelper.Tick  (script 429 bytes)
+  0000: I = 0
+  0007: if !((I < self.Players.Length)) goto 0x01aa
+  0017: switch (I[self.Players].GameState)
+  002f: case 0: (next 0x005c)
+  0034: if !(!CheckReadySpawn(I[self.Players].PC)) goto 0x005c
+  0059: goto 0x01a0
+  005c: case 1: (next 0x012e)
+  0061: if !(!FindSpawnPoint(I[self.Players].PC)) goto 0x00ec
+  0086: if !((cast3a(I[self.Players].GameState) == cast3a(0))) goto 0x00d0
+  00a7: self.Game.NotifyPlayerSpawnPointNotFound(I[self.Players].PC)
+  00d0: I[self.Players].GameState = 1
+  00e9: goto 0x01a0
+  00ec: I[self.Players].GameState = 2
+  0105: self.Game.NotifyPlayerReadyToSpawn(I[self.Players].PC)
+  012e: case 2: (next 0x019d)
+  0133: if !(!TrySpawn(I[self.Players].PC)) goto 0x015b
+  0158: goto 0x01a0
+  015b: I[self.Players].GameState = 3
+  0174: self.Game.NotifyPlayerAdded(I[self.Players].PC)
+  019d: default:
+  01a0: AddAdd_PreInt(I)
+  01a7: goto 0x0007
+  01aa: return nothing
+  01ac: <eos>
+
+function TnPlayerSpawnHelper.CheckReadySpawn  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerSpawnHelper.FindSpawnPoint  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerSpawnHelper.TrySpawn  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPlayerSpawnHelper.RestartingMatchOnPlayer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerSpawnHelper.InsertNewPlayer  (script 79 bytes)
+  0000: if !((TnPlayerSpawnHelper.FindPlayer(PC) != -1)) goto 0x0017
+  0015: return nothing
+  0017: self.Players.Insert(0,1)
+  001f: 0[self.Players].PC = PC
+  0037: 0[self.Players].GameState = 0
+  004c: return nothing
+  004e: <eos>
+
+function TnPlayerSpawnHelper.RemovePlayer  (script 49 bytes)
+  0000: I = TnPlayerSpawnHelper.FindPlayer(PC)
+  0011: if !((I == -1)) goto 0x0022
+  0020: return nothing
+  0022: self.Players.Remove(I,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnPlayerSpawnHelper.FindPlayer  (script 30 bytes)
+  0000: return self.Players.Find('PC',PC)
+  0017: return return
+  001d: <eos>

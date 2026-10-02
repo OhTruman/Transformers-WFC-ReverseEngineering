@@ -1,0 +1,39 @@
+function TnTacticalPathNodeEvaluatorDistanceFromDowned.Score  (script 206 bytes)
+  0000: DownedPawns = TnTacticalPathNodeEvaluatorDistanceFromDowned.FindDownedTeamMates(Searcher)
+  0011: if !((Searcher.Enemy != none)) goto 0x007c
+  0025: DownedEnemies = TnTacticalPathNodeEvaluatorDistanceFromDowned.FindDownedTeamMates(Searcher.Enemy.Controller)
+  0048: I = 0
+  004f: if !((I < DownedEnemies.Length)) goto 0x007c
+  005f: DownedPawns.AddItem(I[DownedEnemies])
+  0072: AddAdd_PreInt(I)
+  0079: goto 0x004f
+  007c: if !((DownedPawns.Length == 0)) goto 0x008e
+  0088: return 0.0
+  008e: Distance = TnTacticalPathNodeEvaluatorDistanceFromDowned.FindClosestDownedDistance(Tactical, DownedPawns)
+  00a4: return obj'Core.Math'.static.EvalCurveFloat(self.ScoreCurve, Distance, 0.0)
+  00c7: return return
+  00cd: <eos>
+
+function TnTacticalPathNodeEvaluatorDistanceFromDowned.FindDownedTeamMates  (script 85 bytes)
+  0000: if !((C != none)) goto 0x0048
+  000b: PRI = TnPlayerReplicationInfo(C.PlayerReplicationInfo)
+  0024: if !((PRI != none)) goto 0x0048
+  002f: DownedTeammates = PRI.GetDownedTeammates()
+  0048: return DownedTeammates
+  004e: return return
+  0054: <eos>
+
+function TnTacticalPathNodeEvaluatorDistanceFromDowned.FindClosestDownedDistance  (script 196 bytes)
+  0000: I = 0
+  0007: if !((I < DownedPawns.Length)) goto 0x00ac
+  0017: if !((I[DownedPawns] != none)) goto 0x00a2
+  0028: CurrentPawn = I[DownedPawns]
+  0039: CurrentDistanceSq = obj'Core.Math'.static.VSizeSq((CurrentPawn.Location - Tactical._Location))
+  0070: if !(((ClosestDownedPawn == none) || (CurrentDistanceSq < ClosestDistanceSq))) goto 0x00a2
+  008c: ClosestDownedPawn = CurrentPawn
+  0097: ClosestDistanceSq = CurrentDistanceSq
+  00a2: AddAdd_PreInt(I)
+  00a9: goto 0x0007
+  00ac: return obj'Core.Math'.static.Sqrt(ClosestDistanceSq)
+  00bd: return return
+  00c3: <eos>

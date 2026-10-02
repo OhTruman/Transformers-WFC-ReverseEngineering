@@ -1,0 +1,121 @@
+function SeqAct_Conversation.DialogEventCallback  (script 7 bytes)
+  0000: Event
+  0005: nothing
+  0006: <eos>
+
+function SeqAct_Conversation.GetIsStopped  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Conversation.GetIsFinished  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Conversation.GetIsPlaying  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Conversation.Play  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Conversation.Stop  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Conversation.OnEnded  (script 7 bytes)
+  0000: IsFinished
+  0005: nothing
+  0006: <eos>
+
+function SeqAct_Conversation.OnDialogPlayed  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SeqAct_Conversation.OnDialogEnded  (script 7 bytes)
+  0000: IsFinished
+  0005: nothing
+  0006: <eos>
+
+function SeqAct_Conversation.Reset  (script 20 bytes)
+  0000: Reset()
+  0006: self.SeqAct_Conversation.Stop()
+  0011: return nothing
+  0013: <eos>
+
+function SeqAct_Conversation.PlayDialog  (script 212 bytes)
+  0000: if !((none == SoundCue)) goto 0x000d
+  000b: return nothing
+  000d: DialogInterface = HmDialogInterface(Speaker)
+  001d: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x00a8
+  0031: LogInternal(((((("WARN:" @ "ERROR ") $ cast57(self.Name)) $ ":  Speaker ") $ cast57(Speaker.Name)) $ " does not support HmDialogInterface!"), 'SeqAct_Conversation', , )
+  00a6: return nothing
+  00a8: DialogInterface.PlayDialog(SoundCue, true, Type, false, delegate.DialogEventCallback)
+  00d1: return nothing
+  00d3: <eos>
+
+function SeqAct_Conversation.StopDialog  (script 221 bytes)
+  0000: if !((none == SoundCue)) goto 0x000d
+  000b: return nothing
+  000d: DialogInterface = HmDialogInterface(Speaker)
+  001d: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x00a8
+  0031: LogInternal(((((("WARN:" @ "ERROR ") $ cast57(self.Name)) $ ":  Speaker ") $ cast57(Speaker.Name)) $ " does not support HmDialogInterface!"), 'SeqAct_Conversation', , )
+  00a6: return nothing
+  00a8: if !(DialogInterface.GetIsDialogPlaying(SoundCue)) goto 0x00da
+  00c4: DialogInterface.StopDialog(true, true)
+  00da: return nothing
+  00dc: <eos>
+
+function SeqAct_Conversation.CheckForErrors  (script 737 bytes)
+  0000: CheckForErrors()
+  0006: LineIndex = 0
+  000d: if !((LineIndex < self.Lines.Length)) goto 0x02de
+  001d: if !((none == LineIndex[self.Lines].SoundCue)) goto 0x008d
+  0039: EmitCheckMessage(1, (("Conversation line " $ cast53(LineIndex)) $ " does not have a soundcue assigned"), , )
+  008a: goto 0x02d4
+  008d: VarLink = (LineIndex * 2)[self.VariableLinks]
+  00a2: if !((0 == VarLink.LinkedVariables.Length)) goto 0x0113
+  00b9: EmitCheckMessage(1, (("Conversation line " $ cast53(LineIndex)) $ " does not have a speaking actor assigned"), , )
+  0110: goto 0x02d4
+  0113: SeqVarObj = SeqVar_Object(0[VarLink.LinkedVariables])
+  0130: if !((none == SeqVarObj)) goto 0x013e
+  013b: goto 0x02d4
+  013e: obj = SeqVarObj.GetObjectValue()
+  0157: if !((none == obj)) goto 0x0165
+  0162: goto 0x02d4
+  0165: SEI = HmSoundEventInterface(obj)
+  0175: if !(EqualEqual_InterfaceInterface(HmSoundEventInterface(none), SEI)) goto 0x020f
+  0189: EmitCheckMessage(1, ((("Speaking actor " $ cast57(obj.Name)) $ " does not have a DialogComponent and will not play conversation line ") $ cast53(LineIndex)), , )
+  020c: goto 0x02d4
+  020f: SEI.GetDialogCharacters(DialogCharacters)
+  0228: if !((0 == DialogCharacters.Length)) goto 0x02ae
+  0234: EmitCheckMessage(1, ((("No HmDialogCharacters assigned on speaking actor " $ cast57(obj.Name)) $ " for conversation line ") $ cast53(LineIndex)), , )
+  02ab: goto 0x02d4
+  02ae: SeqAct_Conversation.CheckSoundCueForErrors(LineIndex[self.Lines].SoundCue, DialogCharacters, LineIndex)
+  02d4: AddAdd_Int(LineIndex)
+  02db: goto 0x000d
+  02de: return nothing
+  02e0: <eos>
+
+function SeqAct_Conversation.CheckSoundCueForErrors  (script 345 bytes)
+  0000: DialogCharacterIndex = 0
+  0007: if !((DialogCharacterIndex < DialogCharacters.Length)) goto 0x0156
+  0017: FoundMatch = false
+  001f: Root = SoundNodeRoot(SoundCue.FirstNode)
+  0038: WaveEventIndex = 0
+  003f: if !((WaveEventIndex < Root.ChildNodes.Length)) goto 0x00c5
+  0058: WaveEvent = SoundNodeWaveEvent(WaveEventIndex[Root.ChildNodes])
+  0077: if !((none == WaveEvent)) goto 0x0085
+  0082: goto 0x00bb
+  0085: FoundIndex = DialogCharacters.Find(WaveEvent.DialogCharacter)
+  00a1: if !((-1 != FoundIndex)) goto 0x00bb
+  00b0: FoundMatch = true
+  00b8: goto 0x00c5
+  00bb: AddAdd_Int(WaveEventIndex)
+  00c2: goto 0x003f
+  00c5: if !(!FoundMatch) goto 0x014c
+  00d0: EmitCheckMessage(1, ((((("Conversation line " $ cast53(LineIndex)) $ " (") $ cast56(SoundCue)) $ ") is not authored for DialogCharacter ") $ cast57(DialogCharacterIndex[DialogCharacters].Name)), , )
+  014c: AddAdd_Int(DialogCharacterIndex)
+  0153: goto 0x0007
+  0156: return nothing
+  0158: <eos>

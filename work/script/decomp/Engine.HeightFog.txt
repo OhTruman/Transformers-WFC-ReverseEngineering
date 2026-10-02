@@ -1,0 +1,28 @@
+function HeightFog.PostBeginPlay  (script 31 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.bEnabled = self.Component.bEnabled
+  001c: return nothing
+  001e: <eos>
+
+function HeightFog.ReplicatedEvent  (script 61 bytes)
+  0000: if !((VarName == 'bEnabled')) goto 0x002f
+  0013: self.Component.SetEnabled(self.bEnabled)
+  002c: goto 0x003a
+  002f: ReplicatedObject.ReplicatedEvent(VarName)
+  003a: return nothing
+  003c: <eos>
+
+function HeightFog.OnToggle  (script 240 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0036
+  001f: self.Component.SetEnabled(true)
+  0033: goto 0x00b0
+  0036: if !(1[Action.InputLinks].bHasImpulse) goto 0x006c
+  0055: self.Component.SetEnabled(false)
+  0069: goto 0x00b0
+  006c: if !(2[Action.InputLinks].bHasImpulse) goto 0x00b0
+  008c: self.Component.SetEnabled(!self.Component.bEnabled)
+  00b0: self.bEnabled = self.Component.bEnabled
+  00c6: ForceNetRelevant()
+  00d0: SetForcedInitialReplicatedProperty(obj'HeightFog.bEnabled', (self.bEnabled == default.bEnabled))
+  00ed: return nothing
+  00ef: <eos>

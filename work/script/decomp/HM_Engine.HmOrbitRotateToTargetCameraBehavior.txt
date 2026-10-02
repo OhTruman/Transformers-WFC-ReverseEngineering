@@ -1,0 +1,116 @@
+function HmOrbitRotateToTargetCameraBehavior.set_TargetingSmoother  (script 14 bytes)
+  0000: self._TargetingSmoother = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.get_TargetingSpeed  (script 13 bytes)
+  0000: return self._TargetingSpeed
+  0006: return return
+  000c: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.set_TargetingSpeed  (script 14 bytes)
+  0000: self._TargetingSpeed = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.get_TargetAngleOffset  (script 13 bytes)
+  0000: return self._TargetAngleOffset
+  0006: return return
+  000c: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.set_TargetAngleOffset  (script 14 bytes)
+  0000: self._TargetAngleOffset = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.Player = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.SetLookAtTarget  (script 14 bytes)
+  0000: self.LookAtTarget = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.Activate  (script 40 bytes)
+  0000: self._TargetingSmoother.SetPercentRemapper(obj'Core.Math'.static.delegate.SCurve)
+  0025: return nothing
+  0027: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.LookAtTargetComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.FocusOnLookAtTarget  (script 258 bytes)
+  0000: Result.Recentering = true
+  0013: Result.Teleport = true
+  0026: TargetLocation = GetLookAtTargetLocation()
+  0036: self.RotationDelta = obj'Core.Math'.static.Normalize((Result.OrbitRotation - CalculateFinalRecenterRotation(Result, TargetLocation)))
+  0076: LookAtTargetTime = (1.0 / get_TargetingSpeed())
+  008d: self._TargetingSmoother.SetTransitionTime(LookAtTargetTime)
+  00a5: self._TargetingSmoother.Reset()
+  00b8: if !(((self.ExtraLookAtTime > cast3f(0)) && (self.Player != none))) goto 0x00f5
+  00d2: self.Player.SetTimer((LookAtTargetTime + self.ExtraLookAtTime), false, 'LookAtTargetComplete', self)
+  00f5: return Result
+  00fb: return return
+  0101: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.IsCameraResetting  (script 27 bytes)
+  0000: return self._TargetingSmoother.IsTransitioning()
+  0014: return return
+  001a: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.GetLookAtTargetLocation  (script 47 bytes)
+  0000: if !((self.LookAtTarget == none)) goto 0x0019
+  000b: return vect(0,0,0)
+  0019: return self.LookAtTarget.Location
+  0028: return return
+  002e: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.CalculateFinalRecenterRotation  (script 429 bytes)
+  0000: if !((self.AnchorPoint == none)) goto 0x0019
+  000b: return rot(0,0,0)
+  0019: ToTarget = cast50((TargetLocation - Result.Location))
+  0038: if !((get_TargetAngleOffset() > 0.0)) goto 0x01a0
+  004c: DistanceToTarget = obj'Core.Math'.static.VSize((TargetLocation - Result.Location))
+  0074: OrbitDistance = obj'Core.Math'.static.VSize(Result.OrbitLocationOffset)
+  0095: HorizontalOffset = (obj'Core.Math'.static.Sin((get_TargetAngleOffset() * 0.0174533)) * OrbitDistance)
+  00be: AngleOffset = ((obj'Core.Math'.static.Asin((HorizontalOffset / DistanceToTarget)) * 57.2957802) + get_TargetAngleOffset())
+  00f6: if !((obj'Core.Math'.static.NormalizeRotAxis((ToTarget.Yaw - obj'Core.Math'.static.NormalizeRotAxis(self.Player.Rotation.Yaw))) < 0)) goto 0x015a
+  014d: AngleOffset = -AngleOffset
+  015a: ToTarget.Yaw = obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(ToTarget.Yaw) + (AngleOffset * 182.0444489))))
+  01a0: return ToTarget
+  01a6: return return
+  01ac: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.CalculateRecenterRotation  (script 105 bytes)
+  0000: ResetTargetRotation = CalculateFinalRecenterRotation(Result, TargetLocation)
+  001a: (self.RotationDelta *= (1.0 - self._TargetingSmoother.Update(DeltaTime)))
+  0041: return obj'Core.Math'.static.Normalize((ResetTargetRotation + self.RotationDelta))
+  0062: return return
+  0068: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.Update  (script 247 bytes)
+  0000: if !(((ShouldLookAtTarget() || ((self.Player != none) && self.Player.IsTimerActive('LookAtTargetComplete', self))) && (self.LookAtTarget != none))) goto 0x00b1
+  0049: TargetLocation = GetLookAtTargetLocation()
+  0059: Result.OrbitRotation = CalculateRecenterRotation(DeltaTime, Result, CI, TargetLocation)
+  0088: Result.Recentering = true
+  009b: Result.Teleport = true
+  00ae: goto 0x00ea
+  00b1: self._TargetingSmoother.EndTransition()
+  00c4: Result.Recentering = false
+  00d7: Result.Teleport = false
+  00ea: return Result
+  00f0: return return
+  00f6: <eos>
+
+function HmOrbitRotateToTargetCameraBehavior.ShouldLookAtTarget  (script 18 bytes)
+  0000: return IsCameraResetting()
+  000b: return return
+  0011: <eos>

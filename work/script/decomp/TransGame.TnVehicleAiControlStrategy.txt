@@ -1,0 +1,217 @@
+function TnVehicleAiControlStrategy.get_BoostOverride  (script 14 bytes)
+  0000: return self._BoostOverride
+  0007: return return
+  000d: <eos>
+
+function TnVehicleAiControlStrategy.set_BoostOverride  (script 70 bytes)
+  0000: self._BoostOverride = Value
+  000d: if !((self._TransformerPawn._VehicleForm != none)) goto 0x0043
+  0021: self._TransformerPawn._VehicleForm.set_BoostingInput(Value)
+  0043: return nothing
+  0045: <eos>
+
+function TnVehicleAiControlStrategy.set_IsAvoiding  (script 14 bytes)
+  0000: self._IsAvoiding = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleAiControlStrategy.get_DesiredLocation  (script 13 bytes)
+  0000: return self._DesiredLocation
+  0006: return return
+  000c: <eos>
+
+function TnVehicleAiControlStrategy.set_DesiredLocation  (script 14 bytes)
+  0000: self._DesiredLocation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleAiControlStrategy.get_DesiredRotation  (script 13 bytes)
+  0000: return self._DesiredRotation
+  0006: return return
+  000c: <eos>
+
+function TnVehicleAiControlStrategy.set_DesiredRotation  (script 14 bytes)
+  0000: self._DesiredRotation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleAiControlStrategy.get_PathFollower  (script 13 bytes)
+  0000: return self._PathFollower
+  0006: return return
+  000c: <eos>
+
+function TnVehicleAiControlStrategy.set_NearTargetLocationDistance  (script 14 bytes)
+  0000: self._NearTargetLocationDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleAiControlStrategy.Initialize  (script 73 bytes)
+  0000: self._BoundController = C
+  000b: self._TransformerPawn = C.get_TransformerPawn()
+  0024: self._PathFollower.Initialize(C)
+  003c: OnInitialize()
+  0046: return nothing
+  0048: <eos>
+
+function TnVehicleAiControlStrategy.Activate  (script 63 bytes)
+  0000: SetWorldStateVehicleMode(1)
+  000c: self._DesiredLocation = self._TransformerPawn.Location
+  0020: self._DesiredRotation = self._TransformerPawn.Rotation
+  0034: self._StopMovement = true
+  003c: return nothing
+  003e: <eos>
+
+function TnVehicleAiControlStrategy.Update  (script 18 bytes)
+  0000: OnUpdate(DeltaTime)
+  000f: return nothing
+  0011: <eos>
+
+function TnVehicleAiControlStrategy.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.GetTargetOffset  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnVehicleAiControlStrategy.OnMoveTowardPoint  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.OnMoveTowardPath  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.OnMoveTowardActor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.OnMoveToLocation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.OnPostMoveToward  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnVehicleAiControlStrategy.IncrementStuckTime  (script 65 bytes)
+  0000: WI = TnWorldInfo(self._TransformerPawn.WorldInfo)
+  0019: if !((WI != none)) goto 0x003e
+  0024: (self.StuckTime += WI.get_DeltaTime())
+  003e: return nothing
+  0040: <eos>
+
+function TnVehicleAiControlStrategy.ClearStuckTime  (script 14 bytes)
+  0000: self.StuckTime = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function TnVehicleAiControlStrategy.IsStuckTimedOut  (script 20 bytes)
+  0000: return (self.StuckTime > 0.5)
+  000d: return return
+  0013: <eos>
+
+function TnVehicleAiControlStrategy.IsStuckInMoveToward  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnVehicleAiControlStrategy.ProcessMovement  (script 135 bytes)
+  0000: Path = self._BoundController.GetCurrentRoute()
+  0019: if !((Path.Length > 1)) goto 0x005d
+  0025: GoalIndex = Path.Find(NavigationPoint(GoalActor))
+  003d: if !((GoalIndex != -1)) goto 0x005d
+  004c: return TnVehicleAiControlStrategy.MoveTowardPath(Path, GoalActor)
+  005d: if !((GoalActor != none)) goto 0x0074
+  0068: return TnVehicleAiControlStrategy.MoveTowardActor(GoalActor)
+  0074: return TnVehicleAiControlStrategy.MoveTowardPoint(Dest)
+  0080: return return
+  0086: <eos>
+
+function TnVehicleAiControlStrategy.MoveToward  (script 73 bytes)
+  0000: if !(TnVehicleAiControlStrategy.ProcessMovement(Dest, GoalActor)) goto 0x0015
+  0013: return true
+  0015: self.LastMoveToRotation = self._DesiredRotation
+  0020: if !(IsStuckInMoveToward()) goto 0x0040
+  002d: self._BoundController.MoveTowardFailed()
+  0040: return false
+  0042: return return
+  0048: <eos>
+
+function TnVehicleAiControlStrategy.StopMovement  (script 40 bytes)
+  0000: self._TransformerPawn._VehicleForm.set_BoostingInput(false)
+  001d: self._StopMovement = true
+  0025: return nothing
+  0027: <eos>
+
+function TnVehicleAiControlStrategy.MoveTowardPath  (script 164 bytes)
+  0000: if !((NavigationPoint(GoalActor) != none)) goto 0x0029
+  0010: self._PathFollower._Offset = GetTargetOffset()
+  0029: if !(self._PathFollower.Update(NavigationPoint(GoalActor))) goto 0x004b
+  0049: return true
+  004b: self._LookAtLocation = self._PathFollower._TargetLocation
+  005f: TnVehicleAiControlStrategy.MoveToLocation(self._PathFollower._TargetLocation)
+  0073: OnMoveTowardPath(GoalActor, Path)
+  0087: OnPostMoveToward(self._DesiredLocation, GoalActor)
+  009b: return false
+  009d: return return
+  00a3: <eos>
+
+function TnVehicleAiControlStrategy.CalculateFinalDesiredLocation  (script 111 bytes)
+  0000: if !(!self._StopMovement) goto 0x0011
+  000b: return self._DesiredLocation
+  0011: return (RigidBody.get_Location() - ((RigidBody.get_LinearSpeed() > cast3f(100)) ? RigidBody.get_LinearVelocity() : vect(0,0,0)))
+  0068: return return
+  006e: <eos>
+
+function TnVehicleAiControlStrategy.MoveTowardActor  (script 103 bytes)
+  0000: if !(self._TransformerPawn.ReachedDestination(GoalActor)) goto 0x001d
+  001b: return true
+  001d: TnVehicleAiControlStrategy.MoveToLocation(GoalActor.GetDestination(self._BoundController))
+  003b: OnMoveTowardActor(GoalActor)
+  004a: OnPostMoveToward(self._DesiredLocation, GoalActor)
+  005e: return false
+  0060: return return
+  0066: <eos>
+
+function TnVehicleAiControlStrategy.MoveTowardPoint  (script 81 bytes)
+  0000: if !(self._TransformerPawn.ReachedPoint(Dest, none)) goto 0x001e
+  001c: return true
+  001e: TnVehicleAiControlStrategy.MoveToLocation(Dest)
+  0029: OnMoveTowardPoint(Dest)
+  0038: OnPostMoveToward(self._DesiredLocation, none)
+  0048: return false
+  004a: return return
+  0050: <eos>
+
+function TnVehicleAiControlStrategy.MoveToLocation  (script 53 bytes)
+  0000: self._StopMovement = false
+  0008: self._DesiredRotation = CalculateRotation(TargetLocation)
+  001d: self._DesiredLocation = TargetLocation
+  0028: OnMoveToLocation()
+  0032: return nothing
+  0034: <eos>
+
+function TnVehicleAiControlStrategy.CalculateRotation  (script 147 bytes)
+  0000: TargetLocation = AdjustLookAtTargetLocation(TargetLocation)
+  0015: TargetDirection = (TargetLocation - self._TransformerPawn.Mesh.GetRBPosition())
+  003e: if !((obj'Core.Math'.static.VSizeSq(TargetDirection) <= (self._NearTargetLocationDistance * self._NearTargetLocationDistance))) goto 0x0084
+  0067: return self._TransformerPawn.Mesh.GetRBRotation()
+  0084: return cast50(TargetDirection)
+  008c: return return
+  0092: <eos>
+
+function TnVehicleAiControlStrategy.AdjustLookAtTargetLocation  (script 13 bytes)
+  0000: return TargetLocation
+  0006: return return
+  000c: <eos>
+
+function TnVehicleAiControlStrategy.SetWorldStateVehicleMode  (script 55 bytes)
+  0000: if !((self._BoundController != none)) goto 0x0034
+  000b: self._BoundController.AiWorldState.SetIntValue(obj'TnAiWorldStateVehicleMode', cast3a(Value), )
+  0034: return nothing
+  0036: <eos>

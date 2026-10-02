@@ -1,0 +1,31 @@
+function SeqAct_AttachComponent.ReturnArg  (script 13 bytes)
+  0000: return arg
+  0006: return return
+  000c: <eos>
+
+function SeqAct_AttachComponent.Activated  (script 497 bytes)
+  0000: if !((self.ComponentToAttach != none)) goto 0x0020
+  000b: LocalClass = self.ComponentToAttach.get_Class()
+  001d: goto 0x0036
+  0020: if !((self.ComponentClass != none)) goto 0x0036
+  002b: LocalClass = self.ComponentClass
+  0036: if !((LocalClass != none)) goto 0x01ee
+  0041: I = 0
+  0048: if !((I < self.Targets.Length)) goto 0x01ee
+  0058: A = Actor(I[self.Targets])
+  006e: if !((A == none)) goto 0x00d7
+  0079: LogInternal((("Error [" @ cast56(self)) @ "] : Actor is none.  Trying to attach to actor that isnt streamed in?"), , , )
+  00d4: goto 0x01e4
+  00d7: if !((A.FindActorComponent(LocalClass) != none)) goto 0x0144
+  00f5: LogInternal(((((("Error [" @ cast56(self)) @ "] : Actor") @ cast57(A.Name)) @ "already has a") @ cast56(LocalClass)), , , )
+  0141: goto 0x01e4
+  0144: NewComponentName = ((PathName(A) $ cast56(LocalClass)) $ "_FromKismet_")
+  0172: if !((self.ComponentToAttach == none)) goto 0x01a2
+  017d: NewComponent = new(A, NewComponentName, SeqAct_AttachComponent.ReturnArg(LocalClass), nothing, AttachTreeCallback)
+  019f: goto 0x01cc
+  01a2: NewComponent = ActorComponent(self.ComponentToAttach.Clone(A, cast60(NewComponentName)))
+  01cc: A.AttachComponent(NewComponent)
+  01e4: AddAdd_Int(I)
+  01eb: goto 0x0048
+  01ee: return nothing
+  01f0: <eos>

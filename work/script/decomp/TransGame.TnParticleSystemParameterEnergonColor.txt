@@ -1,0 +1,20 @@
+function TnParticleSystemParameterEnergonColor.Apply  (script 369 bytes)
+  0000: OwningPawn = TnPawn(PSC.get_Outer())
+  0017: if !((OwningPawn == none)) goto 0x0046
+  0022: if !((Owner != none)) goto 0x0046
+  002d: OwningPawn = TnPawn(Owner.Instigator)
+  0046: if !((OwningPawn != none)) goto 0x006a
+  0051: EnergonColor = OwningPawn.get_EnergonColor()
+  006a: SMAOwner = SkeletalMeshActor(Owner)
+  007a: if !((SMAOwner != none)) goto 0x00d2
+  0085: ParamName = 'EnergonColor'
+  0094: if !(SMAOwner.SkeletalMeshComponent.GetVectorParam(ParamName, SMAEnergonLinearColor)) goto 0x00d2
+  00bd: EnergonColor = LinearColorToSRGBColor(SMAEnergonLinearColor)
+  00d2: OwnerMine = TnProjectileKamikazeMine(Owner)
+  00e2: if !(((OwnerMine != none) && (OwnerMine.GetTeam() != none))) goto 0x0134
+  0108: EnergonColor = LinearColorToSRGBColor(OwnerMine.GetTeam().static.default.EnergonColor)
+  0134: if !((EnergonColor == DefaultColor)) goto 0x0151
+  0146: EnergonColor = self.ColorParameter
+  0151: PSC.SetColorParameter(self.ParameterName, EnergonColor)
+  016e: return nothing
+  0170: <eos>

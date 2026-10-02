@@ -1,0 +1,217 @@
+function PartyBeaconConnectionDemonware.InitAsHost  (script 105 bytes)
+  0000: OnlineChat = OnlineChatInterface(obj'Engine.GameEngine'.static.GetOnlineSubsystem())
+  001e: if !(EqualEqual_InterfaceInterface(OnlineChat, OnlineChatInterface(none))) goto 0x0034
+  0032: return false
+  0034: self.__OnHostCreated__Delegate = CreateNotify
+  003f: self.BeaconRole = 0
+  0047: PartyBeaconConnectionDemonware.AddChatDelegates()
+  004d: return OnlineChat.CreateChatChannel()
+  0062: return return
+  0068: <eos>
+
+function PartyBeaconConnectionDemonware.InitAsClient  (script 78 bytes)
+  0000: self.BeaconRole = 2
+  0008: self.TargetUserId = DesiredHost.GameSettings.OwningPlayerId
+  0027: return PartyBeaconConnectionDemonware.ListenForChatMessages(DesiredHost.GameSettings.ReservationChannel)
+  0047: return return
+  004d: <eos>
+
+function PartyBeaconConnectionDemonware.InitAsChild  (script 41 bytes)
+  0000: self.BeaconRole = 1
+  0008: self.ConnectionState = 1
+  0010: self.TargetUserId = NewTargetUserId
+  001b: PartyBeaconConnectionDemonware.ListenForChatMessages(NewReservationChannel)
+  0026: return nothing
+  0028: <eos>
+
+function PartyBeaconConnectionDemonware.DestroyConnection  (script 106 bytes)
+  0000: LogInternal(((("Destroying reservation " $ cast52(self.BeaconRole)) $ " connection") @ cast56(self)), 'DevDemonware', , )
+  0043: PartyBeaconConnectionDemonware.RemoveChatDelegates()
+  0049: if !((cast3a(self.BeaconRole) != cast3a(1))) goto 0x005f
+  0059: PartyBeaconConnectionDemonware.UnsubscribeFromChannel()
+  005f: self.ConnectionState = 0
+  0067: return nothing
+  0069: <eos>
+
+function PartyBeaconConnectionDemonware.UnsubscribeFromChannel  (script 116 bytes)
+  0000: OnlineChat = OnlineChatInterface(obj'Engine.GameEngine'.static.GetOnlineSubsystem())
+  001e: LogInternal(("Unsubscribing from reservation channel" @ cast56(self)), 'DevDemonware', , )
+  0058: OnlineChat.UnsubscribeFromChatChannel(self.ReservationChannel)
+  0071: return nothing
+  0073: <eos>
+
+function PartyBeaconConnectionDemonware.Accept  (script 64 bytes)
+  0000: if !((self.NewConnections.Length == 0)) goto 0x000e
+  000c: return none
+  000e: Result = (self.NewConnections.Length - 1)[self.NewConnections]
+  0023: self.NewConnections.Length = (self.NewConnections.Length - 1)
+  0033: return Result
+  0039: return return
+  003f: <eos>
+
+function PartyBeaconConnectionDemonware.Send  (script 371 bytes)
+  0000: if !((cast3a(self.ConnectionState) == cast3a(2))) goto 0x0012
+  0010: return false
+  0012: if !((cast3a(self.BeaconRole) == cast3a(0))) goto 0x0072
+  0022: LogInternal("ERROR: Host should only send data via client connections", 'DevDemonware', (4096 | 1), )
+  0070: return false
+  0072: if !((Count > 1024)) goto 0x00be
+  0081: LogInternal("ERROR: Sending a message that is too big", 'DevDemonware', 4096, )
+  00bc: return false
+  00be: OnlineChat = OnlineChatInterface(obj'Engine.GameEngine'.static.GetOnlineSubsystem())
+  00dc: LogInternal(((((("Beacon" @ cast56(self)) @ "Sending ") $ cast53(Count)) $ " bytes to ") $ GetConnectionString()), 'DevDemonware', (16 | 1), )
+  0129: if !(!OnlineChat.SendChatWhisperMessage(self.ReservationChannel, self.TargetUserId, Data, Count)) goto 0x015f
+  0156: BytesSent = 0
+  015d: return false
+  015f: BytesSent = Count
+  016a: return true
+  016c: return return
+  0172: <eos>
+
+function PartyBeaconConnectionDemonware.Recv  (script 274 bytes)
+  0000: if !((cast3a(self.ConnectionState) == cast3a(2))) goto 0x0012
+  0010: return false
+  0012: if !((cast3a(self.BeaconRole) == cast3a(0))) goto 0x0075
+  0022: LogInternal("ERROR: Host should only receive data via client connections", 'DevDemonware', (4096 | 1), )
+  0073: return false
+  0075: BytesRead = obj'Core.Math'.static.Min(self.ReceiveBuffer.Length, BufferSize)
+  0091: if !((BytesRead == 0)) goto 0x009e
+  009c: return true
+  009e: LogInternal(((((("Reading " $ cast53(BytesRead)) $ "(of ") $ cast53(self.ReceiveBuffer.Length)) $ ") bytes from channel") @ cast56(self)), 'DevDemonware', (16 | 1), )
+  00f1: PartyBeaconConnectionDemonware.WriteReceiveBufferToMemory(Data, BufferSize)
+  0101: self.ReceiveBuffer.Length = 0
+  0109: return true
+  010b: return return
+  0111: <eos>
+
+function PartyBeaconConnectionDemonware.HadFatalError  (script 21 bytes)
+  0000: return (cast3a(self.ConnectionState) == cast3a(2))
+  000e: return return
+  0014: <eos>
+
+function PartyBeaconConnectionDemonware.GetErrorString  (script 10 bytes)
+  0000: return ""
+  0003: return return
+  0009: <eos>
+
+function PartyBeaconConnectionDemonware.GetConnectionString  (script 11 bytes)
+  0000: return cast56(self)
+  0004: return return
+  000a: <eos>
+
+function PartyBeaconConnectionDemonware.GetConnectionChannel  (script 13 bytes)
+  0000: return self.ReservationChannel
+  0006: return return
+  000c: <eos>
+
+function PartyBeaconConnectionDemonware.OnChatCreate  (script 104 bytes)
+  0000: if !(obj'Engine.GameEngine'.static.GetOnlineSubsystem().UniqueNetIdHasValue(self.ReservationChannel)) goto 0x002b
+  0029: return nothing
+  002b: self.ReservationChannel = ChannelId
+  0036: self.ConnectionState = (bWasSuccessful ? 1 : 2)
+  004b: OnHostCreated(bWasSuccessful, ChannelId)
+  0065: return nothing
+  0067: <eos>
+
+function PartyBeaconConnectionDemonware.OnChatSubscribe  (script 44 bytes)
+  0000: if !((ChannelId != self.ReservationChannel)) goto 0x0014
+  0012: return nothing
+  0014: self.ConnectionState = (bWasSuccessful ? 1 : 2)
+  0029: return nothing
+  002b: <eos>
+
+function PartyBeaconConnectionDemonware.OnChatUnsubscribe  (script 44 bytes)
+  0000: if !((ChannelId != self.ReservationChannel)) goto 0x0014
+  0012: return nothing
+  0014: self.ConnectionState = (bWasSuccessful ? 1 : 2)
+  0029: return nothing
+  002b: <eos>
+
+function PartyBeaconConnectionDemonware.OnChatSendComplete  (script 42 bytes)
+  0000: if !((ChannelId != self.ReservationChannel)) goto 0x0014
+  0012: return nothing
+  0014: if !(!bWasSuccessful) goto 0x0027
+  001f: self.ConnectionState = 2
+  0027: return nothing
+  0029: <eos>
+
+function PartyBeaconConnectionDemonware.OnChatChange  (script 446 bytes)
+  0000: if !((ChannelId != self.ReservationChannel)) goto 0x0014
+  0012: return nothing
+  0014: if !((cast3a(Status) == cast3a(0))) goto 0x0101
+  0024: if !((cast3a(self.BeaconRole) != cast3a(0))) goto 0x0036
+  0034: return nothing
+  0036: NewConnection = new(nothing, nothing, self.get_Class(), nothing, NewOnlineSub)
+  004d: LogInternal(((((("Reservation host" @ cast56(self)) @ "received a client connection notification from "") $ UserName) $ "" created client connection") @ cast56(NewConnection)), 'DevDemonware', (16 | 1), )
+  00d8: NewConnection.PartyBeaconConnectionDemonware.InitAsChild(UserId, self.ReservationChannel)
+  00f1: self.NewConnections.AddItem(NewConnection)
+  00fe: goto 0x01bb
+  0101: if !((cast3a(self.BeaconRole) == cast3a(0))) goto 0x0113
+  0111: return nothing
+  0113: if !((UserId != self.TargetUserId)) goto 0x0127
+  0125: return nothing
+  0127: LogInternal((((("Reservation beacon" @ cast56(self)) @ "received disconnection notification from "") $ UserName) $ "" and the connection state will be an err"), 'DevDemonware', (16 | 1), )
+  01b3: self.ConnectionState = 2
+  01bb: return nothing
+  01bd: <eos>
+
+function PartyBeaconConnectionDemonware.OnChatMessage  (script 161 bytes)
+  0000: if !((cast3a(self.BeaconRole) == cast3a(0))) goto 0x0012
+  0010: return nothing
+  0012: if !((ChannelId != self.ReservationChannel)) goto 0x0026
+  0024: return nothing
+  0026: if !((SenderId != self.TargetUserId)) goto 0x003a
+  0038: return nothing
+  003a: LogInternal(((("Reservation connection received a message from "" $ SenderName) $ """) @ cast56(self)), 'DevDemonware', (16 | 1), )
+  008e: PartyBeaconConnectionDemonware.CopyMessageToReceiveBuffer(Message, MessageSize)
+  009e: return nothing
+  00a0: <eos>
+
+function PartyBeaconConnectionDemonware.AddChatDelegates  (script 229 bytes)
+  0000: OnlineChat = OnlineChatInterface(obj'Engine.GameEngine'.static.GetOnlineSubsystem())
+  001e: if !(EqualEqual_InterfaceInterface(OnlineChat, OnlineChatInterface(none))) goto 0x0034
+  0032: return nothing
+  0034: OnlineChat.AddChatCreateDelegate(delegate.OnChatCreate)
+  0051: OnlineChat.AddChatSubscribeDelegate(delegate.OnChatSubscribe)
+  006e: OnlineChat.AddChatUnsubscribeDelegate(delegate.OnChatUnsubscribe)
+  008b: OnlineChat.AddChatSendCompleteDelegate(delegate.OnChatSendComplete)
+  00a8: OnlineChat.AddChatChangeDelegate(delegate.OnChatChange)
+  00c5: OnlineChat.AddChatMessageDelegate(delegate.OnChatMessage)
+  00e2: return nothing
+  00e4: <eos>
+
+function PartyBeaconConnectionDemonware.RemoveChatDelegates  (script 229 bytes)
+  0000: OnlineChat = OnlineChatInterface(obj'Engine.GameEngine'.static.GetOnlineSubsystem())
+  001e: if !(EqualEqual_InterfaceInterface(OnlineChat, OnlineChatInterface(none))) goto 0x0034
+  0032: return nothing
+  0034: OnlineChat.ClearChatCreateDelegate(delegate.OnChatCreate)
+  0051: OnlineChat.ClearChatSubscribeDelegate(delegate.OnChatSubscribe)
+  006e: OnlineChat.ClearChatUnsubscribeDelegate(delegate.OnChatUnsubscribe)
+  008b: OnlineChat.ClearChatSendCompleteDelegate(delegate.OnChatSendComplete)
+  00a8: OnlineChat.ClearChatChangeDelegate(delegate.OnChatChange)
+  00c5: OnlineChat.ClearChatMessageDelegate(delegate.OnChatMessage)
+  00e2: return nothing
+  00e4: <eos>
+
+function PartyBeaconConnectionDemonware.ListenForChatMessages  (script 185 bytes)
+  0000: self.ReservationChannel = ChannelId
+  000b: LogInternal((("Subscribing to chat channel" @ obj'Engine.GameEngine'.static.GetOnlineSubsystem().UniqueNetIdToString(ChannelId)) @ cast56(self)), 'DevDemonware', , )
+  0062: PartyBeaconConnectionDemonware.AddChatDelegates()
+  0068: if !((cast3a(self.BeaconRole) == cast3a(2))) goto 0x00b0
+  0078: OnlineChat = OnlineChatInterface(obj'Engine.GameEngine'.static.GetOnlineSubsystem())
+  0096: return OnlineChat.SubscribeToChatChannel(ChannelId)
+  00b0: return false
+  00b2: return return
+  00b8: <eos>
+
+function PartyBeaconConnectionDemonware.CopyMessageToReceiveBuffer  (script 12 bytes)
+  0000: Message
+  0005: MessageSize
+  000a: nothing
+  000b: <eos>
+
+function PartyBeaconConnectionDemonware.WriteReceiveBufferToMemory  (script 12 bytes)
+  0000: Buffer
+  0005: BufferSize
+  000a: nothing
+  000b: <eos>

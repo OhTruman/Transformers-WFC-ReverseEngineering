@@ -1,0 +1,106 @@
+function SeqAct_TnAiUseInteract.get_InteractPriority  (script 13 bytes)
+  0000: return self._InteractPriority
+  0006: return return
+  000c: <eos>
+
+function SeqAct_TnAiUseInteract.set_InteractPriority  (script 14 bytes)
+  0000: self._InteractPriority = Value
+  000b: return nothing
+  000d: <eos>
+
+function SeqAct_TnAiUseInteract.CheckForErrors  (script 85 bytes)
+  0000: PublishLinkedVariableValues()
+  000a: if !((self.Targets.Length > 1)) goto 0x004c
+  0016: EmitCheckMessage(0, "Only one AI can use interact at a time", , )
+  004c: CheckForErrors()
+  0052: return nothing
+  0054: <eos>
+
+function SeqAct_TnAiUseInteract.Activated  (script 233 bytes)
+  0000: self._Aborted = false
+  0008: self._Ended = false
+  0010: ActivateOutputLink(0)
+  001b: if !(1[self.InputLinks].bHasImpulse) goto 0x0039
+  0031: self._Aborted = true
+  0039: if !(2[self.InputLinks].bHasImpulse) goto 0x0058
+  0050: self._Ended = true
+  0058: if !(((self.Targets.Length == 1) && 0[self.InputLinks].bHasImpulse)) goto 0x00a4
+  007c: SeqAct_TnAiUseInteract.AddPendingAiInteract()
+  0082: if !((SeqAct_TnAiUseInteract.IsTargetAIControlled() && (self.OutputLinks.Length > 1))) goto 0x00a4
+  0099: ActivateOutputLink(1)
+  00a4: if !(((self.Interact != none) && (1[self.InputLinks].bHasImpulse || 2[self.InputLinks].bHasImpulse))) goto 0x00e6
+  00e0: SeqAct_TnAiUseInteract.ClearPendingAiInteract()
+  00e6: return nothing
+  00e8: <eos>
+
+function SeqAct_TnAiUseInteract.Aborted  (script 14 bytes)
+  0000: return self._Aborted
+  0007: return return
+  000d: <eos>
+
+function SeqAct_TnAiUseInteract.Ended  (script 14 bytes)
+  0000: return self._Ended
+  0007: return return
+  000d: <eos>
+
+function SeqAct_TnAiUseInteract.IsTargetAIControlled  (script 131 bytes)
+  0000: CampaignGame = SeqAct_TnAiUseInteract.GetCampaignGame()
+  000c: if !(((CampaignGame == none) || (CampaignGame.get_AiSquad() == none))) goto 0x0034
+  0032: return false
+  0034: CharacterName = SeqAct_TnAiUseInteract.GetCharacterName(0[self.Targets])
+  0047: if !((CharacterName == "")) goto 0x0055
+  0053: return false
+  0055: return CampaignGame.get_AiSquad().IsCharacterAIControlled(CharacterName)
+  007c: return return
+  0082: <eos>
+
+function SeqAct_TnAiUseInteract.AddPendingAiInteract  (script 127 bytes)
+  0000: CampaignGame = SeqAct_TnAiUseInteract.GetCampaignGame()
+  000c: if !(((CampaignGame == none) || (CampaignGame.get_AiSquad() == none))) goto 0x0034
+  0032: return nothing
+  0034: CharacterName = SeqAct_TnAiUseInteract.GetCharacterName(0[self.Targets])
+  0047: if !((CharacterName == "")) goto 0x0055
+  0053: return nothing
+  0055: CampaignGame.get_AiSquad().AddPendingAiInteract(CharacterName, self)
+  007c: return nothing
+  007e: <eos>
+
+function SeqAct_TnAiUseInteract.ClearPendingAiInteract  (script 93 bytes)
+  0000: CampaignGame = SeqAct_TnAiUseInteract.GetCampaignGame()
+  000c: if !(((CampaignGame == none) || (CampaignGame.get_AiSquad() == none))) goto 0x0034
+  0032: return nothing
+  0034: CampaignGame.get_AiSquad().ClearPendingAiInteract(self.Interact)
+  005a: return nothing
+  005c: <eos>
+
+function SeqAct_TnAiUseInteract.GetCampaignGame  (script 65 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI == none)) goto 0x0026
+  0024: return none
+  0026: return TnCampaignGameBase(WI.Game)
+  003a: return return
+  0040: <eos>
+
+function SeqAct_TnAiUseInteract.GetCharacterName  (script 158 bytes)
+  0000: P = SeqAct_TnAiUseInteract.GetTnPawn(Target)
+  0011: if !((P != none)) goto 0x0036
+  001c: return P._CurrentCharacter.CharacterName
+  0036: CharacterVar = TnSeqVar_Character(Target)
+  0046: if !((CharacterVar != none)) goto 0x0065
+  0051: return CharacterVar.GetCharacterName()
+  0065: BuddyVar = TnSeqVar_Buddy(Target)
+  0075: if !((BuddyVar != none)) goto 0x0094
+  0080: return BuddyVar.GetCharacterName()
+  0094: return ""
+  0097: return return
+  009d: <eos>
+
+function SeqAct_TnAiUseInteract.GetTnPawn  (script 92 bytes)
+  0000: P = TnPawn(Target)
+  0010: if !((P == none)) goto 0x004f
+  001b: C = Controller(Target)
+  002b: if !((C != none)) goto 0x004f
+  0036: P = TnPawn(C.Pawn)
+  004f: return P
+  0055: return return
+  005b: <eos>

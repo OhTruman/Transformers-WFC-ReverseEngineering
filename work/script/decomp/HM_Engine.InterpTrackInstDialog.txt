@@ -1,0 +1,56 @@
+function InterpTrackInstDialog.InitTrackInst  (script 60 bytes)
+  0000: GroupInst = InterpGroupInst(get_Outer())
+  000e: Seq = SeqAct_Interp(GroupInst.get_Outer())
+  0025: self.LastUpdatePosition = Seq.Position
+  0039: return nothing
+  003b: <eos>
+
+function InterpTrackInstDialog.TermTrackInst  (script 147 bytes)
+  0000: DialogTrack = InterpTrackDialog(Track)
+  0010: GroupInst = InterpGroupInst(get_Outer())
+  001e: Seq = SeqAct_Interp(GroupInst.get_Outer())
+  0035: if !(DialogTrack.bUseExistingSound) goto 0x0049
+  0047: return nothing
+  0049: if !(Seq.bIsCanceled) goto 0x0072
+  005b: if !(DialogTrack.bContinueSoundOnMatineeSkip) goto 0x006f
+  006d: return nothing
+  006f: goto 0x0086
+  0072: if !(DialogTrack.bContinueSoundOnMatineeEnd) goto 0x0086
+  0084: return nothing
+  0086: StopDialog()
+  0090: return nothing
+  0092: <eos>
+
+function InterpTrackInstDialog.PlayDialog  (script 125 bytes)
+  0000: if !((none == _Cue)) goto 0x000d
+  000b: return nothing
+  000d: DialogInterface = HmDialogInterface(InterpTrackInstDialog.GetActor())
+  001e: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0034
+  0032: return nothing
+  0034: if !(DialogInterface.GetIsDialogPlaying(_Cue)) goto 0x0052
+  0050: return nothing
+  0052: DialogInterface.PlayDialog(_Cue, false, , , )
+  006f: self.Cue = _Cue
+  007a: return nothing
+  007c: <eos>
+
+function InterpTrackInstDialog.StopDialog  (script 109 bytes)
+  0000: if !((none == self.Cue)) goto 0x000d
+  000b: return nothing
+  000d: DialogInterface = HmDialogInterface(InterpTrackInstDialog.GetActor())
+  001e: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x0034
+  0032: return nothing
+  0034: if !(!DialogInterface.GetIsDialogPlaying(self.Cue)) goto 0x0054
+  0052: return nothing
+  0054: DialogInterface.StopDialog(false, false)
+  006a: return nothing
+  006c: <eos>
+
+function InterpTrackInstDialog.GetActor  (script 71 bytes)
+  0000: A = GetGroupActor()
+  0010: PC = PlayerController(A)
+  0020: if !((none != PC)) goto 0x003a
+  002b: return PC.Pawn
+  003a: return A
+  0040: return return
+  0046: <eos>

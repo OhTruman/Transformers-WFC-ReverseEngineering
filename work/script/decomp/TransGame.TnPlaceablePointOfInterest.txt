@@ -1,0 +1,43 @@
+function TnPlaceablePointOfInterest.set_PointOfInterest  (script 14 bytes)
+  0000: self._PointOfInterest = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaceablePointOfInterest.set_FocusAvailableSound  (script 14 bytes)
+  0000: self._FocusAvailableSound = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaceablePointOfInterest.PostBeginPlay  (script 53 bytes)
+  0000: RegisterReplicatedObject(self._PointOfInterest, '_PointOfInterest')
+  0018: self._PointOfInterest._FocusAvailableSound = self._FocusAvailableSound
+  002c: PostBeginPlay()
+  0032: return nothing
+  0034: <eos>
+
+function TnPlaceablePointOfInterest.OnStreamedOut  (script 33 bytes)
+  0000: UnregisterReplicatedObject(self._PointOfInterest, '_PointOfInterest')
+  0018: OnStreamedOut()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlaceablePointOfInterest.Tick  (script 38 bytes)
+  0000: self._PointOfInterest.Tick(DeltaTime)
+  0018: Tick(DeltaTime)
+  0023: return nothing
+  0025: <eos>
+
+function TnPlaceablePointOfInterest.OnToggle  (script 253 bytes)
+  0000: PrevEnabled = self._PointOfInterest._Enabled
+  0016: if !(0[Action.InputLinks].bHasImpulse) goto 0x004c
+  0035: self._PointOfInterest.set_Enabled(true)
+  0049: goto 0x00c6
+  004c: if !(1[Action.InputLinks].bHasImpulse) goto 0x0082
+  006b: self._PointOfInterest.set_Enabled(false)
+  007f: goto 0x00c6
+  0082: if !(2[Action.InputLinks].bHasImpulse) goto 0x00c6
+  00a2: self._PointOfInterest.set_Enabled(!self._PointOfInterest._Enabled)
+  00c6: if !((self._PointOfInterest._Enabled && !PrevEnabled)) goto 0x00fa
+  00e5: TriggerStimulus(obj'Engine.StimulusType_PointOfInterest', self.Location, )
+  00fa: return nothing
+  00fc: <eos>

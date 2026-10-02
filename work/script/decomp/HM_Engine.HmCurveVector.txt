@@ -1,0 +1,44 @@
+function HmCurveVector.Evaluate  (script 43 bytes)
+  0000: nothing
+  0001: return obj'Core.Math'.static.EvalCurveVector(self.curve, InputValue, DefaultOutput)
+  0024: return return
+  002a: <eos>
+
+function HmCurveVector.Build  (script 584 bytes)
+  0000: if !((Outputs.Length < 1)) goto 0x000e
+  000c: return false
+  000e: self.curve.Points.Length = Outputs.Length
+  0026: EndIndex = (Outputs.Length - 1)
+  0035: InputIncrement = (1.0 / cast3f(EndIndex))
+  0049: CurrentIndex = 0
+  0050: if !((CurrentIndex <= EndIndex)) goto 0x00c6
+  005f: CurrentIndex[self.curve.Points].InVal = (InputIncrement * cast3f(CurrentIndex))
+  008f: CurrentIndex[self.curve.Points].OutVal = CurrentIndex[Outputs]
+  00bc: AddAdd_PreInt(CurrentIndex)
+  00c3: goto 0x0050
+  00c6: pt = 0[self.curve.Points]
+  00de: SetCurvePointTangents(pt, vect(0,0,0))
+  00fa: 0[self.curve.Points] = pt
+  0112: pt = EndIndex[self.curve.Points]
+  012e: SetCurvePointTangents(pt, vect(0,0,0))
+  014a: EndIndex[self.curve.Points] = pt
+  0166: CurrentIndex = 1
+  016d: if !((CurrentIndex < EndIndex)) goto 0x023f
+  017c: PreviousIndex = (CurrentIndex - 1)
+  018a: NextIndex = (CurrentIndex + 1)
+  0198: Tangent = ((NextIndex[self.curve.Points].OutVal - PreviousIndex[self.curve.Points].OutVal) / 2.0)
+  01e9: pt = CurrentIndex[self.curve.Points]
+  0205: SetCurvePointTangents(pt, Tangent)
+  0219: CurrentIndex[self.curve.Points] = pt
+  0235: AddAdd_PreInt(CurrentIndex)
+  023c: goto 0x016d
+  023f: return true
+  0241: return return
+  0247: <eos>
+
+function HmCurveVector.SetCurvePointTangents  (script 66 bytes)
+  0000: Point.ArriveTangent = Tangent
+  0016: Point.LeaveTangent = Tangent
+  002c: Point.InterpMode = 3
+  003f: return nothing
+  0041: <eos>

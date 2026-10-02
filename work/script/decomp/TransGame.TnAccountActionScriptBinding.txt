@@ -1,0 +1,209 @@
+function TnAccountActionScriptBinding.Initialize  (script 139 bytes)
+  0000: Initialize(NewOwnerMovie)
+  000b: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0024: if !((OnlineSub == none)) goto 0x0031
+  002f: return nothing
+  0031: self.AccountInterface = OnlineSub.AccountInterface
+  0045: self.AccountInterfaceEx = OnlineAccountInterfaceEx(cast36(OnlineSub.AccountInterface))
+  0060: self.PlayerInterface = OnlineSub.PlayerInterface
+  0074: self.SystemInterface = OnlineSub.SystemInterface
+  0088: return nothing
+  008a: <eos>
+
+function TnAccountActionScriptBinding.CreateAccount  (script 238 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self.AccountInterface, OnlineAccountInterface(none))) goto 0x0016
+  0014: return nothing
+  0016: PC = GetPlayerController()
+  0026: self.MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.CreateAccountTitle", "", false)
+  0076: self.MessageBox.bShowDefaultButtons = false
+  0087: self.MessageBox.SetIconType(1, )
+  009d: self.MessageBox.Show()
+  00b0: self.AccountInterface.AddCreateOnlineAccountCompletedDelegate(delegate.OnCreateAccountComplete)
+  00cd: self.AccountInterface.CreateOnlineAccount(UserName, "", "", )
+  00eb: return nothing
+  00ed: <eos>
+
+function TnAccountActionScriptBinding.DeleteAccount  (script 390 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self.AccountInterface, OnlineAccountInterface(none))) goto 0x0016
+  0014: return nothing
+  0016: PC = GetPlayerController()
+  0026: ConfirmMessage = Localize("MessagePrompts", "DeleteAccountConfirmMessage", "UIText")
+  006b: ConfirmMessage = obj'Core.Strings'.static.Repl(ConfirmMessage, "`u", UserName, )
+  008b: self.MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.DeleteAccountTitle", ConfirmMessage, false)
+  00de: self.MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmDeleteAccount, UserName, false)
+  012e: self.MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  0170: self.MessageBox.Show()
+  0183: return nothing
+  0185: <eos>
+
+function TnAccountActionScriptBinding.ConfirmDeleteAccount  (script 59 bytes)
+  0000: self.AccountInterface.AddDeleteOnlineAccountCompletedDelegate(delegate.OnDeleteAccountComplete)
+  001d: self.AccountInterface.DeleteOnlineAccount(UserName, "")
+  0038: return nothing
+  003a: <eos>
+
+function TnAccountActionScriptBinding.ClearLoginDelegates  (script 73 bytes)
+  0000: self.PlayerInterface.ClearLoginFailedDelegate(cast3d(GetPlayerNum()), delegate.OnLoginFailed)
+  0029: self.PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChanged)
+  0046: return nothing
+  0048: <eos>
+
+function TnAccountActionScriptBinding.Login  (script 378 bytes)
+  0000: if !((obj'Engine.WorldInfo'.static.IsConsoleBuild(1) || obj'Engine.WorldInfo'.static.IsConsoleBuild(2))) goto 0x0078
+  0032: LogInternal("ERROR: Explicit log-in on Xbox or PS3 is not allowed.", 'DevOnline', , )
+  0076: return nothing
+  0078: PC = GetPlayerController()
+  0088: self.MessageBox = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.LoginToAccountTitle", "", false)
+  00d9: self.MessageBox.bShowDefaultButtons = false
+  00ea: self.MessageBox.SetIconType(1, true)
+  0100: self.MessageBox.Show()
+  0113: self.PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChanged)
+  0130: self.PlayerInterface.AddLoginFailedDelegate(cast3d(GetPlayerNum()), delegate.OnLoginFailed)
+  0159: self.PlayerInterface.Login(0, UserName, "", )
+  0177: return nothing
+  0179: <eos>
+
+function TnAccountActionScriptBinding.OnLoginChanged  (script 28 bytes)
+  0000: self.MessageBox.Close()
+  0013: TnAccountActionScriptBinding.ClearLoginDelegates()
+  0019: return nothing
+  001b: <eos>
+
+function TnAccountActionScriptBinding.OnLoginFailed  (script 610 bytes)
+  0000: TnAccountActionScriptBinding.ClearLoginDelegates()
+  0006: LogInternal(("Login failed with error code" @ cast52(ErrorCode)), 'DevOnline', , )
+  003a: switch (ErrorCode)
+  0041: case 0: (next 0x0046)
+  0046: case 2: (next 0x004b)
+  004b: case 3: (next 0x0050)
+  0050: case 10: (next 0x0094)
+  0055: Message = "$UIText.MessagePrompts.LoginToAccountConnectionError"
+  0091: goto 0x01f8
+  0094: case 4: (next 0x0099)
+  0099: case 6: (next 0x00e0)
+  009e: Message = "$UIText.MessagePrompts.LoginToAccountServiceUnavailable"
+  00dd: goto 0x01f8
+  00e0: case 7: (next 0x0123)
+  00e5: Message = "$UIText.MessagePrompts.LoginToAccountDuplicateLogin"
+  0120: goto 0x01f8
+  0123: case 8: (next 0x0163)
+  0128: Message = "$UIText.MessagePrompts.LoginToAccountInvalidUser"
+  0160: goto 0x01f8
+  0163: case 9: (next 0x01a5)
+  0168: Message = "$UIText.MessagePrompts.LoginToAccountAccountLocked"
+  01a2: goto 0x01f8
+  01a5: case 5: (next 0x01aa)
+  01aa: case 11: (next 0x01af)
+  01af: case 12: (next 0x01b4)
+  01b4: case 1: (next 0x01f5)
+  01b9: Message = "$UIText.MessagePrompts.LoginToAccountGenericError"
+  01f2: goto 0x01f8
+  01f5: default:
+  01f8: self.MessageBox.bShowDefaultButtons = true
+  0209: self.MessageBox.SetText("$UIText.MessagePrompts.GenericErrorTitle", Message, true)
+  024c: self.MessageBox.Show()
+  025f: return nothing
+  0261: <eos>
+
+function TnAccountActionScriptBinding.Logout  (script 146 bytes)
+  0000: if !((obj'Engine.WorldInfo'.static.IsConsoleBuild(1) || obj'Engine.WorldInfo'.static.IsConsoleBuild(2))) goto 0x0079
+  0032: LogInternal("ERROR: Explicit log-out on Xbox or PS3 is not allowed.", 'DevOnline', , )
+  0077: return nothing
+  0079: self.PlayerInterface.Logout(0)
+  008f: return nothing
+  0091: <eos>
+
+function TnAccountActionScriptBinding.GetLoggedInAccount  (script 66 bytes)
+  0000: if !((cast3a(self.PlayerInterface.GetLoginStatus(0)) != cast3a(2))) goto 0x0024
+  0021: return ""
+  0024: return self.PlayerInterface.GetPlayerNickname(0)
+  003b: return return
+  0041: <eos>
+
+function TnAccountActionScriptBinding.SetDefaultAccount  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAccountActionScriptBinding.OnCreateAccountComplete  (script 972 bytes)
+  0000: switch (ErrorStatus)
+  0007: case 0: (next 0x004b)
+  000c: Message = "$UIText.MessagePrompts.CreateAccountSucceededMessage"
+  0048: goto 0x0319
+  004b: case 2: (next 0x0095)
+  0050: Message = "$UIText.MessagePrompts.CreateAccountInvalidUsernameMessage"
+  0092: goto 0x0319
+  0095: case 4: (next 0x00e5)
+  009a: Message = "$UIText.MessagePrompts.CreateAccountInvalidUniqueUsernameMessage"
+  00e2: goto 0x0319
+  00e5: case 5: (next 0x012c)
+  00ea: Message = "$UIText.MessagePrompts.CreateAccountUniqueUserNameInUse"
+  0129: goto 0x0319
+  012c: case 11: (next 0x0179)
+  0131: Message = "$UIText.MessagePrompts.CreateAccountInvalidLicenseCodeMessage"
+  0176: goto 0x0319
+  0179: case 12: (next 0x01c6)
+  017e: Message = "$UIText.MessagePrompts.CreateAccountMaxAccountExceededMessage"
+  01c3: goto 0x0319
+  01c6: case 15: (next 0x020f)
+  01cb: Message = "$UIText.MessagePrompts.CreateAccountLicenseExpiredMessage"
+  020c: goto 0x0319
+  020f: case 6: (next 0x0214)
+  0214: case 8: (next 0x025a)
+  0219: Message = "$UIText.MessagePrompts.CreateAccountServiceUnavailable"
+  0257: goto 0x0319
+  025a: case 1: (next 0x025f)
+  025f: case 3: (next 0x0264)
+  0264: case 7: (next 0x0269)
+  0269: case 9: (next 0x026e)
+  026e: case 10: (next 0x0273)
+  0273: case 14: (next 0x0278)
+  0278: case 13: (next 0x027d)
+  027d: default:
+  0280: if !(!self.SystemInterface.HasLinkConnection()) goto 0x02d8
+  0299: Message = "$UIText.MessagePrompts.CreateAccountNoLinkConnection"
+  02d5: goto 0x0316
+  02d8: Message = "$UIText.MessagePrompts.CreateAccountServiceUnavailable"
+  0316: goto 0x0319
+  0319: self.MessageBox.bShowDefaultButtons = true
+  032a: self.MessageBox.SetIconType(0, )
+  0340: self.MessageBox.SetText("$UIText.MessagePrompts.CreateAccountTitle", Message, true)
+  0384: self.MessageBox.Show()
+  0397: self.AccountInterface.ClearCreateOnlineAccountCompletedDelegate(delegate.OnCreateAccountComplete)
+  03b4: self.AccountInterfaceEx.ReadProductKeyAccountNames()
+  03c9: return nothing
+  03cb: <eos>
+
+function TnAccountActionScriptBinding.OnDeleteAccountComplete  (script 663 bytes)
+  0000: switch (ErrorStatus)
+  0007: case 0: (next 0x0056)
+  000c: Message = Localize("MessagePrompts", "DeleteAccountSucceededMessage", "UIText")
+  0053: goto 0x01a3
+  0056: case 2: (next 0x00ae)
+  005b: Message = Localize("MessagePrompts", "DeleteAccountInvalidLicenseCodeMessage", "UIText")
+  00ab: goto 0x01a3
+  00ae: case 3: (next 0x0103)
+  00b3: Message = Localize("MessagePrompts", "DeleteAccountInvalidUserNameMessage", "UIText")
+  0100: goto 0x01a3
+  0103: case 4: (next 0x0154)
+  0108: Message = Localize("MessagePrompts", "DeleteAccountNotLoggedInMessage", "UIText")
+  0151: goto 0x01a3
+  0154: case 1: (next 0x0159)
+  0159: default:
+  015c: Message = Localize("MessagePrompts", "DeleteAccountFailedMessage", "UIText")
+  01a0: goto 0x01a3
+  01a3: Message = obj'Core.Strings'.static.Repl(Message, "`u", UserName, )
+  01c3: self.MessageBox.bShowDefaultButtons = true
+  01d4: self.MessageBox.SetText("$UIText.MessagePrompts.DeleteAccountTitle", Message, true)
+  0218: self.MessageBox.SetAButton("$UIText.ButtonHints.Ok", delegate.None, "", true)
+  024f: self.MessageBox.Show()
+  0262: self.AccountInterface.ClearDeleteOnlineAccountCompletedDelegate(delegate.OnDeleteAccountComplete)
+  027f: self.AccountInterfaceEx.ReadProductKeyAccountNames()
+  0294: return nothing
+  0296: <eos>
+
+function TnAccountActionScriptBinding.GetAccountNames  (script 71 bytes)
+  0000: self.AccountInterfaceEx.GetProductKeyAccountNames(AccountNames)
+  0019: obj'Core.Strings'.static.JoinArray(AccountNames, NameCSV, ",", )
+  003a: return NameCSV
+  0040: return return
+  0046: <eos>

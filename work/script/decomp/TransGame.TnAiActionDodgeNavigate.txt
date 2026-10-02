@@ -1,0 +1,85 @@
+function TnAiActionDodgeNavigate.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionDodgeNavigateBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionDodgeNavigate.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._DodgeService = TnDodgeService(GetService('TnDodgeService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionDodgeNavigate.OnSetUpConditions  (script 189 bytes)
+  0000: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x0018
+  0016: return false
+  0018: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateTurret') == 1)) goto 0x003d
+  003b: return false
+  003d: if !((self._DodgeService.get_IsDodging() || (self._DodgeService.get_CanDodge() == false))) goto 0x0072
+  0070: return false
+  0072: if !((get_CurrentWorldState().GetSubject(obj'TnAiWorldStateNavigatePath') == none)) goto 0x0097
+  0095: return false
+  0097: if !((TnAiActionDodgeNavigate.CanDodge() == false)) goto 0x00a5
+  00a3: return false
+  00a5: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00b6: return return
+  00bc: <eos>
+
+function TnAiActionDodgeNavigate.OnStart  (script 139 bytes)
+  0000: Direction = TnAiActionDodgeNavigate.GetDodgeDirection(MaxDistance)
+  0011: if !((cast3a(Direction) == cast3a(0))) goto 0x002c
+  0021: return Fail()
+  002c: SetCharacterState(((1 | 8) | 16))
+  003f: self._DodgeService.set_MaxDodgeDistance(MaxDistance)
+  0058: self._DodgeService.DodgeTowards(Direction, TnAiActionDodgeNavigate.CalculateDodgeDirection(), )
+  0078: return OnStart(ExpectedEffects)
+  0084: return return
+  008a: <eos>
+
+function TnAiActionDodgeNavigate.OnUpdate  (script 101 bytes)
+  0000: if !((NotEqual_InterfaceInterface(self._DodgeService, TnDodgeService(none)) && !self._DodgeService.get_IsDodging())) goto 0x004d
+  002f: self._TransformerController.MoveTowardFailed()
+  0042: return Fail()
+  004d: return OnUpdate(ExpectedEffects, DeltaTime)
+  005e: return return
+  0064: <eos>
+
+function TnAiActionDodgeNavigate.OnFinish  (script 60 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._TransformerController.SetWorldStateSubject(obj'TnAiWorldStateNavigatePath', none)
+  0024: self._TransformerController.RequestReplan(1)
+  0039: return nothing
+  003b: <eos>
+
+function TnAiActionDodgeNavigate.CanDodge  (script 27 bytes)
+  0000: return (cast3a(TnAiActionDodgeNavigate.GetDodgeDirection(DodgeDistance)) != cast3a(0))
+  0014: return return
+  001a: <eos>
+
+function TnAiActionDodgeNavigate.GetDodgeDirection  (script 85 bytes)
+  0000: return self._PlanningUtil.GetNavigateDodgeDirection(self._TransformerPawn, self._DodgeService, TnAiActionDodgeNavigate.CalculateDodgeDirection(), self._Blueprint.DodgeTraceDistance, self._Blueprint.DodgeTraceMinimumThreshold, self._Blueprint.AngleThreshold)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionDodgeNavigate.CalculateDodgeDirection  (script 205 bytes)
+  0000: PathSection = TnPathSection(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateNavigatePath'))
+  0028: Index = TnAiActionDodgeNavigate.FindPathPoint(PathSection, self._Blueprint.DodgeTraceDistance)
+  0047: if !((Index == -1)) goto 0x0064
+  0056: return vect(0,0,0)
+  0064: PointLocation = PathSection.GetPoint(Index).GetDestination(self._TransformerController)
+  0095: return (obj'Core.Math'.static.Normal((PointLocation - self._TransformerPawn.Location)) * self._Blueprint.DodgeTraceDistance)
+  00c6: return return
+  00cc: <eos>
+
+function TnAiActionDodgeNavigate.FindPathPoint  (script 266 bytes)
+  0000: FarIndex = PathSection.FindPathPointAtDistance(self._TransformerController, Distance)
+  0023: if !((FarIndex == -1)) goto 0x0038
+  0032: return -1
+  0038: MidIndex = (((FarIndex + PathSection.get_NumberOfPoints()) - 1) / 2)
+  005f: DodgeLocation = (self._TransformerPawn.Location + (obj'Core.Math'.static.Normal((PathSection.GetPoint(MidIndex).GetDestination(self._TransformerController) - self._TransformerPawn.Location)) * Distance))
+  00c2: Reachable = (self._TransformerPawn.Trace(HitLocation, HitNormal, none, DodgeLocation, , , , , , ) == none)
+  00ee: if !(Reachable) goto 0x00fd
+  00f7: return MidIndex
+  00fd: return -1
+  0103: return return
+  0109: <eos>

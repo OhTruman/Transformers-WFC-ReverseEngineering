@@ -1,0 +1,15 @@
+function TnGoapGoalTransform.set_DesiredForm  (script 14 bytes)
+  0000: self._DesiredForm = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapGoalTransform.PopulateGoals  (script 116 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: if !((cast3a(self._DesiredForm) == cast3a(2))) goto 0x0029
+  0027: return false
+  0029: obj'HM_Engine.HmGoap'.static.SetProperty(out_PopulatedGoals, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateTransformerForm', cast3a(self._DesiredForm), , , ))
+  0063: self._DesiredForm = 2
+  006b: return true
+  006d: return return
+  0073: <eos>

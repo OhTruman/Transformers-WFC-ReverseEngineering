@@ -1,0 +1,7 @@
+function TnStimulusReaction3.GetAnimation  (script 133 bytes)
+  0000: DirectionToStimulus = (obj'Core.Math'.static.Normal((StimulusLocation - P.Location)) << P.Rotation)
+  0037: if !((DirectionToStimulus.X > 0.5)) goto 0x0057
+  0051: return self.FrontAnimation
+  0057: return ((DirectionToStimulus.Y > 0.0) ? self.BackRightAnimation : self.BackLeftAnimation)
+  007e: return return
+  0084: <eos>

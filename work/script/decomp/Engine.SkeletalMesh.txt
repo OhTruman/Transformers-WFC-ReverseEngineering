@@ -1,0 +1,66 @@
+function SkeletalMesh.GetMatIndexForSection  (script 12 bytes)
+  0000: LODIndex
+  0005: SectionIndex
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMesh.GetNumSections  (script 7 bytes)
+  0000: LODIndex
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMesh.GetNumUvSets  (script 7 bytes)
+  0000: LODIndex
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMesh.FindSocket  (script 7 bytes)
+  0000: SocketName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMesh.IsBoneInSkeleton  (script 7 bytes)
+  0000: BoneName
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMesh.HasSmoothNormals  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMesh.GenerateSmoothNormals  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMesh.RemoveSmoothNormals  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMesh.CheckForErrors  (script 448 bytes)
+  0000: CheckForErrors()
+  0006: foreach self.Materials(MI,) (end 0x00b3)
+  0015: if !((MI == none)) goto 0x0024
+  0020: iternext
+  0021: goto 0x00b3
+  0024: if !(!MI.GetUsageByFlag(0)) goto 0x00b2
+  003e: EmitCheckMessage(0, (((PathName(self) @ "uses material") @ PathName(MI)) @ "which doesn't have `Used With Skeletal Mesh` checked."), , )
+  00b2: iternext
+  00b3: iterpop
+  00b4: MinScaleAllowed = 0.01
+  00bf: foreach self.Sockets(Socket,) (end 0x01bc)
+  00ce: if !((Socket == none)) goto 0x00dd
+  00d9: iternext
+  00da: goto 0x01bc
+  00dd: if !((((Socket.RelativeScale.X < MinScaleAllowed) || (Socket.RelativeScale.Y < MinScaleAllowed)) || (Socket.RelativeScale.Z < MinScaleAllowed))) goto 0x01bb
+  014a: EmitCheckMessage(1, ((((cast56(self) @ "has a socket") @ cast57(Socket.SocketName)) @ "whose scale is too small. It must be greater than") @ cast55(MinScaleAllowed)), , )
+  01bb: iternext
+  01bc: iterpop
+  01bd: return nothing
+  01bf: <eos>
+
+function SkeletalMesh.OnPostEditChange  (script 53 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((PropertyName == 'ScaleType')) goto 0x0032
+  001e: self.TranslationScale = self.ScaleType.static.default.TranslationScale
+  0032: return nothing
+  0034: <eos>

@@ -1,0 +1,97 @@
+function HmWigglerData.GetRotationAdjust  (script 29 bytes)
+  0000: default=1.0
+  0009: return (self.RotationAdjust * ScaleAdjust)
+  0016: return return
+  001c: <eos>
+
+function HmWigglerData.GetTranslationAdjust  (script 29 bytes)
+  0000: default=1.0
+  0009: return (self.TranslationAdjust * ScaleAdjust)
+  0016: return return
+  001c: <eos>
+
+function HmWigglerData.GetActiveProfile  (script 13 bytes)
+  0000: return self.ActiveProfile
+  0006: return return
+  000c: <eos>
+
+function HmWigglerData.ResetTarget  (script 33 bytes)
+  0000: self.TargetTranslationAdjust = vect(0,0,0)
+  0013: self.TargetRotationAdjust = 0.0
+  001e: return nothing
+  0020: <eos>
+
+function HmWigglerData.GenerateRotationTarget  (script 252 bytes)
+  0000: self.RotationPositive = !self.RotationPositive
+  000f: switch (Profile.RotationStyle)
+  0021: case 0: (next 0x005c)
+  0026: return obj'Core.Random'.static.RandRangeFloat(-Profile.RotationAmplitude, Profile.RotationAmplitude)
+  005c: case 1: (next 0x00bf)
+  0061: return (self.RotationPositive ? obj'Core.Random'.static.RandRangeFloat(0.0, Profile.RotationAmplitude) : obj'Core.Random'.static.RandRangeFloat(-Profile.RotationAmplitude, 0.0))
+  00bf: case 2: (next 0x00f2)
+  00c4: return (self.RotationPositive ? Profile.RotationAmplitude : -Profile.RotationAmplitude)
+  00f2: default:
+  00f5: return return
+  00fb: <eos>
+
+function HmWigglerData.GenerateTranslationTarget  (script 153 bytes)
+  0000: TranslationTarget.X = obj'Core.Random'.static.RandRangeFloat(-Profile.TranslationAmplitude, Profile.TranslationAmplitude)
+  0046: TranslationTarget.Y = obj'Core.Random'.static.RandRangeFloat(-Profile.TranslationAmplitude, Profile.TranslationAmplitude)
+  008c: return TranslationTarget
+  0092: return return
+  0098: <eos>
+
+function HmWigglerData.UpdateProfileTransition  (script 341 bytes)
+  0000: if !((TransitionTimeLeft > cast3f(0))) goto 0x0147
+  000d: DeltaTime = ((TransitionTimeLeft > DeltaTime) ? DeltaTime : TransitionTimeLeft)
+  002e: AdjustPercentage = (DeltaTime / TransitionTimeLeft)
+  0040: self.ActiveProfile.TranslationAmplitude = obj'Core.Math'.static.Lerp(self.ActiveProfile.TranslationAmplitude, TransitionToProfile.TranslationAmplitude, AdjustPercentage)
+  0081: self.ActiveProfile.TranslationFrequency = obj'Core.Math'.static.Lerp(self.ActiveProfile.TranslationFrequency, TransitionToProfile.TranslationFrequency, AdjustPercentage)
+  00c2: self.ActiveProfile.RotationAmplitude = obj'Core.Math'.static.Lerp(self.ActiveProfile.RotationAmplitude, TransitionToProfile.RotationAmplitude, AdjustPercentage)
+  0103: self.ActiveProfile.RotationFrequency = obj'Core.Math'.static.Lerp(self.ActiveProfile.RotationFrequency, TransitionToProfile.RotationFrequency, AdjustPercentage)
+  0144: goto 0x0152
+  0147: self.ActiveProfile = TransitionToProfile
+  0152: return nothing
+  0154: <eos>
+
+function HmWigglerData.UpdateTranslationAdjust  (script 369 bytes)
+  0000: if !((self.ActiveProfile.TranslationFrequency > cast3f(0))) goto 0x0144
+  0018: TickTime = DeltaTime
+  0023: TimeLeftOver = (DeltaTime - self.TranslationSmoother.GetTimeRemaining())
+  0043: if !((TimeLeftOver >= 0.0)) goto 0x0106
+  0052: self.TranslationAdjust = self.TargetTranslationAdjust
+  005d: self.TargetTranslationAdjust = GenerateTranslationTarget(self.ActiveProfile)
+  0077: TickTime = TimeLeftOver
+  0082: self.TranslationSmoother.Reset()
+  0095: self.TranslationSmoother.SetTransitionTime((1.0 / self.ActiveProfile.TranslationFrequency))
+  00bf: if !(self.ActiveProfile.TranslationUseCurve) goto 0x00ee
+  00d3: self.TranslationSmoother.__PercentRemapper__Delegate = delegate.CurveRemapper
+  00eb: goto 0x0106
+  00ee: self.TranslationSmoother.__PercentRemapper__Delegate = delegate.None
+  0106: self.TranslationAdjust = obj'Core.Math'.static.VLerp(self.TranslationAdjust, self.TargetTranslationAdjust, self.TranslationSmoother.Update(TickTime))
+  0141: goto 0x016e
+  0144: if !((self.TranslationAdjust != vect(0,0,0))) goto 0x016e
+  015b: self.TranslationAdjust = vect(0,0,0)
+  016e: return nothing
+  0170: <eos>
+
+function HmWigglerData.UpdateRotationAdjust  (script 345 bytes)
+  0000: if !((self.ActiveProfile.RotationFrequency > cast3f(0))) goto 0x013c
+  0018: TickTime = DeltaTime
+  0023: TimeLeftOver = (DeltaTime - self.RotationSmoother.GetTimeRemaining())
+  0043: if !((TimeLeftOver >= 0.0)) goto 0x0106
+  0052: self.RotationAdjust = self.TargetRotationAdjust
+  005d: self.TargetRotationAdjust = GenerateRotationTarget(self.ActiveProfile)
+  0077: TickTime = TimeLeftOver
+  0082: self.RotationSmoother.Reset()
+  0095: self.RotationSmoother.SetTransitionTime((1.0 / self.ActiveProfile.RotationFrequency))
+  00bf: if !(self.ActiveProfile.RotationUseCurve) goto 0x00ee
+  00d3: self.RotationSmoother.__PercentRemapper__Delegate = delegate.CurveRemapper
+  00eb: goto 0x0106
+  00ee: self.RotationSmoother.__PercentRemapper__Delegate = delegate.None
+  0106: self.RotationAdjust = obj'Core.Math'.static.Lerp(self.RotationAdjust, self.TargetRotationAdjust, self.RotationSmoother.Update(TickTime))
+  0139: goto 0x0156
+  013c: if !((self.RotationAdjust != 0.0)) goto 0x0156
+  014b: self.RotationAdjust = 0.0
+  0156: return nothing
+  0158: <eos>

@@ -1,0 +1,13 @@
+function TnFactionSpecificPainVolume.IsActorAffected  (script 177 bytes)
+  0000: if !((cast3a(self.ValidFaction) == cast3a(3))) goto 0x0012
+  0010: return true
+  0012: AffectedPawn = TnPawn(Other)
+  0022: IsAutobot = (TnFactionTeamAutobots(AffectedPawn.GetTeam()) != none)
+  0044: IsDecepticon = (TnFactionTeamDecepticons(AffectedPawn.GetTeam()) != none)
+  0066: if !((cast3a(self.ValidFaction) == cast3a(0))) goto 0x007d
+  0076: return IsAutobot
+  007d: if !((cast3a(self.ValidFaction) == cast3a(1))) goto 0x0094
+  008d: return IsDecepticon
+  0094: return (!IsAutobot && !IsDecepticon)
+  00aa: return return
+  00b0: <eos>

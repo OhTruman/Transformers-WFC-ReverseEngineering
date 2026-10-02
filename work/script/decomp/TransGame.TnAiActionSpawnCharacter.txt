@@ -1,0 +1,84 @@
+function TnAiActionSpawnCharacter.set_SpawnFactory  (script 14 bytes)
+  0000: self._SpawnFactory = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionSpawnCharacter.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionSpawnCharacterBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionSpawnCharacter.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionSpawnCharacter.OnSetUpConditions  (script 133 bytes)
+  0000: SpawnCharacterInfo = TnAiSpawnCharacterInfo(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateSpawnCharacter'))
+  0028: if !(((SpawnCharacterInfo == none) || (SpawnCharacterInfo.AiCharacterDefinition == none))) goto 0x004b
+  0049: return false
+  004b: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateSpawnCharacter', SpawnCharacterInfo)
+  006d: return OnSetUpConditions(ExpectedEffects, Conditions)
+  007e: return return
+  0084: <eos>
+
+function TnAiActionSpawnCharacter.OnStart  (script 183 bytes)
+  0000: self._SpawnCharacterInfo = TnAiSpawnCharacterInfo(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateSpawnCharacter'))
+  0028: if !(((self._SpawnCharacterInfo == none) || (self._SpawnCharacterInfo.AiCharacterDefinition == none))) goto 0x0054
+  0049: return Fail()
+  0054: self._SpawnTimeCountdown = self._Blueprint.SpawnTime
+  0068: self._HasSpawned = false
+  0070: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnSpawnAnimationComplete, delegate.FailCallback)
+  00a4: return OnStart(ExpectedEffects)
+  00b0: return return
+  00b6: <eos>
+
+function TnAiActionSpawnCharacter.OnUpdate  (script 110 bytes)
+  0000: (self._SpawnTimeCountdown -= DeltaTime)
+  000c: if !(((self._SpawnTimeCountdown <= 0.0) && (self._HasSpawned == false))) goto 0x0056
+  0029: if !((TnAiActionSpawnCharacter.SpawnCharacter(self._SpawnCharacterInfo.AiCharacterDefinition) == none)) goto 0x004e
+  0043: return Fail()
+  004e: self._HasSpawned = true
+  0056: return OnUpdate(ExpectedEffects, DeltaTime)
+  0067: return return
+  006d: <eos>
+
+function TnAiActionSpawnCharacter.OnSpawnAnimationComplete  (script 71 bytes)
+  0000: if !((self._HasSpawned || (self._SpawnCharacterInfo == none))) goto 0x0018
+  0016: return nothing
+  0018: if !((TnAiActionSpawnCharacter.SpawnCharacter(self._SpawnCharacterInfo.AiCharacterDefinition) != none)) goto 0x003a
+  0032: self._HasSpawned = true
+  003a: Fail()
+  0044: return nothing
+  0046: <eos>
+
+function TnAiActionSpawnCharacter.OnFinish  (script 80 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: if !(!self._HasSpawned) goto 0x002e
+  002c: return nothing
+  002e: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateSpawnCharacter', false, none)
+  004d: return nothing
+  004f: <eos>
+
+function TnAiActionSpawnCharacter.SpawnCharacter  (script 450 bytes)
+  0000: TransformerPawnMesh = self._TransformerPawn.GetMeshComponent()
+  0019: if !((TransformerPawnMesh == none)) goto 0x0026
+  0024: return none
+  0026: SpawnLocation = TransformerPawnMesh.GetSocketWorldLocation(self._Blueprint.SpawnSocket)
+  004d: FactionTeam = TnFactionTeam(self._TransformerPawn.GetTeam())
+  006b: if !((FactionTeam == none)) goto 0x0078
+  0076: return none
+  0078: SpawnedCharacter = TnAiPawn(self._SpawnFactory.SpawnCharacter(AiCharacterDefinitionTemplate, self._Blueprint.PawnType, FactionTeam.get_Class(), true, true, SpawnLocation, self._TransformerPawn.Rotation, 1.0, obj'Core.Math'.static.MakeVector(1.0, 1.0, 1.0)))
+  00f1: if !((SpawnedCharacter != none)) goto 0x01b5
+  00fc: SpawnedCharacter.DownedEnabled = self._Blueprint.EnableDowned
+  011b: SpawnedCharacter._TakesDownedDamage = self._Blueprint.TakesDownedDamage
+  013a: self._SpawnCharacterInfo.SpawnComplete(SpawnedCharacter)
+  0157: if !(!SpawnedCharacter.ValidAnchor()) goto 0x01b5
+  016f: NewAnchor = SpawnedCharacter.GetBestAnchor(SpawnedCharacter, SpawnedCharacter.Location, true, )
+  019d: SpawnedCharacter.SetAnchor(NewAnchor)
+  01b5: return SpawnedCharacter
+  01bb: return return
+  01c1: <eos>

@@ -1,0 +1,260 @@
+function HmInventoryManager.ReloadWeapon  (script 89 bytes)
+  0000: OwnerPawn = Pawn(self.Owner)
+  0010: if !((OwnerPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: CurrentWeapon = HmWeapon(OwnerPawn.Weapon)
+  0036: if !((CurrentWeapon == none)) goto 0x0043
+  0041: return nothing
+  0043: CurrentWeapon.Reload()
+  0056: return nothing
+  0058: <eos>
+
+function HmInventoryManager.AddInventory  (script 605 bytes)
+  0000: nothing
+  0001: if !(((NewItem != none) && !NewItem.bDeleteMe)) goto 0x0254
+  0022: if !((self.InventoryChain == none)) goto 0x003b
+  002d: self.InventoryChain = NewItem
+  0038: goto 0x01c5
+  003b: Item = self.InventoryChain
+  0046: if !((Item != none)) goto 0x01b1
+  0051: if !((Item.get_Class() == NewItem.get_Class())) goto 0x018f
+  006e: Weapon = HmWeapon(Item)
+  007e: ProjectileBag = HmProjectileBag(Item)
+  008e: if !((Weapon != none)) goto 0x00b9
+  0099: Weapon.TryTransferAmmoFrom(HmWeapon(NewItem))
+  00b6: goto 0x0181
+  00b9: if !((ProjectileBag != none)) goto 0x0115
+  00c4: if !(!ProjectileBag.AmmoMaxed()) goto 0x0112
+  00dc: AmmoAmountToAdd = HmProjectileBag(NewItem).GetAmmoCount()
+  00fa: ProjectileBag.AddAmmo(AmmoAmountToAdd)
+  0112: goto 0x0181
+  0115: LogInternal((("Trying to add two items of the same class (" $ cast56(Item.get_Class())) $ ") is not allowed, go see programmers"), , , )
+  017f: return false
+  0181: NewItem.DestroyActor()
+  018d: return true
+  018f: LastItem = Item
+  019a: Item = Item.Inventory
+  01ae: goto 0x0046
+  01b1: LastItem.Inventory = NewItem
+  01c5: NewItem.SetOwner(self.Instigator)
+  01d6: NewItem.SetBase(self.Instigator, , , )
+  01f1: NewItem.Instigator = self.Instigator
+  0205: NewItem.InvManager = self
+  0215: NewItem.GivenTo(self.Instigator, bDoNotActivate)
+  0233: self.Instigator.TriggerEventClass(obj'Engine.SeqEvent_GetInventory', NewItem, , )
+  0252: return true
+  0254: return false
+  0256: return return
+  025c: <eos>
+
+function HmInventoryManager.SetCurrentWeapon  (script 253 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: OldWeapon = Pawn(self.Owner).Weapon
+  0026: if !(((DesiredWeapon != OldWeapon) && ((DesiredWeapon != self.PendingWeapon) || (DesiredWeapon == none)))) goto 0x00fa
+  0053: self.PendingWeapon = DesiredWeapon
+  005e: if !((((OldWeapon != none) && !OldWeapon.bDeleteMe) && !OldWeapon.IsInState('Inactive', ))) goto 0x00c9
+  009c: OldWeapon.TryPutDown()
+  00af: self.bWeaponDrawnOrDrawing = false
+  00b7: ServerSetCurrentWeapon(DesiredWeapon)
+  00c6: goto 0x00fa
+  00c9: self.bWeaponDrawnOrDrawing = true
+  00d1: ServerSetCurrentWeapon(DesiredWeapon)
+  00e0: if !((cast3a(self.Role) != cast3a(3))) goto 0x00fa
+  00f0: ChangedWeapon()
+  00fa: return nothing
+  00fc: <eos>
+
+function HmInventoryManager.ChangedWeapon  (script 129 bytes)
+  0000: Instig = HmWeaponPawnInterface(self.Instigator)
+  0010: if !(NotEqual_InterfaceInterface(Instig, HmWeaponPawnInterface(none))) goto 0x0038
+  0024: OldWeapon = self.Instigator.Weapon
+  0038: ChangedWeapon()
+  003e: if !(NotEqual_InterfaceInterface(Instig, HmWeaponPawnInterface(none))) goto 0x007e
+  0052: HmWeaponPawnInterface(self.Instigator).NotifyWeaponChanged(OldWeapon, self.Instigator.Weapon)
+  007e: return nothing
+  0080: <eos>
+
+function HmInventoryManager.ServerSetCurrentWeapon  (script 110 bytes)
+  0000: Instig = HmWeaponPawnInterface(self.Instigator)
+  0010: if !(((DesiredWeapon == none) && (self.Instigator.Weapon == none))) goto 0x0033
+  0031: return nothing
+  0033: if !(NotEqual_InterfaceInterface(Instig, HmWeaponPawnInterface(none))) goto 0x0060
+  0047: Instig.SetEquippedWeaponClass(DesiredWeapon)
+  0060: ServerSetCurrentWeapon(DesiredWeapon)
+  006b: return nothing
+  006d: <eos>
+
+function HmInventoryManager.CancelWeaponChange  (script 99 bytes)
+  0000: ValidPawnOwner = Pawn(self.Owner)
+  0010: if !(((ValidPawnOwner != none) && (ValidPawnOwner.Weapon == self.PendingWeapon))) goto 0x005a
+  0035: ValidPawnOwner.Weapon.Activate()
+  0051: self.PendingWeapon = none
+  0058: return true
+  005a: return false
+  005c: return return
+  0062: <eos>
+
+function HmInventoryManager.PrevWeapon  (script 207 bytes)
+  0000: StartWeapon = HmWeapon(Pawn(self.Owner).Weapon)
+  001e: if !((self.PendingWeapon != none)) goto 0x0039
+  0029: StartWeapon = HmWeapon(self.PendingWeapon)
+  0039: foreach InventoryActors(obj'HmWeapon', W) (end 0x006e)
+  0050: if !((W == StartWeapon)) goto 0x0062
+  005f: goto 0x006e
+  0062: CandidateWeapon = W
+  006d: iternext
+  006e: iterpop
+  006f: if !((CandidateWeapon == none)) goto 0x009e
+  007a: foreach InventoryActors(obj'HmWeapon', W) (end 0x009d)
+  0091: CandidateWeapon = W
+  009c: iternext
+  009d: iterpop
+  009e: if !((CandidateWeapon == Pawn(self.Owner).Weapon)) goto 0x00bd
+  00bb: return nothing
+  00bd: SetCurrentWeapon(CandidateWeapon)
+  00cc: return nothing
+  00ce: <eos>
+
+function HmInventoryManager.CanCycleToWeapon  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmInventoryManager.FindNextWeapon  (script 275 bytes)
+  0000: if !((self.Owner != none)) goto 0x0029
+  000b: StartWeapon = HmWeapon(Pawn(self.Owner).Weapon)
+  0029: if !((self.PendingWeapon != none)) goto 0x0044
+  0034: StartWeapon = HmWeapon(self.PendingWeapon)
+  0044: foreach InventoryActors(obj'HmWeapon', W) (end 0x00bb)
+  005b: if !(!CanCycleToWeapon(W)) goto 0x0073
+  006f: iternext
+  0070: goto 0x00bb
+  0073: if !((StartWeapon == none)) goto 0x008c
+  007e: CandidateWeapon = W
+  0089: goto 0x00bb
+  008c: if !(bBreakNext) goto 0x00a3
+  0095: CandidateWeapon = W
+  00a0: goto 0x00bb
+  00a3: if !((W == StartWeapon)) goto 0x00ba
+  00b2: bBreakNext = true
+  00ba: iternext
+  00bb: iterpop
+  00bc: if !((CandidateWeapon == none)) goto 0x0106
+  00c7: foreach InventoryActors(obj'HmWeapon', W) (end 0x0105)
+  00de: if !(!CanCycleToWeapon(W)) goto 0x00f6
+  00f2: iternext
+  00f3: goto 0x0105
+  00f6: CandidateWeapon = W
+  0101: goto 0x0105
+  0104: iternext
+  0105: iterpop
+  0106: return CandidateWeapon
+  010c: return return
+  0112: <eos>
+
+function HmInventoryManager.NextWeapon  (script 96 bytes)
+  0000: CandidateWeapon = FindNextWeapon()
+  0010: if !((((none == Pawn(self.Owner)) || (CandidateWeapon == Pawn(self.Owner).Weapon)) || (CandidateWeapon == none))) goto 0x004e
+  004c: return nothing
+  004e: SetCurrentWeapon(CandidateWeapon)
+  005d: return nothing
+  005f: <eos>
+
+function HmInventoryManager.IsWeaponEquipped  (script 38 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return false
+  000d: return (self.Instigator.Weapon != none)
+  001f: return return
+  0025: <eos>
+
+function HmInventoryManager.IsWeaponActive  (script 114 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return false
+  000d: return (((self.Instigator.Weapon != none) && !self.Instigator.Weapon.IsInState('WeaponEquipping', )) && !self.Instigator.Weapon.IsInState('WeaponPuttingDown', ))
+  006b: return return
+  0071: <eos>
+
+function HmInventoryManager.IsWeaponEquipping  (script 74 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return false
+  000d: return ((self.Instigator.Weapon != none) && self.Instigator.Weapon.IsInState('WeaponEquipping', ))
+  0043: return return
+  0049: <eos>
+
+function HmInventoryManager.IsWeaponPuttingDown  (script 74 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return false
+  000d: return ((self.Instigator.Weapon != none) && self.Instigator.Weapon.IsInState('WeaponPuttingDown', ))
+  0043: return return
+  0049: <eos>
+
+function HmInventoryManager.UnEquipWeapon  (script 34 bytes)
+  0000: self.LastEquippedWeapon = self.Instigator.Weapon
+  0014: SetCurrentWeapon(none)
+  001f: return nothing
+  0021: <eos>
+
+function HmInventoryManager.UnEquipWeaponInstantly  (script 127 bytes)
+  0000: self.LastEquippedWeapon = self.Instigator.Weapon
+  0014: if !((HmWeapon(self.Instigator.Weapon) != none)) goto 0x004e
+  002d: HmWeapon(self.Instigator.Weapon).UnEquipInstantly()
+  004e: self.Instigator.Weapon = none
+  005e: HmPawn(self.Instigator).NotifyWeaponChanged(self.LastEquippedWeapon, none)
+  007c: return nothing
+  007e: <eos>
+
+function HmInventoryManager.EquipWeapon  (script 91 bytes)
+  0000: if !((((self.LastEquippedWeapon != none) && self.LastEquippedWeapon.HasAnyAmmo()) && CanCycleToWeapon(HmWeapon(self.LastEquippedWeapon)))) goto 0x004e
+  003c: SetCurrentWeapon(self.LastEquippedWeapon)
+  004b: goto 0x0058
+  004e: NextWeapon()
+  0058: return nothing
+  005a: <eos>
+
+function HmInventoryManager.EquipWeaponInstantly  (script 134 bytes)
+  0000: if !((self.LastEquippedWeapon != none)) goto 0x0019
+  000b: weaponToEquip = self.LastEquippedWeapon
+  0016: goto 0x0029
+  0019: weaponToEquip = FindNextWeapon()
+  0029: if !((HmWeapon(weaponToEquip) != none)) goto 0x0083
+  0039: self.Instigator.Weapon = weaponToEquip
+  004d: HmWeapon(weaponToEquip).EquipInstantly()
+  0065: HmPawn(self.Instigator).NotifyWeaponChanged(none, weaponToEquip)
+  0083: return nothing
+  0085: <eos>
+
+function HmInventoryManager.DestroyItemsByClass  (script 79 bytes)
+  0000: foreach InventoryActors(I, Iter) (end 0x004b)
+  0017: if !(((I == Iter.get_Class()) || (cast3a(method) == cast3a(1)))) goto 0x004a
+  003f: HmInventoryManager.DestroyItem(Iter)
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function HmInventoryManager.DestroyItem  (script 30 bytes)
+  0000: RemoveFromInventory(I)
+  000f: I.DestroyActor()
+  001b: return nothing
+  001d: <eos>
+
+function HmInventoryManager.DestroyClientSideInventory  (script 115 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) != cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: foreach InventoryActors(obj'Engine.Inventory', Inv) (end 0x0058)
+  0032: if !((cast3a(Inv.Role) == cast3a(3))) goto 0x0057
+  004b: Inv.DestroyActor()
+  0057: iternext
+  0058: iterpop
+  0059: self.Instigator.Weapon = none
+  0069: self.PendingWeapon = none
+  0070: return nothing
+  0072: <eos>
+
+function HmInventoryManager.RemoveFromInventory  (script 36 bytes)
+  0000: if !((self.LastEquippedWeapon == ItemToRemove)) goto 0x0016
+  000f: self.LastEquippedWeapon = none
+  0016: RemoveFromInventory(ItemToRemove)
+  0021: return nothing
+  0023: <eos>

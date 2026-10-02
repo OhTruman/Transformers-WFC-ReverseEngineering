@@ -1,0 +1,45 @@
+function TnQuitMessageBox.Show  (script 268 bytes)
+  0000: PC = TnQuitMessageBox.GetPlayerController()
+  000c: GameClass = class<TnGame>(PC.WorldInfo.GetGameClass())
+  0033: GameClass.static.GetQuitGameMessage(PC, QuitTitle, QuitMessage)
+  0055: SetText(QuitTitle, QuitMessage, false)
+  006a: SetAButton("$UIText.ButtonHints.Yes", delegate.ConfirmQuitToMainMenu, , false)
+  0098: SetBButton("$UIText.ButtonHints.No", , , )
+  00bd: SetPostConfirmMessage("$UIText.MessagePrompts.LeaveLobbyInProgressMessage")
+  00fb: self.bShowDefaultButtons = false
+  0103: TnMessageBoxActionScriptInterface.Show()
+  0109: return nothing
+  010b: <eos>
+
+function TnQuitMessageBox.FinalizeQuitToMainMenu  (script 44 bytes)
+  0000: if !(!self.HasFinalizedQuit) goto 0x0029
+  000b: self.HasFinalizedQuit = true
+  0013: TnQuitMessageBox.GetPlayerController().QuitGame(0)
+  0029: return nothing
+  002b: <eos>
+
+function TnQuitMessageBox.ConfirmQuitToMainMenu  (script 24 bytes)
+  0000: SetIconType(1, true)
+  000d: self.bWaitingForSafeQuit = true
+  0015: return nothing
+  0017: <eos>
+
+function TnQuitMessageBox.Tick  (script 103 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(self.bWaitingForSafeQuit) goto 0x0064
+  0014: TnG = TnGame(obj'Engine.Engine'.static.GetCurrentWorldInfo().Game)
+  003b: if !(((TnG == none) || TnG.IsSafeToQuit())) goto 0x0064
+  005e: TnQuitMessageBox.FinalizeQuitToMainMenu()
+  0064: return nothing
+  0066: <eos>
+
+function TnQuitMessageBox.GetPlayerController  (script 75 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0041)
+  0039: iterpop
+  003a: return PC
+  0040: iternext
+  0041: iterpop
+  0042: return none
+  0044: return return
+  004a: <eos>

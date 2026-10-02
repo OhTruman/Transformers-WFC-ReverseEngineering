@@ -1,0 +1,177 @@
+function TnWeaponHoming.UpdateLockOnTargetObjective  (script 156 bytes)
+  0000: if !(!IsOwnerLocalPlayerController()) goto 0x0011
+  000f: return nothing
+  0011: GRI = TnGameReplicationInfoGameBase(self.Instigator.WorldInfo.GRI)
+  0033: if !((GRI == none)) goto 0x0040
+  003e: return nothing
+  0040: if !((PreviousTarget != none)) goto 0x0068
+  004b: GRI.RemoveObjectiveMarker(PreviousTarget, obj'TnObjectiveMarkerTypeLockOn')
+  0068: if !((NewTarget != none)) goto 0x0099
+  0073: GRI.AddObjectiveMarker("Homing", NewTarget, obj'TnObjectiveMarkerTypeLockOn', true)
+  0099: return nothing
+  009b: <eos>
+
+function TnWeaponHoming.GetNormalizedLockOnTime  (script 50 bytes)
+  0000: return obj'Core.Math'.static.FMin(1.0, (self.LockOnTimer / TnWeaponDataHoming(self.Data).LockOnTime))
+  002b: return return
+  0031: <eos>
+
+function TnWeaponHoming.SetLockOnStatusServer  (script 82 bytes)
+  0000: if !((P != none)) goto 0x004f
+  000b: LOI.LockOnStatus = NewStatus
+  0021: LOI.LockOnInstigator = LockOnInstigator
+  0037: P.UpdateLockOnInfo(LOI)
+  004f: return nothing
+  0051: <eos>
+
+function TnWeaponHoming.SetLockOnStatus  (script 70 bytes)
+  0000: if !(!IsOwnerLocalPlayerController()) goto 0x0011
+  000f: return nothing
+  0011: P = TnPawn(Target)
+  0021: if !((P == none)) goto 0x002e
+  002c: return nothing
+  002e: TnWeaponHoming.SetLockOnStatusServer(P, NewStatus, self.Instigator)
+  0043: return nothing
+  0045: <eos>
+
+function TnWeaponHoming.Inactive.BeginState  (script 76 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: TnWeaponHoming.SetLockOnStatus(self.LockOnTarget, 0)
+  0018: TnWeaponHoming.UpdateLockOnTargetObjective(none, self.LockOnTarget)
+  0024: self.LockOnTimer = 0.0
+  002f: self.HoldLockOnTimer = 0.0
+  003a: self.LockOnTarget = none
+  0041: self.bIsLockedOn = false
+  0049: return nothing
+  004b: <eos>
+
+function TnWeaponHoming.Active.EndState  (script 29 bytes)
+  0000: if !(IsOwnerLocalPlayerController()) goto 0x001a
+  000d: AllWeaponMeshesStopSoundEvent(14, )
+  001a: return nothing
+  001c: <eos>
+
+function TnWeaponHoming.Active.Tick  (script 386 bytes)
+  0000: Tick(DeltaTime)
+  000b: HomingData = TnWeaponDataHoming(self.Data)
+  001b: if !((HomingData == none)) goto 0x0028
+  0026: return nothing
+  0028: LocalTarget = TnWeaponHoming.FindLocalTarget()
+  0034: if !(((LocalTarget != none) && HasAmmo(0, 1))) goto 0x00f4
+  0051: if !((LocalTarget != self.LockOnTarget)) goto 0x0086
+  0060: self.LockOnTimer = 0.0
+  006b: TnWeaponHoming.UpdateLockOnTargetObjective(LocalTarget, self.LockOnTarget)
+  007b: self.LockOnTarget = LocalTarget
+  0086: self.HoldLockOnTimer = 0.0
+  0091: (self.LockOnTimer += DeltaTime)
+  009d: if !(((self.LockOnTimer >= HomingData.LockOnTime) && !self.bIsLockedOn)) goto 0x00f1
+  00c2: TnWeaponHoming.SetLockOnStatus(self.LockOnTarget, 1)
+  00cf: self.bIsLockedOn = true
+  00d7: if !(IsOwnerLocalPlayerController()) goto 0x00f1
+  00e4: CurrentWeaponMeshPlaySoundEvent(14, )
+  00f1: goto 0x017f
+  00f4: (self.HoldLockOnTimer += DeltaTime)
+  0100: if !((!TnWeaponHoming.HasValidLockOnTarget() || ((self.HoldLockOnTimer > HomingData.HoldLockOnTime) && (self.LockOnTarget != none)))) goto 0x017f
+  0132: self.LockOnTimer = 0.0
+  013d: TnWeaponHoming.UpdateLockOnTargetObjective(none, self.LockOnTarget)
+  0149: TnWeaponHoming.SetLockOnStatus(self.LockOnTarget, 0)
+  0156: self.LockOnTarget = none
+  015d: self.bIsLockedOn = false
+  0165: if !(IsOwnerLocalPlayerController()) goto 0x017f
+  0172: AllWeaponMeshesStopSoundEvent(14, )
+  017f: return nothing
+  0181: <eos>
+
+function TnWeaponHoming.HasValidLockOnTarget  (script 142 bytes)
+  0000: if !((self.LockOnTarget == none)) goto 0x000d
+  000b: return false
+  000d: TargetPawn = Pawn(self.LockOnTarget)
+  001d: if !((TargetPawn != none)) goto 0x0058
+  0028: return (!TargetPawn.IsDying() && !TargetPawn.IsDead())
+  0058: Destructible = TnDestructibleActor(self.LockOnTarget)
+  0068: if !((Destructible != none)) goto 0x0085
+  0073: return !Destructible._Invulnerable
+  0085: return true
+  0087: return return
+  008d: <eos>
+
+function TnWeaponHoming.FireAmmunition  (script 64 bytes)
+  0000: if !(self.Instigator.IsLocallyControlled()) goto 0x0037
+  0016: if !((cast3a(self.Role) < cast3a(3))) goto 0x0037
+  0026: TnWeaponHoming.ServerSetLockOnTarget(self.bIsLockedOn, self.LockOnTarget)
+  0037: TnWeapon.FireAmmunition()
+  003d: return nothing
+  003f: <eos>
+
+function TnWeaponHoming.ServerSetLockOnTarget  (script 27 bytes)
+  0000: self.bIsLockedOn = LockedOn
+  000d: self.LockOnTarget = Target
+  0018: return nothing
+  001a: <eos>
+
+function TnWeaponHoming.ServerSpawnedProjectile  (script 66 bytes)
+  0000: HomingProjectile = TnProjectileHoming(Proj)
+  0010: if !((HomingProjectile != none)) goto 0x003f
+  001b: HomingProjectile.SetTarget((self.bIsLockedOn ? self.LockOnTarget : none))
+  003f: return nothing
+  0041: <eos>
+
+function TnWeaponHoming.FindLocalTarget  (script 349 bytes)
+  0000: if !((self.Instigator == none)) goto 0x000d
+  000b: return none
+  000d: TnInstigator = TnPawn(self.Instigator)
+  001d: if !((TnInstigator != none)) goto 0x0080
+  0028: MS = TnMeleeService(TnInstigator.GetService('TnMeleeService'))
+  004f: if !((NotEqual_InterfaceInterface(MS, TnMeleeService(none)) && MS.IsMeleeing(10))) goto 0x0080
+  007e: return none
+  0080: Target = TnWeaponHoming.FindLocalTargetFromController(self.Instigator.Controller)
+  009a: TargetPawn = TnPawn(Target)
+  00aa: if !((TargetPawn != none)) goto 0x0150
+  00b5: TargetBuffs = TnBuffService(TargetPawn.GetService('TnBuffService'))
+  00dc: if !((NotEqual_InterfaceInterface(TargetBuffs, TnBuffService(none)) && TargetBuffs.HasBuff(obj'TnBuffDisguise'))) goto 0x0118
+  010e: Target = none
+  0115: goto 0x0150
+  0118: if !((!TnWeaponDataHoming(self.Data).CanLockOnToRobots && TargetPawn.get_IsInRobotForm())) goto 0x0150
+  0149: Target = none
+  0150: return Target
+  0156: return return
+  015c: <eos>
+
+function TnWeaponHoming.FindLocalTargetFromController  (script 177 bytes)
+  0000: PC = TnPlayerController(C)
+  0010: if !((PC != none)) goto 0x0038
+  001b: return PC.PlayerTargeting.GetHomingLockTarget()
+  0038: if !(((C != none) && (C.Enemy != none))) goto 0x0068
+  0059: return C.Enemy
+  0068: AiC = TnAiController(C)
+  0078: if !(((AiC != none) && (AiC._ShootAtActor != none))) goto 0x00a8
+  0099: return AiC._ShootAtActor
+  00a8: return none
+  00aa: return return
+  00b0: <eos>
+
+function TnWeaponHoming.IsLockedOn  (script 14 bytes)
+  0000: return self.bIsLockedOn
+  0007: return return
+  000d: <eos>
+
+function TnWeaponHoming.DisplayDebug  (script 578 bytes)
+  0000: TnWeapon.DisplayDebug(HUD, out_YL, out_YPos)
+  0015: LocalTarget = TnWeaponHoming.FindLocalTarget()
+  0021: if !((self.LockOnTarget != none)) goto 0x0074
+  002c: DebugTargetString = (((("Locked on to" @ cast57(self.LockOnTarget.Name)) @ "(") $ self.LockOnTarget.GetHumanReadableName()) $ ")")
+  0071: goto 0x00d9
+  0074: if !((LocalTarget != none)) goto 0x00c4
+  007f: DebugTargetString = (((("Targeting" @ cast57(LocalTarget.Name)) @ "(") $ LocalTarget.GetHumanReadableName()) $ ")")
+  00c1: goto 0x00d9
+  00c4: DebugTargetString = "Not targeting"
+  00d9: DebugLockString = (((((("for" @ cast55(self.LockOnTimer)) $ "/(") $ cast55(TnWeaponDataHoming(self.Data).LockOnTime)) @ "+") @ cast55(TnWeaponDataHoming(self.Data).HoldLockOnTime)) $ ") seconds.")
+  0134: PreviousDrawColor = HUD.Canvas.DrawColor
+  0151: if !(IsLockedOn()) goto 0x0186
+  015e: HUD.Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  0186: (out_YPos += out_YL)
+  0192: HUD.Canvas.SetPos(4.0, out_YPos)
+  01b8: HUD.Canvas.DrawTextNormal((DebugTargetString @ DebugLockString), false, , )
+  01e3: HUD.Canvas.SetDrawColor(PreviousDrawColor.R, PreviousDrawColor.G, PreviousDrawColor.B, PreviousDrawColor.A)
+  023f: return nothing
+  0241: <eos>

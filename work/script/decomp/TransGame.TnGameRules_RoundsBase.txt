@@ -1,0 +1,122 @@
+function TnGameRules_RoundsBase.get_CurrentRound  (script 36 bytes)
+  0000: return TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI).CurrentRound
+  001d: return return
+  0023: <eos>
+
+function TnGameRules_RoundsBase.set_CurrentRound  (script 37 bytes)
+  0000: TnGameReplicationInfoMultiplayer(self.WorldInfo.GRI).CurrentRound = Value
+  0022: return nothing
+  0024: <eos>
+
+function TnGameRules_RoundsBase.MatchStarting  (script 78 bytes)
+  0000: MatchStarting()
+  0006: SetTimer(self.SyncTimerTime, true, 'SyncTimer', )
+  0019: TnGameReplicationInfo(self.WorldInfo.GRI).SetActiveGameRule(get_Class())
+  003d: GotoState('Active', , , )
+  004b: return nothing
+  004d: <eos>
+
+function TnGameRules_RoundsBase.EndRound  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameRules_RoundsBase.SyncTimer  (script 45 bytes)
+  0000: TnGameReplicationInfo(self.WorldInfo.GRI).ResetCountdown(true, cast44(self.TimeTillNextReset), self)
+  002a: return nothing
+  002c: <eos>
+
+function TnGameRules_RoundsBase.GetAPRIFromWinningTeam  (script 278 bytes)
+  0000: foreach self.WorldInfo.AllActors(obj'TnTeamInfo', CurrentIter) (end 0x00ae)
+  0020: if !((CurrentBest == none)) goto 0x0039
+  002b: CurrentBest = CurrentIter
+  0036: goto 0x00ad
+  0039: if !((CurrentIter.GetScore() == CurrentBest.GetScore())) goto 0x006f
+  0064: TieExists = true
+  006c: goto 0x00ad
+  006f: if !((CurrentIter.GetScore() > CurrentBest.GetScore())) goto 0x00ad
+  009a: CurrentBest = CurrentIter
+  00a5: TieExists = false
+  00ad: iternext
+  00ae: iterpop
+  00af: if !(TieExists) goto 0x00ba
+  00b8: return none
+  00ba: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x010c)
+  00da: if !((PC.PlayerReplicationInfo.Team == CurrentBest)) goto 0x010b
+  00fb: iterpop
+  00fc: return PC.PlayerReplicationInfo
+  010b: iternext
+  010c: iterpop
+  010d: return none
+  010f: return return
+  0115: <eos>
+
+function TnGameRules_RoundsBase.CheckMercyRule  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnGameRules_RoundsBase.Active.BeginState  (script 40 bytes)
+  0000: self.TimeTillNextReset = cast3f(self.WorldInfo.Game.TimeLimit)
+  001f: TnGameRules_RoundsBase.SyncTimer()
+  0025: return nothing
+  0027: <eos>
+
+function TnGameRules_RoundsBase.Active.Tick  (script 78 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(CheckMercyRule()) goto 0x0028
+  0018: GotoState('Disabled', , , )
+  0026: return nothing
+  0028: (self.TimeTillNextReset -= DeltaTime)
+  0034: if !((self.TimeTillNextReset <= cast3f(0))) goto 0x004b
+  0041: RoundTimeUp()
+  004b: return nothing
+  004d: <eos>
+
+function TnGameRules_RoundsBase.Active.RoundTimeUp  (script 13 bytes)
+  0000: EndRound()
+  000a: return nothing
+  000c: <eos>
+
+function TnGameRules_RoundsBase.Active.EndRound  (script 92 bytes)
+  0000: set_CurrentRound((get_CurrentRound() + 1))
+  0017: if !(CheckEndCondition()) goto 0x0037
+  0024: GotoState('Disabled', , , )
+  0032: return nothing
+  0034: goto 0x0059
+  0037: BroadcastLocalizedMessage(obj'TnRoundBasedGameMessage', 2, , , )
+  004b: GotoState('BetweenRounds', , , )
+  0059: return nothing
+  005b: <eos>
+
+function TnGameRules_RoundsBase.BetweenRounds.BeginState  (script 53 bytes)
+  0000: self.TimeTillNextReset = self.TimeBetweenRounds
+  000b: TnGameRules_RoundsBase.SyncTimer()
+  0011: TnGame(self.WorldInfo.Game).RoundEnded()
+  0032: return nothing
+  0034: <eos>
+
+function TnGameRules_RoundsBase.BetweenRounds.Tick  (script 135 bytes)
+  0000: Tick(DeltaTime)
+  000b: (self.TimeTillNextReset -= DeltaTime)
+  0017: if !((!self.ResettingRound && (self.TimeTillNextReset <= cast3f(0)))) goto 0x0084
+  0031: self.ResettingRound = true
+  0039: TnGame(self.WorldInfo.Game).RestartRound()
+  005a: self.ResettingRound = false
+  0062: BroadcastLocalizedMessage(obj'TnRoundBasedGameMessage', 3, , , )
+  0076: GotoState('Active', , , )
+  0084: return nothing
+  0086: <eos>
+
+function TnGameRules_RoundsBase.CheckEndCondition  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnGameRules_RoundsBase.Disabled.BeginState  (script 23 bytes)
+  0000: ClearTimer('SyncTimer', )
+  0014: return nothing
+  0016: <eos>
+
+function TnGameRules_RoundsBase.RunGameTimer  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>

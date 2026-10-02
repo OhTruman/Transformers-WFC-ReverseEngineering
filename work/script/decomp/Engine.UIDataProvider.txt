@@ -1,0 +1,132 @@
+function UIDataProvider.OnDataProviderPropertyChange  (script 4 bytes)
+  0000: nothing
+  0001: return nothing
+  0003: <eos>
+
+function UIDataProvider.NotifyPropertyChanged  (script 75 bytes)
+  0000: nothing
+  0001: Index = 0
+  0008: if !((Index < self.ProviderChangedNotifies.Length)) goto 0x0048
+  0018: Subscriber = Index[self.ProviderChangedNotifies]
+  0029: OnDataProviderPropertyChange(self, PropTag)
+  003e: AddAdd_Int(Index)
+  0045: goto 0x0008
+  0048: return nothing
+  004a: <eos>
+
+function UIDataProvider.AddPropertyNotificationChangeRequest  (script 47 bytes)
+  0000: NewIndex = self.ProviderChangedNotifies.Length
+  000c: self.ProviderChangedNotifies.Length = (NewIndex + 1)
+  001b: NewIndex[self.ProviderChangedNotifies] = InDelegate
+  002c: return nothing
+  002e: <eos>
+
+function UIDataProvider.RemovePropertyNotificationChangeRequest  (script 49 bytes)
+  0000: Index = self.ProviderChangedNotifies.Find(InDelegate)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.ProviderChangedNotifies.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function UIDataProvider.GetSupportedScriptFields  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function UIDataProvider.GetFieldValue  (script 16 bytes)
+  0000: default=-1
+  0009: return return
+  000f: <eos>
+
+function UIDataProvider.SetFieldValue  (script 16 bytes)
+  0000: default=-1
+  0009: return return
+  000f: <eos>
+
+function UIDataProvider.GenerateScriptMarkupString  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function UIDataProvider.GenerateFillerData  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function UIDataProvider.SetDataStoreValue  (script 12 bytes)
+  0000: MarkupString
+  0005: FieldValue
+  000a: nothing
+  000b: <eos>
+
+function UIDataProvider.GetDataStoreValue  (script 12 bytes)
+  0000: MarkupString
+  0005: FieldValue
+  000a: nothing
+  000b: <eos>
+
+function UIDataProvider.GetSupportedDataFields  (script 7 bytes)
+  0000: out_Fields
+  0005: nothing
+  0006: <eos>
+
+function UIDataProvider.SetDataStoreBoolValue  (script 112 bytes)
+  0000: FieldValue.BoolValue = bBoolValue
+  0018: FieldValue.StringValue = (bBoolValue ? "True" : "False")
+  0041: FieldValue.PropertyType = 0
+  0054: return SetDataStoreValue(MarkupString, FieldValue)
+  0069: return return
+  006f: <eos>
+
+function UIDataProvider.SetDataStoreFloatValue  (script 93 bytes)
+  0000: FieldValue.StringValue = cast55(FloatValue)
+  0018: FieldValue.FloatValue = FloatValue
+  002e: FieldValue.PropertyType = 0
+  0041: return SetDataStoreValue(MarkupString, FieldValue)
+  0056: return return
+  005c: <eos>
+
+function UIDataProvider.SetDataStoreIntValue  (script 71 bytes)
+  0000: FieldValue.StringValue = cast53(IntValue)
+  0018: FieldValue.PropertyType = 0
+  002b: return SetDataStoreValue(MarkupString, FieldValue)
+  0040: return return
+  0046: <eos>
+
+function UIDataProvider.GetDataStoreBoolValue  (script 174 bytes)
+  0000: bResult = GetDataStoreValue(MarkupString, FieldValue)
+  001b: if !((obj'Core.Strings'.static.Len(FieldValue.StringValue) == 0)) goto 0x005a
+  003c: bBoolValue = (FieldValue.BoolValue ? 1 : 0)
+  005a: if !(((FieldValue.StringValue == "True") || (FieldValue.StringValue == "1"))) goto 0x0099
+  008f: bBoolValue = 1
+  0096: goto 0x00a0
+  0099: bBoolValue = 0
+  00a0: return bResult
+  00a7: return return
+  00ad: <eos>
+
+function UIDataProvider.GetDataStoreFloatValue  (script 123 bytes)
+  0000: bResult = GetDataStoreValue(MarkupString, FieldValue)
+  001b: if !((obj'Core.Strings'.static.Len(FieldValue.StringValue) == 0)) goto 0x0055
+  003c: FloatValue = FieldValue.FloatValue
+  0052: goto 0x006d
+  0055: FloatValue = cast4c(FieldValue.StringValue)
+  006d: return bResult
+  0074: return return
+  007a: <eos>
+
+function UIDataProvider.GetDataStoreIntValue  (script 65 bytes)
+  0000: bResult = GetDataStoreValue(MarkupString, FieldValue)
+  001b: IntValue = cast4a(FieldValue.StringValue)
+  0033: return bResult
+  003a: return return
+  0040: <eos>
+
+function UIDataProvider.GetDataStoreNameValue  (script 63 bytes)
+  0000: bResult = GetDataStoreValue(MarkupString, FieldValue)
+  001b: NameValue = FieldValue.NameValue
+  0031: return bResult
+  0038: return return
+  003e: <eos>
+
+function UIDataProvider.IsValidPropertyOwnerClass  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>

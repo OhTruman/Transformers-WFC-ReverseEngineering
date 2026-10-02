@@ -1,0 +1,11 @@
+function TnDeathModifierApplyConstantLocalForceOnBone.OnStart  (script 126 bytes)
+  0000: self.RandomDirection.X = obj'Core.Random'.static.RandomInRange(self.ForwardRange)
+  0029: self.RandomDirection.Y = obj'Core.Random'.static.RandomInRange(self.SideRange)
+  0052: self.RandomDirection.Z = obj'Core.Random'.static.RandomInRange(self.VerticalRange)
+  007b: return nothing
+  007d: <eos>
+
+function TnDeathModifierApplyConstantLocalForceOnBone.OnTick  (script 58 bytes)
+  0000: self._Owner.Mesh.AddLocalForce((self.RandomDirection * self._Owner.Mass), , self.BoneName)
+  0037: return nothing
+  0039: <eos>

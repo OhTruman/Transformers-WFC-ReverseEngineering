@@ -1,0 +1,79 @@
+function TnCharacterDataLoader.LoadCompleteObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCharacterDataLoader.LoadCharacter  (script 388 bytes)
+  0000: if !(((CD.CharacterName == "") || (CD.ChassisTypes.Length <= cast3a(FactionNumber)))) goto 0x0038
+  0036: return true
+  0038: self.CachedObjectReferences.Length = 0
+  0040: self.AsyncLoadJobs.Length = 0
+  0048: ObjReference = self.Options.FindChassis(cast3a(FactionNumber)[CD.ChassisTypes])
+  0079: if !((ObjReference == none)) goto 0x0166
+  0084: PackagePath = self.Options.GetChassisObjectPath(cast3a(FactionNumber)[CD.ChassisTypes])
+  00b5: if !((PackagePath != "")) goto 0x00cf
+  00c1: TnCharacterDataLoader.AddLoadJob(PackagePath)
+  00cc: goto 0x0163
+  00cf: LogInternal((((("Error:  Attempt to load Character" @ CD.CharacterName) @ "failed because the package path for") @ cast3a(FactionNumber)[CD.ChassisTypes]) @ "could not be resolved"), , , )
+  0163: goto 0x0173
+  0166: self.CachedObjectReferences.AddItem(ObjReference)
+  0173: return (self.AsyncLoadJobs.Length == 0)
+  017d: return return
+  0183: <eos>
+
+function TnCharacterDataLoader.AddLoadJob  (script 49 bytes)
+  0000: SplitPackageStrings = obj'Core.Strings'.static.Split(PackageName, ".")
+  0021: TnCharacterDataLoader.LoadPackage(0[SplitPackageStrings])
+  002e: return nothing
+  0030: <eos>
+
+function TnCharacterDataLoader.LoadPackage  (script 7 bytes)
+  0000: PackageName
+  0005: nothing
+  0006: <eos>
+
+function TnCharacterDataLoader.JobFinished  (script 89 bytes)
+  0000: I = 0
+  0007: if !((I < self.AsyncLoadJobs.Length)) goto 0x0056
+  0017: if !((I[self.AsyncLoadJobs] == PackageName)) goto 0x004c
+  002c: self.AsyncLoadJobs.Remove(I,1)
+  0038: if !((self.AsyncLoadJobs.Length == 0)) goto 0x004a
+  0044: TnCharacterDataLoader.NotifyLoadCompleteObservers()
+  004a: return nothing
+  004c: AddAdd_PreInt(I)
+  0053: goto 0x0007
+  0056: return nothing
+  0058: <eos>
+
+function TnCharacterDataLoader.CopyReferences  (script 23 bytes)
+  0000: self.CachedObjectReferences = OldDataLoader.CachedObjectReferences
+  0014: return nothing
+  0016: <eos>
+
+function TnCharacterDataLoader.AddLoadCompleteObserver  (script 46 bytes)
+  0000: if !((self.LoadCompleteObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.LoadCompleteObservers.Length[self.LoadCompleteObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnCharacterDataLoader.RemoveLoadCompleteObserver  (script 49 bytes)
+  0000: Index = self.LoadCompleteObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.LoadCompleteObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnCharacterDataLoader.ClearLoadCompleteObservers  (script 11 bytes)
+  0000: self.LoadCompleteObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnCharacterDataLoader.NotifyLoadCompleteObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.LoadCompleteObservers.Length)) goto 0x0041
+  0017: N = I[self.LoadCompleteObservers]
+  0028: LoadCompleteObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>

@@ -1,0 +1,34 @@
+function HmTurnRollCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.Pawn = Pawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmTurnRollCameraBehavior.Activate  (script 75 bytes)
+  0000: HmCameraBehavior.Activate(Result)
+  000b: self.Smoother.Reset()
+  001e: self.CurrentRollDeg = (cast3f(Result.Rotation.Roll) * 0.0054932)
+  0048: return nothing
+  004a: <eos>
+
+function HmTurnRollCameraBehavior.GetMaxRollDeg  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function HmTurnRollCameraBehavior.GetSmoothTime  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function HmTurnRollCameraBehavior.GetCurrentRollFraction  (script 86 bytes)
+  0000: return ((cast3f(obj'Core.Math'.static.NormalizeRotAxis((self.Pawn.Rotation.Yaw - CameraRotation.Yaw))) * 0.0054932) / 180.0)
+  004f: return return
+  0055: <eos>
+
+function HmTurnRollCameraBehavior.Update  (script 150 bytes)
+  0000: TargetRollDeg = (GetMaxRollDeg() * GetCurrentRollFraction(Result.Rotation))
+  002c: self.CurrentRollDeg = self.Smoother.Smooth(self.CurrentRollDeg, TargetRollDeg, GetSmoothTime(), DeltaTime)
+  005e: (Result.Rotation.Roll += cast44((self.CurrentRollDeg * 182.0444489)))
+  0089: return Result
+  008f: return return
+  0095: <eos>

@@ -1,0 +1,30 @@
+function TnEnableTurnaroundCameraBehaviorVolume.set_TurnaroundParams  (script 14 bytes)
+  0000: self._FlyingTurnaroundParams = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnEnableTurnaroundCameraBehaviorVolume.OnPostEditChange  (script 60 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((self._Arrow == none)) goto 0x0018
+  0016: return nothing
+  0018: self._FlyingTurnaroundParams.Direction = cast39(self._Arrow.Rotation)
+  0039: return nothing
+  003b: <eos>
+
+function TnEnableTurnaroundCameraBehaviorVolume.Touch  (script 82 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: P = TnPawn(Other)
+  002a: if !((P == none)) goto 0x0037
+  0035: return nothing
+  0037: P.EnableFlyingTurnaroundBehavior(self._FlyingTurnaroundParams)
+  004f: return nothing
+  0051: <eos>
+
+function TnEnableTurnaroundCameraBehaviorVolume.UnTouch  (script 78 bytes)
+  0000: UnTouch(Other)
+  000b: P = TnPawn(Other)
+  001b: if !((P == none)) goto 0x0028
+  0026: return nothing
+  0028: P.DisableFlyingTurnaroundBehavior(self._FlyingTurnaroundParams.Strategy)
+  004b: return nothing
+  004d: <eos>

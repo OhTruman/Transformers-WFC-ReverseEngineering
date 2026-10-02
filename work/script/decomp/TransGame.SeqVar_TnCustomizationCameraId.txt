@@ -1,0 +1,12 @@
+function SeqVar_TnCustomizationCameraId.GetCustomizationCameraId  (script 196 bytes)
+  0000: PreviewController = obj'TnCharacterScriptBinding'.static.FindPreviewController(self.PreviewCharNumber)
+  0023: if !((PreviewController == none)) goto 0x0034
+  002e: return -1
+  0034: PreviewRobot = TnAiPawn(PreviewController.Pawn)
+  004d: if !((PreviewRobot == none)) goto 0x005e
+  0058: return -1
+  005e: ChassisPath = PathName(PreviewRobot._CurrentCharacter.ChassisType)
+  0087: ChassisProvider = PreviewRobot.CustomCharacterOptions.GetChassisProviderFromObjectPath(ChassisPath)
+  00ae: return ChassisProvider.CustomizationCameraId
+  00bd: return return
+  00c3: <eos>

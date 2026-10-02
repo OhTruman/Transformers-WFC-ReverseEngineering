@@ -1,0 +1,304 @@
+function OnlineGameInterfaceImpl.OnFindOnlineGamesComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.GetGameSettings  (script 89 bytes)
+  0000: SessionIndex = get_Outer().Sessions.Find('SessionName',SessionName)
+  0023: if !((SessionIndex != -1)) goto 0x0050
+  0032: return SessionIndex[get_Outer().Sessions].GameSettings
+  0050: return none
+  0052: return return
+  0058: <eos>
+
+function OnlineGameInterfaceImpl.GetGameSearch  (script 13 bytes)
+  0000: return self.GameSearch
+  0006: return return
+  000c: <eos>
+
+function OnlineGameInterfaceImpl.CreateOnlineGame  (script 17 bytes)
+  0000: HostingPlayerNum
+  0005: SessionName
+  000a: NewGameSettings
+  000f: nothing
+  0010: <eos>
+
+function OnlineGameInterfaceImpl.OnCreateOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddCreateOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.CreateOnlineGameCompleteDelegates.Find(CreateOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.CreateOnlineGameCompleteDelegates.Length[self.CreateOnlineGameCompleteDelegates] = CreateOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearCreateOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.CreateOnlineGameCompleteDelegates.Find(CreateOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.CreateOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.UpdateOnlineGame  (script 12 bytes)
+  0000: default=false
+  0005: return return
+  000b: <eos>
+
+function OnlineGameInterfaceImpl.OnUpdateOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddUpdateOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.UpdateOnlineGameCompleteDelegates.Find(UpdateOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.UpdateOnlineGameCompleteDelegates.Length[self.UpdateOnlineGameCompleteDelegates] = UpdateOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearUpdateOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.UpdateOnlineGameCompleteDelegates.Find(UpdateOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.UpdateOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.DestroyOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnDestroyOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddDestroyOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.DestroyOnlineGameCompleteDelegates.Find(DestroyOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.DestroyOnlineGameCompleteDelegates.Length[self.DestroyOnlineGameCompleteDelegates] = DestroyOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearDestroyOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.DestroyOnlineGameCompleteDelegates.Find(DestroyOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DestroyOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.FindOnlineGames  (script 12 bytes)
+  0000: SearchingPlayerNum
+  0005: SearchSettings
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceImpl.AddFindOnlineGamesCompleteDelegate  (script 44 bytes)
+  0000: if !((self.FindOnlineGamesCompleteDelegates.Find(FindOnlineGamesCompleteDelegate) == -1)) goto 0x0029
+  0017: self.FindOnlineGamesCompleteDelegates.Length[self.FindOnlineGamesCompleteDelegates] = FindOnlineGamesCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearFindOnlineGamesCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.FindOnlineGamesCompleteDelegates.Find(FindOnlineGamesCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.FindOnlineGamesCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.CancelFindOnlineGames  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function OnlineGameInterfaceImpl.OnCancelFindOnlineGamesComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddCancelFindOnlineGamesCompleteDelegate  (script 44 bytes)
+  0000: if !((self.CancelFindOnlineGamesCompleteDelegates.Find(CancelFindOnlineGamesCompleteDelegate) == -1)) goto 0x0029
+  0017: self.CancelFindOnlineGamesCompleteDelegates.Length[self.CancelFindOnlineGamesCompleteDelegates] = CancelFindOnlineGamesCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearCancelFindOnlineGamesCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.CancelFindOnlineGamesCompleteDelegates.Find(CancelFindOnlineGamesCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.CancelFindOnlineGamesCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.FreeSearchResults  (script 7 bytes)
+  0000: Search
+  0005: nothing
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.JoinOnlineGame  (script 17 bytes)
+  0000: PlayerNum
+  0005: SessionName
+  000a: DesiredGame
+  000f: nothing
+  0010: <eos>
+
+function OnlineGameInterfaceImpl.OnJoinOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddJoinOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.JoinOnlineGameCompleteDelegates.Find(JoinOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.JoinOnlineGameCompleteDelegates.Length[self.JoinOnlineGameCompleteDelegates] = JoinOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearJoinOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.JoinOnlineGameCompleteDelegates.Find(JoinOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.JoinOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.GetResolvedConnectString  (script 12 bytes)
+  0000: SessionName
+  0005: ConnectInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceImpl.RegisterPlayer  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnRegisterPlayerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddRegisterPlayerCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.ClearRegisterPlayerCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.UnregisterPlayer  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnUnregisterPlayerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddUnregisterPlayerCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.ClearUnregisterPlayerCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.StartOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnStartOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddStartOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.StartOnlineGameCompleteDelegates.Find(StartOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.StartOnlineGameCompleteDelegates.Length[self.StartOnlineGameCompleteDelegates] = StartOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearStartOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.StartOnlineGameCompleteDelegates.Find(StartOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.StartOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.EndOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnEndOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddEndOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.EndOnlineGameCompleteDelegates.Find(EndOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.EndOnlineGameCompleteDelegates.Length[self.EndOnlineGameCompleteDelegates] = EndOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineGameInterfaceImpl.ClearEndOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.EndOnlineGameCompleteDelegates.Find(EndOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.EndOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineGameInterfaceImpl.RegisterForArbitration  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnArbitrationRegistrationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddArbitrationRegistrationCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.ClearArbitrationRegistrationCompleteDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.GetArbitratedPlayers  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.OnGameInviteAccepted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AddGameInviteAcceptedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.ClearGameInviteAcceptedDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineGameInterfaceImpl.AcceptGameInvite  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.ClearGameInvite  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.GetOnlineGameSearchResultForGameInvite  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.RecalculateSkillRating  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.QueryNonAdvertisedData  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.ReadPlatformSpecificSessionInfo  (script 12 bytes)
+  0000: DesiredGame
+  0005: PlatformSpecificInfo
+  000a: nothing
+  000b: <eos>
+
+function OnlineGameInterfaceImpl.ReadPlatformSpecificSessionInfoBySessionName  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function OnlineGameInterfaceImpl.BindPlatformSpecificSessionToSearch  (script 17 bytes)
+  0000: SearchingPlayerNum
+  0005: SearchSettings
+  000a: PlatformSpecificInfo
+  000f: nothing
+  0010: <eos>

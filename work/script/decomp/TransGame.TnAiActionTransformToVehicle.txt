@@ -1,0 +1,17 @@
+function TnAiActionTransformToVehicle.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTransformToVehicleBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTransformToVehicle.OnStart  (script 153 bytes)
+  0000: LogInternal("Starting transform to vehicle", , , )
+  0024: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x0045
+  003a: return Succeed()
+  0045: if !(self._TransformerPawn.get_IsTransforming()) goto 0x0066
+  005b: return Fail()
+  0066: SetCharacterState(0)
+  0071: self._TransformerController.Transform(1, )
+  0087: return Succeed()
+  0092: return return
+  0098: <eos>

@@ -1,0 +1,30 @@
+function TnAiShootingSweepLocationPicker.Initialize  (script 36 bytes)
+  0000: self.Attacker = InAttacker
+  000b: self.Target = InTarget
+  0016: self.SideAimOffset = InSideAimOffset
+  0021: return nothing
+  0023: <eos>
+
+function TnAiShootingSweepLocationPicker.ResetLocation  (script 11 bytes)
+  0000: self.ShouldResetLocation = true
+  0008: return nothing
+  000a: <eos>
+
+function TnAiShootingSweepLocationPicker.PickShootingSweepLocation  (script 191 bytes)
+  0000: TargetDir = (self.Target.Location - self.Attacker.Location)
+  0024: obj'Core.Math'.static.GetAxes(cast50(TargetDir), X, Y, Z)
+  0045: SideAimDirection = Y
+  0050: obj'Core.Math'.static.GetAxes(self.Attacker.Rotation, X, Y, Z)
+  0078: if !(((TargetDir dot Y) > cast3f(0))) goto 0x009a
+  008c: (SideAimDirection *= cast3f(-1))
+  009a: self.Location = (self.Target.Location + (SideAimDirection * self.SideAimOffset))
+  00bc: return nothing
+  00be: <eos>
+
+function TnAiShootingSweepLocationPicker.GetFocalPoint  (script 36 bytes)
+  0000: if !(self.ShouldResetLocation) goto 0x0017
+  0009: TnAiShootingSweepLocationPicker.PickShootingSweepLocation()
+  000f: self.ShouldResetLocation = false
+  0017: return self.Location
+  001d: return return
+  0023: <eos>

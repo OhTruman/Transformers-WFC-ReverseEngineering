@@ -1,0 +1,66 @@
+function HmStrafingTargetSticker.ApplyLookCompensatedStrafeStickiness  (script 656 bytes)
+  0000: if !((StickyTarget != none)) goto 0x0029
+  000b: StickyTargetTC = StickyTarget.FindActorComponent(obj'HmTargetableComponent')
+  0029: if !((((StickyTargetTC != none) && (StickyTargetTC.Owner != none)) && StickyTargetTC.StrafeStickyEnabled)) goto 0x027c
+  005e: CameraToTarget = GetCameraToTarget()
+  006e: CameraToTargetDistance = obj'Core.Math'.static.VSize(CameraToTarget)
+  0084: PreviousLookDirection = cast39(PreviousLookRotation)
+  0091: if !(((CameraToTargetDistance > cast3f(0)) && ((CameraToTarget dot PreviousLookDirection) > cast3f(0)))) goto 0x027c
+  00b4: AdjustedDirection = PreviousLookRotation
+  00bf: obj'Core.Math'.static.GetAxes(cast50(CameraToTarget), unused, TargetRight, TargetUp)
+  00e0: FrameDifference = obj'Core.Math'.static.Abs(((obj'Engine.Engine'.static.GetCurrentWorldInfo().TimeSeconds - DeltaTime) - self.LastUpdateFrameTime))
+  011b: if !(((self.TargetLastFrame == StickyTarget) && (FrameDifference < 0.01))) goto 0x0207
+  013b: NewRawPosition = self.Projector.GetTargetCircleCoords(PreviousLookDirection, CameraToTarget, TargetRight, TargetUp)
+  0168: NormalizedDeflection = (obj'Core.Math'.static.VSize((NewRawPosition - self.LastFramePosition)) / CameraToTargetDistance)
+  018c: if !((NormalizedDeflection > 0.0005)) goto 0x0207
+  019b: AdjustedPosition = self.Adjuster.GetAdjustedPosition(self.LastFramePosition, NewRawPosition, DeltaTime, ExternalStickinessFactor)
+  01c8: AdjustedDirection = cast50(((CameraToTarget + (AdjustedPosition.X * TargetRight)) + (AdjustedPosition.Y * TargetUp)))
+  0207: InputCorrectedDirection = (AdjustedDirection + LookRotationDelta)
+  021a: self.LastFramePosition = self.Projector.GetTargetCircleCoords(cast39(InputCorrectedDirection), CameraToTarget, TargetRight, TargetUp)
+  0249: self.LastUpdateFrameTime = obj'Engine.Engine'.static.GetCurrentWorldInfo().TimeSeconds
+  026b: self.TargetLastFrame = StickyTarget
+  0276: return AdjustedDirection
+  027c: self.TargetLastFrame = none
+  0283: return PreviousLookRotation
+  0289: return return
+  028f: <eos>
+
+function HmStrafingTargetSticker.IsOwnerMoving  (script 67 bytes)
+  0000: return (obj'Core.Math'.static.VSizeSq(HmPlayerTargeting(get_Outer())._TargetingOwner.Velocity) >= (self.MinMovingSpeed * self.MinMovingSpeed))
+  003c: return return
+  0042: <eos>
+
+function HmStrafingTargetSticker.IsTargetMoving  (script 81 bytes)
+  0000: TheTarget = HmStrafingTargetSticker.GetTarget()
+  000c: if !((TheTarget == none)) goto 0x0019
+  0017: return false
+  0019: return (obj'Core.Math'.static.VSizeSq(HmStrafingTargetSticker.GetTarget().Velocity) >= (self.MinMovingSpeed * self.MinMovingSpeed))
+  004a: return return
+  0050: <eos>
+
+function HmStrafingTargetSticker.GetTargetableComponent  (script 57 bytes)
+  0000: Target = HmStrafingTargetSticker.GetTarget()
+  000c: if !((Target == none)) goto 0x0019
+  0017: return none
+  0019: return Target.FindActorComponent(obj'HmTargetableComponent')
+  0032: return return
+  0038: <eos>
+
+function HmStrafingTargetSticker.GetCameraToTarget  (script 57 bytes)
+  0000: Targeting = HmPlayerTargeting(get_Outer())
+  000e: return (Targeting.GetTargetAssistTargetLocation() - Targeting._ViewpointLocation)
+  0032: return return
+  0038: <eos>
+
+function HmStrafingTargetSticker.GetTarget  (script 30 bytes)
+  0000: return HmPlayerTargeting(get_Outer()).GetTargetAssistTarget()
+  0017: return return
+  001d: <eos>
+
+function HmStrafingTargetSticker.GetTargetSpeed  (script 62 bytes)
+  0000: Target = HmStrafingTargetSticker.GetTarget()
+  000c: if !((Target == none)) goto 0x001d
+  0017: return 0.0
+  001d: return obj'Core.Math'.static.VSize(Target.Velocity)
+  0037: return return
+  003d: <eos>

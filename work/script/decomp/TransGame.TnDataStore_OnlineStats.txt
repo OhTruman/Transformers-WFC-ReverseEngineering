@@ -1,0 +1,64 @@
+function TnDataStore_OnlineStats.GetStatsDataStore  (script 96 bytes)
+  0000: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0019: if !((DataStoreManager == none)) goto 0x0026
+  0024: return none
+  0026: SearchTag = obj'TnDataStore_OnlineStats'.static.default.Tag
+  003a: return TnDataStore_OnlineStats(DataStoreManager.FindDataStore(SearchTag, ))
+  0059: return return
+  005f: <eos>
+
+function TnDataStore_OnlineStats.SetCurrentStats  (script 176 bytes)
+  0000: self.CurrentReadType = FetchType
+  000b: foreach self.StatsReadObjects(CurrentStats,) (end 0x006e)
+  001a: if !((CurrentStats.ViewName == NewViewName)) goto 0x006d
+  0032: self.StatsRead = CurrentStats
+  003d: self.ViewName = NewViewName
+  0048: LogInternal((("Now using " $ self.ViewName) $ " stats"), , , )
+  006a: iterpop
+  006b: return nothing
+  006d: iternext
+  006e: iterpop
+  006f: LogInternal(("ERROR: Failed to find online stats reader named " $ NewViewName), , , )
+  00ad: return nothing
+  00af: <eos>
+
+function TnDataStore_OnlineStats.SetStatsReadInfo  (script 23 bytes)
+  0000: SetCurrentStats(self.ViewName, self.CurrentReadType)
+  0014: return nothing
+  0016: <eos>
+
+function TnDataStore_OnlineStats.GetLocalUserNum  (script 79 bytes)
+  0000: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x0044)
+  002e: iterpop
+  002f: return PC.GetLocalUserNum()
+  0043: iternext
+  0044: iterpop
+  0045: return 255
+  0048: return return
+  004e: <eos>
+
+function TnDataStore_OnlineStats.OnReadComplete  (script 165 bytes)
+  0000: self.IsReadingStats = false
+  0008: if !(((!bWasSuccessful && (cast3a(self.CurrentReadType) == cast3a(2))) && (cast3a(self.DeferredRefreshController) == 255))) goto 0x005f
+  0035: SetCurrentStats(self.ViewName, 4)
+  0046: RefreshStats(cast3d(GetLocalUserNum()))
+  005c: goto 0x00a2
+  005f: OnReadComplete(bWasSuccessful, CompletedStatsRead)
+  0070: if !((cast3a(self.DeferredRefreshController) != 255)) goto 0x00a2
+  007e: StoredDeferredRefreshController = self.DeferredRefreshController
+  0089: self.DeferredRefreshController = cast3d(255)
+  0093: RefreshStats(StoredDeferredRefreshController)
+  00a2: return nothing
+  00a4: <eos>
+
+function TnDataStore_OnlineStats.RefreshStats  (script 81 bytes)
+  0000: if !(self.IsReadingStats) goto 0x0016
+  0009: self.DeferredRefreshController = ControllerIndex
+  0014: return false
+  0016: self.IsReadingStats = true
+  001e: retval = RefreshStats(ControllerIndex)
+  0030: if !(!retval) goto 0x0043
+  003b: self.IsReadingStats = false
+  0043: return retval
+  004a: return return
+  0050: <eos>

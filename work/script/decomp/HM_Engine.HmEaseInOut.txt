@@ -1,0 +1,18 @@
+function HmEaseInOut.Filter  (script 42 bytes)
+  0000: return obj'Core.Math'.static.Smoothstep(Min, Max, X)
+  0023: return return
+  0029: <eos>
+
+function HmEaseInOut.Update  (script 217 bytes)
+  0000: EaseIn = ((self.EaseInTime == cast3f(0)) ? -1.0 : (-DeltaTime / self.EaseInTime))
+  0028: EaseOut = ((self.EaseOutTime == cast3f(0)) ? 1.0 : (DeltaTime / self.EaseOutTime))
+  004e: NormalizedSpeed = (self.PreviousNormalizedSpeed + obj'Core.Math'.static.FClamp((DesiredNormalizedSpeed - self.PreviousNormalizedSpeed), EaseIn, EaseOut))
+  007c: self.CurrentValue = obj'Core.Math'.static.Lerp(self.Range.Min, self.Range.Max, Filter(0.0, 1.0, NormalizedSpeed))
+  00cb: self.PreviousNormalizedSpeed = NormalizedSpeed
+  00d6: return nothing
+  00d8: <eos>
+
+function HmEaseInOut.GetValue  (script 13 bytes)
+  0000: return self.CurrentValue
+  0006: return return
+  000c: <eos>

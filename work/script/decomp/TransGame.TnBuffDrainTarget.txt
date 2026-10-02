@@ -1,0 +1,16 @@
+function TnBuffDrainTarget.ClientTickBuff  (script 296 bytes)
+  0000: self.OwnerPawn.PlayHit(1.0, none, self.OwnerPawn.Location, obj'TnDamageTypeDrain', vect(0,0,0), THI)
+  003e: self.OwnerPawn.PlaySound(self.DamageSound, true, , , , )
+  005b: InstigatorPawn = Pawn(self.Instigator)
+  006b: if !((InstigatorPawn != none)) goto 0x011a
+  0076: if !(((InstigatorPawn.Mesh != none) && (InstigatorPawn.Mesh.GetSocketByName(self.DrainSourceSocket) != none))) goto 0x00dd
+  00b3: BeamLocation = InstigatorPawn.Mesh.GetSocketWorldLocation(self.DrainSourceSocket)
+  00da: goto 0x00f1
+  00dd: BeamLocation = self.Instigator.Location
+  00f1: foreach self.LoopingEffects(LoopingEffect,) (end 0x0119)
+  0100: LoopingEffect.SetTracerEndPoint(BeamLocation)
+  0118: iternext
+  0119: iterpop
+  011a: TnBuff.ClientTickBuff(DeltaTime)
+  0125: return nothing
+  0127: <eos>

@@ -1,0 +1,17 @@
+function Trigger_LOS.Tick  (script 426 bytes)
+  0000: if !(FindEventsOfClass(obj'SeqEvent_LOS', losEvents)) goto 0x01a7
+  0017: foreach self.WorldInfo.AllControllers(obj'PlayerController', Player) (end 0x01a6)
+  0037: if !((Player.Pawn != none)) goto 0x01a5
+  004b: Player.GetPlayerViewPoint(cameraLoc, cameraRot)
+  0068: cameraDist = obj'Core.Math'.static.PointDistToLine(self.Location, cast39(cameraRot), cameraLoc, )
+  0093: idx = 0
+  009a: if !((idx < losEvents.Length)) goto 0x01a5
+  00aa: evt = SeqEvent_LOS(idx[losEvents])
+  00c0: if !(((((cameraDist <= evt.ScreenCenterDistance) && (obj'Core.Math'.static.VSize((Player.Pawn.Location - self.Location)) <= evt.TriggerDistance)) && ((obj'Core.Math'.static.Normal((self.Location - cameraLoc)) dot cast39(cameraRot)) > 0.0)) && (!evt.bCheckForObstructions || Player.LineOfSightTo(self, cameraLoc, )))) goto 0x019b
+  0170: idx[losEvents].CheckActivate(self, Player.Pawn, false, , )
+  019b: AddAdd_Int(idx)
+  01a2: goto 0x009a
+  01a5: iternext
+  01a6: iterpop
+  01a7: return nothing
+  01a9: <eos>

@@ -1,0 +1,22 @@
+function TnSkeletalRigidBodyModifierSetEnergyDeathMaterial.OnInitialize  (script 28 bytes)
+  0000: self.EnergyDeathMaterial = self._Owner.get_EnergyDeathMaterial()
+  0019: return nothing
+  001b: <eos>
+
+function TnSkeletalRigidBodyModifierSetEnergyDeathMaterial.OnStart  (script 102 bytes)
+  0000: if !((self.EnergyDeathMaterial == none)) goto 0x000d
+  000b: return nothing
+  000d: self._SkeletalRigidBody.SkeletalMeshComponent.SetMaterialForAllElements(self.EnergyDeathMaterial)
+  002e: if !((self._Owner != none)) goto 0x0063
+  0039: self._Owner._CharacterApplier.ApplyColorsToMesh(self._SkeletalRigidBody.SkeletalMeshComponent)
+  0063: return nothing
+  0065: <eos>
+
+function TnSkeletalRigidBodyModifierSetEnergyDeathMaterial.OnTick  (script 119 bytes)
+  0000: ScalarValue = obj'Core.Math'.static.FClamp((self.CurrentScalarValue - (DeltaTime / self.TransitionTime)), 0.0, 1.0)
+  002e: if !((ScalarValue == self.CurrentScalarValue)) goto 0x003f
+  003d: return nothing
+  003f: self.CurrentScalarValue = ScalarValue
+  004a: self._SkeletalRigidBody.SkeletalMeshComponent.SetScalarParam('Defrag', ScalarValue)
+  0074: return nothing
+  0076: <eos>

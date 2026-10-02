@@ -1,0 +1,20 @@
+function TnSeqAct_SetObjectiveTimer.Activated  (script 79 bytes)
+  0000: Activated()
+  0006: GRI = TnGameReplicationInfoMultiplayer(GetWorldInfo().GRI)
+  0024: if !((GRI != none)) goto 0x004c
+  002f: GRI.ResetObjectiveCountdown(true, delegate.GetRemainingTimeOnTimer)
+  004c: return nothing
+  004e: <eos>
+
+function TnSeqAct_SetObjectiveTimer.Deactivated  (script 79 bytes)
+  0000: Deactivated()
+  0006: GRI = TnGameReplicationInfoMultiplayer(GetWorldInfo().GRI)
+  0024: if !((GRI != none)) goto 0x004c
+  002f: GRI.ResetObjectiveCountdown(false, delegate.None)
+  004c: return nothing
+  004e: <eos>
+
+function TnSeqAct_SetObjectiveTimer.GetRemainingTimeOnTimer  (script 15 bytes)
+  0000: return cast44(self.RemainingTime)
+  0008: return return
+  000e: <eos>

@@ -1,0 +1,8 @@
+function HmOrbitPitchCameraBehavior.Update  (script 223 bytes)
+  0000: if !(Result.Recentering) goto 0x001a
+  0014: return Result
+  001a: (Result.OrbitRotation.Pitch += cast44((((CI.RightStickInputY * self.PitchSpeed) * 182.0444489) * DeltaTime)))
+  005e: Result.OrbitRotation.Pitch = obj'Core.Math'.static.Clamp(Result.OrbitRotation.Pitch, cast44((self.PitchRange.Min * 182.0444489)), cast44((self.PitchRange.Max * 182.0444489)))
+  00d2: return Result
+  00d8: return return
+  00de: <eos>

@@ -1,0 +1,42 @@
+function TnFlagMessage.GetColoredString  (script 499 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: if !((RelatedPRI_1 != none)) goto 0x008e
+  0010: StringReplacements.Insert(0,1)
+  0018: 0[StringReplacements].SourceString = "`k"
+  002f: 0[StringReplacements].DestString = RelatedPRI_1.Team.GetHumanReadableName()
+  005e: 0[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(LocalPlayerPRI, RelatedPRI_1)
+  008e: switch (MessageSwitch)
+  0095: case 1: (next 0x00bd)
+  0099: UnparsedMsg = default.PickupMessage
+  00a4: Stinger = default.PickupSound
+  00af: Dialog = default.PickupDialogSound
+  00ba: goto 0x013a
+  00bd: case 2: (next 0x00e6)
+  00c2: UnparsedMsg = default.DroppedMessage
+  00cd: Stinger = default.DropSound
+  00d8: Dialog = default.DropDialogSound
+  00e3: goto 0x013a
+  00e6: case 3: (next 0x010f)
+  00eb: UnparsedMsg = default.ScoredMessage
+  00f6: Stinger = default.ScoredSound
+  0101: Dialog = default.ScoredDialogSound
+  010c: goto 0x013a
+  010f: case 0: (next 0x0137)
+  0113: UnparsedMsg = default.ReturnedMessage
+  011e: Stinger = default.ReturnedSound
+  0129: Dialog = default.ReturnedDialogSound
+  0134: goto 0x013a
+  0137: default:
+  013a: PC = TnPlayerController(LocalPlayerPRI.Owner)
+  0153: if !((Stinger != none)) goto 0x017b
+  015e: PC.PlaySound(Stinger, true, , , , )
+  017b: if !((Dialog != none)) goto 0x01b5
+  0186: TnWorldInfo(PC.WorldInfo)._Announcer.PlayEvent(Dialog)
+  01b5: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  01e6: return CS
+  01ec: return return
+  01f2: <eos>

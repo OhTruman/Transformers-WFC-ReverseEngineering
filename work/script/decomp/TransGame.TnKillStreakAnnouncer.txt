@@ -1,0 +1,29 @@
+function TnKillStreakAnnouncer.AnnounceKillStreak  (script 160 bytes)
+  0000: if !((KillerPC == none)) goto 0x000d
+  000b: return nothing
+  000d: KillerPRI = TnPlayerReplicationInfo(KillerPC.PlayerReplicationInfo)
+  0026: if !((KillerPRI == none)) goto 0x0033
+  0031: return nothing
+  0033: KillerPC.UpdateKillstreakRewards(KillerPRI._CurrentKillStreak)
+  0054: if !((self.AnnouncementsForStreakLengths.Find(KillerPRI._CurrentKillStreak) >= 0)) goto 0x009d
+  0070: KillerPC.BroadcastLocalizedMessage(obj'TnKillStreakMessage', KillerPRI._CurrentKillStreak, KillerPRI, , )
+  009d: return nothing
+  009f: <eos>
+
+function TnKillStreakAnnouncer.AnnounceEndedEnemyKillStreak  (script 138 bytes)
+  0000: if !(((KillerPC == none) || (KilledPC == none))) goto 0x001a
+  0018: return nothing
+  001a: KilledPRI = TnPlayerReplicationInfo(KilledPC.PlayerReplicationInfo)
+  0033: if !((KilledPRI == none)) goto 0x0040
+  003e: return nothing
+  0040: if !((KilledPRI._CurrentKillStreak >= 0[self.AnnouncementsForStreakLengths])) goto 0x0087
+  005a: KillerPC.BroadcastLocalizedMessage(obj'TnKillStreakEndedMessage', , KillerPC.PlayerReplicationInfo, KilledPRI, )
+  0087: return nothing
+  0089: <eos>
+
+function TnKillStreakAnnouncer.ScoreKill  (script 60 bytes)
+  0000: if !((Killer != Killed)) goto 0x001f
+  000f: TnKillStreakAnnouncer.AnnounceKillStreak(TnPlayerController(Killer))
+  001f: TnKillStreakAnnouncer.AnnounceEndedEnemyKillStreak(TnPlayerController(Killer), TnPlayerController(Killed))
+  0039: return nothing
+  003b: <eos>

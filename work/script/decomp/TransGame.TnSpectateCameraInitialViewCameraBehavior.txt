@@ -1,0 +1,21 @@
+function TnSpectateCameraInitialViewCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.SpecateCamera = CameraActor(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnSpectateCameraInitialViewCameraBehavior.Activate  (script 27 bytes)
+  0000: if !((self.SpecateCamera == none)) goto 0x000d
+  000b: return nothing
+  000d: self.ElapsedInitializationTime = 0.0
+  0018: return nothing
+  001a: <eos>
+
+function TnSpectateCameraInitialViewCameraBehavior.Update  (script 144 bytes)
+  0000: if !((self.SpecateCamera == none)) goto 0x0011
+  000b: return Result
+  0011: (self.ElapsedInitializationTime += DeltaTime)
+  001d: if !((self.ElapsedInitializationTime <= 0.1)) goto 0x0083
+  002c: Result.OrbitRotation = obj'Core.Math'.static.MakeRotator(self.SpecateCamera.Rotation.Pitch, self.SpecateCamera.Rotation.Yaw, 0)
+  0083: return Result
+  0089: return return
+  008f: <eos>

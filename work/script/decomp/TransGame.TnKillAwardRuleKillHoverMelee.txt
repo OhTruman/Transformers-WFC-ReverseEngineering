@@ -1,0 +1,10 @@
+function TnKillAwardRuleKillHoverMelee.ConditionMet  (script 149 bytes)
+  0000: if !((DamageType != obj'TnDamageTypeMelee')) goto 0x0011
+  000f: return false
+  0011: KilledPawn = TnPawn(Killed.Pawn)
+  002a: if !((KilledPawn == none)) goto 0x0037
+  0035: return false
+  0037: BS = TnBuffService(KilledPawn.GetService('TnBuffService'))
+  005e: return (NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasBuff(obj'TnBuffIncreaseDamageDuringHover'))
+  008e: return return
+  0094: <eos>

@@ -1,0 +1,33 @@
+function OnlineNewsInterfaceMcp.ReadNews  (script 12 bytes)
+  0000: LocalUserNum
+  0005: NewsType
+  000a: nothing
+  000b: <eos>
+
+function OnlineNewsInterfaceMcp.OnReadNewsCompleted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineNewsInterfaceMcp.AddReadNewsCompletedDelegate  (script 44 bytes)
+  0000: if !((self.ReadNewsDelegates.Find(ReadNewsDelegate) == -1)) goto 0x0029
+  0017: self.ReadNewsDelegates.Length[self.ReadNewsDelegates] = ReadNewsDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineNewsInterfaceMcp.ClearReadNewsCompletedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReadNewsDelegates.Find(ReadGameNewsDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReadNewsDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineNewsInterfaceMcp.GetNews  (script 102 bytes)
+  0000: NewsIndex = 0
+  0007: if !((NewsIndex < self.NewsItems.Length)) goto 0x005c
+  0017: if !((cast3a(NewsIndex[self.NewsItems].NewsType) == cast3a(NewsType))) goto 0x0052
+  003b: return NewsIndex[self.NewsItems].NewsItem
+  0052: AddAdd_Int(NewsIndex)
+  0059: goto 0x0007
+  005c: return ""
+  005f: return return
+  0065: <eos>

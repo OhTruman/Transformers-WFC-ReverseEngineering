@@ -1,0 +1,41 @@
+function TnAiActionOmegaDeath.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionOmegaDeathBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionOmegaDeath.OnBind  (script 57 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._Omega = TnOmegaSupremePawn(self._TransformerPawn)
+  0016: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0036: return nothing
+  0038: <eos>
+
+function TnAiActionOmegaDeath.OnSetUpConditions  (script 102 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 2)) goto 0x0026
+  0024: return false
+  0026: if !(((self._Omega == none) || (self._Omega.IsHeartArmorDestroyed() == false))) goto 0x004e
+  004c: return false
+  004e: return OnSetUpConditions(ExpectedEffects, Conditions)
+  005f: return return
+  0065: <eos>
+
+function TnAiActionOmegaDeath.OnStart  (script 105 bytes)
+  0000: SetCharacterState((8 | 1))
+  000f: self._TransformerController.StopMovement()
+  0022: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAnimationComplete, delegate.OnAnimationComplete)
+  0056: return OnStart(ExpectedEffects)
+  0062: return return
+  0068: <eos>
+
+function TnAiActionOmegaDeath.OnAnimationComplete  (script 55 bytes)
+  0000: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.DeathIdleParams, delegate.SucceedCallback, delegate.FailCallback)
+  0034: return nothing
+  0036: <eos>
+
+function TnAiActionOmegaDeath.OnFinish  (script 63 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateReaction', 10, none)
+  003c: return nothing
+  003e: <eos>

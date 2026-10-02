@@ -1,0 +1,13 @@
+function TnInteractHighlighterComponent.CollectMeshes  (script 159 bytes)
+  0000: OwnerAsInteract = TnInteractBase(self.Owner)
+  0010: MCs.AddItem(OwnerAsInteract.BaseMesh)
+  0026: I = 0
+  002d: if !((I < OwnerAsInteract.AttachedMeshes.Length)) goto 0x0092
+  0046: AttachedMesh = MeshComponent(I[OwnerAsInteract.AttachedMeshes].Mesh)
+  0070: if !((AttachedMesh != none)) goto 0x0088
+  007b: MCs.AddItem(AttachedMesh)
+  0088: AddAdd_PreInt(I)
+  008f: goto 0x002d
+  0092: return MCs
+  0098: return return
+  009e: <eos>

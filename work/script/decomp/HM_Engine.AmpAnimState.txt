@@ -1,0 +1,12 @@
+function AmpAnimState.SetNormalizedPosition  (script 7 bytes)
+  0000: NewPosition
+  0005: nothing
+  0006: <eos>
+
+function AmpAnimState.OnBeginTransitionIn  (script 69 bytes)
+  0000: Trig = AmpAnimSourceStateTrigger(0[self.Children].Anim)
+  001d: if !((Trig == none)) goto 0x002a
+  0028: return nothing
+  002a: Trig.OnArriveFromState(SourceStateName)
+  0042: return nothing
+  0044: <eos>

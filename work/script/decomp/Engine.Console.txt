@@ -1,0 +1,470 @@
+function Console.SetInputText  (script 14 bytes)
+  0000: self.TypedStr = Text
+  000b: return nothing
+  000d: <eos>
+
+function Console.SetCursorPos  (script 14 bytes)
+  0000: self.TypedStrPos = Position
+  000b: return nothing
+  000d: <eos>
+
+function Console.PurgeCommandFromHistory  (script 221 bytes)
+  0000: if !(((self.HistoryTop >= 0) && (self.HistoryTop < 16))) goto 0x00da
+  0019: HistoryIdx = 0
+  0020: if !((HistoryIdx < 16)) goto 0x00da
+  002c: if !((HistoryIdx[self.History] ~= Command)) goto 0x00d0
+  0041: idx = HistoryIdx
+  004c: NextIdx = cast44((cast3f((HistoryIdx + 1)) % cast3f(16)))
+  0064: if !((idx != self.HistoryTop)) goto 0x00b0
+  0073: idx[self.History] = NextIdx[self.History]
+  008a: idx = NextIdx
+  0095: NextIdx = cast44((cast3f((NextIdx + 1)) % cast3f(16)))
+  00ad: goto 0x0064
+  00b0: self.HistoryTop = ((self.HistoryTop == 0) ? (16 - 1) : (self.HistoryTop - 1))
+  00d0: AddAdd_PreInt(HistoryIdx)
+  00d7: goto 0x0020
+  00da: return nothing
+  00dc: <eos>
+
+function Console.ConsoleCommand  (script 416 bytes)
+  0000: if !(((self.HistoryTop == 0) ? !((16 - 1)[self.History] ~= Command) : !((self.HistoryTop - 1)[self.History] ~= Command))) goto 0x00a7
+  003b: Console.PurgeCommandFromHistory(Command)
+  0046: self.HistoryTop[self.History] = Command
+  0057: self.HistoryTop = cast44((cast3f((self.HistoryTop + 1)) % cast3f(16)))
+  006f: if !(((self.HistoryBot == -1) || (self.HistoryBot == self.HistoryTop))) goto 0x00a7
+  008f: self.HistoryBot = cast44((cast3f((self.HistoryBot + 1)) % cast3f(16)))
+  00a7: self.HistoryCur = self.HistoryTop
+  00b2: SaveConfig()
+  00b5: OutputText((("
+>>>" @ Command) @ "<<<"))
+  00d3: if !((self.ConsoleTargetPlayer != none)) goto 0x0108
+  00de: self.ConsoleTargetPlayer.Actor.ConsoleCommand(Command, )
+  0105: goto 0x019d
+  0108: if !(((get_Outer().get_Outer().GamePlayers.Length > 0) && (0[get_Outer().get_Outer().GamePlayers].Actor != none))) goto 0x0182
+  0148: 0[get_Outer().get_Outer().GamePlayers].Actor.ConsoleCommand(Command, )
+  017f: goto 0x019d
+  0182: get_Outer().ConsoleCommand(Command)
+  019d: return nothing
+  019f: <eos>
+
+function Console.ClearOutput  (script 23 bytes)
+  0000: self.SBHead = 0
+  0007: self.Scrollback.Remove(0,self.Scrollback.Length)
+  0014: return nothing
+  0016: <eos>
+
+function Console.OutputTextLine  (script 84 bytes)
+  0000: if !((self.Scrollback.Length > self.MaxScrollbackSize)) goto 0x0029
+  0010: self.Scrollback.Remove(0,1)
+  0018: self.SBHead = (self.MaxScrollbackSize - 1)
+  0026: goto 0x0030
+  0029: AddAdd_Int(self.SBHead)
+  0030: self.Scrollback.Length = (self.Scrollback.Length + 1)
+  0040: self.SBHead[self.Scrollback] = Text
+  0051: return nothing
+  0053: <eos>
+
+function Console.OutputText  (script 175 bytes)
+  0000: RemainingText = Text
+  000b: StringLength = obj'Core.Strings'.static.Len(Text)
+  0021: if !((StringLength > 0)) goto 0x00ac
+  002c: LineLength = obj'Core.Strings'.static.InStr(RemainingText, "
+", )
+  0046: if !((LineLength == -1)) goto 0x0060
+  0055: LineLength = StringLength
+  0060: Console.OutputTextLine(obj'Core.Strings'.static.Left(RemainingText, LineLength))
+  007b: RemainingText = obj'Core.Strings'.static.Mid(RemainingText, (LineLength + 1), )
+  009a: (StringLength -= (LineLength + 1))
+  00a9: goto 0x0021
+  00ac: return nothing
+  00ae: <eos>
+
+function Console.StartTyping  (script 50 bytes)
+  0000: GotoState('Typing', , , )
+  000e: Console.SetInputText(Text)
+  0019: Console.SetCursorPos(obj'Core.Strings'.static.Len(Text))
+  002f: return nothing
+  0031: <eos>
+
+function Console.PostRender_Console  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Console.InputKey  (script 129 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: if !((cast3a(Event) == cast3a(0))) goto 0x0073
+  001a: self.bCaptureKeyInput = false
+  0022: if !((Key == self.ConsoleKey)) goto 0x004c
+  0031: GotoState('Open', , , )
+  003f: self.bCaptureKeyInput = true
+  0047: return true
+  0049: goto 0x0073
+  004c: if !((Key == self.TypeKey)) goto 0x0073
+  005b: GotoState('Typing', , , )
+  0069: self.bCaptureKeyInput = true
+  0071: return true
+  0073: return self.bCaptureKeyInput
+  007a: return return
+  0080: <eos>
+
+function Console.InputChar  (script 14 bytes)
+  0000: return self.bCaptureKeyInput
+  0007: return return
+  000d: <eos>
+
+function Console.FlushPlayerInput  (script 198 bytes)
+  0000: if !((self.ConsoleTargetPlayer != none)) goto 0x0022
+  000b: PC = self.ConsoleTargetPlayer.Actor
+  001f: goto 0x0086
+  0022: if !(((get_Outer().get_Outer().GamePlayers.Length > 0) && (0[get_Outer().get_Outer().GamePlayers].Actor != none))) goto 0x0086
+  0062: PC = 0[get_Outer().get_Outer().GamePlayers].Actor
+  0086: if !(((PC != none) && (PC.PlayerInput != none))) goto 0x00c3
+  00a7: PC.PlayerInput.ResetInput()
+  00c3: return nothing
+  00c5: <eos>
+
+function Console.Typing.InputChar  (script 284 bytes)
+  0000: if !(self.bCaptureKeyInput) goto 0x000b
+  0009: return true
+  000b: if !((obj'Core.Strings'.static.Len(Unicode) > 0)) goto 0x0113
+  0021: Character = obj'Core.Strings'.static.Asc(obj'Core.Strings'.static.Left(Unicode, 1))
+  0043: Unicode = obj'Core.Strings'.static.Mid(Unicode, 1, )
+  005b: if !(((((Character >= 32) && (Character < 256)) && (Character != obj'Core.Strings'.static.Asc("~"))) && (Character != obj'Core.Strings'.static.Asc("`")))) goto 0x0110
+  00ac: Console.SetInputText(((obj'Core.Strings'.static.Left(self.TypedStr, self.TypedStrPos) $ obj'Core.Strings'.static.Chr(Character)) $ obj'Core.Strings'.static.Right(self.TypedStr, (obj'Core.Strings'.static.Len(self.TypedStr) - self.TypedStrPos))))
+  0102: Console.SetCursorPos((self.TypedStrPos + 1))
+  0110: goto 0x000b
+  0113: return true
+  0115: return return
+  011b: <eos>
+
+function Console.Typing.InputKey  (script 1239 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: if !((cast3a(Event) == cast3a(0))) goto 0x0022
+  001a: self.bCaptureKeyInput = false
+  0022: if !(((Key == 'Escape') && (cast3a(Event) == cast3a(1)))) goto 0x0085
+  0047: if !((self.TypedStr != "")) goto 0x0072
+  0053: Console.SetInputText("")
+  005b: Console.SetCursorPos(0)
+  0062: self.HistoryCur = self.HistoryTop
+  006d: return true
+  006f: goto 0x0080
+  0072: GotoState('None', , , )
+  0080: return true
+  0082: goto 0x04ce
+  0085: if !(((Key == self.ConsoleKey) && (cast3a(Event) == cast3a(0)))) goto 0x00c1
+  00a6: GotoState('Open', , , )
+  00b4: self.bCaptureKeyInput = true
+  00bc: return true
+  00be: goto 0x04ce
+  00c1: if !(((Key == self.TypeKey) && (cast3a(Event) == cast3a(0)))) goto 0x00fd
+  00e2: GotoState('None', , , )
+  00f0: self.bCaptureKeyInput = true
+  00f8: return true
+  00fa: goto 0x04ce
+  00fd: if !(((Key == 'Enter') && (cast3a(Event) == cast3a(1)))) goto 0x0187
+  0122: if !((self.TypedStr != "")) goto 0x0174
+  012e: Temp = self.TypedStr
+  0139: Console.SetInputText("")
+  0141: Console.SetCursorPos(0)
+  0148: ConsoleCommand(Temp)
+  0157: OutputText("")
+  0163: GotoState('None', , , )
+  0171: goto 0x0182
+  0174: GotoState('None', , , )
+  0182: return true
+  0184: goto 0x04ce
+  0187: if !(global.InputKey(ControllerId, Key, Event, AmountDepressed, bGamepad)) goto 0x01b3
+  01ae: return true
+  01b0: goto 0x04ce
+  01b3: if !(((cast3a(Event) != cast3a(0)) && (cast3a(Event) != cast3a(2)))) goto 0x0213
+  01d5: return (((Key != 'LeftMouseButton') && (Key != 'MiddleMouseButton')) && (Key != 'RightMouseButton'))
+  0210: goto 0x04ce
+  0213: if !((Key == 'Up')) goto 0x029d
+  0226: if !((self.HistoryBot >= 0)) goto 0x0298
+  0231: if !((self.HistoryCur == self.HistoryBot)) goto 0x024e
+  0240: self.HistoryCur = self.HistoryTop
+  024b: goto 0x026b
+  024e: SubtractSubtract_Int(self.HistoryCur)
+  0255: if !((self.HistoryCur < 0)) goto 0x026b
+  0260: self.HistoryCur = (16 - 1)
+  026b: Console.SetInputText(self.HistoryCur[self.History])
+  027c: Console.SetCursorPos(obj'Core.Strings'.static.Len(self.HistoryCur[self.History]))
+  0298: return true
+  029a: goto 0x04ce
+  029d: if !((Key == 'Down')) goto 0x0320
+  02b0: if !((self.HistoryBot >= 0)) goto 0x031d
+  02bb: if !((self.HistoryCur == self.HistoryTop)) goto 0x02d8
+  02ca: self.HistoryCur = self.HistoryBot
+  02d5: goto 0x02f0
+  02d8: self.HistoryCur = cast44((cast3f((self.HistoryCur + 1)) % cast3f(16)))
+  02f0: Console.SetInputText(self.HistoryCur[self.History])
+  0301: Console.SetCursorPos(obj'Core.Strings'.static.Len(self.HistoryCur[self.History]))
+  031d: goto 0x04ce
+  0320: if !((Key == 'BackSpace')) goto 0x0398
+  0333: if !((self.TypedStrPos > 0)) goto 0x0393
+  033e: Console.SetInputText((obj'Core.Strings'.static.Left(self.TypedStr, (self.TypedStrPos - 1)) $ obj'Core.Strings'.static.Right(self.TypedStr, (obj'Core.Strings'.static.Len(self.TypedStr) - self.TypedStrPos))))
+  0385: Console.SetCursorPos((self.TypedStrPos - 1))
+  0393: return true
+  0395: goto 0x04ce
+  0398: if !((Key == 'Delete')) goto 0x0411
+  03ab: if !((self.TypedStrPos < obj'Core.Strings'.static.Len(self.TypedStr))) goto 0x040c
+  03c5: Console.SetInputText((obj'Core.Strings'.static.Left(self.TypedStr, self.TypedStrPos) $ obj'Core.Strings'.static.Right(self.TypedStr, ((obj'Core.Strings'.static.Len(self.TypedStr) - self.TypedStrPos) - 1))))
+  040c: return true
+  040e: goto 0x04ce
+  0411: if !((Key == 'Left')) goto 0x0443
+  0424: Console.SetCursorPos(obj'Core.Math'.static.Max(0, (self.TypedStrPos - 1)))
+  043e: return true
+  0440: goto 0x04ce
+  0443: if !((Key == 'Right')) goto 0x0484
+  0456: Console.SetCursorPos(obj'Core.Math'.static.Min(obj'Core.Strings'.static.Len(self.TypedStr), (self.TypedStrPos + 1)))
+  047f: return true
+  0481: goto 0x04ce
+  0484: if !((Key == 'Home')) goto 0x04a3
+  0497: Console.SetCursorPos(0)
+  049e: return true
+  04a0: goto 0x04ce
+  04a3: if !((Key == 'End')) goto 0x04ce
+  04b6: Console.SetCursorPos(obj'Core.Strings'.static.Len(self.TypedStr))
+  04cc: return true
+  04ce: return true
+  04d0: return return
+  04d6: <eos>
+
+function Console.Typing.PostRender_Console  (script 650 bytes)
+  0000: Canvas.Font = obj'Engine'.static.GetSmallFont()
+  0022: OutStr = ("(>" @ self.TypedStr)
+  0033: Canvas.StrLen(OutStr, XL, YL)
+  0055: ClipX = Canvas.ClipX
+  0069: ClipY = Canvas.ClipY
+  007d: LeftPos = 0.0
+  0088: if !(obj'WorldInfo'.static.IsConsoleBuild()) goto 0x00c0
+  009f: (ClipX -= cast3f(32))
+  00aa: (ClipY -= cast3f(32))
+  00b5: LeftPos = 32.0
+  00c0: Canvas.SetPos(LeftPos, ((ClipY - cast3f(6)) - YL))
+  00ea: Canvas.DrawTile(self.DefaultTexture_Black, ClipX, (YL + cast3f(6)), 0.0, 0.0, 32.0, 32.0)
+  0126: Canvas.SetPos(LeftPos, ((ClipY - cast3f(6)) - YL))
+  0150: Canvas.SetDrawColor(0, cast3d(255), 0, cast3d(255))
+  016f: Canvas.DrawTile(self.DefaultTexture_White, ClipX, 2.0, 0.0, 0.0, 32.0, 32.0)
+  01a5: Canvas.SetPos(LeftPos, ((ClipY - cast3f(3)) - YL))
+  01cf: Canvas.bCenter = false
+  01e0: Canvas.DrawTextNormal(OutStr, false, , )
+  01fb: OutStr = ("(>" @ obj'Core.Strings'.static.Left(self.TypedStr, self.TypedStrPos))
+  021c: Canvas.StrLen(OutStr, XL, YL)
+  023e: Canvas.SetPos((LeftPos + XL), ((ClipY - cast3f(1)) - YL))
+  026e: Canvas.DrawTextNormal("_", , , )
+  0287: return nothing
+  0289: <eos>
+
+function Console.Typing.BeginState  (script 47 bytes)
+  0000: if !((PreviousStateName == 'None')) goto 0x0019
+  0013: Console.FlushPlayerInput()
+  0019: self.bCaptureKeyInput = true
+  0021: self.HistoryCur = self.HistoryTop
+  002c: return nothing
+  002e: <eos>
+
+function Console.Open.InputChar  (script 284 bytes)
+  0000: if !(self.bCaptureKeyInput) goto 0x000b
+  0009: return true
+  000b: if !((obj'Core.Strings'.static.Len(Unicode) > 0)) goto 0x0113
+  0021: Character = obj'Core.Strings'.static.Asc(obj'Core.Strings'.static.Left(Unicode, 1))
+  0043: Unicode = obj'Core.Strings'.static.Mid(Unicode, 1, )
+  005b: if !(((((Character >= 32) && (Character < 256)) && (Character != obj'Core.Strings'.static.Asc("~"))) && (Character != obj'Core.Strings'.static.Asc("`")))) goto 0x0110
+  00ac: Console.SetInputText(((obj'Core.Strings'.static.Left(self.TypedStr, self.TypedStrPos) $ obj'Core.Strings'.static.Chr(Character)) $ obj'Core.Strings'.static.Right(self.TypedStr, (obj'Core.Strings'.static.Len(self.TypedStr) - self.TypedStrPos))))
+  0102: Console.SetCursorPos((self.TypedStrPos + 1))
+  0110: goto 0x000b
+  0113: return true
+  0115: return return
+  011b: <eos>
+
+function Console.Open.InputKey  (script 1726 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: if !((cast3a(Event) == cast3a(0))) goto 0x0022
+  001a: self.bCaptureKeyInput = false
+  0022: if !((Key == 'LeftControl')) goto 0x006a
+  0035: if !((cast3a(Event) == cast3a(1))) goto 0x0050
+  0045: self.bCtrl = false
+  004d: goto 0x0068
+  0050: if !((cast3a(Event) == cast3a(0))) goto 0x0068
+  0060: self.bCtrl = true
+  0068: return true
+  006a: if !(((Key == 'Escape') && (cast3a(Event) == cast3a(1)))) goto 0x00cb
+  008f: if !((self.TypedStr != "")) goto 0x00ba
+  009b: Console.SetInputText("")
+  00a3: Console.SetCursorPos(0)
+  00aa: self.HistoryCur = self.HistoryTop
+  00b5: return true
+  00b7: goto 0x00c8
+  00ba: GotoState('None', , , )
+  00c8: goto 0x06b5
+  00cb: if !(((Key == self.ConsoleKey) && (cast3a(Event) == cast3a(0)))) goto 0x0107
+  00ec: GotoState('None', , , )
+  00fa: self.bCaptureKeyInput = true
+  0102: return true
+  0104: goto 0x06b5
+  0107: if !(((Key == self.TypeKey) && (cast3a(Event) == cast3a(0)))) goto 0x0143
+  0128: GotoState('Typing', , , )
+  0136: self.bCaptureKeyInput = true
+  013e: return true
+  0140: goto 0x06b5
+  0143: if !(((Key == 'Enter') && (cast3a(Event) == cast3a(1)))) goto 0x01ba
+  0168: if !((self.TypedStr != "")) goto 0x01b5
+  0174: Temp = self.TypedStr
+  017f: Console.SetInputText("")
+  0187: Console.SetCursorPos(0)
+  018e: if !((Temp ~= "cls")) goto 0x01a6
+  019d: Console.ClearOutput()
+  01a3: goto 0x01b5
+  01a6: ConsoleCommand(Temp)
+  01b5: return true
+  01b7: goto 0x06b5
+  01ba: if !(global.InputKey(ControllerId, Key, Event, AmountDepressed, bGamepad)) goto 0x01e6
+  01e1: return true
+  01e3: goto 0x06b5
+  01e6: if !(((cast3a(Event) != cast3a(0)) && (cast3a(Event) != cast3a(2)))) goto 0x0246
+  0208: return (((Key != 'LeftMouseButton') && (Key != 'MiddleMouseButton')) && (Key != 'RightMouseButton'))
+  0243: goto 0x06b5
+  0246: if !((Key == 'Up')) goto 0x0317
+  0259: if !(!self.bCtrl) goto 0x02d9
+  0264: if !((self.HistoryBot >= 0)) goto 0x02d6
+  026f: if !((self.HistoryCur == self.HistoryBot)) goto 0x028c
+  027e: self.HistoryCur = self.HistoryTop
+  0289: goto 0x02a9
+  028c: SubtractSubtract_Int(self.HistoryCur)
+  0293: if !((self.HistoryCur < 0)) goto 0x02a9
+  029e: self.HistoryCur = (16 - 1)
+  02a9: Console.SetInputText(self.HistoryCur[self.History])
+  02ba: Console.SetCursorPos(obj'Core.Strings'.static.Len(self.HistoryCur[self.History]))
+  02d6: goto 0x0312
+  02d9: if !((self.SBPos < (self.Scrollback.Length - 1))) goto 0x0312
+  02ec: AddAdd_Int(self.SBPos)
+  02f3: if !((self.SBPos >= self.Scrollback.Length)) goto 0x0312
+  0303: self.SBPos = (self.Scrollback.Length - 1)
+  0312: return true
+  0314: goto 0x06b5
+  0317: if !((Key == 'Down')) goto 0x03ce
+  032a: if !(!self.bCtrl) goto 0x03a5
+  0335: if !((self.HistoryBot >= 0)) goto 0x03a2
+  0340: if !((self.HistoryCur == self.HistoryTop)) goto 0x035d
+  034f: self.HistoryCur = self.HistoryBot
+  035a: goto 0x0375
+  035d: self.HistoryCur = cast44((cast3f((self.HistoryCur + 1)) % cast3f(16)))
+  0375: Console.SetInputText(self.HistoryCur[self.History])
+  0386: Console.SetCursorPos(obj'Core.Strings'.static.Len(self.HistoryCur[self.History]))
+  03a2: goto 0x03c9
+  03a5: if !((self.SBPos > 0)) goto 0x03c9
+  03b0: SubtractSubtract_Int(self.SBPos)
+  03b7: if !((self.SBPos < 0)) goto 0x03c9
+  03c2: self.SBPos = 0
+  03c9: return true
+  03cb: goto 0x06b5
+  03ce: if !((Key == 'BackSpace')) goto 0x0446
+  03e1: if !((self.TypedStrPos > 0)) goto 0x0441
+  03ec: Console.SetInputText((obj'Core.Strings'.static.Left(self.TypedStr, (self.TypedStrPos - 1)) $ obj'Core.Strings'.static.Right(self.TypedStr, (obj'Core.Strings'.static.Len(self.TypedStr) - self.TypedStrPos))))
+  0433: Console.SetCursorPos((self.TypedStrPos - 1))
+  0441: return true
+  0443: goto 0x06b5
+  0446: if !((Key == 'Delete')) goto 0x04bf
+  0459: if !((self.TypedStrPos < obj'Core.Strings'.static.Len(self.TypedStr))) goto 0x04ba
+  0473: Console.SetInputText((obj'Core.Strings'.static.Left(self.TypedStr, self.TypedStrPos) $ obj'Core.Strings'.static.Right(self.TypedStr, ((obj'Core.Strings'.static.Len(self.TypedStr) - self.TypedStrPos) - 1))))
+  04ba: return true
+  04bc: goto 0x06b5
+  04bf: if !((Key == 'Left')) goto 0x04f1
+  04d2: Console.SetCursorPos(obj'Core.Math'.static.Max(0, (self.TypedStrPos - 1)))
+  04ec: return true
+  04ee: goto 0x06b5
+  04f1: if !((Key == 'Right')) goto 0x0532
+  0504: Console.SetCursorPos(obj'Core.Math'.static.Min(obj'Core.Strings'.static.Len(self.TypedStr), (self.TypedStrPos + 1)))
+  052d: return true
+  052f: goto 0x06b5
+  0532: if !((self.bCtrl && (Key == 'Home'))) goto 0x055a
+  0550: self.SBPos = 0
+  0557: goto 0x06b5
+  055a: if !((Key == 'Home')) goto 0x0579
+  056d: Console.SetCursorPos(0)
+  0574: return true
+  0576: goto 0x06b5
+  0579: if !((self.bCtrl && (Key == 'End'))) goto 0x05a9
+  0597: self.SBPos = (self.Scrollback.Length - 1)
+  05a6: goto 0x06b5
+  05a9: if !((Key == 'End')) goto 0x05d7
+  05bc: Console.SetCursorPos(obj'Core.Strings'.static.Len(self.TypedStr))
+  05d2: return true
+  05d4: goto 0x06b5
+  05d7: if !(((Key == 'PageUp') || (Key == 'MouseScrollUp'))) goto 0x0652
+  05ff: if !((self.SBPos < (self.Scrollback.Length - 1))) goto 0x064d
+  0612: if !(self.bCtrl) goto 0x0627
+  061b: (self.SBPos += 5)
+  0624: goto 0x062e
+  0627: AddAdd_Int(self.SBPos)
+  062e: if !((self.SBPos >= self.Scrollback.Length)) goto 0x064d
+  063e: self.SBPos = (self.Scrollback.Length - 1)
+  064d: return true
+  064f: goto 0x06b5
+  0652: if !(((Key == 'PageDown') || (Key == 'MouseScrollDown'))) goto 0x06b5
+  067a: if !((self.SBPos > 0)) goto 0x06b3
+  0685: if !(self.bCtrl) goto 0x069a
+  068e: (self.SBPos -= 5)
+  0697: goto 0x06a1
+  069a: SubtractSubtract_Int(self.SBPos)
+  06a1: if !((self.SBPos < 0)) goto 0x06b3
+  06ac: self.SBPos = 0
+  06b3: return true
+  06b5: return true
+  06b7: return return
+  06bd: <eos>
+
+function Console.Open.PostRender_Console  (script 899 bytes)
+  0000: Canvas.Font = obj'Engine'.static.GetSmallFont()
+  0022: Height = (Canvas.ClipY * 0.75)
+  003d: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0060: Canvas.SetPos(0.0, 0.0)
+  007d: Canvas.DrawTile(self.DefaultTexture_Black, Canvas.ClipX, Height, 0.0, 0.0, 32.0, 32.0)
+  00bc: OutStr = ("(>" @ self.TypedStr)
+  00cd: Canvas.StrLen(OutStr, XL, YL)
+  00ef: Canvas.SetPos(0.0, ((Height - cast3f(12)) - YL))
+  0119: Canvas.SetDrawColor(0, cast3d(255), 0, cast3d(255))
+  0138: Canvas.DrawTile(self.DefaultTexture_White, Canvas.ClipX, 2.0, 0.0, 0.0, 32.0, 32.0)
+  0177: Canvas.SetPos(0.0, Height)
+  0194: Canvas.DrawTile(self.DefaultTexture_White, Canvas.ClipX, 2.0, 0.0, 0.0, 32.0, 32.0)
+  01d3: Canvas.SetPos(0.0, ((Height - cast3f(5)) - YL))
+  01fd: Canvas.bCenter = false
+  020e: Canvas.DrawTextNormal(OutStr, false, , )
+  0229: OutStr = ("(>" @ obj'Core.Strings'.static.Left(self.TypedStr, self.TypedStrPos))
+  024a: Canvas.StrLen(OutStr, XL, YL)
+  026c: Canvas.SetPos(XL, ((Height - cast3f(3)) - YL))
+  0296: Canvas.DrawTextNormal("_", , , )
+  02af: idx = (self.SBHead - self.SBPos)
+  02c1: Y = ((Height - cast3f(16)) - (YL * cast3f(2)))
+  02df: if !((self.Scrollback.Length == 0)) goto 0x02ed
+  02eb: return nothing
+  02ed: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0310: if !(((Y > YL) && (idx >= 0))) goto 0x0380
+  032c: Canvas.SetPos(0.0, Y)
+  0349: Canvas.DrawTextNormal(idx[self.Scrollback], false, , )
+  036a: SubtractSubtract_Int(idx)
+  0371: (Y -= YL)
+  037d: goto 0x0310
+  0380: return nothing
+  0382: <eos>
+
+function Console.Open.BeginState  (script 62 bytes)
+  0000: self.bCaptureKeyInput = true
+  0008: self.HistoryCur = self.HistoryTop
+  0013: self.SBPos = 0
+  001a: self.bCtrl = false
+  0022: if !((PreviousStateName == 'None')) goto 0x003b
+  0035: Console.FlushPlayerInput()
+  003b: return nothing
+  003d: <eos>
+
+function Console.PostConstruct  (script 39 bytes)
+  0000: Interaction.PostConstruct()
+  0006: self.__OnReceivedNativeInputKey__Delegate = delegate.InputKey
+  0015: self.__OnReceivedNativeInputChar__Delegate = delegate.InputChar
+  0024: return nothing
+  0026: <eos>

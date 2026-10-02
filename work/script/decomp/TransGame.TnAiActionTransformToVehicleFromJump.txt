@@ -1,0 +1,43 @@
+function TnAiActionTransformToVehicleFromJump.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTransformToVehicleFromJumpBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTransformToVehicleFromJump.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionTransformToVehicleFromJump.OnStart  (script 135 bytes)
+  0000: if !(self._TransformerPawn.get_IsInVehicleForm()) goto 0x0021
+  0016: return Succeed()
+  0021: if !(self._TransformerPawn.get_IsTransforming()) goto 0x0042
+  0037: return Fail()
+  0042: SetCharacterState(1)
+  004d: self._CurrentDuration = 0.0
+  0058: self._TransformerPawn._RobotForm.Hover()
+  0074: return OnStart(ExpectedEffects)
+  0080: return return
+  0086: <eos>
+
+function TnAiActionTransformToVehicleFromJump.OnUpdate  (script 235 bytes)
+  0000: if !(self._TransformerPawn.get_IsTransforming()) goto 0x0025
+  0016: (self._CurrentDuration += DeltaTime)
+  0022: goto 0x00b0
+  0025: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(8))) goto 0x00b0
+  0044: self._TransformerController.Transform(1, )
+  005a: self._TransformerController.MoveToPosition((self._TransformerPawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, self._AcrobaticsService.get_JumpHeight())), , )
+  00b0: if !((self._CurrentDuration >= self._Blueprint.TransformDuration)) goto 0x00d3
+  00c8: return Succeed()
+  00d3: return OnUpdate(ExpectedEffects, DeltaTime)
+  00e4: return return
+  00ea: <eos>
+
+function TnAiActionTransformToVehicleFromJump.DoCalculateAdditionalCost  (script 149 bytes)
+  0000: TimeSinceTransform = obj'Core.Math'.static.FMin((self._TransformerPawn.WorldInfo.TimeSeconds - self._TransformerPawn._LastTransformTime), self._Blueprint.DesiredTimeBetweenTransforms)
+  0046: AdditionalCost = (self._Blueprint.RecentTransformPenaltyCost * (cast3f(1) - (TimeSinceTransform / self._Blueprint.DesiredTimeBetweenTransforms)))
+  0076: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + AdditionalCost)
+  008e: return return
+  0094: <eos>

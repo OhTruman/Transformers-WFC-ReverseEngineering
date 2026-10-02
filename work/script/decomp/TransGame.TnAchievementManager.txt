@@ -1,0 +1,97 @@
+function TnAchievementManager.Initialize  (script 14 bytes)
+  0000: self.PC = InPC
+  000b: return nothing
+  000d: <eos>
+
+function TnAchievementManager.GetProfile  (script 27 bytes)
+  0000: return TnProfileSettings(self.PC.ProfileSettings)
+  0014: return return
+  001a: <eos>
+
+function TnAchievementManager.UnlockAllAchievements  (script 72 bytes)
+  0000: A = (0 + 1)
+  000a: B = 51
+  0012: Achievement = A
+  001d: if !((Achievement < B)) goto 0x0045
+  002c: UnlockAchievement(Achievement)
+  003b: AddAdd_Int(Achievement)
+  0042: goto 0x001d
+  0045: return nothing
+  0047: <eos>
+
+function TnAchievementManager.UnlockAchievement  (script 263 bytes)
+  0000: AchievementIndex = Achievement
+  000b: if !(obj'Engine.WorldInfo'.static.IsConsoleBuild(2)) goto 0x0077
+  0023: !! unknown token 0x4f at 0x27 ; raw 070074814f0100000505000a0000000519000000051816e7
+
+function TnAchievementManager.SaveProfileSettings  (script 56 bytes)
+  0000: if !(self.PC.WorldInfo.IsConsoleBuild(1)) goto 0x0035
+  0021: self.PC.SaveProfileSettings()
+  0035: return nothing
+  0037: <eos>
+
+function TnAchievementManager.IncrementAchievement  (script 262 bytes)
+  0000: Profile = GetProfile()
+  0010: if !((Profile == none)) goto 0x001d
+  001b: return nothing
+  001d: !! unknown token 0x4f at 0x21 ; raw 0700a8814f0100000503000c383a0000000521000000051f
+
+function TnAchievementManager.SetBitOnAchievement  (script 288 bytes)
+  0000: Profile = GetProfile()
+  0010: if !((Profile == none)) goto 0x001d
+  001b: return nothing
+  001d: !! unknown token 0x4f at 0x21 ; raw 07009b814f0100000503000c383a00000005290000000527
+
+function TnAchievementManager.HandleAchievementUpdate  (script 140 bytes)
+  0000: if !((NewValue >= GoalInfo.GoalValue)) goto 0x002e
+  001a: UnlockAchievement(cast3a(Achievement))
+  002b: goto 0x0074
+  002e: if !((((NewValue / GoalInfo.IncrementNotificationValue) - (OldValue / GoalInfo.IncrementNotificationValue)) > 0)) goto 0x0074
+  0064: TnAchievementManager.NotifyAchievementProgress(NewValue, GoalInfo)
+  0074: TnAchievementManager.HandleAvatarRewardUpdate(Achievement, OldValue, NewValue)
+  0089: return nothing
+  008b: <eos>
+
+function TnAchievementManager.HandleAvatarRewardUpdate  (script 138 bytes)
+  0000: I = 0
+  0007: if !((I < self.AvatarRewards.Length)) goto 0x0087
+  0017: if !(((cast3a(I[self.AvatarRewards].AchievementCounterId) == cast3a(Achievement)) && (NewValue >= I[self.AvatarRewards].GoalValue))) goto 0x007d
+  005d: UnlockAvatarReward(I[self.AvatarRewards].AvatarReward)
+  007d: AddAdd_PreInt(I)
+  0084: goto 0x0007
+  0087: return nothing
+  0089: <eos>
+
+function TnAchievementManager.UnlockAvatarReward  (script 140 bytes)
+  0000: if !(!self.PC.WorldInfo.IsConsoleBuild(1)) goto 0x0025
+  0023: return nothing
+  0025: !! unknown token 0x4f at 0x29 ; raw 070071814f0100000502000c383a00000005360000000535
+
+function TnAchievementManager.IsBitNumberSetOnAchivement  (script 66 bytes)
+  0000: Profile = GetProfile()
+  0010: if !((Profile == none)) goto 0x001d
+  001b: return false
+  001d: return Profile.IsBitNumberSetOnSetting(Achievement, BitNumber)
+  003b: return return
+  0041: <eos>
+
+function TnAchievementManager.NotifyAchievementProgress  (script 261 bytes)
+  0000: if !((((self.PC == none) || (self.PC.UIController == none)) || !self.PC.WorldInfo.IsConsoleBuild())) goto 0x0047
+  0045: return nothing
+  0047: Message = self.PC.Localize("AchievementNotifications", GoalInfo.LocalizedMessageTag, "UIText")
+  0092: Message = obj'Core.Strings'.static.Repl(Message, "`c", cast53(Current), )
+  00b4: Message = obj'Core.Strings'.static.Repl(Message, "`t", cast53(GoalInfo.GoalValue), )
+  00e1: self.PC.UIController.OnAchievementProgress(Message)
+  0102: return nothing
+  0104: <eos>
+
+function TnAchievementManager.TestSetupAchievementGoalMap  (script 93 bytes)
+  0000: !! unknown token 0x59 at 0x0 ; raw 5901000005030f35000005090000050a0001000000054100
+
+function TnAchievementManager.TestSetupAvatarRewardGoal  (script 112 bytes)
+  0000: GoalInfo.AvatarReward = cast3d(AvatarRewardId)
+  0018: GoalInfo.AchievementCounterId = cast3d(AchievementId)
+  0030: GoalInfo.GoalValue = GoalValue
+  0046: self.AvatarRewards.Length = 0
+  004e: self.AvatarRewards.AddItem(GoalInfo)
+  005b: !! unknown token 0x4d at 0x5b ; raw 4d0100000502000a000000054a000000054a040b53535353

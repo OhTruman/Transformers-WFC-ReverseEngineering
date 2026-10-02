@@ -1,0 +1,24 @@
+function SeqCond_SwitchName.VerifyDefaultCaseValue  (script 87 bytes)
+  0000: SeqCond_SwitchBase.VerifyDefaultCaseValue()
+  0006: self.SupportedValues.Length = self.OutputLinks.Length
+  0013: (self.SupportedValues.Length - 1)[self.SupportedValues].NameValue = 'Default'
+  0037: (self.SupportedValues.Length - 1)[self.SupportedValues].bFallThru = false
+  0054: return nothing
+  0056: <eos>
+
+function SeqCond_SwitchName.IsFallThruEnabled  (script 62 bytes)
+  0000: return (((ValueIndex >= 0) && (ValueIndex < self.SupportedValues.Length)) && ValueIndex[self.SupportedValues].bFallThru)
+  0037: return return
+  003d: <eos>
+
+function SeqCond_SwitchName.InsertValueEntry  (script 44 bytes)
+  0000: InsertIndex = obj'Core.Math'.static.Clamp(InsertIndex, 0, self.SupportedValues.Length)
+  001d: self.SupportedValues.Insert(InsertIndex,1)
+  0029: return nothing
+  002b: <eos>
+
+function SeqCond_SwitchName.RemoveValueEntry  (script 44 bytes)
+  0000: if !(((RemoveIndex >= 0) && (RemoveIndex < self.SupportedValues.Length))) goto 0x0029
+  001d: self.SupportedValues.Remove(RemoveIndex,1)
+  0029: return nothing
+  002b: <eos>

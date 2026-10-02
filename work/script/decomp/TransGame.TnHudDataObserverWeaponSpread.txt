@@ -1,0 +1,9 @@
+function TnHudDataObserverWeaponSpread.CheckData  (script 179 bytes)
+  0000: if !(((PC.Pawn != none) && (PC.Pawn.Weapon != none))) goto 0x005e
+  0033: WeaponSpread = PC.Pawn.Weapon.GetSpread()
+  005e: NewValue = (self.ConversionFactor * WeaponSpread)
+  0070: if !((obj'Core.Math'.static.Abs((NewValue - self.CachedValue)) > 0.002)) goto 0x00b0
+  0091: self.CachedValue = NewValue
+  009c: ProcessNewValue(Movie, NewValue)
+  00b0: return nothing
+  00b2: <eos>

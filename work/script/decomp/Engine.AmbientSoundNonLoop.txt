@@ -1,0 +1,18 @@
+function AmbientSoundNonLoop.CheckForErrors  (script 305 bytes)
+  0000: AmbientSoundSimple.CheckForErrors()
+  0006: if !((self.SoundNodeInstance != none)) goto 0x012e
+  0011: SoundNodeNonLoop = SoundNodeAmbientNonLoop(self.SoundNodeInstance)
+  0021: if !((SoundNodeNonLoop == none)) goto 0x0087
+  002c: EmitCheckMessage(1, "AmbientSoundNonLoop has a non-USoundNodeAmbientNonLoop SoundNodeInstance", , )
+  0084: goto 0x012e
+  0087: SlotIndex = 0
+  008e: if !((SlotIndex < SoundNodeNonLoop.SoundSlots.Length)) goto 0x00e1
+  00a7: if !((SlotIndex[SoundNodeNonLoop.SoundSlots].Wave != none)) goto 0x00d7
+  00cc: bFoundNonNULLWave = true
+  00d4: goto 0x00e1
+  00d7: AddAdd_PreInt(SlotIndex)
+  00de: goto 0x008e
+  00e1: if !(!bFoundNonNULLWave) goto 0x012e
+  00ec: EmitCheckMessage(1, "AmbientSoundNonLoop has no Slots containing a Wave", , )
+  012e: return nothing
+  0130: <eos>

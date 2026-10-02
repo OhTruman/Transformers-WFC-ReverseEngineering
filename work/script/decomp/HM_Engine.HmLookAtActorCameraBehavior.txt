@@ -1,0 +1,20 @@
+function HmLookAtActorCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.ActorToLookAt = Pawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmLookAtActorCameraBehavior.SetLookAtOffset  (script 14 bytes)
+  0000: self.LookAtOffset = L
+  000b: return nothing
+  000d: <eos>
+
+function HmLookAtActorCameraBehavior.Update  (script 167 bytes)
+  0000: if !((self.ActorToLookAt != none)) goto 0x009a
+  000b: if !((self.LookAtBone == 'None')) goto 0x0035
+  001e: LookAtTarget = self.ActorToLookAt.Location
+  0032: goto 0x0058
+  0035: LookAtTarget = HmPawn(self.ActorToLookAt).GetBoneLocation(self.LookAtBone)
+  0058: Result.Rotation = cast50(((LookAtTarget + (self.LookAtOffset >> self.ActorToLookAt.Rotation)) - Result.Location))
+  009a: return Result
+  00a0: return return
+  00a6: <eos>

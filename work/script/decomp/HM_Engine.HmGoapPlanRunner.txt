@@ -1,0 +1,540 @@
+function HmGoapPlanRunner.WaitingObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.FailedObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.CompletedObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.get_Planner  (script 13 bytes)
+  0000: return self._Planner
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanRunner.get_CurrentSolution  (script 13 bytes)
+  0000: return self._CurrentSolution
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanRunner.get_GoalSet  (script 13 bytes)
+  0000: return self._GoalSet
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanRunner.set_GoalSet  (script 85 bytes)
+  0000: if !((self._GoalSet != none)) goto 0x001e
+  000b: self._GoalSet.Unbind()
+  001e: self._GoalSet = Value
+  0029: HmGoapPlanRunner.ResetGoalIndex()
+  002f: if !((self._GoalSet != none)) goto 0x0052
+  003a: self._GoalSet.Bind(self._Owner)
+  0052: return nothing
+  0054: <eos>
+
+function HmGoapPlanRunner.get_ActionSet  (script 13 bytes)
+  0000: return self._ActionSet
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanRunner.set_ActionSet  (script 79 bytes)
+  0000: if !((self._ActionSet != none)) goto 0x001e
+  000b: self._ActionSet.Unbind()
+  001e: self._ActionSet = Value
+  0029: if !((self._ActionSet != none)) goto 0x004c
+  0034: self._ActionSet.Bind(self._Owner)
+  004c: return nothing
+  004e: <eos>
+
+function HmGoapPlanRunner.get_HasPlan  (script 16 bytes)
+  0000: return (self._CurrentSolution != none)
+  0009: return return
+  000f: <eos>
+
+function HmGoapPlanRunner.get_PlansPerSecond  (script 27 bytes)
+  0000: return self._PlanningHistory.GetPlansPerSecond()
+  0014: return return
+  001a: <eos>
+
+function HmGoapPlanRunner.get_AllowsPlanningInteruption  (script 41 bytes)
+  0000: return ((self._CurrentSolution != none) ? self._CurrentSolution.AllowsPlanningInteruption() : true)
+  0022: return return
+  0028: <eos>
+
+function HmGoapPlanRunner.get_TimeSinceLastFullPlan  (script 34 bytes)
+  0000: return (obj'Engine.Engine'.static.GetWorldTime() - self._LastFullPlanTime)
+  001b: return return
+  0021: <eos>
+
+function HmGoapPlanRunner.get_TimeSinceLastPlan  (script 34 bytes)
+  0000: return (obj'Engine.Engine'.static.GetWorldTime() - self._LastPlanTime)
+  001b: return return
+  0021: <eos>
+
+function HmGoapPlanRunner.get_CurrentGoal  (script 28 bytes)
+  0000: return self._CurrentGoalIndex[self._GoalSet.Goals]
+  0015: return return
+  001b: <eos>
+
+function HmGoapPlanRunner.set_EvaluateCurrentGoalOnReplan  (script 16 bytes)
+  0000: self._EvaluateCurrentGoalOnReplan = Value
+  000d: return nothing
+  000f: <eos>
+
+function HmGoapPlanRunner.get_IsSuspended  (script 14 bytes)
+  0000: return self._Suspended
+  0007: return return
+  000d: <eos>
+
+function HmGoapPlanRunner.get_Owner  (script 13 bytes)
+  0000: return self._Owner
+  0006: return return
+  000c: <eos>
+
+function HmGoapPlanRunner.Initialize  (script 116 bytes)
+  0000: self._Owner = PendingOwner
+  000b: self._WorldState = HmGoapWorldStateInterface(self._Owner)
+  001b: self._Planner._BuiltSearchSpace = SearchSpace
+  002f: self._Planner.Initialize()
+  0042: HmGoapPlanRunner.set_GoalSet(PendingGoalSet)
+  004d: HmGoapPlanRunner.set_ActionSet(PendingActionSet)
+  0058: HmGoapPlanRunner.ApplyPrebuiltSearchSpace(SearchSpace)
+  0063: GotoState('Waiting', , , )
+  0071: return nothing
+  0073: <eos>
+
+function HmGoapPlanRunner.ClearSolution  (script 14 bytes)
+  0000: EnqueueSolution(none)
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapPlanRunner.ReplaceGoalSet  (script 43 bytes)
+  0000: assert((NewGoalSet != none))
+  000c: self._PendingGoalSet = NewGoalSet
+  0017: self._PendingSolution = none
+  001e: AbortPlan()
+  0028: return nothing
+  002a: <eos>
+
+function HmGoapPlanRunner.ReplaceActionSet  (script 43 bytes)
+  0000: assert((NewActionSet != none))
+  000c: self._PendingActionSet = NewActionSet
+  0017: self._PendingSolution = none
+  001e: AbortPlan()
+  0028: return nothing
+  002a: <eos>
+
+function HmGoapPlanRunner.Shutdown  (script 88 bytes)
+  0000: AbortPlan()
+  000a: HmGoapPlanRunner.set_ActionSet(none)
+  0011: HmGoapPlanRunner.set_GoalSet(none)
+  0018: self._Owner = none
+  001f: self._WorldState = none
+  0026: GotoState('None', , , )
+  0034: self._Planner.Shutdown()
+  0047: self._CurrentSolution = none
+  004e: self._PendingSolution = none
+  0055: return nothing
+  0057: <eos>
+
+function HmGoapPlanRunner.LogEvent  (script 125 bytes)
+  0000: if !((((self._Owner == none) || (self._Owner.Pawn == none)) || (self._Owner.Pawn.WorldInfo == none))) goto 0x0042
+  0040: return nothing
+  0042: self._PlanningHistory.AddEvent(Message, self._Owner.Pawn.WorldInfo.TimeSeconds)
+  007a: return nothing
+  007c: <eos>
+
+function HmGoapPlanRunner.Update  (script 56 bytes)
+  0000: if !((self._Owner != none)) goto 0x0035
+  000b: self._PlanningHistory.Update(self._Owner.WorldInfo.TimeSeconds)
+  0035: return nothing
+  0037: <eos>
+
+function HmGoapPlanRunner.AbortPlan  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.Suspend  (script 25 bytes)
+  0000: self._SuspendPending = true
+  0008: GotoState('Stopping', , , )
+  0016: return nothing
+  0018: <eos>
+
+function HmGoapPlanRunner.Resume  (script 11 bytes)
+  0000: self._SuspendPending = false
+  0008: return nothing
+  000a: <eos>
+
+function HmGoapPlanRunner.TryBetterPlan  (script 344 bytes)
+  0000: if !((((((self._Owner == none) || (self._Owner.Pawn == none)) || self._Owner.Pawn.bPendingDelete) || (self._GoalSet == none)) || (self._GoalSet.Goals.Length == 0))) goto 0x0064
+  0062: return nothing
+  0064: self._LastPlanTime = obj'Engine.Engine'.static.GetWorldTime()
+  007d: if !(self._EvaluateCurrentGoalOnReplan) goto 0x0091
+  0086: self._LastFullPlanTime = self._LastPlanTime
+  0091: if !((((self._CurrentGoalIndex < self._GoalSet.Goals.Length) && (self._CurrentSolution != none)) && !self._CurrentSolution.AllowsPlanningInteruption())) goto 0x0105
+  00d1: HmGoapPlanRunner.LogEvent(("Replan disallowed at " $ self._CurrentSolution.GetCurrentActionDescription()))
+  0103: return nothing
+  0105: Solution = HmGoapPlanRunner.FindPlanInRange((self._EvaluateCurrentGoalOnReplan ? self._CurrentGoalIndex : (self._CurrentGoalIndex - 1)), SolutionGoalIndex)
+  012e: if !((Solution == none)) goto 0x013b
+  0139: return nothing
+  013b: self._CurrentGoalIndex = SolutionGoalIndex
+  0146: EnqueueSolution(Solution)
+  0155: return nothing
+  0157: <eos>
+
+function HmGoapPlanRunner.EnqueueSolution  (script 207 bytes)
+  0000: self._PendingSolution = Solution
+  000b: if !((self._CurrentSolution != none)) goto 0x0093
+  0016: HmGoapPlanRunner.LogEvent(("INTERRUPT" @ self._CurrentSolution.GetCurrentActionDescription()))
+  003c: if !((Solution != none)) goto 0x0082
+  0047: HmGoapPlanRunner.LogEvent(((("RUN" @ self._CurrentSolution.GetShortDescription()) @ "=>") @ Solution.GetShortDescription()))
+  0082: GotoState('Stopping', , , )
+  0090: goto 0x00cc
+  0093: if !((Solution != none)) goto 0x00be
+  009e: HmGoapPlanRunner.LogEvent(("RUN" @ Solution.GetShortDescription()))
+  00be: GotoState('Waiting', , , )
+  00cc: return nothing
+  00ce: <eos>
+
+function HmGoapPlanRunner.Waiting.BeginState  (script 15 bytes)
+  0000: HmGoapPlanRunner.NotifyWaitingObservers()
+  0006: PumpQueue()
+  000c: return nothing
+  000e: <eos>
+
+function HmGoapPlanRunner.Waiting.EndState  (script 20 bytes)
+  0000: UpdateSets()
+  0006: EndState(NextStateName)
+  0011: return nothing
+  0013: <eos>
+
+function HmGoapPlanRunner.Waiting.TryBetterPlan  (script 15 bytes)
+  0000: UpdateSets()
+  0006: HmGoapPlanRunner.TryBetterPlan()
+  000c: return nothing
+  000e: <eos>
+
+function HmGoapPlanRunner.Waiting.EnqueueSolution  (script 20 bytes)
+  0000: HmGoapPlanRunner.EnqueueSolution(Solution)
+  000b: PumpQueue()
+  0011: return nothing
+  0013: <eos>
+
+function HmGoapPlanRunner.Waiting.PumpQueue  (script 54 bytes)
+  0000: self._CurrentSolution = self._PendingSolution
+  000b: self._PendingSolution = none
+  0012: if !((self._CurrentSolution == none)) goto 0x0025
+  001d: HmGoapPlanRunner.ResetGoalIndex()
+  0023: return nothing
+  0025: GotoState('Running', , , )
+  0033: return nothing
+  0035: <eos>
+
+function HmGoapPlanRunner.Waiting.Update  (script 30 bytes)
+  0000: UpdateSets()
+  0006: HmGoapPlanRunner.NotifyWaitingObservers()
+  000c: global.Update(DeltaTime)
+  001b: return nothing
+  001d: <eos>
+
+function HmGoapPlanRunner.Waiting.UpdateSets  (script 61 bytes)
+  0000: if !((self._PendingActionSet != none)) goto 0x001d
+  000b: HmGoapPlanRunner.set_ActionSet(self._PendingActionSet)
+  0016: self._PendingActionSet = none
+  001d: if !((self._PendingGoalSet != none)) goto 0x003a
+  0028: HmGoapPlanRunner.set_GoalSet(self._PendingGoalSet)
+  0033: self._PendingGoalSet = none
+  003a: return nothing
+  003c: <eos>
+
+function HmGoapPlanRunner.Running.BeginState  (script 47 bytes)
+  0000: self._CurrentSolution.Start(self._Owner, self._WorldState.GetGoapWorldState())
+  002c: return nothing
+  002e: <eos>
+
+function HmGoapPlanRunner.Running.AbortPlan  (script 17 bytes)
+  0000: GotoState('Stopping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmGoapPlanRunner.Running.Update  (script 251 bytes)
+  0000: if !(((self._GoalSet != none) && !self._GoalSet.ConditionsMet(self._WorldState.GetGoapWorldState(), self._CurrentGoalIndex, true))) goto 0x0073
+  003f: HmGoapPlanRunner.LogEvent("Goal conditions failed, aborting")
+  0067: AbortPlan()
+  0071: return nothing
+  0073: if !((self._CurrentSolution != none)) goto 0x00e9
+  007e: self._CurrentSolution.Update(DeltaTime, self._WorldState.GetGoapWorldState())
+  00aa: if !(self._CurrentSolution.IsComplete()) goto 0x00cb
+  00c0: PlanIsComplete()
+  00c6: return nothing
+  00c8: goto 0x00e9
+  00cb: if !(self._CurrentSolution.HasFailed()) goto 0x00e9
+  00e1: PlanHasFailed()
+  00e7: return nothing
+  00e9: global.Update(DeltaTime)
+  00f8: return nothing
+  00fa: <eos>
+
+function HmGoapPlanRunner.Running.PlanIsComplete  (script 85 bytes)
+  0000: if !((self._CurrentSolution != none)) goto 0x0031
+  000b: HmGoapPlanRunner.LogEvent(("COMPLETED" @ self._CurrentSolution.GetShortDescription()))
+  0031: self._CurrentSolution = none
+  0038: HmGoapPlanRunner.ResetGoalIndex()
+  003e: GotoState('Waiting', , , )
+  004c: HmGoapPlanRunner.NotifyCompletedObservers()
+  0052: return nothing
+  0054: <eos>
+
+function HmGoapPlanRunner.Running.PlanHasFailed  (script 82 bytes)
+  0000: if !((self._CurrentSolution != none)) goto 0x002e
+  000b: HmGoapPlanRunner.LogEvent(("FAILED" @ self._CurrentSolution.GetCurrentActionDescription()))
+  002e: self._CurrentSolution = none
+  0035: HmGoapPlanRunner.ResetGoalIndex()
+  003b: GotoState('Waiting', , , )
+  0049: HmGoapPlanRunner.NotifyFailedObservers()
+  004f: return nothing
+  0051: <eos>
+
+function HmGoapPlanRunner.Stopping.TryBetterPlan  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.Stopping.EnqueueSolution  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.Stopping.BeginState  (script 122 bytes)
+  0000: if !((self._CurrentSolution != none)) goto 0x001e
+  000b: self._CurrentSolution.Halt()
+  001e: if !(((((self._CurrentSolution == none) || self._CurrentSolution.IsStopped()) || self._CurrentSolution.HasFailed()) || self._CurrentSolution.IsComplete())) goto 0x0077
+  0071: PlanHasStopped()
+  0077: return nothing
+  0079: <eos>
+
+function HmGoapPlanRunner.Stopping.Update  (script 294 bytes)
+  0000: if !((self._CurrentSolution == none)) goto 0x0014
+  000b: PlanHasStopped()
+  0011: goto 0x0123
+  0014: if !(((self._ActionSet == none) || (self._GoalSet == none))) goto 0x00ab
+  002c: LogInternal("Error: IMPORTANT! The action or goal set has been streamed out. This is very bad. Will attempt to recover", , , )
+  009c: self._CurrentSolution = none
+  00a3: PlanHasStopped()
+  00a9: return nothing
+  00ab: self._CurrentSolution.Update(DeltaTime, self._WorldState.GetGoapWorldState())
+  00d7: if !(((self._CurrentSolution.IsStopped() || self._CurrentSolution.HasFailed()) || self._CurrentSolution.IsComplete())) goto 0x0123
+  011d: PlanHasStopped()
+  0123: return nothing
+  0125: <eos>
+
+function HmGoapPlanRunner.Stopping.PlanHasStopped  (script 43 bytes)
+  0000: if !(self._SuspendPending) goto 0x001a
+  0009: GotoState('Suspended', , , )
+  0017: goto 0x0028
+  001a: GotoState('Waiting', , , )
+  0028: return nothing
+  002a: <eos>
+
+function HmGoapPlanRunner.Suspended.TryBetterPlan  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.Suspended.EnqueueSolution  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.Suspended.Suspend  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapPlanRunner.Suspended.BeginState  (script 19 bytes)
+  0000: self._SuspendPending = false
+  0008: self._Suspended = true
+  0010: return nothing
+  0012: <eos>
+
+function HmGoapPlanRunner.Suspended.EndState  (script 22 bytes)
+  0000: EndState(NextStateName)
+  000b: self._Suspended = false
+  0013: return nothing
+  0015: <eos>
+
+function HmGoapPlanRunner.Suspended.Resume  (script 17 bytes)
+  0000: GotoState('Waiting', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmGoapPlanRunner.FindPlanInRange  (script 299 bytes)
+  0000: I = 0
+  0007: if !((I <= MaxGoalIndex)) goto 0x0122
+  0016: NewSolution = none
+  001d: Goal = I[self._GoalSet.Goals]
+  0037: self._PlanningHistory.NewPlan(self._Owner.WorldInfo.TimeSeconds)
+  0061: Index = I
+  006c: if !(((Index == MaxGoalIndex) && (self._CurrentSolution != none))) goto 0x00a1
+  0088: CurrentPlanCost = self._CurrentSolution.GetRunningCost()
+  00a1: NewSolution = self._Planner.Plan(self._WorldState.GetGoapWorldState(), Goal, self._ActionSet, CurrentPlanCost)
+  00dd: if !((NewSolution != none)) goto 0x0118
+  00e8: self._PlanningHistory.NewPlanCreated(self._Owner.WorldInfo.TimeSeconds)
+  0112: return NewSolution
+  0118: AddAdd_PreInt(I)
+  011f: goto 0x0007
+  0122: return none
+  0124: return return
+  012a: <eos>
+
+function HmGoapPlanRunner.ResetGoalIndex  (script 48 bytes)
+  0000: if !((self._GoalSet == none)) goto 0x0015
+  000b: self._CurrentGoalIndex = 0
+  0012: goto 0x002d
+  0015: self._CurrentGoalIndex = (self._GoalSet.Goals.Length - 1)
+  002d: return nothing
+  002f: <eos>
+
+function HmGoapPlanRunner.GetDebugStrings  (script 81 bytes)
+  0000: self._PlanningHistory.GetDebugStrings(Strings)
+  0018: Strings.Length[Strings] = (cast57(GetStateName()) @ ((self._CurrentSolution == none) ? "" : self._CurrentSolution.GetDescription()))
+  004e: return nothing
+  0050: <eos>
+
+function HmGoapPlanRunner.ApplyPrebuiltSearchSpace  (script 256 bytes)
+  0000: if !((SearchSpace == none)) goto 0x000d
+  000b: return nothing
+  000d: idx = 0
+  0014: if !((idx < self._GoalSet.Goals.Length)) goto 0x00fd
+  002d: if !(!idx[self._GoalSet.Goals]._GenerateSearchSpace) goto 0x0053
+  0050: goto 0x00f3
+  0053: idx[self._GoalSet.Goals]._DesiredStateIdx = SearchSpace.GetDesiredStateIdx(idx)
+  0089: if !((idx[self._GoalSet.Goals]._DesiredStateIdx == -1)) goto 0x00f3
+  00b0: LogInternal(("ERROR: Please build search space on AICD for" @ cast56(SearchSpace.get_Outer())), , , )
+  00f3: AddAdd_PreInt(idx)
+  00fa: goto 0x0014
+  00fd: return nothing
+  00ff: <eos>
+
+function HmGoapPlanRunner.FindPlannerWithGoal  (script 262 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._GoalSet.Goals.Length)) goto 0x006d
+  0020: if !((obj'Core.Strings'.static.Locs(idx[self._GoalSet.Goals].Description) == obj'Core.Strings'.static.Locs(Goal))) goto 0x0063
+  005d: return self._Planner
+  0063: AddAdd_PreInt(idx)
+  006a: goto 0x0007
+  006d: idx = 0
+  0074: if !((idx < self._ActionSet.Actions.Length)) goto 0x00f9
+  008d: Runner = idx[self._ActionSet.Actions].get_PlanRunner()
+  00b5: if !((Runner == none)) goto 0x00c3
+  00c0: goto 0x00ef
+  00c3: RunnerWithGoal = Runner.FindPlannerWithGoal(Goal)
+  00e1: if !((RunnerWithGoal != none)) goto 0x00ef
+  00ec: goto 0x00f9
+  00ef: AddAdd_PreInt(idx)
+  00f6: goto 0x0074
+  00f9: return RunnerWithGoal
+  00ff: return return
+  0105: <eos>
+
+function HmGoapPlanRunner.GetGoalDescriptions  (script 202 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._GoalSet.Goals.Length)) goto 0x004f
+  0020: Descriptions.AddItem(idx[self._GoalSet.Goals].Description)
+  0045: AddAdd_PreInt(idx)
+  004c: goto 0x0007
+  004f: idx = 0
+  0056: if !((idx < self._ActionSet.Actions.Length)) goto 0x00c7
+  006f: Runner = idx[self._ActionSet.Actions].get_PlanRunner()
+  0097: if !((Runner == none)) goto 0x00a5
+  00a2: goto 0x00bd
+  00a5: Runner.GetGoalDescriptions(Descriptions)
+  00bd: AddAdd_PreInt(idx)
+  00c4: goto 0x0056
+  00c7: return nothing
+  00c9: <eos>
+
+function HmGoapPlanRunner.AddWaitingObserver  (script 46 bytes)
+  0000: if !((self.WaitingObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.WaitingObservers.Length[self.WaitingObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function HmGoapPlanRunner.RemoveWaitingObserver  (script 49 bytes)
+  0000: Index = self.WaitingObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.WaitingObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function HmGoapPlanRunner.ClearWaitingObservers  (script 11 bytes)
+  0000: self.WaitingObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmGoapPlanRunner.NotifyWaitingObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.WaitingObservers.Length)) goto 0x0041
+  0017: N = I[self.WaitingObservers]
+  0028: WaitingObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>
+
+function HmGoapPlanRunner.AddFailedObserver  (script 46 bytes)
+  0000: if !((self.FailedObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.FailedObservers.Length[self.FailedObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function HmGoapPlanRunner.RemoveFailedObserver  (script 49 bytes)
+  0000: Index = self.FailedObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.FailedObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function HmGoapPlanRunner.ClearFailedObservers  (script 11 bytes)
+  0000: self.FailedObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmGoapPlanRunner.NotifyFailedObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.FailedObservers.Length)) goto 0x0041
+  0017: N = I[self.FailedObservers]
+  0028: FailedObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>
+
+function HmGoapPlanRunner.AddCompletedObserver  (script 46 bytes)
+  0000: if !((self.CompletedObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.CompletedObservers.Length[self.CompletedObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function HmGoapPlanRunner.RemoveCompletedObserver  (script 49 bytes)
+  0000: Index = self.CompletedObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.CompletedObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function HmGoapPlanRunner.ClearCompletedObservers  (script 11 bytes)
+  0000: self.CompletedObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmGoapPlanRunner.NotifyCompletedObservers  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.CompletedObservers.Length)) goto 0x0041
+  0017: N = I[self.CompletedObservers]
+  0028: CompletedObserver()
+  0037: AddAdd_PreInt(I)
+  003e: goto 0x0007
+  0041: return nothing
+  0043: <eos>

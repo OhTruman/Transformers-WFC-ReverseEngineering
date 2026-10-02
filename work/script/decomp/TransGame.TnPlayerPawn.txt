@@ -1,0 +1,528 @@
+function TnPlayerPawn.get_SegmentedHealth  (script 13 bytes)
+  0000: return self._SegmentedHealth
+  0006: return return
+  000c: <eos>
+
+function TnPlayerPawn.set_SegmentedHealth  (script 14 bytes)
+  0000: self._SegmentedHealth = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerPawn.set_CharacterTextureLoader  (script 14 bytes)
+  0000: self._CharacterTextureLoader = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerPawn.ReplicatedEvent  (script 71 bytes)
+  0000: if !((VarName == 'ShouldHolsterWeapon')) goto 0x0020
+  0013: ToggleHolsterWeapon()
+  001d: goto 0x0039
+  0020: if !((VarName == 'Health')) goto 0x0039
+  0033: TnPlayerPawn.UpdateReplicatedHealth()
+  0039: TnPawn.ReplicatedEvent(VarName)
+  0044: return nothing
+  0046: <eos>
+
+function TnPlayerPawn.PostInitAnimTree  (script 87 bytes)
+  0000: PostInitAnimTree(SkelComp)
+  000b: self.WeaponIKController.Initialize(SkelComp)
+  0023: if !((self.Weapon != none)) goto 0x0054
+  002e: self.WeaponIKController.SetLeftArmSocket(TnWeapon(self.Weapon).LeftArmSocket)
+  0054: return nothing
+  0056: <eos>
+
+function TnPlayerPawn.ApplyCharacter  (script 242 bytes)
+  0000: TnPawn.ApplyCharacter(CD)
+  000b: if !(IsLocallyControlled()) goto 0x007e
+  0018: self._CharacterTextureLoader.ResetAll()
+  002b: self._CharacterTextureLoader.UpdateTransformer(self._Blueprint, true)
+  0044: self.HealthMaterialRamper.AddDefragMesh(get_RobotMeshComponent())
+  0061: self.HealthMaterialRamper.AddDefragMesh(get_VehicleMeshComponent())
+  007e: PC = TnPlayerController(self.Controller)
+  008e: if !((PC == none)) goto 0x009b
+  0099: return nothing
+  009b: PC.SetCamerasTemplate(self._Blueprint.Cameras, CD.StartingForm)
+  00cc: PC.GotoNewFormState(CD.StartingForm)
+  00ef: return nothing
+  00f1: <eos>
+
+function TnPlayerPawn.PlayWeaponFireEffects  (script 119 bytes)
+  0000: TnPawn.PlayWeaponFireEffects()
+  0006: if !((self.Weapon == none)) goto 0x0013
+  0011: return nothing
+  0013: if !(IsLocallyControlled()) goto 0x0042
+  0020: PlayForceFeedbackWaveform(TnWeapon(self.Weapon).GetCurrentFFWaveform())
+  0042: if !((TnPlayerController(self.Controller) != none)) goto 0x0074
+  0052: TnPlayerController(self.Controller).OnWeaponFired(TnWeapon(self.Weapon))
+  0074: return nothing
+  0076: <eos>
+
+function TnPlayerPawn.Grabbed.SetMovementPhysics  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerPawn.Grabbed.BeginState  (script 79 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: PC = TnPlayerController(self.Controller)
+  001b: if !((PC != none)) goto 0x0039
+  0026: PC.NotifyGrabBegin()
+  0039: self.WeaponIKController.DisableIK()
+  004c: return nothing
+  004e: <eos>
+
+function TnPlayerPawn.Grabbed.EndState  (script 60 bytes)
+  0000: EndState(NextStateName)
+  000b: PC = TnPlayerController(self.Controller)
+  001b: if !((PC != none)) goto 0x0039
+  0026: PC.NotifyGrabEnd()
+  0039: return nothing
+  003b: <eos>
+
+function TnPlayerPawn.PlayGrabVictimCameraAnimation  (script 116 bytes)
+  0000: C = TnPlayerController(self.Controller)
+  0010: if !(((C == none) || (Attacher._GrabVictimCameraAnimation == none))) goto 0x0033
+  0031: return nothing
+  0033: if !(C.IsLocalPlayerController()) goto 0x0071
+  0049: C.PlayCameraAnimation(Attacher._GrabVictimCameraAnimation, Attacher, , false)
+  0071: return nothing
+  0073: <eos>
+
+function TnPlayerPawn.GetWeaponSpreadModifier  (script 90 bytes)
+  0000: CurrentWeapon = TnWeapon(self.Weapon)
+  0010: if !((CurrentWeapon == none)) goto 0x0021
+  001b: return 0.0
+  0021: CurrentSpread = CurrentWeapon.GetCurrentSpreadModifier()
+  003a: return self.SpreadModifier.ModifySpread(CurrentSpread)
+  0053: return return
+  0059: <eos>
+
+function TnPlayerPawn.GetDefaultCameraMode  (script 99 bytes)
+  0000: if !((((RequestedBy != none) && (RequestedBy.PlayerCamera != none)) && (RequestedBy.PlayerCamera.CameraStyle == 'Fixed'))) goto 0x0052
+  0048: return 'Fixed'
+  0052: return 'TnOverTheShoulder'
+  005c: return return
+  0062: <eos>
+
+function TnPlayerPawn.HealDamage  (script 279 bytes)
+  0000: ActiveSegmentBefore = self._SegmentedHealth.get_ActiveSegment()
+  0019: Amount = self._SegmentedHealth.HealDamage(Amount, HealType)
+  003c: if !(((((ActiveSegmentBefore == 0) && (self._SegmentedHealth.get_ActiveSegment() == 1)) && (Healer != self.Controller)) && (HealType == obj'TnHealTypeRepairTeam'))) goto 0x00b7
+  0084: PC = TnPlayerController(Healer)
+  0094: if !((PC != none)) goto 0x00b7
+  009f: PC.NotifyXpEvent(obj'TnXpEventTypeHealRepairRayLowHealth')
+  00b7: if !((HealType == obj'TnHealTypeHealthPickup')) goto 0x00cc
+  00c6: TnPlayerPawn.ClientRampHealthMaterial()
+  00cc: PC = TnPlayerController(self.Controller)
+  00dc: if !((PC != none)) goto 0x00fa
+  00e7: PC.UpdateDamageHistory()
+  00fa: return TnPawn.HealDamage(Amount, Healer, HealType)
+  0110: return return
+  0116: <eos>
+
+function TnPlayerPawn.ClientRampHealthMaterial  (script 22 bytes)
+  0000: self.HealthMaterialRamper.StartFadeOut()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerPawn.AdjustDamage  (script 130 bytes)
+  0000: nothing
+  0001: nothing
+  0002: TnPawn.AdjustDamage(Damage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser)
+  002b: if !(((self._IsDowned && (self._DownedInvulnerableCountdown > 0.0)) && (DamageType != obj'TnDamageTypeDownedDrain'))) goto 0x0061
+  0056: Damage = 0.0
+  0061: Damage = self._SegmentedHealth.AdjustDamage(Damage)
+  007f: return nothing
+  0081: <eos>
+
+function TnPlayerPawn.TakeDamage  (script 401 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self._Blueprint == none)) goto 0x000f
+  000d: return nothing
+  000f: if !(((DamageType == obj'Engine.DmgType_Fell') || (DamageType == obj'Engine.DmgType_Crushed'))) goto 0x0031
+  002f: return nothing
+  0031: if !((InstigatedBy != none)) goto 0x0136
+  003c: if !((((InstigatedBy.Pawn == self) && (DamageType == obj'TnDamageTypeFlashBang')) && HasSkill(obj'TnSkillFlashBangDoesntEffectSelf'))) goto 0x0077
+  0075: return nothing
+  0077: SentryC = TnAiSentryController(InstigatedBy)
+  0087: if !(((SentryC != none) && (SentryC._KillOwner == self.Controller))) goto 0x00b4
+  00ac: DamageFromSpawnedSentry = true
+  00b4: if !((((DamageType != obj'TnDamageTypeAOE') && (InstigatedBy.Pawn != self)) && (InstigatedBy.OnSameTeamAs(self) || DamageFromSpawnedSentry))) goto 0x0136
+  00fd: if !((self.Controller != none)) goto 0x0134
+  0108: self.Controller.NotifyHitByFriendlyFire(InstigatedBy, HitLocation, Damage, DamageType, Momentum)
+  0134: return nothing
+  0136: ExposeSelf(true, !HasSkill(obj'TnSkillKeepDisguiseWhenDamaged'))
+  0152: TnPawn.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  017b: self._SegmentedHealth.ResetActiveSegment()
+  018e: return nothing
+  0190: <eos>
+
+function TnPlayerPawn.PlayDying  (script 68 bytes)
+  0000: StopAllSounds()
+  000a: obj'Engine.Engine'.static.GetAudioDevice().DisableMixerPreset(self.CurrentWoundedMixerPreset, )
+  0031: TnPawn.PlayDying(DamageType, HitLoc)
+  0041: return nothing
+  0043: <eos>
+
+function TnPlayerPawn.EncroachedBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerPawn.Tick  (script 275 bytes)
+  0000: TnPawn.Tick(DeltaTime)
+  000b: if !((self._SegmentedHealth.get_OverShieldHealth() > cast3f(0))) goto 0x003e
+  0026: self._CharacterMaterials.Start(2)
+  003b: goto 0x007f
+  003e: if !(self._CharacterMaterials.IsActive(2)) goto 0x006a
+  0056: PlaySound(self.OvershieldOffSound, , , , , )
+  006a: self._CharacterMaterials.Stop(2)
+  007f: self.SpreadModifier.Tick(DeltaTime)
+  0097: self.HealthMaterialRamper.Update(DeltaTime)
+  00af: if !((self.Controller == none)) goto 0x00bc
+  00ba: return nothing
+  00bc: UpdateWoundedSounds()
+  00c6: MakeFootstepNoise()
+  00d0: self.WeaponIKController.set_Enabled(!self._RobotForm.get_IsPlayingCustomAnimation())
+  00f8: self.WeaponIKController.Update(DeltaTime)
+  0110: return nothing
+  0112: <eos>
+
+function TnPlayerPawn.ApplyTransformer  (script 53 bytes)
+  0000: TnPawn.ApplyTransformer()
+  0006: InitializeSegmentedHealth(self._Blueprint.SegmentedHealth)
+  001e: self.SpreadModifier.Initialize(self)
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerPawn.ApplySpecialty  (script 235 bytes)
+  0000: GameClass = class<TnGame>(self.WorldInfo.GetGameClass())
+  001e: if !((GameClass != none)) goto 0x00d5
+  0029: if !((self._CurrentCharacter.Specialty == "")) goto 0x0042
+  0040: return nothing
+  0042: switch (self._CurrentCharacter.Specialty)
+  0054: case "Soldier": (next 0x006e)
+  0060: SpecialtyToApply = obj'TnSpecialtySoldier'
+  006b: goto 0x00be
+  006e: case "Leader": (next 0x0087)
+  0079: SpecialtyToApply = obj'TnSpecialtyLeader'
+  0084: goto 0x00be
+  0087: case "Scientist": (next 0x00a3)
+  0095: SpecialtyToApply = obj'TnSpecialtyScientist'
+  00a0: goto 0x00be
+  00a3: case "Scout": (next 0x00bb)
+  00ad: SpecialtyToApply = obj'TnSpecialtyScout'
+  00b8: goto 0x00be
+  00bb: default:
+  00be: SpecialtyToApply.static.Apply(self)
+  00d2: goto 0x00e8
+  00d5: SetTimer(0.1, false, 'ApplySpecialty', )
+  00e8: return nothing
+  00ea: <eos>
+
+function TnPlayerPawn.InitializeSegmentedHealth  (script 39 bytes)
+  0000: self._SegmentedHealth.Initialize(self, SegmentedHealthBlueprint)
+  0019: self.LastReplicatedHealth = self.Health
+  0024: return nothing
+  0026: <eos>
+
+function TnPlayerPawn.SetHealth  (script 79 bytes)
+  0000: SetHealth(Amount)
+  000b: self._SegmentedHealth.ResetActiveSegment()
+  001e: PC = TnPlayerController(self.Controller)
+  002e: if !((PC != none)) goto 0x004c
+  0039: PC.UpdateDamageHistory()
+  004c: return nothing
+  004e: <eos>
+
+function TnPlayerPawn.AddResource  (script 27 bytes)
+  0000: self.AbilityManager.AddResource(Amount)
+  0018: return nothing
+  001a: <eos>
+
+function TnPlayerPawn.CanPickupInventory  (script 209 bytes)
+  0000: if !(self._IsDowned) goto 0x000b
+  0009: return false
+  000b: MeleeService = TnMeleeService(GetRobotService('TnMeleeService'))
+  0029: if !((NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none)) && MeleeService.IsMeleeing(10))) goto 0x005a
+  0058: return false
+  005a: if !((get_IsInVehicleForm() && ClassIsChildOf(InventoryType, obj'TnWeapon'))) goto 0x007b
+  0079: return false
+  007b: if !(((self.Controller != none) && !TnPlayerController(self.Controller).CanPickupInventory(InventoryType))) goto 0x00ac
+  00aa: return false
+  00ac: return TnInventoryManager(self.InvManager).CanPickupInventory(InventoryType)
+  00ca: return return
+  00d0: <eos>
+
+function TnPlayerPawn.NotifyWeaponChanged  (script 124 bytes)
+  0000: NotifyWeaponChanged(PrevWeapon, NextWeapon)
+  0010: NextWeaponAsTn = TnWeapon(NextWeapon)
+  0020: if !((NextWeaponAsTn != none)) goto 0x004c
+  002b: self.WeaponIKController.SetLeftArmSocket(NextWeaponAsTn.LeftArmSocket)
+  004c: if !((self.Controller != none)) goto 0x0079
+  0057: TnPlayerController(self.Controller).NotifyWeaponChanged(PrevWeapon, NextWeapon)
+  0079: return nothing
+  007b: <eos>
+
+function TnPlayerPawn.GetWeaponStartTraceLocation  (script 130 bytes)
+  0000: nothing
+  0001: if !((self.Controller != none)) goto 0x006f
+  000c: self.Controller.GetPlayerViewPoint(ViewPointLocation, ViewpointRotation)
+  0029: ViewToP = (self.Location - ViewPointLocation)
+  003b: Projection = obj'Core.Math'.static.ProjectOnTo(ViewToP, (cast39(ViewpointRotation) * cast3f(10000)))
+  0062: return (ViewPointLocation + Projection)
+  006f: return GetWeaponStartTraceLocation(CurrentWeapon)
+  007b: return return
+  0081: <eos>
+
+function TnPlayerPawn.StartFineAim  (script 38 bytes)
+  0000: if !((self.Weapon != none)) goto 0x0023
+  000b: TnWeapon(self.Weapon).StartFineAim()
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerPawn.StopFineAim  (script 38 bytes)
+  0000: if !((self.Weapon != none)) goto 0x0023
+  000b: TnWeapon(self.Weapon).StopFineAim()
+  0023: return nothing
+  0025: <eos>
+
+function TnPlayerPawn.SetHud  (script 51 bytes)
+  0000: self.AbilityManager.SetHud(NewHud)
+  0018: self._BuffManager.SetHud(NewHud)
+  0030: return nothing
+  0032: <eos>
+
+function TnPlayerPawn.DrawHUD  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnPlayerPawn.ProcessViewRotation  (script 37 bytes)
+  0000: if !((self.Controller == none)) goto 0x000d
+  000b: return nothing
+  000d: ProcessViewRotation(DeltaTime, out_ViewRotation, out_DeltaRot)
+  0022: return nothing
+  0024: <eos>
+
+function TnPlayerPawn.PlayForceFeedbackWaveform  (script 48 bytes)
+  0000: if !((PlayerController(self.Controller) != none)) goto 0x002d
+  0010: PlayerController(self.Controller).ClientPlayForceFeedbackWaveform(WF)
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerPawn.PlayHit  (script 50 bytes)
+  0000: self.LastTakeHitDamage = Damage
+  000b: TnPawn.PlayHit(Damage, InstigatedBy, HitLocation, DamageType, Momentum, HitInfo)
+  002f: return nothing
+  0031: <eos>
+
+function TnPlayerPawn.ClientPlayHit  (script 280 bytes)
+  0000: TnPawn.ClientPlayHit()
+  0006: C = TnPlayerController(self.Controller)
+  0016: if !((C == none)) goto 0x0023
+  0021: return nothing
+  0023: AsTnDamageType = class<TnDamageType>(get_LastTakeHitInfo().DamageType)
+  0043: if !((AsTnDamageType == none)) goto 0x0050
+  004e: return nothing
+  0050: SegmentsOfDamage = self._SegmentedHealth.GetActiveSegment(self.LastTakeHitDamage)
+  006e: SegmentsOfDamage = cast44(obj'Core.Math'.static.FMin(cast3f(SegmentsOfDamage), cast3f((AsTnDamageType.static.default.VictimCameraShakeParams.Length - 1))))
+  009c: if !((SegmentsOfDamage >= 0)) goto 0x00ce
+  00a7: C.StartCameraShake(SegmentsOfDamage[AsTnDamageType.static.default.VictimCameraShakeParams])
+  00ce: if !(AsTnDamageType.static.default.EnablePostProcessModification) goto 0x0101
+  00e0: C.ActivatePostProcessModification(AsTnDamageType.static.default.PostProcessModification)
+  0101: AsTnDamageType.static.OnClientPlayHit(self)
+  0115: return nothing
+  0117: <eos>
+
+function TnPlayerPawn.UpdateReplicatedHealth  (script 48 bytes)
+  0000: self.LastTakeHitDamage = obj'Core.Math'.static.FMax((self.LastReplicatedHealth - self.Health), 0.0)
+  0022: self.LastReplicatedHealth = self.Health
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerPawn.UpdateWoundedSounds  (script 300 bytes)
+  0000: if !(!self.Controller.IsLocalPlayerController()) goto 0x001a
+  0018: return nothing
+  001a: if !((none == self._SegmentedHealth)) goto 0x0027
+  0025: return nothing
+  0027: NormalizedSegmentHealth = self._SegmentedHealth.get_NormalizedSegmentHealth()
+  0040: (NormalizedSegmentHealth += cast3f(self._SegmentedHealth.get_ActiveSegment()))
+  005c: if !((NormalizedSegmentHealth <= 0.25)) goto 0x0079
+  006b: NewWoundedMixerPreset = self.WoundedHealthLowMixerPreset
+  0076: goto 0x00c2
+  0079: if !((NormalizedSegmentHealth <= 0.5)) goto 0x0096
+  0088: NewWoundedMixerPreset = self.WoundedHealthMediumMixerPreset
+  0093: goto 0x00c2
+  0096: if !((NormalizedSegmentHealth <= 0.75)) goto 0x00b3
+  00a5: NewWoundedMixerPreset = self.WoundedHealthHighMixerPreset
+  00b0: goto 0x00c2
+  00b3: NewWoundedMixerPreset = 'None'
+  00c2: if !((self.CurrentWoundedMixerPreset != NewWoundedMixerPreset)) goto 0x0129
+  00d1: obj'Engine.Engine'.static.GetAudioDevice().DisableMixerPreset(self.CurrentWoundedMixerPreset, )
+  00f8: obj'Engine.Engine'.static.GetAudioDevice().EnableMixerPreset(NewWoundedMixerPreset)
+  011e: self.CurrentWoundedMixerPreset = NewWoundedMixerPreset
+  0129: return nothing
+  012b: <eos>
+
+function TnPlayerPawn.ToggleHolsterWeapon  (script 82 bytes)
+  0000: W = TnWeapon(self.Weapon)
+  0010: if !((W == none)) goto 0x001d
+  001b: return nothing
+  001d: if !(self.ShouldHolsterWeapon) goto 0x003c
+  0026: W.DetachWeaponAndHolster()
+  0039: goto 0x004f
+  003c: W.AttachWeapon()
+  004f: return nothing
+  0051: <eos>
+
+function TnPlayerPawn.SetInteractState  (script 69 bytes)
+  0000: TnPawn.SetInteractState(Interact, InteractState)
+  0010: if !((TnPlayerController(self.Controller) != none)) goto 0x0042
+  0020: TnPlayerController(self.Controller).SetPlayerInteractState(Interact, InteractState)
+  0042: return nothing
+  0044: <eos>
+
+function TnPlayerPawn.ClearInteractState  (script 56 bytes)
+  0000: SetInteractState(none, 0)
+  000d: if !((TnPlayerController(self.Controller) != none)) goto 0x0035
+  001d: TnPlayerController(self.Controller).ClearPlayerInteractState()
+  0035: return nothing
+  0037: <eos>
+
+function TnPlayerPawn.BeginTurretControl  (script 59 bytes)
+  0000: TnPawn.BeginTurretControl(Turret)
+  000b: if !((TnPlayerController(self.Controller) != none)) goto 0x0038
+  001b: TnPlayerController(self.Controller).BeginTurretControl(Turret)
+  0038: return nothing
+  003a: <eos>
+
+function TnPlayerPawn.DisplayDebug  (script 855 bytes)
+  0000: TnPawn.DisplayDebug(HUD, out_YL, out_YPos)
+  0015: if !(HUD.ShouldDisplayDebug('Abilities')) goto 0x00d9
+  0034: (out_YPos += out_YL)
+  0040: HUD.Canvas.DrawTextNormal(("Resource:" @ cast55(self.AbilityManager.GetResource())), , , )
+  0081: (out_YPos += out_YL)
+  008d: HUD.Canvas.DrawTextNormal(("Normalized Resource:" @ cast55(self.AbilityManager.GetNormalizedResource())), , , )
+  00d9: if !(HUD.ShouldDisplayDebug('Player')) goto 0x0332
+  00f8: HUD.Canvas.DrawColor = HUD.ConsoleColor
+  011e: (out_YPos += out_YL)
+  012a: HUD.Canvas.DrawTextNormal(("Physics:" @ cast52(self.Physics)), , , )
+  015c: (out_YPos += out_YL)
+  0168: HUD.Canvas.DrawTextNormal(("Role:" @ cast52(self.Role)), , , )
+  0197: (out_YPos += out_YL)
+  01a3: HUD.Canvas.DrawTextNormal(("Collision:" @ cast57(self._CollisionController.GetStateName())), , , )
+  01de: (out_YPos += out_YL)
+  01ea: HUD.Canvas.DrawTextNormal(("Pawn Speed:" @ cast55(obj'Core.Math'.static.VSize(self.Velocity))), , , )
+  022a: (out_YPos += out_YL)
+  0236: HUD.Canvas.DrawTextNormal(("Base:" @ cast56(self.Base)), , , )
+  0265: (out_YPos += out_YL)
+  0271: HUD.Canvas.DrawTextNormal(("BaseBoneName:" @ cast57(self.BaseBoneName)), , , )
+  02a8: (out_YPos += out_YL)
+  02b4: HUD.Canvas.DrawTextNormal(("BaseSkelComponent:" @ cast56(self.BaseSkelComponent)), , , )
+  02f0: (out_YPos += out_YL)
+  02fc: HUD.Canvas.DrawTextNormal(("HardAttach:" @ cast54(self.bHardAttach)), , , )
+  0332: self.Controller.DisplayDebug(HUD, out_YL, out_YPos)
+  0354: return nothing
+  0356: <eos>
+
+function TnPlayerPawn.GetDeathCameraAnchorLocation  (script 79 bytes)
+  0000: if !(((self._Blueprint != none) && (self._Blueprint.DeathCameraFollowBoneName != 'None'))) goto 0x0042
+  0029: return GetBoneLocation(self._Blueprint.DeathCameraFollowBoneName)
+  0042: return self.Location
+  0048: return return
+  004e: <eos>
+
+function TnPlayerPawn.RobotDowned.BeginState  (script 25 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: self._DownedInvulnerableCountdown = self.DownedInvulnerableLength
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerPawn.RobotDowned.EndState  (script 25 bytes)
+  0000: EndState(NextStateName)
+  000b: self._DownedInvulnerableCountdown = 0.0
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerPawn.RobotDowned.Tick  (script 48 bytes)
+  0000: Tick(DeltaTime)
+  000b: self._DownedInvulnerableCountdown = obj'Core.Math'.static.FMax(0.0, (self._DownedInvulnerableCountdown - DeltaTime))
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerPawn.Dying.BeginState  (script 54 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: DetachComponent(FindComponent(obj'TnSpawnModifierComponent'))
+  0024: if !(self.bHidden) goto 0x0033
+  002d: SetCollision(false, false, )
+  0033: return nothing
+  0035: <eos>
+
+function TnPlayerPawn.BeginAnimControl  (script 132 bytes)
+  0000: if !(get_IsInRobotForm()) goto 0x0053
+  000d: MeleeService = TnMeleeService(GetService('TnMeleeService'))
+  002b: if !(NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0053
+  003f: MeleeService.UnequipMeleeWeapon()
+  0053: TnPawn.BeginAnimControl(InAnimSets)
+  005e: if !((self.Controller != none)) goto 0x0081
+  0069: self.Controller.BeginAnimControl(InAnimSets)
+  0081: return nothing
+  0083: <eos>
+
+function TnPlayerPawn.FinishAnimControl  (script 39 bytes)
+  0000: TnPawn.FinishAnimControl()
+  0006: if !((self.Controller != none)) goto 0x0024
+  0011: self.Controller.FinishAnimControl()
+  0024: return nothing
+  0026: <eos>
+
+function TnPlayerPawn.UnPossessed  (script 15 bytes)
+  0000: TnPlayerPawn.ClearInteractState()
+  0006: UnPossessed()
+  000c: return nothing
+  000e: <eos>
+
+function TnPlayerPawn.Teleport  (script 76 bytes)
+  0000: NewLocation = NewLocationTemp
+  000b: NewRotation = NewRotationTemp
+  0016: if !((self.Controller != none)) goto 0x0039
+  0021: TnPlayerController(self.Controller).ForceEndInteract()
+  0039: TnPawn.Teleport(NewLocation, NewRotation)
+  0049: return nothing
+  004b: <eos>
+
+function TnPlayerPawn.ClientStartDowned  (script 44 bytes)
+  0000: if !((self.Controller != none)) goto 0x0023
+  000b: TnPlayerController(self.Controller).StartDowned()
+  0023: TnPawn.ClientStartDowned()
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerPawn.ClientStopDowned  (script 44 bytes)
+  0000: if !((self.Controller != none)) goto 0x0023
+  000b: TnPlayerController(self.Controller).StopDowned()
+  0023: TnPawn.ClientStopDowned()
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerPawn.OnGetRevive  (script 101 bytes)
+  0000: Game = TnCampaignGameBase(self.WorldInfo.Game)
+  0019: if !((Game == none)) goto 0x0026
+  0024: return nothing
+  0026: foreach self.OnReviveBuffs(Buff,) (end 0x0061)
+  0035: self._BuffManager.AddSelfBuff(Buff, Game.GetDifficultyBuffLevel())
+  0060: iternext
+  0061: iterpop
+  0062: return nothing
+  0064: <eos>
+
+function TnPlayerPawn.PrePlayerKicked  (script 33 bytes)
+  0000: if !((self.InvManager != none)) goto 0x001e
+  000b: self.InvManager.DiscardInventory()
+  001e: return nothing
+  0020: <eos>
+
+function TnPlayerPawn.SetHealthFromCheckpoint  (script 49 bytes)
+  0000: self.Health = obj'Core.Math'.static.FMax(Amount, 1.0)
+  001b: self._SegmentedHealth.ResetActiveSegment()
+  002e: return nothing
+  0030: <eos>

@@ -1,0 +1,11 @@
+function HmSoundEventDialogGroup.GetInitialDelay  (script 55 bytes)
+  0000: if !((obj'Core.Random'.static.RandomInt(100) < self.InitialChanceToPlay)) goto 0x0025
+  001f: return 0.0
+  0025: return GetRetriggerDelay()
+  0030: return return
+  0036: <eos>
+
+function HmSoundEventDialogGroup.GetRetriggerDelay  (script 37 bytes)
+  0000: return obj'Core.Random'.static.RandRangeFloat(self.ReTriggerDelayMin, self.ReTriggerDelayMax)
+  001e: return return
+  0024: <eos>

@@ -1,0 +1,26 @@
+function TnLoseHeatModifier.OnHeatEvent  (script 220 bytes)
+  0000: nothing
+  0001: switch (Type)
+  0008: case 4: (next 0x0081)
+  000d: if !((!self.IsHoldingFire && !self.IsOverheated)) goto 0x007e
+  0025: (self.TimeSinceLastShot += DeltaTime)
+  0031: if !(((Heat > cast3f(0)) && ((self.TimeSinceLastShot - self.LossDelay) > cast3f(0)))) goto 0x007e
+  0054: (Heat -= (self.LossRate * obj'Core.Math'.static.FMin((self.TimeSinceLastShot - self.LossDelay), DeltaTime)))
+  007e: goto 0x00cf
+  0081: case 0: (next 0x0091)
+  0086: self.IsHoldingFire = true
+  008e: goto 0x00cf
+  0091: case 1: (next 0x00ac)
+  0096: self.IsHoldingFire = false
+  009e: self.TimeSinceLastShot = 0.0
+  00a9: goto 0x00cf
+  00ac: case 5: (next 0x00bc)
+  00b1: self.IsOverheated = true
+  00b9: goto 0x00cf
+  00bc: case 6: (next 0x00cc)
+  00c1: self.IsOverheated = false
+  00c9: goto 0x00cf
+  00cc: default:
+  00cf: return Heat
+  00d5: return return
+  00db: <eos>

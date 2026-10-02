@@ -1,0 +1,15 @@
+function TnGfxExternalInterface.GetPlayerController  (script 57 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: return WI.GetLocalPlayerController()
+  0032: return return
+  0038: <eos>
+
+function TnGfxExternalInterface.GetPlayerNum  (script 87 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !((PC == none)) goto 0x001d
+  001b: return 0
+  001d: if !((PC.Player == none)) goto 0x0033
+  0031: return 0
+  0033: return LocalPlayer(PC.Player).ControllerId
+  0050: return return
+  0056: <eos>

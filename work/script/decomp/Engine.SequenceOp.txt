@@ -1,0 +1,89 @@
+function SequenceOp.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SequenceOp.ActivateOutputLink  (script 7 bytes)
+  0000: Index
+  0005: nothing
+  0006: <eos>
+
+function SequenceOp.ActivateInputLink  (script 7 bytes)
+  0000: Index
+  0005: nothing
+  0006: <eos>
+
+function SequenceOp.CallUpdateOp  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
+
+function SequenceOp.HasLinkedOps  (script 7 bytes)
+  0000: bConsiderInputLinks
+  0005: nothing
+  0006: <eos>
+
+function SequenceOp.GetLinkedObjects  (script 17 bytes)
+  0000: out_Objects
+  0005: ObjectType
+  000a: bRecurse
+  000f: nothing
+  0010: <eos>
+
+function SequenceOp.GetObjectVars  (script 12 bytes)
+  0000: objVars
+  0005: inDesc
+  000a: nothing
+  000b: <eos>
+
+function SequenceOp.GetBoolVars  (script 12 bytes)
+  0000: boolVars
+  0005: inDesc
+  000a: nothing
+  000b: <eos>
+
+function SequenceOp.LinkedVariables  (script 17 bytes)
+  0000: VarClass
+  0005: OutVariable
+  000a: inDesc
+  000f: nothing
+  0010: <eos>
+
+function SequenceOp.Activated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SequenceOp.Deactivated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SequenceOp.PopulateLinkedVariableValues  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SequenceOp.PublishLinkedVariableValues  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SequenceOp.Reset  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SequenceOp.GetPawn  (script 88 bytes)
+  0000: P = Pawn(TheActor)
+  0010: if !((P != none)) goto 0x0024
+  001b: return P
+  0021: goto 0x0051
+  0024: C = Controller(TheActor)
+  0034: return ((C != none) ? C.Pawn : none)
+  0051: return return
+  0057: <eos>
+
+function SequenceOp.GetController  (script 88 bytes)
+  0000: C = Controller(TheActor)
+  0010: if !((C != none)) goto 0x0024
+  001b: return C
+  0021: goto 0x0051
+  0024: P = Pawn(TheActor)
+  0034: return ((P != none) ? P.Controller : none)
+  0051: return return
+  0057: <eos>

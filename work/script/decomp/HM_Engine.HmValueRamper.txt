@@ -1,0 +1,95 @@
+function HmValueRamper.get_MinValue  (script 13 bytes)
+  0000: return self._MinValue
+  0006: return return
+  000c: <eos>
+
+function HmValueRamper.set_MinValue  (script 41 bytes)
+  0000: self._MinValue = Value
+  000b: self._Value = obj'Core.Math'.static.FMax(self._MinValue, self._Value)
+  0026: return nothing
+  0028: <eos>
+
+function HmValueRamper.get_MaxValue  (script 13 bytes)
+  0000: return self._MaxValue
+  0006: return return
+  000c: <eos>
+
+function HmValueRamper.set_MaxValue  (script 41 bytes)
+  0000: self._MaxValue = Value
+  000b: self._Value = obj'Core.Math'.static.FMin(self._MaxValue, self._Value)
+  0026: return nothing
+  0028: <eos>
+
+function HmValueRamper.get_Exponent  (script 13 bytes)
+  0000: return self._Exponent
+  0006: return return
+  000c: <eos>
+
+function HmValueRamper.set_Exponent  (script 14 bytes)
+  0000: self._Exponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmValueRamper.get_Value  (script 13 bytes)
+  0000: return self._Value
+  0006: return return
+  000c: <eos>
+
+function HmValueRamper.get_IsActive  (script 14 bytes)
+  0000: return self._Active
+  0007: return return
+  000d: <eos>
+
+function HmValueRamper.get_Style  (script 13 bytes)
+  0000: return self._Style
+  0006: return return
+  000c: <eos>
+
+function HmValueRamper.set_Style  (script 14 bytes)
+  0000: self._Style = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmValueRamper.Ramp  (script 33 bytes)
+  0000: self._Direction = Direction
+  000b: self._RampTime = Duration
+  0016: self._Active = true
+  001e: return nothing
+  0020: <eos>
+
+function HmValueRamper.Update  (script 77 bytes)
+  0000: if !(((self._RampTime == cast3f(0)) || (self._Active == false))) goto 0x001d
+  001b: return nothing
+  001d: HmValueRamper.UpdateCurrentTime(DeltaTime)
+  0028: self._Value = HmValueRamper.Interpolate(self._MinValue, self._MaxValue, (self._CurrentTime / self._RampTime))
+  004a: return nothing
+  004c: <eos>
+
+function HmValueRamper.Interpolate  (script 185 bytes)
+  0000: switch (self._Style)
+  0007: case 0: (next 0x0027)
+  000c: return obj'Core.Math'.static.Lerp(A, B, Alpha)
+  0027: case 1: (next 0x0055)
+  002c: return obj'Core.Math'.static.Lerp(A, B, (Alpha ** (1.0 / self._Exponent)))
+  0055: case 2: (next 0x007c)
+  005a: return obj'Core.Math'.static.Lerp(A, B, (Alpha ** self._Exponent))
+  007c: case 3: (next 0x00a9)
+  0081: return obj'Core.Math'.static.FInterpEaseInOut(A, B, Alpha, self._Exponent)
+  00a9: default:
+  00ac: return 0.0
+  00b2: return return
+  00b8: <eos>
+
+function HmValueRamper.UpdateCurrentTime  (script 112 bytes)
+  0000: if !((cast3a(self._Direction) == cast3a(0))) goto 0x0041
+  0010: (self._CurrentTime += DeltaTime)
+  001c: if !((self._CurrentTime >= self._RampTime)) goto 0x003e
+  002b: self._CurrentTime = self._RampTime
+  0036: self._Active = false
+  003e: goto 0x006d
+  0041: (self._CurrentTime -= DeltaTime)
+  004d: if !((self._CurrentTime <= cast3f(0))) goto 0x006d
+  005a: self._CurrentTime = 0.0
+  0065: self._Active = false
+  006d: return nothing
+  006f: <eos>

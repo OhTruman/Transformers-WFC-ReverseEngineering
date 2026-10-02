@@ -1,0 +1,19 @@
+function HmBidirectionalSlopeFilter.Update  (script 149 bytes)
+  0000: if !((TargetValue > self.CurrentValue)) goto 0x0031
+  000f: Slope = ((self.CurrentValue > cast3f(0)) ? self.MaxUpSlope : self.MaxDownSlope)
+  002e: goto 0x0050
+  0031: Slope = ((self.CurrentValue < cast3f(0)) ? self.MaxUpSlope : self.MaxDownSlope)
+  0050: MaxVariation = (Slope * DeltaTime)
+  0062: self.CurrentValue = (self.CurrentValue + obj'Core.Math'.static.FClamp((TargetValue - self.CurrentValue), -MaxVariation, MaxVariation))
+  0092: return nothing
+  0094: <eos>
+
+function HmBidirectionalSlopeFilter.GetValue  (script 13 bytes)
+  0000: return self.CurrentValue
+  0006: return return
+  000c: <eos>
+
+function HmBidirectionalSlopeFilter.Reset  (script 14 bytes)
+  0000: self.CurrentValue = ResetValue
+  000b: return nothing
+  000d: <eos>

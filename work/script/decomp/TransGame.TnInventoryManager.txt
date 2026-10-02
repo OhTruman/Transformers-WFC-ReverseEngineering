@@ -1,0 +1,217 @@
+function TnInventoryManager.CanCycleToWeapon  (script 56 bytes)
+  0000: TnW = TnWeapon(W)
+  0010: if !((TnW == none)) goto 0x001d
+  001b: return false
+  001d: return TnW.CanBeCycledTo()
+  0031: return return
+  0037: <eos>
+
+function TnInventoryManager.ShouldSwitchToBestWeaponOnInventoryRemoval  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnInventoryManager.ClientWeaponSet  (script 286 bytes)
+  0000: OldWeapon = self.Instigator.Weapon
+  0014: if !((self.LastClientWeaponSetTime < NewWeapon.ClientWeaponSetTime)) goto 0x0048
+  002c: IsValidWeaponSetTime = true
+  0034: self.LastClientWeaponSetTime = NewWeapon.ClientWeaponSetTime
+  0048: if !(TnInventoryManager.ShouldForceClientWeaponSet(NewWeapon)) goto 0x0067
+  0056: SetCurrentWeapon(NewWeapon)
+  0065: return nothing
+  0067: if !((((OldWeapon == none) || OldWeapon.bDeleteMe) || OldWeapon.IsInState('Inactive', ))) goto 0x00b2
+  00a1: SetCurrentWeapon(NewWeapon)
+  00b0: return nothing
+  00b2: if !((OldWeapon == NewWeapon)) goto 0x00c3
+  00c1: return nothing
+  00c3: if !((((self.PendingWeapon == none) || !self.PendingWeapon.HasAnyAmmo()) && IsValidWeaponSetTime)) goto 0x0104
+  00f3: SetCurrentWeapon(NewWeapon)
+  0102: return nothing
+  0104: NewWeapon.GotoState('Inactive', , , )
+  011b: return nothing
+  011d: <eos>
+
+function TnInventoryManager.ShouldForceClientWeaponSet  (script 39 bytes)
+  0000: return ((TnWeaponBombBase(NewWeapon) != none) || (TnWeaponFlagBase(NewWeapon) != none))
+  0020: return return
+  0026: <eos>
+
+function TnInventoryManager.CanPickupInventory  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnInventoryManager.GetWeaponByType  (script 69 bytes)
+  0000: foreach InventoryActors(obj'TnWeapon', W) (end 0x003b)
+  0017: if !((cast3a(W.WeaponType) == cast3a(WeaponType))) goto 0x003a
+  0033: iterpop
+  0034: return W
+  003a: iternext
+  003b: iterpop
+  003c: return none
+  003e: return return
+  0044: <eos>
+
+function TnInventoryManager.GetCurrentWeapon  (script 78 bytes)
+  0000: OwnerPawn = Pawn(self.Owner)
+  0010: if !((OwnerPawn == none)) goto 0x001d
+  001b: return none
+  001d: return ((OwnerPawn.Weapon != none) ? OwnerPawn.Weapon : self.StoredRobotWeapon)
+  0047: return return
+  004d: <eos>
+
+function TnInventoryManager.GetWeaponRatingFor  (script 88 bytes)
+  0000: WeaponType = TnWeapon(W).WeaponType
+  0019: if !((cast3a(WeaponType) == cast3a(7))) goto 0x002f
+  0029: return 2.0
+  002f: if !((cast3a(WeaponType) == cast3a(3))) goto 0x0045
+  003f: return -1.0
+  0045: return GetWeaponRatingFor(W)
+  0051: return return
+  0057: <eos>
+
+function TnInventoryManager.FindOrCreateInventory  (script 69 bytes)
+  0000: nothing
+  0001: I = FindInventoryType(InventoryClass, false)
+  0017: if !((I != none)) goto 0x0028
+  0022: return I
+  0028: return CreateInventory(InventoryClass, bDoNotActivate)
+  003e: return return
+  0044: <eos>
+
+function TnInventoryManager.CreateInventory  (script 83 bytes)
+  0000: nothing
+  0001: I = CreateInventory(NewInventoryItemClass, bDoNotActivate)
+  0018: W = TnWeapon(I)
+  0028: if !((W != none)) goto 0x0046
+  0033: W.SetupInitialAmmo()
+  0046: return I
+  004c: return return
+  0052: <eos>
+
+function TnInventoryManager.AddInventory  (script 315 bytes)
+  0000: nothing
+  0001: NewGrenadeBag = TnGrenadeBag(NewItem)
+  0011: if !((NewGrenadeBag != none)) goto 0x0084
+  001c: ActiveGrenadeBag = TnGrenadeBag(FindInventoryType(obj'TnGrenadeBag', true))
+  0037: if !(((ActiveGrenadeBag != none) && (ActiveGrenadeBag.get_Class() != NewGrenadeBag.get_Class()))) goto 0x007c
+  0061: RemoveFromInventory(ActiveGrenadeBag)
+  0070: ActiveGrenadeBag.DestroyActor()
+  007c: bDoNotActivate = true
+  0084: NewItemAsWeapon = TnWeapon(NewItem)
+  0094: if !((NewItemAsWeapon != none)) goto 0x0122
+  009f: if !((((cast3a(NewItemAsWeapon.WeaponType) == cast3a(0)) || (cast3a(NewItemAsWeapon.WeaponType) == cast3a(1))) || (cast3a(NewItemAsWeapon.WeaponType) == cast3a(2)))) goto 0x0122
+  00ee: bHasPrimaryWeapon = (GetWeaponByType(1) != none)
+  0104: NewItemAsWeapon.WeaponType = (bHasPrimaryWeapon ? 2 : 1)
+  0122: return AddInventory(NewItem, bDoNotActivate)
+  0134: return return
+  013a: <eos>
+
+function TnInventoryManager.SetTossVel  (script 43 bytes)
+  0000: self.TossVelocity = obj'Core.Math'.static.MakeVector(X, Y, Z)
+  0028: return nothing
+  002a: <eos>
+
+function TnInventoryManager.CalculateTossVelocity  (script 46 bytes)
+  0000: return ((self.Instigator.Velocity + self.TossVelocity) >> self.Instigator.Rotation)
+  0027: return return
+  002d: <eos>
+
+function TnInventoryManager.Destroyed  (script 13 bytes)
+  0000: DestroyInventory()
+  000a: return nothing
+  000c: <eos>
+
+function TnInventoryManager.StoreRobotWeapon  (script 76 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: self.StoredRobotWeapon = TnWeapon(Pawn(self.Owner).Weapon)
+  002b: if !((self.StoredRobotWeapon != none)) goto 0x0049
+  0036: self.StoredRobotWeapon.InstantReload()
+  0049: return nothing
+  004b: <eos>
+
+function TnInventoryManager.RestoreRobotWeapon  (script 118 bytes)
+  0000: if !(((self.StoredRobotWeapon != none) && (FindInventoryType(self.StoredRobotWeapon.get_Class(), ) != none))) goto 0x003c
+  002a: SetCurrentWeapon(self.StoredRobotWeapon)
+  0039: goto 0x006c
+  003c: if !(((self.Owner != none) && (Pawn(self.Owner).Weapon == none))) goto 0x006c
+  0062: NextWeapon()
+  006c: self.StoredRobotWeapon = none
+  0073: return nothing
+  0075: <eos>
+
+function TnInventoryManager.StoreVehicleWeapon  (script 76 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: self.StoredVehicleWeapon = TnWeapon(Pawn(self.Owner).Weapon)
+  002b: if !((self.StoredVehicleWeapon != none)) goto 0x0049
+  0036: self.StoredVehicleWeapon.InstantReload()
+  0049: return nothing
+  004b: <eos>
+
+function TnInventoryManager.RestoreVehicleWeapon  (script 80 bytes)
+  0000: if !(((self.StoredVehicleWeapon != none) && (FindInventoryType(self.StoredVehicleWeapon.get_Class(), ) != none))) goto 0x003c
+  002a: SetCurrentWeapon(self.StoredVehicleWeapon)
+  0039: goto 0x0046
+  003c: NextWeapon()
+  0046: self.StoredVehicleWeapon = none
+  004d: return nothing
+  004f: <eos>
+
+function TnInventoryManager.RemoveFromInventory  (script 58 bytes)
+  0000: RemoveFromInventory(ItemToRemove)
+  000b: if !((self.StoredRobotWeapon == ItemToRemove)) goto 0x0021
+  001a: self.StoredRobotWeapon = none
+  0021: if !((self.StoredVehicleWeapon == ItemToRemove)) goto 0x0037
+  0030: self.StoredVehicleWeapon = none
+  0037: return nothing
+  0039: <eos>
+
+function TnInventoryManager.DiscardInventory  (script 92 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0053
+  0010: WeaponToDrop = TnInventoryManager.GetWeaponToDropOnDeath()
+  001c: if !((WeaponToDrop != none)) goto 0x0053
+  0027: WeaponToDrop.DropFrom(self.Instigator.Location, CalculateTossVelocity(), )
+  0053: DiscardInventory()
+  0059: return nothing
+  005b: <eos>
+
+function TnInventoryManager.GetWeaponToDropOnDeath  (script 142 bytes)
+  0000: if !(TnInventoryManager.ShouldDropCurrentWeapon(self.Instigator.Weapon)) goto 0x0026
+  0017: return self.Instigator.Weapon
+  0026: if !(((self.StoredRobotWeapon != none) && self.StoredRobotWeapon.CanThrow())) goto 0x004f
+  0049: return self.StoredRobotWeapon
+  004f: LogInternal("ERROR: Failed to find a weapon to drop on death", , , )
+  0085: return none
+  0087: return return
+  008d: <eos>
+
+function TnInventoryManager.ShouldDropCurrentWeapon  (script 192 bytes)
+  0000: TnW = TnWeapon(W)
+  0010: if !((((TnW == none) || !TnW.CanThrow()) || !TnW.HasAnyAmmo())) goto 0x0051
+  004f: return false
+  0051: return ((((cast3a(TnW.WeaponType) == cast3a(5)) || (cast3a(TnW.WeaponType) == cast3a(0))) || (cast3a(TnW.WeaponType) == cast3a(1))) || (cast3a(TnW.WeaponType) == cast3a(2)))
+  00b9: return return
+  00bf: <eos>
+
+function TnInventoryManager.DropHeavyWeapons  (script 79 bytes)
+  0000: foreach InventoryActors(obj'TnWeapon', W) (end 0x004b)
+  0017: if !((cast3a(W.WeaponType) == cast3a(5))) goto 0x004a
+  0030: self.Instigator.TossWeapon(W, , )
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function TnInventoryManager.ChangedWeapon  (script 129 bytes)
+  0000: ChangedWeapon()
+  0006: if !((cast3a(self.Role) != cast3a(3))) goto 0x0018
+  0016: return nothing
+  0018: foreach InventoryActors(obj'TnWeapon', W) (end 0x007d)
+  002f: if !(((self.Instigator.Weapon != W) && (cast3a(W.WeaponType) == cast3a(5)))) goto 0x007c
+  0062: self.Instigator.TossWeapon(W, , )
+  007c: iternext
+  007d: iterpop
+  007e: return nothing
+  0080: <eos>

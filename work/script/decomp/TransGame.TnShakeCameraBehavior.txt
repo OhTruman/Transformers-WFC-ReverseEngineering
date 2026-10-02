@@ -1,0 +1,22 @@
+function TnShakeCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnShakeCameraBehavior.Activate  (script 22 bytes)
+  0000: self.CameraShaker.Reset()
+  0013: return nothing
+  0015: <eos>
+
+function TnShakeCameraBehavior.Update  (script 251 bytes)
+  0000: if !(self.CameraActor.IsCameraShakeStarted()) goto 0x00a5
+  0016: ShakeParams = self.CameraActor.GetCurrentShake()
+  002f: self.Intensity = ShakeParams.Intensity
+  0045: self.CameraShaker.Shake(self.YawSpectrum, self.PitchSpectrum, ShakeParams.ShakeFalloffDuration)
+  0072: self.CameraShaker.Roll(ShakeParams.Roll, ShakeParams.RollFalloffDuration)
+  00a5: ShakeRotation = self.CameraShaker.Update(DeltaTime)
+  00c3: RotInc = (ShakeRotation * self.Intensity)
+  00d6: (Result.RotationAdjustment += RotInc)
+  00ee: return Result
+  00f4: return return
+  00fa: <eos>

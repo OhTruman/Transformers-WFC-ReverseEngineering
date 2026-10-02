@@ -1,0 +1,149 @@
+function TnAiPlanningScheduler.set_MaxProcessingTimeMs  (script 14 bytes)
+  0000: self._MaxProcessingTimeMs = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiPlanningScheduler.set_ProfilingThresholdMs  (script 14 bytes)
+  0000: self._ProfilingThresholdMs = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiPlanningScheduler.Activate  (script 11 bytes)
+  0000: self._Activated = true
+  0008: return nothing
+  000a: <eos>
+
+function TnAiPlanningScheduler.Deactivate  (script 17 bytes)
+  0000: self._Activated = false
+  0008: TnAiPlanningScheduler.FlushRequests()
+  000e: return nothing
+  0010: <eos>
+
+function TnAiPlanningScheduler.FlushRequests  (script 81 bytes)
+  0000: 0[self._PendingRequests].Requests.Remove(0,0[self._PendingRequests].Requests.Length)
+  0027: 1[self._PendingRequests].Requests.Remove(0,1[self._PendingRequests].Requests.Length)
+  004e: return nothing
+  0050: <eos>
+
+function TnAiPlanningScheduler.RequestReplan  (script 84 bytes)
+  0000: Game = TnGame(obj'Engine.Engine'.static.GetGame())
+  001e: if !((Game == none)) goto 0x002b
+  0029: return nothing
+  002b: Game._AiPlanningScheduler.SubmitRequest(PlanRunner, Priority)
+  0051: return nothing
+  0053: <eos>
+
+function TnAiPlanningScheduler.Initialize  (script 294 bytes)
+  0000: self._RequestsGraph.AddDataSet("Low Priority", obj'Core.Colors'.static.Yellow(), obj'Core.Math'.static.MakeFloatRange(0.0, 10.0))
+  0051: self._RequestsGraph.AddDataSet("High Priority", obj'Core.Colors'.static.Red(), obj'Core.Math'.static.MakeFloatRange(0.0, 10.0))
+  00a3: self._ProcessingGraph.AddDataSet("Processing Time (ms)", obj'Core.Colors'.static.Green(), obj'Core.Math'.static.MakeFloatRange(0.0, (self._MaxProcessingTimeMs * cast3f(5))))
+  0102: self._ProcessingGraph.SetThreshold(0, self._MaxProcessingTimeMs)
+  011b: self._Activated = true
+  0123: return nothing
+  0125: <eos>
+
+function TnAiPlanningScheduler.SubmitRequest  (script 146 bytes)
+  0000: if !(((!self._Activated || PlanRunner.get_IsSuspended()) || (TnAiPlanningScheduler.FindRequest(PlanRunner, 1) != -1))) goto 0x003e
+  003c: return nothing
+  003e: LowIndex = TnAiPlanningScheduler.FindRequest(PlanRunner, 0)
+  0051: if !((LowIndex != -1)) goto 0x007f
+  0060: if !((cast3a(Priority) != cast3a(1))) goto 0x0072
+  0070: return nothing
+  0072: TnAiPlanningScheduler.RemoveRequest(LowIndex, 0)
+  007f: TnAiPlanningScheduler.AddRequest(PlanRunner, Priority)
+  008f: return nothing
+  0091: <eos>
+
+function TnAiPlanningScheduler.Update  (script 344 bytes)
+  0000: if !(!self._Activated) goto 0x000d
+  000b: return nothing
+  000d: TnAiPlanningScheduler.UpdateRequestsGraph(DeltaTime)
+  0018: UpdateTimer = obj'Stopwatch'.static.Start()
+  0031: if !(TnAiPlanningScheduler.FindNextPlanRunner(PlanRunner)) goto 0x0132
+  003f: if !((((PlanRunner == none) || (PlanRunner._Owner == none)) || (PlanRunner._Owner.Pawn == none))) goto 0x0082
+  007f: goto 0x012f
+  0082: PlanTimer = obj'Stopwatch'.static.Start()
+  009b: PlanRunner.TryBetterPlan()
+  00ae: AddAdd_Int(NumPlans)
+  00b5: LastPlanDuration = obj'Stopwatch'.static.ElapsedTimeMs(PlanTimer)
+  00d3: (PlanDurationSum += LastPlanDuration)
+  00df: AveragePlanDuration = (PlanDurationSum / cast3f(NumPlans))
+  00f3: TnAiPlanningScheduler.CheckForLongPlan(LastPlanDuration, PlanRunner)
+  0103: if !(((obj'Stopwatch'.static.ElapsedTimeMs(UpdateTimer) + AveragePlanDuration) > self._MaxProcessingTimeMs)) goto 0x012f
+  012c: goto 0x0132
+  012f: goto 0x0031
+  0132: TnAiPlanningScheduler.UpdateProcessingTimeGraph(DeltaTime, obj'Stopwatch'.static.ElapsedTimeMs(UpdateTimer))
+  0155: return nothing
+  0157: <eos>
+
+function TnAiPlanningScheduler.CheckForLongPlan  (script 481 bytes)
+  0000: if !((PlanRunner._CurrentSolution == none)) goto 0x0016
+  0014: return nothing
+  0016: if !((LastPlanDuration >= cast3f(8))) goto 0x004a
+  0024: TnAiController(PlanRunner._Owner).AddErrorIcon(obj'TnAiStateIcons.VerySlowPlan')
+  004a: if !(!obj'Engine.Engine'.static.GetCurrentWorldInfo().IsConsoleBuild()) goto 0x0073
+  0071: return nothing
+  0073: if !(((LastPlanDuration >= cast3f(4)) && (LastPlanDuration < cast3f(8)))) goto 0x00b7
+  0091: TnAiController(PlanRunner._Owner).AddErrorIcon(obj'TnAiStateIcons.SlowPlan')
+  00b7: if !((LastPlanDuration < self._ProfilingThresholdMs)) goto 0x00c8
+  00c6: return nothing
+  00c8: LogInternal(((((("Error:" @ cast56(PlanRunner.get_Outer())) @ "plan took") @ cast55(LastPlanDuration)) $ "ms. Plan is") @ PlanRunner._CurrentSolution.GetDescription()), , , )
+  0128: obj'Core.Profiling'.static.StartNativeProfile(obj'Engine.Engine'.static.GetSystemTimeString())
+  014e: PlanRunner.TryBetterPlan()
+  0161: obj'Core.Profiling'.static.StopNativeProfile()
+  0174: LogInternal(((((("Error:" @ cast56(PlanRunner.get_Outer())) @ "replan (") $ obj'Engine.Engine'.static.GetSystemTimeString()) $ "). Plan is") @ PlanRunner._CurrentSolution.GetDescription()), , , )
+  01de: return nothing
+  01e0: <eos>
+
+function TnAiPlanningScheduler.FindNextPlanRunner  (script 45 bytes)
+  0000: if !(TnAiPlanningScheduler.Dequeue(1, PlanRunner)) goto 0x0012
+  0010: return true
+  0012: if !(TnAiPlanningScheduler.Dequeue(0, PlanRunner)) goto 0x0024
+  0022: return true
+  0024: return false
+  0026: return return
+  002c: <eos>
+
+function TnAiPlanningScheduler.UpdateRequestsGraph  (script 109 bytes)
+  0000: self._RequestsGraph.AddSample(0, cast3f(0[self._PendingRequests].Requests.Length))
+  0029: self._RequestsGraph.AddSample(1, cast3f(1[self._PendingRequests].Requests.Length))
+  0052: self._RequestsGraph.Update(DeltaTime)
+  006a: return nothing
+  006c: <eos>
+
+function TnAiPlanningScheduler.UpdateProcessingTimeGraph  (script 52 bytes)
+  0000: self._ProcessingGraph.AddSample(0, ProcessingTime)
+  0019: self._ProcessingGraph.Update(DeltaTime)
+  0031: return nothing
+  0033: <eos>
+
+function TnAiPlanningScheduler.DisplayDebug  (script 150 bytes)
+  0000: AvailableHeight = (Height - cast3f(4))
+  0011: self._RequestsGraph.Draw(HudCanvas, X, Y, cast44(Width), cast44((AvailableHeight * 0.3)))
+  0048: self._ProcessingGraph.Draw(HudCanvas, X, ((Y + (AvailableHeight * 0.3)) + cast3f(4)), cast44(Width), cast44((AvailableHeight * 0.7)))
+  0093: return nothing
+  0095: <eos>
+
+function TnAiPlanningScheduler.Dequeue  (script 86 bytes)
+  0000: if !((cast3a(Priority)[self._PendingRequests].Requests.Length == 0)) goto 0x0021
+  001f: return false
+  0021: PlanRunner = 0[cast3a(Priority)[self._PendingRequests].Requests]
+  0041: TnAiPlanningScheduler.RemoveRequest(0, Priority)
+  004d: return true
+  004f: return return
+  0055: <eos>
+
+function TnAiPlanningScheduler.FindRequest  (script 40 bytes)
+  0000: return cast3a(Priority)[self._PendingRequests].Requests.Find(PlanRunner)
+  0021: return return
+  0027: <eos>
+
+function TnAiPlanningScheduler.AddRequest  (script 35 bytes)
+  0000: cast3a(Priority)[self._PendingRequests].Requests.AddItem(PlanRunner)
+  0020: return nothing
+  0022: <eos>
+
+function TnAiPlanningScheduler.RemoveRequest  (script 34 bytes)
+  0000: cast3a(Priority)[self._PendingRequests].Requests.Remove(Index,1)
+  001f: return nothing
+  0021: <eos>

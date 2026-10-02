@@ -1,0 +1,32 @@
+function TnRampLightManager.Initialize  (script 14 bytes)
+  0000: self.RampLightComponent = RampLightComp
+  000b: return nothing
+  000d: <eos>
+
+function TnRampLightManager.TriggerLight  (script 142 bytes)
+  0000: self.CurrentRLPs = RLPs
+  000b: self.CurrentTime = 0.0
+  0016: self.RampLightComponent.Radius = RLPs.Radius
+  0035: self.RampLightComponent.FalloffExponent = RLPs.FalloffExponent
+  0054: self.RampLightComponent.SetTranslation(RLPs.Translation)
+  0077: self.RampLightComponent.SetEnabled(true)
+  008b: return nothing
+  008d: <eos>
+
+function TnRampLightManager.UpdateLight  (script 319 bytes)
+  0000: if !((self.CurrentTime == cast3f(-1))) goto 0x0013
+  0011: return nothing
+  0013: (self.CurrentTime += DeltaTime)
+  001f: RampOutStartTime = (self.CurrentRLPs.LightTime - self.CurrentRLPs.RampOutTime)
+  0047: if !((self.CurrentTime > self.CurrentRLPs.LightTime)) goto 0x0085
+  0061: self.RampLightComponent.SetEnabled(false)
+  0075: self.CurrentTime = -1.0
+  0080: return nothing
+  0082: goto 0x0113
+  0085: if !((self.CurrentTime >= RampOutStartTime)) goto 0x00d4
+  0094: LerpedBrightness = ((1.0 - ((self.CurrentTime - RampOutStartTime) / self.CurrentRLPs.RampOutTime)) * self.CurrentRLPs.Brightness)
+  00d1: goto 0x0113
+  00d4: LerpedBrightness = (obj'Core.Math'.static.FMin((self.CurrentTime / self.CurrentRLPs.RampInTime), 1.0) * self.CurrentRLPs.Brightness)
+  0113: self.RampLightComponent.SetLightProperties(LerpedBrightness, self.CurrentRLPs.LightColor, )
+  013c: return nothing
+  013e: <eos>

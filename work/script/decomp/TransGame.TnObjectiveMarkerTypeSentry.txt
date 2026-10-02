@@ -1,0 +1,12 @@
+function TnObjectiveMarkerTypeSentry.ShouldDisplayMarker  (script 198 bytes)
+  0000: if !(!TnObjectiveMarkerTypeDestructible.ShouldDisplayMarker(Displayer, Marker)) goto 0x0017
+  0015: return false
+  0017: MarkerAsSentry = TnSentryPawn(Marker.MarkerBase)
+  0032: if !((MarkerAsSentry._Invulnerable || MarkerAsSentry.IsWaitingForRevival())) goto 0x005e
+  005c: return false
+  005e: DisplayerToMarker = obj'Core.Math'.static.Normal((MarkerAsSentry.Location - Displayer.Location))
+  008d: if !(((cast39(MarkerAsSentry.Rotation) dot DisplayerToMarker) > cast3f(0))) goto 0x00ae
+  00ac: return false
+  00ae: return TnObjectiveMarkerTypeDestructible.ShouldDisplayMarker(Displayer, Marker)
+  00bf: return return
+  00c5: <eos>

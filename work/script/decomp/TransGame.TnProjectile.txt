@@ -1,0 +1,145 @@
+function TnProjectile.SetupProjectileData  (script 251 bytes)
+  0000: if !((self.WorldInfo.GRI != none)) goto 0x0047
+  0014: WDT = class<TnGame>(self.WorldInfo.GRI.GameClass).static.DesiredWeaponDataType()
+  0044: goto 0x004f
+  0047: WDT = 3
+  004f: if !((((self.Instigator != none) && (AIController(self.Instigator.Controller) != none)) && (self.AiData != none))) goto 0x0094
+  0082: SetData(self.AiData)
+  0091: goto 0x00f8
+  0094: if !(((cast3a(WDT) == cast3a(3)) && (self.MultiplayerData != none))) goto 0x00c3
+  00b1: SetData(self.MultiplayerData)
+  00c0: goto 0x00f8
+  00c3: if !(((cast3a(WDT) == cast3a(4)) && (self.SurvivalData != none))) goto 0x00f2
+  00e0: SetData(self.SurvivalData)
+  00ef: goto 0x00f8
+  00f2: SetupProjectileData()
+  00f8: return nothing
+  00fa: <eos>
+
+function TnProjectile.PlayExplosion  (script 173 bytes)
+  0000: TnProjectile.DrawDamageRadii()
+  0006: PM = TnProjectileMesh(self.Mesh)
+  0016: if !((PM.DecalApplicator != none)) goto 0x009a
+  002a: GameThrottle = GetGameThrottle()
+  003a: if !(((cast3a(GameThrottle) != cast3a(3)) && (cast3a(GameThrottle) != cast3a(4)))) goto 0x009a
+  005c: PM.DecalApplicator.Apply(self, (HitLocation + (HitNormal * PM.BlastOffset)), HitNormal)
+  009a: PlayExplosion(HitLocation, HitNormal)
+  00aa: return nothing
+  00ac: <eos>
+
+function TnProjectile.SetAiData  (script 14 bytes)
+  0000: self.AiData = InAiData
+  000b: return nothing
+  000d: <eos>
+
+function TnProjectile.SetMultiplayerData  (script 14 bytes)
+  0000: self.MultiplayerData = InMultiplayerData
+  000b: return nothing
+  000d: <eos>
+
+function TnProjectile.UpdateMesh  (script 38 bytes)
+  0000: SetDrawScale(TnProjectileMesh(self.Mesh).DrawScale)
+  001d: UpdateMesh()
+  0023: return nothing
+  0025: <eos>
+
+function TnProjectile.GetProjectileDamage  (script 114 bytes)
+  0000: Damage = GetProjectileDamage()
+  000c: Index = obj'TnGame'.static.GetCurrentSkillDataIndex()
+  0025: if !((Index < self.ProjectileDamageMultipliers.Length)) goto 0x0047
+  0035: (Damage *= Index[self.ProjectileDamageMultipliers])
+  0047: return self.DamageModifier.ModifyFloat(Damage, TnPawn(self.Instigator), )
+  006b: return return
+  0071: <eos>
+
+function TnProjectile.GetDamageRadius  (script 52 bytes)
+  0000: return self.DamageRadiusModifier.ModifyFloat(self.Data.DamageRadius, TnPawn(self.Instigator), )
+  002d: return return
+  0033: <eos>
+
+function TnProjectile.DrawDamageRadii  (script 176 bytes)
+  0000: if !(!self.DrawDamageRadiusDebug) goto 0x000d
+  000b: return nothing
+  000d: HalfDamageRadius = GetDamageRadius()
+  001d: (HalfDamageRadius *= (1.0 - (0.5 * obj'Core.Math'.static.Sqrt(2.0))))
+  0042: obj'Engine.Debug'.static.DrawSphere(self.Location, GetDamageRadius(), 8, obj'Core.Colors'.static.Red(), true)
+  007a: obj'Engine.Debug'.static.DrawSphere(self.Location, HalfDamageRadius, 8, obj'Core.Colors'.static.DarkRed(), true)
+  00ad: return nothing
+  00af: <eos>
+
+function TnProjectile.TakeDamage  (script 128 bytes)
+  0000: nothing
+  0001: nothing
+  0002: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: if !(ShouldExplodeOnDamage(Damage, InstigatedBy, DamageType)) goto 0x007d
+  0047: if !((InstigatedBy != none)) goto 0x0061
+  0052: DestroyedBy(InstigatedBy)
+  0061: Explode(HitLocation, vect(0,0,1))
+  007d: return nothing
+  007f: <eos>
+
+function TnProjectile.DestroyedBy  (script 98 bytes)
+  0000: PRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0019: if !(((PRI != none) && (PRI._ScoreTracker != none))) goto 0x005f
+  003a: PRI._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventKillProjectile', self, , , )
+  005f: return nothing
+  0061: <eos>
+
+function TnProjectile.ShouldExplodeOnDamage  (script 117 bytes)
+  0000: if !(!self.bProjTarget) goto 0x000d
+  000b: return false
+  000d: if !(((InstigatedBy == none) || (InstigatedBy.Pawn == none))) goto 0x0030
+  002e: return true
+  0030: if !((InstigatedBy.Pawn == self.Instigator)) goto 0x004a
+  0048: return false
+  004a: return !InstigatedBy.Pawn.IsSameTeam(self.Instigator)
+  006e: return return
+  0074: <eos>
+
+function TnProjectile.StopsProjectile  (script 59 bytes)
+  0000: if !((cast3a(P.GetTeamNum()) == cast3a(GetTeamNum()))) goto 0x0028
+  0026: return false
+  0028: return StopsProjectile(P)
+  0034: return return
+  003a: <eos>
+
+function TnProjectile.OnShouldIgnoreInstigator  (script 74 bytes)
+  0000: Sentry = TnSentryPawn(self.Instigator)
+  0010: if !(((Sentry != none) && (Sentry.AttachedPawn == Other))) goto 0x0037
+  0035: return true
+  0037: return OnShouldIgnoreInstigator(Other)
+  0043: return return
+  0049: <eos>
+
+function TnProjectile.EncroachedBy  (script 31 bytes)
+  0000: if !((self.Instigator == Other)) goto 0x0011
+  000f: return nothing
+  0011: EncroachedBy(Other)
+  001c: return nothing
+  001e: <eos>
+
+function TnProjectile.GetAiProjectileInitialSpeed  (script 39 bytes)
+  0000: if !((default.AiData == none)) goto 0x0011
+  000b: return 0.0
+  0011: return default.AiData.InitialSpeed
+  0020: return return
+  0026: <eos>
+
+function TnProjectile.SetInstigatorController  (script 14 bytes)
+  0000: self.InstigatorController = C
+  000b: return nothing
+  000d: <eos>
+
+function TnProjectile.GetMPDamage  (script 39 bytes)
+  0000: if !((default.MultiplayerData == none)) goto 0x0011
+  000b: return 0.0
+  0011: return default.MultiplayerData.Damage
+  0020: return return
+  0026: <eos>
+
+function TnProjectile.GetAIDamage  (script 39 bytes)
+  0000: if !((default.AiData == none)) goto 0x0011
+  000b: return 0.0
+  0011: return default.AiData.Damage
+  0020: return return
+  0026: <eos>

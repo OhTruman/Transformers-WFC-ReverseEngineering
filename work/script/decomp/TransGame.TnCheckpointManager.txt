@@ -1,0 +1,79 @@
+function TnCheckpointManager.get_PreviousCheckpointName  (script 13 bytes)
+  0000: return self._PreviousCheckpointName
+  0006: return return
+  000c: <eos>
+
+function TnCheckpointManager.RestartFromActiveCheckpoint  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function TnCheckpointManager.LoadAndRestartFromCheckpoint  (script 176 bytes)
+  0000: PC = TnCheckpointManager.GetPC()
+  000c: self.PopupInterface = PC.UIController.ShowPopupUI("$UIText.MessagePrompts.LoadingTitle", "$UIText.MessagePrompts.LoadingCheckpoint", false)
+  007e: self.PopupInterface.bShowDefaultButtons = false
+  008f: self.PopupInterface.Show()
+  00a2: LoadAndRestartFromCheckpoint(CheckpointIndex)
+  00ad: return nothing
+  00af: <eos>
+
+function TnCheckpointManager.LoadCompleteCallback  (script 45 bytes)
+  0000: self.PopupInterface.Close()
+  0013: self.PopupInterface = none
+  001a: LoadCompleteCallback(Status, LoadedCheckpointData)
+  002a: return nothing
+  002c: <eos>
+
+function TnCheckpointManager.GetPC  (script 75 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0041)
+  0039: iterpop
+  003a: return PC
+  0040: iternext
+  0041: iterpop
+  0042: return none
+  0044: return return
+  004a: <eos>
+
+function TnCheckpointManager.OnRestartFromActiveCheckpoint  (script 170 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x0083)
+  0039: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0052: if !((PRI != none)) goto 0x0082
+  005d: PRI._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventRestartFromCheckpoint', , , , )
+  0082: iternext
+  0083: iterpop
+  0084: if !(IsRestartingFromCheckpoint()) goto 0x0093
+  0091: return nothing
+  0093: TnCheckpointManager.GetPC().ServerRestartPlayer()
+  00a7: return nothing
+  00a9: <eos>
+
+function TnCheckpointManager.SetActiveCheckpoint  (script 162 bytes)
+  0000: C = GetActiveCheckpoint()
+  0010: self._PreviousCheckpointName = ((C == none) ? NewCheckpoint.Tag : C.Tag)
+  003f: SetActiveCheckpoint(NewCheckpoint)
+  004a: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0063: Game = TnGame(WI.Game)
+  007c: if !((Game != none)) goto 0x009f
+  0087: Game.NotifyReachedCheckpoint(NewCheckpoint)
+  009f: return nothing
+  00a1: <eos>
+
+function TnCheckpointManager.NotifyCheckpointGameStart  (script 99 bytes)
+  0000: NotifyCheckpointGameStart(StartCheckpoint)
+  000b: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0024: Game = TnGame(WI.Game)
+  003d: if !((Game != none)) goto 0x0060
+  0048: Game.NotifyCheckpointGameStart(StartCheckpoint)
+  0060: return nothing
+  0062: <eos>
+
+function TnCheckpointManager.BuildLoadAndRestartURL  (script 167 bytes)
+  0000: MapName = URL
+  000b: GameSettings = obj'Engine.Allocation'.static.CreateObject(obj'TnOnlineGameSettingsCPSolo', )
+  002a: GameSettings.BuildURL(URL)
+  0042: TeamStatus = 4
+  004a: ConcatEqual_StrStr(URL, ("?GameTeamStatus=" $ cast53(TeamStatus)))
+  0072: ConcatEqual_StrStr(URL, ("?MapId=" $ cast53(obj'TnDataStore_MenuItems'.static.ConvertMapFilenameToId(MapName))))
+  00a4: return nothing
+  00a6: <eos>

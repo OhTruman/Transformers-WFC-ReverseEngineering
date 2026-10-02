@@ -1,0 +1,18 @@
+function TnAiActionScanningVehicleNavigation.OnInitialize  (script 50 bytes)
+  0000: TnAiActionNavigatePathSection.OnInitialize(Blueprint)
+  000b: BP = TnAiActionScanningVehicleNavigationBlueprint(Blueprint)
+  001b: self.UpdateEnemyRate = BP.UpdateEnemyRate
+  002f: return nothing
+  0031: <eos>
+
+function TnAiActionScanningVehicleNavigation.OnStart  (script 47 bytes)
+  0000: self._TransformerController.SetTimer(self.UpdateEnemyRate, true, 'OnEnemyChangeAllowed', )
+  001c: return TnAiActionNavigatePathSection.OnStart(ExpectedEffects)
+  0028: return return
+  002e: <eos>
+
+function TnAiActionScanningVehicleNavigation.OnFinish  (script 47 bytes)
+  0000: TnAiActionNavigatePathSection.OnFinish(CurrentState)
+  000b: self._TransformerController.ClearTimer('OnEnemyChangeAllowed', self._TransformerController)
+  002c: return nothing
+  002e: <eos>

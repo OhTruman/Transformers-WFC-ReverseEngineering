@@ -1,0 +1,42 @@
+function TnPropertyBuffModifier.InitializeFloatModifier  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPropertyBuffModifier.AggregateFloatModifier  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPropertyBuffModifier.ApplyFloatModifier  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnPropertyBuffModifier.ModifyFloatInternal  (script 260 bytes)
+  0000: nothing
+  0001: if !((PawnOwner == none)) goto 0x0012
+  000c: return PropertyValue
+  0012: BuffService = TnBuffService(PawnOwner.GetService('TnBuffService'))
+  0039: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0053
+  004d: return PropertyValue
+  0053: Modifier = InitializeFloatModifier()
+  0063: foreach BuffsWhichModifyProp(BuffClass,) (end 0x00e7)
+  0072: B = BuffService.GetBuff(BuffClass)
+  0091: if !(((B != none) && B.ShouldBuffEffect(PawnOwner, OptionalInfo))) goto 0x00e6
+  00be: Modifier = AggregateFloatModifier(Modifier, B.GetFloatModifier())
+  00e6: iternext
+  00e7: iterpop
+  00e8: return ApplyFloatModifier(PropertyValue, Modifier)
+  00fd: return return
+  0103: <eos>
+
+function TnPropertyBuffModifier.ModifyFloat  (script 35 bytes)
+  0000: nothing
+  0001: return TnPropertyBuffModifier.ModifyFloatInternal(PropertyValue, self.BuffsWhichModifyProperty, PawnOwner, OptionalInfo)
+  001c: return return
+  0022: <eos>
+
+function TnPropertyBuffModifier.ModifyFloatSingle  (script 48 bytes)
+  0000: nothing
+  0001: TempArray.AddItem(BuffType)
+  000e: return TnPropertyBuffModifier.ModifyFloatInternal(PropertyValue, TempArray, PawnOwner, OptionalInfo)
+  0029: return return
+  002f: <eos>

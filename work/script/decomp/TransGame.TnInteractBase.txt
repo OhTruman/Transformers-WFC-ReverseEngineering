@@ -1,0 +1,677 @@
+function TnInteractBase.get_AIEnabled  (script 27 bytes)
+  0000: return (self.bAIEnabled && (self.HotSpotPathNode != none))
+  0014: return return
+  001a: <eos>
+
+function TnInteractBase.set_AIEnabled  (script 16 bytes)
+  0000: self.bAIEnabled = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnInteractBase.get_LastUsedTime  (script 13 bytes)
+  0000: return self._LastUsedTime
+  0006: return return
+  000c: <eos>
+
+function TnInteractBase.ReplicatedEvent  (script 42 bytes)
+  0000: if !((VariableName == 'ReplicatedEvents')) goto 0x001c
+  0013: TnInteractBase.HandleFullyReplicatedEvents()
+  0019: goto 0x0027
+  001c: ReplicatedEvent(VariableName)
+  0027: return nothing
+  0029: <eos>
+
+function TnInteractBase.LogReplicatedEvents  (script 235 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.ReplicatedEvents.Length)) goto 0x00e8
+  0021: LogInternal(((((("____________ReplicatedEvent" @ cast56(idx[self.ReplicatedEvents.Events].InteractEvent)) @ "State") @ cast57(idx[self.ReplicatedEvents.Events].InteractEvent.static.default.ClientState)) @ "RequiresUser") @ cast54(idx[self.ReplicatedEvents.Events].InteractEvent.static.default.RequiresUser)), , , )
+  00de: AddAdd_PreInt(idx)
+  00e5: goto 0x0007
+  00e8: return nothing
+  00ea: <eos>
+
+function TnInteractBase.HandleFullyReplicatedEvents  (script 92 bytes)
+  0000: idx = 0
+  0007: if !((idx < self.ReplicatedEvents.Length)) goto 0x0047
+  0021: TnInteractBase.HandleFullyReplicatedEvent(idx[self.ReplicatedEvents.Events])
+  003d: AddAdd_PreInt(idx)
+  0044: goto 0x0007
+  0047: self.ReplicatedEvents.Length = 0
+  0059: return nothing
+  005b: <eos>
+
+function TnInteractBase.HandleFullyReplicatedEvent  (script 255 bytes)
+  0000: if !((ReplicatedEvent.User != none)) goto 0x002c
+  0016: TnInteractBase.ResetUser(ReplicatedEvent.User)
+  002c: if !((ReplicatedEvent.InteractEvent == none)) goto 0x00c4
+  0042: LogInternal((("ERROR:" @ cast56(self)) @ "HandleFullyReplicatedEvent and Interact event type is none.  It has likely not been loaded on a client yet"), , , )
+  00c2: return nothing
+  00c4: ProcessInteractEvent(ReplicatedEvent.InteractEvent)
+  00de: GotoState(ReplicatedEvent.InteractEvent.static.default.ClientState, , , )
+  00fc: return nothing
+  00fe: <eos>
+
+function TnInteractBase.PostBeginPlay  (script 85 bytes)
+  0000: PostBeginPlay()
+  0006: TouchCylinder = FindActorComponent(obj'Engine.CylinderComponent')
+  001b: if !((TouchCylinder != none)) goto 0x004c
+  0026: TouchCylinder.SetCylinderSize(self.TouchDistance, TouchCylinder.CollisionHeight)
+  004c: TnInteractBase.AttachMeshes()
+  0052: return nothing
+  0054: <eos>
+
+function TnInteractBase.IsInUse  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.IsInUseBy  (script 25 bytes)
+  0000: return (P == GetCurrentUser())
+  0012: return return
+  0018: <eos>
+
+function TnInteractBase.IsUseableBy  (script 190 bytes)
+  0000: if !(P._IsDowned) goto 0x0014
+  0012: return false
+  0014: if !(IsInUse()) goto 0x0023
+  0021: return false
+  0023: if !((!self.bAllowVehicles && P.get_IsInVehicleForm())) goto 0x0048
+  0046: return false
+  0048: if !((self.bAllowVehicles && !P.get_IsInVehicleForm())) goto 0x006d
+  006b: return false
+  006d: foreach self.UseConditions(Condition,) (end 0x00b4)
+  007c: if !(Condition.bDisabled) goto 0x0092
+  008e: iternext
+  008f: goto 0x00b4
+  0092: if !(!Condition.CanInteractWith(self, P)) goto 0x00b3
+  00b0: iterpop
+  00b1: return false
+  00b3: iternext
+  00b4: iterpop
+  00b5: return true
+  00b7: return return
+  00bd: <eos>
+
+function TnInteractBase.AddEventForReplicateion  (script 226 bytes)
+  0000: if !((self.ReplicatedEvents.Length == 5)) goto 0x0057
+  0017: LogInternal("Error: Adding more events that replication set can hold", , , )
+  0055: return nothing
+  0057: self.ReplicatedEvents.Length[self.ReplicatedEvents.Events].InteractEvent = EventType
+  0089: if !(EventType.static.default.RequiresUser) goto 0x00cd
+  009b: self.ReplicatedEvents.Length[self.ReplicatedEvents.Events].User = self.CurrentUser
+  00cd: AddAdd_PreInt(self.ReplicatedEvents.Length)
+  00df: return nothing
+  00e1: <eos>
+
+function TnInteractBase.ServerProcessInteractEvent  (script 36 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: ProcessInteractEvent(EventType)
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractBase.ServerAddReplicatedEvent  (script 94 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: if !((self.ReplicatedEventStamp != self.WorldInfo.TimeSeconds)) goto 0x003c
+  002a: self.ReplicatedEvents.Length = 0
+  003c: self.ReplicatedEventStamp = self.WorldInfo.TimeSeconds
+  0050: TnInteractBase.AddEventForReplicateion(EventType)
+  005b: return nothing
+  005d: <eos>
+
+function TnInteractBase.ProcessInteractEvent  (script 141 bytes)
+  0000: TnInteractBase.ServerAddReplicatedEvent(EventType)
+  000b: self.CurrentEvent = EventType
+  0016: TriggerKismetInteractEvent(EventType)
+  0025: foreach self.InteractActions(Action,) (end 0x0074)
+  0034: Action.OnInteractEvent(EventType, self)
+  004d: if !(Action.WaitForCompletion(EventType)) goto 0x0073
+  0068: self.WaitingOnLatentAction = Action
+  0073: iternext
+  0074: iterpop
+  0075: if !((EventType == obj'TnInteractEventTypeEndUse')) goto 0x008a
+  0084: TnInteractBase.ClearPendingAiInteract()
+  008a: return nothing
+  008c: <eos>
+
+function TnInteractBase.TriggerKismetInteractEvent  (script 63 bytes)
+  0000: Indices.AddItem(cast3a(EventType.static.default.SequenceEventMapType))
+  0018: ActivateEventClass(obj'TnSeqEvent_Interact', GetCurrentUser(), self.GeneratedEvents, Indices, )
+  003c: return nothing
+  003e: <eos>
+
+function TnInteractBase.ClearPendingAiInteract  (script 140 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI == none)) goto 0x0026
+  0024: return nothing
+  0026: CampaignGame = TnCampaignGameBase(WI.Game)
+  003f: if !(((CampaignGame == none) || (CampaignGame.get_AiSquad() == none))) goto 0x0067
+  0065: return nothing
+  0067: CampaignGame.get_AiSquad().ClearPendingAiInteract(self)
+  0089: return nothing
+  008b: <eos>
+
+function TnInteractBase.InteractCommand  (script 61 bytes)
+  0000: if !((!IsInUse() && (cast3a(CommandID) == cast3a(0)))) goto 0x003a
+  0021: TnInteractBase.ResetUser(P)
+  002c: GotoState('AdjustingUser', , , )
+  003a: return nothing
+  003c: <eos>
+
+function TnInteractBase.EndUse  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.ReleaseUser  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.CancelActions  (script 39 bytes)
+  0000: foreach self.InteractActions(Action,) (end 0x0023)
+  000f: Action.Cancel()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function TnInteractBase.ForceEndUse  (script 75 bytes)
+  0000: ProcessInteractEvent(obj'TnInteractEventTypeForceEndUse')
+  000f: if !((GetCurrentUser() != none)) goto 0x003a
+  001f: GetCurrentUser().SetInteractState(self, 0)
+  003a: GotoState('Asleep', , , )
+  0048: return nothing
+  004a: <eos>
+
+function TnInteractBase.OnStreamedOut  (script 55 bytes)
+  0000: OnStreamedOut()
+  0006: ForceEndUse()
+  0010: foreach self.InteractActions(Action,) (end 0x0033)
+  001f: Action.Cleanup()
+  0032: iternext
+  0033: iterpop
+  0034: return nothing
+  0036: <eos>
+
+function TnInteractBase.LatentActionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.ResetUser  (script 25 bytes)
+  0000: self.CurrentUser = P
+  000b: self.SavedUser = P
+  0016: return nothing
+  0018: <eos>
+
+function TnInteractBase.Tick  (script 108 bytes)
+  0000: Tick(DeltaTime)
+  000b: Update(DeltaTime)
+  001a: P = GetCurrentUser()
+  002a: if !((((cast3a(self.Role) == cast3a(3)) && (P != none)) && P.IsDead())) goto 0x0069
+  005f: ForceEndUse()
+  0069: return nothing
+  006b: <eos>
+
+function TnInteractBase.Update  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.GetCurrentUser  (script 13 bytes)
+  0000: return self.SavedUser
+  0006: return return
+  000c: <eos>
+
+function TnInteractBase.GetDesiredInteracterLocation  (script 28 bytes)
+  0000: return (self.Location + (self.AdjustLocationOffset >> self.Rotation))
+  0015: return return
+  001b: <eos>
+
+function TnInteractBase.GetDesiredInteracterRotation  (script 13 bytes)
+  0000: return self.Rotation
+  0006: return return
+  000c: <eos>
+
+function TnInteractBase.GetDesiredHotSpotLocation  (script 35 bytes)
+  0000: return (self.Location + ((self.AdjustLocationOffset + self.HotSpotLocationOffset) >> self.Rotation))
+  001c: return return
+  0022: <eos>
+
+function TnInteractBase.IsAdjustingRotation  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.Asleep.BeginState  (script 27 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: TnInteractBase.CancelActions()
+  0011: TnInteractBase.ResetUser(none)
+  0018: return nothing
+  001a: <eos>
+
+function TnInteractBase.Asleep.Update  (script 77 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: PopulateTouchingArray(TouchingPawns)
+  0021: if !((TouchingPawns.Length > 0)) goto 0x004a
+  002d: ProcessInteractEvent(obj'TnInteractEventTypeTouch')
+  003c: GotoState('TouchingUser', , , )
+  004a: return nothing
+  004c: <eos>
+
+function TnInteractBase.TouchingUser.Update  (script 162 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: PopulateTouchingArray(TouchingPawns)
+  0021: if !((TouchingPawns.Length == 0)) goto 0x004d
+  002d: ProcessInteractEvent(obj'TnInteractEventTypeUntouch')
+  003c: GotoState('Asleep', , , )
+  004a: goto 0x009f
+  004d: foreach TouchingPawns(P,) (end 0x009e)
+  005c: if !(IsUseableBy(P)) goto 0x0087
+  006e: P.SetInteractState(self, 1)
+  0084: goto 0x009d
+  0087: P.SetInteractState(self, 0)
+  009d: iternext
+  009e: iterpop
+  009f: return nothing
+  00a1: <eos>
+
+function TnInteractBase.TouchingUser.UnTouch  (script 57 bytes)
+  0000: UnTouch(Other)
+  000b: if !((TnPawn(Other) != none)) goto 0x0036
+  001b: TnPawn(Other).SetInteractState(self, 0)
+  0036: return nothing
+  0038: <eos>
+
+function TnInteractBase.TouchingUser.Detach  (script 57 bytes)
+  0000: Detach(Other)
+  000b: if !((TnPawn(Other) != none)) goto 0x0036
+  001b: TnPawn(Other).SetInteractState(self, 0)
+  0036: return nothing
+  0038: <eos>
+
+function TnInteractBase.AdjustingUser.BeginState  (script 315 bytes)
+  0000: User = GetCurrentUser()
+  0010: if !(User.get_IsInVehicleForm()) goto 0x00f0
+  0026: AiC = TnAiController(User.Controller)
+  003f: if !((AiC != none)) goto 0x009b
+  004a: AiC._VehicleAiControl._DesiredLocation = GetDesiredInteracterLocation(User)
+  0071: AiC._VehicleAiControl._DesiredRotation = GetDesiredInteracterRotation(User)
+  0098: goto 0x00f0
+  009b: LogInternal(("ERROR: EngineTeam - TnAiController(User.Controller) was none in " $ cast57(GetFuncName())), , , )
+  00f0: User.SetInteractState(self, (self.IsSpecialInteract ? 3 : 2))
+  0113: ServerProcessInteractEvent(obj'TnInteractEventTypeBeginAdjust')
+  0122: self.AdjustingUserTime = self.AdjustingUserTimeMax
+  012d: SetUserGodMode(true)
+  0138: return nothing
+  013a: <eos>
+
+function TnInteractBase.AdjustingUser.EndState  (script 36 bytes)
+  0000: self.WaitingOnLatentAction = none
+  0007: self.__FailedNotify__Delegate = delegate.None
+  0016: SetUserGodMode(false)
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractBase.AdjustingUser.LatentActionComplete  (script 32 bytes)
+  0000: if !((self.WaitingOnLatentAction == Action)) goto 0x001d
+  000f: GotoState('Interacting', , , )
+  001d: return nothing
+  001f: <eos>
+
+function TnInteractBase.AdjustingUser.IsInUse  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.AdjustingUser.IsAdjustingRotation  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.AdjustingUser.Update  (script 651 bytes)
+  0000: User = GetCurrentUser()
+  0010: if !((User == none)) goto 0x001d
+  001b: return nothing
+  001d: if !((cast3a(self.Role) == cast3a(3))) goto 0x0072
+  002d: PopulateTouchingArray(TouchingPawns)
+  003c: foreach TouchingPawns(P,) (end 0x0071)
+  004b: if !((P != User)) goto 0x0070
+  005a: P.SetInteractState(self, 0)
+  0070: iternext
+  0071: iterpop
+  0072: DesiredLocation = GetDesiredInteracterLocation(User)
+  0087: DesiredRot = GetDesiredInteracterRotation(User)
+  009c: MoveRemaining = (DesiredLocation - User.Location)
+  00b7: if !((AirPathNode(self.HotSpotPathNode) == none)) goto 0x00dd
+  00c7: MoveRemaining.Z = 0.0
+  00dd: RotateRemaining = obj'Core.Math'.static.Normalize((DesiredRot - User.Rotation))
+  010c: DistanceRemaining = obj'Core.Math'.static.VSize(MoveRemaining)
+  0122: (self.AdjustingUserTime -= DeltaTime)
+  012e: if !(((DistanceRemaining < self.CloseEnoughToDesiredLocation) && (obj'Core.Math'.static.Abs(cast3f(RotateRemaining.Yaw)) < self.CloseEnoughToDesiredRotation))) goto 0x0176
+  0166: GotoState('Interacting', , , )
+  0174: return nothing
+  0176: if !((self.AdjustingUserTime < cast3f(0))) goto 0x01a9
+  0183: TempFailedNotify = self.__FailedNotify__Delegate
+  018e: EndUse()
+  0198: FailedNotify()
+  01a7: return nothing
+  01a9: if !(User.get_IsInVehicleForm()) goto 0x01c1
+  01bf: return nothing
+  01c1: if !((DistanceRemaining > cast3f(0))) goto 0x0221
+  01ce: DistanceToTravel = obj'Core.Math'.static.FClamp((self.PositionAdjustSpeed * DeltaTime), 0.0, DistanceRemaining)
+  01f5: GoalLocation = (User.Location + ((MoveRemaining / DistanceRemaining) * DistanceToTravel))
+  021e: goto 0x0235
+  0221: GoalLocation = User.Location
+  0235: GoalRotation = obj'Core.Math'.static.RInterpTo(User.Rotation, DesiredRot, DeltaTime, self.RotationAdjustSpeed)
+  026b: User.AdjustInteracter(GoalLocation, GoalRotation)
+  0288: return nothing
+  028a: <eos>
+
+function TnInteractBase.AdjustingUser.EndUse  (script 59 bytes)
+  0000: self.__FinishedNotify__Delegate = delegate.None
+  000f: GetCurrentUser().SetInteractState(self, 0)
+  002a: GotoState('Asleep', , , )
+  0038: return nothing
+  003a: <eos>
+
+function TnInteractBase.Interacting.BeginState  (script 35 bytes)
+  0000: ServerProcessInteractEvent(obj'TnInteractEventTypeBeginUse')
+  000f: SetUserGodMode(true)
+  001a: FinalAdjust()
+  0020: return nothing
+  0022: <eos>
+
+function TnInteractBase.Interacting.FinalAdjust  (script 169 bytes)
+  0000: User = GetCurrentUser()
+  0010: if !(((User == none) || User.get_IsInVehicleForm())) goto 0x0035
+  0033: return nothing
+  0035: DesiredLocation = GetDesiredInteracterLocation(User)
+  004a: DesiredLocation.Z = User.Location.Z
+  0074: DesiredRot = GetDesiredInteracterRotation(User)
+  0089: User.AdjustInteracter(DesiredLocation, DesiredRot)
+  00a6: return nothing
+  00a8: <eos>
+
+function TnInteractBase.Interacting.IsInUse  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.Interacting.LatentActionComplete  (script 43 bytes)
+  0000: if !((self.WaitingOnLatentAction == Action)) goto 0x0028
+  000f: ProcessInteractEvent(obj'TnInteractEventTypeEndUse')
+  001e: EndUse()
+  0028: return nothing
+  002a: <eos>
+
+function TnInteractBase.Interacting.EndUse  (script 17 bytes)
+  0000: GotoState('Asleep', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnInteractBase.Interacting.EndState  (script 101 bytes)
+  0000: UserPawn = GetCurrentUser()
+  0010: if !((UserPawn != none)) goto 0x0031
+  001b: UserPawn.SetInteractState(self, 0)
+  0031: self.WaitingOnLatentAction = none
+  0038: self._LastUsedTime = obj'Engine.Engine'.static.GetWorldTime()
+  0051: SetUserGodMode(false)
+  005c: TnInteractBase.ClearAndExecuteFinishedNotify()
+  0062: return nothing
+  0064: <eos>
+
+function TnInteractBase.Interacting.ReleaseUser  (script 41 bytes)
+  0000: GetCurrentUser().SetInteractState(self, 0)
+  001b: SetUserGodMode(false)
+  0026: return nothing
+  0028: <eos>
+
+function TnInteractBase.OnToggle  (script 102 bytes)
+  0000: switch (Action.GetActionInputType())
+  0015: case 0: (next 0x0025)
+  001a: Enable = true
+  0022: goto 0x0053
+  0025: case 1: (next 0x0035)
+  002a: Enable = false
+  0032: goto 0x0053
+  0035: case 2: (next 0x0050)
+  003a: Enable = !IsEnabled()
+  004d: goto 0x0053
+  0050: default:
+  0053: SetInteractEnabled(Enable)
+  0063: return nothing
+  0065: <eos>
+
+function TnInteractBase.SetUserGodMode  (script 100 bytes)
+  0000: if !(!self.MakeUserInvincible) goto 0x000d
+  000b: return nothing
+  000d: P = GetCurrentUser()
+  001d: if !((P == none)) goto 0x002a
+  0028: return nothing
+  002a: C = P.Controller
+  003e: if !((C == none)) goto 0x004b
+  0049: return nothing
+  004b: C.bGodMode = Enabled
+  0061: return nothing
+  0063: <eos>
+
+function TnInteractBase.SetInteractEnabled  (script 28 bytes)
+  0000: if !(!Enable) goto 0x0019
+  000b: GotoState('Disabled', , , )
+  0019: return nothing
+  001b: <eos>
+
+function TnInteractBase.IsEnabled  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.Disabled.BeginState  (script 97 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: TnInteractBase.ResetUser(none)
+  0019: PopulateTouchingArray(TouchingPawns)
+  0028: foreach TouchingPawns(P,) (end 0x004e)
+  0037: P.SetInteractState(self, 0)
+  004d: iternext
+  004e: iterpop
+  004f: ServerProcessInteractEvent(obj'TnInteractEventTypeDisabled')
+  005e: return nothing
+  0060: <eos>
+
+function TnInteractBase.Disabled.EndState  (script 36 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: ServerProcessInteractEvent(obj'TnInteractEventTypeEnabled')
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractBase.Disabled.ForceEndUse  (script 18 bytes)
+  0000: ProcessInteractEvent(obj'TnInteractEventTypeForceEndUse')
+  000f: return nothing
+  0011: <eos>
+
+function TnInteractBase.Disabled.SetInteractEnabled  (script 26 bytes)
+  0000: if !(Enable) goto 0x0017
+  0009: GotoState('Asleep', , , )
+  0017: return nothing
+  0019: <eos>
+
+function TnInteractBase.Disabled.IsEnabled  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnInteractBase.Disabled.InteractCommand  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.OnPostEditChange  (script 40 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: TnInteractBase.AttachMeshes()
+  0011: obj'TnInteractHelper'.static.UpdateHotSpot(self)
+  0025: return nothing
+  0027: <eos>
+
+function TnInteractBase.OnPostEditMove  (script 32 bytes)
+  0000: if !(bFinished) goto 0x001d
+  0009: obj'TnInteractHelper'.static.UpdateHotSpot(self)
+  001d: return nothing
+  001f: <eos>
+
+function TnInteractBase.SetAiEnable  (script 36 bytes)
+  0000: self.bAIEnabled = Enable
+  000d: obj'TnInteractHelper'.static.UpdateHotSpot(self)
+  0021: return nothing
+  0023: <eos>
+
+function TnInteractBase.Destroyed  (script 91 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x002e
+  0010: if !((self.HotSpotPathNode != none)) goto 0x002e
+  001b: self.HotSpotPathNode.DestroyActor()
+  0027: self.HotSpotPathNode = none
+  002e: foreach self.InteractActions(Action,) (end 0x0051)
+  003d: Action.Cleanup()
+  0050: iternext
+  0051: iterpop
+  0052: Destroyed()
+  0058: return nothing
+  005a: <eos>
+
+function TnInteractBase.AttachMeshes  (script 196 bytes)
+  0000: if !((self.BaseMesh == none)) goto 0x000d
+  000b: return nothing
+  000d: foreach self.BaseMesh.AttachedComponents(obj'Engine.PrimitiveComponent', OldComponent) (end 0x0046)
+  002d: self.BaseMesh.DetachComponent(OldComponent)
+  0045: iternext
+  0046: iterpop
+  0047: foreach self.AttachedMeshes(AttachedMesh,) (end 0x00c0)
+  0056: if !(((AttachedMesh.Mesh != none) && (AttachedMesh.AttachSocket != 'None'))) goto 0x00bf
+  008c: self.BaseMesh.AttachComponentToSocket(AttachedMesh.Mesh, AttachedMesh.AttachSocket)
+  00bf: iternext
+  00c0: iterpop
+  00c1: return nothing
+  00c3: <eos>
+
+function TnInteractBase.PawnsTouchingExcluding  (script 74 bytes)
+  0000: PopulateTouchingArray(TouchingPawns)
+  000f: if !((TouchingPawns.Length == 0)) goto 0x001d
+  001b: return false
+  001d: if !((TouchingPawns.Length == 1)) goto 0x0041
+  0029: if !((0[TouchingPawns] == ExcludedPawn)) goto 0x003f
+  003a: return false
+  003c: goto 0x0041
+  003f: return true
+  0041: return true
+  0043: return return
+  0049: <eos>
+
+function TnInteractBase.PopulateTouchingArray  (script 117 bytes)
+  0000: foreach self.Touching(A,) (end 0x0038)
+  000f: P = TnPawn(A)
+  001f: if !((P != none)) goto 0x0037
+  002a: TouchingPawns.AddItem(P)
+  0037: iternext
+  0038: iterpop
+  0039: foreach self.Attached(A,) (end 0x0071)
+  0048: P = TnPawn(A)
+  0058: if !((P != none)) goto 0x0070
+  0063: TouchingPawns.AddItem(P)
+  0070: iternext
+  0071: iterpop
+  0072: return nothing
+  0074: <eos>
+
+function TnInteractBase.CheckForErrors  (script 338 bytes)
+  0000: if !((self.bAIEnabled && (self.HotSpotPathNode == none))) goto 0x0070
+  0016: EmitCheckMessage(1, (cast56(self) @ "does not have HotSpotPathNode! Move Interact in editor to create one."), , )
+  0070: if !((self.bAIEnabled && (self.HotSpotPathNode != none))) goto 0x0149
+  0086: if !((((self.HotSpotPathNode.PathList.Length == 0) && (self.HotSpotPathNode.StaticAnchor.Nav == none)) && !IsGuidValid(self.HotSpotPathNode.StaticAnchor.Guid))) goto 0x0149
+  00e6: EmitCheckMessage(1, (cast56(self) @ "'s Hotspot pathnode is not connected to the navigation network! Rebuild paths."), , )
+  0149: TnInteractBase.CheckForInteractCollisionOnNavMesh()
+  014f: return nothing
+  0151: <eos>
+
+function TnInteractBase.CheckForInteractCollisionOnNavMesh  (script 875 bytes)
+  0000: if !(((self.BaseMesh != none) && (self.BaseMesh.PhysicsAsset != none))) goto 0x0368
+  0021: Extent = obj'Core.Math'.static.MakeVector(20.0, 20.0, 20.0)
+  0049: foreach self.BaseMesh.PhysicsAsset.BodySetup(Body,) (end 0x02da)
+  006a: Rot = obj'Core.Math'.static.QuatToRotator(self.BaseMesh.GetBoneQuaternion(Body.BoneName, ))
+  00a5: Loc = self.BaseMesh.GetBoneLocation(Body.BoneName, )
+  00cd: foreach Body.AggGeom.SphereElems(Sphere,) (end 0x01d2)
+  00f0: Center = ((obj'Core.Math'.static.MakeVector(Sphere.TM.WPlane.X, Sphere.TM.WPlane.Y, Sphere.TM.WPlane.Z) >> Rot) + Loc)
+  018a: TestBox.Max = (Center + Extent)
+  01a7: TestBox.Min = (Center - Extent)
+  01c4: TestBoxes.AddItem(TestBox)
+  01d1: iternext
+  01d2: iterpop
+  01d3: foreach Body.AggGeom.BoxElems(BoxElem,) (end 0x02d8)
+  01f6: Center = ((obj'Core.Math'.static.MakeVector(BoxElem.TM.WPlane.X, BoxElem.TM.WPlane.Y, BoxElem.TM.WPlane.Z) >> Rot) + Loc)
+  0290: TestBox.Max = (Center + Extent)
+  02ad: TestBox.Min = (Center - Extent)
+  02ca: TestBoxes.AddItem(TestBox)
+  02d7: iternext
+  02d8: iterpop
+  02d9: iternext
+  02da: iterpop
+  02db: foreach obj'Engine.Engine'.static.GetCurrentWorldInfo().AllActors(obj'Engine.NavigationCell', Cell) (end 0x0367)
+  0309: foreach TestBoxes(TestBox,) (end 0x0365)
+  0318: if !(Cell.IsBoxInCell(TestBox)) goto 0x0364
+  0333: EmitCheckMessage(1, (cast56(self) @ "Collision is on navmesh."), , )
+  0360: iterpop
+  0361: iterpop
+  0362: return nothing
+  0364: iternext
+  0365: iterpop
+  0366: iternext
+  0367: iterpop
+  0368: return nothing
+  036a: <eos>
+
+function TnInteractBase.EnableConditions  (script 100 bytes)
+  0000: I = 0
+  0007: if !((I < self.UseConditions.Length)) goto 0x0061
+  0017: if !(I[self.UseConditions].IsA(ConditionClass.Name)) goto 0x0057
+  0039: I[self.UseConditions].bDisabled = !Enabled
+  0057: AddAdd_Int(I)
+  005e: goto 0x0007
+  0061: return nothing
+  0063: <eos>
+
+function TnInteractBase.PostDuplicate  (script 41 bytes)
+  0000: PostDuplicate(OriginalObject)
+  000b: self.HotSpotPathNode = none
+  0012: obj'TnInteractHelper'.static.UpdateHotSpot(self)
+  0026: return nothing
+  0028: <eos>
+
+function TnInteractBase.HoldsActor  (script 25 bytes)
+  0000: return (GetCurrentUser() == OtherActor)
+  0012: return return
+  0018: <eos>
+
+function TnInteractBase.FailedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.SetFailedCallback  (script 14 bytes)
+  0000: self.__FailedNotify__Delegate = FailureCallback
+  000b: return nothing
+  000d: <eos>
+
+function TnInteractBase.FinishedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnInteractBase.SetFinishedCallback  (script 14 bytes)
+  0000: self.__FinishedNotify__Delegate = FinishedCallback
+  000b: return nothing
+  000d: <eos>
+
+function TnInteractBase.ClearAndExecuteFinishedNotify  (script 44 bytes)
+  0000: TemporaryDelegate = self.__FinishedNotify__Delegate
+  000b: self.__FinishedNotify__Delegate = delegate.None
+  001a: FinishedNotify()
+  0029: return nothing
+  002b: <eos>

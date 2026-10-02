@@ -1,0 +1,345 @@
+function HmGoapAction.get_Preconditions  (script 13 bytes)
+  0000: return self._Preconditions
+  0006: return return
+  000c: <eos>
+
+function HmGoapAction.set_Preconditions  (script 14 bytes)
+  0000: self._Preconditions = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapAction.get_Effects  (script 13 bytes)
+  0000: return self._Effects
+  0006: return return
+  000c: <eos>
+
+function HmGoapAction.set_Effects  (script 14 bytes)
+  0000: self._Effects = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapAction.set_Cost  (script 14 bytes)
+  0000: self._Cost = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapAction.get_Description  (script 13 bytes)
+  0000: return self._Description
+  0006: return return
+  000c: <eos>
+
+function HmGoapAction.set_Description  (script 14 bytes)
+  0000: self._Description = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmGoapAction.get_DetailedDescription  (script 25 bytes)
+  0000: return (self._Description $ GetDescriptionDetail())
+  0012: return return
+  0018: <eos>
+
+function HmGoapAction.get_CanInterrupt  (script 36 bytes)
+  0000: return ((cast3a(self._PlanningInterruption) == cast3a(0)) || CanInterruptNow())
+  001d: return return
+  0023: <eos>
+
+function HmGoapAction.get_IsUsable  (script 57 bytes)
+  0000: return ((self._BaseBlueprint.UseUsageInterval == false) || (obj'Engine.Engine'.static.GetWorldTime() >= self._NextAllowedUsageTime))
+  0032: return return
+  0038: <eos>
+
+function HmGoapAction.get_BoundController  (script 13 bytes)
+  0000: return self._BoundController
+  0006: return return
+  000c: <eos>
+
+function HmGoapAction.get_CurrentState  (script 13 bytes)
+  0000: return self._CurrentState
+  0006: return return
+  000c: <eos>
+
+function HmGoapAction.get_PlanRunner  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmGoapAction.SucceededNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.FailedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnPieSessionEnding  (script 51 bytes)
+  0000: obj'HmGoap'.static.ClearSubjects(self._Preconditions)
+  0018: obj'HmGoap'.static.ClearSubjects(self._Effects)
+  0030: return nothing
+  0032: <eos>
+
+function HmGoapAction.PreSave  (script 15 bytes)
+  0000: HmGoapAction.BuildPreconditions()
+  0006: HmGoapAction.BuildEffects()
+  000c: return nothing
+  000e: <eos>
+
+function HmGoapAction.Initialize  (script 41 bytes)
+  0000: self._BaseBlueprint = Blueprint
+  000b: HmGoapAction.BuildPreconditions()
+  0011: HmGoapAction.BuildEffects()
+  0017: OnInitialize(Blueprint)
+  0026: return nothing
+  0028: <eos>
+
+function HmGoapAction.Bind  (script 48 bytes)
+  0000: self._BoundController = InAiController
+  000b: if !(self._BaseBlueprint.UseUsageInterval) goto 0x0023
+  001d: HmGoapAction.StampUsage()
+  0023: OnBind()
+  002d: return nothing
+  002f: <eos>
+
+function HmGoapAction.Unbind  (script 20 bytes)
+  0000: OnUnbind()
+  000a: self._BoundController = none
+  0011: return nothing
+  0013: <eos>
+
+function HmGoapAction.AddPrecondition  (script 32 bytes)
+  0000: obj'HmGoap'.static.SetProperty(self._Preconditions, Precondition)
+  001d: return nothing
+  001f: <eos>
+
+function HmGoapAction.AddEffect  (script 32 bytes)
+  0000: obj'HmGoap'.static.SetProperty(self._Effects, Effect)
+  001d: return nothing
+  001f: <eos>
+
+function HmGoapAction.PlanMade  (script 18 bytes)
+  0000: OnPlanMade(ExpectedEffects)
+  000f: return nothing
+  0011: <eos>
+
+function HmGoapAction.PlanStart  (script 26 bytes)
+  0000: self._CurrentState = 0
+  0008: OnPlanStart(ExpectedEffects)
+  0017: return nothing
+  0019: <eos>
+
+function HmGoapAction.Start  (script 112 bytes)
+  0000: assert((((cast3a(self._CurrentState) == cast3a(4)) || (cast3a(self._CurrentState) == cast3a(3))) || (cast3a(self._CurrentState) == cast3a(0))))
+  0035: self.__SucceededNotify__Delegate = ActionComplete
+  0040: self.__FailedNotify__Delegate = ActionFailed
+  004b: HmGoapAction.StampUsage()
+  0051: self._CurrentState = 1
+  0059: return OnStart(ExpectedEffects)
+  0069: return return
+  006f: <eos>
+
+function HmGoapAction.Update  (script 63 bytes)
+  0000: assert(((cast3a(self._CurrentState) == cast3a(1)) || (cast3a(self._CurrentState) == cast3a(2))))
+  0023: return OnUpdate(ExpectedEffects, DeltaTime)
+  0038: return return
+  003e: <eos>
+
+function HmGoapAction.Halt  (script 30 bytes)
+  0000: assert((cast3a(self._CurrentState) == cast3a(1)))
+  0011: OnHalt()
+  001b: return nothing
+  001d: <eos>
+
+function HmGoapAction.Succeed  (script 16 bytes)
+  0000: return HmGoapAction.ClearAndExecute(3)
+  0009: return return
+  000f: <eos>
+
+function HmGoapAction.Fail  (script 16 bytes)
+  0000: return HmGoapAction.ClearAndExecute(4)
+  0009: return return
+  000f: <eos>
+
+function HmGoapAction.CalculatePlanningCost  (script 45 bytes)
+  0000: return ((self._Cost + DoCalculateAdditionalCost(0, ExpectedEffects)) + HmGoapAction.CalculateAdditionalCustomCost(ExpectedEffects))
+  0026: return return
+  002c: <eos>
+
+function HmGoapAction.CalculateRunningCost  (script 45 bytes)
+  0000: return ((self._Cost + DoCalculateAdditionalCost(1, ExpectedEffects)) + HmGoapAction.CalculateAdditionalCustomCost(ExpectedEffects))
+  0026: return return
+  002c: <eos>
+
+function HmGoapAction.IsValidForFutureExecution  (script 28 bytes)
+  0000: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0015: return return
+  001b: <eos>
+
+function HmGoapAction.ValidateForFoundPlan  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapAction.PlanValidated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.ApplyOverride  (script 54 bytes)
+  0000: if !((self._BaseBlueprint.ActionOverrideClass == ActionOverride.get_Class())) goto 0x0033
+  001f: ActionOverride.ApplyOverrideToAction(self)
+  0033: return nothing
+  0035: <eos>
+
+function HmGoapAction.SetUpConditions  (script 108 bytes)
+  0000: if !(!get_IsUsable()) goto 0x0011
+  000f: return false
+  0011: foreach self._BaseBlueprint.CustomProceduralPreconditions(CPP,) (end 0x004f)
+  0029: if !(!CPP.CheckProceduralPrecondition(self._BoundController, ExpectedEffects)) goto 0x004e
+  004b: iterpop
+  004c: return false
+  004e: iternext
+  004f: iterpop
+  0050: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0065: return return
+  006b: <eos>
+
+function HmGoapAction.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnBind  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnPlanMade  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnPlanStart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnStart  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function HmGoapAction.OnUpdate  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function HmGoapAction.OnHalt  (script 13 bytes)
+  0000: Fail()
+  000a: return nothing
+  000c: <eos>
+
+function HmGoapAction.OnFinish  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnUnbind  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmGoapAction.OnSetUpConditions  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapAction.GetDescriptionDetail  (script 10 bytes)
+  0000: return ""
+  0003: return return
+  0009: <eos>
+
+function HmGoapAction.DoCalculateAdditionalCost  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function HmGoapAction.CanInterruptNow  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmGoapAction.OnIsValidForFutureExecution  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmGoapAction.ClearAndExecute  (script 193 bytes)
+  0000: assert(((cast3a(NewState) == cast3a(3)) || (cast3a(NewState) == cast3a(4))))
+  0023: if !(((cast3a(self._CurrentState) != cast3a(1)) && (cast3a(self._CurrentState) != cast3a(2)))) goto 0x004b
+  0045: return self._CurrentState
+  004b: self._CurrentState = NewState
+  0056: Notify = ((cast3a(NewState) == cast3a(3)) ? self.__SucceededNotify__Delegate : self.__FailedNotify__Delegate)
+  0078: OnFinish(NewState)
+  0087: self.__SucceededNotify__Delegate = delegate.None
+  0096: self.__FailedNotify__Delegate = delegate.None
+  00a5: SucceededNotify()
+  00b4: return NewState
+  00ba: return return
+  00c0: <eos>
+
+function HmGoapAction.CalculateAdditionalCustomCost  (script 106 bytes)
+  0000: I = 0
+  0007: if !((I < self._BaseBlueprint.CostModulators.Length)) goto 0x005d
+  0020: (AdditionalCost += I[self._BaseBlueprint.CostModulators].CalculateAdditionalCost(self._BoundController, ExpectedEffects))
+  0053: AddAdd_PreInt(I)
+  005a: goto 0x0007
+  005d: return AdditionalCost
+  0063: return return
+  0069: <eos>
+
+function HmGoapAction.StampUsage  (script 99 bytes)
+  0000: self._NextAllowedUsageTime = (obj'Engine.Engine'.static.GetWorldTime() + obj'Core.Random'.static.RandRangeFloat(self._BaseBlueprint.UsageInterval.Min, self._BaseBlueprint.UsageInterval.Max))
+  0060: return nothing
+  0062: <eos>
+
+function HmGoapAction.SatisfiesAnyConditions  (script 330 bytes)
+  0000: RemainingConditions.Properties.Length = 0
+  0013: AchievableEffects.Properties.Length = 0
+  0026: I = 0
+  002d: if !((I < ConditionsToSatisfy.Properties.Length)) goto 0x012e
+  0048: PM = obj'HmGoap'.static.ContainsPropertyValueMatch(I[ConditionsToSatisfy.Properties], self._Effects, MatchIndex)
+  0081: if !((cast3a(PM) == cast3a(2))) goto 0x0093
+  0091: return false
+  0093: if !((cast3a(PM) == cast3a(1))) goto 0x00f6
+  00a3: obj'HmGoap'.static.SetPropertyWithDisregard(AchievableEffects, I[ConditionsToSatisfy.Properties], MatchIndex[self._Effects.Properties].DisregardSubject)
+  00f3: goto 0x0124
+  00f6: obj'HmGoap'.static.SetProperty(RemainingConditions, I[ConditionsToSatisfy.Properties])
+  0124: AddAdd_PreInt(I)
+  012b: goto 0x002d
+  012e: return (AchievableEffects.Properties.Length > 0)
+  0143: return return
+  0149: <eos>
+
+function HmGoapAction.UnsatisfiesAnyConditions  (script 117 bytes)
+  0000: I = 0
+  0007: if !((I < ConditionsToSatisfy.Properties.Length)) goto 0x006c
+  0022: if !((cast3a(obj'HmGoap'.static.ContainsPropertyValueMatch(I[ConditionsToSatisfy.Properties], self._Preconditions, MatchIndex)) == cast3a(2))) goto 0x0062
+  0060: return true
+  0062: AddAdd_PreInt(I)
+  0069: goto 0x0007
+  006c: return false
+  006e: return return
+  0074: <eos>
+
+function HmGoapAction.BuildPreconditions  (script 145 bytes)
+  0000: self._Preconditions.Properties = self._BaseBlueprint.DefaultPreconditions
+  001f: I = 0
+  0026: if !((I < self._BaseBlueprint.DynamicPreconditions.Length)) goto 0x008e
+  003f: P = I[self._BaseBlueprint.DynamicPreconditions].GetWorldStateProperty()
+  0067: obj'HmGoap'.static.SetProperty(self._Preconditions, P)
+  0084: AddAdd_PreInt(I)
+  008b: goto 0x0026
+  008e: return nothing
+  0090: <eos>
+
+function HmGoapAction.BuildEffects  (script 145 bytes)
+  0000: self._Effects.Properties = self._BaseBlueprint.DefaultEffects
+  001f: I = 0
+  0026: if !((I < self._BaseBlueprint.DynamicEffects.Length)) goto 0x008e
+  003f: P = I[self._BaseBlueprint.DynamicEffects].GetWorldStateProperty()
+  0067: obj'HmGoap'.static.SetProperty(self._Effects, P)
+  0084: AddAdd_PreInt(I)
+  008b: goto 0x0026
+  008e: return nothing
+  0090: <eos>

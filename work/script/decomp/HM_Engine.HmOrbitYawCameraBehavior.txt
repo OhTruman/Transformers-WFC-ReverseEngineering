@@ -1,0 +1,33 @@
+function HmOrbitYawCameraBehavior.GetRampedYawSpeed  (script 368 bytes)
+  0000: AdjustedYawSpeed = (self.YawSpeed * (self.LowSensitivityMultiplier + (self.CameraActor.GetCameraSensitivity() * (self.HighSensitivityMultiplier - self.LowSensitivityMultiplier))))
+  0035: if !((obj'Core.Math'.static.Abs(CI.RightStickInputX) > self.YawRampZone)) goto 0x0143
+  005a: if !((((self.PreviousStickInputX > 0.0) && (CI.RightStickInputX < 0.0)) || ((self.PreviousStickInputX < 0.0) && (CI.RightStickInputX > 0.0)))) goto 0x00bd
+  00b2: self.TimeInRampZone = 0.0
+  00bd: self.PreviousStickInputX = CI.RightStickInputX
+  00d3: (self.TimeInRampZone += DeltaTime)
+  00df: (AdjustedYawSpeed += ((self.YawRampSpeedModifier * (0.6 + self.CameraActor.GetCameraSensitivity())) * ((self.YawRampTime > 0.0) ? obj'Core.Math'.static.FClamp((self.TimeInRampZone / self.YawRampTime), 0.0, 1.0) : 1.0)))
+  0140: goto 0x014e
+  0143: self.TimeInRampZone = 0.0
+  014e: return (AdjustedYawSpeed * self.CameraActor.GetCameraSensitivityModifier())
+  0169: return return
+  016f: <eos>
+
+function HmOrbitYawCameraBehavior.Activate  (script 25 bytes)
+  0000: self.TimeInRampZone = 0.0
+  000b: self.PreviousStickInputX = 0.0
+  0016: return nothing
+  0018: <eos>
+
+function HmOrbitYawCameraBehavior.Update  (script 178 bytes)
+  0000: if !(Result.Recentering) goto 0x001a
+  0014: return Result
+  001a: currentYawSpeed = HmOrbitYawCameraBehavior.GetRampedYawSpeed(DeltaTime, CI)
+  0030: Result.OrbitRotation.Yaw = obj'Core.Math'.static.NormalizeRotAxis(cast44((cast3f(Result.OrbitRotation.Yaw) + (((CI.RightStickInputX * currentYawSpeed) * 182.0444489) * DeltaTime))))
+  00a5: return Result
+  00ab: return return
+  00b1: <eos>
+
+function HmOrbitYawCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = HmCamera(A)
+  0010: return nothing
+  0012: <eos>

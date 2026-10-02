@@ -1,0 +1,34 @@
+function TnSeqAct_BeginPrisonWalk.Activated  (script 59 bytes)
+  0000: foreach self.Targets(Target,) (end 0x0037)
+  000f: TargetPawn = TnSeqAct_BeginPrisonWalk.GetTargetPawn(Target)
+  0020: if !((TargetPawn != none)) goto 0x0036
+  002b: TnSeqAct_BeginPrisonWalk.DisableAllWeapons(TargetPawn)
+  0036: iternext
+  0037: iterpop
+  0038: return nothing
+  003a: <eos>
+
+function TnSeqAct_BeginPrisonWalk.GetTargetPawn  (script 72 bytes)
+  0000: if !((Controller(Target) != none)) goto 0x0024
+  0010: return Controller(Target).Pawn
+  0024: if !((Pawn(Target) != none)) goto 0x003f
+  0034: return Pawn(Target)
+  003f: return none
+  0041: return return
+  0047: <eos>
+
+function TnSeqAct_BeginPrisonWalk.DisableAllWeapons  (script 199 bytes)
+  0000: IM = TnInventoryManager(P.InvManager)
+  0019: foreach self.WeaponTypesToDestroy(WT,) (end 0x005e)
+  0028: W = IM.GetWeaponByType(WT)
+  0046: if !((W != none)) goto 0x005d
+  0051: W.DestroyActor()
+  005d: iternext
+  005e: iterpop
+  005f: IM.CreateInventory(obj'TnWeaponEmpty', )
+  0078: W = IM.GetWeaponByType(6)
+  0093: if !((W != none)) goto 0x00c4
+  009e: W.ConsumeAllAmmo()
+  00b1: W.HideAmmoHudUntilFilled()
+  00c4: return nothing
+  00c6: <eos>

@@ -1,0 +1,101 @@
+function TnDebugActionScriptBinding.GetWorldInfo  (script 27 bytes)
+  0000: return obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0014: return return
+  001a: <eos>
+
+function TnDebugActionScriptBinding.ConsoleCommand  (script 82 bytes)
+  0000: WI = TnDebugActionScriptBinding.GetWorldInfo()
+  000c: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0030)
+  002c: goto 0x0030
+  002f: iternext
+  0030: iterpop
+  0031: PC.ConsoleCommand(Cmd, )
+  004f: return nothing
+  0051: <eos>
+
+function TnDebugActionScriptBinding.ShouldDisplayBuildInfo  (script 42 bytes)
+  0000: return TnDebugActionScriptBinding.GetWorldInfo().GetDebugManager().ShouldDisplayBuildInfo()
+  0023: return return
+  0029: <eos>
+
+function TnDebugActionScriptBinding.GetBuildInfo  (script 42 bytes)
+  0000: return TnDebugActionScriptBinding.GetWorldInfo().GetDebugManager().GetBuildInfo()
+  0023: return return
+  0029: <eos>
+
+function TnDebugActionScriptBinding.ClearCompletedLevels  (script 550 bytes)
+  0000: WI = TnDebugActionScriptBinding.GetWorldInfo()
+  000c: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0049)
+  002c: Profile = TnProfileSettings(PC.ProfileSettings)
+  0045: goto 0x0049
+  0048: iternext
+  0049: iterpop
+  004a: if !((Profile == none)) goto 0x0057
+  0055: return nothing
+  0057: Profile.SetProfileSettingValueBool(96, true)
+  006d: Profile.SetProfileSettingValueInt(112, 0)
+  0083: Profile.SetProfileSettingValueBool(97, false)
+  0099: Profile.SetProfileSettingValueInt(113, 0)
+  00af: Profile.SetProfileSettingValueBool(98, false)
+  00c5: Profile.SetProfileSettingValueInt(114, 0)
+  00db: Profile.SetProfileSettingValueBool(99, false)
+  00f1: Profile.SetProfileSettingValueInt(115, 0)
+  0107: Profile.SetProfileSettingValueBool(100, false)
+  011d: Profile.SetProfileSettingValueInt(116, 0)
+  0133: Profile.SetProfileSettingValueBool(101, true)
+  0149: Profile.SetProfileSettingValueInt(117, 0)
+  015f: Profile.SetProfileSettingValueBool(102, false)
+  0175: Profile.SetProfileSettingValueInt(118, 0)
+  018b: Profile.SetProfileSettingValueBool(103, false)
+  01a1: Profile.SetProfileSettingValueInt(119, 0)
+  01b7: Profile.SetProfileSettingValueBool(104, false)
+  01cd: Profile.SetProfileSettingValueInt(120, 0)
+  01e3: Profile.SetProfileSettingValueBool(105, false)
+  01f9: Profile.SetProfileSettingValueInt(121, 0)
+  020f: PC.SaveProfileSettings()
+  0223: return nothing
+  0225: <eos>
+
+function TnDebugActionScriptBinding.UnlockAllLevels  (script 560 bytes)
+  0000: WI = TnDebugActionScriptBinding.GetWorldInfo()
+  000c: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0049)
+  002c: Profile = TnProfileSettings(PC.ProfileSettings)
+  0045: goto 0x0049
+  0048: iternext
+  0049: iterpop
+  004a: if !((Profile == none)) goto 0x0057
+  0055: return nothing
+  0057: Profile.SetProfileSettingValueBool(96, true)
+  006d: Profile.SetProfileSettingValueInt(112, 20)
+  0084: Profile.SetProfileSettingValueBool(97, true)
+  009a: Profile.SetProfileSettingValueInt(113, 20)
+  00b1: Profile.SetProfileSettingValueBool(98, true)
+  00c7: Profile.SetProfileSettingValueInt(114, 20)
+  00de: Profile.SetProfileSettingValueBool(99, true)
+  00f4: Profile.SetProfileSettingValueInt(115, 20)
+  010b: Profile.SetProfileSettingValueBool(100, true)
+  0121: Profile.SetProfileSettingValueInt(116, 20)
+  0138: Profile.SetProfileSettingValueBool(101, true)
+  014e: Profile.SetProfileSettingValueInt(117, 20)
+  0165: Profile.SetProfileSettingValueBool(102, true)
+  017b: Profile.SetProfileSettingValueInt(118, 20)
+  0192: Profile.SetProfileSettingValueBool(103, true)
+  01a8: Profile.SetProfileSettingValueInt(119, 20)
+  01bf: Profile.SetProfileSettingValueBool(104, true)
+  01d5: Profile.SetProfileSettingValueInt(120, 20)
+  01ec: Profile.SetProfileSettingValueBool(105, true)
+  0202: Profile.SetProfileSettingValueInt(121, 20)
+  0219: PC.SaveProfileSettings()
+  022d: return nothing
+  022f: <eos>
+
+function TnDebugActionScriptBinding.GetPlayerLocation  (script 220 bytes)
+  0000: PC = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo()).GetLocalPlayerController()
+  002c: if !((PC == none)) goto 0x003a
+  0037: return ""
+  003a: PlayerLocation = (("X = " $ cast55(PC.Location.X)) $ ", ")
+  0069: ConcatEqual_StrStr(PlayerLocation, (("Y = " $ cast55(PC.Location.Y)) $ ", "))
+  009f: ConcatEqual_StrStr(PlayerLocation, ("Z = " $ cast55(PC.Location.Z)))
+  00cf: return PlayerLocation
+  00d5: return return
+  00db: <eos>

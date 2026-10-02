@@ -1,0 +1,71 @@
+function TnGrenadeThrower.Initialize  (script 25 bytes)
+  0000: self.ThrowerPawn = Thrower
+  000b: self.GrenadeData = Data
+  0016: return nothing
+  0018: <eos>
+
+function TnGrenadeThrower.GetAnimator  (script 41 bytes)
+  0000: return TnAnimatorService(self.ThrowerPawn.GetService('TnAnimatorService'))
+  0022: return return
+  0028: <eos>
+
+function TnGrenadeThrower.LocalToss  (script 83 bytes)
+  0000: if !((cast3a(self.ThrowerPawn.Role) == cast3a(2))) goto 0x0045
+  0019: TnGrenadeThrower.GetAnimator().EnqueueLocalAnimation(self.TossAnimation, delegate.None, delegate.None)
+  0045: return TnGrenadeThrower.FindTargetLocation()
+  004c: return return
+  0052: <eos>
+
+function TnGrenadeThrower.FindTargetLocation  (script 408 bytes)
+  0000: if !((self.ThrowerPawn.Controller != none)) goto 0x003d
+  0014: self.ThrowerPawn.Controller.GetPlayerViewPoint(ViewLocation, ViewRotation)
+  003a: goto 0x00bf
+  003d: LogInternal((("ERROR:" @ self.ThrowerPawn.get_FriendlyName()) @ "is attempting to toss a grenade without a controller"), , , )
+  0097: ViewLocation = self.ThrowerPawn.Location
+  00ab: ViewRotation = self.ThrowerPawn.Rotation
+  00bf: StartTrace = (ViewLocation + (obj'Core.Math'.static.MakeVector(self.TargetTraceRange.Min, 0.0, 0.0) >> ViewRotation))
+  0101: EndTrace = (ViewLocation + (obj'Core.Math'.static.MakeVector(self.TargetTraceRange.Max, 0.0, 0.0) >> ViewRotation))
+  0143: self.ThrowerPawn.Trace(DesiredLocation, HitNormal, none, EndTrace, StartTrace, true, , , , )
+  0169: if !((DesiredLocation == vect(0,0,0))) goto 0x018b
+  0180: DesiredLocation = EndTrace
+  018b: return DesiredLocation
+  0191: return return
+  0197: <eos>
+
+function TnGrenadeThrower.ServerToss  (script 112 bytes)
+  0000: self.TargetLocation = TargetLocation_
+  000b: TnGrenadeThrower.GetAnimator().EnqueueReplicatedAnimation(self.TossAnimation, delegate.None, delegate.None)
+  0037: if !((self.TossDelay <= cast3f(0))) goto 0x0051
+  0044: SpawnGrenade()
+  004e: goto 0x006d
+  0051: self.ThrowerPawn.SetTimer(self.TossDelay, false, 'SpawnGrenade', self)
+  006d: return nothing
+  006f: <eos>
+
+function TnGrenadeThrower.SpawnGrenade  (script 247 bytes)
+  0000: if !((self.GrenadeData == none)) goto 0x000d
+  000b: return nothing
+  000d: SourceLocation = self.ThrowerPawn.Mesh.GetSocketWorldLocation(self.TossSocket)
+  0034: Grenade = self.ThrowerPawn.Spawn(0[self.GrenadeData.WeaponProjectiles], , , SourceLocation, , , , )
+  0068: if !((Grenade == none)) goto 0x0075
+  0073: return nothing
+  0075: self.ThrowerPawn.SuggestTossVelocity(TossVelocity, self.TargetLocation, SourceLocation, self.GrenadeData.TossStrength, , , , )
+  00a9: TossVelocity = TnGrenadeThrower.AdjustTossVelocity(cast50((self.TargetLocation - SourceLocation)), TossVelocity)
+  00c8: Grenade.Init(TossVelocity)
+  00e0: Grenade.Velocity = TossVelocity
+  00f4: return nothing
+  00f6: <eos>
+
+function TnGrenadeThrower.AdjustTossVelocity  (script 339 bytes)
+  0000: if !((self.GrenadeData.LowPitchDegrees.Min == self.GrenadeData.LowPitchDegrees.Max)) goto 0x003d
+  0037: return TossVelocity
+  003d: PitchDegrees = (cast3f(TargetDirection.Pitch) * 0.0054932)
+  005c: if !((PitchDegrees > self.GrenadeData.LowPitchDegrees.Max)) goto 0x0085
+  007f: return TossVelocity
+  0085: NormalizedPitch = obj'Core.Math'.static.FPctByRange(PitchDegrees, self.GrenadeData.LowPitchDegrees.Min, self.GrenadeData.LowPitchDegrees.Max)
+  00d5: NormalizedPitch = obj'Core.Math'.static.FClamp(NormalizedPitch, 0.0, 1.0)
+  00f5: Speed = obj'Core.Math'.static.VSize(TossVelocity)
+  010b: Speed = obj'Core.Math'.static.Lerp(self.GrenadeData.LowPitchSpeed, Speed, NormalizedPitch)
+  0134: return (obj'Core.Math'.static.Normal(TossVelocity) * Speed)
+  014c: return return
+  0152: <eos>

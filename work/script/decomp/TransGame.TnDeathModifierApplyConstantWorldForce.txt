@@ -1,0 +1,15 @@
+function TnDeathModifierApplyConstantWorldForce.OnStart  (script 300 bytes)
+  0000: self.RandomDirection.X = obj'Core.Random'.static.RandomInRange(self.InitialForwardForce)
+  0029: self.RandomDirection.Y = obj'Core.Random'.static.RandomInRange(self.InitialSideForce)
+  0052: self.RandomDirection.Z = obj'Core.Random'.static.RandomInRange(self.InitialVerticalForce)
+  007b: self._Owner.Mesh.AddForce((self.RandomDirection * self._Owner.Mass), , )
+  00ae: self.RandomDirection.X = obj'Core.Random'.static.RandomInRange(self.ForwardRange)
+  00d7: self.RandomDirection.Y = obj'Core.Random'.static.RandomInRange(self.SideRange)
+  0100: self.RandomDirection.Z = obj'Core.Random'.static.RandomInRange(self.VerticalRange)
+  0129: return nothing
+  012b: <eos>
+
+function TnDeathModifierApplyConstantWorldForce.OnTick  (script 54 bytes)
+  0000: self._Owner.Mesh.AddForce((self.RandomDirection * self._Owner.Mass), , )
+  0033: return nothing
+  0035: <eos>

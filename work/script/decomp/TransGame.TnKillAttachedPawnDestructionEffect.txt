@@ -1,0 +1,22 @@
+function TnKillAttachedPawnDestructionEffect.get_EffectDamageType  (script 13 bytes)
+  0000: return self._EffectDamageType
+  0006: return return
+  000c: <eos>
+
+function TnKillAttachedPawnDestructionEffect.set_EffectDamageType  (script 14 bytes)
+  0000: self._EffectDamageType = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnKillAttachedPawnDestructionEffect.BeginEffect  (script 169 bytes)
+  0000: DestructibleActor = TnDestructibleActor(GetAttachingActor())
+  0015: if !((DestructibleActor == none)) goto 0x0022
+  0020: return nothing
+  0022: if !((cast3a(DestructibleActor.Role) != cast3a(3))) goto 0x003d
+  003b: return nothing
+  003d: AttachedPawn = DestructibleActor._AttachedPawn
+  0051: if !((AttachedPawn == none)) goto 0x005e
+  005c: return nothing
+  005e: AttachedPawn.TakeDamage(1000000.0, DestructibleActor.LastHitInstigator, DestructibleActor.Location, vect(0,0,0), self._EffectDamageType, , )
+  00a6: return nothing
+  00a8: <eos>

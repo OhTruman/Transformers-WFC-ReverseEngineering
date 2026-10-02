@@ -1,0 +1,362 @@
+function TnHoverPlaneSimulation.get_IsDashing  (script 18 bytes)
+  0000: return (self._DashTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnHoverPlaneSimulation.get_IsRolling  (script 18 bytes)
+  0000: return (self._RollTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnHoverPlaneSimulation.get_IsDrifting  (script 18 bytes)
+  0000: return (self._DriftTimeRemaining > cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnHoverPlaneSimulation.set_MaxLinearSpeedModifier  (script 14 bytes)
+  0000: self._MaxLinearSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_MaxLinearSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.MaxLinearSpeed * self._MaxLinearSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.get_DriftAccelerationScale  (script 51 bytes)
+  0000: return ((self._RigidBody.get_LinearSpeed() > TnHoverPlaneSimulation.get_MaxLinearSpeed()) ? 1.0 : 0.5)
+  002c: return return
+  0032: <eos>
+
+function TnHoverPlaneSimulation.set_MaxAngularVelocityModifier  (script 14 bytes)
+  0000: self._MaxAngularVelocityModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_MaxAngularVelocity  (script 20 bytes)
+  0000: return (50.0 * self._MaxAngularVelocityModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_DefaultAngularDampingModifier  (script 14 bytes)
+  0000: self._DefaultAngularDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_DefaultAngularDamping  (script 20 bytes)
+  0000: return (6.0 * self._DefaultAngularDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_StopLinearDampingModifier  (script 14 bytes)
+  0000: self._StopLinearDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_StopLinearDamping  (script 20 bytes)
+  0000: return (10.0 * self._StopLinearDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_DefaultLinearDampingModifier  (script 14 bytes)
+  0000: self._DefaultLinearDampingModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_DefaultLinearDamping  (script 20 bytes)
+  0000: return (0.1 * self._DefaultLinearDampingModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_AiMaxLinearSpeedModifier  (script 14 bytes)
+  0000: self._AiMaxLinearSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_AiMaxLinearSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxLinearSpeed * self._AiMaxLinearSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_AiMaxLinearAccelerationModifier  (script 14 bytes)
+  0000: self._AiMaxLinearAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_AiMaxLinearAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxLinearAcceleration * self._AiMaxLinearAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_AiMaxAngularSpeedModifier  (script 14 bytes)
+  0000: self._AiMaxAngularSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_AiMaxAngularSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxAngularSpeed * self._AiMaxAngularSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_AiMaxAngularAccelerationModifier  (script 14 bytes)
+  0000: self._AiMaxAngularAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_AiMaxAngularAcceleration  (script 29 bytes)
+  0000: return (self._Blueprint.AiMaxAngularAcceleration * self._AiMaxAngularAccelerationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_DriftDurationModifier  (script 14 bytes)
+  0000: self._DriftDurationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_DriftDuration  (script 29 bytes)
+  0000: return (self._Blueprint.DriftDuration * self._DriftDurationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_DashDurationModifier  (script 14 bytes)
+  0000: self._DashDurationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_DashDuration  (script 29 bytes)
+  0000: return (self._Blueprint.DashDuration * self._DashDurationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_RollDurationModifier  (script 14 bytes)
+  0000: self._RollDurationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_RollDuration  (script 29 bytes)
+  0000: return (self._Blueprint.RollDuration * self._RollDurationModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_DashAcclerationModifier  (script 14 bytes)
+  0000: self._DashAcclerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_DashAcceleration  (script 20 bytes)
+  0000: return (10000.0 * self._DashAcclerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_DashSpeedModifier  (script 14 bytes)
+  0000: self._DashSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_DashSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.DashSpeed * self._DashSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_RollLinearSpeedModifier  (script 14 bytes)
+  0000: self._RollLinearSpeedModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_RollLinearSpeed  (script 29 bytes)
+  0000: return (self._Blueprint.RollLinearSpeed * self._RollLinearSpeedModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.set_RollLinearAccelerationModifier  (script 14 bytes)
+  0000: self._RollLinearAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_RollLinearAcceleration  (script 20 bytes)
+  0000: return (10000.0 * self._RollLinearAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_RollAngularAccelerationModifier  (script 14 bytes)
+  0000: self._RollAngularAccelerationModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_RollAngularAcceleration  (script 20 bytes)
+  0000: return (80.0 * self._RollAngularAccelerationModifier)
+  000d: return return
+  0013: <eos>
+
+function TnHoverPlaneSimulation.set_TurnRateModifier  (script 14 bytes)
+  0000: self._TurnRateModifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnHoverPlaneSimulation.get_TurnRate  (script 29 bytes)
+  0000: return (vect(0.1,0.5,0.5) * self._TurnRateModifier)
+  0016: return return
+  001c: <eos>
+
+function TnHoverPlaneSimulation.Initialize  (script 84 bytes)
+  0000: if !((((Blueprint == none) || (Owner == none)) || EqualEqual_InterfaceInterface(RigidBody, IRigidBody(none)))) goto 0x0030
+  002e: return nothing
+  0030: self._Blueprint = Blueprint
+  003b: self._Owner = Owner
+  0046: self._RigidBody = RigidBody
+  0051: return nothing
+  0053: <eos>
+
+function TnHoverPlaneSimulation.Activate  (script 134 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self._RigidBody, IRigidBody(none))) goto 0x0016
+  0014: return nothing
+  0016: self._RigidBody.set_LinearDamping(0.0)
+  002f: self._RigidBody.set_AngularDamping(0.0)
+  0048: self._RigidBody.set_MaxAngularVelocity(TnHoverPlaneSimulation.get_MaxAngularVelocity())
+  0062: self._DashTimeRemaining = 0.0
+  006d: self._RollTimeRemaining = 0.0
+  0078: self._DriftTimeRemaining = 0.0
+  0083: return nothing
+  0085: <eos>
+
+function TnHoverPlaneSimulation.Update  (script 236 bytes)
+  0000: self._RigidBody.ApplyLinearAcceleration(-self._RigidBody.get_Gravity())
+  002a: if !((self._Blueprint == none)) goto 0x0037
+  0035: return nothing
+  0037: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0057
+  0055: return nothing
+  0057: if !(((cast3a(self._Owner.GetRole()) == cast3a(1)) || (DeltaTime == cast3f(0)))) goto 0x0086
+  0084: return nothing
+  0086: if !(get_IsRolling()) goto 0x00a6
+  0093: TnHoverPlaneSimulation.UpdateRoll(DeltaTime, FrameOfReference)
+  00a3: goto 0x00e9
+  00a6: if !(TnHoverPlaneSimulation.get_IsDashing()) goto 0x00bf
+  00af: TnHoverPlaneSimulation.UpdateDash(DeltaTime, FrameOfReference)
+  00bf: TnHoverPlaneSimulation.UpdateStrafe(DeltaTime, ForwardBackInput, RightLeftInput, FrameOfReference)
+  00d9: TnHoverPlaneSimulation.UpdateTurn(DeltaTime, FrameOfReference)
+  00e9: return nothing
+  00eb: <eos>
+
+function TnHoverPlaneSimulation.UpdateFromLocationAndRotation  (script 401 bytes)
+  0000: self._RigidBody.ApplyLinearAcceleration(-self._RigidBody.get_Gravity())
+  002a: if !(((self._Blueprint == none) || (DeltaTime == cast3f(0)))) goto 0x0046
+  0044: return nothing
+  0046: self._DriftTimeRemaining = 0.0
+  0051: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0071
+  006f: return nothing
+  0071: if !(get_IsRolling()) goto 0x0091
+  007e: TnHoverPlaneSimulation.UpdateRoll(DeltaTime, RotationToMatch)
+  008e: goto 0x018e
+  0091: self._RigidBody.set_AngularDamping(TnHoverPlaneSimulation.get_DefaultAngularDamping())
+  00ab: self._RigidBody.set_LinearDamping(((obj'Core.Math'.static.VSizeSq((LocationToMatch - self._RigidBody.get_Location())) < cast3f(100)) ? TnHoverPlaneSimulation.get_StopLinearDamping() : TnHoverPlaneSimulation.get_DefaultLinearDamping()))
+  0104: obj'HoverPhysics'.static.MoveToTargetLocation(self._RigidBody, DeltaTime, LocationToMatch, TnHoverPlaneSimulation.get_AiMaxLinearSpeed(), TnHoverPlaneSimulation.get_AiMaxLinearAcceleration(), vect(1,1,1))
+  013f: obj'HoverPhysics'.static.RotateToTargetOrientation(self._RigidBody, DeltaTime, TnHoverPlaneSimulation.AddMotionPhysics(RotationToMatch, self._Blueprint.AiMotionPhysicsScale), TnHoverPlaneSimulation.get_AiMaxAngularSpeed(), TnHoverPlaneSimulation.get_AiMaxAngularAcceleration(), vect(1,1,1))
+  018e: return nothing
+  0190: <eos>
+
+function TnHoverPlaneSimulation.Drift  (script 60 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: if !((self._Blueprint == none)) goto 0x002d
+  002b: return nothing
+  002d: self._DriftTimeRemaining = TnHoverPlaneSimulation.get_DriftDuration()
+  0039: return nothing
+  003b: <eos>
+
+function TnHoverPlaneSimulation.Dash  (script 58 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: self._DashTimeRemaining = TnHoverPlaneSimulation.get_DashDuration()
+  002c: self._DashDirection = Direction
+  0037: return nothing
+  0039: <eos>
+
+function TnHoverPlaneSimulation.Roll  (script 58 bytes)
+  0000: if !((cast3a(self._Owner.get_SimulationMode()) == cast3a(0))) goto 0x0020
+  001e: return nothing
+  0020: self._RollTimeRemaining = TnHoverPlaneSimulation.get_RollDuration()
+  002c: self._RollDirection = Direction
+  0037: return nothing
+  0039: <eos>
+
+function TnHoverPlaneSimulation.UpdateStrafe  (script 204 bytes)
+  0000: self._DriftTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._DriftTimeRemaining - DeltaTime))
+  0022: MaxAcceleration = (self._Blueprint.MaxLinearAcceleration * obj'Core.Math'.static.FMax(TnHoverPlaneSimulation.CalculateDriftScale(), obj'Core.Math'.static.FMax(obj'Core.Math'.static.Abs(ForwardBackInput), obj'Core.Math'.static.Abs(RightLeftInput))))
+  0074: MaxSpeed = TnHoverPlaneSimulation.get_MaxLinearSpeed()
+  0080: TnHoverPlaneSimulation.Strafe(DeltaTime, obj'Core.Math'.static.MakeVector(ForwardBackInput, RightLeftInput, 0.0), vect(1,1,1), FrameOfReference, MaxAcceleration, MaxSpeed)
+  00c9: return nothing
+  00cb: <eos>
+
+function TnHoverPlaneSimulation.CalculateDriftScale  (script 39 bytes)
+  0000: return obj'Core.Math'.static.Square((1.0 - (self._DriftTimeRemaining / TnHoverPlaneSimulation.get_DriftDuration())))
+  0020: return return
+  0026: <eos>
+
+function TnHoverPlaneSimulation.UpdateTurn  (script 65 bytes)
+  0000: self._RigidBody.set_AngularDamping(TnHoverPlaneSimulation.get_DefaultAngularDamping())
+  001a: TnHoverPlaneSimulation.Turn(DeltaTime, TnHoverPlaneSimulation.AddMotionPhysics(DesiredRotation, self._Blueprint.MotionPhysicsScale))
+  003e: return nothing
+  0040: <eos>
+
+function TnHoverPlaneSimulation.UpdateDash  (script 96 bytes)
+  0000: if !(!TnHoverPlaneSimulation.get_IsDashing()) goto 0x000d
+  000b: return nothing
+  000d: self._DashTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._DashTimeRemaining - DeltaTime))
+  002f: TnHoverPlaneSimulation.Strafe(DeltaTime, self._DashDirection, vect(0,0,1), FrameOfReference, TnHoverPlaneSimulation.get_DashAcceleration(), TnHoverPlaneSimulation.get_DashSpeed())
+  005d: return nothing
+  005f: <eos>
+
+function TnHoverPlaneSimulation.UpdateRoll  (script 297 bytes)
+  0000: if !(!get_IsRolling()) goto 0x0011
+  000f: return nothing
+  0011: self._RigidBody.set_AngularDamping(0.0)
+  002a: self._RollTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._RollTimeRemaining - DeltaTime))
+  004c: MaxSpeed = ((self._RollTimeRemaining > cast3f(0)) ? TnHoverPlaneSimulation.get_RollLinearSpeed() : TnHoverPlaneSimulation.get_MaxLinearSpeed())
+  006d: TnHoverPlaneSimulation.Strafe(DeltaTime, self._RollDirection, vect(1,1,1), DesiredRotation, TnHoverPlaneSimulation.get_RollLinearAcceleration(), MaxSpeed)
+  009a: TnHoverPlaneSimulation.Turn(DeltaTime, obj'Core.Math'.static.MakeRotator(DesiredRotation.Pitch, DesiredRotation.Yaw, self._RigidBody.get_Rotation().Roll))
+  00f7: TnHoverPlaneSimulation.BarrelRoll(DeltaTime, self._RollDirection, DesiredRotation, TnHoverPlaneSimulation.get_RollAngularAcceleration(), ((2.0 * 3.1415927) / TnHoverPlaneSimulation.get_RollDuration()))
+  0126: return nothing
+  0128: <eos>
+
+function TnHoverPlaneSimulation.Strafe  (script 181 bytes)
+  0000: CurrentVelocity = (self._RigidBody.get_LinearVelocity() << FrameOfReference)
+  0022: MaxSpeed = self._SpeedModifier.ModifyFloat(MaxSpeed, self._Owner, )
+  0046: DesiredVelocity = (Direction * MaxSpeed)
+  0058: DesiredAcceleration = (obj'Core.Math'.static.ClampLength(((DesiredVelocity - CurrentVelocity) / DeltaTime), MaxAcceleration) * Mask)
+  0091: self._RigidBody.ApplyLinearAcceleration((DesiredAcceleration >> FrameOfReference))
+  00b2: return nothing
+  00b4: <eos>
+
+function TnHoverPlaneSimulation.Turn  (script 94 bytes)
+  0000: Stretch = TnHoverPlaneSimulation.CalculateDifferenceAxisAngle(DesiredRotation)
+  0011: Velocity = (((Stretch / DeltaTime) - self._RigidBody.get_LocalAngularVelocity()) * TnHoverPlaneSimulation.get_TurnRate())
+  0042: self._RigidBody.ApplyLocalAngularVelocity(Velocity)
+  005b: return nothing
+  005d: <eos>
+
+function TnHoverPlaneSimulation.BarrelRoll  (script 195 bytes)
+  0000: CurrentVelocity = (self._RigidBody.get_LocalAngularVelocity() * vect(1,0,0))
+  002a: DesiredVelocity = (obj'Core.Math'.static.MakeVector(-Direction.Y, 0.0, 0.0) * MaxSpeed)
+  0066: DesiredAcceleration = obj'Core.Math'.static.ClampLength(((DesiredVelocity - CurrentVelocity) / DeltaTime), MaxAcceleration)
+  0097: self._RigidBody.ApplyLocalAngularAcceleration((DesiredAcceleration * vect(1,0,0)))
+  00c0: return nothing
+  00c2: <eos>
+
+function TnHoverPlaneSimulation.CalculateDifferenceAxisAngle  (script 209 bytes)
+  0000: RotationToMatch = obj'Core.Math'.static.QuatFromRotator(Rotation)
+  001e: CurrentRotation = self._RigidBody.get_RotationAsQuaternion()
+  0038: if !((obj'Core.Math'.static.QuatDot(RotationToMatch, CurrentRotation) < cast3f(0))) goto 0x007b
+  005d: RotationToMatch = obj'Core.Math'.static.QuatNegate(RotationToMatch)
+  007b: Difference = obj'Core.Math'.static.QuatProduct(obj'Core.Math'.static.QuatInvert(CurrentRotation), RotationToMatch)
+  00b1: return obj'Core.Math'.static.QuatToAxisWithAngle(Difference)
+  00ca: return return
+  00d0: <eos>
+
+function TnHoverPlaneSimulation.AddMotionPhysics  (script 255 bytes)
+  0000: self._SmoothLocalLinearAcceleration = obj'Core.Math'.static.VLerp(self._SmoothLocalLinearAcceleration, self._RigidBody.get_LocalLinearAcceleration(), 0.1)
+  0037: self._SmoothLocalAngularVelocity = obj'Core.Math'.static.VLerp(self._SmoothLocalAngularVelocity, self._RigidBody.get_LocalAngularVelocity(), 0.9)
+  006e: (RotationToMatch.Roll += cast44((((self._SmoothLocalLinearAcceleration.Y * cast3f(1)) * Scale) + ((self._SmoothLocalAngularVelocity.Z * cast3f(1000)) * Scale))))
+  00c0: (RotationToMatch.Pitch -= cast44(((self._SmoothLocalLinearAcceleration.X * 0.5) * Scale)))
+  00f2: return RotationToMatch
+  00f8: return return
+  00fe: <eos>

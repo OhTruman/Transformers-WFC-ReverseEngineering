@@ -1,0 +1,97 @@
+function DynamicSMActor.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DynamicSMActor.PostBeginPlay  (script 29 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: self.ReplicatedMesh = self.StaticMeshComponent.StaticMesh
+  001a: return nothing
+  001c: <eos>
+
+function DynamicSMActor.ReplicatedEvent  (script 244 bytes)
+  0000: if !((VarName == 'ReplicatedMesh')) goto 0x002e
+  0013: self.StaticMeshComponent.SetStaticMesh(self.ReplicatedMesh)
+  002b: goto 0x00f1
+  002e: if !((VarName == 'ReplicatedMeshTranslation')) goto 0x005c
+  0041: self.StaticMeshComponent.SetTranslation(self.ReplicatedMeshTranslation)
+  0059: goto 0x00f1
+  005c: if !((VarName == 'ReplicatedMeshRotation')) goto 0x008a
+  006f: self.StaticMeshComponent.SetRotation(self.ReplicatedMeshRotation)
+  0087: goto 0x00f1
+  008a: if !((VarName == 'ReplicatedMeshScale3D')) goto 0x00b8
+  009d: self.StaticMeshComponent.SetScale3D(self.ReplicatedMeshScale3D)
+  00b5: goto 0x00f1
+  00b8: if !(((VarName == 'ReplicatedSetMaterialAction') && (self.ReplicatedSetMaterialAction != none))) goto 0x00e6
+  00d8: DynamicSMActor.OnSetMaterial(self.ReplicatedSetMaterialAction)
+  00e3: goto 0x00f1
+  00e6: ReplicatedObject.ReplicatedEvent(VarName)
+  00f1: return nothing
+  00f3: <eos>
+
+function DynamicSMActor.OnSetStaticMesh  (script 155 bytes)
+  0000: if !(((Action.NewStaticMesh != none) && (Action.NewStaticMesh != self.StaticMeshComponent.StaticMesh))) goto 0x0098
+  0037: self.StaticMeshComponent.bAllowDecalAutomaticReAttach = false
+  0048: self.StaticMeshComponent.SetStaticMesh(Action.NewStaticMesh)
+  0069: self.StaticMeshComponent.bAllowDecalAutomaticReAttach = true
+  007a: self.ReplicatedMesh = Action.NewStaticMesh
+  008e: ForceNetRelevant()
+  0098: return nothing
+  009a: <eos>
+
+function DynamicSMActor.OnSetMaterial  (script 71 bytes)
+  0000: self.StaticMeshComponent.SetMaterial(Action.MaterialIndex, Action.NewMaterial)
+  002f: self.ReplicatedSetMaterialAction = Action
+  003a: ForceNetRelevant()
+  0044: return nothing
+  0046: <eos>
+
+function DynamicSMActor.SetStaticMesh  (script 178 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: self.StaticMeshComponent.SetStaticMesh(NewMesh)
+  001b: self.StaticMeshComponent.SetTranslation(NewTranslation)
+  0033: self.StaticMeshComponent.SetRotation(NewRotation)
+  004b: if !(!obj'Core.Math'.static.IsZero(NewScale3D)) goto 0x0084
+  0061: self.StaticMeshComponent.SetScale3D(NewScale3D)
+  0079: self.ReplicatedMeshScale3D = NewScale3D
+  0084: self.ReplicatedMesh = NewMesh
+  008f: self.ReplicatedMeshTranslation = NewTranslation
+  009a: self.ReplicatedMeshRotation = NewRotation
+  00a5: ForceNetRelevant()
+  00af: return nothing
+  00b1: <eos>
+
+function DynamicSMActor.CanBasePawn  (script 71 bytes)
+  0000: if !((self.bPawnCanBaseOn || ((self.bSafeBaseIfAsleep && (self.StaticMeshComponent != none)) && !self.StaticMeshComponent.RigidBodyIsAwake()))) goto 0x003e
+  003c: return true
+  003e: return false
+  0040: return return
+  0046: <eos>
+
+function DynamicSMActor.Attach  (script 64 bytes)
+  0000: Actor.Attach(Other)
+  000b: if !(self.bSafeBaseIfAsleep) goto 0x003d
+  0014: P = Pawn(Other)
+  0024: if !((P != none)) goto 0x003d
+  002f: SetPhysics(0, , )
+  003d: return nothing
+  003f: <eos>
+
+function DynamicSMActor.Detach  (script 166 bytes)
+  0000: Actor.Detach(Other)
+  000b: P = Pawn(Other)
+  001b: if !((P != none)) goto 0x00a3
+  0026: bResetPhysics = true
+  002e: idx = 0
+  0035: if !((idx < self.Attached.Length)) goto 0x008c
+  0045: Test = Pawn(idx[self.Attached])
+  005b: if !(((Test != none) && (Test != P))) goto 0x0082
+  0077: bResetPhysics = false
+  007f: goto 0x008c
+  0082: AddAdd_Int(idx)
+  0089: goto 0x0035
+  008c: if !(bResetPhysics) goto 0x00a3
+  0095: SetPhysics(10, , )
+  00a3: return nothing
+  00a5: <eos>

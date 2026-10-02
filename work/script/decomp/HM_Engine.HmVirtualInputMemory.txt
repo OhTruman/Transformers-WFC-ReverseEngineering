@@ -1,0 +1,28 @@
+function HmVirtualInputMemory.Reset  (script 11 bytes)
+  0000: self.InputValues.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmVirtualInputMemory.GetValue  (script 64 bytes)
+  0000: FoundIndex = HmVirtualInputMemory.FindInputIndex(InputName)
+  0011: if !((FoundIndex >= 0)) goto 0x0033
+  001c: return FoundIndex[self.InputValues].Value
+  0033: return 0.0
+  0039: return return
+  003f: <eos>
+
+function HmVirtualInputMemory.SetValue  (script 111 bytes)
+  0000: Index = HmVirtualInputMemory.FindInputIndex(InputName)
+  0011: if !((Index < 0)) goto 0x0050
+  001c: Index = self.InputValues.Length
+  0028: self.InputValues.Insert(Index,1)
+  0034: Index[self.InputValues].InputName = InputName
+  0050: Index[self.InputValues].Value = NewValue
+  006c: return nothing
+  006e: <eos>
+
+function HmVirtualInputMemory.FindInputIndex  (script 41 bytes)
+  0000: I = self.InputValues.Find('InputName',InputName)
+  001c: return I
+  0022: return return
+  0028: <eos>

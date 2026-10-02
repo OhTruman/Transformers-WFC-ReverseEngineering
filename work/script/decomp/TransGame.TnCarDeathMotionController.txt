@@ -1,0 +1,32 @@
+function TnCarDeathMotionController.Initialize  (script 14 bytes)
+  0000: self._Owner = Owner
+  000b: return nothing
+  000d: <eos>
+
+function TnCarDeathMotionController.Activate  (script 14 bytes)
+  0000: TnCarDeathMotionController.PlayDeathAnimation(Animation)
+  000b: return nothing
+  000d: <eos>
+
+function TnCarDeathMotionController.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCarDeathMotionController.PlayDeathAnimation  (script 143 bytes)
+  0000: if !((Animation.AnimationName == 'None')) goto 0x0020
+  001e: return nothing
+  0020: AnimationParams = TnCarDeathMotionController.CreateAnimationParams(Animation)
+  0031: Animator = TnAnimatorService(self._Owner.GetService('TnAnimatorService'))
+  0058: Animator.EnqueueLocalAnimation(AnimationParams, self._Owner.delegate.Gib, delegate.None)
+  008c: return nothing
+  008e: <eos>
+
+function TnCarDeathMotionController.CreateAnimationParams  (script 153 bytes)
+  0000: Params.AnimName = Animation.AnimationName
+  0021: Params.RootMotionMode = Animation.RootMotionMode
+  0042: Params.BlendInTime = Animation.BlendInTime
+  0063: Params.BlendOutTime = 0.0
+  0079: Params.Priority = 1
+  008c: return Params
+  0092: return return
+  0098: <eos>

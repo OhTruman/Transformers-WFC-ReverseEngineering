@@ -1,0 +1,116 @@
+function TnRollerMine.set_Fuse  (script 14 bytes)
+  0000: self._Fuse = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRollerMine.set_DamageRadius  (script 14 bytes)
+  0000: self._DamageRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRollerMine.set_DamageAmount  (script 14 bytes)
+  0000: self._DamageAmount = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRollerMine.set_DamageMomentum  (script 14 bytes)
+  0000: self._DamageMomentum = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRollerMine.set_Health  (script 14 bytes)
+  0000: self._Health = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnRollerMine.PostBeginPlay  (script 147 bytes)
+  0000: SetHidden(false)
+  000b: SetBlockRigidBody(true)
+  0016: SetCollision(true, true, )
+  001c: SetPhysics(10, , )
+  002a: self.StaticMeshComponent.SetHidden(false)
+  003e: self.StaticMeshComponent.SetTraceBlocking(true, true)
+  0053: self.StaticMeshComponent.SetActorCollision(true, true)
+  0068: self.StaticMeshComponent.WakeRigidBody()
+  007c: PlaySound(self._IdleLoopingSound, true, , true, , )
+  0090: return nothing
+  0092: <eos>
+
+function TnRollerMine.SetLocalLinearVelocity  (script 27 bytes)
+  0000: self.StaticMeshComponent.SetLocalLinearVelocity(V)
+  0018: return nothing
+  001a: <eos>
+
+function TnRollerMine.SetLocalAngularVelocity  (script 27 bytes)
+  0000: self.StaticMeshComponent.SetLocalAngularVelocity(V)
+  0018: return nothing
+  001a: <eos>
+
+function TnRollerMine.Tick  (script 97 bytes)
+  0000: (self._Fuse -= DeltaTime)
+  000c: if !((self._Fuse <= cast3f(0))) goto 0x0026
+  0019: Explode()
+  0023: goto 0x005e
+  0026: if !((!self._PlayingBuildupSound && (self._Fuse <= 1.5))) goto 0x005e
+  0042: PlaySound(self._BuildupSound, true, , true, , )
+  0056: self._PlayingBuildupSound = true
+  005e: return nothing
+  0060: <eos>
+
+function TnRollerMine.CanExplodeFromRigidBodyCollision  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnRollerMine.RigidBodyCollision  (script 110 bytes)
+  0000: RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  001a: if !((OtherComponent != none)) goto 0x003e
+  0025: HitGuy = Pawn(OtherComponent.Owner)
+  003e: if !((HitGuy == none)) goto 0x004b
+  0049: return nothing
+  004b: if !(!CanExplodeFromRigidBodyCollision(HitGuy)) goto 0x0061
+  005f: return nothing
+  0061: Explode()
+  006b: return nothing
+  006d: <eos>
+
+function TnRollerMine.DestroyedBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnRollerMine.TakeDamage  (script 96 bytes)
+  0000: nothing
+  0001: nothing
+  0002: TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: (self._Health -= Damage)
+  0037: if !((self._Health <= cast3f(0))) goto 0x005d
+  0044: DestroyedBy(EventInstigator)
+  0053: Explode()
+  005d: return nothing
+  005f: <eos>
+
+function TnRollerMine.TakeRadiusDamage  (script 141 bytes)
+  0000: TakeRadiusDamage(InstigatedBy, BaseDamage, DamageRadius, DamageType, Momentum, HurtOrigin, bFullDamage, DamageCauser)
+  002f: (self._Health -= (BaseDamage * (bFullDamage ? 1.0 : GetRadiusDamageScale(obj'Core.Math'.static.VSize((self.Location - HurtOrigin)), DamageRadius))))
+  0073: if !((self._Health <= cast3f(0))) goto 0x008a
+  0080: Explode()
+  008a: return nothing
+  008c: <eos>
+
+function TnRollerMine.Destroyed  (script 19 bytes)
+  0000: PlayExplosion()
+  000a: Destroyed()
+  0010: return nothing
+  0012: <eos>
+
+function TnRollerMine.Explode  (script 49 bytes)
+  0000: HurtRadius(self._DamageAmount, self._DamageRadius, -1.0, obj'TnDamageTypeRollerMine', self._DamageMomentum, self.Location, , , false)
+  002b: DestroyActor()
+  002e: return nothing
+  0030: <eos>
+
+function TnRollerMine.PlayExplosion  (script 74 bytes)
+  0000: self.WorldInfo.GetEmitterPool().SpawnEmitter(obj'FX_Explosives_p.FX.EXP_Mortar_FX', self.Location, self.Rotation, , , )
+  0033: PlaySound(self._ExplosionSound, true, , false, , )
+  0047: return nothing
+  0049: <eos>

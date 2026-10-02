@@ -1,0 +1,10 @@
+function TnInteractActionPlayAnimationOnBase.TriggerAction  (script 277 bytes)
+  0000: TnLatentInteractAction.TriggerAction(Interact)
+  000b: BaseMesh = Interact.BaseMesh
+  001f: Slot = AnimNodeSlot(BaseMesh.FindAnimNode(self.SlotNodeName))
+  0042: if !((Slot == none)) goto 0x00ac
+  004d: LogInternal(((("ERROR: Could not find slot node," $ cast57(self.SlotNodeName)) $ ", to play animation on interact:") @ cast56(Interact)), , , )
+  00aa: return nothing
+  00ac: Slot.PlayCustomAnimWithCallbacks(self.Animations.FindAnimation(Interact.GetCurrentUser()), 1.0, self.BlendTime, self.BlendTime, self.Looping, self.RestartIfAnimationPlaying, delegate.ActionComplete, delegate.ActionFailed)
+  0112: return nothing
+  0114: <eos>

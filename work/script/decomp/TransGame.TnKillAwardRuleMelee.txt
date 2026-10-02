@@ -1,0 +1,25 @@
+function TnKillAwardRuleMelee.CheckRule  (script 271 bytes)
+  0000: if !((DamageType != obj'TnDamageTypeMelee')) goto 0x0011
+  000f: return nothing
+  0011: switch (Killer.get_CurrentCharacter().Specialty)
+  0031: case "Soldier": (next 0x0056)
+  003d: XpEvent = obj'TnXpEventTypeKillSoldierMelee'
+  0048: StatId = 5652
+  0053: goto 0x00c7
+  0056: case "Leader": (next 0x007a)
+  0061: XpEvent = obj'TnXpEventTypeKillLeaderMelee'
+  006c: StatId = 5732
+  0077: goto 0x00c7
+  007a: case "Scientist": (next 0x00a1)
+  0088: XpEvent = obj'TnXpEventTypeKillScientistMelee'
+  0093: StatId = 5476
+  009e: goto 0x00c7
+  00a1: case "Scout": (next 0x00c4)
+  00ab: XpEvent = obj'TnXpEventTypeKillScoutMelee'
+  00b6: StatId = 5397
+  00c1: goto 0x00c7
+  00c4: default:
+  00c7: Killer.NotifyXpEvent(XpEvent)
+  00df: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, StatId, 0)
+  010c: return nothing
+  010e: <eos>

@@ -1,0 +1,71 @@
+function TnObjectiveMarkerTypeTransformerCampaign.GetLabelText  (script 145 bytes)
+  0000: MarkerPawn = TnPawn(MarkerData.MarkerBase)
+  001b: if !((MarkerPawn._IsDowned && !TnObjectiveMarkerTypeTransformerCampaign.IsAiBuddy(MarkerPawn))) goto 0x0045
+  003f: return self.DownedEnemyLabel
+  0045: AsTnAiPawn = TnAiPawn(MarkerPawn)
+  0055: if !(((AsTnAiPawn != none) && !AsTnAiPawn._ShouldDisplayName)) goto 0x0079
+  0076: return ""
+  0079: return TnObjectiveMarkerTypeSprite.GetLabelText(Owner, MarkerData)
+  008a: return return
+  0090: <eos>
+
+function TnObjectiveMarkerTypeTransformerCampaign.IsAiBuddy  (script 52 bytes)
+  0000: P = TnAiPawn(MarkerPawn)
+  0010: if !((P != none)) goto 0x002b
+  001b: return P._IsAiBuddy
+  002b: return false
+  002d: return return
+  0033: <eos>
+
+function TnObjectiveMarkerTypeTransformerCampaign.ShouldDisplayMarker  (script 420 bytes)
+  0000: if !((Displayer == Marker.MarkerBase)) goto 0x001c
+  001a: return false
+  001c: if !(!Displayer.IsSameTeam(Pawn(Marker.MarkerBase))) goto 0x0131
+  0049: PC = TnPlayerController(Displayer.Controller)
+  0062: if !(((PC != none) && !PC.IsUsingFineAim())) goto 0x0089
+  0087: return false
+  0089: MarkerBuffService = TnBuffService(TnPawn(Marker.MarkerBase).GetService('TnBuffService'))
+  00c0: P = TnPawn(Marker.MarkerBase)
+  00db: if !((P == none)) goto 0x00e8
+  00e6: return false
+  00e8: if !((NotEqual_InterfaceInterface(MarkerBuffService, TnBuffService(none)) && MarkerBuffService.HasBuff(obj'TnBuffCloakAi'))) goto 0x011c
+  011a: return false
+  011c: return HasLineOfSightTo(Displayer, P)
+  0131: AsTnAiPawn = TnAiPawn(Marker.MarkerBase)
+  014c: if !(((((AsTnAiPawn != none) && !AsTnAiPawn._IsAiBuddy) && !AsTnAiPawn._IsDowned) && !AsTnAiPawn._ShouldDisplayName)) goto 0x019b
+  0199: return false
+  019b: return true
+  019d: return return
+  01a3: <eos>
+
+function TnObjectiveMarkerTypeTransformerCampaign.GetMarkerSetup  (script 252 bytes)
+  0000: MarkerPawn = TnPawn(MarkerData.MarkerBase)
+  001b: EMT = GetEMT(Owner, MarkerData)
+  0035: switch (EMT)
+  003c: case 0: (next 0x009f)
+  0041: if !((MarkerPawn._IsDowned && !TnObjectiveMarkerTypeTransformerCampaign.IsAiBuddy(MarkerPawn))) goto 0x0082
+  0065: CreateInstances(self.DownedAllyMarkerSetup)
+  0074: Result = self.DownedAllyMarkerSetup
+  007f: goto 0x009c
+  0082: CreateInstances(self.AllyMarkerSetup)
+  0091: Result = self.AllyMarkerSetup
+  009c: goto 0x00c4
+  009f: case 1: (next 0x00c1)
+  00a4: CreateInstances(self.EnemyMarkerSetup)
+  00b3: Result = self.EnemyMarkerSetup
+  00be: goto 0x00c4
+  00c1: default:
+  00c4: Result.LabelZOffsetWS = (MarkerPawn.GetCollisionHeight() * 0.5)
+  00ef: return Result
+  00f5: return return
+  00fb: <eos>
+
+function TnObjectiveMarkerTypeTransformerCampaign.DrawLabel  (script 223 bytes)
+  0000: TnObjectiveMarkerTypeSprite.DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, LabelTransparency)
+  0029: EMT = GetEMT(Owner, MarkerData)
+  0043: W = TnWeapon(Owner.Weapon)
+  005c: if !(((((cast3a(EMT) == cast3a(0)) && (MarkerData.Description != "")) && (W != none)) && W.get_IsRepairWeapon())) goto 0x00da
+  00aa: DrawTransformerHealthBar(Setup, TnPawn(MarkerData.MarkerBase), LabelLocationSS, C, 0)
+  00da: return nothing
+  00dc: return nothing
+  00de: <eos>

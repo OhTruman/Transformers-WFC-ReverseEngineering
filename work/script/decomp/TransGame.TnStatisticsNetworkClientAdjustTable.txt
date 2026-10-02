@@ -1,0 +1,16 @@
+function TnStatisticsNetworkClientAdjustTable.RecordAdjustment  (script 344 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: Adjust.ClientAdjustFunction = ClientAdjustFunction
+  0023: Adjust.ClientError = ClientPC.get_PendingAdjustmentClientError()
+  0047: Adjust.ClientName = ClientPC.GetHumanReadableName()
+  006b: Adjust.Session_Id = Game.StatisticsSessionId
+  008a: Adjust.StateName = ClientPC.GetStateName()
+  00a7: if !((ClientPC.Pawn != none)) goto 0x0143
+  00bb: FormType = TnPlayerController(ClientPC).get_TransformerPawn().get_FormType()
+  00e7: Adjust.TransformerForm = cast52(FormType)
+  00ff: VehicleFormType = TnPlayerController(ClientPC).get_TransformerPawn().get_VehicleType()
+  012b: Adjust.VehicleFormType = cast52(VehicleFormType)
+  0143: self.Adjusts.Length[self.Adjusts] = Adjust
+  0155: return nothing
+  0157: <eos>

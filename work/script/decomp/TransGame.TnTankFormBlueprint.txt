@@ -1,0 +1,18 @@
+function TnTankFormBlueprint.get_FormType  (script 10 bytes)
+  0000: return 3
+  0003: return return
+  0009: <eos>
+
+function TnTankFormBlueprint.DoCreateVehicleForm  (script 37 bytes)
+  0000: return obj'Engine.Allocation'.static.CreateObject(obj'TnTankForm', OuterPawn)
+  001e: return return
+  0024: <eos>
+
+function TnTankFormBlueprint.CheckForErrors  (script 217 bytes)
+  0000: if !((self.SkeletalMesh == none)) goto 0x006a
+  000b: EmitCheckMessage(1, "Tank Form Blueprint: No skeletal mesh set.  Only valid for PC nulled out DLC", , )
+  0067: goto 0x00d6
+  006a: if !((self.SkeletalMesh.IsBoneInSkeleton(self.CannonBoneName) == false)) goto 0x00d6
+  0088: EmitCheckMessage(0, "Tank Form Blueprint: CannonBoneName not found in skeletal mesh", , )
+  00d6: return nothing
+  00d8: <eos>

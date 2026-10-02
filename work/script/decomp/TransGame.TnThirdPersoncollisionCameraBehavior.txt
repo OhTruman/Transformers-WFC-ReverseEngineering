@@ -1,0 +1,149 @@
+function TnThirdPersoncollisionCameraBehavior.set_QuickMoveSpeed  (script 14 bytes)
+  0000: self._QuickMoveSpeed = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.set_SlowMoveSpeed  (script 14 bytes)
+  0000: self._SlowMoveSpeed = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfWidth  (script 58 bytes)
+  0000: return (obj'Core.Math'.static.Tan(((self._Camera.GetFOVAngle() * 0.0174533) * 0.5)) * cast3f(100))
+  0033: return return
+  0039: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfHeight  (script 51 bytes)
+  0000: return (TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfWidth() / obj'Core.Math'.static.FMax(1.0, self._Camera.GetAspectRatio()))
+  002c: return return
+  0032: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.Activate  (script 11 bytes)
+  0000: self._OldOffsetIsValid = false
+  0008: return nothing
+  000a: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.SetActor  (script 14 bytes)
+  0000: self._Target = A
+  000b: return nothing
+  000d: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self._Camera = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.Update  (script 75 bytes)
+  0000: TnThirdPersoncollisionCameraBehavior.UpdateCameraState(Result)
+  000b: CameraLocation = TnThirdPersoncollisionCameraBehavior.CalculateCameraLocation(TnThirdPersoncollisionCameraBehavior.FindBestNearPlaneLocation())
+  001d: Result.Location = TnThirdPersoncollisionCameraBehavior.CalculateSmoothMoveLocation(DeltaTime, CameraLocation)
+  003e: return Result
+  0044: return return
+  004a: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.UpdateCameraState  (script 1150 bytes)
+  0000: if !(self._Camera.IsDebugStrategyActive()) goto 0x0018
+  0016: return nothing
+  0018: self._DesiredRotation = Result.Rotation
+  002e: self._DesiredLocation = TnThirdPersoncollisionCameraBehavior.CalculateClipPlaneCenter(Result.Location)
+  004a: self._CurrentLocation = TnThirdPersoncollisionCameraBehavior.CalculateClipPlaneCenter(self._Camera.GetCameraLocation())
+  0069: self._Origin = ((self._Target != none) ? self._Target.Location : Result.Location)
+  009a: self._InflatedNearPlaneExtents = obj'Core.Math'.static.MakeVector(0.01, TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfWidth(), TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfHeight())
+  00c4: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  0132: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  01a2: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  0212: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  0284: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  02f4: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  0366: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  03d8: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  044c: self._InflatedNearPlaneExtentsWS = ((NearPlaneBounds.Max - NearPlaneBounds.Min) * 0.5)
+  047b: return nothing
+  047d: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.FindBestNearPlaneLocation  (script 205 bytes)
+  0000: if !(self._ShowDebugDisplay) goto 0x009b
+  0009: obj'Engine.Debug'.static.DrawOrientedBox(self._Origin, self._DesiredRotation, self._InflatedNearPlaneExtents, obj'Core.Colors'.static.Blue(), )
+  003f: obj'Engine.Debug'.static.DrawSphere(TnThirdPersoncollisionCameraBehavior.CalculateCameraLocation(self._CurrentLocation), 20.0, 8, obj'Core.Colors'.static.Green(), )
+  0078: TnThirdPersoncollisionCameraBehavior.DrawFrame(self._DesiredRotation, self._DesiredLocation, obj'Core.Colors'.static.Blue())
+  009b: if !(TnThirdPersoncollisionCameraBehavior.IsClearPath(self._Origin, self._DesiredLocation)) goto 0x00b4
+  00ae: return self._DesiredLocation
+  00b4: self._SmoothTimeRemaining = 1.0
+  00bf: return TnThirdPersoncollisionCameraBehavior.FindNonCollidingNearPlaneLocation()
+  00c6: return return
+  00cc: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.FindNonCollidingNearPlaneLocation  (script 299 bytes)
+  0000: OriginToCameraCS = ((self._DesiredLocation - self._Origin) << self._DesiredRotation)
+  001a: Up = (vect(0,0,1) >> self._DesiredRotation)
+  0035: Diagonal = ((OriginToCameraCS * vect(1,1,0)) >> self._DesiredRotation)
+  0058: MaxDistanceUp = TnThirdPersoncollisionCameraBehavior.TraceNearClipPlane(self._Origin, (self._Origin + (Up * OriginToCameraCS.Z)))
+  0087: MaxDistanceDiagonal = TnThirdPersoncollisionCameraBehavior.TraceNearClipPlane((self._Origin + (Up * MaxDistanceUp)), ((self._Origin + (Up * MaxDistanceUp)) + Diagonal))
+  00c0: FinalLocation = ((self._Origin + (Up * MaxDistanceUp)) + (obj'Core.Math'.static.Normal(Diagonal) * MaxDistanceDiagonal))
+  00f2: if !(self._ShowDebugDisplay) goto 0x011e
+  00fb: TnThirdPersoncollisionCameraBehavior.DrawFrame(self._DesiredRotation, FinalLocation, obj'Core.Colors'.static.Yellow())
+  011e: return FinalLocation
+  0124: return return
+  012a: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.CalculateSmoothMoveLocation  (script 646 bytes)
+  0000: if !((self._Target == none)) goto 0x0019
+  000b: return vect(0,0,0)
+  0019: self._SmoothTimeRemaining = obj'Core.Math'.static.FMax(0.0, (self._SmoothTimeRemaining - DeltaTime))
+  003b: Temp = obj'Core.Math'.static.MakeAffineTransform(self._DesiredRotation, self._Target.Location)
+  0067: Offset = obj'Core.Math'.static.ReverseTransformPoint(NewLocation, Temp)
+  008a: if !((!self._OldOffsetIsValid || (self._SmoothTimeRemaining == cast3f(0)))) goto 0x00b7
+  00a4: self._OldOffsetCS = Offset
+  00af: self._OldOffsetIsValid = true
+  00b7: Diff = (Offset - self._OldOffsetCS)
+  00c9: (self._OldOffsetCS.X += (obj'Core.Math'.static.Sign(Diff.X) * obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(Diff.X), (((Diff.X < cast3f(0)) ? self._SlowMoveSpeed : self._QuickMoveSpeed) * DeltaTime))))
+  0151: (self._OldOffsetCS.Y += (obj'Core.Math'.static.Sign(Diff.Y) * obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(Diff.Y), (((Diff.Y > cast3f(0)) ? self._SlowMoveSpeed : self._QuickMoveSpeed) * DeltaTime))))
+  01d9: (self._OldOffsetCS.Z += (obj'Core.Math'.static.Sign(Diff.Z) * obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(Diff.Z), (((Diff.Z > cast3f(0)) ? self._SlowMoveSpeed : self._QuickMoveSpeed) * DeltaTime))))
+  0261: return obj'Core.Math'.static.TransformPoint(self._OldOffsetCS, Temp)
+  027f: return return
+  0285: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.IsClearPath  (script 131 bytes)
+  0000: HitActor = self._Camera.TraceCamera(HitLocation, HitNormal, TraceEnd, TraceBegin, , , , )
+  0031: if !((HitActor != none)) goto 0x003e
+  003c: return false
+  003e: HitActor = self._Camera.TraceCamera(HitLocation, HitNormal, TraceEnd, TraceEnd, , self._InflatedNearPlaneExtentsWS, , )
+  0073: return (HitActor == none)
+  007c: return return
+  0082: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.TraceNearClipPlane  (script 120 bytes)
+  0000: HitActor = self._Camera.TraceCamera(HitLocation, HitNormal, TraceEnd, TraceBegin, , self._InflatedNearPlaneExtentsWS, , )
+  0035: return ((HitActor == none) ? obj'Core.Math'.static.VSize((TraceEnd - TraceBegin)) : obj'Core.Math'.static.VSize((HitLocation - TraceBegin)))
+  0071: return return
+  0077: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.CalculateClipPlaneCenter  (script 28 bytes)
+  0000: return (CameraLocation + (cast39(self._DesiredRotation) * cast3f(100)))
+  0015: return return
+  001b: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.CalculateCameraLocation  (script 28 bytes)
+  0000: return (ClipPlaneCenter - (cast39(self._DesiredRotation) * cast3f(100)))
+  0015: return return
+  001b: <eos>
+
+function TnThirdPersoncollisionCameraBehavior.DrawFrame  (script 671 bytes)
+  0000: Transform = obj'Core.Math'.static.MakeAffineTransform(Orientation, Location)
+  0023: HalfWidth = TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfWidth()
+  002f: HalfHeight = TnThirdPersoncollisionCameraBehavior.get_NearPlaneHalfHeight()
+  003b: BL = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, -HalfWidth, -HalfHeight), Transform)
+  007f: TL = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, -HalfWidth, HalfHeight), Transform)
+  00c1: BR = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, HalfWidth, -HalfHeight), Transform)
+  0103: TR = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, HalfWidth, HalfHeight), Transform)
+  0143: CameraLocation = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(cast3f(-100), 0.0, 0.0), Transform)
+  0184: obj'Engine.Debug'.static.DrawLine(BL, BR, DrawColor, )
+  01a7: obj'Engine.Debug'.static.DrawLine(BR, TR, DrawColor, )
+  01ca: obj'Engine.Debug'.static.DrawLine(TR, TL, DrawColor, )
+  01ed: obj'Engine.Debug'.static.DrawLine(TL, BL, DrawColor, )
+  0210: obj'Engine.Debug'.static.DrawLine(CameraLocation, BL, DrawColor, )
+  0233: obj'Engine.Debug'.static.DrawLine(CameraLocation, TL, DrawColor, )
+  0256: obj'Engine.Debug'.static.DrawLine(CameraLocation, BR, DrawColor, )
+  0279: obj'Engine.Debug'.static.DrawLine(CameraLocation, TR, DrawColor, )
+  029c: return nothing
+  029e: <eos>

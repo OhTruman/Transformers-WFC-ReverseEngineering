@@ -1,0 +1,96 @@
+function TnOrbitActorCameraBehavior.Activate  (script 31 bytes)
+  0000: Activate(Result)
+  000b: SetTargeting(false)
+  0016: TnOrbitActorCameraBehavior.CreateDistanceEaser()
+  001c: return nothing
+  001e: <eos>
+
+function TnOrbitActorCameraBehavior.CreateDistanceEaser  (script 96 bytes)
+  0000: if !((self.DistanceEaser != none)) goto 0x000d
+  000b: return nothing
+  000d: self.DistanceEaser = new(self, nothing, obj'HM_Engine.HmEaseInOut', nothing, DeltaTime)
+  0021: self.DistanceEaser.Range = self.DistanceFromAnchor
+  0035: self.DistanceEaser.EaseInTime = self.DistanceEaseInTime
+  0049: self.DistanceEaser.EaseOutTime = self.DistanceEaseOutTime
+  005d: return nothing
+  005f: <eos>
+
+function TnOrbitActorCameraBehavior.Reset  (script 30 bytes)
+  0000: TnOrbitActorCameraBehavior.UpdateEaser(0.0)
+  000b: return Reset(Result)
+  0017: return return
+  001d: <eos>
+
+function TnOrbitActorCameraBehavior.ShouldSlide  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnOrbitActorCameraBehavior.Recenter  (script 120 bytes)
+  0000: if !((self.ActorToOrbit != none)) goto 0x005a
+  000b: self.OrbitRotation = self.ActorToOrbit.Rotation
+  001f: self.OrbitRotation.Yaw = cast44((cast3f(self.ActorToOrbit.Rotation.Yaw) + (cast3f(180) * 182.0444489)))
+  005a: NewLocation = CalcOrbitLocation()
+  006b: return NewLocation
+  0071: return return
+  0077: <eos>
+
+function TnOrbitActorCameraBehavior.SetTargeting  (script 45 bytes)
+  0000: if !(Active) goto 0x001b
+  0009: SetFollowRate(self.TargetingFollowRate)
+  0018: goto 0x002a
+  001b: SetFollowRate(self.NavigationFollowRate)
+  002a: return nothing
+  002c: <eos>
+
+function TnOrbitActorCameraBehavior.UpdateEaser  (script 88 bytes)
+  0000: NormalizedSpeed = ((self.ActorToOrbit == none) ? 0.0 : (obj'Core.Math'.static.VSize(self.ActorToOrbit.Velocity) / self.ApproximateMaxSpeed))
+  0038: self.DistanceEaser.Update(DeltaTime, NormalizedSpeed)
+  0055: return nothing
+  0057: <eos>
+
+function TnOrbitActorCameraBehavior.Update  (script 69 bytes)
+  0000: TnOrbitActorCameraBehavior.UpdateEaser(DeltaTime)
+  000b: SetOrbitDistance(self.DistanceEaser.GetValue())
+  0028: return Update(DeltaTime, Result, CI)
+  003e: return return
+  0044: <eos>
+
+function TnOrbitActorCameraBehavior.SetNavigationFollowRate  (script 14 bytes)
+  0000: self.NavigationFollowRate = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitActorCameraBehavior.SetTargetingFollowRate  (script 14 bytes)
+  0000: self.TargetingFollowRate = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitActorCameraBehavior.SetMinDistanceFromAnchor  (script 40 bytes)
+  0000: TnOrbitActorCameraBehavior.CreateDistanceEaser()
+  0006: self.DistanceEaser.Range.Min = D
+  0025: return nothing
+  0027: <eos>
+
+function TnOrbitActorCameraBehavior.SetMaxDistanceFromAnchor  (script 40 bytes)
+  0000: TnOrbitActorCameraBehavior.CreateDistanceEaser()
+  0006: self.DistanceEaser.Range.Max = D
+  0025: return nothing
+  0027: <eos>
+
+function TnOrbitActorCameraBehavior.SetDistanceEaseOutTime  (script 29 bytes)
+  0000: TnOrbitActorCameraBehavior.CreateDistanceEaser()
+  0006: self.DistanceEaser.EaseOutTime = Time
+  001a: return nothing
+  001c: <eos>
+
+function TnOrbitActorCameraBehavior.SetDistanceEaseInTime  (script 29 bytes)
+  0000: TnOrbitActorCameraBehavior.CreateDistanceEaser()
+  0006: self.DistanceEaser.EaseInTime = Time
+  001a: return nothing
+  001c: <eos>
+
+function TnOrbitActorCameraBehavior.SetEaser  (script 14 bytes)
+  0000: self.DistanceEaser = easer
+  000b: return nothing
+  000d: <eos>

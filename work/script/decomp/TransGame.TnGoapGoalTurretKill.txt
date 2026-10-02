@@ -1,0 +1,15 @@
+function TnGoapGoalTurretKill.PopulateGoals  (script 210 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: TargetSubject = WorldState.GetSubject(obj'TnAiWorldStateTargetIsDead')
+  0035: if !((TargetSubject == none)) goto 0x0042
+  0040: return false
+  0042: C = TnAiController(self.BoundController)
+  0052: ScriptedTurret = C.GetUsableScriptedTurret()
+  006b: if !(((C == none) || (ScriptedTurret == none))) goto 0x0085
+  0083: return false
+  0085: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateTargetIsDead', TargetSubject)
+  00a7: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateTurret', ScriptedTurret)
+  00c9: return true
+  00cb: return return
+  00d1: <eos>

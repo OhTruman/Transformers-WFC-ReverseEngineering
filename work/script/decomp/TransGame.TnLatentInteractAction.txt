@@ -1,0 +1,26 @@
+function TnLatentInteractAction.TriggerAction  (script 14 bytes)
+  0000: self.OwningInteract = Interact
+  000b: return nothing
+  000d: <eos>
+
+function TnLatentInteractAction.ActionComplete  (script 27 bytes)
+  0000: if !(self.BlockingAction) goto 0x0018
+  0009: OnActionComplete()
+  0018: return nothing
+  001a: <eos>
+
+function TnLatentInteractAction.ActionFailed  (script 54 bytes)
+  0000: if !((self.BlockingAction && (cast3a(self.OwningInteract.Role) == cast3a(3)))) goto 0x0033
+  0024: OnActionComplete()
+  0033: return nothing
+  0035: <eos>
+
+function TnLatentInteractAction.OnActionComplete  (script 23 bytes)
+  0000: self.OwningInteract.LatentActionComplete(self)
+  0014: return nothing
+  0016: <eos>
+
+function TnLatentInteractAction.WaitForCompletion  (script 34 bytes)
+  0000: return (self.BlockingAction && EventMatchesTrigger(EventType))
+  001b: return return
+  0021: <eos>

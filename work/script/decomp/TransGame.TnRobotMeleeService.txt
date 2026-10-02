@@ -1,0 +1,64 @@
+function TnRobotMeleeService.get_LastMeleeWasSuccessful  (script 27 bytes)
+  0000: return self.MeleeManager.get_LastMeleeWasSuccessful()
+  0014: return return
+  001a: <eos>
+
+function TnRobotMeleeService.Initialize  (script 25 bytes)
+  0000: self.MeleeManager = MeleeManager_
+  000b: self.BuffManager = BuffManager_
+  0016: return nothing
+  0018: <eos>
+
+function TnRobotMeleeService.StartMeleeAttack  (script 37 bytes)
+  0000: self.MeleeManager.StartMeleeAttack(MeleeType, MeleeTarget, MeleeCompleteEvent)
+  0022: return nothing
+  0024: <eos>
+
+function TnRobotMeleeService.AbortMeleeAttack  (script 22 bytes)
+  0000: self.MeleeManager.AbortMeleeAttack()
+  0013: return nothing
+  0015: <eos>
+
+function TnRobotMeleeService.BeginDamageSweep  (script 42 bytes)
+  0000: self.MeleeManager.BeginDamageSweep(Duration, SocketName, Extent, ZOverride)
+  0027: return nothing
+  0029: <eos>
+
+function TnRobotMeleeService.BeginImpactSweep  (script 52 bytes)
+  0000: self.MeleeManager.BeginImpactSweep(Duration, SocketName, Extent, ZOverride, DamageOverride, MomentumScalar)
+  0031: return nothing
+  0033: <eos>
+
+function TnRobotMeleeService.IsMeleeing  (script 104 bytes)
+  0000: if !((self.MeleeManager == none)) goto 0x000d
+  000b: return false
+  000d: return (self.MeleeManager.get_IsAttacking() && ((cast3a(MeleeType) == cast3a(10)) || (cast3a(MeleeType) == cast3a(self.MeleeManager.get_CurrentAttack().MeleeType))))
+  0061: return return
+  0067: <eos>
+
+function TnRobotMeleeService.ProcessHit  (script 42 bytes)
+  0000: self.MeleeManager.ProcessHit(Impact, HitType, DamageOverride, MomentumScalar)
+  0027: return nothing
+  0029: <eos>
+
+function TnRobotMeleeService.AdjustAcceleration  (script 54 bytes)
+  0000: if !((self.MeleeManager == none)) goto 0x0011
+  000b: return Accel
+  0011: return self.MeleeManager.AdjustAcceleration(Accel, DeltaTime)
+  002f: return return
+  0035: <eos>
+
+function TnRobotMeleeService.PlayHitReaction  (script 38 bytes)
+  0000: self.MeleeManager.PlayHitReaction(DamageType, Attacker, IgnoreReplicatedReaction)
+  0023: return nothing
+  0025: <eos>
+
+function TnRobotMeleeService.EquipMeleeWeapon  (script 22 bytes)
+  0000: self.MeleeManager.EquipMeleeWeapon()
+  0013: return nothing
+  0015: <eos>
+
+function TnRobotMeleeService.UnequipMeleeWeapon  (script 22 bytes)
+  0000: self.MeleeManager.UnequipMeleeWeapon()
+  0013: return nothing
+  0015: <eos>

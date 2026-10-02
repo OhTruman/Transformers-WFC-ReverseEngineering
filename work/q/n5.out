@@ -1,0 +1,116 @@
+=== func 0x82b0f8f0
+  Function_82B0F8F0 entry=82b0f8f0 body=[[82b0f8f0, 82b0fa57]]
+  callee FUN_830eacc4@830eacc4
+  callee Function_82B07BD0@82b07bd0
+  callee Function_82AEA400@82aea400
+  ref 82b0f8f0 DATA from 83709ac8 in <nofunc>
+  ref 82b0f8f0 DATA from 83600b94 in <nofunc>
+=== decomp 0x82b0f8f0
+
+void Function_82B0F8F0(undefined8 param_1,undefined8 param_2,undefined4 *param_3)
+
+{
+  byte bVar1;
+  int iVar2;
+  int iVar3;
+  undefined8 uVar4;
+  undefined4 uVar5;
+  char *pcVar6;
+  undefined1 *puVar7;
+  undefined4 *puVar8;
+  undefined1 auStack_70 [8];
+  undefined4 local_68;
+  undefined4 local_64;
+  undefined4 local_60;
+  
+  uVar4 = FUN_830eacc4();
+  DAT_8376a3e8 = (undefined4 *)0x0;
+  iVar3 = (int)param_2;
+  bVar1 = **(byte **)(iVar3 + 0xc);
+  *(byte **)(iVar3 + 0xc) = *(byte **)(iVar3 + 0xc) + 1;
+  (*(code *)(&DAT_83819910)[bVar1])(*(undefined4 *)(iVar3 + 8));
+  if (DAT_8376a3ec != (int *)0x0) {
+    (**(code **)(*DAT_8376a3ec + 0xd0))(DAT_8376a3ec,DAT_8376a3e0);
+  }
+  puVar7 = (undefined1 *)DAT_8376a3e8;
+  if (DAT_8376a3e8 == (undefined4 *)0x0) {
+    puVar7 = auStack_70;
+  }
+  DAT_8376a3e8 = (undefined4 *)0x0;
+  local_68 = 0;
+  local_64 = 0;
+  local_60 = 0;
+  bVar1 = **(byte **)(iVar3 + 0xc);
+  *(byte **)(iVar3 + 0xc) = *(byte **)(iVar3 + 0xc) + 1;
+  (*(code *)(&DAT_83819910)[bVar1])(*(undefined4 *)(iVar3 + 8),param_2,&local_68);
+  if (DAT_8376a3ec != (int *)0x0) {
+    (**(code **)(*DAT_8376a3ec + 0xd0))(DAT_8376a3ec,DAT_8376a3e0);
+  }
+  puVar8 = DAT_8376a3e8;
+  if (DAT_8376a3e8 == (undefined4 *)0x0) {
+    puVar8 = &local_68;
+  }
+  iVar2 = *(int *)(iVar3 + 0xc);
+  pcVar6 = (char *)(iVar2 + 1);
+  *(char **)(iVar3 + 0xc) = pcVar6;
+  if (*pcVar6 == 'A') {
+    *(int *)(iVar3 + 0xc) = iVar2 + 2;
+    (*DAT_83819a14)(*(undefined4 *)(iVar3 + 8),param_2,0);
+  }
+  uVar5 = Function_82B07BD0(uVar4,puVar7,puVar8);
+  *param_3 = uVar5;
+  Function_82AEA400(&local_68);
+  return;
+}
+
+
+=== func 0x82b0e220
+  Function_82B0E220 entry=82b0e220 body=[[82b0e220, 82b0e353]]
+  callee Function_82B02218@82b02218
+  callee FUN_830eacd8@830eacd8
+  ref 82b0e220 DATA from 83600c48 in Function_83600BC8@83600bc8
+  ref 82b0e220 DATA from 83709afc in <nofunc>
+=== decomp 0x82b0e220
+
+void Function_82B0E220(undefined8 param_1,undefined8 param_2)
+
+{
+  byte bVar1;
+  int iVar2;
+  int iVar3;
+  undefined8 uVar4;
+  char *pcVar5;
+  undefined1 local_150 [4];
+  undefined4 local_14c;
+  undefined4 local_148 [6];
+  undefined1 auStack_130 [304];
+  
+  uVar4 = FUN_830eacd8();
+  iVar3 = (int)param_2;
+  local_14c = 0;
+  bVar1 = **(byte **)(iVar3 + 0xc);
+  *(byte **)(iVar3 + 0xc) = *(byte **)(iVar3 + 0xc) + 1;
+  (*(code *)(&DAT_83819910)[bVar1])(*(undefined4 *)(iVar3 + 8));
+  local_148[0] = 0;
+  bVar1 = **(byte **)(iVar3 + 0xc);
+  *(byte **)(iVar3 + 0xc) = *(byte **)(iVar3 + 0xc) + 1;
+  (*(code *)(&DAT_83819910)[bVar1])(*(undefined4 *)(iVar3 + 8),param_2,local_148);
+  bVar1 = **(byte **)(iVar3 + 0xc);
+  *(byte **)(iVar3 + 0xc) = *(byte **)(iVar3 + 0xc) + 1;
+  (*(code *)(&DAT_83819910)[bVar1])(*(undefined4 *)(iVar3 + 8),param_2,auStack_130);
+  local_150[0] = 0;
+  bVar1 = **(byte **)(iVar3 + 0xc);
+  *(byte **)(iVar3 + 0xc) = *(byte **)(iVar3 + 0xc) + 1;
+  (*(code *)(&DAT_83819910)[bVar1])(*(undefined4 *)(iVar3 + 8),param_2,local_150);
+  iVar2 = *(int *)(iVar3 + 0xc);
+  pcVar5 = (char *)(iVar2 + 1);
+  *(char **)(iVar3 + 0xc) = pcVar5;
+  if (*pcVar5 == 'A') {
+    *(int *)(iVar3 + 0xc) = iVar2 + 2;
+    (*DAT_83819a14)(*(undefined4 *)(iVar3 + 8),param_2,0);
+  }
+  Function_82B02218(uVar4,local_14c,local_148[0],auStack_130,local_150[0]);
+  return;
+}
+
+

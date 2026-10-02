@@ -1,0 +1,28 @@
+function HmParticleInterceptor.Start  (script 19 bytes)
+  0000: self.WorldInfo.ParticleInterceptor = self
+  0010: return nothing
+  0012: <eos>
+
+function HmParticleInterceptor.Stop  (script 19 bytes)
+  0000: self.WorldInfo.ParticleInterceptor = none
+  0010: return nothing
+  0012: <eos>
+
+function HmParticleInterceptor.AddParticleSystemEvent  (script 68 bytes)
+  0000: nothing
+  0001: AParticleEvent.InParticle = InParticle
+  0017: AParticleEvent.bDestroyOnFinish = bDestroyOnFinish
+  002f: self.ParticleEvents.Length[self.ParticleEvents] = AParticleEvent
+  0041: return nothing
+  0043: <eos>
+
+function HmParticleInterceptor.WasParticlePlayed  (script 76 bytes)
+  0000: I = 0
+  0007: if !((I < self.ParticleEvents.Length)) goto 0x0043
+  0017: if !((I[self.ParticleEvents].InParticle == AParticle)) goto 0x0039
+  0037: return true
+  0039: AddAdd_PreInt(I)
+  0040: goto 0x0007
+  0043: return false
+  0045: return return
+  004b: <eos>

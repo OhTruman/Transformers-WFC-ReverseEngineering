@@ -1,0 +1,54 @@
+function HmOrbitTargetStickinessCameraBehavior.SetActor  (script 19 bytes)
+  0000: self.Player = Pawn(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmOrbitTargetStickinessCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitTargetStickinessCameraBehavior.SetTargetingData  (script 14 bytes)
+  0000: self.CameraTargetingData = TargetingData
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitTargetStickinessCameraBehavior.Activate  (script 33 bytes)
+  0000: self.PreviousOrbitRotation = Result.OrbitRotation
+  0016: self.WasRecentering = false
+  001e: return nothing
+  0020: <eos>
+
+function HmOrbitTargetStickinessCameraBehavior.Reset  (script 43 bytes)
+  0000: self.PreviousOrbitRotation = Result.OrbitRotation
+  0016: self.WasRecentering = false
+  001e: return Result
+  0024: return return
+  002a: <eos>
+
+function HmOrbitTargetStickinessCameraBehavior.FocusOnLookAtTarget  (script 21 bytes)
+  0000: self.WasRecentering = true
+  0008: return Result
+  000e: return return
+  0014: <eos>
+
+function HmOrbitTargetStickinessCameraBehavior.Update  (script 530 bytes)
+  0000: IsRecentering = (CI.ResetCamera || Result.Recentering)
+  002e: if !((IsRecentering || self.WasRecentering)) goto 0x006b
+  0042: self.WasRecentering = IsRecentering
+  004f: self.PreviousOrbitRotation = Result.OrbitRotation
+  0065: return Result
+  006b: RotationDelta = obj'Core.Math'.static.Normalize((Result.OrbitRotation - self.PreviousOrbitRotation))
+  009c: (RotationDelta.Yaw *= self.CameraTargetingData.TargetStickiness.YawStickiness)
+  00c7: (RotationDelta.Pitch *= self.CameraTargetingData.TargetStickiness.PitchStickiness)
+  00f2: Result.OrbitRotation = self.PreviousOrbitRotation
+  0108: if !((self.Player != none)) goto 0x012c
+  0113: PC = HmPlayerController(self.Player.Controller)
+  012c: if !((PC != none)) goto 0x01b3
+  0137: CameraLocation = (self.AnchorPoint.Location + (Result.OrbitLocationOffset >> Result.OrbitRotation))
+  0170: Result.OrbitRotation = PC.ApplyLookCompensatedStrafeStickiness(Result.OrbitRotation, CameraLocation, RotationDelta, DeltaTime)
+  01b3: Result.OrbitRotation = obj'Core.Math'.static.Normalize((Result.OrbitRotation + RotationDelta))
+  01ef: self.PreviousOrbitRotation = Result.OrbitRotation
+  0205: return Result
+  020b: return return
+  0211: <eos>

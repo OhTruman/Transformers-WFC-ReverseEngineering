@@ -1,0 +1,71 @@
+function TnCompetitiveScoreDefinition.GetScore  (script 310 bytes)
+  0000: AsKillEvent = class<TnCompetitiveScoreEventKill>(EventType)
+  0010: if !((AsKillEvent != none)) goto 0x0071
+  001b: Index = self.KillMultipliers.Find('EventType',EventType)
+  0037: return (TnCompetitiveScoreDefinition.GetKillScore(TargetActor) * ((Index == -1) ? 1.0 : Index[self.KillMultipliers].Value))
+  0071: AsProjectileEvent = class<TnCompetitiveScoreEventKillProjectile>(EventType)
+  0081: if !((AsProjectileEvent != none)) goto 0x00e7
+  008c: Index = self.ProjectileKillScores.Find('ClassString',TnCompetitiveScoreDefinition.BuildClassStringFromProjectileClass(class<TnProjectile>(TargetActor.get_Class())))
+  00ba: return ((Index == -1) ? 0.0 : Index[self.ProjectileKillScores].Score)
+  00e7: Index = self.ScoreEvents.Find('EventType',EventType)
+  0103: if !((Index == -1)) goto 0x0118
+  0112: return 0.0
+  0118: return Index[self.ScoreEvents].Value
+  012f: return return
+  0135: <eos>
+
+function TnCompetitiveScoreDefinition.GetMultiplier  (script 79 bytes)
+  0000: Index = self.MultiplierEvents.Find('EventType',EventType)
+  001c: if !((Index == -1)) goto 0x0031
+  002b: return 0.0
+  0031: return Index[self.MultiplierEvents].Value
+  0048: return return
+  004e: <eos>
+
+function TnCompetitiveScoreDefinition.GetKillScore  (script 287 bytes)
+  0000: Killed = TnAiController(KilledActor)
+  0010: if !((Killed == none)) goto 0x0021
+  001b: return 0.0
+  0021: KilledDef = Killed._TemplateDefinition
+  0035: Index = self.AIScores.Find('TypeString',TnCompetitiveScoreDefinition.BuildTypeStringFromDef(KilledDef))
+  0057: if !((Index == -1)) goto 0x00f6
+  0066: LogInternal((("ERROR:  Attempting to assign competitive coop score failed because killed AIDef:," @ cast56(KilledDef)) @ ", does not exist in the scoring array"), , , )
+  00f0: return 0.0
+  00f6: Score = Index[self.AIScores].Score
+  0112: return Score
+  0118: return return
+  011e: <eos>
+
+function TnCompetitiveScoreDefinition.OnPostEditChange  (script 223 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((PropertyName == 'Type')) goto 0x0075
+  001e: I = 0
+  0025: if !((I < self.AIScores.Length)) goto 0x0072
+  0035: I[self.AIScores].TypeString = TnCompetitiveScoreDefinition.BuildTypeStringFromDef(I[self.AIScores].Type)
+  0068: AddAdd_PreInt(I)
+  006f: goto 0x0025
+  0072: goto 0x00dc
+  0075: if !((PropertyName == 'ProjectileClass')) goto 0x00dc
+  0088: I = 0
+  008f: if !((I < self.ProjectileKillScores.Length)) goto 0x00dc
+  009f: I[self.ProjectileKillScores].ClassString = TnCompetitiveScoreDefinition.BuildClassStringFromProjectileClass(I[self.ProjectileKillScores].ProjectileClass)
+  00d2: AddAdd_PreInt(I)
+  00d9: goto 0x008f
+  00dc: return nothing
+  00de: <eos>
+
+function TnCompetitiveScoreDefinition.BuildTypeStringFromDef  (script 23 bytes)
+  0000: return PathName(Def)
+  0010: return return
+  0016: <eos>
+
+function TnCompetitiveScoreDefinition.BuildClassStringFromProjectileClass  (script 15 bytes)
+  0000: return cast56(ProjClass)
+  0008: return return
+  000e: <eos>
+
+function TnCompetitiveScoreDefinition.CheckForErrors  (script 83 bytes)
+  0000: if !((self.MaxMultiplier < 1.0)) goto 0x0050
+  000f: EmitCheckMessage(0, "Max Multiplier set below 1.0, this will not work!", , )
+  0050: return nothing
+  0052: <eos>

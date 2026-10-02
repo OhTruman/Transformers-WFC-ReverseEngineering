@@ -1,0 +1,133 @@
+function TnFineAimManager.set_TargetSnapTimeout  (script 14 bytes)
+  0000: self._TargetSnapTimeout = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnFineAimManager.set_GroundSpeedMultiplier  (script 14 bytes)
+  0000: self._GroundSpeedMultiplier = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnFineAimManager.Initialize  (script 36 bytes)
+  0000: self.Owner = P
+  000b: self.CameraStrategyManager = CSM
+  0016: self.PlayerTargeting = pt
+  0021: return nothing
+  0023: <eos>
+
+function TnFineAimManager.IsFineAiming  (script 14 bytes)
+  0000: return self.bFineAiming
+  0007: return return
+  000d: <eos>
+
+function TnFineAimManager.SetWantsToFineAim  (script 104 bytes)
+  0000: self.bWantsToFineAim = WTFA
+  000d: if !((((self.Owner != none) && (cast3a(self.Owner.Role) == cast3a(3))) && !self.Owner.IsLocallyControlled())) goto 0x0065
+  004d: if !(self.bWantsToFineAim) goto 0x005f
+  0056: TnFineAimManager.StartFineAim()
+  005c: goto 0x0065
+  005f: TnFineAimManager.StopFineAim()
+  0065: return nothing
+  0067: <eos>
+
+function TnFineAimManager.StartFineAim  (script 197 bytes)
+  0000: if !((self.bFineAiming || (self.Owner == none))) goto 0x0018
+  0016: return nothing
+  0018: self.bFineAiming = true
+  0020: PP = TnPlayerPawn(self.Owner)
+  0030: if !((PP != none)) goto 0x0067
+  003b: PP.StartFineAim()
+  004e: PP.SetSpeedMultiplier(self._GroundSpeedMultiplier, self)
+  0067: if !(self.Owner.IsLocallyControlled()) goto 0x00c2
+  007d: if !(TnFineAimManager.CanTargetSnap()) goto 0x00aa
+  0086: TargetSnapTarget = self.PlayerTargeting.GetTargetSnapTarget()
+  009f: self.TargetSnapTimeoutRemaining = self._TargetSnapTimeout
+  00aa: self.CameraStrategyManager.StartFineAim(TargetSnapTarget)
+  00c2: return nothing
+  00c4: <eos>
+
+function TnFineAimManager.CanTargetSnap  (script 129 bytes)
+  0000: if !((self.TargetSnapTimeoutRemaining > cast3f(0))) goto 0x000f
+  000d: return false
+  000f: if !(((self.Owner.Weapon != none) && TnWeapon(self.Owner.Weapon).HasFineAimScope)) goto 0x0047
+  0045: return false
+  0047: if !(!TnGameReplicationInfo(self.Owner.WorldInfo.GRI).CanTargetSnap()) goto 0x0078
+  0076: return false
+  0078: return true
+  007a: return return
+  0080: <eos>
+
+function TnFineAimManager.StopFineAim  (script 144 bytes)
+  0000: if !((!self.bFineAiming || (self.Owner == none))) goto 0x001a
+  0018: return nothing
+  001a: self.bFineAiming = false
+  0022: PP = TnPlayerPawn(self.Owner)
+  0032: if !((PP != none)) goto 0x0064
+  003d: PP.StopFineAim()
+  0050: PP.RemoveSpeedMultiplier(self)
+  0064: if !(self.Owner.IsLocallyControlled()) goto 0x008d
+  007a: self.CameraStrategyManager.StopFineAim()
+  008d: return nothing
+  008f: <eos>
+
+function TnFineAimManager.UpdateTargetFocuserParams  (script 243 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self.Owner.Controller == none)) goto 0x0023
+  0021: return nothing
+  0023: Cam = TnCamera(TnPlayerController(self.Owner.Controller).PlayerCamera)
+  004a: if !(((Cam != none) && self.Owner.IsLocallyControlled())) goto 0x00f0
+  006d: W = TnWeapon(self.Owner.Weapon)
+  0086: if !(((self.bFineAiming && (W != none)) && W.ShouldApplyFineAimTargetFocus())) goto 0x00dd
+  00b4: Cam.SetTargetFocusParams(W.GetFineAimTargetFocusParams())
+  00da: goto 0x00f0
+  00dd: Cam.ClearTargetFocusParams()
+  00f0: return nothing
+  00f2: <eos>
+
+function TnFineAimManager.Tick  (script 196 bytes)
+  0000: if !(((self.Owner == none) || (self.Owner.Controller == none))) goto 0x0023
+  0021: return nothing
+  0023: if !(((self.bWantsToFineAim && !self.bFineAiming) && TnPlayerController(self.Owner.Controller).CanFineAim())) goto 0x0065
+  005f: TnFineAimManager.StartFineAim()
+  0065: if !(((!self.bWantsToFineAim || !TnPlayerController(self.Owner.Controller).CanFineAim()) && self.bFineAiming)) goto 0x00a9
+  00a3: TnFineAimManager.StopFineAim()
+  00a9: (self.TargetSnapTimeoutRemaining -= DeltaTime)
+  00b5: TnFineAimManager.CheckSnipingOverheat()
+  00bb: TnFineAimManager.UpdateTargetFocuserParams()
+  00c1: return nothing
+  00c3: <eos>
+
+function TnFineAimManager.CheckSnipingOverheat  (script 137 bytes)
+  0000: if !(!self.bFineAiming) goto 0x000d
+  000b: return nothing
+  000d: PP = TnPlayerPawn(self.Owner)
+  001d: if !((PP == none)) goto 0x002a
+  0028: return nothing
+  002a: CurrentWeapon = TnWeapon(PP.Weapon)
+  0043: if !((CurrentWeapon == none)) goto 0x0050
+  004e: return nothing
+  0050: if !(!CurrentWeapon.HasFineAimScope) goto 0x0066
+  0064: return nothing
+  0066: if !(!CurrentWeapon.IsOverheating()) goto 0x0080
+  007e: return nothing
+  0080: TnFineAimManager.StopFineAim()
+  0086: return nothing
+  0088: <eos>
+
+function TnFineAimManager.NotifyTakeHit  (script 190 bytes)
+  0000: if !(!self.bFineAiming) goto 0x000d
+  000b: return nothing
+  000d: PP = TnPlayerPawn(self.Owner)
+  001d: if !((PP == none)) goto 0x002a
+  0028: return nothing
+  002a: CurrentWeapon = TnWeapon(PP.Weapon)
+  0043: if !((CurrentWeapon == none)) goto 0x0050
+  004e: return nothing
+  0050: if !(!CurrentWeapon.HasFineAimScope) goto 0x0066
+  0064: return nothing
+  0066: BuffService = TnBuffService(PP.GetService('TnBuffService'))
+  008d: if !(NotEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x00bb
+  00a1: BuffService.AddSelfBuff(obj'TnBuffScrambleHudOnDamageWhenSnipingInFineAim', 0)
+  00bb: return nothing
+  00bd: <eos>

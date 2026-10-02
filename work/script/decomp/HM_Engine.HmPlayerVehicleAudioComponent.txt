@@ -1,0 +1,25 @@
+function HmPlayerVehicleAudioComponent.Tick  (script 65 bytes)
+  0000: if !((none == self.OwnerPawn)) goto 0x000d
+  000b: return nothing
+  000d: HmVehicleAudioComponent.Tick(DeltaTime)
+  0018: if !((false == self.IsEntered)) goto 0x0026
+  0024: return nothing
+  0026: self.Impl.Update(DeltaTime)
+  003e: return nothing
+  0040: <eos>
+
+function HmPlayerVehicleAudioComponent.Attached  (script 42 bytes)
+  0000: if !((true == self.IsEntered)) goto 0x000e
+  000c: return nothing
+  000e: self.Impl.Attached()
+  0021: HmVehicleAudioComponent.Attached()
+  0027: return nothing
+  0029: <eos>
+
+function HmPlayerVehicleAudioComponent.Detached  (script 48 bytes)
+  0000: if !((false == self.IsEntered)) goto 0x000e
+  000c: return nothing
+  000e: self.Impl.Detached()
+  0021: HmVehicleAudioComponent.Detached(bWillReattach)
+  002d: return nothing
+  002f: <eos>

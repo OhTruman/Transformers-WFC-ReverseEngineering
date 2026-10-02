@@ -1,0 +1,61 @@
+function TnCampaignTestingPolicy.HandleFrontendReadyToPlay  (script 27 bytes)
+  0000: obj'TnGame'.static.OpenSoloGameLobby(self._MapId)
+  0018: return nothing
+  001a: <eos>
+
+function TnCampaignTestingPolicy.HandleEnterGameLobby  (script 43 bytes)
+  0000: self._GameLobbyGame = TnGameLobbyGame(Game)
+  0010: self._GameLobbyGame.HostRequestMapID(self._MapId)
+  0028: return nothing
+  002a: <eos>
+
+function TnCampaignTestingPolicy.AssignCharacters  (script 103 bytes)
+  0000: foreach Game.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0063)
+  0029: if !((PC.get_CurrentCharacter().CharacterName == "")) goto 0x0062
+  004e: SelectAvailableCharacter(Game, PC)
+  0062: iternext
+  0063: iterpop
+  0064: return nothing
+  0066: <eos>
+
+function TnCampaignTestingPolicy.HandleEnterGame  (script 153 bytes)
+  0000: LogInternal("Starting stress tester", 'DevAutomatedTesting', , )
+  0025: self._CampaignGame = TnCampaignGameBase(Game)
+  0035: if !((self._CampaignGame == none)) goto 0x0042
+  0040: return nothing
+  0042: self._StressTester = Game.Spawn(obj'HM_Engine.HmStressTester', , , , , , , )
+  0067: self._StressTester.Initialize(600, obj'Engine.NavigationPoint', delegate.StressTestMoveProbe, delegate.StressTesterComplete)
+  0096: return nothing
+  0098: <eos>
+
+function TnCampaignTestingPolicy.HandleStartHumans  (script 34 bytes)
+  0000: if !((self._StressTester != none)) goto 0x001f
+  000b: self._StressTester.StartCheckpoint()
+  001f: return nothing
+  0021: <eos>
+
+function TnCampaignTestingPolicy.HandleTick  (script 85 bytes)
+  0000: if !((self._GameLobbyGame != none)) goto 0x001e
+  000b: self._GameLobbyGame.HostRequestsGameStart()
+  001e: if !((self._StressTester != none)) goto 0x003c
+  0029: self._StressTester.Update()
+  003c: if !((self._CampaignGame != none)) goto 0x0052
+  0047: TnCampaignTestingPolicy.AssignCharacters(self._CampaignGame)
+  0052: return nothing
+  0054: <eos>
+
+function TnCampaignTestingPolicy.StressTesterComplete  (script 50 bytes)
+  0000: self._CampaignGame.StartCompleteMission()
+  0013: self._CampaignGame.SetTimer(3.0, false, 'EndCompleteMission', )
+  002f: return nothing
+  0031: <eos>
+
+function TnCampaignTestingPolicy.StressTestMoveProbe  (script 94 bytes)
+  0000: P = PC.Pawn
+  0014: if !(PC.bCinematicMode) goto 0x0028
+  0026: return nothing
+  0028: if !((P == none)) goto 0x0035
+  0033: return nothing
+  0035: P.Teleport(NewLocation, P.Rotation)
+  005b: return nothing
+  005d: <eos>

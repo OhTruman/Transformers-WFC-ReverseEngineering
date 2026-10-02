@@ -1,0 +1,50 @@
+function TnFovCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnFovCameraBehavior.Activate  (script 56 bytes)
+  0000: Fov = TnFovCameraBehavior.GetTargetFOV()
+  000c: self.CurrentFOV = Fov.Fov
+  0022: self.Smoother.Reset()
+  0035: return nothing
+  0037: <eos>
+
+function TnFovCameraBehavior.GetTargetFOV  (script 166 bytes)
+  0000: if !(self.CameraActor.UseFovSettings()) goto 0x002a
+  0016: return self.CameraActor.GetFovSettings()
+  002a: self.CurrentFOVIndex = 0
+  0031: if !((self.CurrentFOVIndex < self.FOVsByPCS.Length)) goto 0x008e
+  0041: if !(self.CameraActor.HasAllPlayerCameraStates(self.CurrentFOVIndex[self.FOVsByPCS].PlayerCameraStates)) goto 0x0084
+  006d: return self.CurrentFOVIndex[self.FOVsByPCS].Settings
+  0084: AddAdd_PreInt(self.CurrentFOVIndex)
+  008b: goto 0x0031
+  008e: self.CurrentFOVIndex = -1
+  0099: return self.DefaultFOV
+  009f: return return
+  00a5: <eos>
+
+function TnFovCameraBehavior.Update  (script 114 bytes)
+  0000: TargetFOV = TnFovCameraBehavior.GetTargetFOV()
+  000c: self.CurrentFOV = self.Smoother.Smooth(self.CurrentFOV, TargetFOV.Fov, TargetFOV.SmoothTime, DeltaTime)
+  004f: Result.Fov = self.CurrentFOV
+  0065: return Result
+  006b: return return
+  0071: <eos>
+
+function TnFovCameraBehavior.DisplayDebug  (script 234 bytes)
+  0000: if !((self.CurrentFOVIndex == -1)) goto 0x0058
+  000f: HUD.Canvas.DrawTextNormal(("FOV Settings [Default] =" @ TnFovCameraBehavior.GetFOVSettingsDebug(self.DefaultFOV)), , , )
+  0055: goto 0x00b5
+  0058: HUD.Canvas.DrawTextNormal(((("FOV Settings [" $ cast53(self.CurrentFOVIndex)) $ "] =") @ TnFovCameraBehavior.GetFOVSettingsDebug(self.CurrentFOVIndex[self.FOVsByPCS].Settings)), , , )
+  00b5: (out_YPos += out_YL)
+  00c1: HUD.Canvas.SetPos(16.0, out_YPos)
+  00e7: return nothing
+  00e9: <eos>
+
+function TnFovCameraBehavior.GetFOVSettingsDebug  (script 94 bytes)
+  0000: DebugString = ("FOV:" @ cast55(FOVS.Fov))
+  0020: ConcatEqual_StrStr(DebugString, (", Smooth Time:" @ cast55(FOVS.SmoothTime)))
+  0051: return DebugString
+  0057: return return
+  005d: <eos>

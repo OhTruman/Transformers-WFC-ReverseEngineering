@@ -1,0 +1,22 @@
+function TnGameMessage.ClientReceive  (script 317 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !(((P.myHUD == none) || (P.PlayerReplicationInfo == none))) goto 0x0030
+  002e: return nothing
+  0030: StringReplacements.Insert(0,1)
+  0038: 0[StringReplacements].SourceString = "`k"
+  004f: 0[StringReplacements].DestString = RelatedPRI_1.GetPlayerAlias()
+  0075: 0[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(P.PlayerReplicationInfo, RelatedPRI_1)
+  00ae: if !((MessageSwitch == 4)) goto 0x00c8
+  00ba: UnparsedMsg = default.LeftGameString
+  00c5: goto 0x00e3
+  00c8: if !((MessageSwitch == 1)) goto 0x00e1
+  00d3: UnparsedMsg = default.JoinedGameString
+  00de: goto 0x00e3
+  00e1: return nothing
+  00e3: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  0114: HmHUD(P.myHUD).ColoredLocalizedMessage(CS)
+  013a: return nothing
+  013c: <eos>

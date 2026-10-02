@@ -1,0 +1,44 @@
+function TnPlaneDeathMotionController.Initialize  (script 25 bytes)
+  0000: self._Owner = Owner
+  000b: self._RigidBody = RigidBody
+  0016: return nothing
+  0018: <eos>
+
+function TnPlaneDeathMotionController.Activate  (script 157 bytes)
+  0000: TnPlaneDeathMotionController.PlayDeathAnimation(Animation)
+  000b: self._Frequency = (obj'Core.Random'.static.RandomSign() * obj'Core.Random'.static.RandRangeFloat(3.0, 6.0))
+  0043: self._Scale = obj'Core.Random'.static.RandRangeFloat(6.0, 10.0)
+  0066: self._Direction = obj'Core.Math'.static.Normal((obj'Core.Random'.static.RandomUnitVector() * vect(1,1,0)))
+  009a: return nothing
+  009c: <eos>
+
+function TnPlaneDeathMotionController.Tick  (script 262 bytes)
+  0000: (self._TimeSinceDeath += DeltaTime)
+  000c: self._RigidBody.set_AngularDamping(1.0)
+  0025: self._RigidBody.set_LinearDamping(0.0)
+  003e: self._RigidBody.ApplyLocalAngularAcceleration((obj'Core.Math'.static.MakeVector(obj'Core.Math'.static.Sin((self._TimeSinceDeath * self._Frequency)), obj'Core.Math'.static.Cos((self._TimeSinceDeath * self._Frequency)), 0.0) * self._Scale))
+  009f: if !((self._TimeSinceDeath > 1.5)) goto 0x00b0
+  00ae: return nothing
+  00b0: self._RigidBody.ApplyLocalLinearAcceleration(-self._RigidBody.get_Gravity())
+  00da: self._RigidBody.ApplyLinearAcceleration(((self._Direction * self._TimeSinceDeath) * cast3f(1500)))
+  0103: return nothing
+  0105: <eos>
+
+function TnPlaneDeathMotionController.PlayDeathAnimation  (script 143 bytes)
+  0000: if !((Animation.AnimationName == 'None')) goto 0x0020
+  001e: return nothing
+  0020: AnimationParams = TnPlaneDeathMotionController.CreateAnimationParams(Animation)
+  0031: Animator = TnAnimatorService(self._Owner.GetService('TnAnimatorService'))
+  0058: Animator.EnqueueLocalAnimation(AnimationParams, self._Owner.delegate.Gib, delegate.None)
+  008c: return nothing
+  008e: <eos>
+
+function TnPlaneDeathMotionController.CreateAnimationParams  (script 153 bytes)
+  0000: Params.AnimName = Animation.AnimationName
+  0021: Params.RootMotionMode = Animation.RootMotionMode
+  0042: Params.BlendInTime = Animation.BlendInTime
+  0063: Params.BlendOutTime = 0.0
+  0079: Params.Priority = 1
+  008c: return Params
+  0092: return return
+  0098: <eos>

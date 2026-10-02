@@ -1,0 +1,209 @@
+function TnPathSection.get_NumberOfPoints  (script 14 bytes)
+  0000: return self._Points.Length
+  0007: return return
+  000d: <eos>
+
+function TnPathSection.SetNext  (script 14 bytes)
+  0000: self._NextSection = Next
+  000b: return nothing
+  000d: <eos>
+
+function TnPathSection.GetNext  (script 13 bytes)
+  0000: return self._NextSection
+  0006: return return
+  000c: <eos>
+
+function TnPathSection.SetPrev  (script 14 bytes)
+  0000: self._PrevSection = Prev
+  000b: return nothing
+  000d: <eos>
+
+function TnPathSection.GetPrev  (script 13 bytes)
+  0000: return self._PrevSection
+  0006: return return
+  000c: <eos>
+
+function TnPathSection.SetSectionType  (script 14 bytes)
+  0000: self._SectionType = Type
+  000b: return nothing
+  000d: <eos>
+
+function TnPathSection.GetSectionType  (script 13 bytes)
+  0000: return self._SectionType
+  0006: return return
+  000c: <eos>
+
+function TnPathSection.AddPoint  (script 16 bytes)
+  0000: self._Points.AddItem(Point)
+  000d: return nothing
+  000f: <eos>
+
+function TnPathSection.GetPoint  (script 19 bytes)
+  0000: return Index[self._Points]
+  000c: return return
+  0012: <eos>
+
+function TnPathSection.RemoveSectionEnd  (script 19 bytes)
+  0000: self._Points.Remove((self._Points.Length - 1),1)
+  0010: return nothing
+  0012: <eos>
+
+function TnPathSection.GetPathDistanceForType  (script 305 bytes)
+  0000: FailType = ((cast3a(SectionType) == cast3a(2)) ? 3 : 2)
+  001c: (Distance += GetDistance(PathOwningController))
+  0032: CurrentSection = GetPrev()
+  0042: if !(((CurrentSection != none) && (cast3a(CurrentSection.GetSectionType()) != cast3a(FailType)))) goto 0x00ab
+  0070: (Distance += CurrentSection.GetDistance(PathOwningController))
+  008f: CurrentSection = CurrentSection.GetPrev()
+  00a8: goto 0x0042
+  00ab: CurrentSection = GetNext()
+  00bb: if !(((CurrentSection != none) && (cast3a(CurrentSection.GetSectionType()) != cast3a(FailType)))) goto 0x0124
+  00e9: (Distance += CurrentSection.GetDistance(PathOwningController))
+  0108: CurrentSection = CurrentSection.GetNext()
+  0121: goto 0x00bb
+  0124: return Distance
+  012a: return return
+  0130: <eos>
+
+function TnPathSection.GetDistance  (script 211 bytes)
+  0000: if !((self._Points.Length <= 1)) goto 0x0012
+  000c: return 0.0
+  0012: idx = 1
+  0019: if !((idx < self._Points.Length)) goto 0x00c6
+  0029: if !(((idx[self._Points] == none) || ((idx - 1)[self._Points] == none))) goto 0x0053
+  0050: goto 0x00bc
+  0053: SegmentStart = idx[self._Points].GetDestination(PathOwningController)
+  0077: SegmentEnd = (idx - 1)[self._Points].GetDestination(PathOwningController)
+  009e: (Distance += obj'Core.Math'.static.VSize((SegmentEnd - SegmentStart)))
+  00bc: AddAdd_PreInt(idx)
+  00c3: goto 0x0019
+  00c6: return Distance
+  00cc: return return
+  00d2: <eos>
+
+function TnPathSection.GetPositionsDistanceAlongSection  (script 392 bytes)
+  0000: if !((self._Points.Length <= 1)) goto 0x0012
+  000c: return 0.0
+  0012: idx = 1
+  0019: if !((idx < (self._Points.Length - 1))) goto 0x00c9
+  002c: if !(((idx[self._Points] == none) || ((idx - 1)[self._Points] == none))) goto 0x0056
+  0053: goto 0x00bf
+  0056: SegmentStart = idx[self._Points].GetDestination(PathOwningController)
+  007a: SegmentEnd = (idx - 1)[self._Points].GetDestination(PathOwningController)
+  00a1: (Distance += obj'Core.Math'.static.VSize((SegmentEnd - SegmentStart)))
+  00bf: AddAdd_PreInt(idx)
+  00c6: goto 0x0019
+  00c9: if !(((self._Points.Length - 1)[self._Points] == none)) goto 0x00e4
+  00de: return Distance
+  00e4: SegmentStart = (self._Points.Length - 1)[self._Points].GetDestination(PathOwningController)
+  010c: SegmentEnd = (self._Points.Length - 2)[self._Points].GetDestination(PathOwningController)
+  0135: ClosestPoint = obj'Core.Math'.static.ClosestPointToLineSegment(SegmentStart, SegmentEnd, Position)
+  015d: (Distance += obj'Core.Math'.static.VSize((SegmentEnd - ClosestPoint)))
+  017b: return Distance
+  0181: return return
+  0187: <eos>
+
+function TnPathSection.FindPathPointAtDistance  (script 162 bytes)
+  0000: DistSq = (Distance * Distance)
+  0012: Index = (get_NumberOfPoints() - 1)
+  0025: if !((Index >= 0)) goto 0x0095
+  0030: if !((obj'Core.Math'.static.VSizeSq((GetPoint(Index).GetDestination(C) - C.Pawn.Location)) > DistSq)) goto 0x008b
+  0088: goto 0x0095
+  008b: SubtractSubtract_Int(Index)
+  0092: goto 0x0025
+  0095: return Index
+  009b: return return
+  00a1: <eos>
+
+function TnPathSection.GetPointsStartToFinish  (script 68 bytes)
+  0000: idx = (self._Points.Length - 1)
+  000f: if !((idx >= 0)) goto 0x0037
+  001a: Path.AddItem(idx[self._Points])
+  002d: SubtractSubtract_PreInt(idx)
+  0034: goto 0x000f
+  0037: return Path
+  003d: return return
+  0043: <eos>
+
+function TnPathSection.GetCurrentSpec  (script 124 bytes)
+  0000: if !((self._Points.Length >= 2)) goto 0x0073
+  000d: NavPoint1 = NavigationPoint((self._Points.Length - 1)[self._Points])
+  0027: NavPoint2 = NavigationPoint((self._Points.Length - 2)[self._Points])
+  0042: if !(((NavPoint1 != none) && (NavPoint2 != none))) goto 0x0073
+  005a: return NavPoint1.GetReachSpecTo(NavPoint2)
+  0073: return none
+  0075: return return
+  007b: <eos>
+
+function TnPathSection.DrawPath  (script 690 bytes)
+  0000: nothing
+  0001: Current = self
+  0008: if !((Current != none)) goto 0x02af
+  0013: R = 0
+  001a: G = 0
+  0021: B = 0
+  0028: if !((cast3a(Current.GetSectionType()) == cast3a(1))) goto 0x0059
+  0046: G = 255
+  004e: B = 255
+  0056: goto 0x00a8
+  0059: if !((cast3a(Current.GetSectionType()) == cast3a(2))) goto 0x0082
+  0077: G = 255
+  007f: goto 0x00a8
+  0082: if !((cast3a(Current.GetSectionType()) == cast3a(3))) goto 0x00a8
+  00a0: B = 255
+  00a8: idx = 1
+  00af: if !((idx < Current.get_NumberOfPoints())) goto 0x0191
+  00cc: TnPathSection.DrawGate(NavigationPoint(Current.GetPoint(idx)), Persistant)
+  00f5: obj'Engine.Debug'.static.DrawLine(Current.GetPoint(idx).GetDestination(C), Current.GetPoint((idx - 1)).GetDestination(C), MakeColor(cast3d(R), cast3d(G), cast3d(B), ), Persistant)
+  0187: AddAdd_PreInt(idx)
+  018e: goto 0x00af
+  0191: if !((Current.get_NumberOfPoints() > 0)) goto 0x0293
+  01aa: PrevPos = Current.GetPoint((Current.get_NumberOfPoints() - 1)).GetDestination(C)
+  01ec: Current = Current.GetNext()
+  0205: if !(((Current != none) && (Current.get_NumberOfPoints() > 0))) goto 0x0290
+  022b: obj'Engine.Debug'.static.DrawLine(PrevPos, Current.GetPoint(0).GetDestination(C), MakeColor(cast3d(R), cast3d(G), cast3d(B), ), Persistant)
+  0290: goto 0x02ac
+  0293: Current = Current.GetNext()
+  02ac: goto 0x0008
+  02af: return nothing
+  02b1: <eos>
+
+function TnPathSection.DrawGate  (script 190 bytes)
+  0000: nothing
+  0001: if !(((NavPoint != none) && NavPoint.get_Gated())) goto 0x00bb
+  0024: if !(NavPoint.bGateOpen) goto 0x007a
+  0036: obj'Engine.Debug'.static.DrawSphere(NavPoint.Location, 70.0, 4, MakeColor(50, cast3d(255), 50, ), Persistant)
+  0077: goto 0x00bb
+  007a: obj'Engine.Debug'.static.DrawSphere(NavPoint.Location, 70.0, 4, MakeColor(cast3d(255), 50, 50, ), Persistant)
+  00bb: return nothing
+  00bd: <eos>
+
+function TnPathSection.OutputPath  (script 505 bytes)
+  0000: LogInternal(("--------PATH for " @ cast56(self)), , , )
+  001d: Current = self
+  0024: if !((Current != none)) goto 0x01f6
+  002f: switch (Current.GetSectionType())
+  0044: case 1: (next 0x0069)
+  0049: LogInternal("SECTION_ROBOVEHICLE - ", , , )
+  0066: goto 0x00ab
+  0069: case 2: (next 0x0087)
+  006e: LogInternal("SECTION_ROBO - ", , , )
+  0084: goto 0x00ab
+  0087: case 3: (next 0x00a8)
+  008c: LogInternal("SECTION_VEHICLE - ", , , )
+  00a5: goto 0x00ab
+  00a8: default:
+  00ab: LogInternal(("Number of points in Section" @ cast53(Current._Points.Length)), , , )
+  00e0: idx = 0
+  00e7: if !((idx < Current._Points.Length)) goto 0x01da
+  0100: if !(((NavigationPoint(idx[Current._Points]) != none) && NavigationPoint(idx[Current._Points]).get_Gated())) goto 0x01d0
+  014b: if !(NavigationPoint(idx[Current._Points]).bGateOpen) goto 0x01a1
+  0171: LogInternal(((" " @ cast56(idx[Current._Points])) @ "Gate OPEN"), , , )
+  019e: goto 0x01d0
+  01a1: LogInternal(((" " @ cast56(idx[Current._Points])) @ "Gate CLOSED"), , , )
+  01d0: AddAdd_PreInt(idx)
+  01d7: goto 0x00e7
+  01da: Current = Current.GetNext()
+  01f3: goto 0x0024
+  01f6: return nothing
+  01f8: <eos>

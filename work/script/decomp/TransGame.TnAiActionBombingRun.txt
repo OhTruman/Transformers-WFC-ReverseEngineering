@@ -1,0 +1,141 @@
+function TnAiActionBombingRun.OnBind  (script 48 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(self._Blueprint.WeaponClass, true)
+  002d: return nothing
+  002f: <eos>
+
+function TnAiActionBombingRun.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionBombingRunBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionBombingRun.OnSetUpConditions  (script 238 bytes)
+  0000: if !((self._TransformerPawn.Weapon == none)) goto 0x0016
+  0014: return false
+  0016: if !(!self._TransformerPawn.get_IsInVehicleForm()) goto 0x0030
+  002e: return false
+  0030: if !((cast3a(cast3d(get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateTargetIsDead'))) <= cast3a(self._Blueprint.MinValidRange))) goto 0x0068
+  0066: return false
+  0068: TargetActor = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0090: if !(TnAiActionBombingRun.IsTooClose(TargetActor)) goto 0x00a0
+  009e: return false
+  00a0: if !(!TnAiActionBombingRun.InFrontOfActor(TargetActor)) goto 0x00b2
+  00b0: return false
+  00b2: if !(!TnAiActionBombingRun.IsFacingTarget(TargetActor)) goto 0x00c4
+  00c2: return false
+  00c4: if !(!TnAiActionBombingRun.IsValidTarget(TargetActor)) goto 0x00d6
+  00d4: return false
+  00d6: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00e7: return return
+  00ed: <eos>
+
+function TnAiActionBombingRun.OnStart  (script 291 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: if !(!TnAiActionBombingRun.CalculateTargetLocation(self._Target, self._TargetLocation)) goto 0x005e
+  0053: return Fail()
+  005e: self._TransformerController.MoveToPosition(self._TargetLocation, delegate.FailCallback, delegate.FailCallback)
+  0088: self._TransformerController.Focus = none
+  0098: SetCharacterState((4 | 1))
+  00a7: get_WeaponAimer().AimInDirection(obj'Core.Math'.static.MakeRotatorDeg(-45.0, 0.0, 0.0))
+  00e1: get_WeaponShooter().Activate(self._Blueprint.WeaponClass, delegate.FailCallback)
+  0110: return OnStart(ExpectedEffects)
+  011c: return return
+  0122: <eos>
+
+function TnAiActionBombingRun.OnUpdate  (script 129 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Succeed()
+  0029: if !((TnAiActionBombingRun.IsCloseEnoughToShoot() && !get_WeaponShooter().IsFiring())) goto 0x0069
+  0051: get_WeaponShooter().StartFire()
+  0069: return OnUpdate(ExpectedEffects, DeltaTime)
+  007a: return return
+  0080: <eos>
+
+function TnAiActionBombingRun.OnFinish  (script 81 bytes)
+  0000: OnFinish(CurrentState)
+  000b: get_WeaponAimer().Reset()
+  0023: get_WeaponShooter().Deactivate()
+  003b: self._TransformerController.StopMovement()
+  004e: return nothing
+  0050: <eos>
+
+function TnAiActionBombingRun.IsCloseEnoughToShoot  (script 35 bytes)
+  0000: return (TnAiActionBombingRun.GetDistanceSqToActor(self._Target) < cast3f((5500 * 5500)))
+  001c: return return
+  0022: <eos>
+
+function TnAiActionBombingRun.InFrontOfActor  (script 72 bytes)
+  0000: TargetToPawn = (self._TransformerPawn.Location - TargetActor.Location)
+  0024: return ((TargetToPawn dot cast39(TargetActor.Rotation)) >= cast3f(0))
+  0041: return return
+  0047: <eos>
+
+function TnAiActionBombingRun.IsFacingTarget  (script 85 bytes)
+  0000: PawnToTarget = obj'Core.Math'.static.Normal((TargetActor.Location - self._TransformerPawn.Location))
+  002f: return ((PawnToTarget dot cast39(self._TransformerPawn.Rotation)) >= 0.866)
+  004e: return return
+  0054: <eos>
+
+function TnAiActionBombingRun.IsValidTarget  (script 118 bytes)
+  0000: TargetPawn = TnPawn(TargetActor)
+  0010: if !(((TargetPawn != none) && !TargetPawn.get_IsInRobotForm())) goto 0x0037
+  0035: return false
+  0037: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x005b
+  0059: return false
+  005b: if !(!TnAiActionBombingRun.CanGetToLocation(TargetActor)) goto 0x006d
+  006b: return false
+  006d: return true
+  006f: return return
+  0075: <eos>
+
+function TnAiActionBombingRun.CalculateTargetLocation  (script 240 bytes)
+  0000: TargetLocation = TnAiActionBombingRun.CalculateTargetOffset(TargetActor, DirectionToTarget)
+  0016: Bounds = self._TransformerPawn.GetSkeletonBounds()
+  002f: HitActor = self._TransformerPawn.Trace(HitLocation, HitNormal, TargetActor, TargetLocation, self._TransformerPawn.Location, false, Bounds.BoxExtent, , , )
+  0077: if !((HitActor == none)) goto 0x0084
+  0082: return true
+  0084: TargetLocation = (HitLocation - (DirectionToTarget * (cast3f(1000) + Bounds.BoxExtent.X)))
+  00bc: return (((TargetLocation - TargetActor.Location) dot cast39(TargetActor.Rotation)) < cast3f(0))
+  00e9: return return
+  00ef: <eos>
+
+function TnAiActionBombingRun.CalculateTargetOffset  (script 139 bytes)
+  0000: BuzzLocation = (TargetActor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 1000.0))
+  0038: DirectionToTarget = obj'Core.Math'.static.Normal(((BuzzLocation - self._TransformerPawn.Location) * vect(1,1,0)))
+  006e: return (BuzzLocation + (DirectionToTarget * cast3f(5000)))
+  0084: return return
+  008a: <eos>
+
+function TnAiActionBombingRun.CanGetToLocation  (script 50 bytes)
+  0000: if !(!TnAiActionBombingRun.CalculateTargetLocation(TargetActor, TargetLocation)) goto 0x0017
+  0015: return false
+  0017: if !(!TnAiActionBombingRun.LocationInAssignedTacticalVolume(TargetLocation)) goto 0x0029
+  0027: return false
+  0029: return true
+  002b: return return
+  0031: <eos>
+
+function TnAiActionBombingRun.LocationInAssignedTacticalVolume  (script 70 bytes)
+  0000: V = self._TransformerController.GetTacticalVolume()
+  0019: if !((V != none)) goto 0x003d
+  0024: return V.EncompassesPoint(TestLocation)
+  003d: return true
+  003f: return return
+  0045: <eos>
+
+function TnAiActionBombingRun.IsTooClose  (script 51 bytes)
+  0000: return (TnAiActionBombingRun.GetDistanceSqToActor(ActorToCheck) < (self._Blueprint.ValidDistance * self._Blueprint.ValidDistance))
+  002c: return return
+  0032: <eos>
+
+function TnAiActionBombingRun.GetDistanceSqToActor  (script 123 bytes)
+  0000: TargetVector = ActorToCheck.Location
+  0014: TargetVector.Z = 0.0
+  002a: PawnVector = self._TransformerPawn.Location
+  003e: PawnVector.Z = 0.0
+  0054: return obj'Core.Math'.static.VSizeSq((TargetVector - PawnVector))
+  0074: return return
+  007a: <eos>

@@ -1,0 +1,34 @@
+function FracturedStaticMeshPart.Initialize  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function FracturedStaticMeshPart.RecyclePart  (script 7 bytes)
+  0000: bAddToFreePool
+  0005: nothing
+  0006: <eos>
+
+function FracturedStaticMeshPart.GetGravityZ  (script 21 bytes)
+  0000: return (Actor.GetGravityZ() * self.FracPartGravScale)
+  000e: return return
+  0014: <eos>
+
+function FracturedStaticMeshPart.TakeDamage  (script 103 bytes)
+  0000: nothing
+  0001: nothing
+  0002: FracturedStaticMeshActor.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: self.FracturedStaticMeshComponent.AddLinearImpulse((obj'Core.Math'.static.Normal(Momentum) * DamageType.static.default.KDamageImpulse), HitLocation, )
+  0064: return nothing
+  0066: <eos>
+
+function FracturedStaticMeshPart.TryToCleanUp  (script 86 bytes)
+  0000: if !(((self.WorldInfo.TimeSeconds - self.BaseFracturer.GetSkinnedComponent().LastRenderTime) > 1.0)) goto 0x0040
+  0036: FracturedStaticMeshPart.RecyclePart(true)
+  003d: goto 0x0053
+  0040: SetTimer(2.0, false, 'TryToCleanUp', )
+  0053: return nothing
+  0055: <eos>
+
+function FracturedStaticMeshPart.FellOutOfWorld  (script 10 bytes)
+  0000: FracturedStaticMeshPart.RecyclePart(true)
+  0007: return nothing
+  0009: <eos>

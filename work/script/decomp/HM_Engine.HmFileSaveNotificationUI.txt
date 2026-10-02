@@ -1,0 +1,39 @@
+function HmFileSaveNotificationUI.SaveStarted  (script 53 bytes)
+  0000: self.Elapsed = 0.0
+  000b: self.GoalTime = self.LongSaveTime
+  0016: self.WaitingOnTimer = false
+  001e: self.SaveNotificationMovie.Start()
+  0032: return nothing
+  0034: <eos>
+
+function HmFileSaveNotificationUI.SaveCompleted  (script 34 bytes)
+  0000: if !((self.Elapsed < self.GoalTime)) goto 0x0019
+  000f: self.WaitingOnTimer = true
+  0017: return nothing
+  0019: HmFileSaveNotificationUI.EndNotification()
+  001f: return nothing
+  0021: <eos>
+
+function HmFileSaveNotificationUI.Tick  (script 51 bytes)
+  0000: (self.Elapsed += DeltaTime)
+  000c: if !(((self.Elapsed >= cast3f(0)) && (self.Elapsed > self.GoalTime))) goto 0x0030
+  002a: HmFileSaveNotificationUI.TimerExpired()
+  0030: return nothing
+  0032: <eos>
+
+function HmFileSaveNotificationUI.ForceEndNotification  (script 9 bytes)
+  0000: HmFileSaveNotificationUI.EndNotification()
+  0006: return nothing
+  0008: <eos>
+
+function HmFileSaveNotificationUI.TimerExpired  (script 18 bytes)
+  0000: if !(self.WaitingOnTimer) goto 0x000f
+  0009: HmFileSaveNotificationUI.EndNotification()
+  000f: return nothing
+  0011: <eos>
+
+function HmFileSaveNotificationUI.EndNotification  (script 34 bytes)
+  0000: self.SaveNotificationMovie.Close()
+  0014: self.Elapsed = -1.0
+  001f: return nothing
+  0021: <eos>

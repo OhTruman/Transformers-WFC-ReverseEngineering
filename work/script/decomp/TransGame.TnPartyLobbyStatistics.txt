@@ -1,0 +1,31 @@
+function TnPartyLobbyStatistics.RecordParties  (script 22 bytes)
+  0000: self.PartyTable.RecordParties()
+  0013: return nothing
+  0015: <eos>
+
+function TnPartyLobbyStatistics.RecordSearchStarted  (script 32 bytes)
+  0000: self.SearchTable.RecordSearchStarted(Game, Search)
+  001d: return nothing
+  001f: <eos>
+
+function TnPartyLobbyStatistics.RecordSearchComplete  (script 32 bytes)
+  0000: self.SearchTable.RecordSearchComplete(Game, Search)
+  001d: return nothing
+  001f: <eos>
+
+function TnPartyLobbyStatistics.RecordReservationCancelation  (script 22 bytes)
+  0000: self.SearchTable.RecordReservationCancelation()
+  0013: return nothing
+  0015: <eos>
+
+function TnPartyLobbyStatistics.RecordReservationComplete  (script 46 bytes)
+  0000: self.SearchTable.RecordReservationComplete(Game)
+  0018: self.PartyTable.RecordParties()
+  002b: return nothing
+  002d: <eos>
+
+function TnPartyLobbyStatistics.RecordHostedGame  (script 46 bytes)
+  0000: self.SearchTable.RecordHostedGame(Game)
+  0018: self.PartyTable.RecordParties()
+  002b: return nothing
+  002d: <eos>

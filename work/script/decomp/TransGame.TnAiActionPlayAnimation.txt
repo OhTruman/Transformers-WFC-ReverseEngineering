@@ -1,0 +1,40 @@
+function TnAiActionPlayAnimation.get_AnimatorService  (script 13 bytes)
+  0000: return self._AnimatorService
+  0006: return return
+  000c: <eos>
+
+function TnAiActionPlayAnimation.get_Blueprint  (script 13 bytes)
+  0000: return self._Blueprint
+  0006: return return
+  000c: <eos>
+
+function TnAiActionPlayAnimation.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionPlayAnimationBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionPlayAnimation.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionPlayAnimation.OnStart  (script 101 bytes)
+  0000: SetCharacterState(1)
+  000b: self._TransformerController.StopMovement()
+  001e: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAnimationComplete, delegate.FailCallback)
+  0052: return OnStart(ExpectedEffects)
+  005e: return return
+  0064: <eos>
+
+function TnAiActionPlayAnimation.OnAnimationComplete  (script 13 bytes)
+  0000: Succeed()
+  000a: return nothing
+  000c: <eos>
+
+function TnAiActionPlayAnimation.OnFinish  (script 64 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(0.0, self._Blueprint.Params.AnimName)
+  003d: return nothing
+  003f: <eos>

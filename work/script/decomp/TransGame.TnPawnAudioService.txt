@@ -1,0 +1,84 @@
+function TnPawnAudioService.set_OwnerPawn  (script 14 bytes)
+  0000: self._OwnerPawn = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawnAudioService.PlaySound  (script 32 bytes)
+  0000: self._OwnerPawn.PlaySound(Sound, , , , , )
+  001d: return nothing
+  001f: <eos>
+
+function TnPawnAudioService.PlayLoopingSound  (script 106 bytes)
+  0000: LoopingSound.Sound = Sound
+  0016: LoopingSound.SoundComponent = self._OwnerPawn.CreateAudioComponent(Sound, true, true, , , )
+  0044: if !((none != LoopingSound.SoundComponent)) goto 0x0067
+  005a: self._LoopingSounds.AddItem(LoopingSound)
+  0067: return nothing
+  0069: <eos>
+
+function TnPawnAudioService.StopLoopingSound  (script 209 bytes)
+  0000: if !((Sound == none)) goto 0x000d
+  000b: return nothing
+  000d: Index = TnPawnAudioService.FindLoopingSoundIndex(Sound)
+  001e: if !((Index == -1)) goto 0x0078
+  002d: LogInternal("Error: TnAudioService Trying to stop a sound that was never played", , , )
+  0076: return nothing
+  0078: if !((none != Index[self._LoopingSounds].SoundComponent)) goto 0x00c2
+  0094: Index[self._LoopingSounds].SoundComponent.FadeOut(FadeTime, 0.0)
+  00c2: self._LoopingSounds.Remove(Index,1)
+  00ce: return nothing
+  00d0: <eos>
+
+function TnPawnAudioService.FindLoopingSoundIndex  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < self._LoopingSounds.Length)) goto 0x0047
+  0017: if !((I[self._LoopingSounds].Sound == Sound)) goto 0x003d
+  0037: return I
+  003d: AddAdd_PreInt(I)
+  0044: goto 0x0007
+  0047: return -1
+  004d: return return
+  0053: <eos>
+
+function TnPawnAudioService.PlaySoundEvent  (script 31 bytes)
+  0000: self._OwnerPawn.PlaySoundEvent(Sound, , , , )
+  001c: return nothing
+  001e: <eos>
+
+function TnPawnAudioService.IsPlayingSoundEvent  (script 69 bytes)
+  0000: Cue = self._OwnerPawn.FindSoundCue(Sound)
+  001e: if !((Cue == none)) goto 0x002b
+  0029: return false
+  002b: return (TnPawnAudioService.FindLoopingSoundIndex(Cue) != -1)
+  003e: return return
+  0044: <eos>
+
+function TnPawnAudioService.PlayLoopingSoundEvent  (script 149 bytes)
+  0000: Cue = self._OwnerPawn.FindSoundCue(Sound)
+  001e: if !((Cue == none)) goto 0x002b
+  0029: return nothing
+  002b: LoopingSound.Sound = Cue
+  0041: LoopingSound.SoundComponent = self._OwnerPawn.CreateAudioComponent(Cue, true, true, , , )
+  006f: if !((none != LoopingSound.SoundComponent)) goto 0x0092
+  0085: self._LoopingSounds.AddItem(LoopingSound)
+  0092: return nothing
+  0094: <eos>
+
+function TnPawnAudioService.StopLoopingSoundEvent  (script 244 bytes)
+  0000: Cue = self._OwnerPawn.FindSoundCue(Sound)
+  001e: if !((Cue == none)) goto 0x002b
+  0029: return nothing
+  002b: Index = TnPawnAudioService.FindLoopingSoundIndex(Cue)
+  003c: if !((Index == -1)) goto 0x009b
+  004b: LogInternal("Error: TnAudioService Trying to stop a soundevent that was never played", , , )
+  0099: return nothing
+  009b: if !((none != Index[self._LoopingSounds].SoundComponent)) goto 0x00e5
+  00b7: Index[self._LoopingSounds].SoundComponent.FadeOut(FadeTime, 0.0)
+  00e5: self._LoopingSounds.Remove(Index,1)
+  00f1: return nothing
+  00f3: <eos>
+
+function TnPawnAudioService.MakeNoise  (script 28 bytes)
+  0000: self._OwnerPawn.MakeNoise(Radius, )
+  0019: return nothing
+  001b: <eos>

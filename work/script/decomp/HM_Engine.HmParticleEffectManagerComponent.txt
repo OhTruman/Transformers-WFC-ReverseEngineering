@@ -1,0 +1,138 @@
+function HmParticleEffectManagerComponent.Attached  (script 50 bytes)
+  0000: if !(!self.bWasTimerRegistered) goto 0x002f
+  000b: self.Owner.SetTimer(60.0, true, 'RemoveOldFX', self)
+  0027: self.bWasTimerRegistered = true
+  002f: return nothing
+  0031: <eos>
+
+function HmParticleEffectManagerComponent.RemoveOldFX  (script 174 bytes)
+  0000: I = 0
+  0007: if !((I < self.ParticleFXs.Length)) goto 0x00ab
+  0017: if !((I[self.ParticleFXs].bRecentlyUsed || I[self.ParticleFXs].FX.IsActive())) goto 0x0076
+  005a: I[self.ParticleFXs].bRecentlyUsed = false
+  0073: goto 0x00a1
+  0076: I[self.ParticleFXs] = (self.ParticleFXs.Length - 1)[self.ParticleFXs]
+  0091: self.ParticleFXs.Length = (self.ParticleFXs.Length - 1)
+  00a1: AddAdd_Int(I)
+  00a8: goto 0x0007
+  00ab: return nothing
+  00ad: <eos>
+
+function HmParticleEffectManagerComponent.GetEffect  (script 156 bytes)
+  0000: I = 0
+  0007: if !((I < self.ParticleFXs.Length)) goto 0x0093
+  0017: if !(((I[self.ParticleFXs].SocketName == SocketName) && (I[self.ParticleFXs].PSCTemplate == PSCTemplate))) goto 0x0089
+  0059: I[self.ParticleFXs].bRecentlyUsed = true
+  0072: return I[self.ParticleFXs].FX
+  0089: AddAdd_Int(I)
+  0090: goto 0x0007
+  0093: return none
+  0095: return return
+  009b: <eos>
+
+function HmParticleEffectManagerComponent.FindEffect  (script 384 bytes)
+  0000: I = 0
+  0007: if !((I < self.ParticleFXs.Length)) goto 0x0173
+  0017: if !((I[self.ParticleFXs].SocketName != SocketName)) goto 0x003a
+  0037: goto 0x0169
+  003a: if !((I[self.ParticleFXs].PSCTemplate != PSCTemplate)) goto 0x005d
+  005a: goto 0x0169
+  005d: if !((I[self.ParticleFXs].RelativeLocation != RelativeLocation)) goto 0x0080
+  007d: goto 0x0169
+  0080: if !((I[self.ParticleFXs].RelativeRotation != RelativeRotation)) goto 0x00a3
+  00a0: goto 0x0169
+  00a3: if !(((I[self.ParticleFXs].SMC != none) && (I[self.ParticleFXs].SMC != SMC))) goto 0x00e4
+  00e1: goto 0x0169
+  00e4: if !((cast3a(FindEffectCondition) == cast3a(2))) goto 0x00fa
+  00f4: return I
+  00fa: EffectIsActive = I[self.ParticleFXs].FX.IsActive()
+  0125: if !((EffectIsActive && (cast3a(FindEffectCondition) == cast3a(0)))) goto 0x0146
+  0140: return I
+  0146: if !((!EffectIsActive && (cast3a(FindEffectCondition) == cast3a(1)))) goto 0x0169
+  0163: return I
+  0169: AddAdd_Int(I)
+  0170: goto 0x0007
+  0173: return -1
+  0179: return return
+  017f: <eos>
+
+function HmParticleEffectManagerComponent.AttachFX  (script 199 bytes)
+  0000: if !(!SMC.AttachComponentToSocketWithOffsets(Index[self.ParticleFXs].FX, Index[self.ParticleFXs].SocketName, Index[self.ParticleFXs].RelativeLocation, Index[self.ParticleFXs].RelativeRotation)) goto 0x00a8
+  0070: LogInternal(("ERROR: Failed to attach" @ cast56(Index[self.ParticleFXs].PSCTemplate)), , , )
+  00a8: Index[self.ParticleFXs].SMC = SMC
+  00c4: return nothing
+  00c6: <eos>
+
+function HmParticleEffectManagerComponent.CreateEffect  (script 260 bytes)
+  0000: AttachableFX.SocketName = SocketName
+  0016: AttachableFX.PSCTemplate = PSCTemplate
+  002c: AttachableFX.FX = CreateEffectComponent()
+  004c: AttachableFX.FX.bAutoActivate = false
+  0068: AttachableFX.FX.SetTemplate(PSCTemplate)
+  008b: AttachableFX.RelativeLocation = RelativeLocation
+  00a1: AttachableFX.RelativeRotation = RelativeRotation
+  00b7: AttachableFX.bRecentlyUsed = true
+  00ca: FXIndex = self.ParticleFXs.Length
+  00d6: FXIndex[self.ParticleFXs] = AttachableFX
+  00e7: HmParticleEffectManagerComponent.AttachFX(FXIndex, SMC)
+  00f7: return FXIndex
+  00fd: return return
+  0103: <eos>
+
+function HmParticleEffectManagerComponent.CreateEffectComponent  (script 24 bytes)
+  0000: return new(get_Outer(), nothing, obj'HmParticleSystemComponent', nothing, AttachTreeCallback)
+  0011: return return
+  0017: <eos>
+
+function HmParticleEffectManagerComponent.PlayEffect  (script 469 bytes)
+  0000: default=false
+  0005: nothing
+  0006: nothing
+  0007: default=1
+  000d: if !((self.Owner == none)) goto 0x001a
+  0018: return none
+  001a: if !((SMC == none)) goto 0x006b
+  0025: LogInternal("Error: no SkeletalMeshComponent to play particle effect with.", , , )
+  0069: return none
+  006b: FindActiveEffect = (cast3a(PlayCondition) == cast3a(1))
+  007f: FXIndex = HmParticleEffectManagerComponent.FindEffect((FindActiveEffect ? 2 : 1), SocketName, PSCTemplate, RelativeLocation, RelativeRotation, SMC)
+  00b3: if !((FXIndex == -1)) goto 0x00ea
+  00c2: FXIndex = HmParticleEffectManagerComponent.CreateEffect(SMC, SocketName, PSCTemplate, RelativeLocation, RelativeRotation)
+  00e7: goto 0x015c
+  00ea: FXIndex[self.ParticleFXs].bRecentlyUsed = true
+  0103: if !((FindActiveEffect && FXIndex[self.ParticleFXs].FX.IsActive())) goto 0x014c
+  0135: return FXIndex[self.ParticleFXs].FX
+  014c: HmParticleEffectManagerComponent.AttachFX(FXIndex, SMC)
+  015c: if !((FXIndex != -1)) goto 0x01c8
+  016b: FX = FXIndex[self.ParticleFXs].FX
+  0187: FX.bTickPostPhysicsBlendIn = bTickPostPhysicsBlendIn
+  019d: FX.StartFromBeginning()
+  01b0: FX.__OnSystemFinished__Delegate = delegate.NotifyParticleSystemFinished
+  01c8: return FX
+  01ce: return return
+  01d4: <eos>
+
+function HmParticleEffectManagerComponent.NotifyParticleSystemFinished  (script 180 bytes)
+  0000: I = 0
+  0007: if !((I < self.ParticleFXs.Length)) goto 0x00b1
+  0017: if !((I[self.ParticleFXs].FX == PSC)) goto 0x00a7
+  0037: if !((I[self.ParticleFXs].SMC != none)) goto 0x00a5
+  0053: I[self.ParticleFXs].SMC.DetachComponent(I[self.ParticleFXs].FX)
+  008d: I[self.ParticleFXs].SMC = none
+  00a5: return nothing
+  00a7: AddAdd_PreInt(I)
+  00ae: goto 0x0007
+  00b1: return nothing
+  00b3: <eos>
+
+function HmParticleEffectManagerComponent.StopEffect  (script 205 bytes)
+  0000: nothing
+  0001: nothing
+  0002: FXIndex = HmParticleEffectManagerComponent.FindEffect(0, SocketName, PSCTemplate, RelativeLocation, RelativeRotation, SMC)
+  0029: if !((FXIndex != -1)) goto 0x00ca
+  0038: FXIndex[self.ParticleFXs].FX.DeactivateSystem()
+  005c: if !((FXIndex[self.ParticleFXs].SMC != none)) goto 0x00ca
+  0078: FXIndex[self.ParticleFXs].SMC.DetachComponent(FXIndex[self.ParticleFXs].FX)
+  00b2: FXIndex[self.ParticleFXs].SMC = none
+  00ca: return nothing
+  00cc: <eos>

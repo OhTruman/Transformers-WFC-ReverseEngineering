@@ -1,0 +1,9 @@
+function TnDecalApplicatorProjectile.GetDecalTemplate  (script 126 bytes)
+  0000: PMaterial = HitInfo.PhysMaterial
+  0016: if !(((none != PMaterial) && (self.WeaponEffectsType != none))) goto 0x006b
+  002e: MaterialProperty = TnPhysicalMaterialProperty(PMaterial.PhysicalMaterialProperty)
+  0047: if !((MaterialProperty != none)) goto 0x006b
+  0052: return MaterialProperty.GetWeaponSpecificDecal(self.WeaponEffectsType)
+  006b: return TnDecalApplicator.GetDecalTemplate(HitInfo)
+  0077: return return
+  007d: <eos>

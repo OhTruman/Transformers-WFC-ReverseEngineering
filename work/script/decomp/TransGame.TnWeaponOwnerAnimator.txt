@@ -1,0 +1,118 @@
+function TnWeaponOwnerAnimator.CheckForErrors  (script 443 bytes)
+  0000: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.EquipAnimation)
+  000b: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.UnequipAnimation)
+  0016: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.DropAnimation)
+  0021: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.BeginOverheatAnimation)
+  002c: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.LoopOverheatAnimation)
+  0037: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.EndOverheatAnimation)
+  0042: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(self.ReloadAnimation)
+  004d: I = 0
+  0054: if !((I < self.FireAmmoAnimations.Length)) goto 0x007f
+  0064: TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation(I[self.FireAmmoAnimations])
+  0075: AddAdd_PreInt(I)
+  007c: goto 0x0054
+  007f: if !((self.BeginOverheatAnimation.BlendOutTime != cast3f(0))) goto 0x011c
+  0097: EmitCheckMessage(1, "Begin Overheat animation is blending into looping overheat animation.  Going from begin -> loop might not look right ", , )
+  011c: if !((self.LoopOverheatAnimation.BlendInTime != cast3f(0))) goto 0x01b8
+  0134: EmitCheckMessage(1, "Looping Overheat animation is blending from begin overheat animation.  Going from begin -> loop might not look right", , )
+  01b8: return nothing
+  01ba: <eos>
+
+function TnWeaponOwnerAnimator.CheckForBadAdditiveAnimation  (script 150 bytes)
+  0000: LooksAdditive = (obj'Core.Strings'.static.Left(cast57(OwnerAnimation.AnimationName), 4) == "ADD_")
+  002e: if !((LooksAdditive ^^ OwnerAnimation.AdditiveAnimation)) goto 0x0093
+  004a: EmitCheckMessage(0, ("Found bad additive animation flag for" @ cast57(OwnerAnimation.AnimationName)), , )
+  0093: return nothing
+  0095: <eos>
+
+function TnWeaponOwnerAnimator.Initialize  (script 44 bytes)
+  0000: self._Animator = Animator
+  000b: self._AdditiveAnimator = AdditiveAnimator
+  0016: self.LoopOverheatAnimation.IsLooping = true
+  0029: return nothing
+  002b: <eos>
+
+function TnWeaponOwnerAnimator.OnEquip  (script 20 bytes)
+  0000: TnWeaponOwnerAnimator.PlayAnimation(self.EquipAnimation, self.EquipAnimationMask, )
+  0011: return nothing
+  0013: <eos>
+
+function TnWeaponOwnerAnimator.OnUnequip  (script 17 bytes)
+  0000: TnWeaponOwnerAnimator.PlayAnimation(self.UnequipAnimation, 0, )
+  000e: return nothing
+  0010: <eos>
+
+function TnWeaponOwnerAnimator.OnDrop  (script 17 bytes)
+  0000: TnWeaponOwnerAnimator.PlayAnimation(self.DropAnimation, 0, )
+  000e: return nothing
+  0010: <eos>
+
+function TnWeaponOwnerAnimator.GetAnimationLength  (script 130 bytes)
+  0000: if !((AnimationName == 'None')) goto 0x0019
+  0013: return 0.0
+  0019: if !(NotEqual_InterfaceInterface(self._Animator, TnAnimatorService(none))) goto 0x0047
+  002d: return self._Animator.GetAnimationLength(AnimationName)
+  0047: if !(NotEqual_InterfaceInterface(self._AdditiveAnimator, TnAnimatorService(none))) goto 0x0075
+  005b: return self._AdditiveAnimator.GetAnimationLength(AnimationName)
+  0075: return 0.0
+  007b: return return
+  0081: <eos>
+
+function TnWeaponOwnerAnimator.OnBeginOverheat  (script 113 bytes)
+  0000: TnWeaponOwnerAnimator.PlayAnimation(self.BeginOverheatAnimation, 1, )
+  000e: BeginLoopDelay = (TnWeaponOwnerAnimator.GetAnimationLength(self.BeginOverheatAnimation.AnimationName) - 0.1)
+  0031: BeginLoopDelay = obj'Core.Math'.static.FMax(BeginLoopDelay, 0.0)
+  004c: self._EndOverheatTimer.Start(delegate.OnLoopOverheat, BeginLoopDelay, )
+  006e: return nothing
+  0070: <eos>
+
+function TnWeaponOwnerAnimator.OnLoopOverheat  (script 17 bytes)
+  0000: TnWeaponOwnerAnimator.PlayAnimation(self.LoopOverheatAnimation, 1, )
+  000e: return nothing
+  0010: <eos>
+
+function TnWeaponOwnerAnimator.OnEndOverheat  (script 131 bytes)
+  0000: self._EndOverheatTimer.Clear()
+  0013: if !((self.EndOverheatAnimation.AnimationName != 'None')) goto 0x0071
+  0031: self._EndOverheatTimer.Start(EndOverheat, TnWeaponOwnerAnimator.GetAnimationLength(self.EndOverheatAnimation.AnimationName), )
+  0060: TnWeaponOwnerAnimator.PlayAnimation(self.EndOverheatAnimation, 1, )
+  006e: goto 0x0080
+  0071: OnBeginOverheat()
+  0080: return nothing
+  0082: <eos>
+
+function TnWeaponOwnerAnimator.OnReload  (script 30 bytes)
+  0000: default=1.0
+  0009: TnWeaponOwnerAnimator.PlayAnimation(self.ReloadAnimation, 1, PlayRate)
+  001b: return nothing
+  001d: <eos>
+
+function TnWeaponOwnerAnimator.OnFireAmmunition  (script 63 bytes)
+  0000: if !((self.FireAmmoAnimations.Length > 0)) goto 0x003c
+  000c: TnWeaponOwnerAnimator.PlayAnimation(self.CurrentFireAmmoAnimation[self.FireAmmoAnimations], 0, )
+  0020: self.CurrentFireAmmoAnimation = cast44((cast3f((self.CurrentFireAmmoAnimation + 1)) % cast3f(self.FireAmmoAnimations.Length)))
+  003c: return nothing
+  003e: <eos>
+
+function TnWeaponOwnerAnimator.Tick  (script 27 bytes)
+  0000: self._EndOverheatTimer.Tick(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnWeaponOwnerAnimator.PlayAnimation  (script 344 bytes)
+  0000: default=1.0
+  0009: if !((Animation.AnimationName == 'None')) goto 0x0029
+  0027: return nothing
+  0029: Animator = (Animation.AdditiveAnimation ? self._AdditiveAnimator : self._Animator)
+  004f: if !(EqualEqual_InterfaceInterface(Animator, TnAnimatorService(none))) goto 0x0065
+  0063: return nothing
+  0065: Params.AnimName = Animation.AnimationName
+  0086: Params.PlayRate = PlayRate
+  009c: Params.BlendInTime = Animation.BlendInTime
+  00bd: Params.BlendOutTime = Animation.BlendOutTime
+  00de: Params.MaskType = MaskType
+  00f4: Params.Looping = Animation.IsLooping
+  0117: Params.RootMotionMode = 2
+  012a: Animator.EnqueueReplicatedAnimation(Params, delegate.None, delegate.None)
+  0155: return nothing
+  0157: <eos>

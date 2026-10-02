@@ -1,0 +1,29 @@
+function HmInputObserver.InputKeyObserver  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function HmInputObserver.InputAxisObserver  (script 8 bytes)
+  0000: nothing
+  0001: return return
+  0007: <eos>
+
+function HmInputObserver.InputKey  (script 59 bytes)
+  0000: default=1.0
+  0009: nothing
+  000a: return InputKeyObserver(ControllerId, Key, Event, AmountDepressed, bGamepad)
+  0034: return return
+  003a: <eos>
+
+function HmInputObserver.InputAxis  (script 50 bytes)
+  0000: nothing
+  0001: return InputAxisObserver(ControllerId, Key, Delta, DeltaTime, bGamepad)
+  002b: return return
+  0031: <eos>
+
+function HmInputObserver.NotifyGameSessionEnded  (script 48 bytes)
+  0000: HPC = HmPlayerController(get_Outer())
+  000e: if !((HPC != none)) goto 0x002d
+  0019: HPC.RemoveGlobalInteraction(self)
+  002d: return nothing
+  002f: <eos>

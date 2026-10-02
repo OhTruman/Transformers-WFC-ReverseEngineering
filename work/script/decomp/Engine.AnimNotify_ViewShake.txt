@@ -1,0 +1,20 @@
+function AnimNotify_ViewShake.Notify  (script 418 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: OwnerActor = AnimSeqInstigator.SkelComponent.Owner
+  0033: if !(((self.bUseBoneLocation && (AnimSeqInstigator != none)) && (AnimSeqInstigator.SkelComponent != none))) goto 0x008a
+  005f: ViewShakeOrigin = AnimSeqInstigator.SkelComponent.GetBoneLocation(self.BoneName, )
+  0087: goto 0x009e
+  008a: ViewShakeOrigin = OwnerActor.Location
+  009e: if !((OwnerActor == none)) goto 0x00ab
+  00a9: return nothing
+  00ab: foreach OwnerActor.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x019e)
+  00d4: PC.GetPlayerViewPoint(CamLoc, CamRot)
+  00f1: DistToOrigin = obj'Core.Math'.static.VSize((ViewShakeOrigin - CamLoc))
+  010e: if !((DistToOrigin < self.ShakeRadius)) goto 0x019d
+  011d: Pct = (1.0 - (DistToOrigin / self.ShakeRadius))
+  0136: PC.CameraShake((self.Duration * Pct), (self.RotAmplitude * Pct), (self.RotFrequency * Pct), (self.LocAmplitude * Pct), (self.LocFrequency * Pct), (self.FOVAmplitude * Pct), (self.FOVFrequency * Pct))
+  019d: iternext
+  019e: iterpop
+  019f: return nothing
+  01a1: <eos>

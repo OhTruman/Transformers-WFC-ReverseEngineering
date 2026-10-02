@@ -1,0 +1,17 @@
+function TnBuffIncreaseGroundSpeed.Apply  (script 304 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: if !((self.SpeedMultiplier.Length == 0)) goto 0x0083
+  0021: LogInternal((("ERROR: Someone forgot to add speed multipliers for" @ cast56(get_Class())) @ "in DefaultCustomization.ini."), , , )
+  0081: return nothing
+  0083: if !((GetLevel() >= self.SpeedMultiplier.Length)) goto 0x010e
+  0098: Level = (self.SpeedMultiplier.Length - 1)
+  00a7: LogInternal((("ERROR: Someone forgot to add speed enough multipliers for" @ cast56(get_Class())) @ "in DefaultCustomization.ini."), , , )
+  010e: self.OwnerPawn.SetSpeedMultiplier(Level[self.SpeedMultiplier], self)
+  012d: return nothing
+  012f: <eos>
+
+function TnBuffIncreaseGroundSpeed.Unapply  (script 29 bytes)
+  0000: TnBuff.Unapply()
+  0006: self.OwnerPawn.RemoveSpeedMultiplier(self)
+  001a: return nothing
+  001c: <eos>

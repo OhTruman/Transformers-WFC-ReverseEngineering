@@ -1,0 +1,11 @@
+function SeqAct_TnCorruptOmegaBattery.Activated  (script 70 bytes)
+  0000: foreach self.Targets(Target,) (end 0x0042)
+  000f: Battery = TnOmegaBatteryDestructibleActor(Target)
+  001f: if !((Battery == none)) goto 0x002e
+  002a: iternext
+  002b: goto 0x0042
+  002e: Battery.Corrupt()
+  0041: iternext
+  0042: iterpop
+  0043: return nothing
+  0045: <eos>

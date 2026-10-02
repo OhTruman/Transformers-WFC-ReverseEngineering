@@ -1,0 +1,46 @@
+function TnAiActionAreaOfEffectAttack.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionAreaOfEffectAttackBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionAreaOfEffectAttack.OnBind  (script 70 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', ((cast3a(self._Blueprint.RequiredForm) == cast3a(0)) ? 0 : 1)))
+  0043: return nothing
+  0045: <eos>
+
+function TnAiActionAreaOfEffectAttack.OnSetUpConditions  (script 155 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !((cast3a(self._Blueprint.RequiredForm) != cast3a(self._TransformerPawn.get_FormType()))) goto 0x0061
+  005f: return false
+  0061: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Target)
+  0083: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0094: return return
+  009a: <eos>
+
+function TnAiActionAreaOfEffectAttack.OnStart  (script 149 bytes)
+  0000: SetCharacterState((1 | 8))
+  000f: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.OnAnimationComplete, delegate.FailCallback)
+  0043: get_WeaponAimer().AimAtTarget(IFocusible(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))))
+  0082: return OnStart(ExpectedEffects)
+  008e: return return
+  0094: <eos>
+
+function TnAiActionAreaOfEffectAttack.OnAnimationComplete  (script 95 bytes)
+  0000: Target = Actor(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTargetIsDead'))
+  0028: if !(!self._TransformerController.IsDangerous(Target)) goto 0x0052
+  0045: Succeed()
+  004f: goto 0x005c
+  0052: Fail()
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionAreaOfEffectAttack.OnFinish  (script 54 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0033
+  001b: get_WeaponAimer().Reset()
+  0033: return nothing
+  0035: <eos>

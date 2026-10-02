@@ -1,0 +1,89 @@
+function TnTacticalSystem.get_NumberOfEnemies  (script 14 bytes)
+  0000: return self._TargetedPawns.Length
+  0007: return return
+  000d: <eos>
+
+function TnTacticalSystem.get_ExtentRadius  (script 13 bytes)
+  0000: return self._ExtentRadius
+  0006: return return
+  000c: <eos>
+
+function TnTacticalSystem.set_ExtentRadius  (script 14 bytes)
+  0000: self._ExtentRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTacticalSystem.PostBeginPlay  (script 33 bytes)
+  0000: PostBeginPlay()
+  0006: self._TacticalQueue.set_Capacity(400)
+  001e: return nothing
+  0020: <eos>
+
+function TnTacticalSystem.Tick  (script 184 bytes)
+  0000: TnTacticalSystem.BuildActivityLists()
+  0006: TnTacticalSystem.SyncCollections(self._TargetedPawns)
+  0011: foreach self._TacticalCollectionSet(TacticalCollection,) (end 0x0092)
+  0020: TacticalSet = TacticalCollection.Collection
+  0034: foreach TacticalSet(Tactical,) (end 0x0090)
+  0043: if !(((Tactical == none) || Tactical._WaitingForUpdate)) goto 0x0066
+  0062: iternext
+  0063: goto 0x0090
+  0066: Tactical._WaitingForUpdate = true
+  0077: self._TacticalQueue.Enqueue(Tactical)
+  008f: iternext
+  0090: iterpop
+  0091: iternext
+  0092: iterpop
+  0093: self._TacticalUpdater.Update(self._TacticalQueue, self._TargetedPawns, self._AllPawns)
+  00b5: return nothing
+  00b7: <eos>
+
+function TnTacticalSystem.FindTacticalCollectionForPawn  (script 84 bytes)
+  0000: Index = 0
+  0007: if !((Index < self._TacticalCollectionSet.Length)) goto 0x004b
+  0017: if !((Index[self._TacticalCollectionSet]._BoundPawn == P)) goto 0x0041
+  0035: return Index[self._TacticalCollectionSet]
+  0041: AddAdd_PreInt(Index)
+  0048: goto 0x0007
+  004b: return none
+  004d: return return
+  0053: <eos>
+
+function TnTacticalSystem.BuildActivityLists  (script 197 bytes)
+  0000: self._TargetedPawns.Length = 0
+  0008: self._AllPawns.Length = 0
+  0010: obj'Engine.Engine'.static.GetCurrentWorldInfo().GetAllControllers(obj'Engine.Controller', FoundControllers)
+  003b: foreach FoundControllers(C,) (end 0x00c1)
+  004a: if !((C.Pawn != none)) goto 0x0074
+  005e: self._AllPawns.AddItem(C.Pawn)
+  0074: if !(((C.Enemy != none) && (self._TargetedPawns.Find(C.Enemy) == -1))) goto 0x00c0
+  00aa: self._TargetedPawns.AddItem(C.Enemy)
+  00c0: iternext
+  00c1: iterpop
+  00c2: return nothing
+  00c4: <eos>
+
+function TnTacticalSystem.SyncCollections  (script 210 bytes)
+  0000: idx = (self._TacticalCollectionSet.Length - 1)
+  000f: if !((idx >= 0)) goto 0x0070
+  001a: EnemyIndex = Enemies.Find(idx[self._TacticalCollectionSet]._BoundPawn)
+  003c: if !((EnemyIndex != -1)) goto 0x005a
+  004b: Enemies.Remove(EnemyIndex,1)
+  0057: goto 0x0066
+  005a: self._TacticalCollectionSet.Remove(idx,1)
+  0066: SubtractSubtract_PreInt(idx)
+  006d: goto 0x000f
+  0070: foreach Enemies(CurrentEnemy,) (end 0x00ce)
+  007f: TacticalCollection = TnTacticalCollection(self._TacticalCollectionFactory.CreateObject(obj'TnTacticalCollection', self))
+  00a3: TacticalCollection.Initialize(CurrentEnemy, self._ExtentRadius)
+  00c0: self._TacticalCollectionSet.AddItem(TacticalCollection)
+  00cd: iternext
+  00ce: iterpop
+  00cf: return nothing
+  00d1: <eos>
+
+function TnTacticalSystem.DrawDebug  (script 137 bytes)
+  0000: C.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0023: C.DrawTextNormal(((("Number Of Enemies: " @ cast53(self._TargetedPawns.Length)) @ "Tactical to be updated: ") @ cast53(self._TacticalQueue._Count)), , , )
+  0086: return nothing
+  0088: <eos>

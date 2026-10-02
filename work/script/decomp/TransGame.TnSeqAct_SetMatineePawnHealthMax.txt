@@ -1,0 +1,23 @@
+function TnSeqAct_SetMatineePawnHealthMax.Activated  (script 169 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Index = 0
+  001b: if !((Index < self.Targets.Length)) goto 0x00a6
+  002b: P = TnMatineePawn(Index[self.Targets])
+  0041: if !((P == none)) goto 0x0086
+  004c: C = Controller(Index[self.Targets])
+  0062: if !((C != none)) goto 0x0086
+  006d: P = TnMatineePawn(C.Pawn)
+  0086: if !((P != none)) goto 0x009c
+  0091: TnSeqAct_SetMatineePawnHealthMax.SetHealthMax(P)
+  009c: AddAdd_PreInt(Index)
+  00a3: goto 0x001b
+  00a6: return nothing
+  00a8: <eos>
+
+function TnSeqAct_SetMatineePawnHealthMax.SetHealthMax  (script 47 bytes)
+  0000: P.HealthMax = self.HealthMax
+  0014: P.SetHealth(self.HealthMax)
+  002c: return nothing
+  002e: <eos>

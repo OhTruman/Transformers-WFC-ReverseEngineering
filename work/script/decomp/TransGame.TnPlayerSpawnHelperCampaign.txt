@@ -1,0 +1,27 @@
+function TnPlayerSpawnHelperCampaign.CheckReadySpawn  (script 86 bytes)
+  0000: if !(!PC.CanRestartPlayer()) goto 0x001a
+  0018: return false
+  001a: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0033: if !(!PRI.HasSelectedCharacter()) goto 0x004d
+  004b: return false
+  004d: return true
+  004f: return return
+  0055: <eos>
+
+function TnPlayerSpawnHelperCampaign.FindSpawnPoint  (script 35 bytes)
+  0000: return (self.Game.FindInitialPlayerStart(PC) != none)
+  001c: return return
+  0022: <eos>
+
+function TnPlayerSpawnHelperCampaign.TrySpawn  (script 71 bytes)
+  0000: Success = self.Game.TrySpawnPlayer(PC)
+  001f: if !(Success) goto 0x0039
+  0028: PC.RespawnFromCheckpoint = false
+  0039: return Success
+  0040: return return
+  0046: <eos>
+
+function TnPlayerSpawnHelperCampaign.RestartingMatchOnPlayer  (script 20 bytes)
+  0000: PC.RespawnFromCheckpoint = true
+  0011: return nothing
+  0013: <eos>

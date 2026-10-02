@@ -1,0 +1,65 @@
+function TnSpring.get_RestingLength  (script 13 bytes)
+  0000: return self._RestingLength
+  0006: return return
+  000c: <eos>
+
+function TnSpring.get_Stiffness  (script 13 bytes)
+  0000: return self._Stiffness
+  0006: return return
+  000c: <eos>
+
+function TnSpring.get_Damping  (script 13 bytes)
+  0000: return self._Damping
+  0006: return return
+  000c: <eos>
+
+function TnSpring.get_Length  (script 13 bytes)
+  0000: return self._Length
+  0006: return return
+  000c: <eos>
+
+function TnSpring.get_Force  (script 13 bytes)
+  0000: return self._Force
+  0006: return return
+  000c: <eos>
+
+function TnSpring.get_Velocity  (script 13 bytes)
+  0000: return self._Velocity
+  0006: return return
+  000c: <eos>
+
+function TnSpring.get_Mass  (script 13 bytes)
+  0000: return self._Mass
+  0006: return return
+  000c: <eos>
+
+function TnSpring.Initialize  (script 58 bytes)
+  0000: self._RestingLength = NewRestingLength
+  000b: self._Stiffness = NewStiffness
+  0016: self._Damping = NewDamping
+  0021: self._Mass = NewMass
+  002c: self._Length = self._RestingLength
+  0037: return nothing
+  0039: <eos>
+
+function TnSpring.Reset  (script 14 bytes)
+  0000: self._Length = -1.0
+  000b: return nothing
+  000d: <eos>
+
+function TnSpring.Update  (script 137 bytes)
+  0000: if !((DeltaTime == 0.0)) goto 0x0011
+  000f: return nothing
+  0011: self._Velocity = ((self._Length >= cast3f(0)) ? ((CurrentLength - self._Length) / DeltaTime) : 0.0)
+  003e: self._Length = CurrentLength
+  0049: PredictedVelocity = TnSpring.CalculateSpringVelocity(DeltaTime, Gravity)
+  005f: self._Force = (self._Mass * (((PredictedVelocity - self._Velocity) / DeltaTime) - Gravity))
+  0086: return nothing
+  0088: <eos>
+
+function TnSpring.CalculateSpringVelocity  (script 124 bytes)
+  0000: K = (self._Stiffness / self._Mass)
+  0012: B = (self._Damping / self._Mass)
+  0024: return ((self._Velocity + (DeltaTime * ((K * (self._RestingLength - self._Length)) + Gravity))) / ((cast3f(1) + (B * DeltaTime)) + ((K * DeltaTime) * DeltaTime)))
+  0075: return return
+  007b: <eos>

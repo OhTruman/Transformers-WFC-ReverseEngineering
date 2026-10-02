@@ -1,0 +1,36 @@
+function TnQuickTurnCameraBehavior.SetActor  (script 14 bytes)
+  0000: self._Target = A
+  000b: return nothing
+  000d: <eos>
+
+function TnQuickTurnCameraBehavior.Reset  (script 74 bytes)
+  0000: Result.OrbitRotation = self._Target.Rotation
+  001f: Result.Recentering = false
+  0032: self._TurnTimeRemaining = 0.0
+  003d: return Result
+  0043: return return
+  0049: <eos>
+
+function TnQuickTurnCameraBehavior.Activate  (script 14 bytes)
+  0000: self._TurnTimeRemaining = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function TnQuickTurnCameraBehavior.Update  (script 254 bytes)
+  0000: if !((CI.ResetCamera && (self._TurnTimeRemaining == cast3f(0)))) goto 0x007a
+  0023: self._TurnTimeRemaining = self._Duration
+  002e: self._TargetRotation = obj'Core.Math'.static.Normalize((self._Target.Rotation + obj'Core.Math'.static.MakeRotatorDeg(0.0, 180.0, 0.0)))
+  007a: if !((self._TurnTimeRemaining > cast3f(0))) goto 0x00d5
+  0087: self._TurnTimeRemaining = obj'Core.Math'.static.FMax((self._TurnTimeRemaining - DeltaTime), 0.0)
+  00a9: Result.OrbitRotation = TnQuickTurnCameraBehavior.CalculateOrbitRotation(DeltaTime, Result.OrbitRotation)
+  00d5: Result.Recentering = (self._TurnTimeRemaining > cast3f(0))
+  00f1: return Result
+  00f7: return return
+  00fd: <eos>
+
+function TnQuickTurnCameraBehavior.CalculateOrbitRotation  (script 134 bytes)
+  0000: TargetRelativeOrbitRotation = obj'Core.Math'.static.Normalize((CurrentOrbitRotation - self._TargetRotation))
+  0026: OrbitDelta = obj'Core.Math'.static.RLerp(rot(0,0,0), TargetRelativeOrbitRotation, (self._TurnTimeRemaining / self._Duration), )
+  005e: return obj'Core.Math'.static.Normalize((self._TargetRotation + OrbitDelta))
+  007f: return return
+  0085: <eos>

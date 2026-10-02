@@ -1,0 +1,85 @@
+function TnCompetitiveScoreTracker.get_Multiplier  (script 22 bytes)
+  0000: return self.OwningPRI.CompetitiveScoreMultiplier
+  000f: return return
+  0015: <eos>
+
+function TnCompetitiveScoreTracker.set_Multiplier  (script 53 bytes)
+  0000: self.OwningPRI.CompetitiveScoreMultiplier = obj'Core.Math'.static.FClamp(Value, 1.0, self.ScoreDefinition.MaxMultiplier)
+  0032: return nothing
+  0034: <eos>
+
+function TnCompetitiveScoreTracker.get_Active  (script 16 bytes)
+  0000: return (self.OwningPRI != none)
+  0009: return return
+  000f: <eos>
+
+function TnCompetitiveScoreTracker.AddScoreEventDelegate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCompetitiveScoreTracker.Activate  (script 25 bytes)
+  0000: self.OwningPRI = PRI
+  000b: self.__AddScoreEventDelegate__Delegate = ScoreEventDelegate
+  0016: return nothing
+  0018: <eos>
+
+function TnCompetitiveScoreTracker.ScoreEvent  (script 500 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=-1.0
+  000b: default=-1.0
+  0014: if !((self.OwningPRI == none)) goto 0x0021
+  001f: return nothing
+  0021: if !((EventType == obj'TnCompetitiveScoreEventHitCheckpoint')) goto 0x005e
+  0030: self._LastCheckpointScore = self.OwningPRI.GetScore()
+  0049: self._LastCheckpointMultiplier = get_Multiplier()
+  0059: return nothing
+  005b: goto 0x0096
+  005e: if !((EventType == obj'TnCompetitiveScoreEventRestartFromCheckpoint')) goto 0x0096
+  006d: self.OwningPRI.SetScore(self._LastCheckpointScore)
+  0085: set_Multiplier(self._LastCheckpointMultiplier)
+  0094: return nothing
+  0096: set_Multiplier((get_Multiplier() + ((OverrideMultiplierAmount == cast3f(-1)) ? self.ScoreDefinition.GetMultiplier(EventType, TargetActor) : OverrideMultiplierAmount)))
+  00e1: FinalScore = cast44(((OverrideScoreAmount == cast3f(-1)) ? self.ScoreDefinition.GetScore(EventType, TargetActor) : OverrideScoreAmount))
+  011e: if !((FinalScore > 0)) goto 0x014a
+  0129: (FinalScore *= (get_Multiplier() * self.ScoreDefinition.GlobalScoreMultiplier))
+  014a: if !((FinalScore != 0)) goto 0x0189
+  0155: self.OwningPRI.AddScore(FinalScore, )
+  016e: AddScoreEventDelegate(EventType, cast3f(FinalScore))
+  0189: foreach self.ScoreDefinition.Combos(Combo,) (end 0x01f0)
+  01a1: ComboClass = Combo.CheckCombo(EventType, TargetActor, EventAmount)
+  01c9: if !((ComboClass != none)) goto 0x01ef
+  01d4: ScoreEvent(ComboClass, TargetActor, EventAmount, , )
+  01ef: iternext
+  01f0: iterpop
+  01f1: return nothing
+  01f3: <eos>
+
+function TnCompetitiveScoreTracker.ClientAddScoreEvent  (script 83 bytes)
+  0000: Place = self.ReplicatedScoreEvents.Length
+  000c: self.ReplicatedScoreEvents.Insert(Place,1)
+  0018: Place[self.ReplicatedScoreEvents].EventType = EventType
+  0034: Place[self.ReplicatedScoreEvents].Score = Score
+  0050: return nothing
+  0052: <eos>
+
+function TnCompetitiveScoreTracker.DumpScoreEvents  (script 22 bytes)
+  0000: Events = self.ReplicatedScoreEvents
+  000b: self.ReplicatedScoreEvents.Length = 0
+  0013: return nothing
+  0015: <eos>
+
+function TnCompetitiveScoreTracker.Tick  (script 59 bytes)
+  0000: if !((self.OwningPRI == none)) goto 0x000d
+  000b: return nothing
+  000d: set_Multiplier((get_Multiplier() - (self.ScoreDefinition.MultiplierDecayRate * DeltaTime)))
+  0038: return nothing
+  003a: <eos>
+
+function TnCompetitiveScoreTracker.ResetScore  (script 55 bytes)
+  0000: if !((self.OwningPRI == none)) goto 0x000d
+  000b: return nothing
+  000d: self.OwningPRI.SetScore(0.0)
+  0025: set_Multiplier(0.0)
+  0034: return nothing
+  0036: <eos>

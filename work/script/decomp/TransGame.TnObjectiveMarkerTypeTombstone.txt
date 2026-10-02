@@ -1,0 +1,14 @@
+function TnObjectiveMarkerTypeTombstone.ShouldDisplayMarker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnObjectiveMarkerTypeTombstone.GetMarkerSetup  (script 181 bytes)
+  0000: Alpha = 1.0
+  000b: if !(((MarkerData.MarkerBase != none) && (MarkerData.MarkerBase.LifeSpan < self.FadeOutTime))) goto 0x006c
+  0046: Alpha = (MarkerData.MarkerBase.LifeSpan / self.FadeOutTime)
+  006c: CreateInstances(self.MarkerSetup)
+  007b: self.MarkerSetup.MatInst.SetScalarParameterValue('Alpha', Alpha, )
+  00a8: return self.MarkerSetup
+  00ae: return return
+  00b4: <eos>

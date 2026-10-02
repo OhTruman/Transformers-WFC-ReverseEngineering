@@ -1,0 +1,30 @@
+function HmLocationHistory.AddCurrentFollowLocationToHistory  (script 21 bytes)
+  0000: self.History.Length[self.History] = Location
+  0012: return nothing
+  0014: <eos>
+
+function HmLocationHistory.GetDistanceToPrevFollowLocation  (script 52 bytes)
+  0000: PrevLocation = (self.History.Length - 1)[self.History]
+  0015: return obj'Core.Math'.static.VSize((Location - PrevLocation))
+  002d: return return
+  0033: <eos>
+
+function HmLocationHistory.UpdateLocationHistory  (script 85 bytes)
+  0000: if !((self.History.Length == 0)) goto 0x001a
+  000c: HmLocationHistory.AddCurrentFollowLocationToHistory(Location)
+  0017: goto 0x003a
+  001a: if !((HmLocationHistory.GetDistanceToPrevFollowLocation(Location) > self.DistanceGranularity)) goto 0x003a
+  002f: HmLocationHistory.AddCurrentFollowLocationToHistory(Location)
+  003a: if !((self.History.Length > self.LocationCapacity)) goto 0x0052
+  004a: self.History.Remove(0,1)
+  0052: return nothing
+  0054: <eos>
+
+function HmLocationHistory.DrawLocationHistory  (script 103 bytes)
+  0000: I = 0
+  0007: if !((I < (self.History.Length - 1))) goto 0x0064
+  001a: obj'Engine.Debug'.static.DrawLine(I[self.History], (I + 1)[self.History], MakeColor(cast3d(255), 80, 135, ), )
+  005a: AddAdd_PreInt(I)
+  0061: goto 0x0007
+  0064: return nothing
+  0066: <eos>

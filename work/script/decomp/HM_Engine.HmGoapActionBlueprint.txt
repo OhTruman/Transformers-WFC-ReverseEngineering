@@ -1,0 +1,47 @@
+function HmGoapActionBlueprint.CheckForErrors  (script 649 bytes)
+  0000: if !(((get_Class() != obj'HmGoapActionBlueprint') && (self.actionClass == obj'HmGoapAction'))) goto 0x0064
+  001e: EmitCheckMessage(0, (("Blueprint(" @ cast56(get_Class())) @ ") does not have Action class set!"), , )
+  0064: I = 0
+  006b: if !((I < self.DynamicPreconditions.Length)) goto 0x00ed
+  007b: if !((I[self.DynamicPreconditions] == none)) goto 0x00e3
+  008c: EmitCheckMessage(0, ((("Blueprint(" @ cast56(get_Class())) @ ") has a null dynamic precondition at slot") @ cast53(I)), , )
+  00e3: AddAdd_PreInt(I)
+  00ea: goto 0x006b
+  00ed: I = 0
+  00f4: if !((I < self.DynamicEffects.Length)) goto 0x0170
+  0104: if !((I[self.DynamicEffects] == none)) goto 0x0166
+  0115: EmitCheckMessage(0, ((("Blueprint(" @ cast56(get_Class())) @ ") has a null dynamic effect at slot") @ cast53(I)), , )
+  0166: AddAdd_PreInt(I)
+  016d: goto 0x00f4
+  0170: I = 0
+  0177: if !((I < self.CustomProceduralPreconditions.Length)) goto 0x0203
+  0187: if !((I[self.CustomProceduralPreconditions] == none)) goto 0x01f9
+  0198: EmitCheckMessage(0, ((("Blueprint(" @ cast56(get_Class())) @ ") has a null custom procedural precondition at slot") @ cast53(I)), , )
+  01f9: AddAdd_PreInt(I)
+  0200: goto 0x0177
+  0203: I = 0
+  020a: if !((I < self.CostModulators.Length)) goto 0x0286
+  021a: if !((I[self.CostModulators] == none)) goto 0x027c
+  022b: EmitCheckMessage(0, ((("Blueprint(" @ cast56(get_Class())) @ ") has a null cost modulator at slot") @ cast53(I)), , )
+  027c: AddAdd_PreInt(I)
+  0283: goto 0x020a
+  0286: return nothing
+  0288: <eos>
+
+function HmGoapActionBlueprint.AddOverrides  (script 80 bytes)
+  0000: if !(((self.ActionOverrideClass != none) && !HmGoapActionBlueprint.HasActionOverrideClass(ActionOverrides))) goto 0x004d
+  001d: ActionOverride = obj'Engine.Allocation'.static.CreateObject(self.ActionOverrideClass, OuterObject)
+  0040: ActionOverrides.AddItem(ActionOverride)
+  004d: return nothing
+  004f: <eos>
+
+function HmGoapActionBlueprint.HasActionOverrideClass  (script 72 bytes)
+  0000: I = 0
+  0007: if !((I < ActionOverrides.Length)) goto 0x003f
+  0017: if !((I[ActionOverrides].get_Class() == self.ActionOverrideClass)) goto 0x0035
+  0033: return true
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return false
+  0041: return return
+  0047: <eos>

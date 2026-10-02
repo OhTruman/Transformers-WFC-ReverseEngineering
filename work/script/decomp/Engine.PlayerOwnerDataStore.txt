@@ -1,0 +1,42 @@
+function PlayerOwnerDataStore.SetPlayerDataProvider  (script 343 bytes)
+  0000: LogInternal((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())), 'DevDataStore', , )
+  002e: if !((NewPlayerData != none)) goto 0x0103
+  0039: LogInternal(((((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "creating new PlayerOwnerDataProvider for") @ cast56(NewPlayerData)) @ "and linking to 'PlayerOwner' data store") @ cast56(self)), 'DevDataStore', , )
+  00c6: if !((self.PlayerData != none)) goto 0x00e4
+  00d1: self.PlayerData.CleanupDataProvider()
+  00e4: self.PlayerData = new(nothing, nothing, self.ProviderTypes.PlayerOwnerDataProviderClass, nothing, GetRemoteRole)
+  0103: if !((self.PlayerData != none)) goto 0x0126
+  010e: self.PlayerData.SetPlayerDataProvider(NewPlayerData)
+  0126: LogInternal(((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())), 'DevDataStore', , )
+  0154: return nothing
+  0156: <eos>
+
+function PlayerOwnerDataStore.ClearDataProviders  (script 301 bytes)
+  0000: LogInternal((((">>" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())), 'DevDataStore', , )
+  002e: if !((self.PlayerData != none)) goto 0x004c
+  0039: self.PlayerData.CleanupDataProvider()
+  004c: if !((self.CurrentWeapon != none)) goto 0x006a
+  0057: self.CurrentWeapon.CleanupDataProvider()
+  006a: I = 0
+  0071: if !((I < self.WeaponList.Length)) goto 0x00a4
+  0081: I[self.WeaponList].CleanupDataProvider()
+  009a: AddAdd_Int(I)
+  00a1: goto 0x0071
+  00a4: I = 0
+  00ab: if !((I < self.PowerupList.Length)) goto 0x00de
+  00bb: I[self.PowerupList].CleanupDataProvider()
+  00d4: AddAdd_Int(I)
+  00db: goto 0x00ab
+  00de: self.PlayerData = none
+  00e5: self.CurrentWeapon = none
+  00ec: self.WeaponList.Length = 0
+  00f4: self.PowerupList.Length = 0
+  00fc: LogInternal(((("<<" @ cast57(self.Name)) $ "::") $ cast57(GetFuncName())), 'DevDataStore', , )
+  012a: return nothing
+  012c: <eos>
+
+function PlayerOwnerDataStore.NotifyGameSessionEnded  (script 20 bytes)
+  0000: PlayerOwnerDataStore.ClearDataProviders()
+  0006: return UIDataStore_GameState.NotifyGameSessionEnded()
+  000d: return return
+  0013: <eos>

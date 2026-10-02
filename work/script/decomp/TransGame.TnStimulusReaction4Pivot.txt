@@ -1,0 +1,18 @@
+function TnStimulusReaction4Pivot.GetAnimation  (script 161 bytes)
+  0000: AxisDir = obj'Core.Math'.static.GetXYDirection2(P.Rotation, (P.Location - StimulusLocation), AxisDir2)
+  0041: switch (AxisDir)
+  0048: case 0: (next 0x006c)
+  004d: if !((cast3a(AxisDir2) == cast3a(2))) goto 0x0066
+  005d: return self.BackLeftAnimation
+  0063: goto 0x006c
+  0066: return self.BackRightAnimation
+  006c: case 1: (next 0x0077)
+  0071: return self.FrontAnimation
+  0077: case 2: (next 0x0082)
+  007c: return self.LeftAnimation
+  0082: case 3: (next 0x008d)
+  0087: return self.RightAnimation
+  008d: default:
+  0090: return 'None'
+  009a: return return
+  00a0: <eos>

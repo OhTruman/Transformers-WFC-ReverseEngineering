@@ -1,0 +1,103 @@
+function DataStoreClient.FindDataStore  (script 12 bytes)
+  0000: DataStoreTag
+  0005: PlayerOwner
+  000a: nothing
+  000b: <eos>
+
+function DataStoreClient.CreateDataStore  (script 7 bytes)
+  0000: DataStoreClass
+  0005: nothing
+  0006: <eos>
+
+function DataStoreClient.RegisterDataStore  (script 12 bytes)
+  0000: DataStore
+  0005: PlayerOwner
+  000a: nothing
+  000b: <eos>
+
+function DataStoreClient.UnregisterDataStore  (script 7 bytes)
+  0000: DataStore
+  0005: nothing
+  0006: <eos>
+
+function DataStoreClient.GetAvailableDataStores  (script 7 bytes)
+  0000: out_DataStores
+  0005: nothing
+  0006: <eos>
+
+function DataStoreClient.FindPlayerDataStoreIndex  (script 7 bytes)
+  0000: PlayerOwner
+  0005: nothing
+  0006: <eos>
+
+function DataStoreClient.GetPlayerDataStoreClasses  (script 14 bytes)
+  0000: out_DataStoreClasses = self.PlayerDataStoreClasses
+  000b: return nothing
+  000d: <eos>
+
+function DataStoreClient.FindDataStoreClass  (script 193 bytes)
+  0000: I = 0
+  0007: if !((I < self.GlobalDataStores.Length)) goto 0x005e
+  0017: if !(I[self.GlobalDataStores].IsA(RequiredMetaClass.Name)) goto 0x0054
+  0039: Result = I[self.GlobalDataStores].get_Class()
+  0051: goto 0x005e
+  0054: AddAdd_Int(I)
+  005b: goto 0x0007
+  005e: if !((Result == none)) goto 0x00b4
+  0069: I = 0
+  0070: if !((I < self.PlayerDataStoreClasses.Length)) goto 0x00b4
+  0080: if !(ClassIsChildOf(I[self.PlayerDataStoreClasses], RequiredMetaClass)) goto 0x00aa
+  0096: Result = I[self.PlayerDataStoreClasses]
+  00a7: goto 0x00b4
+  00aa: AddAdd_Int(I)
+  00b1: goto 0x0070
+  00b4: return Result
+  00ba: return return
+  00c0: <eos>
+
+function DataStoreClient.NotifyGameSessionEnded  (script 239 bytes)
+  0000: DataStoreArray = self.GlobalDataStores
+  000b: DataStoreIndex = 0
+  0012: if !((DataStoreIndex < DataStoreArray.Length)) goto 0x005d
+  0022: if !(DataStoreIndex[DataStoreArray].NotifyGameSessionEnded()) goto 0x0053
+  003e: UnregisterDataStore(DataStoreIndex[DataStoreArray])
+  0053: AddAdd_Int(DataStoreIndex)
+  005a: goto 0x0012
+  005d: I = (self.PlayerDataStores.Length - 1)
+  006c: if !((I >= 0)) goto 0x00ec
+  0077: DataStoreArray = I[self.PlayerDataStores].DataStores
+  0093: DataStoreIndex = 0
+  009a: if !((DataStoreIndex < DataStoreArray.Length)) goto 0x00e2
+  00aa: DataStoreIndex[DataStoreArray].NotifyGameSessionEnded()
+  00c3: UnregisterDataStore(DataStoreIndex[DataStoreArray])
+  00d8: AddAdd_Int(DataStoreIndex)
+  00df: goto 0x009a
+  00e2: SubtractSubtract_Int(I)
+  00e9: goto 0x006c
+  00ec: return nothing
+  00ee: <eos>
+
+function DataStoreClient.DebugDumpDataStoreInfo  (script 660 bytes)
+  0000: LogInternal(("GlobalDataStores: " $ cast53(self.GlobalDataStores.Length)), 'DevDataStore', , )
+  002b: DataStoreIndex = 0
+  0032: if !((DataStoreIndex < self.GlobalDataStores.Length)) goto 0x00ac
+  0042: LogInternal((((((("	GlobalDataStore[" $ cast53(DataStoreIndex)) $ "]:") @ cast57(DataStoreIndex[self.GlobalDataStores].Tag)) @ "(") $ cast56(DataStoreIndex[self.GlobalDataStores])) $ ")"), 'DevDataStore', , )
+  00a2: AddAdd_Int(DataStoreIndex)
+  00a9: goto 0x0032
+  00ac: LogInternal("", , , )
+  00b3: LogInternal(("Player data store groups:" $ cast53(self.PlayerDataStores.Length)), 'DevDataStore', , )
+  00e5: DataStoreIndex = 0
+  00ec: if !((DataStoreIndex < self.PlayerDataStores.Length)) goto 0x0291
+  00fc: PlayerOwner = DataStoreIndex[self.PlayerDataStores].PlayerOwner
+  0118: PlayerGroupDataStores = DataStoreIndex[self.PlayerDataStores].DataStores
+  0134: PlayerName = ((((PlayerOwner != none) && (PlayerOwner.Actor != none)) && (PlayerOwner.Actor.PlayerReplicationInfo != none)) ? PlayerOwner.Actor.PlayerReplicationInfo.PlayerName : "None")
+  01a2: LogInternal((((((((("	PlayerDataStores for player " $ cast53(DataStoreIndex)) $ ":") @ cast53(PlayerGroupDataStores.Length)) @ "(") $ PlayerName) @ "-") @ cast56(PlayerOwner)) $ ")"), 'DevDataStore', , )
+  0205: PlayerDataStoreIndex = 0
+  020c: if !((PlayerDataStoreIndex < PlayerGroupDataStores.Length)) goto 0x0287
+  021c: LogInternal((((((("		PlayerDataStore[" $ cast53(PlayerDataStoreIndex)) $ "]:") @ cast57(PlayerDataStoreIndex[PlayerGroupDataStores].Tag)) @ "(") $ cast56(PlayerDataStoreIndex[PlayerGroupDataStores])) $ ")"), 'DevDataStore', , )
+  027d: AddAdd_Int(PlayerDataStoreIndex)
+  0284: goto 0x020c
+  0287: AddAdd_Int(DataStoreIndex)
+  028e: goto 0x00ec
+  0291: return nothing
+  0293: <eos>

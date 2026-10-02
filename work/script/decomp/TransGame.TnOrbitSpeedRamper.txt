@@ -1,0 +1,27 @@
+function TnOrbitSpeedRamper.Reset  (script 33 bytes)
+  0000: self.PreviousStickInput = vect(0,0,0)
+  0013: self.CurrentRampPercentage = 0.0
+  001e: return nothing
+  0020: <eos>
+
+function TnOrbitSpeedRamper.UpdateRampPercentage  (script 293 bytes)
+  0000: CurrentStickInput = obj'Core.Math'.static.MakeVector(CI.RightStickInputX, CI.RightStickInputY, 0.0)
+  003e: InputChange = obj'Core.Math'.static.VSize((CurrentStickInput - self.PreviousStickInput))
+  005b: StickInputMagnitude = obj'Core.Math'.static.VSize(CurrentStickInput)
+  0071: if !(((InputChange < MaxInputChange) && (StickInputMagnitude > RampZone))) goto 0x010c
+  0091: if !((RampTime <= 0.0)) goto 0x00ae
+  00a0: self.CurrentRampPercentage = 1.0
+  00ab: goto 0x0109
+  00ae: FractionInRampZone = ((StickInputMagnitude - RampZone) / (1.0 - RampZone))
+  00ce: RampIncreaseThisFrame = ((DeltaTime / RampTime) * FractionInRampZone)
+  00e7: self.CurrentRampPercentage = obj'Core.Math'.static.FMin((self.CurrentRampPercentage + RampIncreaseThisFrame), 1.0)
+  0109: goto 0x0117
+  010c: self.CurrentRampPercentage = 0.0
+  0117: self.PreviousStickInput = CurrentStickInput
+  0122: return nothing
+  0124: <eos>
+
+function TnOrbitSpeedRamper.GetCurrentRampPercentage  (script 13 bytes)
+  0000: return self.CurrentRampPercentage
+  0006: return return
+  000c: <eos>

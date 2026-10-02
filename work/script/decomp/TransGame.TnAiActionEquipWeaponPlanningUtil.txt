@@ -1,0 +1,18 @@
+function TnAiActionEquipWeaponPlanningUtil.CreateInventory  (script 108 bytes)
+  0000: if !((WeaponClass == none)) goto 0x000d
+  000b: return nothing
+  000d: Weapon = TnWeapon(TransformerPawn.InvManager.FindInventoryType(WeaponClass, false))
+  003a: if !((Weapon != none)) goto 0x0047
+  0045: return nothing
+  0047: TransformerPawn.InvManager.CreateInventory(WeaponClass, true)
+  0069: return nothing
+  006b: <eos>
+
+function TnAiActionEquipWeaponPlanningUtil.WeaponIsReady  (script 101 bytes)
+  0000: if !((EquippingWeapon == none)) goto 0x000d
+  000b: return false
+  000d: if !(((EquippingWeapon.get_Class() != TransformerController.AiWorldState.GetClassValue(obj'TnAiWorldStateCurrentWeapon')) || !EquippingWeapon.ReadyToFire(true))) goto 0x005c
+  005a: return false
+  005c: return true
+  005e: return return
+  0064: <eos>

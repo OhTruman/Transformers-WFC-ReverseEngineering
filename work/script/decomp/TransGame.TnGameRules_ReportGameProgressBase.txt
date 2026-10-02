@@ -1,0 +1,13 @@
+function TnGameRules_ReportGameProgressBase.HandleProgress  (script 214 bytes)
+  0000: Game = TnGame(self.WorldInfo.Game)
+  0019: if !(((ProgressMaker == none) || (Game == none))) goto 0x0033
+  0031: return nothing
+  0033: NumScoresLeft = Game.GetNumScoresRemaining(ProgressMaker)
+  0051: I = self.Sounds.Find('NumScoresLeft',NumScoresLeft)
+  006d: if !((I == -1)) goto 0x007e
+  007c: return nothing
+  007e: BroadcastLocalizedMessage(obj'TnGameProgressAnnouncementMessage', I[self.Sounds].MessageSwitch, , , )
+  00a6: if !(I[self.Sounds].NotifyGame) goto 0x00d3
+  00c0: Game.NotifyGameNearlyComplete()
+  00d3: return nothing
+  00d5: <eos>

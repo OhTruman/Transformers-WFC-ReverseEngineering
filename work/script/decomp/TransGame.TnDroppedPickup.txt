@@ -1,0 +1,93 @@
+function TnDroppedPickup.ReplicatedEvent  (script 91 bytes)
+  0000: if !((VarName == 'InventoryClass')) goto 0x004d
+  0013: InventoryClassAsWeapon = class<TnWeapon>(self.InventoryClass)
+  0023: if !((InventoryClassAsWeapon != none)) goto 0x004d
+  002e: SetPickupMesh(InventoryClassAsWeapon.static.GetPickupMesh())
+  004b: return nothing
+  004d: ReplicatedEvent(VarName)
+  0058: return nothing
+  005a: <eos>
+
+function TnDroppedPickup.GiveTo  (script 74 bytes)
+  0000: GiveTo(P)
+  000b: DWG = TnGame(self.WorldInfo.Game)
+  0024: DWG.PickedUp(TnPawn(P), self, self.InventoryClass)
+  0047: return nothing
+  0049: <eos>
+
+function TnDroppedPickup.TakePickUp  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnDroppedPickup.Pickup.TakePickUp  (script 46 bytes)
+  0000: if !(!ValidTouch(PP)) goto 0x0016
+  0014: return false
+  0016: GiveTo(PP)
+  0025: return true
+  0027: return return
+  002d: <eos>
+
+function TnDroppedPickup.ClonePickupMesh  (script 34 bytes)
+  0000: return PrimitiveComponent(PickupMesh.Clone(self, ))
+  001b: return return
+  0021: <eos>
+
+function TnDroppedPickup.SetPickupMesh  (script 419 bytes)
+  0000: if !((PickupMesh == none)) goto 0x000d
+  000b: return nothing
+  000d: PC = ClonePickupMesh(PickupMesh)
+  0027: if !((PC == none)) goto 0x0034
+  0032: return nothing
+  0034: AttachComponent(PC)
+  0043: PC.SetLightEnvironment(self.LightEnvironment)
+  005b: if !(PickupMesh.bDisableAllRigidBody) goto 0x006f
+  006d: return nothing
+  006f: if !((StaticMeshComponent(PC) != none)) goto 0x0097
+  007f: StaticMeshComponent(PC).ResetBodyInstance()
+  0097: self.AtRestCollisionComponent = self.CollisionComponent
+  00a2: self.CollisionComponent = PC
+  00ad: SetTimer(self.CheckAtRestInterval, true, 'CheckForRigidBodySleepState', )
+  00c0: self.CollisionComponent.SetBlockRigidBody(true)
+  00d4: self.CollisionComponent.SetRBChannel(5)
+  00e9: self.CollisionComponent.SetRBCollidesWithChannel(2, false)
+  00ff: self.CollisionComponent.SetActorCollision(true, false)
+  0114: if !((SkeletalMeshComponent(self.CollisionComponent) != none)) goto 0x0156
+  0124: SkeletalMeshComponent(self.CollisionComponent).SetHasPhysicsAssetInstance(true)
+  013d: SkeletalMeshComponent(self.CollisionComponent).PhysicsWeight = 1.0
+  0156: SetPhysics(10, , )
+  0164: self.CollisionComponent.SetNotifyRigidBodyCollision(true)
+  0178: self.CollisionComponent.ScriptRigidBodyCollisionThreshold = 100.0
+  018c: self.CollisionComponent.WakeRigidBody()
+  01a0: return nothing
+  01a2: <eos>
+
+function TnDroppedPickup.CheckForRigidBodySleepState  (script 230 bytes)
+  0000: if !((self.CollisionComponent.RigidBodyIsAwake() == false)) goto 0x00e3
+  001a: self.CollisionComponent.SetNotifyRigidBodyCollision(false)
+  002e: ClearTimer('CheckForRigidBodySleepState', )
+  0042: self.CollisionComponent.SetBlockRigidBody(false)
+  0056: self.CollisionComponent.SetActorCollision(false, false)
+  006b: SkelComp = SkeletalMeshComponent(self.CollisionComponent)
+  007b: if !(((SkelComp != none) && (SkelComp.PhysicsAssetInstance != none))) goto 0x00ca
+  009c: SkelComp.PhysicsAssetInstance.SetAllBodiesFixed(true)
+  00b9: SkelComp.bUpdateKinematicBonesFromAnimation = false
+  00ca: self.CollisionComponent = self.AtRestCollisionComponent
+  00d5: SetPhysics(0, , )
+  00e3: return nothing
+  00e5: <eos>
+
+function TnDroppedPickup.GetPickupRating  (script 27 bytes)
+  0000: return self.InventoryClass.static.GetPickupRating()
+  0014: return return
+  001a: <eos>
+
+function TnDroppedPickup.SetTeamNum  (script 14 bytes)
+  0000: self.TeamNum = TeamNum_
+  000b: return nothing
+  000d: <eos>
+
+function TnDroppedPickup.ScriptGetTeamNum  (script 13 bytes)
+  0000: return self.TeamNum
+  0006: return return
+  000c: <eos>

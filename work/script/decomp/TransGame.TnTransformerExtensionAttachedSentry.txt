@@ -1,0 +1,45 @@
+function TnTransformerExtensionAttachedSentry.ApplyTransformerExtension  (script 281 bytes)
+  0000: if !((cast3a(P.Role) < cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: P.get_RobotMeshComponent().GetSocketWorldLocationAndRotation(self.AttachSocketName, SpawnLocation, SpawnRotation)
+  004b: SentryPawn = P.Spawn(obj'TnSentryPawn', , , SpawnLocation, SpawnRotation, , true, self.Sentry)
+  007c: SentryController = P.Spawn(obj'TnAiSentryController', , , , , , , )
+  00a1: SentryController.Possess(SentryPawn, )
+  00ba: SentryPawn.Controller = SentryController
+  00ce: SentryPawn.AttachToPawn(P, self.AttachSocketName)
+  00eb: TnTransformerExtensionAttachedSentry.SetAITeam(SentryPawn, P)
+  00fb: TnTransformerExtensionAttachedSentry.AddToSentryGroup(SentryPawn, P)
+  010b: TnTransformerExtensionAttachedSentry.AlertToPlayers(SentryController)
+  0116: return nothing
+  0118: <eos>
+
+function TnTransformerExtensionAttachedSentry.SetAITeam  (script 75 bytes)
+  0000: Team = TnFactionTeam(P.GetTeam())
+  001e: if !((Team != none)) goto 0x0048
+  0029: SentryPawn.SetAITeam(Team.get_Class())
+  0048: return nothing
+  004a: <eos>
+
+function TnTransformerExtensionAttachedSentry.AddToSentryGroup  (script 87 bytes)
+  0000: SentryService = TnSentryGroupService(Owner.GetService('TnSentryGroupService'))
+  0027: if !(NotEqual_InterfaceInterface(SentryService, TnSentryGroupService(none))) goto 0x0054
+  003b: SentryService.Add(SentryPawn)
+  0054: return nothing
+  0056: <eos>
+
+function TnTransformerExtensionAttachedSentry.AlertToPlayers  (script 79 bytes)
+  0000: foreach SentryController.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x004b)
+  0029: SentryController.SeeEnemy(PC.Pawn)
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function TnTransformerExtensionAttachedSentry.CheckForTransformerErrors  (script 235 bytes)
+  0000: if !((self.Sentry == none)) goto 0x0044
+  000b: get_Outer().EmitCheckMessage(0, "Attached sentry definition not set", , )
+  0044: if !(((Transformer.SkelMesh != none) && (Transformer.SkelMesh.FindSocket(self.AttachSocketName) == none))) goto 0x00dd
+  0081: get_Outer().EmitCheckMessage(0, ((("Attached sentry socket '" $ cast57(self.AttachSocketName)) $ "' not found in") @ cast56(Transformer.SkelMesh)), , )
+  00dd: TnTransformerExtension.CheckForTransformerErrors(Transformer)
+  00e8: return nothing
+  00ea: <eos>

@@ -1,0 +1,88 @@
+function ReachSpec.CostFor  (script 7 bytes)
+  0000: P
+  0005: nothing
+  0006: <eos>
+
+function ReachSpec.IsWalkRequired  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ReachSpec.IsSwimRequired  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ReachSpec.IsFlyRequired  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ReachSpec.IsJumpRequired  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ReachSpec.IsHighJumpRequired  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ReachSpec.IsBlockedFor  (script 30 bytes)
+  0000: return (CostFor(P) >= 10000000.0)
+  0017: return return
+  001d: <eos>
+
+function ReachSpec.MustTraverse  (script 50 bytes)
+  0000: return (!IsWalkRequired() && (IsJumpRequired() || IsHighJumpRequired()))
+  002b: return return
+  0031: <eos>
+
+function ReachSpec.GetStartNavigationPoint  (script 13 bytes)
+  0000: return self.Start
+  0006: return return
+  000c: <eos>
+
+function ReachSpec.GetEndNavigationPoint  (script 24 bytes)
+  0000: return self.End.Nav
+  0011: return return
+  0017: <eos>
+
+function ReachSpec.SupportsPawn  (script 7 bytes)
+  0000: P
+  0005: nothing
+  0006: <eos>
+
+function ReachSpec.SupportsMovementCapabilities  (script 7 bytes)
+  0000: MC
+  0005: nothing
+  0006: <eos>
+
+function ReachSpec.GetBoundingBox  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ReachSpec.PlanTraversal  (script 10 bytes)
+  0000: AddAdd_PreInt(self._NumOfPlannedTraversal)
+  0007: return nothing
+  0009: <eos>
+
+function ReachSpec.UnplanTraversal  (script 37 bytes)
+  0000: self._NumOfPlannedTraversal = cast44(obj'Core.Math'.static.FMax(cast3f((self._NumOfPlannedTraversal - 1)), 0.0))
+  0022: return nothing
+  0024: <eos>
+
+function ReachSpec.PathColor  (script 488 bytes)
+  0000: if !(((self.Start == none) || (self.End.Nav == none))) goto 0x0042
+  0023: return MakeLinearColor(0.0, 0.0, 0.0, 0.0)
+  0042: if !((self.Start.bCrowdPath && self.End.Nav.bCrowdPath)) goto 0x0092
+  0073: return MakeLinearColor(1.0, 1.0, 0.0, 0.0)
+  0092: if !((IsFlyRequired() && !IsWalkRequired())) goto 0x016a
+  00b0: if !(((AirPathNode(self.Start) != none) && (AirPathNode(self.End.Nav) == none))) goto 0x00fc
+  00dd: return MakeLinearColor(0.4, 1.0, 0.4, 0.0)
+  00fc: if !(((AirPathNode(self.Start) == none) && (AirPathNode(self.End.Nav) != none))) goto 0x014b
+  0129: return MakeLinearColor(0.4, 0.7, 1.0, 0.0)
+  0148: goto 0x016a
+  014b: return MakeLinearColor(1.0, 0.5, 0.0, 0.0)
+  016a: if !(IsJumpRequired()) goto 0x0196
+  0177: return MakeLinearColor(1.0, 0.0, 0.66, 0.0)
+  0196: if !(IsWalkRequired()) goto 0x01c2
+  01a3: return MakeLinearColor(1.0, 1.0, 1.0, 0.0)
+  01c2: return MakeLinearColor(0.0, 0.0, 0.0, 0.0)
+  01e1: return return
+  01e7: <eos>

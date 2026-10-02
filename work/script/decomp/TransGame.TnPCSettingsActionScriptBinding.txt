@@ -1,0 +1,12 @@
+function TnPCSettingsActionScriptBinding.SetTextureQualityLevel  (script 397 bytes)
+  0000: WI = TnWorldInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo())
+  001e: PCSM = GetPCSM()
+  002e: if !(((PCSM == none) || (WI == none))) goto 0x0048
+  0046: return nothing
+  0048: if !((!WI.IsNonShippingBuild() && (PCSM.GetCurrentTextureQualityLevel() != TextureQualityLevel))) goto 0x017f
+  007f: MessageBox = WI.GetLocalPlayerController().UIController.ShowPopupUI("$UIText.MessagePrompts.RestartToApplyTextureSettingsTitle", "$UIText.MessagePrompts.RestartToApplyTextureSettingsMessage", false)
+  0128: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", , , )
+  016c: MessageBox.Show()
+  017f: SetTextureQualityLevel(TextureQualityLevel)
+  018a: return nothing
+  018c: <eos>

@@ -1,0 +1,208 @@
+function TnXpManager.GetPropertyIdForSpecialty  (script 111 bytes)
+  0000: Specialties = obj'TnDataStore_MenuItems'.static.GetSpecialtyProviders()
+  0019: foreach Specialties(Provider,) (end 0x0061)
+  0028: SpecialtyProvider = TnDataProvider_Specialty(Provider)
+  0038: if !((SpecialtyProvider.UniqueId == Specialty)) goto 0x0060
+  0050: iterpop
+  0051: return SpecialtyProvider.XpPropertyId
+  0060: iternext
+  0061: iterpop
+  0062: return -1
+  0068: return return
+  006e: <eos>
+
+function TnXpManager.GetXpEarnedForSpecialty  (script 287 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return 0
+  0026: StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0041: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0057
+  0055: return 0
+  0057: SpecialtyPropertyId = TnXpManager.GetPropertyIdForSpecialty(Specialty)
+  0068: if !((SpecialtyPropertyId == -1)) goto 0x00be
+  0077: LogInternal((("ERROR: Failed to convert specialty (" $ Specialty) $ ") to ID"), 'DevOnline', , )
+  00bc: return 0
+  00be: Prop.PropertyId = SpecialtyPropertyId
+  00d4: if !(!StatsInterface.GetKeyArchiveValue(Prop)) goto 0x00f4
+  00f2: return 0
+  00f4: return obj'Engine.Settings'.static.GetSettingsDataInt(Prop.Data)
+  0118: return return
+  011e: <eos>
+
+function TnXpManager.SetXpEarnedForSpecialty  (script 281 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return nothing
+  0026: StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0041: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0057
+  0055: return nothing
+  0057: SpecialtyPropertyId = TnXpManager.GetPropertyIdForSpecialty(Specialty)
+  0068: if !((SpecialtyPropertyId == -1)) goto 0x00be
+  0077: LogInternal((("ERROR: Failed to convert specialty (" $ Specialty) $ ") to ID"), 'DevOnline', , )
+  00bc: return nothing
+  00be: Prop.PropertyId = SpecialtyPropertyId
+  00d4: obj'Engine.Settings'.static.SetSettingsDataInt(Prop.Data, NewValue)
+  00fc: StatsInterface.SetKeyArchiveValue(Prop, true)
+  0116: return nothing
+  0118: <eos>
+
+function TnXpManager.GetLevelForSpecialty  (script 97 bytes)
+  0000: XpEarned = GetXpEarnedForSpecialty(Specialty)
+  0015: I = 0
+  001c: if !((I < self.LevelTable.Length)) goto 0x0053
+  002c: if !((cast3f(XpEarned) < I[self.LevelTable])) goto 0x0049
+  0043: return I
+  0049: AddAdd_PreInt(I)
+  0050: goto 0x001c
+  0053: return self.LevelTable.Length
+  005a: return return
+  0060: <eos>
+
+function TnXpManager.GetXpNeededForLevel  (script 61 bytes)
+  0000: if !((Level > self.LevelTable.Length)) goto 0x0018
+  0010: return cast44(self.kLevelTooHigh)
+  0018: if !((Level == 0)) goto 0x0025
+  0023: return 0
+  0025: return cast44((Level - 1)[self.LevelTable])
+  0036: return return
+  003c: <eos>
+
+function TnXpManager.NotifyChallengeXpEvent  (script 19 bytes)
+  0000: TnXpManager.AddXpForSpecialty(Specialty, CustomXpAmount)
+  0010: return nothing
+  0012: <eos>
+
+function TnXpManager.NotifyXpEvent  (script 39 bytes)
+  0000: return TnXpManager.AddXpForSpecialty(Specialty, GetAwardAmount(EventType))
+  0020: return return
+  0026: <eos>
+
+function TnXpManager.AddXpForSpecialty  (script 140 bytes)
+  0000: XpMax = cast44((self.LevelTable.Length - 1)[self.LevelTable])
+  0017: XpCurrent = GetXpEarnedForSpecialty(Specialty)
+  002c: XpToAdd = cast44(obj'Core.Math'.static.FMin(cast3f((XpMax - XpCurrent)), cast3f(Xp)))
+  0054: SetXpEarnedForSpecialty(Specialty, (XpCurrent + XpToAdd))
+  006f: TnXpManager.AddToCurrentGameXp(Specialty, XpToAdd)
+  007f: return XpToAdd
+  0085: return return
+  008b: <eos>
+
+function TnXpManager.ClearXp  (script 86 bytes)
+  0000: Specialties = obj'TnDataStore_MenuItems'.static.GetSpecialtyProviders()
+  0019: foreach Specialties(Provider,) (end 0x0052)
+  0028: Specialty = TnDataProvider_Specialty(Provider)
+  0038: SetXpEarnedForSpecialty(Specialty.UniqueId, 0)
+  0051: iternext
+  0052: iterpop
+  0053: return nothing
+  0055: <eos>
+
+function TnXpManager.GetLevelSum  (script 102 bytes)
+  0000: Specialties = obj'TnDataStore_MenuItems'.static.GetSpecialtyProviders()
+  0019: foreach Specialties(Provider,) (end 0x0058)
+  0028: Specialty = TnDataProvider_Specialty(Provider)
+  0038: (Total += GetLevelForSpecialty(Specialty.UniqueId))
+  0057: iternext
+  0058: iterpop
+  0059: return Total
+  005f: return return
+  0065: <eos>
+
+function TnXpManager.LogXpData  (script 119 bytes)
+  0000: Specialties = obj'TnDataStore_MenuItems'.static.GetSpecialtyProviders()
+  0019: foreach Specialties(Provider,) (end 0x0073)
+  0028: Specialty = TnDataProvider_Specialty(Provider)
+  0038: XpEarned = GetXpEarnedForSpecialty(Specialty.UniqueId)
+  0056: LogInternal((Specialty.UniqueId @ cast53(XpEarned)), , , )
+  0072: iternext
+  0073: iterpop
+  0074: return nothing
+  0076: <eos>
+
+function TnXpManager.IsLevelMaxed  (script 138 bytes)
+  0000: XpMax = cast44((self.LevelTable.Length - 1)[self.LevelTable])
+  0017: Specialties = obj'TnDataStore_MenuItems'.static.GetSpecialtyProviders()
+  0030: foreach Specialties(Provider,) (end 0x0080)
+  003f: Specialty = TnDataProvider_Specialty(Provider)
+  004f: XpEarned = GetXpEarnedForSpecialty(Specialty.UniqueId)
+  006d: if !((XpEarned < XpMax)) goto 0x007f
+  007c: iterpop
+  007d: return false
+  007f: iternext
+  0080: iterpop
+  0081: return true
+  0083: return return
+  0089: <eos>
+
+function TnXpManager.GetAwardAmount  (script 29 bytes)
+  0000: return cast44(EventType.static.GetAwardAmount())
+  0016: return return
+  001c: <eos>
+
+function TnXpManager.AddToCurrentGameXp  (script 135 bytes)
+  0000: I = self.CurrentGameXpEntries.Find('Specialty',Specialty)
+  001c: if !((I != -1)) goto 0x004b
+  002b: (I[self.CurrentGameXpEntries].XpEarned += Amount)
+  0048: goto 0x0084
+  004b: NewEntry.Specialty = Specialty
+  0061: NewEntry.XpEarned = Amount
+  0077: self.CurrentGameXpEntries.AddItem(NewEntry)
+  0084: return nothing
+  0086: <eos>
+
+function TnXpManager.ResetCurrentGameXp  (script 11 bytes)
+  0000: self.CurrentGameXpEntries.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnXpManager.GetXpEarnedForSpecialtyLastMatch  (script 70 bytes)
+  0000: foreach self.CurrentGameXpEntries(XpE,) (end 0x003c)
+  000f: if !((XpE.Specialty == Specialty)) goto 0x003b
+  0029: iterpop
+  002a: return XpE.XpEarned
+  003b: iternext
+  003c: iterpop
+  003d: return 0
+  003f: return return
+  0045: <eos>
+
+function TnXpManager.SetPrimeModeUnlocked  (script 183 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return nothing
+  0026: StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0041: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0057
+  0055: return nothing
+  0057: Prop.PropertyId = 84
+  006a: obj'Engine.Settings'.static.SetSettingsDataInt(Prop.Data, (Value ? 1 : 0))
+  009a: StatsInterface.SetKeyArchiveValue(Prop, true)
+  00b4: return nothing
+  00b6: <eos>
+
+function TnXpManager.GetPrimeModeUnlocked  (script 195 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return false
+  0026: StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0041: if !(EqualEqual_InterfaceInterface(StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0057
+  0055: return false
+  0057: Prop.PropertyId = 84
+  006a: if !(!StatsInterface.GetKeyArchiveValue(Prop)) goto 0x008a
+  0088: return false
+  008a: I = obj'Engine.Settings'.static.GetSettingsDataInt(Prop.Data)
+  00b3: return (I != 0)
+  00bc: return return
+  00c2: <eos>
+
+function TnXpManager.PackLevels  (script 138 bytes)
+  0000: return (((((GetLevelForSpecialty(obj'TnSpecialtyScout'.static.default.Tag) & 255) << 24) + ((GetLevelForSpecialty(obj'TnSpecialtyScientist'.static.default.Tag) & 255) << 16)) + ((GetLevelForSpecialty(obj'TnSpecialtySoldier'.static.default.Tag) & 255) << 8)) + (GetLevelForSpecialty(obj'TnSpecialtyLeader'.static.default.Tag) & 255))
+  0083: return return
+  0089: <eos>
+
+function TnXpManager.UnpackLevels  (script 75 bytes)
+  0000: ScoutLevel = ((PackedLevel >> 24) & 255)
+  0013: ScientistLevel = ((PackedLevel >> 16) & 255)
+  0026: SoldierLevel = ((PackedLevel >> 8) & 255)
+  0039: LeaderLevel = (PackedLevel & 255)
+  0048: return nothing
+  004a: <eos>

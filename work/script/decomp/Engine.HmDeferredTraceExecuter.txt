@@ -1,0 +1,78 @@
+function HmDeferredTraceExecuter.DeferredTraceFinished  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDeferredTraceExecuter.ActorTrace  (script 270 bytes)
+  0000: DeferredTraceId = AddAdd_PreInt(self.UniqueId)
+  000d: Data.TraceActor = TraceActor
+  0023: Data.DeferredTraceId = DeferredTraceId
+  0039: Data.FinishedDelegate = FinishedDelegate
+  004f: Data.TraceEnd = TraceEnd
+  0065: Data.TraceStart = TraceStart
+  007b: Data.bTraceActors = bTraceActors
+  0093: Data.Extent = Extent
+  00a9: Data.bFillHitInfo = bFillHitInfo
+  00c1: Data.ExtraTraceFlags = ExtraTraceFlags
+  00d7: Data.MaxExecuteFrameCounter = (GetFrameCounter() + MaxFrameDelay)
+  00f9: self.ActorTraces.Length[self.ActorTraces] = Data
+  010b: return nothing
+  010d: <eos>
+
+function HmDeferredTraceExecuter.Clear  (script 11 bytes)
+  0000: self.ActorTraces.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmDeferredTraceExecuter.Flush  (script 41 bytes)
+  0000: foreach self.ActorTraces(Data,) (end 0x001b)
+  000f: HmDeferredTraceExecuter.ExecuteActorTrace(Data)
+  001a: iternext
+  001b: iterpop
+  001c: Clear()
+  0026: return nothing
+  0028: <eos>
+
+function HmDeferredTraceExecuter.GetTraceCount  (script 14 bytes)
+  0000: return self.ActorTraces.Length
+  0007: return return
+  000d: <eos>
+
+function HmDeferredTraceExecuter.ExecuteActorTrace  (script 318 bytes)
+  0000: Data.Result.HitActor = Data.TraceActor.Trace(Data.Result.HitLocation, Data.Result.HitNormal, Data.TargetActor, Data.TraceEnd, Data.TraceStart, Data.bTraceActors, Data.Extent, Data.bFillHitInfo, Data.Result.HitInfo, Data.ExtraTraceFlags)
+  00f6: FinishedDelegate = Data.FinishedDelegate
+  010c: DeferredTraceFinished(Data.DeferredTraceId, Data.Result)
+  013b: return nothing
+  013d: <eos>
+
+function HmDeferredTraceExecuter.ExecuteRequiredActorTraces  (script 114 bytes)
+  0000: I = 0
+  0007: if !((I < self.ActorTraces.Length)) goto 0x006f
+  0017: Data = I[self.ActorTraces]
+  0028: if !((GetFrameCounter() >= Data.MaxExecuteFrameCounter)) goto 0x0065
+  0047: HmDeferredTraceExecuter.ExecuteActorTrace(Data)
+  0052: self.ActorTraces.Remove(I,1)
+  005e: SubtractSubtract_PreInt(I)
+  0065: AddAdd_PreInt(I)
+  006c: goto 0x0007
+  006f: return nothing
+  0071: <eos>
+
+function HmDeferredTraceExecuter.ExecuteActorTracesUntilTimeLimitReached  (script 87 bytes)
+  0000: ExecutedTraces = 0
+  0007: foreach self.ActorTraces(Data,) (end 0x0047)
+  0016: if !(((GetAppSeconds() - StartTime) > TimeLimit)) goto 0x0034
+  0031: goto 0x0047
+  0034: HmDeferredTraceExecuter.ExecuteActorTrace(Data)
+  003f: AddAdd_PreInt(ExecutedTraces)
+  0046: iternext
+  0047: iterpop
+  0048: self.ActorTraces.Remove(0,ExecutedTraces)
+  0054: return nothing
+  0056: <eos>
+
+function HmDeferredTraceExecuter.Tick  (script 41 bytes)
+  0000: StartTime = GetAppSeconds()
+  0010: HmDeferredTraceExecuter.ExecuteRequiredActorTraces()
+  0016: HmDeferredTraceExecuter.ExecuteActorTracesUntilTimeLimitReached(StartTime, TimeLimit)
+  0026: return nothing
+  0028: <eos>

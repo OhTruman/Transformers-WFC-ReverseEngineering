@@ -1,0 +1,26 @@
+function TnAiBiggestThreatSensor.Initialize  (script 58 bytes)
+  0000: TnAiSensor.Initialize(Owner, TacticalDatabase)
+  0010: self.TCS = TnActionTargetClaimService(self._OwnerPawn.GetService('TnActionTargetClaimService'))
+  0037: return nothing
+  0039: <eos>
+
+function TnAiBiggestThreatSensor.OnUpdate  (script 375 bytes)
+  0000: I = 0
+  0007: if !((I < self._TacticalDatabase.Enemies.Length)) goto 0x015c
+  0020: if !((I[self._TacticalDatabase.Enemies].EnemyController != none)) goto 0x0073
+  0045: CurrentPawn = I[self._TacticalDatabase.Enemies].EnemyController.Pawn
+  0073: if !((CurrentPawn == none)) goto 0x0081
+  007e: goto 0x0152
+  0081: if !(((TnPawn(CurrentPawn) != none) && !TnPawn(CurrentPawn).IsTargetableEnemy())) goto 0x00b3
+  00b0: goto 0x0152
+  00b3: CurrentDistSq = obj'Core.Math'.static.VSizeSq((self._OwnerPawn.Location - CurrentPawn.Location))
+  00ea: if !((TnPlayerController(I[self._TacticalDatabase.Enemies].EnemyController) != none)) goto 0x0120
+  0114: (CurrentDistSq *= self.PlayerDistanceScale)
+  0120: if !(((NearestPawn == none) || (CurrentDistSq < NearestDistSq))) goto 0x0152
+  013c: NearestPawn = CurrentPawn
+  0147: NearestDistSq = CurrentDistSq
+  0152: AddAdd_PreInt(I)
+  0159: goto 0x0007
+  015c: self._OwnerController.set_DesiredEnemy(NearestPawn)
+  0174: return nothing
+  0176: <eos>

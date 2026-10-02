@@ -1,0 +1,39 @@
+function TnGameStatsKeySet.CanIncrementStats  (script 74 bytes)
+  0000: GRI = TnGameReplicationInfo(PRI.WorldInfo.GRI)
+  0022: if !((GRI == none)) goto 0x002f
+  002d: return false
+  002f: return GRI.CanGainXp()
+  0043: return return
+  0049: <eos>
+
+function TnGameStatsKeySet.RefreshValues  (script 487 bytes)
+  0000: StatsInterface = GetStatsInterface()
+  0010: PRI = TnPlayerReplicationInfo(GetPRI())
+  0025: if !((PRI == none)) goto 0x0079
+  0030: LogInternal("ERROR: Failed to refresh game stats because PRI was none", 'DevDemonware', , )
+  0077: return false
+  0079: if !(!TnGameStatsKeySet.CanIncrementStats(PRI)) goto 0x008b
+  0089: return false
+  008b: I = 0
+  0092: if !((I < self.Stats.Length)) goto 0x01de
+  00a2: StatProperty = I[self.Stats]
+  00b3: if !(!PRI.GetGameStatForUpdate(StatProperty.PropertyId, Stat)) goto 0x00e3
+  00e0: goto 0x01d4
+  00e3: StatsInterface.GetKeyArchiveValue(StatProperty)
+  00fc: StatValue = obj'Engine.Settings'.static.GetSettingsDataInt(StatProperty.Data)
+  0125: switch (Stat.UpdateType)
+  0137: case 0: (next 0x0158)
+  013c: (StatValue += cast44(Stat.Value))
+  0155: goto 0x0192
+  0158: case 1: (next 0x015d)
+  015d: case 2: (next 0x018f)
+  0162: StatValue = cast44(obj'Core.Math'.static.FMax(Stat.Value, cast3f(StatValue)))
+  018c: goto 0x0192
+  018f: default:
+  0192: obj'Engine.Settings'.static.SetSettingsDataInt(StatProperty.Data, StatValue)
+  01ba: StatsInterface.SetKeyArchiveValue(StatProperty, )
+  01d4: AddAdd_PreInt(I)
+  01db: goto 0x0092
+  01de: return true
+  01e0: return return
+  01e6: <eos>

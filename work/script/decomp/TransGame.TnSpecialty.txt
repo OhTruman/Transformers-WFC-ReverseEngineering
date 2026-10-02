@@ -1,0 +1,11 @@
+function TnSpecialty.Apply  (script 176 bytes)
+  0000: GameClass = class<TnGame>(P.WorldInfo.GetGameClass())
+  0027: if !((GameClass == none)) goto 0x0062
+  0032: LogInternal("Error could not apply specialty, no gri", , , )
+  0060: return nothing
+  0062: if !(!GameClass.static.default.ApplySpecialtyBuffs) goto 0x0078
+  0076: return nothing
+  0078: P.SetSpeedMultiplier(default.SpeedMultiplier, P)
+  0095: P.InitializeSegmentedHealth(default.HealthBlueprint)
+  00ad: return nothing
+  00af: <eos>

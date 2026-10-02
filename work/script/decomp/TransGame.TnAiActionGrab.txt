@@ -1,0 +1,103 @@
+function TnAiActionGrab.OnInitialize  (script 95 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionGrabBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._Blueprint.WeaponClass, , , ))
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionGrab.OnBind  (script 73 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._GrabAttackerService = TnGrabAttackerService(GetService('TnGrabAttackerService', 2))
+  0046: return nothing
+  0048: <eos>
+
+function TnAiActionGrab.OnSetUpConditions  (script 178 bytes)
+  0000: if !(get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateGrabbedObject')) goto 0x0022
+  0020: return false
+  0022: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') == 2)) goto 0x0048
+  0046: return false
+  0048: ObjectToGrab = obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateGrabbedObject', ExpectedEffects)
+  006b: if !((ObjectToGrab == none)) goto 0x0078
+  0076: return false
+  0078: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateLockedOnTarget', ObjectToGrab)
+  009a: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00ab: return return
+  00b1: <eos>
+
+function TnAiActionGrab.OnStart  (script 183 bytes)
+  0000: self._ActiveGrabDescription = self._Blueprint.GrabDescription
+  0014: self._ActiveGrabDescription.AttachSocket = self._Blueprint.AttachSocket
+  0033: if !(((TnAiActionGrab.TryPawnGrab() == false) && (TnAiActionGrab.TryDestructibleGrab() == false))) goto 0x0058
+  004d: return Fail()
+  0058: SetCharacterState((32 | 64))
+  0068: self._TrackingVictim = false
+  0070: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.FailCallback, delegate.FailCallback)
+  00a4: return OnStart(ExpectedEffects)
+  00b0: return return
+  00b6: <eos>
+
+function TnAiActionGrab.OnUpdate  (script 225 bytes)
+  0000: if !(((self._GrabbedActor == none) || ((TnPawn(self._GrabbedActor) != none) && !self._TransformerController.IsDangerous(self._GrabbedActor)))) goto 0x0047
+  003c: return Fail()
+  0047: if !(self._GrabAttackerService.get_IsHolding()) goto 0x0069
+  005e: return Succeed()
+  0069: if !((self._GrabAttackerService.get_IsLifting() && !self._TrackingVictim)) goto 0x00c9
+  008d: SetCharacterState(0)
+  0098: self._TransformerPawn.set_IkTarget(cast36(self._GrabAttackerService.get_Victim()))
+  00c1: self._TrackingVictim = true
+  00c9: return OnUpdate(ExpectedEffects, DeltaTime)
+  00da: return return
+  00e0: <eos>
+
+function TnAiActionGrab.OnFinish  (script 174 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0055
+  001b: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateGrabbedObject', true, )
+  0035: self._TransformerController.SetWorldStateSubject(obj'TnAiWorldStateGrabbedObject', self._GrabbedActor)
+  0052: goto 0x0069
+  0055: self._GrabAttackerService.AbortGrab()
+  0069: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateLockedOnTarget', false, )
+  0083: if !(NotEqual_InterfaceInterface(self._LockOnThreat, TnLockOnThreatInterface(none))) goto 0x00ab
+  0097: self._LockOnThreat.ClearLockOnThreatLevel()
+  00ab: return nothing
+  00ad: <eos>
+
+function TnAiActionGrab.TryPawnGrab  (script 115 bytes)
+  0000: Victim = TnPawn(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateLockedOnTarget'))
+  0028: if !((((Victim == none) || (Victim.Controller == none)) || Victim._IsDowned)) goto 0x005f
+  005d: return false
+  005f: TnAiActionGrab.StartPawnGrab(Victim)
+  006a: return true
+  006c: return return
+  0072: <eos>
+
+function TnAiActionGrab.StartPawnGrab  (script 205 bytes)
+  0000: self._GrabbedActor = Victim
+  000b: if !((TnAiPawn(Victim) != none)) goto 0x0031
+  001b: self._ActiveGrabDescription.DetachDamage = 100000.0
+  0031: self._ActiveGrabDescription.DetachImpulse = self._Blueprint.GrabbedPawnDetachImpulse
+  0050: self._LockOnThreat = TnLockOnThreatInterface(Victim.Controller)
+  0069: if !((self._Blueprint.DisplayLockOnThreatLevel && NotEqual_InterfaceInterface(self._LockOnThreat, TnLockOnThreatInterface(none)))) goto 0x00a7
+  0091: self._LockOnThreat.SetLockOnThreatLevel(3)
+  00a7: self._GrabAttackerService.AttemptGrab(self._ActiveGrabDescription, TnServiceProvider(Victim))
+  00ca: return nothing
+  00cc: <eos>
+
+function TnAiActionGrab.TryDestructibleGrab  (script 306 bytes)
+  0000: Destructible = TnDestructibleActor(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateLockedOnTarget'))
+  0028: if !((Destructible == none)) goto 0x0035
+  0033: return false
+  0035: self._GrabbedActor = Destructible
+  0040: self._ActiveGrabDescription.DetachDamage = 0.0
+  0056: self._ActiveGrabDescription.DetachImpulse = self._Blueprint.GrabbedDestructibleDetachImpulse
+  0075: if !((TnOmegaBatteryDestructibleActor(Destructible) != none)) goto 0x00d6
+  0085: self._ActiveGrabDescription.DetachFromZAxis = true
+  0098: self._ActiveGrabDescription.RotateToDestinationDistanceThreshold = self._Blueprint.BatteryRotateToDestinationDistanceThreshold
+  00b7: self._ActiveGrabDescription.AttachSocket = self._Blueprint.BatteryAttachSocket
+  00d6: self._GrabAttackerService.AttemptGrab(self._ActiveGrabDescription, TnServiceProvider(Destructible))
+  00f9: if !((TnOmegaBatteryDestructibleActor(Destructible) != none)) goto 0x0129
+  0109: self._TransformerController.TriggerEventClass(obj'TnSeqEvent_OmegaStatus', self._TransformerController, 4, )
+  0129: return true
+  012b: return return
+  0131: <eos>

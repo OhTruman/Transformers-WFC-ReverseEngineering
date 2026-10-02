@@ -1,0 +1,68 @@
+function HmStaticMeshDestructionEffectFactory.GetLightingOption  (script 13 bytes)
+  0000: return self.LightingOption
+  0006: return return
+  000c: <eos>
+
+function HmStaticMeshDestructionEffectFactory.GetEffectDescription  (script 38 bytes)
+  0000: return ((self.Mesh == none) ? "" : PathName(self.Mesh))
+  001f: return return
+  0025: <eos>
+
+function HmStaticMeshDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmStaticMeshDestructionEffectFactory.CalculatePrimitiveCount  (script 41 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return 0
+  000d: return self.Mesh.GetNumElements(0)
+  0022: return return
+  0028: <eos>
+
+function HmStaticMeshDestructionEffectFactory.DoCreateInstance  (script 155 bytes)
+  0000: Effect = new(Owner, nothing, self.EffectClass, nothing, AttachTreeCallback)
+  0018: Component = StaticMeshComponent(cast3a(self.LightingOption)[self.ComponentTemplates].Clone(Effect, ))
+  0044: Component.SetStaticMesh(self.Mesh)
+  005c: HmStaticMeshDestructionEffectFactory.SetShadowingOptions(Component)
+  0067: ProcessMesh(Component)
+  0076: Effect.AddMeshComponent(Component)
+  008e: return Effect
+  0094: return return
+  009a: <eos>
+
+function HmStaticMeshDestructionEffectFactory.ProcessMesh  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmStaticMeshDestructionEffectFactory.SetShadowingOptions  (script 139 bytes)
+  0000: switch (self.ShadowingOption)
+  0007: case 0: (next 0x0031)
+  000c: Component.CastShadow = false
+  001d: Component.bCastDynamicShadow = false
+  002e: goto 0x0088
+  0031: case 1: (next 0x005b)
+  0036: Component.CastShadow = true
+  0047: Component.bCastDynamicShadow = false
+  0058: goto 0x0088
+  005b: case 2: (next 0x0085)
+  0060: Component.CastShadow = true
+  0071: Component.bCastDynamicShadow = true
+  0082: goto 0x0088
+  0085: default:
+  0088: return nothing
+  008a: <eos>
+
+function HmStaticMeshDestructionEffectFactory.AddCookingOptions  (script 101 bytes)
+  0000: Option.Mesh = self.Mesh
+  0016: Option.Scale = (cast3a(self.LightingOption)[self.ComponentTemplates].Scale3D * cast3a(self.LightingOption)[self.ComponentTemplates].Scale)
+  0055: Options.AddItem(Option)
+  0062: return nothing
+  0064: <eos>
+
+function HmStaticMeshDestructionEffectFactory.CheckForErrors  (script 87 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.Mesh == none)) goto 0x0054
+  0011: EmitCheckMessage(0, "Missing mesh template in static mesh effect factory", , )
+  0054: return nothing
+  0056: <eos>

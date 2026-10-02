@@ -1,0 +1,37 @@
+function TnKillAwardRuleSpecialtySpecific.CheckRule  (script 818 bytes)
+  0000: if !((Killer.get_CurrentCharacter().Specialty != self.SpecialtyName)) goto 0x002a
+  0028: return nothing
+  002a: PRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0043: KillerPawn = TnPawn(Killer.Pawn)
+  005c: KilledPawn = TnPawn(Killed.Pawn)
+  0075: I = 0
+  007c: if !((I < self.KillChecks.Length)) goto 0x032f
+  008c: if !(((I[self.KillChecks].DamageType != none) && (DamageType != I[self.KillChecks].DamageType))) goto 0x00cd
+  00ca: goto 0x0325
+  00cd: if !((I[self.KillChecks].Headshot && !KilledPawn.WasLastHitHeadshot())) goto 0x0104
+  0101: goto 0x0325
+  0104: if !((I[self.KillChecks].KillerInVehicle && ((KillerPawn == none) || !KillerPawn.get_IsInVehicleForm()))) goto 0x0148
+  0145: goto 0x0325
+  0148: DesiredForm = I[self.KillChecks].KilledForm
+  0164: if !(((cast3a(DesiredForm) != cast3a(4)) && (!KilledPawn.get_IsInVehicleForm() || (cast3a(DesiredForm) != cast3a(KilledPawn.get_VehicleType()))))) goto 0x01b4
+  01b1: goto 0x0325
+  01b4: DesiredSpecialty = I[self.KillChecks].KilledSpecialty
+  01d0: if !(((DesiredSpecialty != "") && (Killed.get_CurrentCharacter().Specialty != DesiredSpecialty))) goto 0x0209
+  0206: goto 0x0325
+  0209: BuffClass = I[self.KillChecks].KillerBuff
+  0225: if !((BuffClass != none)) goto 0x0286
+  0230: if !((KillerPawn == none)) goto 0x023e
+  023b: goto 0x0325
+  023e: BS = TnBuffService(KillerPawn.GetService('TnBuffService'))
+  0265: if !(!BS.HasDerivedBuff(BuffClass)) goto 0x0286
+  0283: goto 0x0325
+  0286: BuffClass = I[self.KillChecks].KilledBuff
+  02a2: if !((BuffClass != none)) goto 0x02f5
+  02ad: BS = TnBuffService(KilledPawn.GetService('TnBuffService'))
+  02d4: if !(!BS.HasDerivedBuff(BuffClass)) goto 0x02f5
+  02f2: goto 0x0325
+  02f5: PRI.IncrementGameStat(1.0, I[self.KillChecks].StatId, 0)
+  0325: AddAdd_PreInt(I)
+  032c: goto 0x007c
+  032f: return nothing
+  0331: <eos>

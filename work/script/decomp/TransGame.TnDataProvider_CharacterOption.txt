@@ -1,0 +1,8 @@
+function TnDataProvider_CharacterOption.CheckForErrors  (script 241 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.UniqueId == "")) goto 0x005e
+  0012: LogInternal((("Error: Missing UniqueID for character option" @ cast57(self.Name)) @ cast57(get_Class().static.default.Name)), , , )
+  005e: if !((self.FriendlyName == "")) goto 0x00ee
+  006a: LogInternal(((("Error: Missing Friendly Name for character option" @ cast57(self.Name)) @ cast57(get_Class().static.default.Name)) @ ", make sure there is an entry in the INT file!)"), , , )
+  00ee: return nothing
+  00f0: <eos>

@@ -1,0 +1,96 @@
+function Volume.EncompassesActorLocation  (script 7 bytes)
+  0000: Other
+  0005: nothing
+  0006: <eos>
+
+function Volume.EncompassesPoint  (script 7 bytes)
+  0000: Point
+  0005: nothing
+  0006: <eos>
+
+function Volume.EncompassesAxisAlignedBox  (script 12 bytes)
+  0000: Center
+  0005: Extent
+  000a: nothing
+  000b: <eos>
+
+function Volume.IntersectsAxisAlignedBox  (script 12 bytes)
+  0000: Center
+  0005: Extent
+  000a: nothing
+  000b: <eos>
+
+function Volume.IntersectsVolume  (script 7 bytes)
+  0000: OtherVolume
+  0005: nothing
+  0006: <eos>
+
+function Volume.PostBeginPlay  (script 35 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: if !((self.AssociatedActor != none)) goto 0x0020
+  0011: SetAssociatedActor(self.AssociatedActor)
+  0020: return nothing
+  0022: <eos>
+
+function Volume.SetAssociatedActor  (script 37 bytes)
+  0000: self.AssociatedActor = NewAssociatedActor
+  000b: GotoState('AssociatedTouch', , , )
+  0019: self.InitialState = GetStateName()
+  0022: return nothing
+  0024: <eos>
+
+function Volume.GetAssociatedActor  (script 13 bytes)
+  0000: return self.AssociatedActor
+  0006: return return
+  000c: <eos>
+
+function Volume.GetLocationStringFor  (script 13 bytes)
+  0000: return self.LocationName
+  0006: return return
+  000c: <eos>
+
+function Volume.DisplayDebug  (script 132 bytes)
+  0000: Actor.DisplayDebug(HUD, out_YL, out_YPos)
+  0015: HUD.Canvas.DrawTextNormal(("AssociatedActor " $ cast56(self.AssociatedActor)), false, , )
+  004f: (out_YPos += out_YL)
+  005b: HUD.Canvas.SetPos(4.0, out_YPos)
+  0081: return nothing
+  0083: <eos>
+
+function Volume.AssociatedTouch.Touch  (script 42 bytes)
+  0000: self.AssociatedActor.Touch(Other, OtherComp, HitLocation, HitNormal)
+  0027: return nothing
+  0029: <eos>
+
+function Volume.AssociatedTouch.UnTouch  (script 27 bytes)
+  0000: self.AssociatedActor.UnTouch(Other)
+  0018: return nothing
+  001a: <eos>
+
+function Volume.AssociatedTouch.BeginState  (script 71 bytes)
+  0000: foreach TouchingActors(obj'Actor', A) (end 0x0043)
+  0017: Touch(A, none, A.Location, vect(0,0,1))
+  0042: iternext
+  0043: iterpop
+  0044: return nothing
+  0046: <eos>
+
+function Volume.OnToggle  (script 202 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0038
+  001f: if !(!self.bCollideActors) goto 0x0035
+  002a: SetCollision(true, self.bBlockActors, )
+  0035: goto 0x00a0
+  0038: if !(1[Action.InputLinks].bHasImpulse) goto 0x006e
+  0057: if !(self.bCollideActors) goto 0x006b
+  0060: SetCollision(false, self.bBlockActors, )
+  006b: goto 0x00a0
+  006e: if !(2[Action.InputLinks].bHasImpulse) goto 0x00a0
+  008e: SetCollision(!self.bCollideActors, self.bBlockActors, )
+  00a0: ForceNetRelevant()
+  00aa: SetForcedInitialReplicatedProperty(obj'Actor.bCollideActors', (self.bCollideActors == default.bCollideActors))
+  00c7: return nothing
+  00c9: <eos>
+
+function Volume.ProcessActorSetVolume  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

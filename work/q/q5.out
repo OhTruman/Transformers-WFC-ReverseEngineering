@@ -1,0 +1,57 @@
+=== decomp 0x8280cbe0
+
+undefined4 * Function_8280CBE0(undefined4 *param_1)
+
+{
+  undefined4 *puStack00000014;
+  
+  puStack00000014 = param_1;
+  Function_8270D300(param_1);
+  *puStack00000014 = &PTR_Function_82700DA0_82211ad8;
+  *puStack00000014 = &PTR_Function_82700DA0_820dc330;
+  *puStack00000014 = &PTR_Function_82700DA0_820dc330;
+  return puStack00000014;
+}
+
+
+=== decomp 0x8281faf8
+
+undefined4 * Function_8281FAF8(undefined4 *param_1)
+
+{
+  undefined4 *puStack00000014;
+  
+  puStack00000014 = param_1;
+  Function_8281E510(param_1);
+  *puStack00000014 = &PTR_Function_82700DA0_82106ad8;
+  puStack00000014[0xb] = &PTR_FUN_82226890;
+  *puStack00000014 = &PTR_Function_82700DA0_82106ad8;
+  puStack00000014[0xb] = &PTR_FUN_82226890;
+  return puStack00000014;
+}
+
+
+=== asm 0x828383c0 12
+  828383c0  b 0x828383cc ->828383cc
+  828383c4  li r8,0x0
+  828383c8  stw r8,0x5134(r31) ->Stack[-0xffc]
+  828383cc  lwz r7,0x5134(r31) ->Stack[-0xffc]
+  828383d0  stw r7,0x2104(r31) ->Stack[-0x402c]
+  828383d4  lwz r4,0x2104(r31) ->Stack[-0x402c]
+  828383d8  lis r6,-0x7c7e
+  828383dc  addi r5,r6,0x6580 ->83826580
+  828383e0  addi r3,r5,0x477c ->8382acfc
+  828383e4  bl 0x82b3d0a8 ->82b3d0a8
+  828383e8  lwz r4,0x50(r31) ->Stack[-0x60e0]
+  828383ec  li r3,0xbc
+=== asm 0x82838410 10
+  82838410  b 0x8283841c ->8283841c
+  82838414  li r3,0x0
+  82838418  stw r3,0x5138(r31) ->Stack[-0xff8]
+  8283841c  lwz r11,0x5138(r31) ->Stack[-0xff8]
+  82838420  stw r11,0x210c(r31) ->Stack[-0x4024]
+  82838424  lwz r4,0x210c(r31) ->Stack[-0x4024]
+  82838428  lis r10,-0x7c7e
+  8283842c  addi r9,r10,0x6580 ->83826580
+  82838430  addi r3,r9,0x4780 ->8382ad00
+  82838434  bl 0x82b3d0a8 ->82b3d0a8

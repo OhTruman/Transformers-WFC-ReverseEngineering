@@ -1,0 +1,29 @@
+function Input.ResetInput  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Input.GetBind  (script 7 bytes)
+  0000: Key
+  0005: nothing
+  0006: <eos>
+
+function Input.SetBind  (script 169 bytes)
+  0000: BindIndex = (self.Bindings.Length - 1)
+  000f: if !((BindIndex >= 0)) goto 0x0065
+  001a: if !((BindIndex[self.Bindings].Name == BindName)) goto 0x005b
+  003a: BindIndex[self.Bindings].Command = Command
+  0056: SaveConfig()
+  0059: return nothing
+  005b: SubtractSubtract_Int(BindIndex)
+  0062: goto 0x000f
+  0065: NewBind.Name = BindName
+  007b: NewBind.Command = Command
+  0091: self.Bindings.Length[self.Bindings] = NewBind
+  00a3: SaveConfig()
+  00a6: return nothing
+  00a8: <eos>
+
+function Input.AllowKeyCommand  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

@@ -1,0 +1,9 @@
+function TnHudDataObserverNormalizedDownedHealth.CheckData  (script 140 bytes)
+  0000: TransformerPawn = TnPlayerPawn(PC.Pawn)
+  0019: if !(((TransformerPawn == none) || !TransformerPawn._IsDowned)) goto 0x0048
+  003a: CurrentValue = 1.0
+  0045: goto 0x0075
+  0048: CurrentValue = (1.0 - (TransformerPawn.Health / -TransformerPawn.DownedHealth))
+  0075: ProcessNewValue(Movie, CurrentValue)
+  0089: return nothing
+  008b: <eos>

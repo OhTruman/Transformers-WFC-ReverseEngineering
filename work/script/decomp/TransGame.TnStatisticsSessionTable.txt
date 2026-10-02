@@ -1,0 +1,31 @@
+function TnStatisticsSessionTable.GetServerHost  (script 96 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x002e
+  0024: return "unknown"
+  002e: PlayerInterface = OnlineSub.PlayerInterface
+  0042: return PlayerInterface.GetPlayerNickname(0)
+  0059: return return
+  005f: <eos>
+
+function TnStatisticsSessionTable.RecordSession  (script 505 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: M.Session_Id = Game.StatisticsSessionId
+  002c: M.GameType = Game.get_Class()
+  0049: Settings = Game.GetOnlineGameSettings()
+  0062: if !((Settings != none)) goto 0x008a
+  006d: M.SettingsClass = Settings.get_Class()
+  008a: M.Host = TnStatisticsSessionTable.GetServerHost()
+  00a1: M.ComputerName = Game.WorldInfo.ComputerName
+  00c9: M.MapName = Game.GameReplicationInfo.WorldInfo.GetMapName()
+  0100: M.GoalScore = Game.GoalScore
+  011f: M.Platform = GetPlatformName()
+  013a: M.BuildConfiguration = obj'Engine.WorldInfo'.static.GetBuildConfigurationName()
+  015e: M.SampleInterval = Game.StatisticsSampleInterval
+  017d: CPM = obj'Engine.Engine'.static.GetEngine().GetCheckpointManager()
+  01a4: CP = CPM.GetActiveCheckpoint()
+  01bd: if !((CP != none)) goto 0x01e9
+  01c8: M.InitialCheckpoint = cast57(CP.Tag)
+  01e9: self.Matches.AddItem(M)
+  01f6: return nothing
+  01f8: <eos>

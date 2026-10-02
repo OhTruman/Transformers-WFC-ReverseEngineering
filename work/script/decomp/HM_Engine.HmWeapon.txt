@@ -1,0 +1,801 @@
+function HmWeapon.set_WeaponMeshes  (script 14 bytes)
+  0000: self._WeaponMeshes = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmWeapon.get_NumWeaponMeshes  (script 14 bytes)
+  0000: return self._WeaponMeshes.Length
+  0007: return return
+  000d: <eos>
+
+function HmWeapon.GetWeaponMesh  (script 37 bytes)
+  0000: if !((self._CurrentMesh >= self._WeaponMeshes.Length)) goto 0x0012
+  0010: return none
+  0012: return self._CurrentMesh[self._WeaponMeshes]
+  001e: return return
+  0024: <eos>
+
+function HmWeapon.CreateWeaponMeshes  (script 268 bytes)
+  0000: if !((self.WeaponMeshTemplate == none)) goto 0x001a
+  000b: self._WeaponMeshes.Remove(0,self._WeaponMeshes.Length)
+  0018: return nothing
+  001a: NewWeaponOwner = HmWeaponPawnInterface(self.Instigator)
+  002a: if !(EqualEqual_InterfaceInterface(NewWeaponOwner, HmWeaponPawnInterface(none))) goto 0x004d
+  003e: self._WeaponMeshes.Remove(0,self._WeaponMeshes.Length)
+  004b: return nothing
+  004d: Sockets = NewWeaponOwner.GetWeaponSockets(self)
+  0068: if !((Sockets.Length == self._WeaponMeshes.Length)) goto 0x007b
+  0079: return nothing
+  007b: self._WeaponMeshes.Remove(0,self._WeaponMeshes.Length)
+  0088: self._CurrentMesh = 0
+  008f: I = 0
+  0096: if !((I < Sockets.Length)) goto 0x0109
+  00a6: WM = new(self, nothing, self.WeaponMeshTemplate.get_Class(), self.WeaponMeshTemplate, AttachTreeCallback)
+  00c5: self._WeaponMeshes.AddItem(WM)
+  00d2: WM.Initialize(self)
+  00e6: self.PickupFactoryMesh = WM.GetAnimatedMeshComponent()
+  00ff: AddAdd_PreInt(I)
+  0106: goto 0x0096
+  0109: return nothing
+  010b: <eos>
+
+function HmWeapon.SetupInitialAmmo  (script 45 bytes)
+  0000: self.AmmoClipCount = GetMaxAmmoClipCount()
+  0010: self.ReserveAmmoCount = GetInitialReserveAmmoCount()
+  0020: SyncAmmoToClient()
+  002a: return nothing
+  002c: <eos>
+
+function HmWeapon.GetInitialReserveAmmoCount  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).InitialReserveAmmoCount
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.SetHidden  (script 45 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0029)
+  000f: WM.SetHidden(bNewHidden)
+  0028: iternext
+  0029: iterpop
+  002a: return nothing
+  002c: <eos>
+
+function HmWeapon.Tick  (script 55 bytes)
+  0000: Tick(DeltaTime)
+  000b: foreach self._WeaponMeshes(WM,) (end 0x0033)
+  001a: WM.Tick(DeltaTime)
+  0032: iternext
+  0033: iterpop
+  0034: return nothing
+  0036: <eos>
+
+function HmWeapon.GetMuzzleLocationAndRotation  (script 79 bytes)
+  0000: if !((self._CurrentMesh >= self._WeaponMeshes.Length)) goto 0x0029
+  0010: OutLoc = self.Location
+  001b: OutRot = self.Rotation
+  0026: goto 0x004c
+  0029: self._CurrentMesh[self._WeaponMeshes].GetMuzzleLocationAndRotation(OutLoc, OutRot)
+  004c: return nothing
+  004e: <eos>
+
+function HmWeapon.GetMuzzleLoc  (script 55 bytes)
+  0000: if !((self._CurrentMesh >= self._WeaponMeshes.Length)) goto 0x0016
+  0010: return self.Location
+  0016: return self._CurrentMesh[self._WeaponMeshes].GetMuzzleLocation()
+  0030: return return
+  0036: <eos>
+
+function HmWeapon.GetMuzzleRotation  (script 38 bytes)
+  0000: GetMuzzleLocationAndRotation(MuzzLoc, MuzzRot)
+  0019: return MuzzRot
+  001f: return return
+  0025: <eos>
+
+function HmWeapon.DisplayDebug  (script 255 bytes)
+  0000: DisplayDebug(HUD, out_YL, out_YPos)
+  0015: T = ((("Eyeheight " $ cast55(self.Instigator.EyeHeight)) $ " base ") $ cast55(self.Instigator.BaseEyeHeight))
+  0055: HUD.Canvas.DrawTextNormal(T, false, , )
+  0079: (out_YPos += out_YL)
+  0085: StartTrace = self.Instigator.GetWeaponStartTraceLocation()
+  009f: EndTrace = (StartTrace + (cast39(GetAdjustedAim(StartTrace)) * GetTraceRange()))
+  00c9: HUD.Draw3DLine(StartTrace, EndTrace, MakeColor(cast3d(255), 0, 0, cast3d(255)))
+  00fc: return nothing
+  00fe: <eos>
+
+function HmWeapon.GetWeaponEventForFireMode  (script 44 bytes)
+  0000: switch (FireModeNum)
+  0007: case 0: (next 0x000f)
+  000c: return 1
+  000f: case 1: (next 0x0017)
+  0014: return 2
+  0017: case 2: (next 0x001f)
+  001c: return 3
+  001f: default:
+  0022: return 1
+  0025: return return
+  002b: <eos>
+
+function HmWeapon.ShouldPlayFireEffects  (script 21 bytes)
+  0000: return (GetWeaponMesh() != none)
+  000e: return return
+  0014: <eos>
+
+function HmWeapon.OnPlayFireEffects  (script 222 bytes)
+  0000: FireEvent = GetWeaponEventForFireMode(FireModeNum)
+  0015: PlayWeaponEvent(FireEvent, 0, )
+  0027: if !((self._CurrentMesh >= self._WeaponMeshes.Length)) goto 0x0039
+  0037: return nothing
+  0039: WM = self._CurrentMesh[self._WeaponMeshes]
+  004a: WM.StartMuzzleFlash(FireEvent)
+  0062: if !(!self.bSuppressTracerEffects) goto 0x008a
+  006d: WM.PlayTracerEffect(FireEvent, Impact)
+  008a: PlayImpactEffects(Impact)
+  0099: WM.EjectShellCasing()
+  00ac: WM.ChangeSocket()
+  00bf: self._CurrentMesh = cast44((cast3f((self._CurrentMesh + 1)) % cast3f(self._WeaponMeshes.Length)))
+  00db: return nothing
+  00dd: <eos>
+
+function HmWeapon.StopFireEffects  (script 39 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0023)
+  000f: WM.StopMuzzleFlash()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function HmWeapon.PlayImpactEffects  (script 49 bytes)
+  0000: if !((self._CurrentMesh < self._WeaponMeshes.Length)) goto 0x002e
+  0010: self._CurrentMesh[self._WeaponMeshes].CreateImpactEffects(Impact)
+  002e: return nothing
+  0030: <eos>
+
+function HmWeapon.TimeWeaponPutDown  (script 68 bytes)
+  0000: SetTimer(((GetDetachDelay() > cast3f(0)) ? GetDetachDelay() : 0.01), false, 'DetachWeaponAndHolster', )
+  0031: PlayWeaponPutDown()
+  003b: TimeWeaponPutDown()
+  0041: return nothing
+  0043: <eos>
+
+function HmWeapon.DetachWeaponAndHolster  (script 13 bytes)
+  0000: DetachWeapon()
+  000a: return nothing
+  000c: <eos>
+
+function HmWeapon.GetDetachDelay  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).DetachDelay
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.PlayWeaponPutDown  (script 18 bytes)
+  0000: PlayWeaponEvent(7, 1, )
+  000f: return nothing
+  0011: <eos>
+
+function HmWeapon.TimeWeaponEquipping  (script 58 bytes)
+  0000: SetTimer(((GetAttachDelay() > cast3f(0)) ? GetAttachDelay() : 0.01), false, 'AttachWeapon', )
+  0031: TimeWeaponEquipping()
+  0037: return nothing
+  0039: <eos>
+
+function HmWeapon.GetAttachDelay  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).AttachDelay
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.PlayWeaponEquip  (script 18 bytes)
+  0000: PlayWeaponEvent(6, 1, )
+  000f: return nothing
+  0011: <eos>
+
+function HmWeapon.AttachWeapon  (script 157 bytes)
+  0000: ClearTimer('AttachWeapon', )
+  0014: CreateWeaponMeshes()
+  001e: NewWeaponOwner = HmWeaponPawnInterface(self.Instigator)
+  002e: if !(EqualEqual_InterfaceInterface(NewWeaponOwner, HmWeaponPawnInterface(none))) goto 0x0044
+  0042: return nothing
+  0044: Sockets = NewWeaponOwner.GetWeaponSockets(self)
+  005f: if !((Sockets.Length > 0)) goto 0x0090
+  006b: AttachWeaponActor(0[Sockets])
+  007c: AttachWeaponMeshes(NewWeaponOwner, Sockets)
+  0090: PlayWeaponEquip()
+  009a: return nothing
+  009c: <eos>
+
+function HmWeapon.AttachWeaponActor  (script 43 bytes)
+  0000: SetBase(self.Instigator, , self.Instigator.GetMeshComponent(), SocketName)
+  0028: return nothing
+  002a: <eos>
+
+function HmWeapon.AttachWeaponMeshes  (script 88 bytes)
+  0000: I = 0
+  0007: foreach self._WeaponMeshes(WM,) (end 0x0054)
+  0016: WM.Attach(self.Instigator, self.Instigator.GetMeshComponent(), I[Sockets])
+  004c: AddAdd_PreInt(I)
+  0053: iternext
+  0054: iterpop
+  0055: return nothing
+  0057: <eos>
+
+function HmWeapon.DetachWeapon  (script 79 bytes)
+  0000: ClearTimer('DetachWeapon', )
+  0014: ClearTimer('AttachWeapon', )
+  0028: foreach self._WeaponMeshes(WM,) (end 0x004b)
+  0037: WM.Detach()
+  004a: iternext
+  004b: iterpop
+  004c: return nothing
+  004e: <eos>
+
+function HmWeapon.ReattachWeapon  (script 73 bytes)
+  0000: if !((IsTimerActive('AttachWeapon', ) || IsTimerActive('DetachWeapon', ))) goto 0x0032
+  0030: return nothing
+  0032: DetachWeapon()
+  003c: AttachWeapon()
+  0046: return nothing
+  0048: <eos>
+
+function HmWeapon.EquipInstantly  (script 67 bytes)
+  0000: GotoState('Active', , , )
+  000e: AttachWeapon()
+  0018: ClearTimer('DetachWeapon', )
+  002c: ClearTimer('AttachWeapon', )
+  0040: return nothing
+  0042: <eos>
+
+function HmWeapon.UnEquipInstantly  (script 67 bytes)
+  0000: GotoState('Inactive', , , )
+  000e: DetachWeapon()
+  0018: ClearTimer('AttachWeapon', )
+  002c: ClearTimer('DetachWeapon', )
+  0040: return nothing
+  0042: <eos>
+
+function HmWeapon.GetViewAxes  (script 97 bytes)
+  0000: if !((self._InstigatorController == none)) goto 0x0036
+  000b: obj'Core.Math'.static.GetAxes(self.Instigator.Rotation, XAxis, YAxis, ZAxis)
+  0033: goto 0x005e
+  0036: obj'Core.Math'.static.GetAxes(self._InstigatorController.Rotation, XAxis, YAxis, ZAxis)
+  005e: return nothing
+  0060: <eos>
+
+function HmWeapon.GetSpread  (script 72 bytes)
+  0000: CurrentSpread = GetSpread()
+  000c: if !((Pawn(self.Owner) != none)) goto 0x003b
+  001c: (CurrentSpread += Pawn(self.Owner).GetWeaponSpreadModifier())
+  003b: return CurrentSpread
+  0041: return return
+  0047: <eos>
+
+function HmWeapon.GetShotCost  (script 33 bytes)
+  0000: return FireModeNum[HmWeaponData(self.Data).ShotCost]
+  001a: return return
+  0020: <eos>
+
+function HmWeapon.ShouldConsumeAmmo  (script 50 bytes)
+  0000: if !((HmPawn(self.Instigator) != none)) goto 0x0029
+  0010: if !(HmPawn(self.Instigator).HasUnlimitedAmmo) goto 0x0029
+  0027: return false
+  0029: return true
+  002b: return return
+  0031: <eos>
+
+function HmWeapon.ConsumeAmmo  (script 117 bytes)
+  0000: if !(!ShouldConsumeAmmo()) goto 0x0011
+  000f: return nothing
+  0011: if !((GetMaxAmmoClipCount() > 0)) goto 0x0058
+  0021: self.AmmoClipCount = obj'Core.Math'.static.Clamp((self.AmmoClipCount - GetShotCost(cast3a(FireModeNum))), 0, GetMaxAmmoClipCount())
+  0055: goto 0x0072
+  0058: self.ReserveAmmoCount = obj'Core.Math'.static.Max(0, (self.ReserveAmmoCount - 1))
+  0072: return nothing
+  0074: <eos>
+
+function HmWeapon.AddAmmo  (script 85 bytes)
+  0000: NewReserveAmmo = obj'Core.Math'.static.Clamp((self.ReserveAmmoCount + Amount), 0, GetMaxAmmoCount())
+  0028: ClientSyncAmmo(self.AmmoClipCount, NewReserveAmmo, true)
+  003d: self.ReserveAmmoCount = NewReserveAmmo
+  0048: return self.ReserveAmmoCount
+  004e: return return
+  0054: <eos>
+
+function HmWeapon.CanTransferAmmoFrom  (script 23 bytes)
+  0000: return AreCompatibleClassesForAmmoTransfer(OtherWeaponClass)
+  0010: return return
+  0016: <eos>
+
+function HmWeapon.AreCompatibleClassesForAmmoTransfer  (script 23 bytes)
+  0000: return (self.get_Class() == OtherWeaponClass)
+  0010: return return
+  0016: <eos>
+
+function HmWeapon.TryTransferAmmoFrom  (script 126 bytes)
+  0000: if !(((!ReserveAmmoFull() && (OtherWeapon != none)) && CanTransferAmmoFrom(OtherWeapon.get_Class()))) goto 0x0075
+  0037: AddAmmo(OtherWeapon.GetTransferAmmoAmount())
+  0054: if !(!HasAmmo(self.CurrentFireMode, )) goto 0x0073
+  0069: Reload()
+  0073: return true
+  0075: return false
+  0077: return return
+  007d: <eos>
+
+function HmWeapon.AmmoMaxed  (script 25 bytes)
+  0000: return (self.ReserveAmmoCount >= GetMaxAmmoCount())
+  0012: return return
+  0018: <eos>
+
+function HmWeapon.HasAmmo  (script 108 bytes)
+  0000: nothing
+  0001: ActualAmmoCount = self.AmmoClipCount
+  000c: if !((GetMaxAmmoClipCount() == 0)) goto 0x0027
+  001c: ActualAmmoCount = self.ReserveAmmoCount
+  0027: if !((Amount == 0)) goto 0x0058
+  0032: return (ActualAmmoCount >= cast3a(FireModeNum)[HmWeaponData(self.Data).ShotCost])
+  0055: goto 0x0065
+  0058: return (ActualAmmoCount >= Amount)
+  0065: return return
+  006b: <eos>
+
+function HmWeapon.HasAnyAmmo  (script 87 bytes)
+  0000: return (((self.AmmoClipCount > 0) || (self.ReserveAmmoCount > 0)) || ((0[HmWeaponData(self.Data).ShotCost] == 0) && (1[HmWeaponData(self.Data).ShotCost] == 0)))
+  0050: return return
+  0056: <eos>
+
+function HmWeapon.ReserveAmmoFull  (script 25 bytes)
+  0000: return (self.ReserveAmmoCount == GetMaxAmmoCount())
+  0012: return return
+  0018: <eos>
+
+function HmWeapon.HasUnlimitedReserveAmmo  (script 28 bytes)
+  0000: return HmWeaponData(self.Data).bHasUnlimitedReserveAmmo
+  0015: return return
+  001b: <eos>
+
+function HmWeapon.HasReserveAmmo  (script 31 bytes)
+  0000: return ((self.ReserveAmmoCount > 0) || HasUnlimitedReserveAmmo())
+  0018: return return
+  001e: <eos>
+
+function HmWeapon.Loaded  (script 43 bytes)
+  0000: nothing
+  0001: if !(bUseWeaponMax) goto 0x001d
+  000a: self.ReserveAmmoCount = GetMaxAmmoCount()
+  001a: goto 0x0028
+  001d: self.AmmoClipCount = 999
+  0028: return nothing
+  002a: <eos>
+
+function HmWeapon.DenyPickupQuery  (script 33 bytes)
+  0000: if !((ItemClass == get_Class())) goto 0x0018
+  000d: return ReserveAmmoFull()
+  0018: return false
+  001a: return return
+  0020: <eos>
+
+function HmWeapon.GetMaxAmmoCount  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).MaxAmmoCount
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.GetMaxAmmoClipCount  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).MaxAmmoClipCount
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.PlayWeaponEvent  (script 125 bytes)
+  0000: default=8
+  0006: if !((cast3a(MeshForAction) == cast3a(0))) goto 0x004c
+  0016: if !((self._CurrentMesh < self._WeaponMeshes.Length)) goto 0x0049
+  0026: self._CurrentMesh[self._WeaponMeshes].PlayEvent(AnimEvent, SoundEvent)
+  0049: goto 0x007a
+  004c: foreach self._WeaponMeshes(WM,) (end 0x0079)
+  005b: WM.PlayEvent(AnimEvent, SoundEvent)
+  0078: iternext
+  0079: iterpop
+  007a: return nothing
+  007c: <eos>
+
+function HmWeapon.ServerInstantReload  (script 13 bytes)
+  0000: RefillClip()
+  000a: return nothing
+  000c: <eos>
+
+function HmWeapon.InstantReload  (script 35 bytes)
+  0000: RefillClip()
+  000a: if !((cast3a(self.Role) < cast3a(3))) goto 0x0020
+  001a: HmWeapon.ServerInstantReload()
+  0020: return nothing
+  0022: <eos>
+
+function HmWeapon.RefillClip  (script 192 bytes)
+  0000: if !(HasUnlimitedReserveAmmo()) goto 0x002f
+  000d: self.ReserveAmmoCount = GetMaxAmmoCount()
+  001d: self.AmmoClipCount = GetMaxAmmoClipCount()
+  002d: return nothing
+  002f: if !((self.ReserveAmmoCount > 0)) goto 0x008e
+  003a: AmountToFill = (GetMaxAmmoClipCount() - self.AmmoClipCount)
+  0051: (self.AmmoClipCount += obj'Core.Math'.static.Min(self.ReserveAmmoCount, AmountToFill))
+  006d: self.ReserveAmmoCount = obj'Core.Math'.static.Max((self.ReserveAmmoCount - AmountToFill), 0)
+  008b: goto 0x00bd
+  008e: LogInternal("Refill clip called with no reserve ammo!", , , )
+  00bd: return nothing
+  00bf: <eos>
+
+function HmWeapon.WeaponReloaded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.GetReloadTime  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).WeaponReloadAnimTime
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.ReloadStartedCallback  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.ReloadCompleteCallback  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.IsAllowedToReload  (script 41 bytes)
+  0000: return ((GetStateName() == 'Active') || (GetStateName() == 'WeaponFiring'))
+  0022: return return
+  0028: <eos>
+
+function HmWeapon.Reload  (script 83 bytes)
+  0000: if !(((IsAllowedToReload() && (self.AmmoClipCount < GetMaxAmmoClipCount())) && (self.ReserveAmmoCount > 0))) goto 0x0050
+  0030: if !((cast3a(self.Role) < cast3a(3))) goto 0x0046
+  0040: HmWeapon.ServerReload()
+  0046: OnReload()
+  0050: return nothing
+  0052: <eos>
+
+function HmWeapon.ServerReload  (script 13 bytes)
+  0000: OnReload()
+  000a: return nothing
+  000c: <eos>
+
+function HmWeapon.OnReload  (script 17 bytes)
+  0000: GotoState('WeaponReloading', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmWeapon.IsReloading  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmWeapon.WeaponReloading.BeginState  (script 57 bytes)
+  0000: ReloadStartedCallback()
+  000f: PlayWeaponEvent(4, 1, )
+  001e: SetTimer(GetReloadTime(), false, 'WeaponReloaded', )
+  0036: return nothing
+  0038: <eos>
+
+function HmWeapon.WeaponReloading.EndState  (script 23 bytes)
+  0000: ClearTimer('WeaponReloaded', )
+  0014: return nothing
+  0016: <eos>
+
+function HmWeapon.WeaponReloading.IsReloading  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmWeapon.WeaponReloading.WeaponReloaded  (script 64 bytes)
+  0000: RefillClip()
+  000a: if !(self.bWeaponPutDown) goto 0x0020
+  0013: PutDownWeapon()
+  001d: goto 0x003d
+  0020: GotoState('Active', , , )
+  002e: ReloadCompleteCallback()
+  003d: return nothing
+  003f: <eos>
+
+function HmWeapon.WeaponReloading.ConsumeAmmo  (script 24 bytes)
+  0000: WeaponReloaded()
+  000a: HmWeapon.ConsumeAmmo(FireModeNum)
+  0015: return nothing
+  0017: <eos>
+
+function HmWeapon.InstantFire  (script 311 bytes)
+  0000: InstantFire()
+  0006: if !((((cast3a(self.Role) != cast3a(3)) || (self.Owner == none)) || (Pawn(self.Owner) == none))) goto 0x0037
+  0035: return nothing
+  0037: OwnerController = Pawn(self.Owner).GetController()
+  0055: if !((OwnerController == none)) goto 0x0062
+  0060: return nothing
+  0062: StartPoint = self.Instigator.GetWeaponStartTraceLocation(self)
+  007c: HitLocation = self.Instigator.FlashImpact.HitLocation
+  009b: BulletPath = (HitLocation - StartPoint)
+  00ad: foreach self.WorldInfo.AllPawns(obj'Engine.Pawn', TestPawn, , ) (end 0x0133)
+  00cf: TestController = TestPawn.GetController()
+  00e8: if !((TestController != none)) goto 0x0132
+  00f3: if !((TestController.bIsPlayer || OwnerController.bIsPlayer)) goto 0x0132
+  0119: NotifyPawnNearlyShot(TestPawn, BulletPath, StartPoint)
+  0132: iternext
+  0133: iterpop
+  0134: return nothing
+  0136: <eos>
+
+function HmWeapon.NotifyPawnNearlyShot  (script 253 bytes)
+  0000: if !((TargetPawn == self.Owner)) goto 0x0011
+  000f: return nothing
+  0011: ClosestDistFromRay = obj'Core.Math'.static.PointDistToLine(TargetPawn.Location, obj'Core.Math'.static.Normal(BulletPath), StartPoint, ClosestPoint)
+  0052: EndPoint = (StartPoint + BulletPath)
+  0064: ClosestPoint = obj'Core.Math'.static.ClosestPointToLineSegment(StartPoint, EndPoint, TargetPawn.Location)
+  0095: ClosestDistFromRay = obj'Core.Math'.static.VSize((TargetPawn.Location - ClosestPoint))
+  00bb: if !((ClosestDistFromRay < HmWeaponData(self.Data).NearlyShotDistance)) goto 0x00fa
+  00d8: TargetPawn.NotifyNearlyShot(Pawn(self.Owner), ClosestPoint)
+  00fa: return nothing
+  00fc: <eos>
+
+function HmWeapon.ShouldAutoReload  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmWeapon.FiredCallback  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.FireAmmunition  (script 88 bytes)
+  0000: FireAmmunition()
+  0006: if !((self.Instigator != none)) goto 0x0040
+  0011: self.Instigator.MakeNoise(HmWeaponData(self.Data).SoundRadius, 'FireAmmunition')
+  0040: FiredCallback()
+  004f: HmWeapon.TryReload()
+  0055: return nothing
+  0057: <eos>
+
+function HmWeapon.WeaponFiring.BeginFire  (script 117 bytes)
+  0000: if !(((HmWeaponData(self.Data).bAutoReload && !HasAmmo(1, 1)) && HasAnyAmmo())) goto 0x0046
+  003a: Reload()
+  0044: return nothing
+  0046: if !(!HasAmmo(FireModeNum, )) goto 0x0067
+  005b: WeaponEmpty()
+  0065: return nothing
+  0067: BeginFire(FireModeNum)
+  0072: return nothing
+  0074: <eos>
+
+function HmWeapon.WeaponFiring.LeaveWeaponFireState  (script 17 bytes)
+  0000: GotoState('Active', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmWeapon.WeaponFiring.RefireCheckTimer  (script 155 bytes)
+  0000: SetTimer(GetFireInterval(0), false, 'RefireCheckTimer', )
+  001a: if !(self.bWeaponPutDown) goto 0x002f
+  0023: PutDownWeapon()
+  002d: return nothing
+  002f: if !(ShouldRefire()) goto 0x004b
+  003c: FireAmmunition()
+  0046: return nothing
+  0048: goto 0x0075
+  004b: if !(!HmWeaponData(self.Data).bAutoFire) goto 0x0075
+  0064: ClearPendingFire(cast3a(self.CurrentFireMode))
+  0075: LeaveWeaponFireState()
+  007f: if !(!HasAnyAmmo()) goto 0x0098
+  008e: WeaponEmpty()
+  0098: return nothing
+  009a: <eos>
+
+function HmWeapon.TryReload  (script 96 bytes)
+  0000: if !(!ShouldAutoReload()) goto 0x0011
+  000f: return false
+  0011: if !(((HmWeaponData(self.Data).bAutoReload && !HasAmmo(1, 1)) && HasAnyAmmo())) goto 0x0057
+  004b: Reload()
+  0055: return true
+  0057: return false
+  0059: return return
+  005f: <eos>
+
+function HmWeapon.WeaponEquipping.BeginState  (script 25 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: SetHidden(false)
+  0016: return nothing
+  0018: <eos>
+
+function HmWeapon.Active.BeginState  (script 25 bytes)
+  0000: if !(HmWeapon.TryReload()) goto 0x000b
+  0009: return nothing
+  000b: BeginState(PreviousStateName)
+  0016: return nothing
+  0018: <eos>
+
+function HmWeapon.Active.BeginFire  (script 47 bytes)
+  0000: if !(PlayNoAmmoWeaponEvent(FireModeNum)) goto 0x0021
+  0012: PlayWeaponEvent(22, 1, )
+  0021: BeginFire(FireModeNum)
+  002c: return nothing
+  002e: <eos>
+
+function HmWeapon.PlayNoAmmoWeaponEvent  (script 26 bytes)
+  0000: return !HasAmmo(FireModeNum, )
+  0013: return return
+  0019: <eos>
+
+function HmWeapon.TryPutDown  (script 259 bytes)
+  0000: self.bWeaponPutDown = true
+  0008: I = 0
+  000f: if !((I < self.Timers.Length)) goto 0x00fa
+  001f: if !((I[self.Timers].FuncName == 'RefireCheckTimer')) goto 0x00c0
+  0043: if !(((I[self.Timers].Rate == cast3f(0)) || (cast3a(self.CurrentFireMode)[HmWeaponData(self.Data).MinReloadPct] <= (I[self.Timers].Count / I[self.Timers].Rate)))) goto 0x00bd
+  00b1: PutDownWeapon()
+  00bb: return true
+  00bd: goto 0x00fa
+  00c0: if !((I[self.Timers].FuncName == 'WeaponReloaded')) goto 0x00f0
+  00e4: PutDownWeapon()
+  00ee: return true
+  00f0: AddAdd_Int(I)
+  00f7: goto 0x000f
+  00fa: return false
+  00fc: return return
+  0102: <eos>
+
+function HmWeapon.PlayThrowAnimation  (script 18 bytes)
+  0000: PlayWeaponEvent(2, 1, )
+  000f: return nothing
+  0011: <eos>
+
+function HmWeapon.RefireCheckTimer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.ShouldRegisterDamage  (script 110 bytes)
+  0000: if !((A == none)) goto 0x000d
+  000b: return false
+  000d: if !((cast3a(self.WorldInfo.NetMode) != cast3a(3))) goto 0x0028
+  0026: return true
+  0028: HitPawn = Pawn(A)
+  0038: if !(((HitPawn != none) && HitPawn.bTearOff)) goto 0x0059
+  0057: return true
+  0059: return (CrowdAgent(A) != none)
+  0067: return return
+  006d: <eos>
+
+function HmWeapon.ProcessInstantHit  (script 248 bytes)
+  0000: if !(HmWeapon.ShouldRegisterDamage(Impact.HitActor)) goto 0x00f5
+  0019: Damage = cast3a(self.CurrentFireMode)[self.Data.InstantHitDamage]
+  0035: if !((self.Instigator != none)) goto 0x0054
+  0040: Controller = self.Instigator.Controller
+  0054: Impact.HitActor.TakeDamage(ModifyDamage(Damage, Impact.HitActor), Controller, Impact.HitLocation, (cast3a(FiringMode)[self.Data.InstantHitMomentum] * Impact.RayDir), cast3a(FiringMode)[self.Data.InstantHitDamageTypes], Impact.HitInfo, )
+  00f5: return nothing
+  00f7: <eos>
+
+function HmWeapon.StillFiring  (script 44 bytes)
+  0000: if !(HmWeaponData(self.Data).bAutoFire) goto 0x0023
+  0017: return StillFiring(FireMode)
+  0023: return false
+  0025: return return
+  002b: <eos>
+
+function HmWeapon.GetAutoFire  (script 28 bytes)
+  0000: return HmWeaponData(self.Data).bAutoFire
+  0015: return return
+  001b: <eos>
+
+function HmWeapon.ChangeFireInterval  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.GetTransferAmmoAmount  (script 45 bytes)
+  0000: if !((GetMaxAmmoClipCount() <= 0)) goto 0x001b
+  0010: return GetMaxAmmoCount()
+  001b: return GetMaxAmmoClipCount()
+  0026: return return
+  002c: <eos>
+
+function HmWeapon.ToggleWeaponSounds  (script 53 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0031)
+  000f: WM.EnableSounds = !WM.EnableSounds
+  0030: iternext
+  0031: iterpop
+  0032: return nothing
+  0034: <eos>
+
+function HmWeapon.ToggleWeaponImpactEffects  (script 53 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0031)
+  000f: WM.EnableImpactEffects = !WM.EnableImpactEffects
+  0030: iternext
+  0031: iterpop
+  0032: return nothing
+  0034: <eos>
+
+function HmWeapon.ToggleMuzzleLight  (script 53 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0031)
+  000f: WM.EnableMuzzleLight = !WM.EnableMuzzleLight
+  0030: iternext
+  0031: iterpop
+  0032: return nothing
+  0034: <eos>
+
+function HmWeapon.StopAllLoopingSoundEvents  (script 39 bytes)
+  0000: foreach self._WeaponMeshes(WM,) (end 0x0023)
+  000f: WM.StopAllLoopingSoundEvents()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function HmWeapon.GetTargetStickinessFactor  (script 27 bytes)
+  0000: return HmWeaponData(self.Data).TargetStickinessFactor
+  0014: return return
+  001a: <eos>
+
+function HmWeapon.GetPossibleDamageTypes  (script 304 bytes)
+  0000: I = 0
+  0007: if !((I < self.Data.WeaponFireTypes.Length)) goto 0x0123
+  0020: PossibleDamageType = none
+  0027: if !(((cast3a(I[self.Data.WeaponFireTypes]) == cast3a(0)) && (I < self.Data.InstantHitDamageTypes.Length))) goto 0x007e
+  0061: PossibleDamageType = I[self.Data.InstantHitDamageTypes]
+  007b: goto 0x0101
+  007e: if !((((cast3a(I[self.Data.WeaponFireTypes]) == cast3a(1)) && (I < self.Data.WeaponProjectiles.Length)) && (I[self.Data.WeaponProjectiles] != none))) goto 0x0101
+  00d4: PossibleDamageType = class<HmProjectile>(I[self.Data.WeaponProjectiles]).static.GetDamageType()
+  0101: if !((PossibleDamageType != none)) goto 0x0119
+  010c: DTs.AddItem(PossibleDamageType)
+  0119: AddAdd_PreInt(I)
+  0120: goto 0x0007
+  0123: return DTs
+  0129: return return
+  012f: <eos>
+
+function HmWeapon.GivenTo  (script 31 bytes)
+  0000: nothing
+  0001: GivenTo(ThisPawn, bDoNotActivate)
+  0012: SyncAmmoToClient()
+  001c: return nothing
+  001e: <eos>
+
+function HmWeapon.SyncAmmoToClient  (script 24 bytes)
+  0000: ClientSyncAmmo(self.AmmoClipCount, self.ReserveAmmoCount, false)
+  0015: return nothing
+  0017: <eos>
+
+function HmWeapon.ClientSyncAmmo  (script 65 bytes)
+  0000: OnAmmoAdded((ClipCount - self.AmmoClipCount), (ReserveCount - self.ReserveAmmoCount), DisplayInHud)
+  0028: self.AmmoClipCount = ClipCount
+  0033: self.ReserveAmmoCount = ReserveCount
+  003e: return nothing
+  0040: <eos>
+
+function HmWeapon.OnAmmoAdded  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmWeapon.CurrentWeaponMeshPlaySoundEvent  (script 55 bytes)
+  0000: default=0
+  0006: if !((self._CurrentMesh < self._WeaponMeshes.Length)) goto 0x0034
+  0016: self._CurrentMesh[self._WeaponMeshes].PlaySoundEvent(WeaponEvent)
+  0034: return nothing
+  0036: <eos>
+
+function HmWeapon.AllWeaponMeshesStopSoundEvent  (script 50 bytes)
+  0000: default=1
+  0006: foreach self._WeaponMeshes(WM,) (end 0x002e)
+  0015: WM.StopSoundEvent(WeaponEvent)
+  002d: iternext
+  002e: iterpop
+  002f: return nothing
+  0031: <eos>
+
+function HmWeapon.CurrentWeaponMeshSetSoundEventLocation  (script 60 bytes)
+  0000: default=0
+  0006: if !((self._CurrentMesh < self._WeaponMeshes.Length)) goto 0x0039
+  0016: self._CurrentMesh[self._WeaponMeshes].SetSoundEventLocation(WeaponEvent, SoundLocation)
+  0039: return nothing
+  003b: <eos>
+
+function HmWeapon.CurrentWeaponMeshStartMuzzleFlash  (script 55 bytes)
+  0000: default=0
+  0006: if !((self._CurrentMesh < self._WeaponMeshes.Length)) goto 0x0034
+  0016: self._CurrentMesh[self._WeaponMeshes].StartMuzzleFlash(WeaponEvent)
+  0034: return nothing
+  0036: <eos>
+
+function HmWeapon.CurrentWeaponMeshPlayTracerEffect  (script 60 bytes)
+  0000: default=0
+  0006: if !((self._CurrentMesh < self._WeaponMeshes.Length)) goto 0x0039
+  0016: self._CurrentMesh[self._WeaponMeshes].PlayTracerEffect(WeaponEvent, ImpInfo)
+  0039: return nothing
+  003b: <eos>

@@ -1,0 +1,47 @@
+function TnOrbitRotateToTargetSettings.get_ShouldSnapToTarget  (script 65 bytes)
+  0000: SettingsIndex = TnOrbitRotateToTargetSettings.FindSettingsIndex()
+  000c: if !((SettingsIndex != -1)) goto 0x0033
+  001b: return SettingsIndex[self.SettingsByPCS].ShouldSnapToTarget
+  0033: return self.DefaultShouldSnapToTarget
+  003a: return return
+  0040: <eos>
+
+function TnOrbitRotateToTargetSettings.get_ShouldStickToTarget  (script 65 bytes)
+  0000: SettingsIndex = TnOrbitRotateToTargetSettings.FindSettingsIndex()
+  000c: if !((SettingsIndex != -1)) goto 0x0033
+  001b: return SettingsIndex[self.SettingsByPCS].ShouldStickToTarget
+  0033: return self.DefaultShouldStickToTarget
+  003a: return return
+  0040: <eos>
+
+function TnOrbitRotateToTargetSettings.get_TargetingSpeed  (script 63 bytes)
+  0000: SettingsIndex = TnOrbitRotateToTargetSettings.FindSettingsIndex()
+  000c: if !((SettingsIndex != -1)) goto 0x0032
+  001b: return SettingsIndex[self.SettingsByPCS].TargetingSpeed
+  0032: return self.DefaultTargetingSpeed
+  0038: return return
+  003e: <eos>
+
+function TnOrbitRotateToTargetSettings.get_TargetAngleOffset  (script 63 bytes)
+  0000: SettingsIndex = TnOrbitRotateToTargetSettings.FindSettingsIndex()
+  000c: if !((SettingsIndex != -1)) goto 0x0032
+  001b: return SettingsIndex[self.SettingsByPCS].TargetAngleOffset
+  0032: return self.DefaultTargetAngleOffset
+  0038: return return
+  003e: <eos>
+
+function TnOrbitRotateToTargetSettings.Initialize  (script 14 bytes)
+  0000: self.CameraActor = C
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitRotateToTargetSettings.FindSettingsIndex  (script 96 bytes)
+  0000: SettingsIndex = 0
+  0007: if !((SettingsIndex < self.SettingsByPCS.Length)) goto 0x0053
+  0017: if !(self.CameraActor.HasAllPlayerCameraStates(SettingsIndex[self.SettingsByPCS].PlayerCameraStates)) goto 0x0049
+  0043: return SettingsIndex
+  0049: AddAdd_PreInt(SettingsIndex)
+  0050: goto 0x0007
+  0053: return -1
+  0059: return return
+  005f: <eos>

@@ -1,0 +1,26 @@
+function HmSequentialAllocator.Allocate  (script 128 bytes)
+  0000: if !((self.objects.Length > self.UnusedHeadIndex)) goto 0x002b
+  0010: obj = AddAdd_Int(self.UnusedHeadIndex)[self.objects]
+  0023: return cast36(obj)
+  002b: obj = HmSequentialAllocatorInterface(new(self, nothing, self._ObjectClass, nothing, AttachTreeCallback))
+  0044: if !(NotEqual_InterfaceInterface(obj, HmSequentialAllocatorInterface(none))) goto 0x0071
+  0058: self.objects.AddItem(obj)
+  0065: self.UnusedHeadIndex = self.objects.Length
+  0071: return cast36(obj)
+  0079: return return
+  007f: <eos>
+
+function HmSequentialAllocator.Reset  (script 47 bytes)
+  0000: foreach self.objects(obj,) (end 0x0024)
+  000f: obj.Reset()
+  0023: iternext
+  0024: iterpop
+  0025: self.UnusedHeadIndex = 0
+  002c: return nothing
+  002e: <eos>
+
+function HmSequentialAllocator.Release  (script 21 bytes)
+  0000: Reset()
+  000a: self.objects.Length = 0
+  0012: return nothing
+  0014: <eos>

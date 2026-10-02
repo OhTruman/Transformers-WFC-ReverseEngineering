@@ -1,0 +1,27 @@
+function TnBuffAbilityJammed.Apply  (script 455 bytes)
+  0000: BuffOwner.AbilityManager.SetCooldownMultiplier(0.0)
+  0021: if !((cast3a(BuffOwner.Role) == cast3a(3))) goto 0x01af
+  003a: BuffService = TnBuffService(BuffOwner.GetService('TnBuffService'))
+  0061: foreach self.BuffsToRemoveWhenJammed(BuffIter,) (end 0x00a6)
+  0070: if !(BuffService.HasBuff(BuffIter)) goto 0x00a5
+  008c: BuffService.RemoveBuff(BuffIter)
+  00a5: iternext
+  00a6: iterpop
+  00a7: ShieldService = TnShieldService(BuffOwner.GetService('TnShieldService'))
+  00ce: if !(NotEqual_InterfaceInterface(ShieldService, TnShieldService(none))) goto 0x00f6
+  00e2: ShieldService.StopShield()
+  00f6: AcrobaticsService = TnAcrobaticsService(BuffOwner.GetService('TnAcrobaticsService'))
+  011d: if !(NotEqual_InterfaceInterface(AcrobaticsService, TnAcrobaticsService(none))) goto 0x0145
+  0131: AcrobaticsService.Fall()
+  0145: MeleeService = TnMeleeService(BuffOwner.GetService('TnMeleeService'))
+  016c: if !((NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none)) && MeleeService.IsMeleeing(3))) goto 0x01af
+  019b: MeleeService.AbortMeleeAttack()
+  01af: TnBuff.Apply(Level, BuffOwner, Applier)
+  01c4: return nothing
+  01c6: <eos>
+
+function TnBuffAbilityJammed.Unapply  (script 42 bytes)
+  0000: TnBuff.Unapply()
+  0006: self.OwnerPawn.AbilityManager.SetCooldownMultiplier(1.0)
+  0027: return nothing
+  0029: <eos>

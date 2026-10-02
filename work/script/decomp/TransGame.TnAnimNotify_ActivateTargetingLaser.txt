@@ -1,0 +1,8 @@
+function TnAnimNotify_ActivateTargetingLaser.OnParticleSystemSpawned  (script 189 bytes)
+  0000: OmegaPawn = TnOmegaSupremePawn(AnimSeqInstigator.SkelComponent.Owner)
+  0022: if !((OmegaPawn == none)) goto 0x009d
+  002d: LogInternal("Error: AnimNotify_ActivateTargetingLaser has the wrong pawn type. The laser will clip through geometry.", , , )
+  009b: return nothing
+  009d: OmegaPawn.OnTargetingLaserActivated(PSC, self.SocketName)
+  00ba: return nothing
+  00bc: <eos>

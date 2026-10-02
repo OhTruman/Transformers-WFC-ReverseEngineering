@@ -1,0 +1,13 @@
+function TnTurnAroundCameraBehavior.Update  (script 139 bytes)
+  0000: Result.Rotation = obj'Core.Math'.static.RLerp(Result.Rotation, self._Rot, self._Blend, true)
+  003f: Result.OrbitRotation = obj'Core.Math'.static.RLerp(Result.OrbitRotation, self._Rot, self._Blend, true)
+  007e: return Result
+  0084: return return
+  008a: <eos>
+
+function TnTurnAroundCameraBehavior.EnableTurnaround  (script 46 bytes)
+  0000: self._Blend = Blend
+  000b: self._Rot = cast50(obj'Core.Math'.static.Normal(Direction))
+  0023: self.Enabled = true
+  002b: return nothing
+  002d: <eos>

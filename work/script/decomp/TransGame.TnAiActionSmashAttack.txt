@@ -1,0 +1,88 @@
+function TnAiActionSmashAttack.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionSmashAttack.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionSmashAttack.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionSmashAttackBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionSmashAttack.OnBind  (script 76 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0049: return nothing
+  004b: <eos>
+
+function TnAiActionSmashAttack.OnSetUpConditions  (script 196 bytes)
+  0000: if !(!self._MeleePlanningUtil.PopulatePreconditions(self, ExpectedEffects, Conditions)) goto 0x0025
+  0023: return false
+  0025: if !(!self._MeleePlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.NavigateToAttackDestination, self._Blueprint.OuterDistanceThreshold)) goto 0x0066
+  0064: return false
+  0066: if !((!self._Blueprint.NavigateToAttackDestination && !TnAiActionSmashAttack.IsBetweenDistanceThresholds())) goto 0x0089
+  0087: return false
+  0089: if !(!self._TransformerPawn._RobotForm.get_IsOnTheGround()) goto 0x00ac
+  00aa: return false
+  00ac: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00bd: return return
+  00c3: <eos>
+
+function TnAiActionSmashAttack.IsBetweenDistanceThresholds  (script 168 bytes)
+  0000: VectorFromEnemy = (self._TransformerPawn.Location - self._TransformerController.Enemy.Location)
+  002d: DistanceToEnemySq = obj'Core.Math'.static.VSizeSq(VectorFromEnemy)
+  004b: if !((DistanceToEnemySq > (self._Blueprint.OuterDistanceThreshold * self._Blueprint.OuterDistanceThreshold))) goto 0x0075
+  0073: return false
+  0075: if !((DistanceToEnemySq < (self._Blueprint.InnerDistanceThreshold * self._Blueprint.InnerDistanceThreshold))) goto 0x009f
+  009d: return false
+  009f: return true
+  00a1: return return
+  00a7: <eos>
+
+function TnAiActionSmashAttack.OnPlanStart  (script 38 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._MeleePlanningUtil.PlanStart(ExpectedEffects)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiActionSmashAttack.OnIsValidForFutureExecution  (script 124 bytes)
+  0000: if !(!self._MeleePlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, self._Blueprint.NavigateToAttackDestination, self._Blueprint.OuterDistanceThreshold)) goto 0x0041
+  003f: return false
+  0041: if !(!self._TransformerPawn._RobotForm.get_IsOnTheGround()) goto 0x0064
+  0062: return false
+  0064: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0075: return return
+  007b: <eos>
+
+function TnAiActionSmashAttack.OnStart  (script 210 bytes)
+  0000: W = TnWeapon(get_InvManager().FindInventoryType(get_WeaponClass(), false))
+  002e: get_InvManager().SetCurrentWeapon(W)
+  004b: self._TransformerController.StopMovement()
+  005e: SetCharacterState(1)
+  0069: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  008b: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.FailCallback, delegate.FailCallback)
+  00bf: return OnStart(ExpectedEffects)
+  00cb: return return
+  00d1: <eos>
+
+function TnAiActionSmashAttack.OnUpdate  (script 74 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._TransformerController.Enemy) == false)) goto 0x0032
+  0027: return Succeed()
+  0032: return OnUpdate(ExpectedEffects, DeltaTime)
+  0043: return return
+  0049: <eos>
+
+function TnAiActionSmashAttack.OnFinish  (script 94 bytes)
+  0000: OnFinish(CurrentState)
+  000b: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateFacingActor', false, )
+  002a: if !((cast3a(CurrentState) != cast3a(3))) goto 0x003c
+  003a: return nothing
+  003c: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  005b: return nothing
+  005d: <eos>

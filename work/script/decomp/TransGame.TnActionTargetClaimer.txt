@@ -1,0 +1,41 @@
+function TnActionTargetClaimer.AssignActionSentryTarget  (script 83 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(Target, TnActionTargetClaimService(none))) goto 0x0016
+  0014: return nothing
+  0016: if !(EqualEqual_InterfaceInterface(self.ActionSentryTarget, Target)) goto 0x002b
+  0029: return nothing
+  002b: Target.AssignActionSentryTargeter(TnActionTargetClaimService(self))
+  0045: self.ActionSentryTarget = Target
+  0050: return nothing
+  0052: <eos>
+
+function TnActionTargetClaimer.ReleaseActionSentryTarget  (script 58 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(Target, TnActionTargetClaimService(none))) goto 0x0016
+  0014: return nothing
+  0016: Target.ReleaseActionSentryTargeter(TnActionTargetClaimService(self))
+  0030: self.ActionSentryTarget = none
+  0037: return nothing
+  0039: <eos>
+
+function TnActionTargetClaimer.AssignActionSentryTargeter  (script 63 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(Targeter, TnActionTargetClaimService(none))) goto 0x0016
+  0014: return nothing
+  0016: if !((self.SentryTargeters.Find(Targeter) != -1)) goto 0x002f
+  002d: return nothing
+  002f: self.SentryTargeters.AddItem(Targeter)
+  003c: return nothing
+  003e: <eos>
+
+function TnActionTargetClaimer.ReleaseActionSentryTargeter  (script 49 bytes)
+  0000: Index = self.SentryTargeters.Find(Targeter)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.SentryTargeters.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnActionTargetClaimer.GetNumActionSentryTargeters  (script 70 bytes)
+  0000: nothing
+  0001: if !((NotEqual_InterfaceInterface(ExcludeTargeter, TnActionTargetClaimService(none)) && (self.SentryTargeters.Find(ExcludeTargeter) != -1))) goto 0x0038
+  002e: return (self.SentryTargeters.Length - 1)
+  0038: return self.SentryTargeters.Length
+  003f: return return
+  0045: <eos>

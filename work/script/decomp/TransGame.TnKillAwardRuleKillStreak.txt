@@ -1,0 +1,20 @@
+function TnKillAwardRuleKillStreak.CheckRule  (script 406 bytes)
+  0000: PRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0019: if !((PRI == none)) goto 0x00f2
+  0024: LogInternal(((((("ERROR: Please report this to Robert M, a player was checking his killstreak in a kill award with a PRI.  Player is:" @ cast56(Killer)) $ ", PRI is:") @ cast56(Killer.PlayerReplicationInfo)) $ ", Cast version:") @ cast56(TnPlayerReplicationInfo(Killer.PlayerReplicationInfo))), , , )
+  00f0: return nothing
+  00f2: CurrentKillStreak = PRI._CurrentKillStreak
+  0106: switch (CurrentKillStreak)
+  010d: case 3: (next 0x012d)
+  0112: Killer.NotifyXpEvent(obj'TnXpEventTypeKillStreak3')
+  012a: goto 0x0170
+  012d: case 5: (next 0x014d)
+  0132: Killer.NotifyXpEvent(obj'TnXpEventTypeKillStreak5')
+  014a: goto 0x0170
+  014d: case 7: (next 0x016d)
+  0152: Killer.NotifyXpEvent(obj'TnXpEventTypeKillStreak7')
+  016a: goto 0x0170
+  016d: default:
+  0170: PRI.ReportGameStat(cast3f(CurrentKillStreak), 5968, 0, 1)
+  0193: return nothing
+  0195: <eos>

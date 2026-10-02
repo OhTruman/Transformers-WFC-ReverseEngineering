@@ -1,0 +1,70 @@
+function HmInstallerMonitor.CleanupInstallMonitor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmInstallerMonitor.Install  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmInstallerMonitor.Cancel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmInstallerMonitor.GetCompletionPercentage  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmInstallerMonitor.InstallInProgress  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmInstallerMonitor.CleanupAfterInstall  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmInstallerMonitor.FilesNeedFreshInstall  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmInstallerMonitor.InstallStarted  (script 18 bytes)
+  0000: OnInstallStarted(InInstallType)
+  000f: return nothing
+  0011: <eos>
+
+function HmInstallerMonitor.InstallFinished  (script 19 bytes)
+  0000: OnInstallFinished()
+  000a: HmInstallerMonitor.CleanupAfterInstall()
+  0010: return nothing
+  0012: <eos>
+
+function HmInstallerMonitor.InstallCancelled  (script 19 bytes)
+  0000: OnInstallCancelled()
+  000a: HmInstallerMonitor.CleanupAfterInstall()
+  0010: return nothing
+  0012: <eos>
+
+function HmInstallerMonitor.InstallError  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmInstallerMonitor.OnInstallStarted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmInstallerMonitor.OnInstallFinished  (script 18 bytes)
+  0000: CleanupInstallMonitor()
+  000f: return nothing
+  0011: <eos>
+
+function HmInstallerMonitor.OnInstallCancelled  (script 18 bytes)
+  0000: CleanupInstallMonitor()
+  000f: return nothing
+  0011: <eos>
+
+function HmInstallerMonitor.OnInstallError  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmInstallerMonitor.SetInstallingPlayer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

@@ -1,0 +1,43 @@
+function TnAutomatedTestingPolicy.HandleFrontendReadyToPlay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAutomatedTestingPolicy.HandleEnterPartyLobby  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAutomatedTestingPolicy.HandleEnterGameLobby  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAutomatedTestingPolicy.HandleEnterGame  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAutomatedTestingPolicy.HandleStartHumans  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAutomatedTestingPolicy.HandleTick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAutomatedTestingPolicy.SelectAvailableCharacter  (script 230 bytes)
+  0000: GRI = TnGameReplicationInfo(Game.GameReplicationInfo)
+  0019: PossibleCharacters = GRI.GetPlayableIconicCharacterNames()
+  0032: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  004b: if !((PRI == none)) goto 0x0058
+  0056: return nothing
+  0058: if !(PRI.bBot) goto 0x006c
+  006a: return nothing
+  006c: I = 0
+  0073: if !((I < PossibleCharacters.Length)) goto 0x00e3
+  0083: if !(!GRI.ValidateCharacterSelection(PRI, I[PossibleCharacters])) goto 0x00ae
+  00ab: goto 0x00d9
+  00ae: if !(!PC.SelectCharacter(I[PossibleCharacters], 1)) goto 0x00d6
+  00d3: goto 0x00d9
+  00d6: goto 0x00e3
+  00d9: AddAdd_PreInt(I)
+  00e0: goto 0x0073
+  00e3: return nothing
+  00e5: <eos>

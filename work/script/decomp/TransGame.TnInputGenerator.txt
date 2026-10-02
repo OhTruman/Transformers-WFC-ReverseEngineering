@@ -1,0 +1,18 @@
+function TnInputGenerator.Update  (script 19 bytes)
+  0000: Update(DeltaTime, PlayerIn)
+  0010: return nothing
+  0012: <eos>
+
+function TnInputGenerator.FindGoal  (script 136 bytes)
+  0000: LP = LocalPlayer(PlayerIn.get_Outer().Player)
+  0020: foreach LP.Actor.AllActors(obj'Engine.PickupFactory', PF) (end 0x0084)
+  0049: if !((self.VisitedPickupsFactories.Find(PF) == -1)) goto 0x0083
+  0060: self.VisitedPickupsFactories.AddItem(PF)
+  006d: self.Goal = PF
+  0078: self.bHasGoal = true
+  0080: iterpop
+  0081: return nothing
+  0083: iternext
+  0084: iterpop
+  0085: return nothing
+  0087: <eos>

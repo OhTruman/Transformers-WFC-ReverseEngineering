@@ -1,0 +1,80 @@
+function BroadcastHandler.UpdateSentText  (script 10 bytes)
+  0000: self.SentText = 0
+  0007: return nothing
+  0009: <eos>
+
+function BroadcastHandler.AllowsBroadcast  (script 117 bytes)
+  0000: if !(((self.bMuteSpectators && (PlayerController(broadcaster) != none)) && PlayerController(broadcaster).PlayerReplicationInfo.bOnlySpectator)) goto 0x003f
+  003d: return false
+  003f: (self.SentText += InLen)
+  004b: return ((self.WorldInfo.Pauser != none) || (self.SentText < 260))
+  006e: return return
+  0074: <eos>
+
+function BroadcastHandler.BroadcastText  (script 39 bytes)
+  0000: nothing
+  0001: Receiver.TeamMessage(SenderPRI, msg, Type, )
+  0024: return nothing
+  0026: <eos>
+
+function BroadcastHandler.BroadcastLocalized  (script 51 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: Receiver.ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0030: return nothing
+  0032: <eos>
+
+function BroadcastHandler.Broadcast  (script 183 bytes)
+  0000: nothing
+  0001: if !(!BroadcastHandler.AllowsBroadcast(Sender, obj'Core.Strings'.static.Len(msg))) goto 0x0023
+  0021: return nothing
+  0023: if !((Pawn(Sender) != none)) goto 0x004f
+  0033: PRI = Pawn(Sender).PlayerReplicationInfo
+  004c: goto 0x0078
+  004f: if !((Controller(Sender) != none)) goto 0x0078
+  005f: PRI = Controller(Sender).PlayerReplicationInfo
+  0078: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x00b3)
+  0098: BroadcastHandler.BroadcastText(PRI, P, msg, Type)
+  00b2: iternext
+  00b3: iterpop
+  00b4: return nothing
+  00b6: <eos>
+
+function BroadcastHandler.BroadcastTeam  (script 158 bytes)
+  0000: nothing
+  0001: if !(!BroadcastHandler.AllowsBroadcast(Sender, obj'Core.Strings'.static.Len(msg))) goto 0x0023
+  0021: return nothing
+  0023: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x009a)
+  0043: if !((P.PlayerReplicationInfo.Team == Sender.PlayerReplicationInfo.Team)) goto 0x0099
+  0076: BroadcastHandler.BroadcastText(Sender.PlayerReplicationInfo, P, msg, Type)
+  0099: iternext
+  009a: iterpop
+  009b: return nothing
+  009d: <eos>
+
+function BroadcastHandler.AllowBroadcastLocalized  (script 82 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x004e)
+  0024: BroadcastHandler.BroadcastLocalized(Sender, P, Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  004d: iternext
+  004e: iterpop
+  004f: return nothing
+  0051: <eos>
+
+function BroadcastHandler.AllowBroadcastLocalizedTeam  (script 177 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x00ad)
+  0024: if !((((P.PlayerReplicationInfo != none) && (P.PlayerReplicationInfo.Team != none)) && (P.PlayerReplicationInfo.Team.TeamIndex == TeamIndex))) goto 0x00ac
+  0083: BroadcastHandler.BroadcastLocalized(Sender, P, Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  00ac: iternext
+  00ad: iterpop
+  00ae: return nothing
+  00b0: <eos>

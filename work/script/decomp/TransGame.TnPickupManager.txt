@@ -1,0 +1,248 @@
+function TnPickupManager.get_AvailablePickup  (script 24 bytes)
+  0000: return self.PickupInfo.PickupState
+  0011: return return
+  0017: <eos>
+
+function TnPickupManager.ReplicatedEvent  (script 78 bytes)
+  0000: if !((VarName == 'PickupInfo')) goto 0x0040
+  0013: OnStateChanged(self.PickupInfo.PickupState, self.PickupInfo.PickupObject)
+  003d: goto 0x004b
+  0040: ReplicatedEvent(VarName)
+  004b: return nothing
+  004d: <eos>
+
+function TnPickupManager.Initialize  (script 25 bytes)
+  0000: self.OwnerPawn = OwnerP
+  000b: self.ContextualCommander = ContextualCommander_
+  0016: return nothing
+  0018: <eos>
+
+function TnPickupManager.IsPickupAvailable  (script 61 bytes)
+  0000: return ((cast3a(self.PickupInfo.PickupState) == cast3a(1)) || (cast3a(self.PickupInfo.PickupState) == cast3a(2)))
+  0036: return return
+  003c: <eos>
+
+function TnPickupManager.Pickup  (script 53 bytes)
+  0000: if !(!TnPickupManager.FindAvailablePickup(PickupActor, PickupType)) goto 0x0017
+  0015: return nothing
+  0017: TnPickupManager.DropInventory(PickupType)
+  0022: TnPickupManager.TakePickUp(PickupActor, PickupType)
+  0032: return nothing
+  0034: <eos>
+
+function TnPickupManager.FindAvailablePickup  (script 95 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return false
+  000d: PickupActor = TnPickupManager.GetClosestPickup()
+  0019: PickupType = TnPickupManager.GetPickupType(PickupActor)
+  002a: if !((PickupType == none)) goto 0x0037
+  0035: return false
+  0037: if !(!self.OwnerPawn.CanPickupInventory(PickupType)) goto 0x0056
+  0054: return false
+  0056: return true
+  0058: return return
+  005e: <eos>
+
+function TnPickupManager.DropInventory  (script 44 bytes)
+  0000: if !((class<TnGrenadeBag>(NewPickupType) != none)) goto 0x001e
+  0010: TnPickupManager.DropGrenades(NewPickupType)
+  001b: goto 0x0029
+  001e: TnPickupManager.DropRobotWeapon(NewPickupType)
+  0029: return nothing
+  002b: <eos>
+
+function TnPickupManager.DropGrenades  (script 111 bytes)
+  0000: CurrentGrenadeBag = TnGrenadeBag(self.OwnerPawn.InvManager.FindInventoryType(obj'TnGrenadeBag', true))
+  002d: if !((CurrentGrenadeBag == none)) goto 0x003a
+  0038: return nothing
+  003a: if !((CurrentGrenadeBag.get_Class() == NewPickupType)) goto 0x0052
+  0050: return nothing
+  0052: self.OwnerPawn.TossWeapon(CurrentGrenadeBag, , )
+  006c: return nothing
+  006e: <eos>
+
+function TnPickupManager.DropRobotWeapon  (script 590 bytes)
+  0000: NewPickupAsWeapon = class<TnWeapon>(NewPickupType)
+  0010: if !((NewPickupAsWeapon == none)) goto 0x001d
+  001b: return nothing
+  001d: IM = TnInventoryManager(self.OwnerPawn.InvManager)
+  0036: PrimaryWeapon = IM.GetWeaponByType(1)
+  0051: SecondaryWeapon = IM.GetWeaponByType(2)
+  006c: CurrentWeapon = TnWeapon(self.OwnerPawn.Weapon)
+  0085: if !(((((PrimaryWeapon != none) && (PrimaryWeapon.get_Class() == NewPickupType)) || ((SecondaryWeapon != none) && (SecondaryWeapon.get_Class() == NewPickupType))) || ((CurrentWeapon != none) && (CurrentWeapon.get_Class() == NewPickupType)))) goto 0x00f4
+  00f2: return nothing
+  00f4: if !(((CurrentWeapon != none) && ((cast3a(CurrentWeapon.WeaponType) == cast3a(5)) || (TnWeaponEmpty(CurrentWeapon) != none)))) goto 0x0146
+  012c: self.OwnerPawn.TossWeapon(CurrentWeapon, , )
+  0146: if !(((PrimaryWeapon == none) || (SecondaryWeapon == none))) goto 0x0160
+  015e: return nothing
+  0160: if !((cast3a(NewPickupAsWeapon.static.default.WeaponType) == cast3a(5))) goto 0x017b
+  0179: return nothing
+  017b: if !((((CurrentWeapon != none) && (cast3a(CurrentWeapon.default.WeaponType) == cast3a(0))) && CurrentWeapon.CanThrow())) goto 0x01c7
+  01b9: WeaponToToss = CurrentWeapon
+  01c4: goto 0x0226
+  01c7: if !(((PrimaryWeapon != none) && PrimaryWeapon.CanThrow())) goto 0x01f8
+  01ea: WeaponToToss = PrimaryWeapon
+  01f5: goto 0x0226
+  01f8: if !(((SecondaryWeapon != none) && SecondaryWeapon.CanThrow())) goto 0x0226
+  021b: WeaponToToss = SecondaryWeapon
+  0226: if !((WeaponToToss != none)) goto 0x024b
+  0231: self.OwnerPawn.TossWeapon(WeaponToToss, , )
+  024b: return nothing
+  024d: <eos>
+
+function TnPickupManager.TakePickUp  (script 266 bytes)
+  0000: PF = TnPickupFactory(Pickup)
+  0010: TnPickupManager.PlayPickupAnimation(NewPickupType)
+  001b: if !((PF != none)) goto 0x0045
+  0026: Success = PF.TakePickUp(self.OwnerPawn)
+  0045: DP = TnDroppedPickup(Pickup)
+  0055: if !((DP != none)) goto 0x007f
+  0060: Success = DP.TakePickUp(self.OwnerPawn)
+  007f: if !(!Success) goto 0x0107
+  008a: LogInternal((((("Error: We thought we could pickup" @ cast56(Pickup.get_Class())) @ "of type") @ cast56(NewPickupType)) @ "but we're getting rejected at the last second"), , , )
+  0107: return nothing
+  0109: <eos>
+
+function TnPickupManager.PlayPickupAnimation  (script 267 bytes)
+  0000: if !(TnPickupManager.IsPickupAnimationDisabled(NewPickupType)) goto 0x0010
+  000e: return nothing
+  0010: Service = TnAnimatorService(self.OwnerPawn.GetRobotService('TnAnimatorService'))
+  0037: if !(EqualEqual_InterfaceInterface(Service, TnAnimatorService(none))) goto 0x004d
+  004b: return nothing
+  004d: Params.AnimName = self.PickupAnimName
+  0063: Params.MaskType = 1
+  0076: Params.Priority = 0
+  0089: Params.Override = 2
+  009c: Params.BlendInTime = 0.1
+  00b2: Params.BlendOutTime = 0.2
+  00c8: Service.SetReplicateCustomAnimToOwningPlayer(true)
+  00dd: Service.EnqueueReplicatedAnimation(Params, delegate.PickupAnimDone, delegate.PickupAnimDone)
+  0108: return nothing
+  010a: <eos>
+
+function TnPickupManager.IsPickupAnimationDisabled  (script 77 bytes)
+  0000: if !((class<TnGrenadeBag>(NewPickupType) != none)) goto 0x0012
+  0010: return true
+  0012: NewPickupAsWeapon = class<TnWeapon>(NewPickupType)
+  0022: return ((NewPickupAsWeapon != none) && (cast3a(NewPickupAsWeapon.static.default.WeaponType) == cast3a(5)))
+  0046: return return
+  004c: <eos>
+
+function TnPickupManager.PickupAnimDone  (script 85 bytes)
+  0000: Service = TnAnimatorService(self.OwnerPawn.GetRobotService('TnAnimatorService'))
+  0027: if !(EqualEqual_InterfaceInterface(Service, TnAnimatorService(none))) goto 0x003d
+  003b: return nothing
+  003d: Service.SetReplicateCustomAnimToOwningPlayer(false)
+  0052: return nothing
+  0054: <eos>
+
+function TnPickupManager.UpdateCommand  (script 310 bytes)
+  0000: if !((cast3a(self.Owner.Role) != cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: NewPickupObject = TnPickupManager.GetClosestPickup()
+  0027: NewPickupType = TnPickupManager.GetPickupType(NewPickupObject)
+  0038: if !(((NewPickupType == none) || !self.OwnerPawn.CanPickupInventory(NewPickupType))) goto 0x006d
+  0062: NewPickupState = 0
+  006a: goto 0x00b9
+  006d: if !(((NewPickupType == obj'TnAmmoCratePickup') || (self.OwnerPawn.InvManager.FindInventoryType(NewPickupType, ) != none))) goto 0x00b1
+  00a6: NewPickupState = 2
+  00ae: goto 0x00b9
+  00b1: NewPickupState = 1
+  00b9: if !(((cast3a(NewPickupState) != cast3a(self.PickupInfo.PickupState)) || (NewPickupObject != self.PickupInfo.PickupObject))) goto 0x0133
+  00f3: self.PickupInfo.PickupState = NewPickupState
+  0109: self.PickupInfo.PickupObject = NewPickupObject
+  011f: OnStateChanged(NewPickupState, NewPickupObject)
+  0133: return nothing
+  0135: <eos>
+
+function TnPickupManager.OnStateChanged  (script 329 bytes)
+  0000: if !((self.ContextualCommander == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self.CurrentCommand != none)) goto 0x0030
+  0018: self.ContextualCommander.UnregisterContextualCommand(obj'TnContextualCommandPickupBase')
+  0030: if !(((NewPickupObject == none) || (cast3a(NewPickupState) == cast3a(0)))) goto 0x0057
+  004d: self.CurrentCommand = none
+  0054: goto 0x00ad
+  0057: switch (NewPickupState)
+  005e: case 1: (next 0x0080)
+  0063: self.CurrentCommand = CreateCommand(obj'TnContextualCommandPickupWeapon')
+  007d: goto 0x00ad
+  0080: case 3: (next 0x00a2)
+  0085: self.CurrentCommand = CreateCommand(obj'TnContextualCommandPickupUnavailable')
+  009f: goto 0x00ad
+  00a2: case 2: (next 0x00aa)
+  00a7: goto 0x00ad
+  00aa: default:
+  00ad: NewPickupType = TnPickupManager.GetPickupType(NewPickupObject)
+  00be: if !((self.CurrentCommand != none)) goto 0x0146
+  00c9: if !((NewPickupType == obj'TnAmmoCratePickup')) goto 0x010b
+  00d8: ResolvedPickupType = TnInventoryManager(self.OwnerPawn.InvManager).GetWeaponByType(1).get_Class()
+  0108: goto 0x0116
+  010b: ResolvedPickupType = NewPickupType
+  0116: self.CurrentCommand.set_PickupType(ResolvedPickupType)
+  012e: self.ContextualCommander.RegisterContextualCommand(self.CurrentCommand)
+  0146: return nothing
+  0148: <eos>
+
+function TnPickupManager.CreateCommand  (script 22 bytes)
+  0000: return new(self, nothing, CommandClass, nothing, DeltaTime)
+  000f: return return
+  0015: <eos>
+
+function TnPickupManager.GetClosestPickup  (script 518 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return none
+  000d: foreach self.OwnerPawn.TouchingActors(obj'TnPickupFactory', PF) (end 0x0102)
+  002d: if !((PF == none)) goto 0x003c
+  0038: iternext
+  0039: goto 0x0102
+  003c: if !(!PF.ValidTouch(self.OwnerPawn)) goto 0x005d
+  0059: iternext
+  005a: goto 0x0102
+  005d: Rating = PF.GetPickupRating()
+  0076: if !((Rating < HighestRating)) goto 0x0089
+  0085: iternext
+  0086: goto 0x0102
+  0089: PickupDistanceSq = obj'Core.Math'.static.VSizeSq((PF.Location - self.OwnerPawn.Location))
+  00c0: if !(((PickupDistanceSq >= ClosestPickupDistanceSq) && (ClosestPickup != none))) goto 0x00e0
+  00dc: iternext
+  00dd: goto 0x0102
+  00e0: HighestRating = Rating
+  00eb: ClosestPickupDistanceSq = PickupDistanceSq
+  00f6: ClosestPickup = PF
+  0101: iternext
+  0102: iterpop
+  0103: foreach self.OwnerPawn.TouchingActors(obj'TnDroppedPickup', DP) (end 0x01f8)
+  0123: if !((DP == none)) goto 0x0132
+  012e: iternext
+  012f: goto 0x01f8
+  0132: if !(!DP.ValidTouch(self.OwnerPawn)) goto 0x0153
+  014f: iternext
+  0150: goto 0x01f8
+  0153: Rating = DP.GetPickupRating()
+  016c: if !((Rating < HighestRating)) goto 0x017f
+  017b: iternext
+  017c: goto 0x01f8
+  017f: PickupDistanceSq = obj'Core.Math'.static.VSizeSq((DP.Location - self.OwnerPawn.Location))
+  01b6: if !(((PickupDistanceSq >= ClosestPickupDistanceSq) && (ClosestPickup != none))) goto 0x01d6
+  01d2: iternext
+  01d3: goto 0x01f8
+  01d6: HighestRating = Rating
+  01e1: ClosestPickupDistanceSq = PickupDistanceSq
+  01ec: ClosestPickup = DP
+  01f7: iternext
+  01f8: iterpop
+  01f9: return ClosestPickup
+  01ff: return return
+  0205: <eos>
+
+function TnPickupManager.GetPickupType  (script 93 bytes)
+  0000: DP = TnDroppedPickup(PickupActor)
+  0010: if !((DP != none)) goto 0x002a
+  001b: return DP.InventoryClass
+  002a: PF = TnPickupFactory(PickupActor)
+  003a: if !((PF != none)) goto 0x0054
+  0045: return PF.InventoryType
+  0054: return none
+  0056: return return
+  005c: <eos>

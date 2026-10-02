@@ -1,0 +1,11 @@
+function HmAnimNotify_BodyImpact.PostLoad  (script 98 bytes)
+  0000: if !((cast3a(self.BodyPart) == cast3a(0))) goto 0x0025
+  0010: self.BodyPart = 4
+  0018: MarkModified()
+  0022: goto 0x0059
+  0025: if !(((cast3a(self.BodyPart) == cast3a(2)) || (cast3a(self.BodyPart) == cast3a(1)))) goto 0x0059
+  0047: self.BodyPart = 3
+  004f: MarkModified()
+  0059: PostLoad()
+  005f: return nothing
+  0061: <eos>

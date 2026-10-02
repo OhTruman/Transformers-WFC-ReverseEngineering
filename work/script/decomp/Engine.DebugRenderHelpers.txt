@@ -1,0 +1,113 @@
+function DebugRenderHelpers.DrawReachSpec  (script 318 bytes)
+  0000: if !((RS.Start == none)) goto 0x0016
+  0014: return nothing
+  0016: BeginPoint = RS.Start.Location
+  0033: EndPoint = BeginPoint
+  003e: if !((RS.End.Nav == none)) goto 0x00e7
+  005d: foreach obj'Engine'.static.GetCurrentWorldInfo().AllActors(obj'NavigationPoint', NavPoint) (end 0x00d2)
+  008b: if !((RS.End.Guid == NavPoint.NavGuid)) goto 0x00d1
+  00ba: EndPoint = NavPoint.Location
+  00ce: goto 0x00d2
+  00d1: iternext
+  00d2: iterpop
+  00d3: if !((BeginPoint == EndPoint)) goto 0x00e4
+  00e2: return nothing
+  00e4: goto 0x010f
+  00e7: EndPoint = RS.End.Nav.Location
+  010f: DrawSolidConnection(ProxyComponent, BeginPoint, EndPoint, RS.PathColor())
+  013b: return nothing
+  013d: <eos>
+
+function DebugRenderHelpers.DrawSolidConnection  (script 165 bytes)
+  0000: Direction = obj'Core.Math'.static.Normal((End - Start))
+  001d: Right = obj'Core.Math'.static.Normal((Direction cross vect(0,0,1)))
+  0042: Offset = (Right * cast3f(8))
+  0053: ProxyComponent.AddLine((Start + Offset), (End + Offset), Col)
+  0083: DrawArrow(ProxyComponent, Start, End, Col, )
+  00a2: return nothing
+  00a4: <eos>
+
+function DebugRenderHelpers.DrawDashedConnection  (script 170 bytes)
+  0000: Direction = obj'Core.Math'.static.Normal((End - Start))
+  001d: Right = obj'Core.Math'.static.Normal((Direction cross vect(0,0,1)))
+  0042: Offset = (Right * cast3f(8))
+  0053: ProxyComponent.AddDashedLine((Start + Offset), (End + Offset), 20.0, Col)
+  0088: DrawArrow(ProxyComponent, Start, End, Col, )
+  00a7: return nothing
+  00a9: <eos>
+
+function DebugRenderHelpers.DrawArrow  (script 271 bytes)
+  0000: default=8.0
+  0009: Direction = obj'Core.Math'.static.Normal((End - Start))
+  0026: Right = obj'Core.Math'.static.Normal((Direction cross vect(0,0,1)))
+  004b: Offset = (Right * SideOffset)
+  005d: MidPoint = (((End + Start) * 0.5) + Offset)
+  007d: RightCorner = (((MidPoint + (Direction * cast3f(15))) + (Right * cast3f(35))) + Offset)
+  00a9: LeftCorner = (((MidPoint + (Direction * cast3f(15))) + (Right * cast3f(-35))) + Offset)
+  00d8: ProxyComponent.AddWireTriangle((MidPoint + (Direction * cast3f(80))), RightCorner, LeftCorner, Col)
+  010c: return nothing
+  010e: <eos>
+
+function DebugRenderHelpers.DrawArrowHead  (script 302 bytes)
+  0000: default=45.0
+  0009: default=15.0
+  0012: Direction = obj'Core.Math'.static.Normal((End - Tip))
+  002f: Right = obj'Core.Math'.static.Normal((Direction cross vect(0,0,1)))
+  0054: RightCorner = (End + (Right * Width))
+  006d: LeftCorner = (End + (Right * -Width))
+  0088: TailEnd = (End + (Direction * -Tail))
+  00a3: ProxyComponent.AddLine(Tip, RightCorner, Col)
+  00c5: ProxyComponent.AddLine(Tip, LeftCorner, Col)
+  00e7: ProxyComponent.AddLine(TailEnd, RightCorner, Col)
+  0109: ProxyComponent.AddLine(TailEnd, LeftCorner, Col)
+  012b: return nothing
+  012d: <eos>
+
+function DebugRenderHelpers.DrawArrow3D  (script 368 bytes)
+  0000: Direction = obj'Core.Math'.static.Normal((End - Start))
+  001d: Right = obj'Core.Math'.static.Normal((Direction cross vect(0,0,1)))
+  0042: MidPoint = ((End + Start) * 0.5)
+  005b: RightCorner = ((MidPoint + (Direction * cast3f(15))) + (Right * cast3f(35)))
+  0080: LeftCorner = ((MidPoint + (Direction * cast3f(15))) + (Right * cast3f(-35)))
+  00a8: TopCorner = ((MidPoint + (Direction * cast3f(15))) + (vect(0,0,1) * cast3f(35)))
+  00d5: BottomCorner = ((MidPoint + (Direction * cast3f(15))) + (vect(0,0,1) * cast3f(-35)))
+  0105: ProxyComponent.AddWireTriangle((MidPoint + (Direction * cast3f(80))), RightCorner, LeftCorner, Col)
+  0139: ProxyComponent.AddWireTriangle((MidPoint + (Direction * cast3f(80))), TopCorner, BottomCorner, Col)
+  016d: return nothing
+  016f: <eos>
+
+function DebugRenderHelpers.DrawJumpConnection  (script 502 bytes)
+  0000: if !(((Start == none) || (End == none))) goto 0x001a
+  0018: return nothing
+  001a: if !(((End.Location.Z - Start.Location.Z) > cast3f(500))) goto 0x00a5
+  005a: DrawDashedConnection(ProxyComponent, Start.Location, End.Location, MakeLinearColor(1.0, 0.0, 0.0, 1.0))
+  00a3: return nothing
+  00a5: NumPoints = 30
+  00ad: Delta = (1.0 / cast3f(NumPoints))
+  00c1: I = 0
+  00c8: if !((I < NumPoints)) goto 0x0177
+  00d7: ProxyComponent.AddLine(DebugRenderHelpers.CalculateJumpPoint(Start.Location, End.Location, (cast3f(I) * Delta)), DebugRenderHelpers.CalculateJumpPoint(Start.Location, End.Location, (cast3f((I + 1)) * Delta)), MakeLinearColor(1.0, 0.78, 1.0, 1.0))
+  016b: (I += 2)
+  0174: goto 0x00c8
+  0177: DrawArrow(ProxyComponent, DebugRenderHelpers.CalculateJumpPoint(Start.Location, End.Location, 0.2), DebugRenderHelpers.CalculateJumpPoint(Start.Location, End.Location, 0.4), MakeLinearColor(1.0, 0.78, 1.0, 1.0), )
+  01f3: return nothing
+  01f5: <eos>
+
+function DebugRenderHelpers.CalculateJumpPoint  (script 253 bytes)
+  0000: if !((DebugRenderHelpers.SolveQuadratic((-4.0 * cast3f(500)), (4.0 * cast3f(500)), (BeginPoint.Z - EndPoint.Z), Scale) == false)) goto 0x006b
+  004f: return ((NormalizedDistance > 0.5) ? EndPoint : BeginPoint)
+  006b: Result = (BeginPoint + (((EndPoint - BeginPoint) * vect(1,1,0)) * NormalizedDistance))
+  009b: T = (NormalizedDistance * Scale)
+  00ad: Result.Z = (BeginPoint.Z + (cast3f((4 * 500)) * (T - (T * T))))
+  00f0: return Result
+  00f6: return return
+  00fc: <eos>
+
+function DebugRenderHelpers.SolveQuadratic  (script 106 bytes)
+  0000: R = ((B * B) - ((cast3f(4) * A) * C))
+  0026: if !((R < cast3f(0))) goto 0x0035
+  0033: return false
+  0035: Result = ((-B - obj'Core.Math'.static.Sqrt(R)) / (cast3f(2) * A))
+  0061: return true
+  0063: return return
+  0069: <eos>

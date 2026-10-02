@@ -1,0 +1,17 @@
+function TnAiCustomProceduralPreconditionReviveTargetForm.set_ReviveTargetForm  (script 14 bytes)
+  0000: self._ReviveTargetForm = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiCustomProceduralPreconditionReviveTargetForm.CheckProceduralPrecondition  (script 149 bytes)
+  0000: TnAiC = TnAiController(C)
+  0010: if !((TnAiC == none)) goto 0x001d
+  001b: return false
+  001d: TargetPawn = TnPawn(TnAiC.AiWorldState.GetSubject(obj'TnAiWorldStateReviveTarget'))
+  0049: if !((TargetPawn == none)) goto 0x0056
+  0054: return false
+  0056: if !((cast3a(self._ReviveTargetForm) == cast3a(0))) goto 0x007a
+  0066: return TargetPawn.get_IsInRobotForm()
+  007a: return TargetPawn.get_IsInVehicleForm()
+  008e: return return
+  0094: <eos>

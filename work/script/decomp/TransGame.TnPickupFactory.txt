@@ -1,0 +1,87 @@
+function TnPickupFactory.GetInventoryTypeFor  (script 35 bytes)
+  0000: if !((TnAiPawn(P) != none)) goto 0x0016
+  0010: return self.AiInventoryType
+  0016: return self.InventoryType
+  001c: return return
+  0022: <eos>
+
+function TnPickupFactory.TakePickUp  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnPickupFactory.GiveTo  (script 85 bytes)
+  0000: GiveTo(P)
+  000b: DWG = TnGame(self.WorldInfo.Game)
+  0024: DWG.PickedUp(TnPawn(P), self, TnPickupFactory.GetInventoryTypeFor(HmPawn(P)))
+  0052: return nothing
+  0054: <eos>
+
+function TnPickupFactory.Pickup.TakePickUp  (script 44 bytes)
+  0000: if !(ValidTouch(P)) goto 0x0023
+  0012: GiveTo(P)
+  0021: return true
+  0023: return false
+  0025: return return
+  002b: <eos>
+
+function TnPickupFactory.Pickup.ValidTouch  (script 64 bytes)
+  0000: P = TnPawn(Other)
+  0010: if !((self.AiUseOnly && (TnAiPawn(P) == none))) goto 0x002d
+  002b: return false
+  002d: return ValidTouch(Other)
+  0039: return return
+  003f: <eos>
+
+function TnPickupFactory.InstantiateInventory  (script 61 bytes)
+  0000: if !((TnAiPawn(Recipient) != none)) goto 0x002a
+  0010: return Spawn(self.AiInventoryType, , , , , , , )
+  0027: goto 0x0036
+  002a: return InstantiateInventory(Recipient)
+  0036: return return
+  003c: <eos>
+
+function TnPickupFactory.SetPickupMesh  (script 44 bytes)
+  0000: SetPickupMesh()
+  0006: if !((self.PickupMesh != none)) goto 0x0029
+  0011: self.PickupMesh.SetLightEnvironment(self.LightEnvironment)
+  0029: return nothing
+  002b: <eos>
+
+function TnPickupFactory.GetRespawnTime  (script 13 bytes)
+  0000: return self.RespawnTime
+  0006: return return
+  000c: <eos>
+
+function TnPickupFactory.IsReadyToPickup  (script 51 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0023
+  0010: return ReadyToPickup(0.0)
+  0020: goto 0x002c
+  0023: return !self.bPickupHidden
+  002c: return return
+  0032: <eos>
+
+function TnPickupFactory.SetPickupHidden  (script 87 bytes)
+  0000: SetPickupHidden()
+  0006: if !((self.CustomPickupEffect != none)) goto 0x0038
+  0011: self.CustomPickupEffect.SetHidden(true)
+  0025: self.CustomPickupEffect.DeactivateSystem()
+  0038: if !(self.ShouldDisplayHighlightFx) goto 0x0054
+  0041: self.PickupEffect.DeactivateSystem()
+  0054: return nothing
+  0056: <eos>
+
+function TnPickupFactory.SetPickupVisible  (script 89 bytes)
+  0000: SetPickupVisible()
+  0006: if !((self.CustomPickupEffect != none)) goto 0x0039
+  0011: self.CustomPickupEffect.SetHidden(false)
+  0025: self.CustomPickupEffect.ActivateSystem()
+  0039: if !(self.ShouldDisplayHighlightFx) goto 0x0056
+  0042: self.PickupEffect.ActivateSystem()
+  0056: return nothing
+  0058: <eos>
+
+function TnPickupFactory.GetPickupRating  (script 27 bytes)
+  0000: return self.InventoryType.static.GetPickupRating()
+  0014: return return
+  001a: <eos>

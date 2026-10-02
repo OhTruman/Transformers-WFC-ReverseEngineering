@@ -1,0 +1,63 @@
+function HmStatisticsPublisherEvent.ShouldPublish  (script 41 bytes)
+  0000: if !(!HmStatisticsPublisher.ShouldPublish(Table)) goto 0x0012
+  0010: return false
+  0012: return Table.WriteToDemonware
+  0022: return return
+  0028: <eos>
+
+function HmStatisticsPublisherEvent.BeginPublishCollection  (script 199 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub == none)) goto 0x0026
+  0024: return nothing
+  0026: self.StatsInterface = OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  0041: self.Payload = ""
+  0049: AppendToPayload("<statistics ")
+  0061: AppendToPayload(((" path="" $ Collection.DemonwareXPath) $ """))
+  0089: AppendToPayload(((" version="" $ cast53(Collection.Version)) $ """))
+  00b6: AppendToPayload(">
+")
+  00c4: return nothing
+  00c6: <eos>
+
+function HmStatisticsPublisherEvent.BeginPublishTable  (script 54 bytes)
+  0000: AppendToPayload("<")
+  000d: AppendToPayload(Table.TableName)
+  0025: AppendToPayload(">
+")
+  0033: return nothing
+  0035: <eos>
+
+function HmStatisticsPublisherEvent.ProcessRow  (script 209 bytes)
+  0000: AppendToPayload("<")
+  000d: AppendToPayload((TableName $ "Item"))
+  0024: AppendToPayload(" ")
+  0031: foreach Items(Item,) (end 0x00be)
+  0040: Value = ProcessReplacements(Item.MetricValue)
+  0060: if !((Value != "")) goto 0x00bd
+  006c: AppendToPayload(" ")
+  0079: AppendToPayload(Item.MetricName)
+  0093: AppendToPayload("="")
+  00a1: AppendToPayload(Value)
+  00b0: AppendToPayload(""")
+  00bd: iternext
+  00be: iterpop
+  00bf: AppendToPayload("/>
+")
+  00ce: return nothing
+  00d0: <eos>
+
+function HmStatisticsPublisherEvent.EndPublishTable  (script 42 bytes)
+  0000: self.Payload = (((self.Payload $ "</") $ Table.TableName) $ ">
+")
+  0027: return nothing
+  0029: <eos>
+
+function HmStatisticsPublisherEvent.EndPublishCollection  (script 95 bytes)
+  0000: if !((NumTablesPublished > 0)) goto 0x0054
+  000b: AppendToPayload("</statistics>
+")
+  0025: if !(NotEqual_InterfaceInterface(self.StatsInterface, OnlineStatsInterfaceEx(none))) goto 0x0054
+  0039: self.StatsInterface.RecordEvent(self.Payload, 1, true)
+  0054: self.Payload = ""
+  005c: return nothing
+  005e: <eos>

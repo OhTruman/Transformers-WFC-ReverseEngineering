@@ -1,0 +1,12 @@
+function TnHudDataObserverBombDefuseTimer.AddAssociatedActor  (script 19 bytes)
+  0000: self.PlantPoint = TnBombPlantPointBase(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnHudDataObserverBombDefuseTimer.CheckData  (script 93 bytes)
+  0000: CurrentValue = 0.0
+  000b: if !(((self.PlantPoint != none) && (PC.Pawn != none))) goto 0x0045
+  002c: CurrentValue = self.PlantPoint.get_NormalizedDefuseTime()
+  0045: ProcessNewValue(Movie, CurrentValue, )
+  005a: return nothing
+  005c: <eos>

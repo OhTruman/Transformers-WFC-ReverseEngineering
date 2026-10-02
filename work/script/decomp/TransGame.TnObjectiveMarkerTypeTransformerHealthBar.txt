@@ -1,0 +1,23 @@
+function TnObjectiveMarkerTypeTransformerHealthBar.GetMarkerSetup  (script 28 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: return self.MarkerSetup
+  0015: return return
+  001b: <eos>
+
+function TnObjectiveMarkerTypeTransformerHealthBar.ShouldDisplayMarker  (script 261 bytes)
+  0000: P = Pawn(Marker.MarkerBase)
+  001b: if !(((P == none) || (P.Mesh == none))) goto 0x003e
+  003c: return false
+  003e: ServiceProvider = TnServiceProvider(P)
+  004e: if !(NotEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x008a
+  0062: HealthService = TnHealthDisplayService(ServiceProvider.GetService('TnHealthDisplayService'))
+  008a: if !((NotEqual_InterfaceInterface(HealthService, TnHealthDisplayService(none)) && !HealthService.ShouldDisplayHealth())) goto 0x00bb
+  00b9: return false
+  00bb: return ((Marker.MarkerBase.WorldInfo.TimeSeconds - P.Mesh.LastRenderTime) < self.EnemyMarkerHysterisis)
+  00fe: return return
+  0104: <eos>
+
+function TnObjectiveMarkerTypeTransformerHealthBar.DrawLabel  (script 54 bytes)
+  0000: DrawTransformerHealthBar(Setup, Pawn(MarkerData.MarkerBase), LabelLocationSS, C, self.FillColor)
+  0033: return nothing
+  0035: <eos>

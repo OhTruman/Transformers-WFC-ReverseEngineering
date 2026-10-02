@@ -1,0 +1,256 @@
+function TnCustomAnimationPlayer.CompleteNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCustomAnimationPlayer.FailedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCustomAnimationPlayer.DequeuedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCustomAnimationPlayer.ReplicatedEvent  (script 57 bytes)
+  0000: switch (VarName)
+  0007: case 'ReplicatedCustomAnimParams': (next 0x0033)
+  0013: TnCustomAnimationPlayer.ClientPlayAnimation(self.ReplicatedCustomAnimParams, delegate.None, delegate.None)
+  0030: goto 0x0036
+  0033: default:
+  0036: return nothing
+  0038: <eos>
+
+function TnCustomAnimationPlayer.Initialize  (script 49 bytes)
+  0000: self.Mesh = Mesh_
+  000b: self.Slot = AnimNodeSlot(self.Mesh.FindAnimNode(self.AnimNodeName))
+  002e: return nothing
+  0030: <eos>
+
+function TnCustomAnimationPlayer.Suspend  (script 11 bytes)
+  0000: self._Suspended = true
+  0008: return nothing
+  000a: <eos>
+
+function TnCustomAnimationPlayer.Resume  (script 11 bytes)
+  0000: self._Suspended = false
+  0008: return nothing
+  000a: <eos>
+
+function TnCustomAnimationPlayer.GetSlot  (script 13 bytes)
+  0000: return self.Slot
+  0006: return return
+  000c: <eos>
+
+function TnCustomAnimationPlayer.GetAnimationLength  (script 34 bytes)
+  0000: return (IsPlayingAnimation() ? self.AnimLength : 0.0)
+  001b: return return
+  0021: <eos>
+
+function TnCustomAnimationPlayer.EnqueueAnimation  (script 146 bytes)
+  0000: default=false
+  0005: Animation.Params = Params
+  001b: Animation.CompletionCallback = CompletionCallback
+  0031: Animation.FailureCallback = FailureCallback
+  0047: Animation.Replicate = Replicate
+  005f: self.AnimationQueue.AddItem(Animation)
+  006c: TnCustomAnimationPlayer.LogInfo(("Enqueue" @ cast57(Params.AnimName)))
+  008f: return nothing
+  0091: <eos>
+
+function TnCustomAnimationPlayer.Update  (script 20 bytes)
+  0000: TnCustomAnimationPlayer.CheckForCompletion(DeltaTime)
+  000b: TnCustomAnimationPlayer.PlayPendingAnimations()
+  0011: return nothing
+  0013: <eos>
+
+function TnCustomAnimationPlayer.CheckForCompletion  (script 104 bytes)
+  0000: if !((self.AnimName == 'None')) goto 0x0015
+  0013: return nothing
+  0015: TimeLeft = self.Slot.GetCustomAnimNodeSeq().GetTimeLeft()
+  003c: if !((!self._Looping && ((TimeLeft - DeltaTime) < self.AnimBlendOutTime))) goto 0x0065
+  005f: TnCustomAnimationPlayer.NotifyAnimationCompletion()
+  0065: return nothing
+  0067: <eos>
+
+function TnCustomAnimationPlayer.PlayPendingAnimations  (script 185 bytes)
+  0000: if !((self.AnimationQueue.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: if !((self._Suspended == false)) goto 0x00ae
+  001a: foreach self.AnimationQueue(CurrentAnimation,) (end 0x00ad)
+  0029: if !(CurrentAnimation.Replicate) goto 0x0076
+  003d: TnCustomAnimationPlayer.PlayReplicatedAnimation(CurrentAnimation.Params, CurrentAnimation.CompletionCallback, CurrentAnimation.FailureCallback)
+  0073: goto 0x00ac
+  0076: TnCustomAnimationPlayer.PlayAnimation(CurrentAnimation.Params, CurrentAnimation.CompletionCallback, CurrentAnimation.FailureCallback)
+  00ac: iternext
+  00ad: iterpop
+  00ae: self.AnimationQueue.Length = 0
+  00b6: return nothing
+  00b8: <eos>
+
+function TnCustomAnimationPlayer.PlayReplicatedAnimation  (script 85 bytes)
+  0000: NewDirtyBit = !self.ReplicatedCustomAnimParams.DirtyBitToggle
+  001a: self.ReplicatedCustomAnimParams = Params
+  0025: self.ReplicatedCustomAnimParams.DirtyBitToggle = NewDirtyBit
+  003d: TnCustomAnimationPlayer.ClientPlayAnimation(Params, AnimationCompleteCallback, AnimationFailedCallback)
+  0052: return nothing
+  0054: <eos>
+
+function TnCustomAnimationPlayer.IgnoreCustomAnimation  (script 25 bytes)
+  0000: self.IgnoreCustomAnimationName = AnimationName
+  000b: self.IgnoreCustomAnimationTimeStamp = AnimationTimeStamp
+  0016: return nothing
+  0018: <eos>
+
+function TnCustomAnimationPlayer.SetReplicateCustomAnimToOwningPlayer  (script 16 bytes)
+  0000: self.ReplicateCustomAnimToOwningPlayer = Replicate
+  000d: return nothing
+  000f: <eos>
+
+function TnCustomAnimationPlayer.ClientPlayAnimation  (script 98 bytes)
+  0000: if !(((self.IgnoreCustomAnimationName == Params.AnimName) && (self.IgnoreCustomAnimationTimeStamp > obj'Engine.Engine'.static.GetWorldTime()))) goto 0x004a
+  0039: self.IgnoreCustomAnimationName = 'None'
+  0048: return nothing
+  004a: TnCustomAnimationPlayer.PlayAnimation(Params, AnimationCompleteCallback, AnimationFailedCallback)
+  005f: return nothing
+  0061: <eos>
+
+function TnCustomAnimationPlayer.PlayAnimation  (script 636 bytes)
+  0000: TnCustomAnimationPlayer.LogInfo(("Request to play new animation" @ cast57(Params.AnimName)))
+  0039: if !((Params.AnimName == 'None')) goto 0x0091
+  0057: self.Slot.StopCustomAnim(Params.BlendOutTime)
+  007a: FailedNotify()
+  0089: TnCustomAnimationPlayer.Cleanup()
+  008f: return nothing
+  0091: if !(!TnCustomAnimationPlayer.CanPlayAnimation(Params)) goto 0x00b2
+  00a1: FailedNotify()
+  00b0: return nothing
+  00b2: if !(IsPlayingAnimation()) goto 0x00ec
+  00c0: TnCustomAnimationPlayer.LogInfo("Aborting the current animation")
+  00e6: TnCustomAnimationPlayer.NotifyAnimationFailure()
+  00ec: self.__CompleteNotify__Delegate = AnimationCompleteCallback
+  00f7: self.__FailedNotify__Delegate = AnimationFailedCallback
+  0102: self.PlayingPriority = Params.Priority
+  0118: self.PlayingMask = Params.MaskType
+  012e: self.AnimName = Params.AnimName
+  0144: self._Looping = Params.Looping
+  015c: if !((Params.AnimSet != none)) goto 0x0195
+  0172: self.Mesh.AppendAnimSet(Params.AnimSet)
+  0195: TnCustomAnimationPlayer.SetRootMotionMode(Params.RootMotionMode, Params.RootMotionRotationMode)
+  01bb: self.AnimLength = self.Slot.PlayCustomAnimWithCallbacks(Params.AnimName, Params.PlayRate, Params.BlendInTime, Params.BlendOutTime, Params.Looping, true, delegate.None, delegate.OnAnimationFailed)
+  0238: TnCustomAnimationPlayer.SetAnimationPosition(obj'Core.Math'.static.FClamp(Params.StartPosition, 0.0, self.AnimLength))
+  0263: self.AnimBlendOutTime = Params.BlendOutTime
+  0279: return nothing
+  027b: <eos>
+
+function TnCustomAnimationPlayer.CanPlayAnimation  (script 221 bytes)
+  0000: if !((self.Slot == none)) goto 0x000d
+  000b: return false
+  000d: if !(((cast3a(Params.Override) == cast3a(0)) && IsPlayingAnimation())) goto 0x003a
+  0038: return false
+  003a: if !((((cast3a(Params.Override) == cast3a(1)) && IsPlayingAnimation()) && (cast3a(self.PlayingPriority) >= cast3a(Params.Priority)))) goto 0x0087
+  0085: return false
+  0087: if !((((cast3a(Params.Override) == cast3a(2)) && IsPlayingAnimation()) && (cast3a(self.PlayingPriority) > cast3a(Params.Priority)))) goto 0x00d4
+  00d2: return false
+  00d4: return true
+  00d6: return return
+  00dc: <eos>
+
+function TnCustomAnimationPlayer.Cleanup  (script 58 bytes)
+  0000: TnCustomAnimationPlayer.SetRootMotionMode(2, 0)
+  000a: self.__CompleteNotify__Delegate = delegate.None
+  0019: self.__FailedNotify__Delegate = delegate.None
+  0028: self.AnimName = 'None'
+  0037: return nothing
+  0039: <eos>
+
+function TnCustomAnimationPlayer.LogInfo  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnCustomAnimationPlayer.OnAnimationComplete  (script 9 bytes)
+  0000: TnCustomAnimationPlayer.NotifyAnimationCompletion()
+  0006: return nothing
+  0008: <eos>
+
+function TnCustomAnimationPlayer.OnAnimationFailed  (script 9 bytes)
+  0000: TnCustomAnimationPlayer.NotifyAnimationFailure()
+  0006: return nothing
+  0008: <eos>
+
+function TnCustomAnimationPlayer.NotifyAnimationCompletion  (script 83 bytes)
+  0000: TnCustomAnimationPlayer.LogInfo("Sending animation complete notification.")
+  0030: OldCompleteNotify = self.__CompleteNotify__Delegate
+  003b: TnCustomAnimationPlayer.Cleanup()
+  0041: CompleteNotify()
+  0050: return nothing
+  0052: <eos>
+
+function TnCustomAnimationPlayer.NotifyAnimationFailure  (script 81 bytes)
+  0000: TnCustomAnimationPlayer.LogInfo("Sending animation failed notification.")
+  002e: OldFailedNotify = self.__FailedNotify__Delegate
+  0039: TnCustomAnimationPlayer.Cleanup()
+  003f: FailedNotify()
+  004e: return nothing
+  0050: <eos>
+
+function TnCustomAnimationPlayer.IsPlayingAnimation  (script 63 bytes)
+  0000: nothing
+  0001: return ((self.AnimName != 'None') && ((PlayingAnimName == 'None') || (self.AnimName == PlayingAnimName)))
+  0038: return return
+  003e: <eos>
+
+function TnCustomAnimationPlayer.IsPlayingAnimationOrBlendingOut  (script 27 bytes)
+  0000: return self.Slot.IsPlayingAnimationOrBlendingOut()
+  0014: return return
+  001a: <eos>
+
+function TnCustomAnimationPlayer.SetRootMotionMode  (script 61 bytes)
+  0000: if !((cast3a(self.PlayingMask) != cast3a(0))) goto 0x0012
+  0010: return nothing
+  0012: self.Mesh.RootMotionMode = Translation
+  0026: self.Mesh.RootMotionRotationMode = Rotation
+  003a: return nothing
+  003c: <eos>
+
+function TnCustomAnimationPlayer.SetAnimationPosition  (script 81 bytes)
+  0000: if !((Position == 0.0)) goto 0x0011
+  000f: return nothing
+  0011: SequenceNode = self.Slot.GetCustomAnimNodeSeq()
+  002a: if !((SequenceNode != none)) goto 0x004e
+  0035: SequenceNode.SetPosition(Position, false)
+  004e: return nothing
+  0050: <eos>
+
+function TnCustomAnimationPlayer.LogAnimQueue  (script 62 bytes)
+  0000: foreach self.AnimationQueue(Anim,) (end 0x003a)
+  000f: LogInternal(("Anim" @ cast57(Anim.Params.AnimName)), , , )
+  0039: iternext
+  003a: iterpop
+  003b: return nothing
+  003d: <eos>
+
+function TnCustomAnimationPlayer.RemoveAnimationFromQueue  (script 154 bytes)
+  0000: idx = (self.AnimationQueue.Length - 1)
+  000f: if !((idx >= 0)) goto 0x0097
+  001a: if !((AnimationName == idx[self.AnimationQueue].Params.AnimName)) goto 0x008d
+  0045: self.__DequeuedNotify__Delegate = idx[self.AnimationQueue].FailureCallback
+  0061: self.AnimationQueue.Remove(idx,1)
+  006d: DequeuedNotify()
+  007c: self.__DequeuedNotify__Delegate = delegate.None
+  008b: return nothing
+  008d: SubtractSubtract_PreInt(idx)
+  0094: goto 0x000f
+  0097: return nothing
+  0099: <eos>
+
+function TnCustomAnimationPlayer.StopAnimation  (script 142 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self.Slot == none)) goto 0x000f
+  000d: return nothing
+  000f: if !(((AnimationToStop == 'None') || (AnimationToStop == self.AnimName))) goto 0x0080
+  0033: TnCustomAnimationPlayer.NotifyAnimationFailure()
+  0039: StopParams.BlendOutTime = ((BlendOutTime == cast3f(0)) ? self.AnimBlendOutTime : BlendOutTime)
+  0063: TnCustomAnimationPlayer.PlayReplicatedAnimation(StopParams, delegate.None, delegate.None)
+  0080: TnCustomAnimationPlayer.RemoveAnimationFromQueue(AnimationToStop)
+  008b: return nothing
+  008d: <eos>

@@ -1,0 +1,28 @@
+function TnVelocityAnimBlend.Tick  (script 301 bytes)
+  0000: Tick(DeltaTime, TotalWeight)
+  0010: if !(((self.SkelComponent == none) || (self.SkelComponent.Owner == none))) goto 0x0033
+  0031: return nothing
+  0033: HorizontalVelocity = self.SkelComponent.Owner.Velocity
+  0050: HorizontalVelocity.Z = 0.0
+  0066: Speed = obj'Core.Math'.static.VSize(HorizontalVelocity)
+  007c: if !((Speed <= self.MinSpeed)) goto 0x0096
+  008b: Weight = 0.0
+  0096: if !((Speed >= self.MaxSpeed)) goto 0x00b3
+  00a5: Weight = 1.0
+  00b0: goto 0x00f3
+  00b3: Weight = ((Speed - self.MinSpeed) / (self.MaxSpeed - self.MinSpeed))
+  00d3: Weight = obj'Core.Math'.static.FClamp(Weight, 0.0, 1.0)
+  00f3: 1[self.Children].Weight = Weight
+  010b: 0[self.Children].Weight = (1.0 - Weight)
+  012a: return nothing
+  012c: <eos>
+
+function TnVelocityAnimBlend.SliderMove  (script 145 bytes)
+  0000: SliderMove(SliderIdx, NewValue)
+  0010: Weight = NewValue
+  001b: Weight = obj'Core.Math'.static.FClamp(Weight, 0.0, 1.0)
+  003b: 1[self.Children].Weight = Weight
+  0053: 0[self.Children].Weight = (1.0 - Weight)
+  0072: SliderIdx[self.Sliders].Position = Weight
+  008e: return nothing
+  0090: <eos>

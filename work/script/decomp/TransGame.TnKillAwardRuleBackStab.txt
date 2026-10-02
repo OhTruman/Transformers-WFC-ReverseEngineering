@@ -1,0 +1,16 @@
+function TnKillAwardRuleBackStab.CheckRule  (script 280 bytes)
+  0000: if !(!ClassIsChildOf(DamageType, obj'TnDamageTypeMelee')) goto 0x0014
+  0012: return nothing
+  0014: KillerPawn = TnPawn(Killer.Pawn)
+  002d: if !((KillerPawn == none)) goto 0x003a
+  0038: return nothing
+  003a: BS = TnBuffService(KillerPawn.GetService('TnBuffService'))
+  0061: if !(EqualEqual_InterfaceInterface(BS, TnBuffService(none))) goto 0x0077
+  0075: return nothing
+  0077: Buff = BS.GetBuff(obj'TnBuffIncreaseMeleeDamageFromBehind')
+  0096: if !(((Buff == none) || !Buff.ShouldBuffEffect(KillerPawn, Killed.Pawn))) goto 0x00d0
+  00ce: return nothing
+  00d0: Killer.NotifyXpEvent(obj'TnXpEventTypeKillBackstab')
+  00e8: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, 5393, 0)
+  0115: return nothing
+  0117: <eos>

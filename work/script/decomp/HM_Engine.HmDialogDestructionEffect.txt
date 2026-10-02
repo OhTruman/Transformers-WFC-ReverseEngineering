@@ -1,0 +1,27 @@
+function HmDialogDestructionEffect.get_SoundEvent  (script 13 bytes)
+  0000: return self.SoundEvent_
+  0006: return return
+  000c: <eos>
+
+function HmDialogDestructionEffect.set_SoundEvent  (script 14 bytes)
+  0000: self.SoundEvent_ = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmDialogDestructionEffect.BeginEffect  (script 261 bytes)
+  0000: if !((none == get_SoundEvent())) goto 0x0012
+  0010: return nothing
+  0012: AttachingActor = GetAttachingActor()
+  0022: if !((none != AttachingActor.GetActorBase())) goto 0x0054
+  003b: AttachingActor = AttachingActor.GetActorBase()
+  0054: DialogInterface = HmDialogInterface(AttachingActor)
+  0064: if !(EqualEqual_InterfaceInterface(HmDialogInterface(none), DialogInterface)) goto 0x007a
+  0078: return nothing
+  007a: P = HmPawn(AttachingActor)
+  008a: if !((none != P)) goto 0x00e0
+  0095: WI = HmWorldInfo(P.WorldInfo)
+  00ae: WI._DialogEventManager.Play(P, get_SoundEvent(), , , , )
+  00dd: goto 0x0102
+  00e0: DialogInterface.PlayDialogEvent(get_SoundEvent(), false, , , )
+  0102: return nothing
+  0104: <eos>

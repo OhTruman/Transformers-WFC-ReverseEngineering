@@ -1,0 +1,288 @@
+function NavigationCellEditUtil.get_Vertices  (script 13 bytes)
+  0000: return self._Vertices
+  0006: return return
+  000c: <eos>
+
+function NavigationCellEditUtil.get_EditorEdges  (script 13 bytes)
+  0000: return self._Edges
+  0006: return return
+  000c: <eos>
+
+function NavigationCellEditUtil.set_Cell  (script 14 bytes)
+  0000: self._Cell = Value
+  000b: return nothing
+  000d: <eos>
+
+function NavigationCellEditUtil.IsRightSideUp  (script 38 bytes)
+  0000: return ((GetNormal() dot vect(0,0,1)) > cast3f(0))
+  001f: return return
+  0025: <eos>
+
+function NavigationCellEditUtil.Initialize  (script 405 bytes)
+  0000: self._Vertices.Length = 0
+  0008: self._Edges.Length = 0
+  0010: VertexIdentifiers = self._Cell._VertexIdentifiers
+  0024: idx = 0
+  002b: if !((idx < VertexIdentifiers.Length)) goto 0x009e
+  003b: VertexPosition = self._Cell.GetEdge(idx).Start
+  0064: NewVertices.AddItem(NavMesh.GetVertex(self._Cell, idx[VertexIdentifiers], VertexPosition))
+  0094: AddAdd_PreInt(idx)
+  009b: goto 0x002b
+  009e: SetTriangle(0[NewVertices], 1[NewVertices], 2[NewVertices])
+  00be: if !(!self._Cell.get_HasBuiltEdges()) goto 0x00d8
+  00d6: return nothing
+  00d8: idx = 0
+  00df: if !((idx < self._Edges.Length)) goto 0x0192
+  00ef: if !((!self._Cell.GetEdge(idx).Border && (idx[self._Edges].Neighbor == none))) goto 0x0188
+  0136: idx[self._Edges].Neighbor = NavigationCell(obj'NavigationPoint'.static.GetNavPointFromRef(self._Cell.GetEdge(idx).Neighbor))
+  0188: AddAdd_PreInt(idx)
+  018f: goto 0x00df
+  0192: return nothing
+  0194: <eos>
+
+function NavigationCellEditUtil.Disconnect  (script 291 bytes)
+  0000: nothing
+  0001: default=true
+  0006: foreach self._Vertices(Vertex,) (end 0x006b)
+  0015: Vertex.RemoveOwner(self._Cell)
+  002d: if !(((DestroyVertices && (Vertex != VertexBeingDestroyed)) && (Vertex._OwningCells.Length == 0))) goto 0x006a
+  005e: Vertex.DestroyActor()
+  006a: iternext
+  006b: iterpop
+  006c: idx = 0
+  0073: if !((idx < self._Edges.Length)) goto 0x0120
+  0083: if !((idx[self._Edges].Neighbor == none)) goto 0x00a2
+  009f: goto 0x0116
+  00a2: idx[self._Edges].Neighbor.get_EditUtil().RemoveNeighborCell(self._Cell)
+  00d9: idx[self._Edges].Neighbor.UpdateRendering()
+  00fe: idx[self._Edges].Neighbor = none
+  0116: AddAdd_PreInt(idx)
+  011d: goto 0x0073
+  0120: return nothing
+  0122: <eos>
+
+function NavigationCellEditUtil.RewindForRightSideUp  (script 229 bytes)
+  0000: if !(NavigationCellEditUtil.IsRightSideUp()) goto 0x000b
+  0009: return nothing
+  000b: Temp = 1[self._Vertices]
+  0018: 1[self._Vertices] = 2[self._Vertices]
+  0028: 2[self._Vertices] = Temp
+  0036: if !((self._Edges.Length != 0)) goto 0x00e2
+  0042: 0[self._Edges].Start = 0[self._Vertices]
+  005c: 0[self._Edges].End = 1[self._Vertices]
+  0076: 1[self._Edges].Start = 1[self._Vertices]
+  0090: 1[self._Edges].End = 2[self._Vertices]
+  00ab: 2[self._Edges].Start = 2[self._Vertices]
+  00c7: 2[self._Edges].End = 0[self._Vertices]
+  00e2: return nothing
+  00e4: <eos>
+
+function NavigationCellEditUtil.ReCalcEdgeNormals  (script 98 bytes)
+  0000: if !(!NavigationCellEditUtil.IsRightSideUp()) goto 0x0011
+  000b: NavigationCellEditUtil.RewindForRightSideUp()
+  0011: idx = 0
+  0018: if !((idx < self._Edges.Length)) goto 0x005f
+  0028: Edge = idx[self._Edges]
+  0039: NavigationCellEditUtil.CalcEdgeNormal(Edge)
+  0044: idx[self._Edges] = Edge
+  0055: AddAdd_PreInt(idx)
+  005c: goto 0x0018
+  005f: return nothing
+  0061: <eos>
+
+function NavigationCellEditUtil.RepositionCellToCentroid  (script 105 bytes)
+  0000: Translation = (GetCentroid() - self._Cell.Location)
+  0020: self._Cell.EditorApplyTranslation(Translation, false, false, false)
+  003b: if !((obj'Core.Math'.static.VSize(Translation) > cast3f(1))) goto 0x0066
+  0053: self._Cell.MarkModified()
+  0066: return nothing
+  0068: <eos>
+
+function NavigationCellEditUtil.PostVertexMove  (script 19 bytes)
+  0000: NavigationCellEditUtil.ReCalcEdgeNormals()
+  0006: RepositionCellToCentroid()
+  0010: return nothing
+  0012: <eos>
+
+function NavigationCellEditUtil.GetNormal  (script 90 bytes)
+  0000: return obj'Core.Math'.static.Normal(((2[self._Vertices].Location - 0[self._Vertices].Location) cross (1[self._Vertices].Location - 0[self._Vertices].Location)))
+  0053: return return
+  0059: <eos>
+
+function NavigationCellEditUtil.CalcEdgeNormal  (script 147 bytes)
+  0000: EdgeDirection = (Edge.Start.Location - Edge.End.Location)
+  003a: Edge.Normal = obj'Core.Math'.static.Normal(obj'Core.Math'.static.MakeVector(EdgeDirection.Y, -EdgeDirection.X, 0.0))
+  0090: return nothing
+  0092: <eos>
+
+function NavigationCellEditUtil.AddVertex  (script 55 bytes)
+  0000: if !((self._Vertices.Length == 3)) goto 0x000f
+  000d: return nothing
+  000f: Vertex.AddOwner(self._Cell)
+  0027: self._Vertices.AddItem(Vertex)
+  0034: return nothing
+  0036: <eos>
+
+function NavigationCellEditUtil.CreateEdgeFromVertices  (script 68 bytes)
+  0000: Edge.Start = Start
+  0016: Edge.End = End
+  002c: NavigationCellEditUtil.CalcEdgeNormal(Edge)
+  0037: return Edge
+  003d: return return
+  0043: <eos>
+
+function NavigationCellEditUtil.SetTriangle  (script 237 bytes)
+  0000: NavigationCellEditUtil.AddVertex(Zero)
+  000b: NavigationCellEditUtil.AddVertex(One)
+  0016: NavigationCellEditUtil.AddVertex(Two)
+  0021: NavigationCellEditUtil.RewindForRightSideUp()
+  0027: self._Edges.AddItem(NavigationCellEditUtil.CreateEdgeFromVertices(0[self._Vertices], 1[self._Vertices]))
+  0043: self._Edges.AddItem(NavigationCellEditUtil.CreateEdgeFromVertices(1[self._Vertices], 2[self._Vertices]))
+  0060: self._Edges.AddItem(NavigationCellEditUtil.CreateEdgeFromVertices(2[self._Vertices], 0[self._Vertices]))
+  007d: VertexIdentifiers.AddItem(0[self._Vertices]._Identifier)
+  0095: VertexIdentifiers.AddItem(1[self._Vertices]._Identifier)
+  00ad: VertexIdentifiers.AddItem(2[self._Vertices]._Identifier)
+  00c6: self._Cell._VertexIdentifiers = VertexIdentifiers
+  00da: RepositionCellToCentroid()
+  00e4: NavigationCellEditUtil.ConnectToNeighbors()
+  00ea: return nothing
+  00ec: <eos>
+
+function NavigationCellEditUtil.GetVertexIndex  (script 21 bytes)
+  0000: return self._Vertices.Find(Vertex)
+  000e: return return
+  0014: <eos>
+
+function NavigationCellEditUtil.SelectEdge  (script 47 bytes)
+  0000: if !((self._Edges.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: EdgeIndex[self._Edges].Selected = Selected
+  002c: return nothing
+  002e: <eos>
+
+function NavigationCellEditUtil.HasEdgeSelected  (script 90 bytes)
+  0000: if !((self._Edges.Length == 0)) goto 0x000e
+  000c: return false
+  000e: return ((0[self._Edges].Selected || 1[self._Edges].Selected) || 2[self._Edges].Selected)
+  0053: return return
+  0059: <eos>
+
+function NavigationCellEditUtil.GetSelectedEdge  (script 107 bytes)
+  0000: nothing
+  0001: SelectedIndex = -1
+  000c: idx = 0
+  0013: if !((idx < self._Edges.Length)) goto 0x005e
+  0023: if !(idx[self._Edges].Selected) goto 0x0054
+  003d: SelectedIndex = idx
+  0048: return idx[self._Edges]
+  0054: AddAdd_PreInt(idx)
+  005b: goto 0x0013
+  005e: return Edge
+  0064: return return
+  006a: <eos>
+
+function NavigationCellEditUtil.GetCentroid  (script 111 bytes)
+  0000: if !((self._Vertices.Length == 0)) goto 0x001b
+  000c: return self._Cell.Location
+  001b: Centroid = ((0[self._Vertices].Location + 1[self._Vertices].Location) + 2[self._Vertices].Location)
+  0056: (Centroid *= 0.333333)
+  0062: return Centroid
+  0068: return return
+  006e: <eos>
+
+function NavigationCellEditUtil.HasVertex  (script 28 bytes)
+  0000: return (-1 != self._Vertices.Find(Vertex))
+  0015: return return
+  001b: <eos>
+
+function NavigationCellEditUtil.IsNeighbor  (script 37 bytes)
+  0000: return (-1 != self._Edges.Find('Neighbor',Cell))
+  001e: return return
+  0024: <eos>
+
+function NavigationCellEditUtil.AddNeighborCell  (script 84 bytes)
+  0000: if !(NavigationCellEditUtil.IsNeighbor(Neighbor)) goto 0x0010
+  000e: return false
+  0010: NavigationCellEditUtil.SetNeighborToEdge(Neighbor)
+  001b: Neighbor.get_EditUtil().AddNeighborCell(self._Cell)
+  0041: UpdateNeighborRendering()
+  004b: return true
+  004d: return return
+  0053: <eos>
+
+function NavigationCellEditUtil.SetNeighborToEdge  (script 191 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._Edges.Length)) goto 0x00ab
+  0017: if !((Neighbor.get_EditUtil().NavigationCellEditUtil.HasVertex(idx[self._Edges].Start) && Neighbor.get_EditUtil().NavigationCellEditUtil.HasVertex(idx[self._Edges].End))) goto 0x00a1
+  0085: idx[self._Edges].Neighbor = Neighbor
+  00a1: AddAdd_PreInt(idx)
+  00a8: goto 0x0007
+  00ab: self._Cell._NeedsRebuild = true
+  00bc: return nothing
+  00be: <eos>
+
+function NavigationCellEditUtil.RemoveNeighborFromEdge  (script 109 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._Edges.Length)) goto 0x0059
+  0017: if !((idx[self._Edges].Neighbor == Neighbor)) goto 0x004f
+  0037: idx[self._Edges].Neighbor = none
+  004f: AddAdd_PreInt(idx)
+  0056: goto 0x0007
+  0059: self._Cell._NeedsRebuild = true
+  006a: return nothing
+  006c: <eos>
+
+function NavigationCellEditUtil.RemoveNeighborCell  (script 34 bytes)
+  0000: if !(!NavigationCellEditUtil.IsNeighbor(Neighbor)) goto 0x0012
+  0010: return nothing
+  0012: NavigationCellEditUtil.RemoveNeighborFromEdge(Neighbor)
+  001d: return nothing
+  001f: return nothing
+  0021: <eos>
+
+function NavigationCellEditUtil.ConnectToNeighbors  (script 202 bytes)
+  0000: 0[self._Vertices].GetCellsThatShareEdge(1[self._Vertices], CellsThatShareEdge)
+  0021: 1[self._Vertices].GetCellsThatShareEdge(2[self._Vertices], CellsThatShareEdge)
+  0043: 2[self._Vertices].GetCellsThatShareEdge(0[self._Vertices], CellsThatShareEdge)
+  0065: idx = 0
+  006c: if !((idx < CellsThatShareEdge.Length)) goto 0x00c7
+  007c: if !((idx[CellsThatShareEdge] != self._Cell)) goto 0x00bd
+  0091: idx[CellsThatShareEdge].get_EditUtil().AddNeighborCell(self._Cell)
+  00bd: AddAdd_PreInt(idx)
+  00c4: goto 0x006c
+  00c7: return nothing
+  00c9: <eos>
+
+function NavigationCellEditUtil.UpdateNeighborRendering  (script 73 bytes)
+  0000: foreach self._Edges(Edge,) (end 0x0045)
+  000f: if !((Edge.Neighbor != none)) goto 0x0044
+  0025: Edge.Neighbor.UpdateRendering(false)
+  0044: iternext
+  0045: iterpop
+  0046: return nothing
+  0048: <eos>
+
+function NavigationCellEditUtil.IsVertexABorderVertex  (script 136 bytes)
+  0000: Index = self._Vertices.Find(Vertex)
+  0013: if !((Index == -1)) goto 0x0024
+  0022: return false
+  0024: NextIndex = (Index - 1)
+  0032: if !((NextIndex == -1)) goto 0x0049
+  0041: NextIndex = 2
+  0049: return ((Index[self._Edges].Neighbor == none) || (NextIndex[self._Edges].Neighbor == none))
+  0081: return return
+  0087: <eos>
+
+function NavigationCellEditUtil.GetEdgeBordersForVertex  (script 170 bytes)
+  0000: Index = self._Vertices.Find(Vertex)
+  0013: if !((Index == -1)) goto 0x0024
+  0022: return nothing
+  0024: NextIndex = (Index - 1)
+  0032: if !((NextIndex == -1)) goto 0x0049
+  0041: NextIndex = 2
+  0049: if !((Index[self._Edges].Neighbor == none)) goto 0x0078
+  0065: Edges.AddItem(Index[self._Edges])
+  0078: if !((NextIndex[self._Edges].Neighbor == none)) goto 0x00a7
+  0094: Edges.AddItem(NextIndex[self._Edges])
+  00a7: return nothing
+  00a9: <eos>

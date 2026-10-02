@@ -1,0 +1,21 @@
+function PotentialClimbWatcher.Tick  (script 262 bytes)
+  0000: if !((((self.Owner == none) || self.Owner.bDeleteMe) || !Pawn(self.Owner).CanGrabLadder())) goto 0x0043
+  003e: DestroyActor()
+  0041: return nothing
+  0043: PawnRot = self.Owner.Rotation
+  0057: PawnRot.Pitch = 0
+  0069: foreach self.Owner.TouchingActors(obj'LadderVolume', L) (end 0x00f4)
+  0089: if !(L.EncompassesActorLocation(self.Owner)) goto 0x00f3
+  00a4: if !(((cast39(PawnRot) dot L.LookDir) > 0.9)) goto 0x00eb
+  00c5: Pawn(self.Owner).ClimbLadder(L)
+  00e2: DestroyActor()
+  00e5: iterpop
+  00e6: return nothing
+  00e8: goto 0x00f3
+  00eb: bFound = true
+  00f3: iternext
+  00f4: iterpop
+  00f5: if !(!bFound) goto 0x0103
+  0100: DestroyActor()
+  0103: return nothing
+  0105: <eos>

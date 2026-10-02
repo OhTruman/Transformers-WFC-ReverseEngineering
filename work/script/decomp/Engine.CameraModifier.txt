@@ -1,0 +1,68 @@
+function CameraModifier.Init  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function CameraModifier.ModifyCamera  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function CameraModifier.AddCameraModifier  (script 116 bytes)
+  0000: if !(self.bDebug) goto 0x0033
+  0009: LogInternal(((cast56(self) @ "AddModifier") @ cast53(Camera.ModifierList.Length)), , , )
+  0033: if !((self.CameraOwner != none)) goto 0x0040
+  003e: return false
+  0040: self.CameraOwner = Camera
+  004b: Camera.ModifierList.Length[Camera.ModifierList] = self
+  006b: return true
+  006d: return return
+  0073: <eos>
+
+function CameraModifier.RemoveCameraModifier  (script 142 bytes)
+  0000: if !(self.bDebug) goto 0x0023
+  0009: LogInternal((cast56(self) @ "RemoveModifier"), , , )
+  0023: ModifierIdx = 0
+  002a: if !((ModifierIdx < Camera.ModifierList.Length)) goto 0x0085
+  0043: if !((ModifierIdx[Camera.ModifierList] == self)) goto 0x007b
+  005d: Camera.ModifierList.Remove(ModifierIdx,1)
+  0072: self.CameraOwner = none
+  0079: return true
+  007b: AddAdd_Int(ModifierIdx)
+  0082: goto 0x002a
+  0085: return false
+  0087: return return
+  008d: <eos>
+
+function CameraModifier.IsDisabled  (script 14 bytes)
+  0000: return self.bDisabled
+  0007: return return
+  000d: <eos>
+
+function CameraModifier.DisableModifier  (script 55 bytes)
+  0000: if !(self.bDebug) goto 0x0024
+  0009: LogInternal((cast56(self) @ "DisableModifier"), , , )
+  0024: self.bDisabled = true
+  002c: self.bPendingDisable = false
+  0034: return nothing
+  0036: <eos>
+
+function CameraModifier.EnableModifier  (script 54 bytes)
+  0000: if !(self.bDebug) goto 0x0023
+  0009: LogInternal((cast56(self) @ "EnableModifier"), , , )
+  0023: self.bDisabled = false
+  002b: self.bPendingDisable = false
+  0033: return nothing
+  0035: <eos>
+
+function CameraModifier.ToggleModifier  (script 70 bytes)
+  0000: if !(self.bDebug) goto 0x0023
+  0009: LogInternal((cast56(self) @ "ToggleModifier"), , , )
+  0023: if !(self.bDisabled) goto 0x0039
+  002c: EnableModifier()
+  0036: goto 0x0043
+  0039: DisableModifier()
+  0043: return nothing
+  0045: <eos>
+
+function CameraModifier.ProcessViewRotation  (script 7 bytes)
+  0000: return return
+  0006: <eos>

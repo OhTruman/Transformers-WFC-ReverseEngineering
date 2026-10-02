@@ -1,0 +1,55 @@
+function TnOnlinePlaylistManager.DownloadPlaylist  (script 34 bytes)
+  0000: if !((cast3a(self.Status) == cast3a(2))) goto 0x0019
+  0010: TnOnlinePlaylistManager.ReadPlaylistGroupCounts()
+  0016: goto 0x001f
+  0019: DownloadPlaylist()
+  001f: return nothing
+  0021: <eos>
+
+function TnOnlinePlaylistManager.OnReadTitleFileComplete  (script 41 bytes)
+  0000: OnReadTitleFileComplete(Result, Filename)
+  0010: if !((cast3a(Result) == cast3a(1))) goto 0x0026
+  0020: TnOnlinePlaylistManager.ReadPlaylistGroupCounts()
+  0026: return nothing
+  0028: <eos>
+
+function TnOnlinePlaylistManager.PlaylistIdToGroupId  (script 20 bytes)
+  0000: return (PlaylistId + 2000)
+  000d: return return
+  0013: <eos>
+
+function TnOnlinePlaylistManager.GetStats  (script 54 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: return OnlineStatsInterfaceEx(cast36(OnlineSub.StatsInterface))
+  002f: return return
+  0035: <eos>
+
+function TnOnlinePlaylistManager.ReadPlaylistGroupCounts  (script 155 bytes)
+  0000: PlaylistProviders = obj'TnDataStore_MenuItems'.static.GetPlaylistProviders()
+  0019: foreach PlaylistProviders(Provider,) (end 0x0055)
+  0028: PlaylistProvider = TnDataProvider_OnlinePlaylist(Provider)
+  0038: GroupsToRead.AddItem(TnOnlinePlaylistManager.PlaylistIdToGroupId(PlaylistProvider.PlaylistId))
+  0054: iternext
+  0055: iterpop
+  0056: Stats = TnOnlinePlaylistManager.GetStats()
+  0062: Stats.AddReadGroupCountsCompleteDelegate(delegate.OnReadGroupsComplete)
+  007f: Stats.ReadGroupCounts(GroupsToRead)
+  0098: return nothing
+  009a: <eos>
+
+function TnOnlinePlaylistManager.OnReadGroupsComplete  (script 206 bytes)
+  0000: Stats = TnOnlinePlaylistManager.GetStats()
+  000c: Stats.ClearReadGroupCountsCompleteDelegate(delegate.OnReadGroupsComplete)
+  0029: PlaylistProviders = obj'TnDataStore_MenuItems'.static.GetPlaylistProviders()
+  0042: foreach PlaylistProviders(Provider,) (end 0x00c0)
+  0051: PlaylistProvider = TnDataProvider_OnlinePlaylist(Provider)
+  0061: GroupIndex = GroupIds.Find(TnOnlinePlaylistManager.PlaylistIdToGroupId(PlaylistProvider.PlaylistId))
+  0083: if !((GroupIndex == -1)) goto 0x00a5
+  0092: PlaylistProvider.OnlinePlayers = 0
+  00a2: goto 0x00bf
+  00a5: PlaylistProvider.OnlinePlayers = GroupIndex[GroupCounts]
+  00bf: iternext
+  00c0: iterpop
+  00c1: RefreshDatastores()
+  00cb: return nothing
+  00cd: <eos>

@@ -1,0 +1,25 @@
+function HmGibsDestructionEffectFactory.DoCreateInstance  (script 232 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmGibsDestructionEffect', nothing, AttachTreeCallback)
+  0018: Effect.AddMeshTemplate(self.MeshTemplate)
+  0030: foreach self.MeshTemplates(Mesh,) (end 0x0058)
+  003f: Effect.AddMeshTemplate(Mesh)
+  0057: iternext
+  0058: iterpop
+  0059: Effect.SetLifespans(self.ChunkLifespan, self.CollisionLifeSpan)
+  0076: Effect.SetParticles(self.Particles)
+  008e: Effect.SetSpawnParameters(self.SpawnVolumeScale, self.NumChunks)
+  00ab: Effect.SetVelocityParameters(self.LinearSpeed, self.AngularSpeed, ((self.VelocityConeAngle * 0.5) * 0.0174533))
+  00db: return Effect
+  00e1: return return
+  00e7: <eos>
+
+function HmGibsDestructionEffectFactory.AddCookingOptions  (script 96 bytes)
+  0000: HmDebrisDestructionEffectFactory.AddCookingOptions(Options)
+  000b: foreach self.MeshTemplates(Mesh,) (end 0x005c)
+  001a: Option.Mesh = Mesh
+  0030: Option.Scale = vect(1,1,1)
+  004e: Options.AddItem(Option)
+  005b: iternext
+  005c: iterpop
+  005d: return nothing
+  005f: <eos>

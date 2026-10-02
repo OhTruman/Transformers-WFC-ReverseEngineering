@@ -1,0 +1,9 @@
+function TnWheelAssemblyBlueprint.CheckForErrors  (script 236 bytes)
+  0000: if !((self.WheelRadius == cast3f(0))) goto 0x003a
+  000d: EmitCheckMessage(0, "Wheel radius can not be zero.", , )
+  003a: if !((self.BoneName == 'None')) goto 0x0093
+  004d: EmitCheckMessage(0, "Can't have empty BoneName for attaching wheel assembly", , )
+  0093: if !((self.SkelControlName == 'None')) goto 0x00e9
+  00a6: EmitCheckMessage(0, "Can't have empty SkelControlName for wheel assembly", , )
+  00e9: return nothing
+  00eb: <eos>

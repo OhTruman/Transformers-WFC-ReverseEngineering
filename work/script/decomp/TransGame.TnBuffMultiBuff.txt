@@ -1,0 +1,21 @@
+function TnBuffMultiBuff.Apply  (script 158 bytes)
+  0000: TnBuff.Apply(Level, BuffOwner, Applier)
+  0015: self.BuffService = TnBuffService(BuffOwner.GetService('TnBuffService'))
+  003c: if !((NotEqual_InterfaceInterface(self.BuffService, TnBuffService(none)) && (cast3a(BuffOwner.Role) == cast3a(3)))) goto 0x009b
+  006b: foreach self.BuffsToApply(BuffIter,) (end 0x009a)
+  007a: self.BuffService.AddBuff(BuffIter, 0, Applier)
+  0099: iternext
+  009a: iterpop
+  009b: return nothing
+  009d: <eos>
+
+function TnBuffMultiBuff.OnUnapplyOrOwnerDied  (script 126 bytes)
+  0000: TnBuff.OnUnapplyOrOwnerDied()
+  0006: if !((NotEqual_InterfaceInterface(self.BuffService, TnBuffService(none)) && (cast3a(self.OwnerPawn.Role) == cast3a(3)))) goto 0x007b
+  0035: foreach self.BuffsToApply(BuffIter,) (end 0x007a)
+  0044: if !(self.BuffService.HasBuff(BuffIter)) goto 0x0079
+  0060: self.BuffService.RemoveBuff(BuffIter)
+  0079: iternext
+  007a: iterpop
+  007b: return nothing
+  007d: <eos>

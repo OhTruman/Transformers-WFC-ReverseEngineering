@@ -1,0 +1,24 @@
+function TnVersionedPlayerData.get_IsCorrupt  (script 14 bytes)
+  0000: return self._IsCorrupt
+  0007: return return
+  000d: <eos>
+
+function TnVersionedPlayerData.set_IsCorrupt  (script 16 bytes)
+  0000: self._IsCorrupt = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnVersionedPlayerData.UpdateVersion  (script 14 bytes)
+  0000: self.DataVersion = self.ClassVersion
+  000b: return nothing
+  000d: <eos>
+
+function TnVersionedPlayerData.CheckVersion  (script 28 bytes)
+  0000: if !((self.DataVersion != self.ClassVersion)) goto 0x0019
+  000f: ClearData()
+  0019: return nothing
+  001b: <eos>
+
+function TnVersionedPlayerData.ClearData  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

@@ -1,0 +1,35 @@
+function TnAiActionScanningIdleWithWeapon.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionScanningIdleWithWeapon.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionScanningIdleWithWeapon.OnBind  (script 44 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionScanningIdleWithWeapon.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionScanningIdleWithWeaponBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionScanningIdleWithWeapon.OnStart  (script 141 bytes)
+  0000: W = TnWeapon(get_InvManager().FindInventoryType(get_WeaponClass(), false))
+  002e: get_InvManager().SetCurrentWeapon(W)
+  004b: self._TransformerController.WeaponShooter.Activate(get_WeaponClass(), delegate.FailCallback)
+  007a: return TnAiActionScanningIdle.OnStart(ExpectedEffects)
+  0086: return return
+  008c: <eos>
+
+function TnAiActionScanningIdleWithWeapon.OnFinish  (script 42 bytes)
+  0000: self._TransformerController.WeaponShooter.Deactivate()
+  001c: TnAiActionScanningIdle.OnFinish(CurrentState)
+  0027: return nothing
+  0029: <eos>

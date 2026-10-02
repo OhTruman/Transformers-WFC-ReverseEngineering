@@ -1,0 +1,125 @@
+function HmFootstepComponent.FindPhysicalMaterial  (script 502 bytes)
+  0000: if !((self.Owner == none)) goto 0x000d
+  000b: return false
+  000d: TraceRoot = self.Owner.GetSoundLocation()
+  0027: S = HmSkeletonInterface(self.Owner)
+  0037: if !(NotEqual_InterfaceInterface(S, HmSkeletonInterface(none))) goto 0x00a6
+  004b: TraceStart = TraceRoot
+  0056: TraceDest = (TraceRoot - (vect(0,0,1) * (S.GetSkeletonBounds().BoxExtent.Z + 250.0)))
+  00a3: goto 0x00e1
+  00a6: TraceStart = (TraceRoot + vect(0,0,50))
+  00c0: TraceDest = (TraceRoot - (vect(0,0,1) * 250.0))
+  00e1: TraceActor = self.Owner.Trace(HitLocation, HitNormal, none, TraceDest, TraceStart, true, vect(0,0,0), true, HitInfo, (2 | 1))
+  0121: if !((TraceActor == none)) goto 0x012e
+  012c: return false
+  012e: if !((none != HitInfo.PhysMaterial)) goto 0x015d
+  0144: PhysMaterial = HitInfo.PhysMaterial
+  015a: goto 0x0192
+  015d: if !((none != HitInfo.Material)) goto 0x0192
+  0173: PhysMaterial = HitInfo.Material.PhysMaterial
+  0192: BlockingVolumeActor = BlockingVolume(TraceActor)
+  01a2: if !(((BlockingVolumeActor != none) && (BlockingVolumeActor.PhysMaterialOverride != none))) goto 0x01d7
+  01c3: PhysMaterial = BlockingVolumeActor.PhysMaterialOverride
+  01d7: if !((self.UsePhysicalMaterialOverrideCount > 0)) goto 0x01ed
+  01e2: PhysMaterial = self.PhysicalMaterialOverride
+  01ed: return true
+  01ef: return return
+  01f5: <eos>
+
+function HmFootstepComponent.GetFootStepSoundFromPhysicalMaterialAndFootstepType  (script 942 bytes)
+  0000: if !((none != PhysMaterial)) goto 0x0322
+  000b: MaterialProperty = HmPhysicalMaterialProperty(PhysMaterial.PhysicalMaterialProperty)
+  0024: if !((none != MaterialProperty)) goto 0x0304
+  002f: switch (FootstepType)
+  0036: case 0: (next 0x0077)
+  003b: if !((none != MaterialProperty.FootstepSounds.FootstepWalk)) goto 0x0074
+  005a: return MaterialProperty.FootstepSounds.FootstepWalk
+  0074: goto 0x0304
+  0077: case 5: (next 0x00b8)
+  007c: if !((none != MaterialProperty.FootstepSounds.FootstepJog)) goto 0x00b5
+  009b: return MaterialProperty.FootstepSounds.FootstepJog
+  00b5: goto 0x0304
+  00b8: case 4: (next 0x00f9)
+  00bd: if !((none != MaterialProperty.FootstepSounds.FootstepRun)) goto 0x00f6
+  00dc: return MaterialProperty.FootstepSounds.FootstepRun
+  00f6: goto 0x0304
+  00f9: case 7: (next 0x013a)
+  00fe: if !((none != MaterialProperty.FootstepSounds.FootstepCrouchWalk)) goto 0x0137
+  011d: return MaterialProperty.FootstepSounds.FootstepCrouchWalk
+  0137: goto 0x0304
+  013a: case 8: (next 0x017b)
+  013f: if !((none != MaterialProperty.FootstepSounds.FootstepCrouchJog)) goto 0x0178
+  015e: return MaterialProperty.FootstepSounds.FootstepCrouchJog
+  0178: goto 0x0304
+  017b: case 6: (next 0x01bc)
+  0180: if !((none != MaterialProperty.FootstepSounds.FootstepCrouchRun)) goto 0x01b9
+  019f: return MaterialProperty.FootstepSounds.FootstepCrouchRun
+  01b9: goto 0x0304
+  01bc: case 1: (next 0x01fd)
+  01c1: if !((none != MaterialProperty.FootstepSounds.FootstepScuff)) goto 0x01fa
+  01e0: return MaterialProperty.FootstepSounds.FootstepScuff
+  01fa: goto 0x0304
+  01fd: case 9: (next 0x023e)
+  0202: if !((none != MaterialProperty.FootstepSounds.FootstepCrouchScuff)) goto 0x023b
+  0221: return MaterialProperty.FootstepSounds.FootstepCrouchScuff
+  023b: goto 0x0304
+  023e: case 2: (next 0x027f)
+  0243: if !((none != MaterialProperty.FootstepSounds.FootstepJump)) goto 0x027c
+  0262: return MaterialProperty.FootstepSounds.FootstepJump
+  027c: goto 0x0304
+  027f: case 3: (next 0x02c0)
+  0284: if !((none != MaterialProperty.FootstepSounds.FootstepLand)) goto 0x02bd
+  02a3: return MaterialProperty.FootstepSounds.FootstepLand
+  02bd: goto 0x0304
+  02c0: case 10: (next 0x0301)
+  02c5: if !((none != MaterialProperty.FootstepSounds.FootstepHardLand)) goto 0x02fe
+  02e4: return MaterialProperty.FootstepSounds.FootstepHardLand
+  02fe: goto 0x0304
+  0301: default:
+  0304: return GetFootStepSoundFromPhysicalMaterialAndFootstepType(PhysMaterial.Parent, FootstepType)
+  0322: switch (FootstepType)
+  0329: case 0: (next 0x0334)
+  032e: return self.DefaultWalkSound
+  0334: case 5: (next 0x033f)
+  0339: return self.DefaultJogSound
+  033f: case 4: (next 0x034a)
+  0344: return self.DefaultRunSound
+  034a: case 7: (next 0x0355)
+  034f: return self.DefaultCrouchWalkSound
+  0355: case 8: (next 0x0360)
+  035a: return self.DefaultCrouchJogSound
+  0360: case 6: (next 0x036b)
+  0365: return self.DefaultCrouchRunSound
+  036b: case 1: (next 0x0376)
+  0370: return self.DefaultScuffSound
+  0376: case 9: (next 0x0381)
+  037b: return self.DefaultCrouchScuffSound
+  0381: case 2: (next 0x038c)
+  0386: return self.DefaultJumpSound
+  038c: case 3: (next 0x0397)
+  0391: return self.DefaultLandSound
+  0397: case 10: (next 0x03a2)
+  039c: return self.DefaultHardLandSound
+  03a2: default:
+  03a5: return none
+  03a7: return return
+  03ad: <eos>
+
+function HmFootstepComponent.PlayFootStep  (script 96 bytes)
+  0000: if !((false == FindPhysicalMaterial(PhysMaterial, HitLocation, HitNormal))) goto 0x0021
+  001f: return nothing
+  0021: FootStepSoundEvent = GetFootStepSoundFromPhysicalMaterialAndFootstepType(PhysMaterial, FootstepType)
+  003b: HmSoundEventInterface(self.Owner).PlaySoundEvent(FootStepSoundEvent, true, , true, )
+  005d: return nothing
+  005f: <eos>
+
+function HmFootstepComponent.EnablePhysicalMaterialOverride  (script 58 bytes)
+  0000: if !(Enable) goto 0x001e
+  0009: AddAdd_Int(self.UsePhysicalMaterialOverrideCount)
+  0010: self.PhysicalMaterialOverride = PhysMaterial
+  001b: goto 0x0037
+  001e: SubtractSubtract_Int(self.UsePhysicalMaterialOverrideCount)
+  0025: if !((self.UsePhysicalMaterialOverrideCount < 0)) goto 0x0037
+  0030: self.UsePhysicalMaterialOverrideCount = 0
+  0037: return nothing
+  0039: <eos>

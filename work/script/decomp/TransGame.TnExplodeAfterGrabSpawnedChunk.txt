@@ -1,0 +1,44 @@
+function TnExplodeAfterGrabSpawnedChunk.set_DamageRadius  (script 14 bytes)
+  0000: self._DamageRadius = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnExplodeAfterGrabSpawnedChunk.set_DamageAmount  (script 14 bytes)
+  0000: self._DamageAmount = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnExplodeAfterGrabSpawnedChunk.set_DamageMomentum  (script 14 bytes)
+  0000: self._DamageMomentum = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnExplodeAfterGrabSpawnedChunk.NotifyGrabEnd  (script 33 bytes)
+  0000: TnDestructibleSpawnedChunk.NotifyGrabEnd(Attacker)
+  000b: self._CanExplode = true
+  0013: self.Grabber = Attacker
+  001e: return nothing
+  0020: <eos>
+
+function TnExplodeAfterGrabSpawnedChunk.RigidBodyCollision  (script 159 bytes)
+  0000: RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  001a: if !(((cast3a(self.Role) != cast3a(3)) || (self._CanExplode == false))) goto 0x003a
+  0038: return nothing
+  003a: if !((((self.Grabber != none) && (OtherComponent != none)) && (self.Grabber == OtherComponent.Owner))) goto 0x006e
+  006c: return nothing
+  006e: HurtRadius(self._DamageAmount, self._DamageRadius, -1.0, obj'Engine.DamageType', self._DamageMomentum, self.Location, , , true)
+  0099: DestroyActor()
+  009c: return nothing
+  009e: <eos>
+
+function TnExplodeAfterGrabSpawnedChunk.Destroyed  (script 15 bytes)
+  0000: TnExplodeAfterGrabSpawnedChunk.PlayExplosion()
+  0006: Destroyed()
+  000c: return nothing
+  000e: <eos>
+
+function TnExplodeAfterGrabSpawnedChunk.PlayExplosion  (script 87 bytes)
+  0000: self.WorldInfo.GetEmitterPool().SpawnEmitter(obj'FX_Explosives_p.FX.Exp_GenericLvl_LRG_FX', self.Location, self.Rotation, , , )
+  0033: self.WorldInfo.PlaySound(obj'BL_PROP_EXPLOSIVES.PROP_IACON_OMEGA_DEBRIS_THROW_EXPL', , , , self.Location, )
+  0054: return nothing
+  0056: <eos>

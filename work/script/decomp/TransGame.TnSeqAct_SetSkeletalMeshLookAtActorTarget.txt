@@ -1,0 +1,57 @@
+function TnSeqAct_SetSkeletalMeshLookAtActorTarget.StartSkeletalMeshLookAtActorTarget  (script 233 bytes)
+  0000: foreach self.Targets(Target,) (end 0x00e5)
+  000f: LookAtTargetInterface = TnIKLookAtTargetInterface(Target)
+  001f: if !(EqualEqual_InterfaceInterface(LookAtTargetInterface, TnIKLookAtTargetInterface(none))) goto 0x00cb
+  0033: LogInternal((("Error: TnSeqAct_SetSkeletalMeshLookAtActorTarget::StartSkeletalMeshLookAtActorTarget " $ cast56(Target)) $ " does not support TnIKLookAtTargetInterface."), , , )
+  00c8: iterpop
+  00c9: return nothing
+  00cb: LookAtTargetInterface.StartLookAtTracking(A)
+  00e4: iternext
+  00e5: iterpop
+  00e6: return nothing
+  00e8: <eos>
+
+function TnSeqAct_SetSkeletalMeshLookAtActorTarget.StopSkeletalMeshLookAtActorTarget  (script 227 bytes)
+  0000: foreach self.Targets(Target,) (end 0x00df)
+  000f: LookAtTargetInterface = TnIKLookAtTargetInterface(Target)
+  001f: if !(EqualEqual_InterfaceInterface(LookAtTargetInterface, TnIKLookAtTargetInterface(none))) goto 0x00ca
+  0033: LogInternal((("Error: TnSeqAct_SetSkeletalMeshLookAtActorTarget::StopSkeletalMeshLookAtActorTarget " $ cast56(Target)) $ " does not support TnIKLookAtTargetInterface."), , , )
+  00c7: iterpop
+  00c8: return nothing
+  00ca: LookAtTargetInterface.StopLookAtTracking()
+  00de: iternext
+  00df: iterpop
+  00e0: return nothing
+  00e2: <eos>
+
+function TnSeqAct_SetSkeletalMeshLookAtActorTarget.LockSkeletalMeshLookAtActorTarget  (script 232 bytes)
+  0000: foreach self.Targets(Target,) (end 0x00e4)
+  000f: LookAtTargetInterface = TnIKLookAtTargetInterface(Target)
+  001f: if !(EqualEqual_InterfaceInterface(LookAtTargetInterface, TnIKLookAtTargetInterface(none))) goto 0x00ca
+  0033: LogInternal((("Error: TnSeqAct_SetSkeletalMeshLookAtActorTarget::LockSkeletalMeshLookAtActorTarget " $ cast56(Target)) $ " does not support TnIKLookAtTargetInterface."), , , )
+  00c7: iterpop
+  00c8: return nothing
+  00ca: LookAtTargetInterface.LockLookAtTracking(A)
+  00e3: iternext
+  00e4: iterpop
+  00e5: return nothing
+  00e7: <eos>
+
+function TnSeqAct_SetSkeletalMeshLookAtActorTarget.Activated  (script 186 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: TargetController = Controller(self.TargetActor)
+  0024: if !((TargetController != none)) goto 0x0043
+  002f: self.TargetActor = TargetController.Pawn
+  0043: if !(0[self.InputLinks].bHasImpulse) goto 0x006b
+  0059: TnSeqAct_SetSkeletalMeshLookAtActorTarget.StartSkeletalMeshLookAtActorTarget(self.Targets, self.TargetActor)
+  0069: return nothing
+  006b: if !(1[self.InputLinks].bHasImpulse) goto 0x008e
+  0081: TnSeqAct_SetSkeletalMeshLookAtActorTarget.StopSkeletalMeshLookAtActorTarget(self.Targets)
+  008c: return nothing
+  008e: if !(2[self.InputLinks].bHasImpulse) goto 0x00b7
+  00a5: TnSeqAct_SetSkeletalMeshLookAtActorTarget.LockSkeletalMeshLookAtActorTarget(self.Targets, self.TargetActor)
+  00b5: return nothing
+  00b7: return nothing
+  00b9: <eos>

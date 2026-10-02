@@ -1,0 +1,609 @@
+function HmWeaponMesh.Tick  (script 15 bytes)
+  0000: (self.TimeSinceLastSquibCreated += DeltaTime)
+  000c: return nothing
+  000e: <eos>
+
+function HmWeaponMesh.SkipEffectBecauseOfFrameRate  (script 158 bytes)
+  0000: if !((self.WeaponOwner == none)) goto 0x000d
+  000b: return true
+  000d: if !((self.WeaponOwner.IsHumanControlled() && self.WeaponOwner.IsLocallyControlled())) goto 0x003d
+  003b: return false
+  003d: switch (GetGameThrottle())
+  0049: case 0: (next 0x0050)
+  004e: return false
+  0050: case 1: (next 0x0066)
+  0055: return (obj'Core.Random'.static.Rand(4) == 0)
+  0066: case 2: (next 0x007c)
+  006b: return (obj'Core.Random'.static.Rand(2) != 0)
+  007c: case 3: (next 0x0092)
+  0081: return (obj'Core.Random'.static.Rand(5) != 0)
+  0092: default:
+  0095: return true
+  0097: return return
+  009d: <eos>
+
+function HmWeaponMesh.SkipSquibEffect  (script 116 bytes)
+  0000: AddAdd_PreInt(self.NumSquibsAttempted)
+  0007: if !((self.TimeSinceLastSquibCreated >= 1.0)) goto 0x0026
+  0016: self.NumSquibsAttempted = 0
+  001d: self.NumSquibsCreated = 0
+  0024: return false
+  0026: if !((self.NumSquibsAttempted > 0)) goto 0x004f
+  0031: SquibCreationPercentage = cast3f(self.NumSquibsCreated)
+  003e: (SquibCreationPercentage /= cast3f(self.NumSquibsAttempted))
+  004c: goto 0x005a
+  004f: SquibCreationPercentage = 0.0
+  005a: if !((SquibCreationPercentage > self.ImpactSquibPercentage)) goto 0x006b
+  0069: return true
+  006b: return false
+  006d: return return
+  0073: <eos>
+
+function HmWeaponMesh.GetAnimatedMeshComponent  (script 114 bytes)
+  0000: if !((self.AnimatedMesh == none)) goto 0x000d
+  000b: return none
+  000d: if !(((self.AnimatedMesh.Mesh != none) && (self.AnimatedMesh.Mesh.SkeletalMesh != none))) goto 0x004f
+  0040: return self.AnimatedMesh.Mesh
+  004f: if !((self.WeaponOwner != none)) goto 0x0069
+  005a: return self.WeaponOwner.Mesh
+  0069: return none
+  006b: return return
+  0071: <eos>
+
+function HmWeaponMesh.CurrentMuzzleFlashSocket  (script 48 bytes)
+  0000: if !((self.CurrentSocket < self.MuzzleFlashSockets.Length)) goto 0x001f
+  0010: return self.CurrentSocket[self.MuzzleFlashSockets]
+  001c: goto 0x0029
+  001f: return 'None'
+  0029: return return
+  002f: <eos>
+
+function HmWeaponMesh.GetMuzzleLocationAndRotation  (script 164 bytes)
+  0000: MeshComp = GetAnimatedMeshComponent()
+  0010: if !((MeshComp != none)) goto 0x0045
+  001b: MeshComp.GetSocketWorldLocationAndRotation(CurrentMuzzleFlashSocket(), OutLoc, OutRot)
+  0042: goto 0x00a1
+  0045: if !((self.Weapon != none)) goto 0x007b
+  0050: OutLoc = self.Weapon.Location
+  0064: OutRot = self.Weapon.Rotation
+  0078: goto 0x00a1
+  007b: OutLoc = vect(0,0,0)
+  008e: OutRot = rot(0,0,0)
+  00a1: return nothing
+  00a3: <eos>
+
+function HmWeaponMesh.GetMuzzleLocation  (script 33 bytes)
+  0000: GetMuzzleLocationAndRotation(MuzzleLocation, MuzzleRotation)
+  0014: return MuzzleLocation
+  001a: return return
+  0020: <eos>
+
+function HmWeaponMesh.GetMuzzleRotation  (script 33 bytes)
+  0000: GetMuzzleLocationAndRotation(MuzzleLocation, MuzzleRotation)
+  0014: return MuzzleRotation
+  001a: return return
+  0020: <eos>
+
+function HmWeaponMesh.GetSocketWorldLocationAndRotation  (script 72 bytes)
+  0000: nothing
+  0001: MeshComp = GetAnimatedMeshComponent()
+  0011: if !((MeshComp == none)) goto 0x001e
+  001c: return false
+  001e: return MeshComp.GetSocketWorldLocationAndRotation(InSocketName, OutLocation, OutRotation)
+  0041: return return
+  0047: <eos>
+
+function HmWeaponMesh.AnimSequenceExistsInAnimSet  (script 92 bytes)
+  0000: I = 0
+  0007: if !((I < Set.Sequences.Length)) goto 0x0053
+  0020: if !((SequenceName == I[Set.Sequences].SequenceName)) goto 0x0049
+  0047: return true
+  0049: AddAdd_PreInt(I)
+  0050: goto 0x0007
+  0053: return false
+  0055: return return
+  005b: <eos>
+
+function HmWeaponMesh.CreateMuzzleFlash  (script 200 bytes)
+  0000: I[self.MuzzleFlashes].PSComponent = new(self.WeaponOwner, nothing, obj'HmParticleSystemComponent', nothing, AttachTreeCallback)
+  0029: I[self.MuzzleFlashes].PSComponent.SetTemplate(I[self.MuzzleFlashes].PSTemplate)
+  0063: I[self.MuzzleFlashes].PSComponent.DeactivateSystem()
+  0087: I[self.MuzzleFlashes].PSComponent.bTickPostPhysicsBlendIn = true
+  00a9: HmWeaponMesh.OnParticleSystemCreated(I[self.MuzzleFlashes].PSComponent)
+  00c5: return nothing
+  00c7: <eos>
+
+function HmWeaponMesh.AttachMuzzleFlash  (script 224 bytes)
+  0000: if !((none == self.WeaponOwner)) goto 0x000d
+  000b: return nothing
+  000d: CurrentSocketName = CurrentMuzzleFlashSocket()
+  001d: if !((self.MuzzleFlashMesh != none)) goto 0x0038
+  0028: HmWeaponMesh.AttachComponentToAvailableLocation(self.MuzzleFlashMesh, CurrentSocketName)
+  0038: I = FindMuzzleFlash(WeaponEvent)
+  004d: if !(((I != -1) && (I[self.MuzzleFlashes].PSTemplate != none))) goto 0x00c2
+  007a: if !((I[self.MuzzleFlashes].PSComponent == none)) goto 0x00a1
+  0096: HmWeaponMesh.CreateMuzzleFlash(I)
+  00a1: HmWeaponMesh.AttachComponentToAvailableLocation(I[self.MuzzleFlashes].PSComponent, CurrentSocketName)
+  00c2: if !((self.MuzzleFlashLight != none)) goto 0x00dd
+  00cd: HmWeaponMesh.AttachComponentToAvailableLocation(self.MuzzleFlashLight, CurrentSocketName)
+  00dd: return nothing
+  00df: <eos>
+
+function HmWeaponMesh.PlayEvent  (script 276 bytes)
+  0000: default=8
+  0006: if !(!IsAttached()) goto 0x001b
+  0015: return 0.0
+  001b: AnimIndex = FindAnim(AnimEvent)
+  0030: if !((AnimIndex != -1)) goto 0x00dd
+  003f: PlayRate = GetPlayRate(AnimEvent)
+  0054: if !((PlayRate <= cast3f(0))) goto 0x006c
+  0061: PlayRate = 1.0
+  006c: PlayAnimation(AnimIndex[self.WeaponEventAnims].AnimName, (cast3a(AnimEvent) == cast3a(9)), PlayRate)
+  009e: AnimLength = (self.AnimatedMesh.Mesh.GetAnimLength(AnimIndex[self.WeaponEventAnims].AnimName) / PlayRate)
+  00dd: if !((cast3a(SoundEvent) == cast3a(8))) goto 0x00f8
+  00ed: SoundEvent = AnimEvent
+  00f8: PlaySoundEvent(SoundEvent)
+  0107: return AnimLength
+  010d: return return
+  0113: <eos>
+
+function HmWeaponMesh.GetPlayRate  (script 13 bytes)
+  0000: return 1.0
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.PlaySoundEvent  (script 296 bytes)
+  0000: if !((false == self.EnableSounds)) goto 0x000e
+  000c: return nothing
+  000e: Index = FindSound(SoundEvent)
+  0023: if !((-1 == Index)) goto 0x0034
+  0032: return nothing
+  0034: if !((none == Index[self.WeaponEventSounds].WeaponSound)) goto 0x0052
+  0050: return nothing
+  0052: if !((true == Index[self.WeaponEventSounds].WeaponSound.GetIsLooping())) goto 0x00ee
+  007c: WeaponAudioComponent = Index[self.WeaponEventSounds].WeaponAudioComponent
+  0098: HmWeaponMesh.PlayLoopingSound(WeaponAudioComponent, Index[self.WeaponEventSounds].WeaponSound, Index[self.WeaponEventSounds].LoopingFadeInTime)
+  00cf: Index[self.WeaponEventSounds].WeaponAudioComponent = WeaponAudioComponent
+  00eb: goto 0x0125
+  00ee: Index[self.WeaponEventSounds].WeaponAudioComponent = PlayOneshotSound(Index[self.WeaponEventSounds].WeaponSound)
+  0125: return nothing
+  0127: <eos>
+
+function HmWeaponMesh.StopSoundEvent  (script 174 bytes)
+  0000: if !((false == self.EnableSounds)) goto 0x000e
+  000c: return nothing
+  000e: Index = FindSound(SoundEvent)
+  0023: if !((-1 == Index)) goto 0x0034
+  0032: return nothing
+  0034: if !((none == Index[self.WeaponEventSounds].WeaponSound)) goto 0x0052
+  0050: return nothing
+  0052: WeaponAudioComponent = Index[self.WeaponEventSounds].WeaponAudioComponent
+  006e: HmWeaponMesh.StopSound(WeaponAudioComponent, Index[self.WeaponEventSounds].LoopingFadeOutTime)
+  008f: Index[self.WeaponEventSounds].WeaponAudioComponent = WeaponAudioComponent
+  00ab: return nothing
+  00ad: <eos>
+
+function HmWeaponMesh.SetSoundEventLocation  (script 119 bytes)
+  0000: Index = FindSound(SoundEvent)
+  0015: if !((-1 == Index)) goto 0x0026
+  0024: return nothing
+  0026: WeaponAudioComponent = Index[self.WeaponEventSounds].WeaponAudioComponent
+  0042: if !((none == WeaponAudioComponent)) goto 0x004f
+  004d: return nothing
+  004f: WeaponAudioComponent.bUseOwnerLocation = false
+  0060: WeaponAudioComponent.Location = SoundLocation
+  0074: return nothing
+  0076: <eos>
+
+function HmWeaponMesh.StopAllLoopingSoundEvents  (script 137 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.WeaponEventSounds.Length)) goto 0x0086
+  0017: if !(((none != Index[self.WeaponEventSounds].WeaponSound) && Index[self.WeaponEventSounds].WeaponSound.GetIsLooping())) goto 0x007c
+  005c: StopSoundEvent(Index[self.WeaponEventSounds].WeaponEventType)
+  007c: AddAdd_Int(Index)
+  0083: goto 0x0007
+  0086: return nothing
+  0088: <eos>
+
+function HmWeaponMesh.SetWeaponOwner  (script 14 bytes)
+  0000: self.WeaponOwner = P
+  000b: return nothing
+  000d: <eos>
+
+function HmWeaponMesh.StopEvent  (script 33 bytes)
+  0000: if !((self.AnimatedMesh != none)) goto 0x001e
+  000b: self.AnimatedMesh.StopAnimation()
+  001e: return nothing
+  0020: <eos>
+
+function HmWeaponMesh.GetSoundOwner  (script 13 bytes)
+  0000: return self.WeaponOwner
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.PlayOneshotSound  (script 84 bytes)
+  0000: if !(((Sound == none) || (GetSoundOwner() == none))) goto 0x001f
+  001d: return none
+  001f: NewAudioComponent = GetSoundOwner().CreateAudioComponent(Sound, true, true, , , )
+  0047: return NewAudioComponent
+  004d: return return
+  0053: <eos>
+
+function HmWeaponMesh.PlayLoopingSound  (script 227 bytes)
+  0000: default=0.0
+  0009: if !(((none == Sound) || (none == GetSoundOwner()))) goto 0x0028
+  0026: return false
+  0028: if !((((LoopingAudioComponent != none) && LoopingAudioComponent.IsPlaying()) && (LoopingAudioComponent.SoundCue == Sound))) goto 0x0067
+  0065: return true
+  0067: HmWeaponMesh.StopSound(LoopingAudioComponent, FadeInTime)
+  0077: LoopingAudioComponent = GetSoundOwner().CreateAudioComponent(Sound, false, true, , , )
+  009f: if !((none == LoopingAudioComponent)) goto 0x00ac
+  00aa: return false
+  00ac: LoopingAudioComponent.bAutoPlay = true
+  00bd: LoopingAudioComponent.FadeIn(FadeInTime, 1.0)
+  00da: return true
+  00dc: return return
+  00e2: <eos>
+
+function HmWeaponMesh.StopSound  (script 82 bytes)
+  0000: default=0.0
+  0009: if !((none != LoopingAudioComponent)) goto 0x0049
+  0014: LoopingAudioComponent.bAutoDestroy = true
+  0025: LoopingAudioComponent.FadeOut(FadeOutTime, 0.0)
+  0042: LoopingAudioComponent = none
+  0049: return true
+  004b: return return
+  0051: <eos>
+
+function HmWeaponMesh.AttachComponentToAvailableLocation  (script 91 bytes)
+  0000: if !((GetAnimatedMeshComponent() != none)) goto 0x0035
+  0010: GetAnimatedMeshComponent().AttachComponentToSocket(Comp, SocketName)
+  0032: goto 0x0058
+  0035: if !((self.Weapon != none)) goto 0x0058
+  0040: self.Weapon.AttachComponent(Comp)
+  0058: return nothing
+  005a: <eos>
+
+function HmWeaponMesh.DetachComponent  (script 56 bytes)
+  0000: if !((Comp.Owner != none)) goto 0x0035
+  0014: Comp.Owner.DetachComponent(Comp)
+  0035: return nothing
+  0037: <eos>
+
+function HmWeaponMesh.EjectShellCasing  (script 243 bytes)
+  0000: if !((((self.WeaponOwner == none) || SkipEffectBecauseOfFrameRate()) || !self.WeaponOwner.EffectIsRelevant(self.WeaponOwner.Location, false, self.MaxFireEffectDistance))) goto 0x004a
+  0048: return nothing
+  004a: if !(((self.ShellCasingPSCTemplate != none) && (self.ShellCasingPSC == none))) goto 0x00d1
+  0062: self.ShellCasingPSC = new(self.WeaponOwner, nothing, obj'HmParticleSystemComponent', nothing, AttachTreeCallback)
+  007a: HmWeaponMesh.AttachComponentToAvailableLocation(self.ShellCasingPSC, self.ShellCasingSocket)
+  008a: self.ShellCasingPSC.SetTemplate(self.ShellCasingPSCTemplate)
+  00a2: self.ShellCasingPSC.bTickPostPhysicsBlendIn = true
+  00b3: self.ShellCasingPSC.DeactivateSystem()
+  00c6: HmWeaponMesh.OnParticleSystemCreated(self.ShellCasingPSC)
+  00d1: if !((self.ShellCasingPSC != none)) goto 0x00f0
+  00dc: self.ShellCasingPSC.ActivateSystem()
+  00f0: return nothing
+  00f2: <eos>
+
+function HmWeaponMesh.FrameRateGoodEnoughForMuzzleFlashLight  (script 26 bytes)
+  0000: return (cast3a(GetGameThrottle()) < cast3a(2))
+  0013: return return
+  0019: <eos>
+
+function HmWeaponMesh.StartMuzzleFlash  (script 331 bytes)
+  0000: I = FindMuzzleFlash(WeaponEvent)
+  0015: if !((I == -1)) goto 0x003b
+  0024: if !(!self.OnlyStopMuzzleFlashWhenAnotherMuzzleFlashStarts) goto 0x0039
+  002f: StopMuzzleFlash()
+  0039: return nothing
+  003b: StopMuzzleFlash()
+  0045: HmWeaponMesh.AttachMuzzleFlash(WeaponEvent)
+  0050: if !((((self.EnableMuzzleLight && !I[self.MuzzleFlashes].DisableLight) && (self.MuzzleFlashLight != none)) && HmWeaponMesh.FrameRateGoodEnoughForMuzzleFlashLight())) goto 0x00a3
+  008f: self.MuzzleFlashLight.SetEnabled(true)
+  00a3: if !((I[self.MuzzleFlashes].PSComponent != none)) goto 0x00e4
+  00bf: I[self.MuzzleFlashes].PSComponent.ActivateSystem()
+  00e4: if !((self.MuzzleFlashMesh != none)) goto 0x0103
+  00ef: self.MuzzleFlashMesh.SetHidden(false)
+  0103: if !((!I[self.MuzzleFlashes].PSLoops && (none != self.WeaponOwner))) goto 0x0148
+  012c: self.WeaponOwner.SetTimer(self.MuzzleFlashDuration, false, 'StopMuzzleFlashInternal', self)
+  0148: return nothing
+  014a: <eos>
+
+function HmWeaponMesh.ChangeSocket  (script 43 bytes)
+  0000: if !((self.MuzzleFlashSockets.Length > 0)) goto 0x0028
+  000c: self.CurrentSocket = cast44((cast3f((self.CurrentSocket + 1)) % cast3f(self.MuzzleFlashSockets.Length)))
+  0028: return nothing
+  002a: <eos>
+
+function HmWeaponMesh.StopMuzzleFlashInternal  (script 162 bytes)
+  0000: if !((self.MuzzleFlashLight != none)) goto 0x001f
+  000b: self.MuzzleFlashLight.SetEnabled(false)
+  001f: if !((self.MuzzleFlashMesh != none)) goto 0x003e
+  002a: self.MuzzleFlashMesh.SetHidden(true)
+  003e: I = 0
+  0045: if !((I < self.MuzzleFlashes.Length)) goto 0x009f
+  0055: if !((I[self.MuzzleFlashes].PSComponent != none)) goto 0x0095
+  0071: I[self.MuzzleFlashes].PSComponent.DeactivateSystem()
+  0095: AddAdd_PreInt(I)
+  009c: goto 0x0045
+  009f: return nothing
+  00a1: <eos>
+
+function HmWeaponMesh.StopMuzzleFlash  (script 49 bytes)
+  0000: if !((self.WeaponOwner != none)) goto 0x0028
+  000b: self.WeaponOwner.ClearTimer('StopMuzzleFlashInternal', self)
+  0028: HmWeaponMesh.StopMuzzleFlashInternal()
+  002e: return nothing
+  0030: <eos>
+
+function HmWeaponMesh.Initialize  (script 44 bytes)
+  0000: self.Weapon = NewWeapon
+  000b: if !((self.AnimatedMesh != none)) goto 0x0029
+  0016: self.AnimatedMesh.Initialize()
+  0029: return nothing
+  002b: <eos>
+
+function HmWeaponMesh.Attach  (script 280 bytes)
+  0000: self.WeaponOwner = NewWeaponOwner
+  000b: if !((self.ShellCasingPSC != none)) goto 0x0029
+  0016: self.ShellCasingPSC.DeactivateSystem()
+  0029: SetHidden(false)
+  0034: Mesh = GetAnimatedMeshComponent()
+  0044: if !(((Mesh != none) && (Mesh != self.WeaponOwner.Mesh))) goto 0x0115
+  0069: self.AttachToMeshComponent = BaseMesh
+  0074: if !((SocketName != 'None')) goto 0x00a4
+  0087: BaseMesh.AttachComponentToSocket(Mesh, SocketName)
+  00a4: Mesh.SetShadowParent(BaseMesh)
+  00bc: Mesh.SetLightEnvironment(BaseMesh.LightEnvironment)
+  00dd: self.LightEnvironment.SetEnabled(false)
+  00f1: if !((self.WeaponPhysicsAsset != none)) goto 0x0115
+  00fc: Mesh.SetPhysicsAsset(self.WeaponPhysicsAsset, )
+  0115: return nothing
+  0117: <eos>
+
+function HmWeaponMesh.IsAttached  (script 16 bytes)
+  0000: return (self.WeaponOwner != none)
+  0009: return return
+  000f: <eos>
+
+function HmWeaponMesh.Detach  (script 199 bytes)
+  0000: StopMuzzleFlash()
+  000a: HmWeaponMesh.StopLoopTracerEffect()
+  0010: SetHidden(true)
+  001b: Mesh = GetAnimatedMeshComponent()
+  002b: if !((((Mesh != none) && (self.WeaponOwner != none)) && (Mesh != self.WeaponOwner.Mesh))) goto 0x00b3
+  005d: if !((self.AttachToMeshComponent != none)) goto 0x0080
+  0068: self.AttachToMeshComponent.DetachComponent(Mesh)
+  0080: self.AttachToMeshComponent = none
+  0087: Mesh.SetShadowParent(none)
+  009b: Mesh.SetLightEnvironment(self.LightEnvironment)
+  00b3: StopAllLoopingSoundEvents()
+  00bd: self.WeaponOwner = none
+  00c4: return nothing
+  00c6: <eos>
+
+function HmWeaponMesh.SetHolstered  (script 14 bytes)
+  0000: SetHidden(true)
+  000b: return nothing
+  000d: <eos>
+
+function HmWeaponMesh.SetUnholstered  (script 14 bytes)
+  0000: SetHidden(false)
+  000b: return nothing
+  000d: <eos>
+
+function HmWeaponMesh.SetHidden  (script 154 bytes)
+  0000: MeshComp = GetAnimatedMeshComponent()
+  0010: if !((((MeshComp != none) && (self.WeaponOwner != none)) && (MeshComp != self.WeaponOwner.Mesh))) goto 0x008a
+  0042: MeshComp.SetHidden(bNewHidden)
+  005b: if !((MeshComp.PhysicsAsset != none)) goto 0x008a
+  006f: MeshComp.SetHasPhysicsAssetInstance(!bNewHidden)
+  008a: self.IsMeshHidden = bNewHidden
+  0097: return nothing
+  0099: <eos>
+
+function HmWeaponMesh.IsHidden  (script 14 bytes)
+  0000: return self.IsMeshHidden
+  0007: return return
+  000d: <eos>
+
+function HmWeaponMesh.PlayTracerEffect  (script 136 bytes)
+  0000: if !((cast3a(WeaponEvent) == cast3a(12))) goto 0x0016
+  0010: HmWeaponMesh.StopLoopTracerEffect()
+  0016: if !(SkipEffectBecauseOfFrameRate()) goto 0x0025
+  0023: return nothing
+  0025: PSTemplate = GetTracerTemplate(WeaponEvent)
+  003a: if !((PSTemplate == none)) goto 0x0047
+  0045: return nothing
+  0047: if !((cast3a(WeaponEvent) == cast3a(9))) goto 0x006a
+  0057: HmWeaponMesh.PlayLoopTracerEffect(PSTemplate, ImpInfo)
+  0067: goto 0x0085
+  006a: HmWeaponMesh.PlaySingleTracerEffect(PSTemplate, ImpInfo.HitLocation)
+  0085: return nothing
+  0087: <eos>
+
+function HmWeaponMesh.GetTracerTemplate  (script 131 bytes)
+  0000: if !((self.TracerTemplateSequence.Length == 0)) goto 0x0049
+  000c: I = FindTracerTemplate(WeaponEvent)
+  0021: if !((I != -1)) goto 0x0047
+  0030: return I[self.TracerTemplates].TracerTemplate
+  0047: return none
+  0049: SequenceIndex = self.CurrentTracer
+  0054: self.CurrentTracer = cast44((cast3f((self.CurrentTracer + 1)) % cast3f(self.TracerTemplateSequence.Length)))
+  0070: return SequenceIndex[self.TracerTemplateSequence]
+  007c: return return
+  0082: <eos>
+
+function HmWeaponMesh.CreateLoopTracerPSC  (script 26 bytes)
+  0000: return new(self.WeaponOwner, nothing, obj'HmParticleSystemComponent', nothing, AttachTreeCallback)
+  0013: return return
+  0019: <eos>
+
+function HmWeaponMesh.PlayLoopTracerEffect  (script 234 bytes)
+  0000: if !((self.LoopTracerPSC == none)) goto 0x0048
+  000b: self.LoopTracerPSC = CreateLoopTracerPSC()
+  001b: HmWeaponMesh.OnParticleSystemCreated(self.LoopTracerPSC)
+  0026: self.LoopTracerPSC.bTickPostPhysicsBlendIn = true
+  0037: self.LoopTracerPSC.bDeferredBeamUpdate = true
+  0048: if !(!self.LoopTracerPSC.IsActive()) goto 0x00a1
+  0060: HmWeaponMesh.AttachComponentToAvailableLocation(self.LoopTracerPSC, CurrentMuzzleFlashSocket())
+  0075: self.LoopTracerPSC.SetTemplate(PSTemplate)
+  008d: self.LoopTracerPSC.ActivateSystem()
+  00a1: self.LoopTracerPSC.SetTracerEndPoint(ImpInfo.HitLocation)
+  00c4: self.LoopTracerPSC.SetAllBeamsSourceTangent(ImpInfo.RayDir)
+  00e7: return nothing
+  00e9: <eos>
+
+function HmWeaponMesh.StopLoopTracerEffect  (script 68 bytes)
+  0000: if !(((self.LoopTracerPSC != none) && self.LoopTracerPSC.IsActive())) goto 0x0041
+  0023: self.LoopTracerPSC.DeactivateSystem()
+  0036: HmWeaponMesh.DetachComponent(self.LoopTracerPSC)
+  0041: return nothing
+  0043: <eos>
+
+function HmWeaponMesh.GetTracerEmitter  (script 13 bytes)
+  0000: return self.SingleTracerEmitter
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.PlaySingleTracerEffect  (script 192 bytes)
+  0000: GetMuzzleLocationAndRotation(MuzzleLocation, MuzzleRotation)
+  0014: MuzzleToHit = (HitLocation - MuzzleLocation)
+  0026: MuzzleToHitRotation = cast50(MuzzleToHit)
+  0033: DistanceToHit = obj'Core.Math'.static.VSize(MuzzleToHit)
+  0049: if !((DistanceToHit == cast3f(0))) goto 0x0058
+  0056: return nothing
+  0058: PSC = self.WeaponOwner.WorldInfo.GetEmitterPool().SpawnEmitter(PSTemplate, MuzzleLocation, MuzzleToHitRotation, , , )
+  009a: PSC.SetTracerDistance(DistanceToHit)
+  00b2: HmWeaponMesh.OnParticleSystemCreated(PSC)
+  00bd: return nothing
+  00bf: <eos>
+
+function HmWeaponMesh.GetImpactDecalTemplate  (script 13 bytes)
+  0000: return self.DefaultDecal
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.GetImpactSquibTemplate  (script 13 bytes)
+  0000: return self.DefaultSquib
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.GetImpactSound  (script 13 bytes)
+  0000: return self.DefaultImpactSound
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.GetLastUsedSquib  (script 13 bytes)
+  0000: return self.DebugLastUsedSquib
+  0006: return return
+  000c: <eos>
+
+function HmWeaponMesh.CreateSquib  (script 177 bytes)
+  0000: if !(!IsGuidValid(self.SquibBucketGuid)) goto 0x0024
+  0014: self.SquibBucketGuid = CreateGuid()
+  0024: PSC = self.WeaponOwner.WorldInfo.GetEmitterPool().SpawnEmitter(SquibTemplate, Impact.HitLocation, cast50(Impact.HitNormal), none, self.SquibBucketGuid, self.ImpactSquibMaxCount)
+  0086: HmWeaponMesh.OnParticleSystemCreated(PSC)
+  0091: self.DebugLastUsedSquib = SquibTemplate
+  009c: self.TimeSinceLastSquibCreated = 0.0
+  00a7: AddAdd_PreInt(self.NumSquibsCreated)
+  00ae: return nothing
+  00b0: <eos>
+
+function HmWeaponMesh.CreateSquibsFromImpact  (script 106 bytes)
+  0000: if !(HmWeaponMesh.SkipSquibEffect(Impact.HitLocation)) goto 0x001b
+  0019: return nothing
+  001b: SquibTemplate = GetImpactSquibTemplate(Impact.HitInfo.PhysMaterial)
+  0046: if !((none == SquibTemplate)) goto 0x0053
+  0051: return nothing
+  0053: CreateSquib(SquibTemplate, Impact)
+  0067: return nothing
+  0069: <eos>
+
+function HmWeaponMesh.CreateImpactEffects  (script 880 bytes)
+  0000: if !(((((self.WeaponOwner == none) || !self.EnableImpactEffects) || SkipEffectBecauseOfFrameRate()) || !self.WeaponOwner.EffectIsRelevant(Impact.HitLocation, false, self.MaxImpactEffectDistance))) goto 0x0059
+  0057: return nothing
+  0059: PMaterial = Impact.HitInfo.PhysMaterial
+  007a: if !((PMaterial != none)) goto 0x009e
+  0085: MatProp = HmPhysicalMaterialProperty(PMaterial.PhysicalMaterialProperty)
+  009e: HitPawn = Pawn(Impact.HitActor)
+  00b9: if !(((Impact.HitActor != none) && ((HitPawn == none) || HitPawn.AllowHitEffects))) goto 0x013a
+  00f0: CreateSquibsFromImpact(Impact)
+  00ff: ImpactSound = GetImpactSound(Impact)
+  0114: if !((ImpactSound != none)) goto 0x013a
+  011f: HmWeaponMesh.PlaySoundAt(ImpactSound, Impact.HitLocation)
+  013a: if !((((Impact.HitActor != none) && (MatProp != none)) && !MatProp.NoDecal)) goto 0x036d
+  0173: foundTemplate = GetImpactDecalTemplate(Impact)
+  0188: if !((foundTemplate.Material != none)) goto 0x036d
+  019e: decalScale = obj'Core.Random'.static.FRand()
+  01af: decalDepthBias = (-0.00015 + (obj'Core.Random'.static.FRand() * -0.0001))
+  01ce: self.WeaponOwner.WorldInfo.MyDecalManager.SpawnDecal(foundTemplate.Material, Impact.HitLocation, cast50(-Impact.HitNormal), (foundTemplate.MinWidth + (decalScale * foundTemplate.WidthRange)), (foundTemplate.MinHeight + ((foundTemplate.UniformScale ? decalScale : obj'Core.Random'.static.FRand()) * foundTemplate.HeightRange)), foundTemplate.Thickness, foundTemplate.NoClip, foundTemplate.Lifetime, cast3f((MatProp.ApplyRandomRotationToDecal ? obj'Core.Random'.static.RandomInt(65536) : 0)), Impact.HitInfo.HitComponent, true, true, Impact.HitInfo.BoneName, Impact.HitInfo.Item, Impact.HitInfo.LevelIndex, decalDepthBias)
+  036d: return nothing
+  036f: <eos>
+
+function HmWeaponMesh.PlaySoundAt  (script 131 bytes)
+  0000: AC = self.WeaponOwner.WorldInfo.CreateAudioComponent(ASound, false, true, , , )
+  002c: if !((AC != none)) goto 0x0080
+  0037: AC.bUseOwnerLocation = false
+  0048: AC.Location = SourceLocation
+  005c: AC.bAutoDestroy = true
+  006d: AC.Play()
+  0080: return nothing
+  0082: <eos>
+
+function HmWeaponMesh.PlayAnimation  (script 58 bytes)
+  0000: nothing
+  0001: if !((self.AnimatedMesh != none)) goto 0x0037
+  000c: self.AnimatedMesh.PlayAnimation(AnimationName, bLoop, !bLoop, PlayRate)
+  0037: return nothing
+  0039: <eos>
+
+function HmWeaponMesh.OnParticleSystemCreated  (script 43 bytes)
+  0000: if !((self.Parameters != none)) goto 0x0028
+  000b: self.Parameters.Apply(PSC, self.WeaponOwner)
+  0028: return nothing
+  002a: <eos>
+
+function HmWeaponMesh.FindTracerTemplate  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < self.TracerTemplates.Length)) goto 0x004b
+  0017: if !((cast3a(I[self.TracerTemplates].WeaponEventType) == cast3a(WeaponEvent))) goto 0x0041
+  003b: return I
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return -1
+  0051: return return
+  0057: <eos>
+
+function HmWeaponMesh.FindMuzzleFlash  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < self.MuzzleFlashes.Length)) goto 0x004b
+  0017: if !((cast3a(I[self.MuzzleFlashes].WeaponEventType) == cast3a(WeaponEvent))) goto 0x0041
+  003b: return I
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return -1
+  0051: return return
+  0057: <eos>
+
+function HmWeaponMesh.FindSound  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < self.WeaponEventSounds.Length)) goto 0x004b
+  0017: if !((cast3a(I[self.WeaponEventSounds].WeaponEventType) == cast3a(WeaponEvent))) goto 0x0041
+  003b: return I
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return -1
+  0051: return return
+  0057: <eos>
+
+function HmWeaponMesh.FindAnim  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < self.WeaponEventAnims.Length)) goto 0x004b
+  0017: if !((cast3a(I[self.WeaponEventAnims].WeaponEventType) == cast3a(WeaponEvent))) goto 0x0041
+  003b: return I
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return -1
+  0051: return return
+  0057: <eos>

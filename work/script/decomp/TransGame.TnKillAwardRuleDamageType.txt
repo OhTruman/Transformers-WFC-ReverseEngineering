@@ -1,0 +1,12 @@
+function TnKillAwardRuleDamageType.CheckRule  (script 232 bytes)
+  0000: I = 0
+  0007: if !((I < self.DamageChecks.Length)) goto 0x00e5
+  0017: if !(ClassIsChildOf(DamageType, I[self.DamageChecks].DamageType)) goto 0x00db
+  0038: if !((I[self.DamageChecks].XpEvent != none)) goto 0x007d
+  0054: Killer.NotifyXpEvent(I[self.DamageChecks].XpEvent)
+  007d: if !((I[self.DamageChecks].StatId != -1)) goto 0x00db
+  009d: TnPlayerReplicationInfo(Killer.PlayerReplicationInfo).IncrementGameStat(1.0, I[self.DamageChecks].StatId, 0)
+  00db: AddAdd_PreInt(I)
+  00e2: goto 0x0007
+  00e5: return nothing
+  00e7: <eos>

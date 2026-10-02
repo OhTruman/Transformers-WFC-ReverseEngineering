@@ -1,0 +1,55 @@
+function TnPointOfInterestManager.set_Command  (script 14 bytes)
+  0000: self._Command = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPointOfInterestManager.Initialize  (script 14 bytes)
+  0000: self.Owner = PC
+  000b: return nothing
+  000d: <eos>
+
+function TnPointOfInterestManager.Add  (script 113 bytes)
+  0000: if !((self.ActivePointOfInterest != none)) goto 0x000d
+  000b: return nothing
+  000d: self.ActivePointOfInterest = PointOfInterest
+  0018: self.Owner.ClientPlaySound(PointOfInterest._FocusAvailableSound)
+  0039: self._Command.PointOfInterest = PointOfInterest
+  004d: self.Owner.ContextualCommander.RegisterContextualCommand(self._Command)
+  006e: return nothing
+  0070: <eos>
+
+function TnPointOfInterestManager.Remove  (script 77 bytes)
+  0000: if !((PointOfInterest != self.ActivePointOfInterest)) goto 0x0011
+  000f: return nothing
+  0011: StopFocus()
+  001b: self.Owner.ContextualCommander.UnregisterContextualCommand(self._Command.get_Class())
+  0043: self.ActivePointOfInterest = none
+  004a: return nothing
+  004c: <eos>
+
+function TnPointOfInterestManager.Reset  (script 34 bytes)
+  0000: Remove(self.ActivePointOfInterest)
+  000f: self._Command.PointOfInterest = none
+  001f: return nothing
+  0021: <eos>
+
+function TnPointOfInterestManager.IsFocusing  (script 14 bytes)
+  0000: return self.bFocusing
+  0007: return return
+  000d: <eos>
+
+function TnPointOfInterestManager.StartFocus  (script 90 bytes)
+  0000: if !((self.ActivePointOfInterest == none)) goto 0x000d
+  000b: return nothing
+  000d: self.bFocusing = true
+  0015: self.Owner._CameraStrategyManager.StartFocus(self.ActivePointOfInterest.get_FocusActor(), self.ActivePointOfInterest.get_FOV())
+  0057: return nothing
+  0059: <eos>
+
+function TnPointOfInterestManager.StopFocus  (script 61 bytes)
+  0000: CameraStrategyManager = self.Owner._CameraStrategyManager
+  0014: if !((CameraStrategyManager != none)) goto 0x0032
+  001f: CameraStrategyManager.StopFocus()
+  0032: self.bFocusing = false
+  003a: return nothing
+  003c: <eos>

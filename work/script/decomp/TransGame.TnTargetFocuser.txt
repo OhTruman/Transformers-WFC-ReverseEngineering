@@ -1,0 +1,36 @@
+function TnTargetFocuser.SetTargetFocusParams  (script 22 bytes)
+  0000: self.CurrentTargetFocusParams = FocusParams
+  000b: self.IsEnabled = true
+  0013: return nothing
+  0015: <eos>
+
+function TnTargetFocuser.ClearTargetFocusParams  (script 11 bytes)
+  0000: self.IsEnabled = false
+  0008: return nothing
+  000a: <eos>
+
+function TnTargetFocuser.DOFTrace  (script 91 bytes)
+  0000: HitActor = TraceOwner.Trace(HitLocation, HitNormal, none, EndTrace, StartTrace, true, vect(0,0,0), , , 1)
+  0038: if !((HitActor == none)) goto 0x004e
+  0043: HitLocation = EndTrace
+  004e: return HitLocation
+  0054: return return
+  005a: <eos>
+
+function TnTargetFocuser.ModifyPostProcessSettings  (script 387 bytes)
+  0000: if !(!self.IsEnabled) goto 0x000d
+  000b: return nothing
+  000d: PP.bEnableDOF = true
+  0020: PP.DOF_FalloffExponent = self.CurrentTargetFocusParams.DOF_FalloffExponent
+  0041: PP.DOF_BlurKernelSize = self.CurrentTargetFocusParams.DOF_BlurKernelSize
+  0062: PP.DOF_MaxNearBlurAmount = self.CurrentTargetFocusParams.DOF_MaxNearBlurAmount
+  0083: PP.DOF_MaxFarBlurAmount = self.CurrentTargetFocusParams.DOF_MaxFarBlurAmount
+  00a4: PP.DOF_FocusNearFalloff = self.CurrentTargetFocusParams.DOF_FocusSize
+  00c5: PP.DOF_FocusFarFalloff = self.CurrentTargetFocusParams.DOF_FocusSize
+  00e6: PP.DOF_FocusType = 0
+  00f9: StartTrace = Cam.GetCameraLocation()
+  0112: EndTrace = (StartTrace + (cast39(Cam.GetCameraRotation()) * cast3f(50000)))
+  013d: FocusLoc = TnTargetFocuser.DOFTrace(Cam, StartTrace, EndTrace)
+  0158: PP.DOF_FocusDistance = obj'Core.Math'.static.VSize((FocusLoc - StartTrace))
+  0180: return nothing
+  0182: <eos>

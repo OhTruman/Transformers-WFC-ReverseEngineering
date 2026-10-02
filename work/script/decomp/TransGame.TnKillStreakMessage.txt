@@ -1,0 +1,48 @@
+function TnKillStreakMessage.ClientReceive  (script 143 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !((((RelatedPRI_1 == none) || (P == none)) || (P.myHUD == none))) goto 0x0034
+  0032: return nothing
+  0034: CS = GetColoredString(Switch, P.PlayerReplicationInfo, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0066: TnHUD(P.myHUD).ColoredLocalizedMessage(CS)
+  008c: return nothing
+  008e: <eos>
+
+function TnKillStreakMessage.GetLocalStreakerMessage  (script 163 bytes)
+  0000: StringReplacements.Insert(0,1)
+  0008: 0[StringReplacements].SourceString = "`n"
+  001f: 0[StringReplacements].DestString = cast53(MessageSwitch)
+  0039: 0[StringReplacements].DestStringColor = obj'TnMessageTextColors'.static.default.NeutralColor
+  005a: UnparsedMsg = default.LocalStreakerMessage
+  0065: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  0096: return CS
+  009c: return return
+  00a2: <eos>
+
+function TnKillStreakMessage.GetRemoteStreakerMessage  (script 273 bytes)
+  0000: StringReplacements.Insert(0,2)
+  0009: 0[StringReplacements].SourceString = "`k"
+  0020: 0[StringReplacements].DestString = RelatedPRI_1.GetPlayerAlias()
+  0046: 0[StringReplacements].DestStringColor = obj'TnMessageHelpers'.static.GetColorForPRI(LocalPlayerPRI, RelatedPRI_1)
+  0076: 1[StringReplacements].SourceString = "`n"
+  008d: 1[StringReplacements].DestString = cast53(MessageSwitch)
+  00a7: 1[StringReplacements].DestStringColor = obj'TnMessageTextColors'.static.default.NeutralColor
+  00c8: UnparsedMsg = default.RemoteStreakerMessage
+  00d3: CS = obj'TnMessageHelpers'.static.ParseMessageIntoColoredString(UnparsedMsg, StringReplacements, obj'TnMessageTextColors'.static.default.NeutralColor)
+  0104: return CS
+  010a: return return
+  0110: <eos>
+
+function TnKillStreakMessage.GetColoredString  (script 66 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: nothing
+  0005: if !((RelatedPRI_1 == LocalPlayerPRI)) goto 0x0025
+  0014: return TnKillStreakMessage.GetLocalStreakerMessage(MessageSwitch, LocalPlayerPRI)
+  0025: return TnKillStreakMessage.GetRemoteStreakerMessage(MessageSwitch, LocalPlayerPRI, RelatedPRI_1)
+  003b: return return
+  0041: <eos>

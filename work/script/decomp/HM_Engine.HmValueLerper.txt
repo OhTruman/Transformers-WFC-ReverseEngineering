@@ -1,0 +1,39 @@
+function HmValueLerper.Initialize  (script 36 bytes)
+  0000: self.StartValue = Start
+  000b: self.EndValue = End
+  0016: self.CurTime = 0.0
+  0021: return nothing
+  0023: <eos>
+
+function HmValueLerper.SetRampTime  (script 76 bytes)
+  0000: if !((self.RampTime == cast3f(0))) goto 0x001a
+  000d: self.RampTime = NewRampTime
+  0018: return nothing
+  001a: NormalizedTime = (self.CurTime / self.RampTime)
+  002c: self.RampTime = NewRampTime
+  0037: self.CurTime = (self.RampTime * NormalizedTime)
+  0049: return nothing
+  004b: <eos>
+
+function HmValueLerper.GetValue  (script 60 bytes)
+  0000: if !((self.RampTime == cast3f(0))) goto 0x0013
+  000d: return self.StartValue
+  0013: return (self.StartValue + ((self.EndValue - self.StartValue) * (self.CurTime / self.RampTime)))
+  0035: return return
+  003b: <eos>
+
+function HmValueLerper.Update  (script 47 bytes)
+  0000: (self.CurTime += DeltaTime)
+  000c: self.CurTime = obj'Core.Math'.static.FClamp(self.CurTime, 0.0, self.RampTime)
+  002c: return nothing
+  002e: <eos>
+
+function HmValueLerper.SetTime  (script 14 bytes)
+  0000: self.CurTime = Time
+  000b: return nothing
+  000d: <eos>
+
+function HmValueLerper.IsDoneLerping  (script 20 bytes)
+  0000: return (self.CurTime >= self.RampTime)
+  000d: return return
+  0013: <eos>

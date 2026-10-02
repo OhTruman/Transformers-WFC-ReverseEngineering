@@ -1,0 +1,315 @@
+function HmDebugScreenshotCameraBehavior.Update  (script 281 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: DM = WI.GetDebugManager()
+  0032: DM.FlushPersistentDebugText()
+  0045: HmDebugScreenshotCameraBehavior.UpdateKeys(CI)
+  0050: if !((self.SpawnedLights.Length <= 0)) goto 0x0064
+  005c: self.LightMode = 0
+  0064: if !((cast3a(self.LightMode) == cast3a(1))) goto 0x009d
+  0074: Result = HmDebugScreenshotCameraBehavior.LightMoveUpdate(DeltaTime, Result, CI)
+  008f: HmDebugScreenshotCameraBehavior.LightMoveOutput(DM)
+  009a: goto 0x010c
+  009d: if !((cast3a(self.LightMode) == cast3a(2))) goto 0x00d6
+  00ad: Result = HmDebugScreenshotCameraBehavior.LightEditUpdate(DeltaTime, Result, CI)
+  00c8: HmDebugScreenshotCameraBehavior.LightEditOutput(DM)
+  00d3: goto 0x010c
+  00d6: if !((cast3a(self.LightMode) == cast3a(0))) goto 0x010c
+  00e6: Result = HmDebugScreenshotCameraBehavior.CameraUpdate(DeltaTime, Result, CI)
+  0101: HmDebugScreenshotCameraBehavior.CameraOutput(DM)
+  010c: return Result
+  0112: return return
+  0118: <eos>
+
+function HmDebugScreenshotCameraBehavior.Deactivate  (script 59 bytes)
+  0000: Result = HmCameraBehavior.Deactivate(Result)
+  0011: foreach self.SpawnedLights(DebugLight,) (end 0x002d)
+  0020: DebugLight.DestroyActor()
+  002c: iternext
+  002d: iterpop
+  002e: return Result
+  0034: return return
+  003a: <eos>
+
+function HmDebugScreenshotCameraBehavior.CameraUpdate  (script 547 bytes)
+  0000: LightColor = MakeColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0020: LightBrightness = 1.0
+  002b: LightRadius = 1024.0
+  0036: SelectedLight = HmDebugScreenshotCameraBehavior.GetLight(self.SelectedLightIndex)
+  0047: if !((SelectedLight != none)) goto 0x00c2
+  0052: SelectedLightComponent = SelectedLight.GetLightComponent()
+  006b: SelectedPointLightComponent = PointLightComponent(SelectedLightComponent)
+  007b: LightColor = SelectedLightComponent.LightColor
+  008f: LightBrightness = SelectedLightComponent.Brightness
+  00a3: if !((SelectedPointLightComponent != none)) goto 0x00c2
+  00ae: LightRadius = SelectedPointLightComponent.Radius
+  00c2: if !((self.KeysDown.Find('XboxTypeS_B') != -1)) goto 0x00f1
+  00dd: if !((self.SpawnedLights.Length > 0)) goto 0x00f1
+  00e9: self.LightMode = 2
+  00f1: if !((self.KeysDown.Find('XboxTypeS_X') != -1)) goto 0x01ad
+  010c: if !((cast3a(self.NewLightType) == cast3a(0))) goto 0x015e
+  011c: HmDebugScreenshotCameraBehavior.SpawnLight(obj'Engine.PointLightSpawnable', Result.Location, Result.Rotation, LightRadius, 2.0, LightBrightness, LightColor)
+  015b: goto 0x01ad
+  015e: if !((cast3a(self.NewLightType) == cast3a(1))) goto 0x01ad
+  016e: HmDebugScreenshotCameraBehavior.SpawnLight(obj'Engine.SpotLightSpawnable', Result.Location, Result.Rotation, LightRadius, 2.0, LightBrightness, LightColor)
+  01ad: if !((self.KeysDown.Find('XboxTypeS_DPad_Left') != -1)) goto 0x0206
+  01c8: if !((cast3a(self.NewLightType) == cast3a(0))) goto 0x01e3
+  01d8: self.NewLightType = 1
+  01e0: goto 0x0206
+  01e3: if !((cast3a(self.NewLightType) == cast3a(1))) goto 0x01fe
+  01f3: self.NewLightType = 0
+  01fb: goto 0x0206
+  01fe: self.NewLightType = 0
+  0206: return HmDebugQuicktimeShotCameraBehavior.Update(DeltaTime, Result, CI)
+  021c: return return
+  0222: <eos>
+
+function HmDebugScreenshotCameraBehavior.CameraOutput  (script 891 bytes)
+  0000: TextPos.X = 640.0
+  0016: TextPos.Y = 32.0
+  002c: DM.AddDebugText(TextPos, "***Camera Mode***", 0, cast3d(255), cast3d(255), true, true)
+  0063: (TextPos.Y += cast3f((2 * 16)))
+  007d: DM.AddDebugText(TextPos, "Move Camera: Left Thumbstick", cast3d(255), cast3d(255), cast3d(255), true, true)
+  00c1: (TextPos.Y += cast3f(16))
+  00d7: DM.AddDebugText(TextPos, "Rotate Camera: Right Thumbstick", cast3d(255), cast3d(255), cast3d(255), true, true)
+  011e: (TextPos.Y += cast3f(16))
+  0134: DM.AddDebugText(TextPos, "Camera Up/Down: Y / A", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0171: (TextPos.Y += cast3f(16))
+  0187: DM.AddDebugText(TextPos, "Camera Roll: Left Trigger / Right Trigger (Reset: Right DPad)", cast3d(255), cast3d(255), cast3d(255), true, true)
+  01ec: (TextPos.Y += cast3f(16))
+  0202: DM.AddDebugText(TextPos, "Camera FOV: DPad Up / DPad Down", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0249: (TextPos.Y += cast3f((2 * 16)))
+  0263: DM.AddDebugText(TextPos, (("Add New " $ HmDebugScreenshotCameraBehavior.GetNewLightTypeString()) $ " Light: X"), cast3d(255), cast3d(255), cast3d(255), true, true)
+  02a8: (TextPos.Y += cast3f(16))
+  02be: DM.AddDebugText(TextPos, "Change New Light Type: Left DPad", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0306: (TextPos.Y += cast3f(16))
+  031c: if !((self.SpawnedLights.Length > 0)) goto 0x0378
+  0328: DM.AddDebugText(TextPos, "Light Edit Mode: B", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0362: (TextPos.Y += cast3f(16))
+  0378: return nothing
+  037a: <eos>
+
+function HmDebugScreenshotCameraBehavior.LightEditUpdate  (script 832 bytes)
+  0000: SelectedLight = HmDebugScreenshotCameraBehavior.GetLight(self.SelectedLightIndex)
+  0011: if !((SelectedLight == none)) goto 0x0022
+  001c: return Result
+  0022: SelectedLightComponent = SelectedLight.GetLightComponent()
+  003b: LightColor = SelectedLightComponent.LightColor
+  004f: LightBrightness = SelectedLightComponent.Brightness
+  0063: SelectedPointLightComponent = PointLightComponent(SelectedLightComponent)
+  0073: if !((SelectedPointLightComponent != none)) goto 0x0122
+  007e: LightRadius = SelectedPointLightComponent.Radius
+  0092: if !((self.KeysPressed.Find('XboxTypeS_LeftTrigger') != -1)) goto 0x00dc
+  00ad: (LightRadius -= cast3f(128))
+  00b8: (LightBrightness -= 1e-06)
+  00c4: if !((LightRadius < cast3f(0))) goto 0x00dc
+  00d1: LightRadius = 0.0
+  00dc: if !((self.KeysPressed.Find('XboxTypeS_RightTrigger') != -1)) goto 0x010e
+  00f7: (LightRadius += cast3f(128))
+  0102: (LightBrightness += 1e-06)
+  010e: SelectedPointLightComponent.Radius = LightRadius
+  0122: Result.Location = SelectedLight.Location
+  0141: Result.Rotation = SelectedLight.Rotation
+  0160: if !((self.KeysDown.Find('XboxTypeS_Y') != -1)) goto 0x0186
+  017b: HmDebugScreenshotCameraBehavior.RemoveLight(self.SelectedLightIndex)
+  0186: if !((self.KeysDown.Find('XboxTypeS_X') != -1)) goto 0x01a9
+  01a1: self.LightMode = 1
+  01a9: if !((self.KeysDown.Find('XboxTypeS_B') != -1)) goto 0x01cc
+  01c4: self.LightMode = 0
+  01cc: if !((self.KeysDown.Find('XboxTypeS_RightShoulder') != -1)) goto 0x01f4
+  01e7: HmDebugScreenshotCameraBehavior.SetSelectedLightIndex(AddAdd_PreInt(self.SelectedLightIndex))
+  01f4: if !((self.KeysDown.Find('XboxTypeS_LeftShoulder') != -1)) goto 0x021c
+  020f: HmDebugScreenshotCameraBehavior.SetSelectedLightIndex(SubtractSubtract_PreInt(self.SelectedLightIndex))
+  021c: LightColor.R = HmDebugScreenshotCameraBehavior.UpdateByteColor(LightColor.R, CI.LeftStickInputX)
+  0253: LightColor.G = HmDebugScreenshotCameraBehavior.UpdateByteColor(LightColor.G, CI.LeftStickInputY)
+  028a: LightColor.B = HmDebugScreenshotCameraBehavior.UpdateByteColor(LightColor.B, CI.RightStickInputX)
+  02c1: if !(((CI.RightStickInputY > 0.6) || (CI.RightStickInputY < -0.6))) goto 0x0315
+  02f7: (LightBrightness += (CI.RightStickInputY / 10.0))
+  0315: SelectedLightComponent.SetLightProperties(LightBrightness, LightColor, )
+  0333: return Result
+  0339: return return
+  033f: <eos>
+
+function HmDebugScreenshotCameraBehavior.LightEditOutput  (script 1419 bytes)
+  0000: SelectedLight = HmDebugScreenshotCameraBehavior.GetLight(self.SelectedLightIndex)
+  0011: if !((SelectedLight == none)) goto 0x001e
+  001c: return nothing
+  001e: TextPos.X = 640.0
+  0034: TextPos.Y = 32.0
+  004a: SelectedLightComponent = SelectedLight.GetLightComponent()
+  0063: SelectedPointLightComponent = PointLightComponent(SelectedLightComponent)
+  0073: LightColor = SelectedLightComponent.LightColor
+  0087: LightBrightness = SelectedLightComponent.Brightness
+  009b: DM.AddDebugText(TextPos, "***Light Edit Mode***", cast3d(255), cast3d(255), 0, true, true)
+  00d6: (TextPos.Y += cast3f((2 * 16)))
+  00f0: DM.AddDebugText(TextPos, ("Light Index: " $ cast53(self.SelectedLightIndex)), cast3d(255), cast3d(255), cast3d(255), true, true)
+  012e: (TextPos.Y += cast3f((2 * 16)))
+  0148: DM.AddDebugText(TextPos, ((((("Light Color: " $ cast52(LightColor.R)) $ ",") $ cast52(LightColor.G)) $ ",") $ cast52(LightColor.B)), LightColor.R, LightColor.G, LightColor.B, true, true)
+  01e7: (TextPos.Y += cast3f(16))
+  01fd: DM.AddDebugText(TextPos, "Change Color: Red - Left stick X axis, Green - Left stick Y axis, Blue - Right stick X axis", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0280: (TextPos.Y += cast3f((2 * 16)))
+  029a: DM.AddDebugText(TextPos, ("Light Brightness: " $ cast55(LightBrightness)), cast3d(255), cast3d(255), cast3d(255), true, true)
+  02dd: (TextPos.Y += cast3f(16))
+  02f3: DM.AddDebugText(TextPos, "Change Brightness: Right stick Y axis", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0340: (TextPos.Y += cast3f((2 * 16)))
+  035a: if !((SelectedPointLightComponent != none)) goto 0x043b
+  0365: LightRadius = SelectedPointLightComponent.Radius
+  0379: DM.AddDebugText(TextPos, ("Light Radius: " $ cast55(LightRadius)), cast3d(255), cast3d(255), cast3d(255), true, true)
+  03b8: (TextPos.Y += cast3f(16))
+  03ce: DM.AddDebugText(TextPos, "Change Radius: Left Trigger / Right Trigger", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0421: (TextPos.Y += cast3f((2 * 16)))
+  043b: DM.AddDebugText(TextPos, "Delete Current Light: Y", cast3d(255), cast3d(255), cast3d(255), true, true)
+  047a: (TextPos.Y += cast3f(16))
+  0490: DM.AddDebugText(TextPos, "Change Current Light: Left Shoulder / Right Shoulder", cast3d(255), cast3d(255), cast3d(255), true, true)
+  04ec: (TextPos.Y += cast3f(16))
+  0502: DM.AddDebugText(TextPos, "Light Move Mode: X", cast3d(255), cast3d(255), cast3d(255), true, true)
+  053c: (TextPos.Y += cast3f(16))
+  0552: DM.AddDebugText(TextPos, "Camera Mode: B", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0588: return nothing
+  058a: <eos>
+
+function HmDebugScreenshotCameraBehavior.LightMoveUpdate  (script 537 bytes)
+  0000: CI = CITemp
+  000b: SelectedLight = HmDebugScreenshotCameraBehavior.GetLight(self.SelectedLightIndex)
+  001c: if !((SelectedLight != none)) goto 0x0065
+  0027: Result.Location = SelectedLight.Location
+  0046: Result.Rotation = SelectedLight.Rotation
+  0065: CI.PressedKeys.RemoveItem('XboxTypeS_RightTrigger')
+  0081: CI.PressedKeys.RemoveItem('XboxTypeS_LeftTrigger')
+  009d: CI.PressedKeys.RemoveItem('XboxTypeS_DPad_Up')
+  00b9: CI.PressedKeys.RemoveItem('XboxTypeS_DPad_Down')
+  00d5: CI.PressedKeys.RemoveItem('XboxTypeS_DPad_Right')
+  00f1: CI.PressedKeys.RemoveItem('XboxTypeS_DPad_Left')
+  010d: Result = HmDebugQuicktimeShotCameraBehavior.Update(DeltaTime, Result, CI)
+  0128: if !((SelectedLight != none)) goto 0x014f
+  0133: SelectedLight.SetRotation(Result.Rotation)
+  014f: if !((SelectedLight != none)) goto 0x0176
+  015a: SelectedLight.SetLocation(Result.Location)
+  0176: if !((self.KeysDown.Find('XboxTypeS_X') != -1)) goto 0x0199
+  0191: self.LightMode = 2
+  0199: if !((self.KeysDown.Find('XboxTypeS_B') != -1)) goto 0x01bc
+  01b4: self.LightMode = 0
+  01bc: if !((self.KeysDown.Find('XboxTypeS_RightShoulder') != -1)) goto 0x01e4
+  01d7: HmDebugScreenshotCameraBehavior.SetSelectedLightIndex(AddAdd_PreInt(self.SelectedLightIndex))
+  01e4: if !((self.KeysDown.Find('XboxTypeS_LeftShoulder') != -1)) goto 0x020c
+  01ff: HmDebugScreenshotCameraBehavior.SetSelectedLightIndex(SubtractSubtract_PreInt(self.SelectedLightIndex))
+  020c: return Result
+  0212: return return
+  0218: <eos>
+
+function HmDebugScreenshotCameraBehavior.LightMoveOutput  (script 981 bytes)
+  0000: SelectedLight = HmDebugScreenshotCameraBehavior.GetLight(self.SelectedLightIndex)
+  0011: if !((SelectedLight == none)) goto 0x001e
+  001c: return nothing
+  001e: LightLocation = SelectedLight.Location
+  0032: LightRotation = SelectedLight.Rotation
+  0046: TextPos.X = 640.0
+  005c: TextPos.Y = 32.0
+  0072: DM.AddDebugText(TextPos, "***Light Move Mode***", cast3d(255), 0, 0, true, true)
+  00ab: (TextPos.Y += cast3f((2 * 16)))
+  00c5: DM.AddDebugText(TextPos, ("Light Index: " $ cast53(self.SelectedLightIndex)), cast3d(255), cast3d(255), cast3d(255), true, true)
+  0103: (TextPos.Y += cast3f((2 * 16)))
+  011d: DM.AddDebugText(TextPos, ("Light Location: " $ cast58(LightLocation)), cast3d(255), cast3d(255), cast3d(255), true, true)
+  015e: (TextPos.Y += cast3f(16))
+  0174: DM.AddDebugText(TextPos, ("Light Rotation: " $ cast59(LightRotation)), cast3d(255), cast3d(255), cast3d(255), true, true)
+  01b5: (TextPos.Y += cast3f((2 * 16)))
+  01cf: DM.AddDebugText(TextPos, "Move Light: Left Thumbstick", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0212: (TextPos.Y += cast3f(16))
+  0228: DM.AddDebugText(TextPos, "Rotate Light: Right Thumbstick", cast3d(255), cast3d(255), cast3d(255), true, true)
+  026e: (TextPos.Y += cast3f(16))
+  0284: DM.AddDebugText(TextPos, "Light Up/Down: Y / A", cast3d(255), cast3d(255), cast3d(255), true, true)
+  02c0: (TextPos.Y += cast3f((2 * 16)))
+  02da: DM.AddDebugText(TextPos, "Change Current Light: Left Shoulder / Right Shoulder", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0336: (TextPos.Y += cast3f(16))
+  034c: DM.AddDebugText(TextPos, "Light Edit Mode: X", cast3d(255), cast3d(255), cast3d(255), true, true)
+  0386: (TextPos.Y += cast3f(16))
+  039c: DM.AddDebugText(TextPos, "Camera Mode: B", cast3d(255), cast3d(255), cast3d(255), true, true)
+  03d2: return nothing
+  03d4: <eos>
+
+function HmDebugScreenshotCameraBehavior.UpdateByteColor  (script 130 bytes)
+  0000: if !((obj'Core.Math'.static.Abs(DeltaValue) < 0.5)) goto 0x0020
+  001a: return ColorValue
+  0020: DeltaValue = ((DeltaValue * 3.0) + 0.5)
+  0039: FinalValue = (cast3c(ColorValue) + DeltaValue)
+  004d: if !((FinalValue > 255.0)) goto 0x0061
+  005c: return cast3d(255)
+  0061: if !((FinalValue < 0.0)) goto 0x0073
+  0070: return 0
+  0073: return cast43(FinalValue)
+  007b: return return
+  0081: <eos>
+
+function HmDebugScreenshotCameraBehavior.SpawnLight  (script 265 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: Rotation.Roll = 0
+  002b: NewLight = WI.Spawn(LightClass, , , Location, Rotation, , , )
+  0058: if !((NewLight == none)) goto 0x0065
+  0063: return nothing
+  0065: NewLightComponent = NewLight.GetLightComponent()
+  007e: NewPointLightComponent = PointLightComponent(NewLightComponent)
+  008e: if !((NewPointLightComponent != none)) goto 0x00c1
+  0099: NewPointLightComponent.Radius = Radius
+  00ad: NewPointLightComponent.FalloffExponent = FalloffExponent
+  00c1: NewLightComponent.SetLightProperties(Brightness, LightColor, )
+  00df: self.SpawnedLights.AddItem(NewLight)
+  00ec: SpawnedLightIndex = (self.SpawnedLights.Length - 1)
+  00fb: HmDebugScreenshotCameraBehavior.SetSelectedLightIndex(SpawnedLightIndex)
+  0106: return nothing
+  0108: <eos>
+
+function HmDebugScreenshotCameraBehavior.RemoveLight  (script 86 bytes)
+  0000: RemoveLight = HmDebugScreenshotCameraBehavior.GetLight(LightIndex)
+  0011: if !((RemoveLight == none)) goto 0x001e
+  001c: return nothing
+  001e: RemoveLight.DestroyActor()
+  002a: self.SpawnedLights.Remove(LightIndex,1)
+  0036: if !((self.SelectedLightIndex >= LightIndex)) goto 0x0053
+  0045: HmDebugScreenshotCameraBehavior.SetSelectedLightIndex((self.SelectedLightIndex - 1))
+  0053: return nothing
+  0055: <eos>
+
+function HmDebugScreenshotCameraBehavior.GetLight  (script 50 bytes)
+  0000: if !(((LightIndex < 0) || (LightIndex >= self.SpawnedLights.Length))) goto 0x001f
+  001d: return none
+  001f: return LightIndex[self.SpawnedLights]
+  002b: return return
+  0031: <eos>
+
+function HmDebugScreenshotCameraBehavior.SetSelectedLightIndex  (script 63 bytes)
+  0000: self.SelectedLightIndex = LightIndex
+  000b: if !((self.SelectedLightIndex >= self.SpawnedLights.Length)) goto 0x0022
+  001b: self.SelectedLightIndex = 0
+  0022: if !((self.SelectedLightIndex < 0)) goto 0x003c
+  002d: self.SelectedLightIndex = (self.SpawnedLights.Length - 1)
+  003c: return nothing
+  003e: <eos>
+
+function HmDebugScreenshotCameraBehavior.UpdateKeys  (script 159 bytes)
+  0000: self.KeysDown.Length = 0
+  0008: self.KeysUp.Length = 0
+  0010: foreach CI.PressedKeys(ActiveKey,) (end 0x005f)
+  002a: if !((self.KeysPressed.Find(ActiveKey) == -1)) goto 0x0051
+  0041: self.KeysDown.AddItem(ActiveKey)
+  004e: goto 0x005e
+  0051: self.KeysPressed.RemoveItem(ActiveKey)
+  005e: iternext
+  005f: iterpop
+  0060: foreach self.KeysPressed(ActiveKey,) (end 0x007d)
+  006f: self.KeysUp.AddItem(ActiveKey)
+  007c: iternext
+  007d: iterpop
+  007e: self.KeysPressed.Length = 0
+  0086: self.KeysPressed = CI.PressedKeys
+  009c: return nothing
+  009e: <eos>
+
+function HmDebugScreenshotCameraBehavior.GetNewLightTypeString  (script 70 bytes)
+  0000: if !((cast3a(self.NewLightType) == cast3a(0))) goto 0x001b
+  0010: return "Point"
+  0018: goto 0x003f
+  001b: if !((cast3a(self.NewLightType) == cast3a(1))) goto 0x0035
+  002b: return "Spot"
+  0032: goto 0x003f
+  0035: return "Unknown"
+  003f: return return
+  0045: <eos>

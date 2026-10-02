@@ -1,0 +1,15 @@
+function TnHudDataObserverCompetitiveScoring.CheckData  (script 215 bytes)
+  0000: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0019: if !((PRI == none)) goto 0x0026
+  0024: return nothing
+  0026: PRI._ScoreTracker.DumpScoreEvents(ScoreEvents)
+  0047: foreach ScoreEvents(ScoreEvent,) (end 0x00b6)
+  0056: args.Length = 0
+  005e: AddNumberValue(args, 0, -1.0)
+  0073: AddNumberValue(args, 1, ScoreEvent.Score)
+  0093: Movie.Invoke(self.PointEventBindingName, args)
+  00b5: iternext
+  00b6: iterpop
+  00b7: ProcessNewValue(Movie, PRI.CompetitiveScoreMultiplier)
+  00d4: return nothing
+  00d6: <eos>

@@ -1,0 +1,15 @@
+function TnAnimNotify_HolsterWeapon.Notify  (script 78 bytes)
+  0000: OwnerPawn = TnPawn(AnimSeq.SkelComponent.Owner)
+  0022: if !((OwnerPawn != none)) goto 0x0040
+  002d: OwnerPawn.HolsterWeapon()
+  0040: Notify(AnimSeq)
+  004b: return nothing
+  004d: <eos>
+
+function TnAnimNotify_HolsterWeapon.OnAnimSequenceStopped  (script 83 bytes)
+  0000: OwnerPawn = TnPawn(AnimSeq.SkelComponent.Owner)
+  0022: if !((OwnerPawn != none)) goto 0x0040
+  002d: OwnerPawn.UnholsterWeapon()
+  0040: OnAnimSequenceStopped(Owner, AnimSeq)
+  0050: return nothing
+  0052: <eos>

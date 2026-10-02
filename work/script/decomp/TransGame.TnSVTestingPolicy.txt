@@ -1,0 +1,33 @@
+function TnSVTestingPolicy.HandleEnterGame  (script 42 bytes)
+  0000: TnKillBasedMultiplayerTestingPolicy.HandleEnterGame(Game)
+  000b: Game.SetTimer(self.RefillAmmoInterval, true, 'RefillAmmo', self)
+  0027: return nothing
+  0029: <eos>
+
+function TnSVTestingPolicy.HandlePlayerEnterGame  (script 74 bytes)
+  0000: if !((self._Game != none)) goto 0x0047
+  000b: PC = TnPlayerController(NewPlayer)
+  001b: SelectAvailableCharacter(self._Game, TnPlayerController(NewPlayer))
+  0034: PC.ClientStartRandomInput()
+  0047: return nothing
+  0049: <eos>
+
+function TnSVTestingPolicy.HandleRestartPlayer  (script 36 bytes)
+  0000: if !((TnPlayerController(NewPlayer) != none)) goto 0x0021
+  0010: NewPlayer.bGodMode = true
+  0021: return nothing
+  0023: <eos>
+
+function TnSVTestingPolicy.PopulatePotentialVictims  (script 41 bytes)
+  0000: self._Game.WorldInfo.GetAllControllers(obj'TnAiController', Victims)
+  0026: return nothing
+  0028: <eos>
+
+function TnSVTestingPolicy.RefillAmmo  (script 90 bytes)
+  0000: foreach self._Game.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0056)
+  0029: if !((PC.Pawn != none)) goto 0x0055
+  003d: PC.Give(obj'TnAmmoCratePickup')
+  0055: iternext
+  0056: iterpop
+  0057: return nothing
+  0059: <eos>

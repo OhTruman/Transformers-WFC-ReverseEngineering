@@ -1,0 +1,563 @@
+function HmPawn.get_BodyImpactComponent  (script 13 bytes)
+  0000: return self._BodyImpactComponent
+  0006: return return
+  000c: <eos>
+
+function HmPawn.set_BodyImpactComponent  (script 14 bytes)
+  0000: self._BodyImpactComponent = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmPawn.get_DialogComponent  (script 13 bytes)
+  0000: return self.DialogComp
+  0006: return return
+  000c: <eos>
+
+function HmPawn.ReplicatedEvent  (script 48 bytes)
+  0000: if !((VarName == 'EquippedWeaponClass')) goto 0x0022
+  0013: ClientUpdateWeapon(self.EquippedWeaponClass)
+  0022: ReplicatedEvent(VarName)
+  002d: return nothing
+  002f: <eos>
+
+function HmPawn.PostBeginPlay  (script 127 bytes)
+  0000: PostBeginPlay()
+  0006: if !((((cast3a(self.Role) == cast3a(1)) && (self.InvManager == none)) && (self.InventoryManagerClass != none))) goto 0x007c
+  0030: self.InvManager = Spawn(self.InventoryManagerClass, self, , , , , , )
+  004c: if !((self.InvManager != none)) goto 0x007c
+  0057: self.InvManager.RemoteRole = 0
+  0068: self.InvManager.SetupFor(self)
+  007c: return nothing
+  007e: <eos>
+
+function HmPawn.Destroyed  (script 67 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002e
+  001b: ValidInvManager.DestroyClientSideInventory()
+  002e: StopDialog(false, false)
+  003a: Destroyed()
+  0040: return nothing
+  0042: <eos>
+
+function HmPawn.GetNormalizedSpeed  (script 59 bytes)
+  0000: CurrentSpeed = obj'Core.Math'.static.VSize(self.Velocity)
+  0016: return cast3f(obj'Core.Math'.static.Clamp(cast44((CurrentSpeed / self.GroundSpeed)), 0, 1))
+  0034: return return
+  003a: <eos>
+
+function HmPawn.GetEyeHeight  (script 37 bytes)
+  0000: if !(!IsLocallyControlled()) goto 0x0018
+  000f: return self.BaseEyeHeight
+  0015: goto 0x001e
+  0018: return self.EyeHeight
+  001e: return return
+  0024: <eos>
+
+function HmPawn.TestAddDefaultInventory  (script 13 bytes)
+  0000: AddDefaultInventory()
+  000a: return nothing
+  000c: <eos>
+
+function HmPawn.ReloadWeapon  (script 49 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002e
+  001b: ValidInvManager.ReloadWeapon()
+  002e: return nothing
+  0030: <eos>
+
+function HmPawn.EquipWeapon  (script 49 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002e
+  001b: ValidInvManager.EquipWeapon()
+  002e: return nothing
+  0030: <eos>
+
+function HmPawn.UnEquipWeapon  (script 49 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002e
+  001b: ValidInvManager.UnEquipWeapon()
+  002e: return nothing
+  0030: <eos>
+
+function HmPawn.ToggleEquipWeapon  (script 99 bytes)
+  0000: if !(IsWeaponEquipped()) goto 0x002c
+  000d: if !(!IsWeaponEquipping()) goto 0x0029
+  001c: UnEquipWeapon()
+  0026: return 0
+  0029: goto 0x0059
+  002c: EquipWeapon()
+  0036: if !((!IsWeaponEquipped() && !IsWeaponEquipping())) goto 0x0059
+  0056: return 0
+  0059: return 1
+  005c: return return
+  0062: <eos>
+
+function HmPawn.UnEquipWeaponInstantly  (script 49 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002e
+  001b: ValidInvManager.UnEquipWeaponInstantly()
+  002e: return nothing
+  0030: <eos>
+
+function HmPawn.EquipWeaponInstantly  (script 49 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002e
+  001b: ValidInvManager.EquipWeaponInstantly()
+  002e: return nothing
+  0030: <eos>
+
+function HmPawn.IsWeaponEquipped  (script 90 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x0022
+  0019: return (self.Weapon != none)
+  0022: ValidInvManager = HmInventoryManager(self.InvManager)
+  0032: if !((ValidInvManager == none)) goto 0x003f
+  003d: return false
+  003f: return ValidInvManager.IsWeaponEquipped()
+  0053: return return
+  0059: <eos>
+
+function HmPawn.IsWeaponActive  (script 56 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002f
+  001b: return ValidInvManager.IsWeaponActive()
+  002f: return false
+  0031: return return
+  0037: <eos>
+
+function HmPawn.IsWeaponEquipping  (script 56 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002f
+  001b: return ValidInvManager.IsWeaponEquipping()
+  002f: return false
+  0031: return return
+  0037: <eos>
+
+function HmPawn.IsWeaponPuttingDown  (script 83 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(3)) || (ValidInvManager == none))) goto 0x0038
+  0036: return false
+  0038: return ValidInvManager.IsWeaponPuttingDown()
+  004c: return return
+  0052: <eos>
+
+function HmPawn.IsWeaponDrawnOrDrawing  (script 52 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x002b
+  001b: return ValidInvManager.bWeaponDrawnOrDrawing
+  002b: return false
+  002d: return return
+  0033: <eos>
+
+function HmPawn.NotifyWeaponChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPawn.SetEquippedWeaponClass  (script 55 bytes)
+  0000: if !(((cast3a(self.Role) == cast3a(3)) && (NextWeapon != none))) goto 0x0034
+  001d: self.EquippedWeaponClass = class<HmWeapon>(NextWeapon.get_Class())
+  0034: return nothing
+  0036: <eos>
+
+function HmPawn.AdjustDamage  (script 85 bytes)
+  0000: nothing
+  0001: nothing
+  0002: AdjustDamage(inDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser)
+  002b: Multiplier = GetBoneDamageMultiplier(HitInfo)
+  0040: inDamage = (inDamage * Multiplier)
+  0052: return nothing
+  0054: <eos>
+
+function HmPawn.GetBoneDamageMultiplier  (script 106 bytes)
+  0000: DamageMultiplier = 1.0
+  000b: I = self.BoneDamageOverrides.Find('BoneName',HitInfo.BoneName)
+  0032: if !((I != -1)) goto 0x005d
+  0041: DamageMultiplier = I[self.BoneDamageOverrides].DamageModifier
+  005d: return DamageMultiplier
+  0063: return return
+  0069: <eos>
+
+function HmPawn.DestroyPawn  (script 17 bytes)
+  0000: GotoState('DeferedDestroy', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmPawn.CalcVelocity  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmPawn.Dying.BeginState  (script 157 bytes)
+  0000: if !(((self.bTearOff && (cast3a(self.WorldInfo.NetMode) == cast3a(1))) || ((self.Location.Z <= self.WorldInfo.KillZ) && (cast3a(self.Role) == cast3a(3))))) goto 0x007b
+  005b: self.LifeSpan = obj'Core.Math'.static.FClamp(self.LifeSpan, 0.0, 1.0)
+  007b: if !((self.Controller != none)) goto 0x009a
+  0086: self.Controller.PawnDied(self)
+  009a: return nothing
+  009c: <eos>
+
+function HmPawn.Dying.FellOutOfWorld  (script 35 bytes)
+  0000: self.LifeSpan = obj'Core.Math'.static.FClamp(self.LifeSpan, 0.0, 1.0)
+  0020: return nothing
+  0022: <eos>
+
+function HmPawn.PlayDying  (script 49 bytes)
+  0000: PlayDying(DamageType, HitLoc)
+  0010: self.bCanTeleport = false
+  0018: self.HitDamageType = DamageType
+  0023: self.TakeHitLocation = HitLoc
+  002e: return nothing
+  0030: <eos>
+
+function HmPawn.GetWeaponStartTraceLocation  (script 19 bytes)
+  0000: nothing
+  0001: return GetPawnViewLocation()
+  000c: return return
+  0012: <eos>
+
+function HmPawn.ClientUpdateWeapon  (script 284 bytes)
+  0000: if !((self.InvManager == none)) goto 0x000d
+  000b: return nothing
+  000d: Weap = ClientGetWeaponByClass(WeaponClass)
+  0022: if !(((Weap != none) && (Weap != self.Weapon))) goto 0x0119
+  003e: if !((((cast3a(self.Role) < cast3a(2)) && (self.Weapon != none)) && (self.Weapon.get_Class() != WeaponClass))) goto 0x00ed
+  0073: WeaponReference = HmWeapon(self.Weapon)
+  0083: WeaponReference.StopFireEffects(0)
+  0098: WeaponReference.SetBase(none, , , )
+  00af: WeaponReference.DetachWeapon()
+  00c2: self.InvManager.RemoveFromInventory(WeaponReference)
+  00da: WeaponReference.DestroyActor()
+  00e6: self.Weapon = none
+  00ed: Weap.SetHidden(true)
+  0101: self.InvManager.SetCurrentWeapon(Weap)
+  0119: return nothing
+  011b: <eos>
+
+function HmPawn.ClientGetWeaponByClass  (script 124 bytes)
+  0000: Weap = HmWeapon(self.InvManager.FindInventoryType(WeaponClass, ))
+  0024: if !((Weap == none)) goto 0x006f
+  002f: Weap = HmWeapon(self.InvManager.CreateInventory(WeaponClass, true))
+  0053: if !((Weap != none)) goto 0x006f
+  005e: Weap.RemoteRole = 0
+  006f: return Weap
+  0075: return return
+  007b: <eos>
+
+function HmPawn.FindAnimNode  (script 41 bytes)
+  0000: return self.Mesh.Animations.FindAnimNode(NodeName)
+  0022: return return
+  0028: <eos>
+
+function HmPawn.OnDestroyInventoryWeapons  (script 56 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x0035
+  001b: ValidInvManager.DestroyItemsByClass(obj'Engine.Weapon', 1)
+  0035: return nothing
+  0037: <eos>
+
+function HmPawn.OnDestroyInventoryItem  (script 27 bytes)
+  0000: DestroyInventoryItem(Action.InventoryItemClass)
+  0018: return nothing
+  001a: <eos>
+
+function HmPawn.DestroyInventoryItem  (script 56 bytes)
+  0000: ValidInvManager = HmInventoryManager(self.InvManager)
+  0010: if !((ValidInvManager != none)) goto 0x0035
+  001b: ValidInvManager.DestroyItemsByClass(InventoryClass, 1)
+  0035: return nothing
+  0037: <eos>
+
+function HmPawn.HasWeapon  (script 49 bytes)
+  0000: if !((self.InvManager != none)) goto 0x0028
+  000b: return (self.InvManager.FindInventoryType(obj'Engine.Weapon', true) != none)
+  0028: return false
+  002a: return return
+  0030: <eos>
+
+function HmPawn.PlayFootStepSound  (script 43 bytes)
+  0000: if !((self.FootstepComp != none)) goto 0x0028
+  000b: self.FootstepComp.PlayFootStep(FootDown, Type)
+  0028: return nothing
+  002a: <eos>
+
+function HmPawn.FindPhysicalMaterial  (script 58 bytes)
+  0000: if !((self.FootstepComp != none)) goto 0x0031
+  000b: return self.FootstepComp.FindPhysicalMaterial(PhysMaterial, HitLocation, HitNormal)
+  002e: goto 0x0033
+  0031: return false
+  0033: return return
+  0039: <eos>
+
+function HmPawn.EnablePhysicalMaterialOverride  (script 44 bytes)
+  0000: if !((self.FootstepComp != none)) goto 0x0029
+  000b: self.FootstepComp.EnablePhysicalMaterialOverride(Enable, PhysMaterial)
+  0029: return nothing
+  002b: <eos>
+
+function HmPawn.PlayBodyGroundImpactSound  (script 53 bytes)
+  0000: if !((self._BodyImpactComponent != none)) goto 0x002c
+  000b: return self._BodyImpactComponent.PlaySoundFromGroundImpact(BodyPart, ImpactWeight)
+  0029: goto 0x002e
+  002c: return false
+  002e: return return
+  0034: <eos>
+
+function HmPawn.StopAllSounds  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPawn.PlayDialog  (script 91 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: self.DialogComp.Play(SoundCue, Replicate, Type, Deactivate, DialogCallback)
+  0058: return nothing
+  005a: <eos>
+
+function HmPawn.PlayDialogEvent  (script 92 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: PlayDialog(FindSoundCue(SoundEvent), Replicate, Type, Deactivate, DialogCallback)
+  0059: return nothing
+  005b: <eos>
+
+function HmPawn.StopDialog  (script 57 bytes)
+  0000: default=false
+  0005: default=true
+  000a: if !((none == self.DialogComp)) goto 0x0017
+  0015: return nothing
+  0017: self.DialogComp.Stop(ConversationOnly, Replicate)
+  0036: return nothing
+  0038: <eos>
+
+function HmPawn.GetIsDialogPlaying  (script 45 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return self.DialogComp.GetIsPlaying(SoundCueTarget)
+  0026: return return
+  002c: <eos>
+
+function HmPawn.GetIsDialogPlayingEvent  (script 46 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return GetIsDialogPlaying(FindSoundCue(SoundEvent))
+  0027: return return
+  002d: <eos>
+
+function HmPawn.SetDialogCharacter  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_DialogCharacter(DialogCharacter)
+  0023: return nothing
+  0025: <eos>
+
+function HmPawn.SetDialogSocketName  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_SocketName(_SocketName)
+  0023: return nothing
+  0025: <eos>
+
+function HmPawn.FindSoundCue  (script 116 bytes)
+  0000: if !((((self.Mesh != none) && (self.Mesh.SkeletalMesh != none)) && (self.Mesh.SkeletalMesh.SoundEventSet != none))) goto 0x006b
+  0040: return self.Mesh.SkeletalMesh.SoundEventSet.FindSoundCue(Event)
+  006b: return none
+  006d: return return
+  0073: <eos>
+
+function HmPawn.PlaySoundEvent  (script 56 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: PlaySound(FindSoundCue(InSoundEvent), bNotReplicated, bNoRepToOwner, bStopWhenOwnerDestroyed, SoundLocation, )
+  0035: return nothing
+  0037: <eos>
+
+function HmPawn.GetDialogCharacters  (script 113 bytes)
+  0000: DialogCharacters.Length = 0
+  0008: if !((((self.Mesh != none) && (self.Mesh.SkeletalMesh != none)) && (self.Mesh.SkeletalMesh.SoundEventSet != none))) goto 0x006e
+  0048: DialogCharacters = self.Mesh.SkeletalMesh.SoundEventSet.DialogCharacters
+  006e: return nothing
+  0070: <eos>
+
+function HmPawn.SetIsBodyImpactsActivated  (script 39 bytes)
+  0000: if !((none != self._BodyImpactComponent)) goto 0x0024
+  000b: self._BodyImpactComponent.SetIsActivated(IsBodyImpactsActivated)
+  0024: return nothing
+  0026: <eos>
+
+function HmPawn.GetMinimumBodyImpactSpeedThreshold  (script 47 bytes)
+  0000: if !((none != self._BodyImpactComponent)) goto 0x0022
+  000b: return self._BodyImpactComponent.GetMinimumBodyImpactSpeedThreshold()
+  001f: goto 0x0028
+  0022: return 0.0
+  0028: return return
+  002e: <eos>
+
+function HmPawn.HandleRigidBodyCollision  (script 48 bytes)
+  0000: if !((none != self._BodyImpactComponent)) goto 0x002d
+  000b: self._BodyImpactComponent.HandleRigidBodyCollision(ContactInfos, ContactIndex, ContactSpeed)
+  002d: return nothing
+  002f: <eos>
+
+function HmPawn.RigidBodyCollision  (script 46 bytes)
+  0000: HmPawn.HandleRigidBodyCollision(RigidCollisionData.ContactInfos, ContactIndex, RigidCollisionData.ContactSpeed)
+  002b: return nothing
+  002d: <eos>
+
+function HmPawn.GetFootstepLoudness  (script 29 bytes)
+  0000: return (self.bIsCrouched ? 0.005 : 0.2)
+  0016: return return
+  001c: <eos>
+
+function HmPawn.ShouldMakeFootstepNoise  (script 55 bytes)
+  0000: return ((cast3a(self.Physics) == cast3a(1)) && (obj'Core.Math'.static.VSizeSq(self.Acceleration) > cast3f(0)))
+  0030: return return
+  0036: <eos>
+
+function HmPawn.MakeFootstepNoise  (script 95 bytes)
+  0000: if !(ShouldMakeFootstepNoise()) goto 0x005c
+  000d: CurrentSeconds = self.WorldInfo.TimeSeconds
+  0021: if !((CurrentSeconds > (self.LastFootstepNoiseSeconds + GetFootStepFrequency()))) goto 0x005c
+  003c: self.LastFootstepNoiseSeconds = CurrentSeconds
+  0047: MakeNoise(GetFootstepLoudness(), )
+  005c: return nothing
+  005e: <eos>
+
+function HmPawn.GetFootStepFrequency  (script 13 bytes)
+  0000: return 0.25
+  0006: return return
+  000c: <eos>
+
+function HmPawn.PlayTeleportEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPawn.FindMorphNodeWeight  (script 50 bytes)
+  0000: if !((self.Mesh != none)) goto 0x0029
+  000b: return MorphNodeWeight(self.Mesh.FindMorphNode(NodeName))
+  0029: return none
+  002b: return return
+  0031: <eos>
+
+function HmPawn.OnSetSkeletalMesh  (script 217 bytes)
+  0000: if !((((self.Mesh.SkeletalMesh != none) && self.WorldInfo.bBegunPlay) && !Action.bDisableWarning)) goto 0x00b4
+  003e: LogInternal(((((("Error: Performance warning - assigning skelmesh" @ cast56(Action.NewSkeletalMesh)) @ "when") @ cast56(self)) @ "already has") @ cast56(self.Mesh.SkeletalMesh)), , , )
+  00b4: self.Mesh.SetSkeletalMesh(Action.NewSkeletalMesh, )
+  00d6: return nothing
+  00d8: <eos>
+
+function HmPawn.NotifyNearlyShot  (script 220 bytes)
+  0000: NotifyNearlyShot(FiringPawn, ClosestPoint)
+  0010: if !((FiringPawn == self)) goto 0x001d
+  001b: return nothing
+  001d: if !(((none == self.Controller) || (false == self.Controller.IsLocalPlayerController()))) goto 0x0045
+  0043: return nothing
+  0045: FiringWeapon = HmWeapon(FiringPawn.Weapon)
+  005e: if !((((none == FiringWeapon) || (none == FiringWeapon.GetWeaponMesh())) || (none == FiringWeapon.GetWeaponMesh().BulletBySound))) goto 0x00aa
+  00a8: return nothing
+  00aa: PlaySound(FiringWeapon.GetWeaponMesh().BulletBySound, , , , ClosestPoint, )
+  00d9: return nothing
+  00db: <eos>
+
+function HmPawn.WakeRigidBody  (script 28 bytes)
+  0000: nothing
+  0001: self.Mesh.WakeRigidBody(BoneName)
+  0019: return nothing
+  001b: <eos>
+
+function HmPawn.GetBoneNames  (script 37 bytes)
+  0000: self.Mesh.GetBoneNames(BoneNames)
+  0018: return BoneNames
+  001e: return return
+  0024: <eos>
+
+function HmPawn.SetCollisionFlags  (script 27 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: SetCollision(bNewColActors, bNewBlockActors, bNewIgnoreEncroachers)
+  0018: return nothing
+  001a: <eos>
+
+function HmPawn.BeginAnimControl  (script 138 bytes)
+  0000: I = 0
+  0007: if !((I < InAnimSets.Length)) goto 0x0087
+  0017: if !(self.Mesh.HasAnimSet(I[InAnimSets])) goto 0x003b
+  0038: goto 0x007d
+  003b: self.Mesh.AnimSets.Length[self.Mesh.AnimSets] = I[InAnimSets]
+  0065: self.AddedAnimSets.Length[self.AddedAnimSets] = I[InAnimSets]
+  007d: AddAdd_PreInt(I)
+  0084: goto 0x0007
+  0087: return nothing
+  0089: <eos>
+
+function HmPawn.FinishAnimControl  (script 142 bytes)
+  0000: I = 0
+  0007: if !((I < self.AddedAnimSets.Length)) goto 0x008b
+  0017: J = 0
+  001e: if !((J < self.Mesh.AnimSets.Length)) goto 0x0081
+  0037: if !((I[self.AddedAnimSets] == J[self.Mesh.AnimSets])) goto 0x0077
+  005b: self.Mesh.AnimSets.Remove(J,1)
+  0070: SubtractSubtract_PreInt(J)
+  0077: AddAdd_PreInt(J)
+  007e: goto 0x001e
+  0081: AddAdd_PreInt(I)
+  0088: goto 0x0007
+  008b: return nothing
+  008d: <eos>
+
+function HmPawn.AddAnimSetToPawn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmPawn.HasRearCollision  (script 100 bytes)
+  0000: ProbeEnd = (self.Location + (obj'Core.Math'.static.MakeVector(-RearCollisionRange, 0.0, 0.0) >> self.Rotation))
+  0039: return !ClearLineOfSight(none, ProbeEnd, self.Location, true, (0.75 * GetCollisionExtent()), )
+  005d: return return
+  0063: <eos>
+
+function HmPawn.PlayActorFaceFXAnim  (script 125 bytes)
+  0000: if !((self.Mesh == none)) goto 0x0045
+  000b: LogInternal(("ERROR: EngineTeam - Mesh was none in " $ cast57(GetFuncName())), , , )
+  0045: return ((self.Mesh != none) ? self.Mesh.PlayFaceFXAnim(AnimSet, SeqName, GroupName) : false)
+  0076: return return
+  007c: <eos>
+
+function HmPawn.StopActorFaceFXAnim  (script 35 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Mesh.StopFaceFXAnim()
+  0020: return nothing
+  0022: <eos>
+
+function HmPawn.StopActorFaceFXAnimByName  (script 45 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return nothing
+  000d: self.Mesh.StopFaceFXAnimByName(SeqName, GroupName)
+  002a: return nothing
+  002c: <eos>
+
+function HmPawn.TakeDamage  (script 150 bytes)
+  0000: nothing
+  0001: nothing
+  0002: DNI = HmDamageNotificationInterface(InstigatedBy)
+  0012: HealthBeforeDamage = cast44(self.Health)
+  001f: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  0048: if !(NotEqual_InterfaceInterface(DNI, HmDamageNotificationInterface(none))) goto 0x0093
+  005c: DNI.NotifyCausedDamage(self, (cast3f(HealthBeforeDamage) - self.Health), DamageType, IsDying(), HitInfo)
+  0093: return nothing
+  0095: <eos>
+
+function HmPawn.GetWeaponSockets  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmPawn.CanSwitchWeapons  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

@@ -1,0 +1,38 @@
+function TnRollAnimBlend.Tick  (script 309 bytes)
+  0000: Tick(DeltaTime, TotalWeight)
+  0010: if !(((self.SkelComponent == none) || (self.SkelComponent.Owner == none))) goto 0x0033
+  0031: return nothing
+  0033: Roll = (cast3f(self.SkelComponent.Owner.Rotation.Roll) * 0.0054932)
+  0064: Weight = (obj'Core.Math'.static.Abs(Roll) / self.MaxAngle)
+  0081: Weight = obj'Core.Math'.static.FClamp(Weight, 0.0, 1.0)
+  00a1: 1[self.Children].Weight = (1.0 - Weight)
+  00c0: if !((Roll < cast3f(0))) goto 0x0101
+  00cd: 0[self.Children].Weight = Weight
+  00e5: 2[self.Children].Weight = 0.0
+  00fe: goto 0x0132
+  0101: 0[self.Children].Weight = 0.0
+  0119: 2[self.Children].Weight = Weight
+  0132: return nothing
+  0134: <eos>
+
+function TnRollAnimBlend.SliderMove  (script 390 bytes)
+  0000: SliderMove(SliderIdx, NewValue)
+  0010: Weight = NewValue
+  001b: Weight = obj'Core.Math'.static.FClamp(Weight, 0.0, 1.0)
+  003b: SliderIdx[self.Sliders].Position = Weight
+  0057: if !((Weight < 0.5)) goto 0x00f6
+  0066: Weight = (0.5 - Weight)
+  0078: (Weight *= cast3f(2))
+  0083: Weight = obj'Core.Math'.static.FClamp(Weight, 0.0, 1.0)
+  00a3: 0[self.Children].Weight = Weight
+  00bb: 1[self.Children].Weight = (1.0 - Weight)
+  00da: 2[self.Children].Weight = 0.0
+  00f3: goto 0x0183
+  00f6: Weight = (Weight - 0.5)
+  0108: (Weight *= cast3f(2))
+  0113: Weight = obj'Core.Math'.static.FClamp(Weight, 0.0, 1.0)
+  0133: 0[self.Children].Weight = 0.0
+  014b: 1[self.Children].Weight = (1.0 - Weight)
+  016a: 2[self.Children].Weight = Weight
+  0183: return nothing
+  0185: <eos>

@@ -1,0 +1,32 @@
+function TnAiActionVehicleNavigation.OnSetUpConditions  (script 141 bytes)
+  0000: Section = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: if !((((Section == none) || (cast3a(Section.GetSectionType()) == cast3a(2))) || (cast3a(Section.GetSectionType()) == cast3a(4)))) goto 0x0075
+  0073: return false
+  0075: return TnAiActionNavigatePathSection.OnSetUpConditions(ExpectedEffects, Conditions)
+  0086: return return
+  008c: <eos>
+
+function TnAiActionVehicleNavigation.OnUpdate  (script 130 bytes)
+  0000: if !(TnAiActionVehicleNavigation.CanEarlyTransform()) goto 0x006a
+  0009: DistanceToEnd = self._PathSection.GetPositionsDistanceAlongSection(self._BoundController, self._TransformerPawn.Location)
+  0035: if !(((self._TransformerPawn.GroundSpeed * 1.0) >= DistanceToEnd)) goto 0x006a
+  0054: self._TransformerController.Transform(0, )
+  006a: return TnAiActionNavigatePathSection.OnUpdate(EffectsToAchieve, DeltaTime)
+  007b: return return
+  0081: <eos>
+
+function TnAiActionVehicleNavigation.CanEarlyTransform  (script 111 bytes)
+  0000: if !((cast3a(self._PathSection.GetSectionType()) != cast3a(1))) goto 0x0020
+  001e: return false
+  0020: PrevSection = self._PathSection.GetPrev()
+  0039: if !(((PrevSection == none) || (cast3a(PrevSection.GetSectionType()) != cast3a(2)))) goto 0x0066
+  0064: return false
+  0066: return true
+  0068: return return
+  006e: <eos>
+
+function TnAiActionVehicleNavigation.DoCalculateAdditionalCost  (script 114 bytes)
+  0000: Section = TnPathSection(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateNavigatePath', ExpectedEffects))
+  0028: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((Section.GetPathDistanceForType(self._TransformerController, 3) < 10000.0) ? 5.0 : 0.0))
+  006b: return return
+  0071: <eos>

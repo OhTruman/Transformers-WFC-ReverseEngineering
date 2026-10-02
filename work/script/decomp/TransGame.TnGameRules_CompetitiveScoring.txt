@@ -1,0 +1,63 @@
+function TnGameRules_CompetitiveScoring.SetupGameOnClient  (script 79 bytes)
+  0000: if !(((PC != none) && (TnHUD(PC.myHUD) != none))) goto 0x004c
+  0026: TnHUD(PC.myHUD).AddHudDataObserver(obj'TnHudDataObserverCompetitiveScoring')
+  004c: return nothing
+  004e: <eos>
+
+function TnGameRules_CompetitiveScoring.PostBeginPlay  (script 9 bytes)
+  0000: PostBeginPlay()
+  0006: return nothing
+  0008: <eos>
+
+function TnGameRules_CompetitiveScoring.MatchStarting  (script 372 bytes)
+  0000: MatchStarting()
+  0006: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  001f: GRI.SetActiveGameRule(self.get_Class())
+  003a: GRI.set_CompetitiveScoring(true)
+  004e: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0170)
+  006e: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0087: if !((PRI != none)) goto 0x00a8
+  0092: PRI.StartCompetitiveScoring()
+  00a5: goto 0x016f
+  00a8: LogInternal(((((("ERROR: Please report this to Robert M, a player trying to start competitive scoring without a PRI.  Player is:" @ cast56(PC)) $ ", PRI is:") @ cast56(PC.PlayerReplicationInfo)) $ ", Cast version:") @ cast56(TnPlayerReplicationInfo(PC.PlayerReplicationInfo))), , , )
+  016f: iternext
+  0170: iterpop
+  0171: return nothing
+  0173: <eos>
+
+function TnGameRules_CompetitiveScoring.HandleNewPlayer  (script 27 bytes)
+  0000: TnPlayerReplicationInfo(PRI).StartCompetitiveScoring()
+  0018: return nothing
+  001a: <eos>
+
+function TnGameRules_CompetitiveScoring.ScoreKill  (script 261 bytes)
+  0000: ScoreKill(Killer, Killed, DamageType)
+  0015: PC = TnPlayerController(Killer)
+  0025: if !(((PC == none) || (PC.PlayerReplicationInfo == none))) goto 0x0048
+  0046: return nothing
+  0048: P = TnPawn(PC.Pawn)
+  0061: if !(((P != none) && P.WasLastHitHeadshot())) goto 0x0092
+  0084: KillEventType = obj'TnCompetitiveScoreEventHeadShot'
+  008f: goto 0x00bb
+  0092: if !(ClassIsChildOf(DamageType, obj'TnDamageTypeMelee')) goto 0x00b0
+  00a2: KillEventType = obj'TnCompetitiveScoreEventMeleeKill'
+  00ad: goto 0x00bb
+  00b0: KillEventType = obj'TnCompetitiveScoreEventKill'
+  00bb: TnPlayerReplicationInfo(PC.PlayerReplicationInfo)._ScoreTracker.ScoreEvent(KillEventType, Killed, , , )
+  00f2: TnGameRules_CompetitiveScoring.ScoreAssists(Killer, Killed)
+  0102: return nothing
+  0104: <eos>
+
+function TnGameRules_CompetitiveScoring.ScoreAssists  (script 216 bytes)
+  0000: AiC = TnAiController(Killed)
+  0010: if !((AiC == none)) goto 0x001d
+  001b: return nothing
+  001d: DamageResults = AiC._DamageResults
+  0031: foreach DamageResults(Result,) (end 0x00d4)
+  0040: Attacker = Result.Attacker
+  0056: if !((((Attacker != none) && (Result.Attacker != Killer.Pawn)) && (Attacker.PlayerReplicationInfo != none))) goto 0x00d3
+  009c: TnPlayerReplicationInfo(Attacker.PlayerReplicationInfo)._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventKillAssist', Killed, , , )
+  00d3: iternext
+  00d4: iterpop
+  00d5: return nothing
+  00d7: <eos>

@@ -1,0 +1,14 @@
+function TnFirstPersonRotationCameraBehavior.Activate  (script 22 bytes)
+  0000: self.CurrentOffsetFromForward = rot(0,0,0)
+  0013: return nothing
+  0015: <eos>
+
+function TnFirstPersonRotationCameraBehavior.Update  (script 287 bytes)
+  0000: (self.CurrentOffsetFromForward.Yaw += cast44(((CI.RightStickInputX * self.YawSpeed) * DeltaTime)))
+  0032: self.CurrentOffsetFromForward.Yaw = cast44((obj'Core.Math'.static.FClampRange((0.0054932 * cast3f(self.CurrentOffsetFromForward.Yaw)), self.YawOffsetRange) * 182.0444489))
+  007d: (self.CurrentOffsetFromForward.Pitch += cast44(((CI.RightStickInputY * self.PitchSpeed) * DeltaTime)))
+  00af: self.CurrentOffsetFromForward.Pitch = cast44((obj'Core.Math'.static.FClampRange((0.0054932 * cast3f(self.CurrentOffsetFromForward.Pitch)), self.PitchOffsetRange) * 182.0444489))
+  00fa: (Result.Rotation += self.CurrentOffsetFromForward)
+  0112: return Result
+  0118: return return
+  011e: <eos>

@@ -1,0 +1,100 @@
+function TnDroppedPickupDefrag.ReplicatedEvent  (script 46 bytes)
+  0000: if !((VarName == 'HasLanded')) goto 0x0020
+  0013: ClientLanded()
+  001d: goto 0x002b
+  0020: TnDroppedPickup.ReplicatedEvent(VarName)
+  002b: return nothing
+  002d: <eos>
+
+function TnDroppedPickupDefrag.Landed  (script 55 bytes)
+  0000: Landed(HitNormal, FloorActor)
+  0010: SetPhysics(5, FloorActor, )
+  0022: self.HasLanded = true
+  002a: ClientLanded()
+  0034: return nothing
+  0036: <eos>
+
+function TnDroppedPickupDefrag.ClientLanded  (script 62 bytes)
+  0000: SetHidden(false)
+  000b: self.Defragger.StartFadeIn()
+  001e: if !(self.CanBeDestroyed) goto 0x003b
+  0027: SetCollisionPreset(5)
+  0033: self.bProjTarget = true
+  003b: return nothing
+  003d: <eos>
+
+function TnDroppedPickupDefrag.OnFullyFadedIn  (script 63 bytes)
+  0000: self.HighlightFx.SetMaterial(0, self.HighlightFxMat)
+  0019: AttachComponent(self.HighlightFx)
+  0028: self.PickupEffect.ActivateSystem()
+  003c: return nothing
+  003e: <eos>
+
+function TnDroppedPickupDefrag.Pickup.Tick  (script 149 bytes)
+  0000: self.Defragger.Update(DeltaTime)
+  0018: FullyFadedIn = ((!self.HighlightFx.bAttached && !self.bHidden) && self.Defragger.IsFullyFadedIn())
+  0055: if !((!self.IsFullyFadedIn && FullyFadedIn)) goto 0x007d
+  006b: self.IsFullyFadedIn = true
+  0073: OnFullyFadedIn()
+  007d: CheckTouching()
+  0087: Tick(DeltaTime)
+  0092: return nothing
+  0094: <eos>
+
+function TnDroppedPickupDefrag.Pickup.ValidTouch  (script 63 bytes)
+  0000: PickupRequiresFullFadeIn = (TnAmmoCratePickup(self.Inventory) == none)
+  0014: if !((PickupRequiresFullFadeIn && !self.IsFullyFadedIn)) goto 0x002c
+  002a: return false
+  002c: return ValidTouch(Other)
+  0038: return return
+  003e: <eos>
+
+function TnDroppedPickupDefrag.Pickup.TakeDamage  (script 274 bytes)
+  0000: nothing
+  0001: nothing
+  0002: TakeDamage(DamageAmount, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: if !(!self.CanBeDestroyed) goto 0x0038
+  0036: return nothing
+  0038: if !((((EventInstigator != none) && (EventInstigator.Pawn != none)) && (EventInstigator.Pawn == self.Instigator))) goto 0x0075
+  0073: return nothing
+  0075: if !((EventInstigator == none)) goto 0x0082
+  0080: return nothing
+  0082: MyTeamNum = GetTeamNum()
+  0092: if !(((cast3a(MyTeamNum) == 255) || (cast3a(MyTeamNum) != cast3a(EventInstigator.GetTeamNum())))) goto 0x010f
+  00c3: if !((self.InstantKillDamageTypes.Find(DamageType) != -1)) goto 0x00e8
+  00da: self.Health = 0.0
+  00e5: goto 0x00f4
+  00e8: (self.Health -= DamageAmount)
+  00f4: if !((self.Health <= cast3f(0))) goto 0x010f
+  0101: GotoState('FadeOut', , , )
+  010f: return nothing
+  0111: <eos>
+
+function TnDroppedPickupDefrag.SetPickupMesh  (script 112 bytes)
+  0000: TnDroppedPickup.SetPickupMesh(PickupMesh)
+  000b: MC = FindComponent(obj'Engine.MeshComponent')
+  0020: if !((MC != none)) goto 0x0043
+  002b: self.Defragger.AddDefragMesh(MC)
+  0043: if !((self.InventoryClass != none)) goto 0x0062
+  004e: self.RotationRate = self.InventoryClass.static.default.PickupRotationRate
+  0062: SetHidden(true)
+  006d: return nothing
+  006f: <eos>
+
+function TnDroppedPickupDefrag.FadeOut.Tick  (script 27 bytes)
+  0000: self.Defragger.Update(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnDroppedPickupDefrag.FadeOut.ValidTouch  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnDroppedPickupDefrag.OnFadeOut  (script 76 bytes)
+  0000: DetachComponent(self.HighlightFx)
+  000f: self.PickupEffect.DeactivateSystem()
+  0022: self.Defragger.StartFadeOutFromCurrent()
+  0035: self.LifeSpan = self.Defragger.DefragTime
+  0049: return nothing
+  004b: <eos>

@@ -1,0 +1,28 @@
+function TnAiActionNavigatingIdleWithWeapon.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionNavigatingIdleWithWeapon.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionNavigatingIdleWithWeapon.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionNavigatingIdleWithWeaponBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionNavigatingIdleWithWeapon.OnBind  (script 44 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionNavigatingIdleWithWeapon.OnStart  (script 94 bytes)
+  0000: W = TnWeapon(get_InvManager().FindInventoryType(get_WeaponClass(), false))
+  002e: get_InvManager().SetCurrentWeapon(W)
+  004b: return TnAiActionNavigatingIdle.OnStart(ExpectedEffects)
+  0057: return return
+  005d: <eos>

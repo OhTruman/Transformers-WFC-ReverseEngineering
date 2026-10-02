@@ -1,0 +1,33 @@
+function TnDataProvider_Specialty.CheckForErrors  (script 136 bytes)
+  0000: TnDataProvider_CharacterOption.CheckForErrors()
+  0006: if !(((self.DefaultSecondaryWeapon != "") && !TnDataProvider_Specialty.WeaponExists(self.DefaultSecondaryWeapon))) goto 0x0085
+  0024: LogInternal((((("Error: Specialty" @ cast57(self.Name)) @ "has DefaultSecondaryWeapon") @ self.DefaultSecondaryWeapon) @ "which could not be found"), , , )
+  0085: return nothing
+  0087: <eos>
+
+function TnDataProvider_Specialty.WeaponExists  (script 94 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetWeaponProviders()
+  0019: foreach Providers(Provider,) (end 0x0054)
+  0028: W = TnDataProvider_Weapon(Provider)
+  0038: if !((W.UniqueId == WeaponName)) goto 0x0053
+  0050: iterpop
+  0051: return true
+  0053: iternext
+  0054: iterpop
+  0055: return false
+  0057: return return
+  005d: <eos>
+
+function TnDataProvider_Specialty.LocalizeSpecialty  (script 163 bytes)
+  0000: Specialties = obj'TnDataStore_MenuItems'.static.GetSpecialtyProviders()
+  0019: foreach Specialties(Provider,) (end 0x0061)
+  0028: SpecialtyProvider = TnDataProvider_Specialty(Provider)
+  0038: if !((SpecialtyProvider.UniqueId == Id)) goto 0x0060
+  0050: iterpop
+  0051: return SpecialtyProvider.FriendlyName
+  0060: iternext
+  0061: iterpop
+  0062: LogInternal(("WARNING: Could not find friendly name for" @ Id), , , )
+  0099: return ""
+  009c: return return
+  00a2: <eos>

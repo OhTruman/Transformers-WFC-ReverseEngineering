@@ -1,0 +1,74 @@
+function TnAiActionHeal.OnInitialize  (script 97 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionHealBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateTransformerForm', cast3a(self._Blueprint.RequiredForm), , , ))
+  005e: return nothing
+  0060: <eos>
+
+function TnAiActionHeal.OnBind  (script 54 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._Weapon = get_InvManager().FindOrCreateInventory(self._Blueprint.WeaponClass, true)
+  0033: return nothing
+  0035: <eos>
+
+function TnAiActionHeal.OnSetUpConditions  (script 165 bytes)
+  0000: if !(self._TransformerPawn.bIsFlying) goto 0x0014
+  0012: return false
+  0014: HealTarget = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateHealTarget', ExpectedEffects))
+  003c: if !((HealTarget == none)) goto 0x0049
+  0047: return false
+  0049: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', HealTarget)
+  006b: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActorLOS', HealTarget)
+  008d: return OnSetUpConditions(ExpectedEffects, Conditions)
+  009e: return return
+  00a4: <eos>
+
+function TnAiActionHeal.OnStart  (script 180 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateHealTarget', ExpectedEffects))
+  0028: get_WeaponShooter().Activate(self._Blueprint.WeaponClass, delegate.FailCallback)
+  0057: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  0079: self._TransformerController.Focus = IFocusible(self._Target)
+  0092: PlayDialog(obj'SoundEvents_Dialog.HealTeammateBeginDialog')
+  00a1: return OnStart(ExpectedEffects)
+  00ad: return return
+  00b3: <eos>
+
+function TnAiActionHeal.OnUpdate  (script 430 bytes)
+  0000: if !((((self._Target == none) || self._Target.IsDying()) || self._Target.IsPendingKill())) goto 0x0046
+  003b: return Fail()
+  0046: if !((!self._Blueprint.HealDownedTargets && self._Target._IsDowned)) goto 0x0079
+  006e: return Fail()
+  0079: if !(((self._Weapon != none) && self._Weapon.IsOverheating())) goto 0x00a7
+  009c: return Fail()
+  00a7: if !((self._Target.GetNormalizedHealth() >= self._Blueprint.MaxHealthThreshold)) goto 0x00d8
+  00cd: return Succeed()
+  00d8: get_WeaponShooter().Update()
+  00f0: if !((get_WeaponAimer().get_OwnerIsAiming() && (get_WeaponShooter().IsFiring() == false))) goto 0x0143
+  012b: get_WeaponShooter().StartFire()
+  0143: if !(((get_WeaponAimer().get_OwnerIsAiming() == false) && get_WeaponShooter().IsFiring())) goto 0x0196
+  017e: get_WeaponShooter().StopFire()
+  0196: return OnUpdate(ExpectedEffects, DeltaTime)
+  01a7: return return
+  01ad: <eos>
+
+function TnAiActionHeal.OnFinish  (script 112 bytes)
+  0000: OnFinish(CurrentState)
+  000b: get_WeaponShooter().Deactivate()
+  0023: get_WeaponAimer().Reset()
+  003b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x004d
+  004b: return nothing
+  004d: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateHealTarget', true, none)
+  0067: TnAiActionHeal.NotifyHealTarget()
+  006d: return nothing
+  006f: <eos>
+
+function TnAiActionHeal.NotifyHealTarget  (script 139 bytes)
+  0000: ServiceProvider = TnServiceProvider(self._Target.Controller)
+  0019: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x002f
+  002d: return nothing
+  002f: DialogNotificationService = TnDialogNotificationService(ServiceProvider.GetService('TnDialogNotificationService'))
+  0057: if !(EqualEqual_InterfaceInterface(DialogNotificationService, TnDialogNotificationService(none))) goto 0x006d
+  006b: return nothing
+  006d: DialogNotificationService.DialogNotifyFromTeammate(9, self._TransformerPawn)
+  0088: return nothing
+  008a: <eos>

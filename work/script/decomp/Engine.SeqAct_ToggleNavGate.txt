@@ -1,0 +1,16 @@
+function SeqAct_ToggleNavGate.CheckForErrors  (script 393 bytes)
+  0000: GetObjectVars(objVars, "Target")
+  0017: I = 0
+  001e: if !((I < objVars.Length)) goto 0x0180
+  002e: NavPoint = NavigationPoint(I[objVars])
+  0044: if !((NavPoint == none)) goto 0x00d1
+  004f: if !((I[objVars] != none)) goto 0x00ce
+  0060: I[objVars].EmitCheckMessage(1, ((cast56(self) @ " has a target which is not derived from a NavigationPoint: ") @ cast56(I[objVars])), , )
+  00ce: goto 0x0176
+  00d1: if !(!NavPoint.get_Gated()) goto 0x0176
+  00e9: NavPoint.EmitCheckMessage(1, (((cast56(self) @ " has a target which is an unGated NavigationPoint: ") @ cast56(NavPoint)) @ ". Use Navigation Point Edit Mode to make Gates."), , )
+  0176: AddAdd_Int(I)
+  017d: goto 0x001e
+  0180: CheckForErrors()
+  0186: return nothing
+  0188: <eos>

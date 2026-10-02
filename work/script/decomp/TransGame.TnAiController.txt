@@ -1,0 +1,1835 @@
+function TnAiController.get_IsInitialized  (script 16 bytes)
+  0000: return (self._TemplateDefinition != none)
+  0009: return return
+  000f: <eos>
+
+function TnAiController.get_ScriptedUseInteract  (script 13 bytes)
+  0000: return self._ScriptedUseInteract
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_ScriptedUseInteract  (script 14 bytes)
+  0000: self._ScriptedUseInteract = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_Friend  (script 13 bytes)
+  0000: return self._Friend
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_Friend  (script 14 bytes)
+  0000: self._Friend = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_IsAiBuddy  (script 46 bytes)
+  0000: if !((get_TransformerPawn() != none)) goto 0x0025
+  0010: return get_TransformerPawn()._IsAiBuddy
+  0025: return false
+  0027: return return
+  002d: <eos>
+
+function TnAiController.set_IsAiBuddy  (script 46 bytes)
+  0000: if !((get_TransformerPawn() != none)) goto 0x002b
+  0010: get_TransformerPawn()._IsAiBuddy = Value
+  002b: return nothing
+  002d: <eos>
+
+function TnAiController.get_SnipeSearchLocations  (script 13 bytes)
+  0000: return self._SnipeSearchLocations
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_SnipeSearchLocations  (script 14 bytes)
+  0000: self._SnipeSearchLocations = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_VehicleAiControl  (script 13 bytes)
+  0000: return self._VehicleAiControl
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_VehicleAiControl  (script 14 bytes)
+  0000: self._VehicleAiControl = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.set_ShouldPlaySpawnAnimation  (script 16 bytes)
+  0000: self._PlaySpawnAnimation = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnAiController.get_TransformerPawn  (script 18 bytes)
+  0000: return TnAiPawn(self.Pawn)
+  000b: return return
+  0011: <eos>
+
+function TnAiController.set_DesiredEnemy  (script 48 bytes)
+  0000: self._DesiredEnemy = Value
+  000b: if !(((self._DesiredEnemy != none) && (self.Enemy == none))) goto 0x002d
+  0023: OnEnemyChangeAllowed()
+  002d: return nothing
+  002f: <eos>
+
+function TnAiController.get_EnemyChangedTime  (script 13 bytes)
+  0000: return self._EnemyChangedTime
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_LastVisibleEnemyLocation  (script 13 bytes)
+  0000: return self._LastVisibleEnemyLocation
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_ShootAtActor  (script 13 bytes)
+  0000: return self._ShootAtActor
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_ShootAtActor  (script 14 bytes)
+  0000: TnAiController.SetShootAtActor(Value)
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_AttackFromActor  (script 13 bytes)
+  0000: return self._AttackFromActor
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_AttackFromActor  (script 14 bytes)
+  0000: self._AttackFromActor = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_DefendActor  (script 13 bytes)
+  0000: return self._DefendActor
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_DefendActor  (script 14 bytes)
+  0000: self._DefendActor = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_ShieldInteract  (script 37 bytes)
+  0000: return TnInteractShieldedPositionBase(self.AiWorldState.GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  001e: return return
+  0024: <eos>
+
+function TnAiController.set_ShieldInteract  (script 63 bytes)
+  0000: self.AiWorldState.SetSubject(obj'TnAiWorldStateShieldedPosition', Value)
+  001d: if !((Value != none)) goto 0x003c
+  0028: Value.Initialize(self)
+  003c: return nothing
+  003e: <eos>
+
+function TnAiController.get_PreferredWeaponClass  (script 13 bytes)
+  0000: return self._PreferredWeaponClass
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_PreferredWeaponClass  (script 14 bytes)
+  0000: self._PreferredWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.set_EnemyWoundedThresholdPercentage  (script 25 bytes)
+  0000: self._EnemyWoundedRange.Max = Value
+  0016: return nothing
+  0018: <eos>
+
+function TnAiController.set_EnemyCriticalThresholdPercentage  (script 54 bytes)
+  0000: self._EnemyCriticalRange.Max = Value
+  0016: self._EnemyWoundedRange.Min = (Value + 0.01)
+  0033: return nothing
+  0035: <eos>
+
+function TnAiController.get_TemplateDefinition  (script 13 bytes)
+  0000: return self._TemplateDefinition
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_DamageResultDecayRate  (script 14 bytes)
+  0000: self._DamageResultDecayRate = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_DamageResults  (script 13 bytes)
+  0000: return self._DamageResults
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_Invulnerable  (script 14 bytes)
+  0000: return self.bGodMode
+  0007: return return
+  000d: <eos>
+
+function TnAiController.set_Invulnerable  (script 16 bytes)
+  0000: self.bGodMode = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnAiController.set_DamageThreatWindow  (script 14 bytes)
+  0000: self._DamageThreatWindow = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.set_DamageThreatMins  (script 14 bytes)
+  0000: self._DamageThreatMins = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.set_StepDistance  (script 14 bytes)
+  0000: self._StepDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_MostRecentStimulus  (script 13 bytes)
+  0000: return self._MostRecentStimulus
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_MostRecentStimulus  (script 14 bytes)
+  0000: self._MostRecentStimulus = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_ActiveStimulus  (script 13 bytes)
+  0000: return self._ActiveStimulus
+  0006: return return
+  000c: <eos>
+
+function TnAiController.set_ActiveStimulus  (script 14 bytes)
+  0000: self._ActiveStimulus = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.get_OccupiedNavigationPoint  (script 13 bytes)
+  0000: return self._OccupiedNavigationPoint
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_ClaimedTactical  (script 13 bytes)
+  0000: return self._ClaimedTactical
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_RangeDetector  (script 13 bytes)
+  0000: return self._RangeDetector
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_DebugMode  (script 13 bytes)
+  0000: return self._DebugMode
+  0006: return return
+  000c: <eos>
+
+function TnAiController.get_AiType  (script 48 bytes)
+  0000: return ((self._TemplateDefinition == none) ? 0 : self._TemplateDefinition.AiCharacterDataResolved.CharacterType)
+  0029: return return
+  002f: <eos>
+
+function TnAiController.GetService  (script 181 bytes)
+  0000: if !((Type == 'TnDialogNotificationService')) goto 0x0019
+  0013: return self._DialogManager
+  0019: TP = get_TransformerPawn()
+  0029: if !((TP == none)) goto 0x006e
+  0034: LogInternal(("ERROR: EngineTeam - TP was none in " $ cast57(GetFuncName())), , , )
+  006c: return none
+  006e: if !((Type == 'TnAiLaserSight')) goto 0x0095
+  0081: return TP.GetLaserSight()
+  0095: return TP.GetService(Type)
+  00ae: return return
+  00b4: <eos>
+
+function TnAiController.GetRobotService  (script 37 bytes)
+  0000: return get_TransformerPawn().GetRobotService(Type)
+  001e: return return
+  0024: <eos>
+
+function TnAiController.GetVehicleService  (script 37 bytes)
+  0000: return get_TransformerPawn().GetVehicleService(Type)
+  001e: return return
+  0024: <eos>
+
+function TnAiController.ShouldSpawnPRIOnPostBeginPlay  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnAiController.CreateVehicleAiControlStrategy  (script 225 bytes)
+  0000: if !((get_TransformerPawn()._VehicleForm == none)) goto 0x001b
+  0019: return none
+  001b: switch (get_TransformerPawn().get_VehicleType())
+  0035: case 0: (next 0x0049)
+  003a: return new(self, nothing, obj'TnVehicleCarAiControlStrategy', nothing, DeltaTime)
+  0049: case 1: (next 0x005d)
+  004e: return new(self, nothing, obj'TnVehicleCarAiControlStrategy', nothing, DeltaTime)
+  005d: case 2: (next 0x0071)
+  0062: return new(self, nothing, obj'TnVehiclePlaneAiControlStrategy', nothing, DeltaTime)
+  0071: case 3: (next 0x007d)
+  0076: return TnAiController.CreateTankAiControlStrategy()
+  007d: case 4: (next 0x00d7)
+  0082: LogInternal("Warning: Invalid vehicle form type when creating AI vehicle control strategy", , , )
+  00d5: return none
+  00d7: default:
+  00da: return return
+  00e0: <eos>
+
+function TnAiController.CreateTankAiControlStrategy  (script 58 bytes)
+  0000: if !((TnTankAiPawn(get_TransformerPawn()) != none)) goto 0x0024
+  0015: return new(self, nothing, obj'TnVehicleGiantTankAiControlStrategy', nothing, DeltaTime)
+  0024: return new(self, nothing, obj'TnVehicleTankAiControlStrategy', nothing, DeltaTime)
+  0033: return return
+  0039: <eos>
+
+function TnAiController.Possess  (script 190 bytes)
+  0000: nothing
+  0001: Possess(inPawn, bVehicleTransition)
+  0012: self._IconDrawer.Initialize(get_TransformerPawn())
+  002f: self.TacticalAnalyzer.AddNewEnemyObserver(delegate.OnNewEnemy)
+  004b: self._DebugManager = TnDebugManager(self.WorldInfo.GetDebugManager())
+  0069: self.WeaponAimer.Initialize(get_TransformerPawn())
+  0086: self.WeaponShooter.Initialize(get_TransformerPawn())
+  00a3: self._RangeDetector.Initialize(self.RangeSet)
+  00bb: return nothing
+  00bd: <eos>
+
+function TnAiController.UnPossess  (script 37 bytes)
+  0000: self.TacticalAnalyzer.RemoveNewEnemyObserver(delegate.OnNewEnemy)
+  001c: UnPossess()
+  0022: return nothing
+  0024: <eos>
+
+function TnAiController.GetCurrentCharacter  (script 27 bytes)
+  0000: return get_TransformerPawn()._CurrentCharacter
+  0014: return return
+  001a: <eos>
+
+function TnAiController.CanVehicleFormFly  (script 91 bytes)
+  0000: if !((get_TransformerPawn()._VehicleForm == none)) goto 0x001b
+  0019: return false
+  001b: MC = get_TransformerPawn()._VehicleForm.get_FormMovementCapabilities()
+  0042: return MC.bCanFly
+  0054: return return
+  005a: <eos>
+
+function TnAiController.CycleDebugMode  (script 29 bytes)
+  0000: self._DebugMode = cast43((cast3f((cast3a(self._DebugMode) + 1)) % cast3f(4)))
+  001a: return nothing
+  001c: <eos>
+
+function TnAiController.DisableDebugMode  (script 11 bytes)
+  0000: self._DebugMode = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnAiController.IsVehicleFlying  (script 70 bytes)
+  0000: ThePlaneForm = TnPlaneForm(get_TransformerPawn()._VehicleForm)
+  001e: if !((ThePlaneForm != none)) goto 0x003d
+  0029: return ThePlaneForm.get_IsBoosting()
+  003d: return false
+  003f: return return
+  0045: <eos>
+
+function TnAiController.ClearCurrentRoute  (script 19 bytes)
+  0000: self.CurrentRoute.Length = 0
+  0008: self.RouteCache.Length = 0
+  0010: return nothing
+  0012: <eos>
+
+function TnAiController.RefreshPawnWorldState  (script 203 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: AsTnWeapon = TnWeapon(self.Pawn.Weapon)
+  0026: if !((AsTnWeapon != none)) goto 0x0073
+  0031: SetWorldStateClass(obj'TnAiWorldStateCurrentWeapon', AsTnWeapon.get_Class(), )
+  004d: SetWorldStateBool(obj'TnAiWorldStateWeaponOverheated', AsTnWeapon.IsOverheating(), )
+  0070: goto 0x0099
+  0073: SetWorldStateBool(obj'TnAiWorldStateWeaponOverheated', false, )
+  0084: SetWorldStateClass(obj'TnAiWorldStateCurrentWeapon', obj'TnWeapon', )
+  0099: SetWorldStateInt(obj'TnAiWorldStateTransformerForm', (get_TransformerPawn().get_IsInRobotForm() ? 0 : 1), )
+  00c8: return nothing
+  00ca: <eos>
+
+function TnAiController.PawnDied  (script 119 bytes)
+  0000: ReleaseOccupiedNavigationPoint()
+  000a: self.bDestroyPawnsOnDestroyed = false
+  0012: SuspendPlanRunner()
+  001c: TnAiController.DialogRemoveEnemy(self.Enemy)
+  0027: self._DialogManager.DialogUnregisterAllEnemies()
+  003a: CurrentEnemy = TnPawn(self.Enemy)
+  004a: if !((CurrentEnemy != none)) goto 0x0069
+  0055: CurrentEnemy.RemoveTargeter(self)
+  0069: PawnDied(inPawn)
+  0074: return nothing
+  0076: <eos>
+
+function TnAiController.Destroyed  (script 111 bytes)
+  0000: self.PlanRunner.Shutdown()
+  0013: if !(((cast3a(self.Role) == cast3a(3)) && self.bDestroyPawnsOnDestroyed)) goto 0x004f
+  002e: if !((get_TransformerPawn() != none)) goto 0x004f
+  003e: get_TransformerPawn().DestroyActor()
+  004f: if !((self.DynamicNav != none)) goto 0x0066
+  005a: self.DynamicNav.DestroyActor()
+  0066: Destroyed()
+  006c: return nothing
+  006e: <eos>
+
+function TnAiController.ApplyBuffs  (script 193 bytes)
+  0000: BuffService = TnBuffService(TnAiPawn(self.Pawn).GetService('TnBuffService'))
+  002c: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0042
+  0040: return nothing
+  0042: I = 0
+  0049: if !((I < AiCharacterDefinitionTemplate.Buffs.Length)) goto 0x00be
+  0062: BuffService.AddSelfBuff(I[AiCharacterDefinitionTemplate.Buffs].BuffClass, I[AiCharacterDefinitionTemplate.Buffs].BuffLevel)
+  00b4: AddAdd_PreInt(I)
+  00bb: goto 0x0049
+  00be: return nothing
+  00c0: <eos>
+
+function TnAiController.InitializePlanning  (script 235 bytes)
+  0000: nothing
+  0001: if !((ActionSet != none)) goto 0x0024
+  000c: ActionSet.ApplyActionOverrides(ActionOverrides)
+  0024: self.PlanRunner.Initialize(self, GoalSet, ActionSet, SearchSpace)
+  0047: SetWorldStateBool(obj'TnAiWorldStateHasAmmo', true, )
+  0058: SetWorldStateBool(obj'TnAiWorldStateSpawned', !self._PlaySpawnAnimation, )
+  0070: if !(((self.Pawn != none) && (self.Pawn.Weapon != none))) goto 0x00b6
+  0091: SetWorldStateClass(obj'TnAiWorldStateCurrentWeapon', self.Pawn.Weapon.get_Class(), )
+  00b6: self.PlanRunner.AddWaitingObserver(delegate.OnEnemyChangeAllowed)
+  00d2: self.DefaultGoalSet = GoalSet
+  00dd: self.DefaultActionSet = ActionSet
+  00e8: return nothing
+  00ea: <eos>
+
+function TnAiController.CloneAiCharacterDefinition  (script 487 bytes)
+  0000: AiC = new(self, nothing, obj'TnAiCharacterDefinition', nothing, DeltaTime)
+  0014: AiC.Buffs = AiCharacterDefinitionTemplate.Buffs
+  0031: AiC.ColorVariations = AiCharacterDefinitionTemplate.ColorVariations
+  004e: AiC.AiCharacterDataResolved = AiCharacterDefinitionTemplate.AiCharacterDataResolved
+  006b: if !((AiCharacterDefinitionTemplate.GoalSet != none)) goto 0x00d5
+  007f: AiC.GoalSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapGoalSet', AiC)
+  00ab: AiC.GoalSet.InitializeFromTemplate(AiCharacterDefinitionTemplate.GoalSet)
+  00d5: if !((AiCharacterDefinitionTemplate.ActionSet != none)) goto 0x013f
+  00e9: AiC.ActionSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapActionSet', AiC)
+  0115: AiC.ActionSet.InitializeFromTemplate(AiCharacterDefinitionTemplate.ActionSet)
+  013f: if !((AiCharacterDefinitionTemplate.SensorSet != none)) goto 0x01a9
+  0153: AiC.SensorSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmAiSensorSet', AiC)
+  017f: AiC.SensorSet.InitializeFromTemplate(AiCharacterDefinitionTemplate.SensorSet)
+  01a9: if !((AiCharacterDefinitionTemplate.SearchSpace != none)) goto 0x01da
+  01bd: AiC.SearchSpace = AiCharacterDefinitionTemplate.SearchSpace
+  01da: return AiC
+  01e0: return return
+  01e6: <eos>
+
+function TnAiController.CreateAndInitializeVehicleAiControlStrategy  (script 46 bytes)
+  0000: self._VehicleAiControl = TnAiController.CreateVehicleAiControlStrategy()
+  000c: if !((self._VehicleAiControl != none)) goto 0x002b
+  0017: self._VehicleAiControl.Initialize(self)
+  002b: return nothing
+  002d: <eos>
+
+function TnAiController.InitializeFromTemplate  (script 734 bytes)
+  0000: default=2
+  0006: self.AiWorldState.AutoPopulate(self.WorldStateTypes)
+  001e: self._TemplateDefinition = AiCharacterDefinitionTemplate
+  0029: AiC = TnAiController.CloneAiCharacterDefinition(AiCharacterDefinitionTemplate)
+  003a: if !((cast3a(StartingFormOverride) != cast3a(2))) goto 0x0069
+  004a: AiC.AiCharacterDataResolved.StartingForm = StartingFormOverride
+  0069: TnAiController.SetColorVariation(AiC)
+  0074: get_TransformerPawn().ApplyCharacter(AiC.AiCharacterDataResolved)
+  009a: get_TransformerPawn().InvManager.DestroyInventory()
+  00bb: CreateAndInitializeVehicleAiControlStrategy()
+  00c5: TnAiController.RefreshPawnWorldState()
+  00cb: self.TacticalAnalyzer.Initialize(self, AiC.SensorSet)
+  00ed: TnAiController.InitializePlanning(AiC.GoalSet, AiC.ActionSet, AiC.SearchSpace, AiCharacterDefinitionTemplate.ActionOverrides)
+  012b: if !(!get_IsAiBuddy()) goto 0x014e
+  013a: AssignToVolume(GetTouchingTacticalVolume())
+  014e: self.DynamicNav = get_TransformerPawn().Spawn(obj'Engine.DynamicNavPoint', self, , , , , , )
+  0178: self.DamageThreatHistory.SetSampleTime(self._DamageThreatWindow)
+  0190: TnAiController.ApplyBuffs(AiCharacterDefinitionTemplate)
+  019b: if !((self.Pawn.Weapon == none)) goto 0x01d0
+  01af: get_TransformerPawn().InvManager.NextWeapon()
+  01d0: self._DialogManager.InitializeWithAiPawn(get_TransformerPawn())
+  01ed: self._DialogManager.PlaySpawnedDialog()
+  0200: get_TransformerPawn().OnInitialized()
+  0218: self._HealthAtLastHeavyDamageReaction = self.Pawn.HealthMax
+  022c: self._HeavyDamageThreshold = AiCharacterDefinitionTemplate.HeavyDamageThreshold
+  0240: self._HeavyDamageThresholdEnabled = AiCharacterDefinitionTemplate.HeavyDamageThresholdEnabled
+  0256: get_TransformerPawn()._ShouldDisplayName = AiCharacterDefinitionTemplate.ShouldDisplayName
+  027a: if !((self.PlayerReplicationInfo != none)) goto 0x02db
+  0285: CharacterName = AiC.AiCharacterDataResolved.CharacterName
+  02a4: if !((CharacterName == "")) goto 0x02c3
+  02b0: CharacterName = "DefaultName"
+  02c3: self.PlayerReplicationInfo.SetPlayerAlias(CharacterName)
+  02db: return nothing
+  02dd: <eos>
+
+function TnAiController.SetColorVariation  (script 180 bytes)
+  0000: if !((AiC.ColorVariations.Length == 0)) goto 0x0017
+  0015: return nothing
+  0017: Selected = obj'Core.Random'.static.RandomInt(AiC.ColorVariations.Length)
+  003f: AiC.AiCharacterDataResolved.PrimaryColor = Selected[AiC.ColorVariations].Primary
+  0078: AiC.AiCharacterDataResolved.SecondaryColor = Selected[AiC.ColorVariations].Secondary
+  00b1: return nothing
+  00b3: <eos>
+
+function TnAiController.AssignToVolume  (script 177 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((AssignedTacticalVolume == self.TacticalVolume)) goto 0x001e
+  001c: return nothing
+  001e: if !((self.TacticalVolume != none)) goto 0x003d
+  0029: self.TacticalVolume.RemoveFromVolume(self)
+  003d: TnAiController.ResetMoveToTacticalVolumeSensor()
+  0043: self.TacticalVolume = AssignedTacticalVolume
+  004e: if !((self.TacticalVolume != none)) goto 0x00ae
+  0059: self.TacticalVolume.AssignToVolume(self)
+  006d: self.TacticalVolume.RegisterTouchingEnemiesWithAiPawn(get_TransformerPawn(), true)
+  008b: if !(!self.TacticalVolume.EncompassesActorLocation(self.Pawn)) goto 0x00ae
+  00a8: TnAiController.MoveToPathNodeInTacticalVolume()
+  00ae: return nothing
+  00b0: <eos>
+
+function TnAiController.GetTouchingTacticalVolume  (script 63 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return none
+  000d: foreach self.Pawn.TouchingActors(obj'TnTacticalVolume', ReturnVolume) (end 0x0031)
+  002d: goto 0x0031
+  0030: iternext
+  0031: iterpop
+  0032: return ReturnVolume
+  0038: return return
+  003e: <eos>
+
+function TnAiController.GetTacticalVolume  (script 13 bytes)
+  0000: return self.TacticalVolume
+  0006: return return
+  000c: <eos>
+
+function TnAiController.OnTnAssignTacticalVolume  (script 247 bytes)
+  0000: if !((Action.TacticalVolume == none)) goto 0x0022
+  0014: AssignToVolume(none)
+  001f: goto 0x00f4
+  0022: if !(0[Action.InputLinks].bHasImpulse) goto 0x005c
+  0041: AssignToVolume(Action.TacticalVolume)
+  0059: goto 0x00f4
+  005c: if !(1[Action.InputLinks].bHasImpulse) goto 0x00a1
+  007b: if !((self.TacticalVolume == Action.TacticalVolume)) goto 0x009e
+  0093: AssignToVolume(none)
+  009e: goto 0x00f4
+  00a1: if !(2[Action.InputLinks].bHasImpulse) goto 0x00f4
+  00c1: AssignToVolume(((self.TacticalVolume == Action.TacticalVolume) ? none : Action.TacticalVolume))
+  00f4: return nothing
+  00f6: <eos>
+
+function TnAiController.ResetMoveToTacticalVolumeSensor  (script 65 bytes)
+  0000: Sensor = self.TacticalAnalyzer.GetMoveToRangeSensor(obj'TnAiWorldStateMoveToTacticalVolume')
+  001e: if !((Sensor == none)) goto 0x002b
+  0029: return nothing
+  002b: Sensor.ClearSubject()
+  003e: return nothing
+  0040: <eos>
+
+function TnAiController.SetGoalSet  (script 27 bytes)
+  0000: self.PlanRunner.ReplaceGoalSet(NewGoalSet)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.SetActionSet  (script 27 bytes)
+  0000: self.PlanRunner.ReplaceActionSet(NewActionSet)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.ResetGoalSet  (script 27 bytes)
+  0000: self.PlanRunner.ReplaceGoalSet(self.DefaultGoalSet)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.ResetActionSet  (script 27 bytes)
+  0000: self.PlanRunner.ReplaceActionSet(self.DefaultActionSet)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.OnTnAiUseInteract  (script 67 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x002d
+  001f: self._ScriptedUseInteract = Action
+  002a: goto 0x0034
+  002d: self._ScriptedUseInteract = none
+  0034: RequestReplan(1)
+  0040: return nothing
+  0042: <eos>
+
+function TnAiController.OnTnAiJump  (script 129 bytes)
+  0000: if !(((!get_TransformerPawn()._IsDowned && 0[Action.InputLinks].bHasImpulse) && get_TransformerPawn().get_IsInRobotForm())) goto 0x007e
+  0057: self.AiWorldState.SetIntValue(obj'TnAiWorldStateReaction', 2, )
+  0072: RequestReplan(1)
+  007e: return nothing
+  0080: <eos>
+
+function TnAiController.OnTeleport  (script 146 bytes)
+  0000: self.AiWorldState.SetIntValue(obj'TnAiWorldStateTurret', 0, none)
+  001a: ClearScriptedTurrets()
+  0024: OnTeleport(Action)
+  002f: FocalPoint = (self.Pawn.Location + (cast3f(512) * cast39(self.Pawn.Rotation)))
+  005e: !! index out of range ; raw 0f01fffff8ca52fffffe9211170b20fffffeb20bfffffb97
+
+function TnAiController.Touch  (script 67 bytes)
+  0000: TouchedVolume = TnTacticalVolume(Other)
+  0010: if !(((TouchedVolume == none) || (self.TacticalVolume != TouchedVolume))) goto 0x002e
+  002c: return nothing
+  002e: TnAiController.ResetMoveToTacticalVolumeSensor()
+  0034: RequestReplan(1)
+  0040: return nothing
+  0042: <eos>
+
+function TnAiController.UnTouch  (script 55 bytes)
+  0000: TouchedVolume = TnTacticalVolume(Other)
+  0010: if !(((TouchedVolume == none) || (self.TacticalVolume != TouchedVolume))) goto 0x002e
+  002c: return nothing
+  002e: TnAiController.MoveToPathNodeInTacticalVolume()
+  0034: return nothing
+  0036: <eos>
+
+function TnAiController.MoveToPathNodeInTacticalVolume  (script 130 bytes)
+  0000: if !((self.AiWorldState.GetSubject(obj'TnAiWorldStateMoveToTacticalVolume') != none)) goto 0x0020
+  001e: return nothing
+  0020: MoveToRangeSensor = self.TacticalAnalyzer.GetMoveToRangeSensor(obj'TnAiWorldStateMoveToTacticalVolume')
+  003e: if !((MoveToRangeSensor == none)) goto 0x004b
+  0049: return nothing
+  004b: PathNodeInsideVolume = self.TacticalVolume.GetTacticalPathNodeInsideVolume(self)
+  0065: MoveToRangeSensor.SetSubjectAndRange(PathNodeInsideVolume, 1)
+  007f: return nothing
+  0081: <eos>
+
+function TnAiController.MoveToTacticalVolumeCompleted  (script 92 bytes)
+  0000: if !((self.TacticalVolume == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self.Pawn == none)) goto 0x001a
+  0018: return nothing
+  001a: if !((self.Pawn.Touching.Find(self.TacticalVolume) != -1)) goto 0x0059
+  003a: TnAiController.ResetMoveToTacticalVolumeSensor()
+  0040: self.AiWorldState.SetSubject(obj'TnAiWorldStateMoveToTacticalVolume', none)
+  0059: return nothing
+  005b: <eos>
+
+function TnAiController.AssignOccupiedNavigationPoint  (script 127 bytes)
+  0000: if !((self._OccupiedNavigationPoint != none)) goto 0x0015
+  000b: ReleaseOccupiedNavigationPoint()
+  0015: NavPoint.AssignOccupier(self)
+  0029: self._OccupiedNavigationPoint = NavPoint
+  0034: TacticalPathNode = TnTacticalPathNode(NavPoint)
+  0044: if !((TacticalPathNode != none)) goto 0x007c
+  004f: self._ClaimedTactical = TacticalPathNode.GetTactical()
+  0068: self._ClaimedTactical.Claim(self)
+  007c: return nothing
+  007e: <eos>
+
+function TnAiController.ReleaseOccupiedNavigationPoint  (script 81 bytes)
+  0000: if !((self._OccupiedNavigationPoint == none)) goto 0x000d
+  000b: return nothing
+  000d: self._OccupiedNavigationPoint.ReleaseOccupier(self)
+  0021: self._OccupiedNavigationPoint = none
+  0028: if !((self._ClaimedTactical != none)) goto 0x004e
+  0033: self._ClaimedTactical.Release(self)
+  0047: self._ClaimedTactical = none
+  004e: return nothing
+  0050: <eos>
+
+function TnAiController.InvalidateTactical  (script 45 bytes)
+  0000: if !((InvalidTactical == none)) goto 0x000d
+  000b: return nothing
+  000d: self._TacticalPathNodeInvalidator.InvalidateTactical(InvalidTactical, InvalidDuration)
+  002a: return nothing
+  002c: <eos>
+
+function TnAiController.IsTacticalValid  (script 32 bytes)
+  0000: return self._TacticalPathNodeInvalidator.IsValidTactical(TacticalToCheck)
+  0019: return return
+  001f: <eos>
+
+function TnAiController.Tick  (script 509 bytes)
+  0000: if !(!get_IsInitialized()) goto 0x0011
+  000f: return nothing
+  0011: Tick(DeltaTime)
+  001c: if !(((DeltaTime == cast3f(0)) || (self.Pawn == none))) goto 0x0038
+  0036: return nothing
+  0038: if !(!get_TransformerPawn()._IsDowned) goto 0x0069
+  0051: self.TacticalAnalyzer.Update(DeltaTime)
+  0069: TnAiController.UpdateDamageThreat(DeltaTime)
+  0074: TnAiController.UpdateDamageResults(DeltaTime)
+  007f: self._DialogManager.UpdateHealthDialog(DeltaTime, get_TransformerPawn().GetNormalizedHealth())
+  00af: if !(get_TransformerPawn().get_IsInVehicleForm()) goto 0x00e2
+  00ca: self._VehicleAiControl.Update(DeltaTime)
+  00e2: if !((get_TransformerPawn() == none)) goto 0x00f4
+  00f2: return nothing
+  00f4: TnAiController.UpdateEnemyStatus()
+  00fa: StepOffBlockedAnchor()
+  0104: self.WeaponShooter.Update()
+  0117: self.PlanRunner.Update(DeltaTime)
+  012f: if !((get_TransformerPawn() == none)) goto 0x0141
+  013f: return nothing
+  0141: if !((self.PlanRunner._CurrentSolution == none)) goto 0x0164
+  0155: RequestReplan(1)
+  0161: goto 0x01bb
+  0164: if !((self.PlanRunner.get_TimeSinceLastFullPlan() > obj'Core.Math'.static.FClamp((self.WorldInfo.TimeSeconds - self.Pawn.LastRenderTime), 0.2, 1.0))) goto 0x01bb
+  01af: RequestReplan(0)
+  01bb: if !(((self._MostRecentStimulus.Type != none) && (self.PlanRunner.get_TimeSinceLastPlan() > 0.2))) goto 0x01fa
+  01f0: ResetStimulus()
+  01fa: return nothing
+  01fc: <eos>
+
+function TnAiController.StepOffBlockedAnchor  (script 478 bytes)
+  0000: if !((self.Pawn.Anchor == none)) goto 0x004f
+  0014: self.Pawn.SetAnchor(self.Pawn.GetBestAnchor(self.Pawn, self.Pawn.Location, true, ))
+  004f: AnchoredCell = get_TransformerPawn().GetAnchoredNavigationCell()
+  006d: if !((((AnchoredCell != none) && AnchoredCell.bBlocked) && (AnchoredCell.BlockedByActor != self.Pawn))) goto 0x01db
+  00a6: self.WorldInfo.GetAllNavigationPointsInRadius(obj'Engine.NavigationCell', get_TransformerPawn().Location, 2500.0, NavPoints)
+  00db: idx = 0
+  00e2: if !((idx < NavPoints.Length)) goto 0x01db
+  00f2: if !(!idx[NavPoints].bBlocked) goto 0x01d1
+  010c: if !(!AnchoredCell.WalkLine(get_TransformerPawn().Location, idx[NavPoints].Location, get_TransformerPawn()._WorkingMovementCapabilities.CylinderRadius, )) goto 0x016d
+  016a: goto 0x01d1
+  016d: self._StepInfo._ActorToStepAwayFrom = AnchoredCell
+  0181: self._StepInfo._StepDestination = idx[NavPoints].Location
+  01a4: self.AiWorldState.SetIntValue(obj'TnAiWorldStateReaction', 1, self._StepInfo)
+  01c2: RequestReplan(1)
+  01ce: goto 0x01db
+  01d1: AddAdd_PreInt(idx)
+  01d8: goto 0x00e2
+  01db: return nothing
+  01dd: <eos>
+
+function TnAiController.ShouldUpdateAiming  (script 45 bytes)
+  0000: return ((self.Enemy != none) && self.AiWorldState.GetBoolValue(obj'TnAiWorldStateLOSToEnemy'))
+  0026: return return
+  002c: <eos>
+
+function TnAiController.UpdateEnemyStatus  (script 122 bytes)
+  0000: TnAiController.UpdateEnemyVisibilityStatus()
+  0006: EnemyPawn = TnPawn(self.Enemy)
+  0016: if !((EnemyPawn == none)) goto 0x0056
+  0021: if !((self._PreviousEnemyHealth != cast3f(0))) goto 0x0054
+  002e: self._PreviousEnemyHealth = 0.0
+  0039: self.AiWorldState.SetIntValue(obj'TnAiWorldStateEnemyTransformerForm', 2, )
+  0054: return nothing
+  0056: TnAiController.UpdateEnemyStunned(EnemyPawn)
+  0061: TnAiController.UpdateEnemyForm(EnemyPawn)
+  006c: TnAiController.UpdateEnemyHealth(EnemyPawn)
+  0077: return nothing
+  0079: <eos>
+
+function TnAiController.UpdateEnemyStunned  (script 87 bytes)
+  0000: IsEnemyStunned = EnemyPawn.IsStunned()
+  001a: StunnedEnemy = (IsEnemyStunned ? EnemyPawn : none)
+  0031: self.AiWorldState.SetBoolValue(obj'TnAiWorldStateEnemyStunned', IsEnemyStunned, StunnedEnemy)
+  0054: return nothing
+  0056: <eos>
+
+function TnAiController.UpdateEnemyVisibilityStatus  (script 110 bytes)
+  0000: if !((self.Enemy == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(!self.AiWorldState.GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x002c
+  002a: return nothing
+  002c: self._LastVisibleEnemyLocation = self.Enemy.Location
+  0040: if !(!self.bEnemyEncountered) goto 0x006b
+  004b: self._DialogManager.PlayEnemyEncounteredDialog(self.Enemy)
+  0063: self.bEnemyEncountered = true
+  006b: return nothing
+  006d: <eos>
+
+function TnAiController.UpdateEnemyForm  (script 118 bytes)
+  0000: CurrentForm = EnemyPawn.get_FormType()
+  0019: if !((cast3a(self._PreviousTransformerForm) != cast3a(CurrentForm))) goto 0x0073
+  002c: TransformerForm = ((cast3a(CurrentForm) == cast3a(1)) ? 1 : 0)
+  0048: self.AiWorldState.SetIntValue(obj'TnAiWorldStateEnemyTransformerForm', cast3a(TransformerForm), )
+  0068: self._PreviousTransformerForm = CurrentForm
+  0073: return nothing
+  0075: <eos>
+
+function TnAiController.UpdateEnemyHealth  (script 314 bytes)
+  0000: NormalizedHealth = EnemyPawn.GetNormalizedHealth()
+  0019: if !((obj'Core.Math'.static.IsFloatInRange(NormalizedHealth, self._EnemyCriticalRange) && !obj'Core.Math'.static.IsFloatInRange(self._PreviousEnemyHealth, self._EnemyCriticalRange))) goto 0x007b
+  005d: self.AiWorldState.SetIntValue(obj'TnAiWorldStateEnemyHealthStatus', 2, )
+  0078: goto 0x012c
+  007b: if !((obj'Core.Math'.static.IsFloatInRange(NormalizedHealth, self._EnemyWoundedRange) && !obj'Core.Math'.static.IsFloatInRange(self._PreviousEnemyHealth, self._EnemyWoundedRange))) goto 0x00dc
+  00bf: self.AiWorldState.SetIntValue(obj'TnAiWorldStateEnemyHealthStatus', 1, )
+  00d9: goto 0x012c
+  00dc: if !(((NormalizedHealth > self._EnemyWoundedRange.Max) && (self._PreviousEnemyHealth <= self._EnemyWoundedRange.Max))) goto 0x012c
+  0112: self.AiWorldState.SetIntValue(obj'TnAiWorldStateEnemyHealthStatus', 0, )
+  012c: self._PreviousEnemyHealth = NormalizedHealth
+  0137: return nothing
+  0139: <eos>
+
+function TnAiController.UpdateDamageThreat  (script 305 bytes)
+  0000: if !(((DeltaTime == cast3f(0)) || (self.Pawn.Health == cast3f(0)))) goto 0x0027
+  0025: return nothing
+  0027: if !((cast3a(self.FixedDamageThreat) != cast3a(5))) goto 0x0050
+  0037: SetWorldStateInt(obj'TnAiWorldStateDamageThreat', cast3a(self.FixedDamageThreat), )
+  004e: return nothing
+  0050: self.DamageThreatHistory.AddValue(((self.DamageSum / DeltaTime) / self.Pawn.Health), self.WorldInfo.TimeSeconds)
+  008d: self.DamageSum = 0.0
+  0098: self.DamageThreatHistory.Update(self.WorldInfo.TimeSeconds)
+  00b9: DamageThreat = self.DamageThreatHistory.ValueAverage()
+  00d2: idx = (self._DamageThreatMins.Length - 1)
+  00e1: if !((idx >= 0)) goto 0x010e
+  00ec: if !((DamageThreat >= idx[self._DamageThreatMins])) goto 0x0104
+  0101: goto 0x010e
+  0104: SubtractSubtract_PreInt(idx)
+  010b: goto 0x00e1
+  010e: if !((idx >= 0)) goto 0x012e
+  0119: SetWorldStateInt(obj'TnAiWorldStateDamageThreat', idx, )
+  012e: return nothing
+  0130: <eos>
+
+function TnAiController.FixDamageThreat  (script 56 bytes)
+  0000: self.FixedDamageThreat = DamageThreat
+  000b: self.DamageThreatHistory.Clear()
+  001e: SetWorldStateInt(obj'TnAiWorldStateDamageThreat', cast3a(self.FixedDamageThreat), )
+  0035: return nothing
+  0037: <eos>
+
+function TnAiController.ClearDamageThreatHistory  (script 81 bytes)
+  0000: self.DamageThreatHistory.Clear()
+  0013: if !((cast3a(self.FixedDamageThreat) == cast3a(5))) goto 0x0037
+  0023: SetWorldStateInt(obj'TnAiWorldStateDamageThreat', 0, )
+  0034: goto 0x004e
+  0037: SetWorldStateInt(obj'TnAiWorldStateDamageThreat', cast3a(self.FixedDamageThreat), )
+  004e: return nothing
+  0050: <eos>
+
+function TnAiController.OnToggleCinematicMode  (script 60 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0039
+  001f: get_TransformerPawn().GetRevive(none, false)
+  0039: return nothing
+  003b: <eos>
+
+function TnAiController.StartDowned  (script 75 bytes)
+  0000: self._DialogManager.PlayDownedDialog()
+  0013: if !(self.AiWorldState.GetBoolValue(obj'TnAiWorldStateInteractedWith')) goto 0x0048
+  002e: self.AiWorldState.SetBoolValue(obj'TnAiWorldStateInteractedWith', false, none)
+  0048: return nothing
+  004a: <eos>
+
+function TnAiController.StopDowned  (script 22 bytes)
+  0000: self._DialogManager.PlayRevivedDialog()
+  0013: return nothing
+  0015: <eos>
+
+function TnAiController.OnDownRevive  (script 248 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0098
+  001f: get_TransformerPawn().DownedEnabled = true
+  0035: get_TransformerPawn()._DrainHealthWhenDown = Action.DrainHealthWhenDown
+  0059: get_TransformerPawn()._CanHealWhenDown = Action.CanHealWhenDown
+  007d: get_TransformerPawn().DownTransformer()
+  0095: goto 0x00f5
+  0098: if !(1[Action.InputLinks].bHasImpulse) goto 0x00f5
+  00b7: get_TransformerPawn().DownedEnabled = false
+  00cd: get_TransformerPawn().GetRevive(none, Action.FullRevive)
+  00f5: return nothing
+  00f7: <eos>
+
+function TnAiController.DrawNav  (script 1394 bytes)
+  0000: if !((self.Pawn.Anchor != none)) goto 0x017b
+  0014: obj'Engine.Debug'.static.DrawText((self.Pawn.Anchor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), "Anchor", obj'Core.Colors'.static.Yellow(), )
+  007e: obj'Engine.Debug'.static.DrawLine((self.Pawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), (self.Pawn.Anchor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), obj'Core.Colors'.static.Yellow(), )
+  0112: obj'Engine.Debug'.static.DrawSphere((self.Pawn.Anchor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), 25.0, 3, obj'Core.Colors'.static.Yellow(), )
+  017b: if !((self.Pawn.LastAnchor != none)) goto 0x030c
+  018f: obj'Engine.Debug'.static.DrawText((self.Pawn.LastAnchor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 150.0)), ("LastAnchor" @ cast55(self.Pawn.FindAnchorFailedTime)), obj'Core.Colors'.static.Yellow(), )
+  020f: obj'Engine.Debug'.static.DrawLine((self.Pawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), (self.Pawn.LastAnchor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), obj'Core.Colors'.static.Yellow(), )
+  02a3: obj'Engine.Debug'.static.DrawSphere((self.Pawn.LastAnchor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), 25.0, 3, obj'Core.Colors'.static.Yellow(), )
+  030c: if !((self._OccupiedNavigationPoint != none)) goto 0x0402
+  0317: obj'Engine.Debug'.static.DrawText((self._OccupiedNavigationPoint.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 200.0)), "Claimed Nav Point", obj'Core.Colors'.static.Yellow(), )
+  0383: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, self._OccupiedNavigationPoint.Location, obj'Core.Colors'.static.Yellow(), )
+  03c6: obj'Engine.Debug'.static.DrawSphere(self._OccupiedNavigationPoint.Location, 25.0, 3, obj'Core.Colors'.static.Yellow(), )
+  0402: if !((self.MoveTarget != none)) goto 0x056f
+  040d: obj'Engine.Debug'.static.DrawText((self.MoveTarget.GetDestination(self) + obj'Core.Math'.static.MakeVector(0.0, 0.0, 50.0)), "MoveTarget", obj'Core.Colors'.static.DarkCyan(), )
+  0478: obj'Engine.Debug'.static.DrawLine((self.Pawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), (self.MoveTarget.GetDestination(self) + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), obj'Core.Colors'.static.DarkCyan(), )
+  0509: obj'Engine.Debug'.static.DrawSphere((self.MoveTarget.GetDestination(self) + obj'Core.Math'.static.MakeVector(0.0, 0.0, -100.0)), 25.0, 3, obj'Core.Colors'.static.DarkCyan(), )
+  056f: return nothing
+  0571: <eos>
+
+function TnAiController.DrawAID  (script 3204 bytes)
+  0000: SensorSet = self.TacticalAnalyzer.GetSensorSet()
+  0019: GetDebugStrings(DebugStrings)
+  0028: idx = 0
+  002f: if !((idx < DebugStrings.Length)) goto 0x0072
+  003f: CompleteDebugString = (CompleteDebugString @ idx[DebugStrings])
+  0057: CompleteDebugString = (CompleteDebugString $ " 
+")
+  0068: AddAdd_PreInt(idx)
+  006f: goto 0x002f
+  0072: if !(!self._DebugManager.TacticalEvalDebug) goto 0x00e4
+  0086: obj'Engine.Debug'.static.DrawText((self.Pawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 250.0)), CompleteDebugString, obj'Core.Colors'.static.White(), )
+  00e4: if !((self.Enemy != none)) goto 0x0132
+  00ef: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, self.Enemy.Location, obj'Core.Colors'.static.Red(), )
+  0132: if !(NotEqual_InterfaceInterface(self.Focus, IFocusible(none))) goto 0x0290
+  0146: LineEnd = self.Focus.GetFocalPoint()
+  0160: obj'Engine.Debug'.static.DrawText((LineEnd + obj'Core.Math'.static.MakeVector(0.0, 0.0, 200.0)), "Focus", obj'Core.Colors'.static.Magenta(), )
+  01b7: obj'Engine.Debug'.static.DrawLine((self.Pawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), (LineEnd + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), obj'Core.Colors'.static.Magenta(), )
+  0239: obj'Engine.Debug'.static.DrawSphere((LineEnd + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), 25.0, 3, obj'Core.Colors'.static.Magenta(), )
+  0290: if !((self.Pawn.Base != none)) goto 0x03f0
+  02a4: LineEnd = self.Pawn.Base.Location
+  02c1: obj'Engine.Debug'.static.DrawText((LineEnd + obj'Core.Math'.static.MakeVector(0.0, 0.0, 50.0)), "Base", obj'Core.Colors'.static.White(), )
+  0317: obj'Engine.Debug'.static.DrawLine((self.Pawn.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), (LineEnd + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), obj'Core.Colors'.static.White(), )
+  0399: obj'Engine.Debug'.static.DrawSphere((LineEnd + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), 50.0, 3, obj'Core.Colors'.static.White(), )
+  03f0: TnAiController.DrawNav()
+  03f6: if !((self._DefendActor != none)) goto 0x04e6
+  0401: obj'Engine.Debug'.static.DrawText((self._DefendActor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 200.0)), "DefendActor", obj'Core.Colors'.static.Magenta(), )
+  0467: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, self._DefendActor.Location, obj'Core.Colors'.static.Magenta(), )
+  04aa: obj'Engine.Debug'.static.DrawSphere(self._DefendActor.Location, 25.0, 3, obj'Core.Colors'.static.Magenta(), )
+  04e6: if !((self._ScriptedUseInteract != none)) goto 0x0691
+  04f1: if !((cast3a(self._ScriptedUseInteract._InteractPriority) == cast3a(0))) goto 0x0587
+  050a: obj'Engine.Debug'.static.DrawText((self._ScriptedUseInteract.Interact.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 200.0)), "High Priority Interact", obj'Core.Colors'.static.DarkGreen(), )
+  0584: goto 0x0600
+  0587: obj'Engine.Debug'.static.DrawText((self._ScriptedUseInteract.Interact.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 200.0)), "Low Priority Interact", obj'Core.Colors'.static.DarkGreen(), )
+  0600: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, self._ScriptedUseInteract.Interact.Location, obj'Core.Colors'.static.DarkGreen(), )
+  064c: obj'Engine.Debug'.static.DrawSphere(self._ScriptedUseInteract.Interact.Location, 25.0, 3, obj'Core.Colors'.static.DarkGreen(), )
+  0691: if !((self.ScriptedMoveToAction != none)) goto 0x0835
+  069c: obj'Engine.Debug'.static.DrawText((self.ScriptedMoveToAction.DestinationActor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 200.0)), "Scripted MoveTo", obj'Core.Colors'.static.Blue(), )
+  070f: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, self.ScriptedMoveToAction.DestinationActor.Location, obj'Core.Colors'.static.Blue(), )
+  075b: obj'Engine.Debug'.static.DrawSphere(self.ScriptedMoveToAction.DestinationActor.Location, 25.0, 3, obj'Core.Colors'.static.Blue(), )
+  07a0: obj'Engine.Debug'.static.DrawDisk(self.ScriptedMoveToAction.DestinationActor.Location, vect(0,0,1), (cast3a(self.ScriptedMoveToAction.Range)[self.RangeSet].Max - cast3f(100)), cast3a(self.ScriptedMoveToAction.Range)[self.RangeSet].Max, 15, obj'Core.Colors'.static.Blue(), )
+  0835: GetMoveToObjective(DebugActor, Range)
+  0849: if !((DebugActor != none)) goto 0x09b7
+  0854: obj'Engine.Debug'.static.DrawText((DebugActor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), "Objective Point", obj'Core.Colors'.static.DarkYellow(), )
+  08be: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, DebugActor.Location, obj'Core.Colors'.static.DarkYellow(), )
+  0901: obj'Engine.Debug'.static.DrawDisk(DebugActor.Location, vect(0,0,1), (cast3a(Range)[self.RangeSet].Max - cast3f(100)), cast3a(Range)[self.RangeSet].Max, 15, obj'Core.Colors'.static.DarkYellow(), )
+  097b: obj'Engine.Debug'.static.DrawSphere(DebugActor.Location, 25.0, 3, obj'Core.Colors'.static.DarkYellow(), )
+  09b7: idx = 0
+  09be: if !((idx < self._UseTurrets.Length)) goto 0x0ae5
+  09ce: obj'Engine.Debug'.static.DrawText((idx[self._UseTurrets].Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 400.0)), ("Turret" @ cast53(idx)), obj'Core.Colors'.static.DarkYellow(), )
+  0a3e: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, idx[self._UseTurrets].Location, obj'Core.Colors'.static.DarkYellow(), )
+  0a87: obj'Engine.Debug'.static.DrawDisk(idx[self._UseTurrets].Location, vect(0,0,1), 350.0, 400.0, 15, obj'Core.Colors'.static.DarkYellow(), )
+  0adb: AddAdd_PreInt(idx)
+  0ae2: goto 0x09be
+  0ae5: idx = 0
+  0aec: if !((idx < SensorSet.Sensors.Length)) goto 0x0c81
+  0b05: TacticalSensor = TnTacticalPathNodePickerSensor(idx[SensorSet.Sensors])
+  0b24: if !((TacticalSensor == none)) goto 0x0b32
+  0b2f: goto 0x0c77
+  0b32: DebugActor = Actor(cast36(TacticalSensor.GetBestTacticalPathNode()))
+  0b52: if !((DebugActor != none)) goto 0x0c77
+  0b5d: if !((self.Enemy != none)) goto 0x0bfc
+  0b68: obj'Engine.Debug'.static.DrawText((DebugActor.Location + obj'Core.Math'.static.MakeVector(0.0, 0.0, 100.0)), (TacticalSensor.TacticalDescription @ cast53(cast44(obj'Core.Math'.static.VSize((DebugActor.Location - self.Enemy.Location))))), MakeColor(0, 204, 102, ), )
+  0bfc: obj'Engine.Debug'.static.DrawLine(self.Pawn.Location, DebugActor.Location, MakeColor(0, 204, 102, ), )
+  0c3d: obj'Engine.Debug'.static.DrawSphere(DebugActor.Location, 25.0, 3, MakeColor(0, 204, 102, ), )
+  0c77: AddAdd_PreInt(idx)
+  0c7e: goto 0x0aec
+  0c81: return nothing
+  0c83: <eos>
+
+function TnAiController.GetGoapWorldState  (script 13 bytes)
+  0000: return self.AiWorldState
+  0006: return return
+  000c: <eos>
+
+function TnAiController.GetGoapPlanRunner  (script 13 bytes)
+  0000: return self.PlanRunner
+  0006: return return
+  000c: <eos>
+
+function TnAiController.SetSensorSet  (script 27 bytes)
+  0000: self.TacticalAnalyzer.SetSensorSet(InSensorSet)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.GetDebugStrings  (script 141 bytes)
+  0000: Strings.AddItem("-------- Tactical Analyzer --------")
+  002d: self.TacticalAnalyzer.GetDebugStrings(Strings)
+  0045: Strings.AddItem("----------- Plan Runner -----------")
+  0072: self.PlanRunner.GetDebugStrings(Strings)
+  008a: return nothing
+  008c: <eos>
+
+function TnAiController.SetWorldStateBool  (script 39 bytes)
+  0000: nothing
+  0001: self.AiWorldState.SetBoolValue(WorldStateType, Value, Subject)
+  0024: return nothing
+  0026: <eos>
+
+function TnAiController.SetWorldStateInt  (script 38 bytes)
+  0000: nothing
+  0001: self.AiWorldState.SetIntValue(WorldStateType, Value, Subject)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiController.SetWorldStateClass  (script 38 bytes)
+  0000: nothing
+  0001: self.AiWorldState.SetClassValue(WorldStateType, Value, Subject)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiController.SetWorldStateSubject  (script 32 bytes)
+  0000: self.AiWorldState.SetSubject(WorldStateType, Subject)
+  001d: return nothing
+  001f: <eos>
+
+function TnAiController.GetWorldState  (script 32 bytes)
+  0000: return self.AiWorldState.GetState(WorldStateType)
+  0019: return return
+  001f: <eos>
+
+function TnAiController.GetWorldStateSubject  (script 32 bytes)
+  0000: return self.AiWorldState.GetSubject(WorldStateType)
+  0019: return return
+  001f: <eos>
+
+function TnAiController.GetWorldStateInt  (script 32 bytes)
+  0000: return self.AiWorldState.GetIntValue(WorldStateType)
+  0019: return return
+  001f: <eos>
+
+function TnAiController.GetWorldStateBool  (script 32 bytes)
+  0000: return self.AiWorldState.GetBoolValue(WorldStateType)
+  0019: return return
+  001f: <eos>
+
+function TnAiController.IsAwareOfEnemy  (script 32 bytes)
+  0000: return self.TacticalAnalyzer.IsAwareOfEnemy(C)
+  0019: return return
+  001f: <eos>
+
+function TnAiController.NotifyKilled  (script 295 bytes)
+  0000: KilledAsTnPawn = TnPawn(KilledPawn)
+  0010: if !((KilledAsTnPawn != none)) goto 0x004f
+  001b: WasLastHitHeadshot = KilledAsTnPawn.WasLastHitHeadshot()
+  0035: InVehicleForm = KilledAsTnPawn.get_IsInVehicleForm()
+  004f: if !((KilledPawn == self.Pawn)) goto 0x008c
+  005e: if !((!WasLastHitHeadshot && !InVehicleForm)) goto 0x0089
+  0076: self._DialogManager.PlayKilledDialog()
+  0089: goto 0x00d3
+  008c: if !((((Killer == self) && (KilledPawn == self.Enemy)) && (KilledAsTnPawn != none))) goto 0x00d3
+  00b5: self._DialogManager.PlayTargetKilledDialog(DamageType, WasLastHitHeadshot)
+  00d3: self.TacticalAnalyzer.UnregisterEnemy(KilledPawn.Controller)
+  00f4: if !((KilledPawn == self.Enemy)) goto 0x010a
+  0103: TnAiController.SetEnemy(none)
+  010a: NotifyKilled(Killer, Killed, KilledPawn, DamageType)
+  0124: return nothing
+  0126: <eos>
+
+function TnAiController.OnEnemyChangeAllowed  (script 27 bytes)
+  0000: if !((self._ShootAtActor != none)) goto 0x000d
+  000b: return nothing
+  000d: TnAiController.SetEnemy(self._DesiredEnemy)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.SetEnemy  (script 340 bytes)
+  0000: ChangedEnemy = (NewTarget != self.Enemy)
+  0013: PreviousEnemy = self.Enemy
+  001e: CurrentEnemy = TnPawn(self.Enemy)
+  002e: if !((CurrentEnemy != none)) goto 0x004d
+  0039: CurrentEnemy.RemoveTargeter(self)
+  004d: if !((Controller(NewTarget) != none)) goto 0x0079
+  005d: self.Enemy = Controller(NewTarget).Pawn
+  0076: goto 0x0089
+  0079: self.Enemy = Pawn(NewTarget)
+  0089: CurrentEnemy = TnPawn(self.Enemy)
+  0099: if !((CurrentEnemy != none)) goto 0x00b8
+  00a4: CurrentEnemy.AddTargeter(self)
+  00b8: SetWorldStateSubject(obj'TnAiWorldStateTargetIsDead', self.Enemy)
+  00cc: SetWorldStateSubject(obj'TnAiWorldStateLOSToEnemy', self.Enemy)
+  00e0: if !(ChangedEnemy) goto 0x0151
+  00e9: self.TacticalAnalyzer.RefreshEnemyWorldState()
+  00fc: self._EnemyChangedTime = self.WorldInfo.TimeSeconds
+  0110: TnAiController.DialogAddEnemy(self.Enemy)
+  011b: TnAiController.DialogRemoveEnemy(Pawn(PreviousEnemy))
+  012b: self.bEnemyEncountered = false
+  0133: if !((self._DesiredEnemy != none)) goto 0x0151
+  013e: self._DialogManager.PlayAwareOfEnemyDialog()
+  0151: return nothing
+  0153: <eos>
+
+function TnAiController.DialogAddEnemy  (script 155 bytes)
+  0000: if !((inPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: SP = TnServiceProvider(inPawn.Controller)
+  0026: if !(EqualEqual_InterfaceInterface(SP, TnServiceProvider(none))) goto 0x003c
+  003a: return nothing
+  003c: DNI = TnDialogNotificationService(SP.GetService('TnDialogNotificationService'))
+  0064: if !(EqualEqual_InterfaceInterface(DNI, TnDialogNotificationService(none))) goto 0x007a
+  0078: return nothing
+  007a: DNI.DialogRegisterEnemy(get_TransformerPawn())
+  0098: return nothing
+  009a: <eos>
+
+function TnAiController.DialogRemoveEnemy  (script 155 bytes)
+  0000: if !((inPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: SP = TnServiceProvider(inPawn.Controller)
+  0026: if !(EqualEqual_InterfaceInterface(SP, TnServiceProvider(none))) goto 0x003c
+  003a: return nothing
+  003c: DNI = TnDialogNotificationService(SP.GetService('TnDialogNotificationService'))
+  0064: if !(EqualEqual_InterfaceInterface(DNI, TnDialogNotificationService(none))) goto 0x007a
+  0078: return nothing
+  007a: DNI.DialogUnregisterEnemy(get_TransformerPawn())
+  0098: return nothing
+  009a: <eos>
+
+function TnAiController.OnNewEnemy  (script 210 bytes)
+  0000: I = 0
+  0007: if !((I < self.Pawn.Attached.Length)) goto 0x008b
+  0020: TurretPawn = TnSentryPawn(I[self.Pawn.Attached])
+  003f: if !(((TurretPawn != none) && (TurretPawn.Controller != none))) goto 0x0081
+  0060: TurretPawn.Controller.SeeEnemy(Seen)
+  0081: AddAdd_PreInt(I)
+  0088: goto 0x0007
+  008b: T = TnFactionTeam(self.Pawn.GetTeam())
+  00a9: if !((T == none)) goto 0x00b6
+  00b4: return nothing
+  00b6: T.NotifyNearbyMembersOfEnemy(self, Seen)
+  00cf: return nothing
+  00d1: <eos>
+
+function TnAiController.SeeEnemy  (script 80 bytes)
+  0000: SeeEnemy(Seen)
+  000b: if !(((Seen != none) && (Seen.Controller != none))) goto 0x004d
+  002c: self.TacticalAnalyzer.RegisterEnemy(Seen.Controller)
+  004d: return nothing
+  004f: <eos>
+
+function TnAiController.UnregisterEnemy  (script 27 bytes)
+  0000: self.TacticalAnalyzer.UnregisterEnemy(C)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.HearNoise  (script 103 bytes)
+  0000: nothing
+  0001: HearNoise(Loudness, NoiseMaker, NoiseType)
+  0016: self.TacticalAnalyzer.HearNoise(NoiseMaker)
+  002e: if !((NoiseType == 'Dialog')) goto 0x0064
+  0041: ReactToStimulus(NoiseMaker, obj'HM_Engine.HmStimulusType_DialogHear', NoiseMaker.Location, )
+  0064: return nothing
+  0066: <eos>
+
+function TnAiController.SetShootAtActor  (script 227 bytes)
+  0000: self._ShootAtActor = ShootAtActor
+  000b: TnAiController.SetEnemy(none)
+  0012: if !((ShootAtActor != none)) goto 0x00cb
+  001d: ShootAtPawn = Pawn(ShootAtActor)
+  002d: if !((ShootAtPawn == none)) goto 0x0048
+  0038: C = Controller(ShootAtActor)
+  0048: if !((C != none)) goto 0x0067
+  0053: ShootAtPawn = C.Pawn
+  0067: if !((ShootAtPawn != none)) goto 0x00a0
+  0072: self.TacticalAnalyzer.RegisterEnemy(ShootAtPawn.Controller)
+  0093: TnAiController.SetEnemy(ShootAtPawn)
+  009e: return nothing
+  00a0: SetWorldStateSubject(obj'TnAiWorldStateTargetIsDead', ShootAtActor)
+  00b4: SetWorldStateSubject(obj'TnAiWorldStateLOSToEnemy', ShootAtActor)
+  00c8: goto 0x00e0
+  00cb: TnAiController.SetEnemy(self._DesiredEnemy)
+  00d6: OnEnemyChangeAllowed()
+  00e0: return nothing
+  00e2: <eos>
+
+function TnAiController.RecordDamage  (script 200 bytes)
+  0000: DamageIndex = self._DamageResults.Find('Attacker',Attacker)
+  001c: if !((DamageIndex == -1)) goto 0x0067
+  002b: NewDamageResult.Attacker = Attacker
+  0041: NewDamageResult.DamageAmount = Damage
+  0057: self._DamageResults.AddItem(NewDamageResult)
+  0064: goto 0x0084
+  0067: (DamageIndex[self._DamageResults].DamageAmount += Damage)
+  0084: if !(((self._ClaimedTactical != none) && (GetWorldStateInt(obj'TnAiWorldStateAtActor') == 1))) goto 0x00c5
+  00a6: self._ClaimedTactical.AddStench((Damage * 0.02))
+  00c5: return nothing
+  00c7: <eos>
+
+function TnAiController.GetDamageResult  (script 80 bytes)
+  0000: DamageIndex = self._DamageResults.Find('Attacker',Attacker)
+  001c: return ((DamageIndex == -1) ? 0.0 : DamageIndex[self._DamageResults].DamageAmount)
+  0049: return return
+  004f: <eos>
+
+function TnAiController.UpdateDamageResults  (script 116 bytes)
+  0000: Index = 0
+  0007: if !((Index < self._DamageResults.Length)) goto 0x0071
+  0017: (Index[self._DamageResults].DamageAmount -= (DeltaTime * self._DamageResultDecayRate))
+  003b: if !((Index[self._DamageResults].DamageAmount <= cast3f(0))) goto 0x0067
+  0059: self._DamageResults.Remove(SubtractSubtract_Int(Index),1)
+  0067: AddAdd_PreInt(Index)
+  006e: goto 0x0007
+  0071: return nothing
+  0073: <eos>
+
+function TnAiController.NotifyHit  (script 418 bytes)
+  0000: (self.DamageSum += Damage)
+  000c: if !(((InstigatedBy == none) || get_Invulnerable())) goto 0x0028
+  0026: return nothing
+  0028: HealthDiff = (self.Pawn.Health - (self.Pawn.HealthMax * 0.8))
+  0053: if !(((DamageType == obj'TnDamageTypeShieldPush') || (DamageType == obj'TnDamageTypeFlashBang'))) goto 0x009a
+  0073: ReactToStimulus(self.Pawn, obj'TnStimulusType_HeavyDamage', self.Pawn.Location, InstigatedBy)
+  009a: if !((self._HeavyDamageThresholdEnabled && ((self._HealthAtLastHeavyDamageReaction - (self.Pawn.Health - Damage)) > self._HeavyDamageThreshold))) goto 0x0110
+  00cb: ReactToStimulus(self.Pawn, obj'TnStimulusType_HeavyDamage', self.Pawn.Location, InstigatedBy)
+  00f2: self._HealthAtLastHeavyDamageReaction = (self.Pawn.Health - Damage)
+  010d: goto 0x0186
+  0110: if !((((HealthDiff > cast3f(0)) && ((HealthDiff - Damage) <= cast3f(0))) && (obj'Core.Math'.static.VSizeSq(self.Pawn.Velocity) < cast3f(10)))) goto 0x0186
+  015f: ReactToStimulus(self.Pawn, obj'TnStimulusType_HeavyDamage', self.Pawn.Location, InstigatedBy)
+  0186: TnAiController.RecordDamage(InstigatedBy.Pawn, Damage)
+  019f: return nothing
+  01a1: <eos>
+
+function TnAiController.NotifyHitByFriendlyFire  (script 90 bytes)
+  0000: self._DialogManager.PlayFriendlyFireDialog(DamageType, TnPawn(InstigatedBy.Pawn))
+  002b: ReactToStimulus(self, obj'TnStimulusType_HitByFriendlyFire', InstigatedBy.Pawn.Location, InstigatedBy)
+  0057: return nothing
+  0059: <eos>
+
+function TnAiController.NotifyTakeHit  (script 69 bytes)
+  0000: NotifyTakeHit(InstigatedBy, HitLocation, Damage, DamageType, Momentum)
+  001f: if !((InstigatedBy != none)) goto 0x0042
+  002a: self.TacticalAnalyzer.RegisterEnemy(InstigatedBy)
+  0042: return nothing
+  0044: <eos>
+
+function TnAiController.OnBlockDamage  (script 28 bytes)
+  0000: self.DamageSum = (self.DamageSum + (PreDamage - PostDamage))
+  0019: return nothing
+  001b: <eos>
+
+function TnAiController.NotifyCausedDamage  (script 133 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: I = 0
+  0014: if !((I < self.Pawn.GeneratedEvents.Length)) goto 0x0082
+  002d: DamageEvent = TnSeqEvent_CausedDamage(I[self.Pawn.GeneratedEvents])
+  004c: if !((DamageEvent == none)) goto 0x005a
+  0057: goto 0x0078
+  005a: DamageEvent.HandleDamageCaused(DamagedPawn, self, Damage)
+  0078: AddAdd_PreInt(I)
+  007f: goto 0x0014
+  0082: return nothing
+  0084: <eos>
+
+function TnAiController.NotifyCausedDamageToDestructible  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.NotifyNearlyShot  (script 36 bytes)
+  0000: self.TacticalAnalyzer.RegisterEnemy(FiringPawn.Controller)
+  0021: return nothing
+  0023: <eos>
+
+function TnAiController.NotifyWeaponChanged  (script 167 bytes)
+  0000: self.WeaponShooter.NotifyWeaponChanged(PrevWeapon, NextWeapon)
+  001d: if !((TnWeapon(NextWeapon) != none)) goto 0x0086
+  002d: self.AiWorldState.SetClassValue(obj'TnAiWorldStateCurrentWeapon', NextWeapon.get_Class(), )
+  0052: self.AiWorldState.SetBoolValue(obj'TnAiWorldStateWeaponOverheated', TnWeapon(NextWeapon).IsOverheating(), )
+  0083: goto 0x00a4
+  0086: self.AiWorldState.SetClassValue(obj'TnAiWorldStateCurrentWeapon', obj'TnWeapon', )
+  00a4: return nothing
+  00a6: <eos>
+
+function TnAiController.SetupStepInfo  (script 514 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return false
+  000d: if !((cast3a(self.Pawn.GetPhysics()) == cast3a(2))) goto 0x002d
+  002b: return false
+  002d: self._StepInfo._ActorToStepAwayFrom = OtherPawn
+  0041: self._StepInfo._StepDestination = (self.Pawn.Location + (obj'Core.Math'.static.Normal((self.Pawn.Location - OtherPawn.Location)) * self._StepDistance))
+  0090: if !((CanVehicleFormFly() && get_TransformerPawn().get_IsInVehicleForm())) goto 0x00e6
+  00ba: return obj'TnObstacleAvoidance'.static.IsPathClearToLocation(get_TransformerPawn(), self._StepInfo._StepDestination)
+  00e6: CurrentNavCell = get_TransformerPawn().GetAnchoredNavigationCell()
+  0104: if !((CurrentNavCell == none)) goto 0x0111
+  010f: return false
+  0111: MaxRadius = get_TransformerPawn()._CurrentForm.get_FormMovementCapabilities().CylinderRadius
+  0143: StepDestination = self._StepInfo._StepDestination
+  0157: CurrentNavCell.WalkLine(get_TransformerPawn().Location, self._StepInfo._StepDestination, MaxRadius, StepDestination)
+  0195: self._StepInfo._StepDestination = (StepDestination + (obj'Core.Math'.static.Normal((self.Pawn.Location - StepDestination)) * cast3f(200)))
+  01d1: return !get_TransformerPawn().ReachedPoint(self._StepInfo._StepDestination, none)
+  01fb: return return
+  0201: <eos>
+
+function TnAiController.ReactToBump  (script 179 bytes)
+  0000: HitPawn = TnPawn(Other)
+  0010: if !((HitPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: if !((HitPawn.get_IsInRobotForm() && !HitPawn.IsSameTeam(self.Pawn))) goto 0x0054
+  0052: return nothing
+  0054: if !((self.AiWorldState.GetIntValue(obj'TnAiWorldStateTurret') == 1)) goto 0x0074
+  0072: return nothing
+  0074: if !(!TnAiController.SetupStepInfo(HitPawn)) goto 0x0086
+  0084: return nothing
+  0086: self.AiWorldState.SetIntValue(obj'TnAiWorldStateReaction', 1, self._StepInfo)
+  00a4: RequestReplan(1)
+  00b0: return nothing
+  00b2: <eos>
+
+function TnAiController.NotifyBump  (script 29 bytes)
+  0000: ReactToBump(HitNormal, Other)
+  0014: return true
+  0016: return return
+  001c: <eos>
+
+function TnAiController.ReactToStimulus  (script 220 bytes)
+  0000: nothing
+  0001: if !(((StimulusSource == none) || (StimulusType == none))) goto 0x001b
+  0019: return nothing
+  001b: if !(((self.WorldInfo.TimeSeconds - self._MostRecentStimulus.TimeSeconds) == cast3f(0))) goto 0x0045
+  0043: return nothing
+  0045: self._MostRecentStimulus.Type = StimulusType
+  005b: self._MostRecentStimulus.Source = StimulusSource
+  0071: self._MostRecentStimulus.Location = StimulusLocation
+  0087: self._MostRecentStimulus.Instigator = StimulusInstigator
+  009d: self._MostRecentStimulus.TimeSeconds = self.WorldInfo.TimeSeconds
+  00bc: RequestReplan(0)
+  00c8: self.PlanRunner._EvaluateCurrentGoalOnReplan = false
+  00d9: return nothing
+  00db: <eos>
+
+function TnAiController.ResetStimulus  (script 126 bytes)
+  0000: self._MostRecentStimulus.Type = none
+  0012: self._MostRecentStimulus.Source = none
+  0024: self._MostRecentStimulus.Location = vect(0,0,0)
+  0042: self._MostRecentStimulus.Instigator = none
+  0054: self._MostRecentStimulus.TimeSeconds = 0.0
+  006a: SetWorldStateInt(obj'TnAiWorldStateStimulusReaction', 0, none)
+  007b: return nothing
+  007d: <eos>
+
+function TnAiController.ResetActiveStimulus  (script 109 bytes)
+  0000: self._ActiveStimulus.Type = none
+  0012: self._ActiveStimulus.Source = none
+  0024: self._ActiveStimulus.Location = vect(0,0,0)
+  0042: self._ActiveStimulus.Instigator = none
+  0054: self._ActiveStimulus.TimeSeconds = 0.0
+  006a: return nothing
+  006c: <eos>
+
+function TnAiController.RigidBodyCollision  (script 78 bytes)
+  0000: if !((OtherComponent != none)) goto 0x001f
+  000b: Other = OtherComponent.Owner
+  001f: ReactToBump(0[RigidCollisionData.ContactInfos].ContactNormal, Other)
+  004b: return nothing
+  004d: <eos>
+
+function TnAiController.PlayHighPriorityReaction  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.GetPlayerViewPoint  (script 125 bytes)
+  0000: self.Pawn.GetActorEyesViewPoint(out_Location, out_Rotation)
+  001d: out_Rotation = self.WeaponAimer.CalculateAdjustedAimFor(out_Location)
+  003b: if !((get_TransformerPawn()._VehicleForm != none)) goto 0x007a
+  0054: get_TransformerPawn()._VehicleForm.set_ViewRotation(out_Rotation)
+  007a: return nothing
+  007c: <eos>
+
+function TnAiController.SuspendPlanRunner  (script 22 bytes)
+  0000: self.PlanRunner.Suspend()
+  0013: return nothing
+  0015: <eos>
+
+function TnAiController.ResumePlanRunner  (script 22 bytes)
+  0000: self.PlanRunner.Resume()
+  0013: return nothing
+  0015: <eos>
+
+function TnAiController.CancelCurrentPlan  (script 41 bytes)
+  0000: self.PlanRunner.Suspend()
+  0013: self.PlanRunner.Resume()
+  0026: return nothing
+  0028: <eos>
+
+function TnAiController.SetMoveToObjective  (script 106 bytes)
+  0000: MoveToRangeSensor = self.TacticalAnalyzer.GetMoveToRangeSensor(obj'TnAiWorldStateMoveToObjective')
+  001e: if !((MoveToRangeSensor != none)) goto 0x0067
+  0029: if !((ObjectiveActor != none)) goto 0x0054
+  0034: MoveToRangeSensor.SetSubjectAndRange(ObjectiveActor, Range)
+  0051: goto 0x0067
+  0054: MoveToRangeSensor.ClearSubject()
+  0067: return nothing
+  0069: <eos>
+
+function TnAiController.GetMoveToObjective  (script 89 bytes)
+  0000: MoveToRangeSensor = self.TacticalAnalyzer.GetMoveToRangeSensor(obj'TnAiWorldStateMoveToObjective')
+  001e: if !((MoveToRangeSensor != none)) goto 0x0056
+  0029: ObjectiveActor = MoveToRangeSensor.get_Subject()
+  0042: Range = MoveToRangeSensor._Range
+  0056: return nothing
+  0058: <eos>
+
+function TnAiController.OnTnAiMoveToActor  (script 35 bytes)
+  0000: ClearLatentAction(obj'SeqAct_TnAiMoveToActor', true, Action)
+  0015: self.ScriptedMoveToAction = Action
+  0020: return nothing
+  0022: <eos>
+
+function TnAiController.IsScriptedMoveExecuting  (script 16 bytes)
+  0000: return (self.ScriptedMoveToAction != none)
+  0009: return return
+  000f: <eos>
+
+function TnAiController.GetScriptedMoveToAction  (script 13 bytes)
+  0000: return self.ScriptedMoveToAction
+  0006: return return
+  000c: <eos>
+
+function TnAiController.GetScriptedMoveToActor  (script 96 bytes)
+  0000: if !(!IsScriptedMoveExecuting()) goto 0x0011
+  000f: return none
+  0011: if !((Controller(self.ScriptedMoveToAction.DestinationActor) != none)) goto 0x004a
+  002a: return Controller(self.ScriptedMoveToAction.DestinationActor).Pawn
+  0047: goto 0x0059
+  004a: return self.ScriptedMoveToAction.DestinationActor
+  0059: return return
+  005f: <eos>
+
+function TnAiController.ScriptedMoveFailed  (script 76 bytes)
+  0000: if !(!IsScriptedMoveExecuting()) goto 0x0011
+  000f: return nothing
+  0011: if !((GetScriptedMoveToActor() != GetWorldStateSubject(obj'TnAiWorldStateAtActor'))) goto 0x0031
+  002f: return nothing
+  0031: self.ScriptedMoveToAction = none
+  0038: ClearLatentAction(obj'SeqAct_TnAiMoveToActor', true, )
+  0049: return nothing
+  004b: <eos>
+
+function TnAiController.ScriptedMoveCompleted  (script 76 bytes)
+  0000: if !(!IsScriptedMoveExecuting()) goto 0x0011
+  000f: return nothing
+  0011: if !((GetScriptedMoveToActor() != GetWorldStateSubject(obj'TnAiWorldStateAtActor'))) goto 0x0031
+  002f: return nothing
+  0031: self.ScriptedMoveToAction = none
+  0038: ClearLatentAction(obj'SeqAct_TnAiMoveToActor', false, )
+  0049: return nothing
+  004b: <eos>
+
+function TnAiController.MoveFailedNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.NearDestinationNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.MoveUnreachable  (script 18 bytes)
+  0000: MoveFailedNotify()
+  000f: return nothing
+  0011: <eos>
+
+function TnAiController.NotifyMissedJump  (script 13 bytes)
+  0000: MoveTowardFailed()
+  000a: return nothing
+  000c: <eos>
+
+function TnAiController.MoveToPosition  (script 76 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !(!IsInState('MovingToPosition', )) goto 0x0049
+  0014: self.MoveTargetPosition = InDestination
+  001f: self.__MoveFailedNotify__Delegate = InFailed
+  002a: self.__NearDestinationNotify__Delegate = InNear
+  0035: PushState('MovingToPosition', )
+  0049: return nothing
+  004b: <eos>
+
+function TnAiController.CancelMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.MovingToPosition.ReactToBump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.MovingToPosition.StepOffBlockedAnchor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.MovingToPosition.CancelMove  (script 14 bytes)
+  0000: PopState()
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.MovingToPosition.NotifyHitWall  (script 35 bytes)
+  0000: NearDestinationNotify()
+  000f: PopState()
+  001a: return false
+  001c: return return
+  0022: <eos>
+
+function TnAiController.MovingToPosition.PoppedState  (script 40 bytes)
+  0000: self.PathFocus = none
+  0007: self.__MoveFailedNotify__Delegate = delegate.None
+  0016: self.__NearDestinationNotify__Delegate = delegate.None
+  0025: return nothing
+  0027: <eos>
+
+function TnAiController.MovingToPosition.MoveTowardFailed  (script 29 bytes)
+  0000: MoveFailedNotify()
+  000f: PopState()
+  001a: return nothing
+  001c: <eos>
+
+function TnAiController.MoveTowardActor  (script 96 bytes)
+  0000: self.__MoveFailedNotify__Delegate = InFailed
+  000b: self.__NearDestinationNotify__Delegate = InNear
+  0016: if !((InDestination != none)) goto 0x005d
+  0021: if !(!IsInState('MovingToActor', )) goto 0x005d
+  0033: self.MoveTarget = InDestination
+  003e: self.PathFocus = ViewFocus
+  0049: PushState('MovingToActor', )
+  005d: return nothing
+  005f: <eos>
+
+function TnAiController.MovingToActor.ReactToBump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.MovingToActor.StepOffBlockedAnchor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiController.MovingToActor.CancelMove  (script 14 bytes)
+  0000: PopState()
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.MovingToActor.NotifyHitWall  (script 44 bytes)
+  0000: TnPawn(self.Pawn)._RobotForm.Jump(, true)
+  0023: return false
+  0025: return return
+  002b: <eos>
+
+function TnAiController.MovingToActor.PoppedState  (script 40 bytes)
+  0000: self.PathFocus = none
+  0007: self.__MoveFailedNotify__Delegate = delegate.None
+  0016: self.__NearDestinationNotify__Delegate = delegate.None
+  0025: return nothing
+  0027: <eos>
+
+function TnAiController.MovingToActor.MoveTowardFailed  (script 29 bytes)
+  0000: MoveFailedNotify()
+  000f: PopState()
+  001a: return nothing
+  001c: <eos>
+
+function TnAiController.MoveDelegatesCleared  (script 29 bytes)
+  0000: return AndAnd_BoolBool((self.__NearDestinationNotify__Delegate == emptydelegate))
+  000a: (self.__MoveFailedNotify__Delegate == emptydelegate)
+  0014: <endparms>
+  0015: <endparms>
+  0016: return return
+  001c: <eos>
+
+function TnAiController.GetTacticalAnalyzer  (script 13 bytes)
+  0000: return self.TacticalAnalyzer
+  0006: return return
+  000c: <eos>
+
+function TnAiController.GetEnemyCenterPointRange  (script 55 bytes)
+  0000: if !((self.Enemy != none)) goto 0x002d
+  000b: return self.TacticalAnalyzer.GetEnemyCenterPointRange(self.Enemy.Controller)
+  002d: return 0
+  0030: return return
+  0036: <eos>
+
+function TnAiController.GetEnemyNearestRange  (script 55 bytes)
+  0000: if !((self.Enemy != none)) goto 0x002d
+  000b: return self.TacticalAnalyzer.GetEnemyNearestRange(self.Enemy.Controller)
+  002d: return 0
+  0030: return return
+  0036: <eos>
+
+function TnAiController.GetDynamicNavPoint  (script 13 bytes)
+  0000: return self.DynamicNav
+  0006: return return
+  000c: <eos>
+
+function TnAiController.SetCurrentRoute  (script 14 bytes)
+  0000: self.CurrentRoute = Route
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.GetCurrentRoute  (script 13 bytes)
+  0000: return self.CurrentRoute
+  0006: return return
+  000c: <eos>
+
+function TnAiController.SetPendingPathingInfo  (script 25 bytes)
+  0000: self._PendingRoute = PendingRoute
+  000b: self._PendingReachableSectionType = PendingReachableSectionType
+  0016: return nothing
+  0018: <eos>
+
+function TnAiController.GetPendingPathingInfo  (script 25 bytes)
+  0000: PendingRoute = self._PendingRoute
+  000b: PendingReachableSectionType = self._PendingReachableSectionType
+  0016: return nothing
+  0018: <eos>
+
+function TnAiController.SetLockOnThreatLevel  (script 64 bytes)
+  0000: LOT = TnLockOnThreatInterface(self.Pawn)
+  0010: if !(NotEqual_InterfaceInterface(LOT, TnLockOnThreatInterface(none))) goto 0x003d
+  0024: LOT.SetLockOnThreatLevel(ThreatLevel)
+  003d: return nothing
+  003f: <eos>
+
+function TnAiController.ClearLockOnThreatLevel  (script 64 bytes)
+  0000: LOT = TnLockOnThreatInterface(get_TransformerPawn())
+  0015: if !(NotEqual_InterfaceInterface(LOT, TnLockOnThreatInterface(none))) goto 0x003d
+  0029: LOT.ClearLockOnThreatLevel()
+  003d: return nothing
+  003f: <eos>
+
+function TnAiController.VehicleMoveToward  (script 37 bytes)
+  0000: return self._VehicleAiControl.MoveToward(Dest, GoalActor)
+  001e: return return
+  0024: <eos>
+
+function TnAiController.StopMovement  (script 142 bytes)
+  0000: if !((get_TransformerPawn() == none)) goto 0x0012
+  0010: return nothing
+  0012: if !(get_TransformerPawn().get_IsInVehicleForm()) goto 0x0043
+  002d: self._VehicleAiControl.StopMovement()
+  0040: goto 0x008b
+  0043: get_TransformerPawn().Acceleration = vect(0,0,0)
+  0064: get_TransformerPawn().DesiredRotation = get_TransformerPawn().Rotation
+  008b: return nothing
+  008d: <eos>
+
+function TnAiController.Transform  (script 130 bytes)
+  0000: default=delegate.None
+  000d: get_TransformerPawn().Transform(TargetForm, TransformCompleteEvent)
+  002f: TnAiController.RefreshPawnWorldState()
+  0035: self._DialogManager.PlayTransformDialog(TargetForm)
+  004d: if !(((cast3a(TargetForm) == cast3a(0)) || (self._VehicleAiControl == none))) goto 0x006c
+  006a: return nothing
+  006c: self._VehicleAiControl.Activate()
+  007f: return nothing
+  0081: <eos>
+
+function TnAiController.AddErrorIcon  (script 27 bytes)
+  0000: self._IconDrawer.AddPersistentIcon(IconTexture)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.DisplayDebug  (script 1296 bytes)
+  0000: if !(self._DebugManager.get_IsRunningGAIDAR()) goto 0x0018
+  0016: return nothing
+  0018: HUD.Canvas.SetPos(0.0, out_YPos)
+  003e: HUD.Canvas.DrawTextNormal(("Debug Mode:" @ cast52(self._DebugMode)), , , )
+  0073: (out_YPos += out_YL)
+  007f: HUD.Canvas.DrawTextNormal(("Controller:" @ cast56(self)), , , )
+  00b0: (out_YPos += out_YL)
+  00bc: HUD.Canvas.DrawTextNormal(("Pawn:" @ cast56(self.Pawn)), , , )
+  00eb: (out_YPos += out_YL)
+  00f7: HUD.Canvas.DrawTextNormal(("Character:" @ cast56(self._TemplateDefinition)), , , )
+  012b: (out_YPos += out_YL)
+  0137: HUD.Canvas.DrawTextNormal(("Goal Set:" @ cast56(self._TemplateDefinition.GoalSet)), , , )
+  0173: (out_YPos += out_YL)
+  017f: HUD.Canvas.DrawTextNormal(("Action Set:" @ cast56(self._TemplateDefinition.ActionSet)), , , )
+  01bd: (out_YPos += out_YL)
+  01c9: HUD.Canvas.DrawTextNormal(("Sensor Set:" @ cast56(self._TemplateDefinition.SensorSet)), , , )
+  0207: (out_YPos += out_YL)
+  0213: HUD.Canvas.DrawTextNormal(("Tactical Volume:" @ cast56(self.TacticalVolume)), , , )
+  024d: (out_YPos += out_YL)
+  0259: HUD.Canvas.DrawTextNormal(("Focus:" @ cast37(self.Focus)), , , )
+  0289: (out_YPos += out_YL)
+  0295: HUD.Canvas.DrawTextNormal(("Enemy:" @ cast56(self.Enemy)), , , )
+  02c5: (out_YPos += out_YL)
+  02d1: HUD.Canvas.DrawTextNormal(("ShootAtActor:" @ cast56(self._ShootAtActor)), , , )
+  0308: (out_YPos += out_YL)
+  0314: HUD.Canvas.DrawTextNormal(("Weapon:" @ cast56(self.Pawn.Weapon)), , , )
+  034e: (out_YPos += out_YL)
+  035a: HUD.Canvas.DrawTextNormal(("Faction:" @ cast52(self.Pawn.GetTeamNum())), , , )
+  039a: (out_YPos += out_YL)
+  03a6: HUD.Canvas.DrawTextNormal(("Base:" @ cast56(self.Pawn.Base)), , , )
+  03de: (out_YPos += out_YL)
+  03ea: if !((self.TacticalVolume != none)) goto 0x0485
+  03f5: TacticalVolumeBounds = self.TacticalVolume.GetWorldBoundingBox()
+  040e: obj'Engine.Debug'.static.DrawBox(((TacticalVolumeBounds.Max + TacticalVolumeBounds.Min) / cast3f(2)), ((TacticalVolumeBounds.Max - TacticalVolumeBounds.Min) / cast3f(2)), obj'Core.Colors'.static.White(), )
+  0485: self._IconDrawer.DrawToCanvas(HUD.Canvas)
+  04a6: self._IconDrawer.Reset()
+  04b9: switch (self._DebugMode)
+  04c0: case 1: (next 0x04ce)
+  04c5: TnAiController.DrawAID()
+  04cb: goto 0x050d
+  04ce: case 3: (next 0x04dc)
+  04d3: TnAiController.DrawNav()
+  04d9: goto 0x050d
+  04dc: case 2: (next 0x050a)
+  04e1: self.TacticalAnalyzer.GetSensorSet().DisplayDebug(HUD)
+  0507: goto 0x050d
+  050a: default:
+  050d: return nothing
+  050f: <eos>
+
+function TnAiController.DisplayAiDebug  (script 46 bytes)
+  0000: self._IconDrawer.DrawToCanvas(C)
+  0018: self._IconDrawer.Reset()
+  002b: return nothing
+  002d: <eos>
+
+function TnAiController.IsWeaponReady  (script 106 bytes)
+  0000: if !((WeaponClass != self.AiWorldState.GetClassValue(obj'TnAiWorldStateCurrentWeapon'))) goto 0x0024
+  0022: return false
+  0024: InvManager = HmInventoryManager(get_TransformerPawn().InvManager)
+  0042: return ((InvManager != none) && InvManager.IsWeaponActive())
+  0063: return return
+  0069: <eos>
+
+function TnAiController.BeginAnimControl  (script 38 bytes)
+  0000: if !((self.Pawn != none)) goto 0x0023
+  000b: self.Pawn.BeginAnimControl(InAnimSets)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiController.OnBeginPawnAnimControl  (script 17 bytes)
+  0000: GotoState('AnimControl', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAiController.OnEndPawnAnimControl  (script 17 bytes)
+  0000: GotoState('None', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAiController.AnimControl.BeginState  (script 45 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: SuspendPlanRunner()
+  0015: self._PreMatineeRotateTowardFocus = self.bRotateTowardFocus
+  0022: self.bRotateTowardFocus = false
+  002a: return nothing
+  002c: <eos>
+
+function TnAiController.AnimControl.EndState  (script 37 bytes)
+  0000: EndState(NextStateName)
+  000b: self.bRotateTowardFocus = self._PreMatineeRotateTowardFocus
+  0018: ResumePlanRunner()
+  0022: return nothing
+  0024: <eos>
+
+function TnAiController.AnimControl.FinishAnimControl  (script 22 bytes)
+  0000: self.Pawn.FinishAnimControl()
+  0013: return nothing
+  0015: <eos>
+
+function TnAiController.AnimControl.SetAnimPosition  (script 54 bytes)
+  0000: self.Pawn.SetAnimPosition(SlotName, ChannelIndex, InAnimSeqName, InPosition, bFireNotifies, bLooping)
+  0033: return nothing
+  0035: <eos>
+
+function TnAiController.AnimControl.SetAnimWeights  (script 27 bytes)
+  0000: self.Pawn.SetAnimWeights(SlotInfos)
+  0018: return nothing
+  001a: <eos>
+
+function TnAiController.PlayDialogEvent  (script 77 bytes)
+  0000: if !((self.Pawn == none)) goto 0x000d
+  000b: return nothing
+  000d: TnWorldInfo(self.Pawn.WorldInfo)._DialogEventManager.Play(TnPawn(self.Pawn), SoundEvent, , , , )
+  004a: return nothing
+  004c: <eos>
+
+function TnAiController.GetKillTarget  (script 32 bytes)
+  0000: return self.AiWorldState.GetSubject(obj'TnAiWorldStateTargetIsDead')
+  0019: return return
+  001f: <eos>
+
+function TnAiController.IsDangerous  (script 193 bytes)
+  0000: if !((ChosenTarget == none)) goto 0x000d
+  000b: return false
+  000d: TargetAsPawn = Pawn(ChosenTarget)
+  001d: if !(((TargetAsPawn != none) && TargetAsPawn.IsDead())) goto 0x0042
+  0040: return false
+  0042: TargetAsTnPawn = TnPawn(ChosenTarget)
+  0052: if !(((TargetAsTnPawn != none) && (TargetAsTnPawn._IsCloaking && !get_IsAiBuddy()))) goto 0x0084
+  0082: return false
+  0084: TargetAsTnAiPawn = TnAiPawn(ChosenTarget)
+  0094: if !(((TargetAsTnAiPawn != none) && (TargetAsTnAiPawn._TargetableByAi == false))) goto 0x00b8
+  00b6: return false
+  00b8: return true
+  00ba: return return
+  00c0: <eos>
+
+function TnAiController.IsInWeaponRange  (script 92 bytes)
+  0000: if !(((ChosenTarget == none) || (ChosenWeapon == none))) goto 0x001a
+  0018: return false
+  001a: return (cast3a(self.TacticalAnalyzer.GetEnemyCenterPointRange(ChosenTarget.Controller)) == cast3a(ChosenWeapon.GetDesiredFiringRange()))
+  0055: return return
+  005b: <eos>
+
+function TnAiController.FindTacticalSensor  (script 240 bytes)
+  0000: SensorSet = self.TacticalAnalyzer.GetSensorSet()
+  0019: if !((SensorSet == none)) goto 0x0026
+  0024: return none
+  0026: TacticalSensor = TnAiController.FindTacticalSensorInSet(SensorSet, WeaponClass, actionClass)
+  0041: if !((TacticalSensor != none)) goto 0x0052
+  004c: return TacticalSensor
+  0052: TacticalSensor = TnAiController.FindTacticalSensorInSet(SensorSet.DynamicSensorSet, WeaponClass, actionClass)
+  0076: if !((TacticalSensor != none)) goto 0x00e3
+  0081: TacticalSensor = TnTacticalPathNodePickerSensor(TacticalSensor.Clone(self.TacticalAnalyzer, ))
+  00a5: TacticalSensor.TacticalDescription = ("Tactical for" @ cast56(WeaponClass))
+  00cb: self.TacticalAnalyzer.AddSensor(TacticalSensor)
+  00e3: return TacticalSensor
+  00e9: return return
+  00ef: <eos>
+
+function TnAiController.FindTacticalSensorInSet  (script 180 bytes)
+  0000: if !((((SensorSet == none) || (SensorSet.Sensors.Length == 0)) || (inWeaponClass == none))) goto 0x0031
+  002f: return none
+  0031: foreach SensorSet.Sensors(Sensor,) (end 0x00aa)
+  0049: PickerSensor = TnTacticalPathNodePickerSensor(Sensor)
+  0059: if !(((PickerSensor == none) || (PickerSensor.actionClass != actionClass))) goto 0x0082
+  007e: iternext
+  007f: goto 0x00aa
+  0082: if !((PickerSensor.WeaponClasses.Find(inWeaponClass) != -1)) goto 0x00a9
+  00a2: iterpop
+  00a3: return PickerSensor
+  00a9: iternext
+  00aa: iterpop
+  00ab: return none
+  00ad: return return
+  00b3: <eos>
+
+function TnAiController.UpdatePreferredWeaponPickerSensor  (script 116 bytes)
+  0000: SensorSet = self.TacticalAnalyzer.GetSensorSet()
+  0019: if !((SensorSet == none)) goto 0x0026
+  0024: return nothing
+  0026: foreach SensorSet.Sensors(Sensor,) (end 0x0070)
+  003e: PreferredWeaponPickerSensor = TnPreferredWeaponPickerSensor(Sensor)
+  004e: if !((PreferredWeaponPickerSensor != none)) goto 0x006f
+  0059: PreferredWeaponPickerSensor.SetWeaponClasses()
+  006c: goto 0x0070
+  006f: iternext
+  0070: iterpop
+  0071: return nothing
+  0073: <eos>
+
+function TnAiController.IsValidAiIconicCharacterName  (script 28 bytes)
+  0000: return (default.PresetAiIconicCharacters.Find(CharacterName) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnAiController.SetScriptedTurrets  (script 14 bytes)
+  0000: self._UseTurrets = Turrets
+  000b: return nothing
+  000d: <eos>
+
+function TnAiController.ClearScriptedTurrets  (script 11 bytes)
+  0000: self._UseTurrets.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnAiController.GetUsableScriptedTurret  (script 120 bytes)
+  0000: idx = 0
+  0007: if !((idx < self._UseTurrets.Length)) goto 0x006f
+  0017: if !((!idx[self._UseTurrets].PlayerRequestingTurret() && obj'TnInteractHelper'.static.IsTurretUsableByAI(idx[self._UseTurrets], self))) goto 0x0065
+  0059: return idx[self._UseTurrets]
+  0065: AddAdd_PreInt(idx)
+  006c: goto 0x0007
+  006f: return none
+  0071: return return
+  0077: <eos>
+
+function TnAiController.RequestReplan  (script 49 bytes)
+  0000: self.PlanRunner._EvaluateCurrentGoalOnReplan = true
+  0011: obj'TnAiPlanningScheduler'.static.RequestReplan(self.PlanRunner, Priority)
+  002e: return nothing
+  0030: <eos>

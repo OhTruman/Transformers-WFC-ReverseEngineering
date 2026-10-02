@@ -1,0 +1,36 @@
+function TnSeqAct_ShootFromShieldedLocation.CheckForErrors  (script 127 bytes)
+  0000: PublishLinkedVariableValues()
+  000a: if !((TnInteractShieldedPositionBase(self.ShieldInteract) == none)) goto 0x0076
+  001a: EmitCheckMessage(0, "Can only plug in TnInteractShieldedPosition interacts into Shielded Location", , )
+  0076: CheckForErrors()
+  007c: return nothing
+  007e: <eos>
+
+function TnSeqAct_ShootFromShieldedLocation.__Constructor__TnSeqAct_ShootFromShieldedLocation_0  (script 14 bytes)
+  0000: self.ShieldInteract = InShieldInteract
+  000b: return nothing
+  000d: <eos>
+
+function TnSeqAct_ShootFromShieldedLocation.Activated  (script 169 bytes)
+  0000: Activated()
+  0006: if !((self.Targets.Length == 0)) goto 0x0014
+  0012: return nothing
+  0014: Index = 0
+  001b: if !((Index < self.Targets.Length)) goto 0x00a6
+  002b: C = TnAiController(Index[self.Targets])
+  0041: if !((C == none)) goto 0x0086
+  004c: P = Pawn(Index[self.Targets])
+  0062: if !((P != none)) goto 0x0086
+  006d: C = TnAiController(P.Controller)
+  0086: if !((C != none)) goto 0x009c
+  0091: TnSeqAct_ShootFromShieldedLocation.SetShieldedLocation(C)
+  009c: AddAdd_PreInt(Index)
+  00a3: goto 0x001b
+  00a6: return nothing
+  00a8: <eos>
+
+function TnSeqAct_ShootFromShieldedLocation.SetShieldedLocation  (script 54 bytes)
+  0000: if !(0[self.InputLinks].bHasImpulse) goto 0x0033
+  0016: C.set_ShieldInteract(TnInteractShieldedPositionBase(self.ShieldInteract))
+  0033: return nothing
+  0035: <eos>

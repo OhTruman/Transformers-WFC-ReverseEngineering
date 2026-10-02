@@ -1,0 +1,57 @@
+function HmCircularQueue.get_Count  (script 13 bytes)
+  0000: return self._Count
+  0006: return return
+  000c: <eos>
+
+function HmCircularQueue.get_Capacity  (script 14 bytes)
+  0000: return self._Buffer.Length
+  0007: return return
+  000d: <eos>
+
+function HmCircularQueue.set_Capacity  (script 15 bytes)
+  0000: self._Buffer.Length = Value
+  000c: return nothing
+  000e: <eos>
+
+function HmCircularQueue.get_Full  (script 21 bytes)
+  0000: return (self._Count == self._Buffer.Length)
+  000e: return return
+  0014: <eos>
+
+function HmCircularQueue.Enqueue  (script 75 bytes)
+  0000: if !((self._Count == self._Buffer.Length)) goto 0x0012
+  0010: return nothing
+  0012: self._Start[self._Buffer] = obj
+  0023: AddAdd_Int(self._Start)
+  002a: if !((self._Start == self._Buffer.Length)) goto 0x0041
+  003a: self._Start = 0
+  0041: AddAdd_Int(self._Count)
+  0048: return nothing
+  004a: <eos>
+
+function HmCircularQueue.Dequeue  (script 80 bytes)
+  0000: if !((self._Count == 0)) goto 0x000d
+  000b: return none
+  000d: DequeuedObj = self._End[self._Buffer]
+  001e: AddAdd_Int(self._End)
+  0025: if !((self._End == self._Buffer.Length)) goto 0x003c
+  0035: self._End = 0
+  003c: SubtractSubtract_Int(self._Count)
+  0043: return DequeuedObj
+  0049: return return
+  004f: <eos>
+
+function HmCircularQueue.Contains  (script 128 bytes)
+  0000: if !((self._Count == self._Buffer.Length)) goto 0x0025
+  0010: return (self._Buffer.Find(obj) != -1)
+  0025: idx = self._End
+  0030: if !((idx != self._Start)) goto 0x0077
+  003f: if !((idx == self._Buffer.Length)) goto 0x0056
+  004f: idx = 0
+  0056: if !((idx[self._Buffer] == obj)) goto 0x006d
+  006b: return true
+  006d: AddAdd_Int(idx)
+  0074: goto 0x0030
+  0077: return false
+  0079: return return
+  007f: <eos>

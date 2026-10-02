@@ -1,0 +1,72 @@
+function HmTimer.get_HasTimerExpiredCallback  (script 16 bytes)
+  0000: return (self.__OnTimerComplete__Delegate != emptydelegate)
+  0008: <endparms>
+  0009: return return
+  000f: <eos>
+
+function HmTimer.OnTimerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmTimer.Start  (script 112 bytes)
+  0000: default=self.TimerLength
+  0009: default=0
+  000f: if !((Length < cast3f(0))) goto 0x001e
+  001c: return nothing
+  001e: Clear()
+  0028: self.TimerLength = Length
+  0033: self.__OnTimerComplete__Delegate = Callback
+  003e: if !((cast3a(Type) == cast3a(1))) goto 0x005f
+  004e: GotoState('Looping', , , )
+  005c: goto 0x006d
+  005f: GotoState('Single', , , )
+  006d: return nothing
+  006f: <eos>
+
+function HmTimer.Expired  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmTimer.Clear  (script 43 bytes)
+  0000: self.CurrentTime = 0.0
+  000b: self.__OnTimerComplete__Delegate = delegate.None
+  001a: GotoState('None', , , )
+  0028: return nothing
+  002a: <eos>
+
+function HmTimer.IsActive  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmTimer.Tick  (script 57 bytes)
+  0000: if !(!IsActive()) goto 0x0011
+  000f: return nothing
+  0011: (self.CurrentTime += DeltaTime)
+  001d: if !((self.CurrentTime >= self.TimerLength)) goto 0x0036
+  002c: Expired()
+  0036: return nothing
+  0038: <eos>
+
+function HmTimer.Single.Expired  (script 39 bytes)
+  0000: TimerComplete = self.__OnTimerComplete__Delegate
+  000b: Clear()
+  0015: OnTimerComplete()
+  0024: return nothing
+  0026: <eos>
+
+function HmTimer.Single.IsActive  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmTimer.Looping.Expired  (script 29 bytes)
+  0000: OnTimerComplete()
+  000f: self.CurrentTime = 0.0
+  001a: return nothing
+  001c: <eos>
+
+function HmTimer.Looping.IsActive  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

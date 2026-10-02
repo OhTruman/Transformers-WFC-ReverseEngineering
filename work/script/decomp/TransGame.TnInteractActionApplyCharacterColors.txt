@@ -1,0 +1,29 @@
+function TnInteractActionApplyCharacterColors.TriggerAction  (script 519 bytes)
+  0000: User = Interact.GetCurrentUser()
+  0019: if !((User == none)) goto 0x0026
+  0024: return nothing
+  0026: CharacterApplier = User._CharacterApplier
+  003a: PrimaryColorName = CharacterApplier.PrimaryColorMaterialParamName
+  004e: SecondaryColorName = CharacterApplier.SecondaryColorMaterialParamName
+  0062: if !(self.ResetColors) goto 0x0177
+  006b: PrimaryColor = MakeLinearColor(1.0, 1.0, 1.0, 1.0)
+  008f: SecondaryColor = PrimaryColor
+  009a: Interact.BaseMesh.SetVectorParam(PrimaryColorName, PrimaryColor)
+  00c0: Interact.BaseMesh.SetVectorParam(SecondaryColorName, SecondaryColor)
+  00e6: I = 0
+  00ed: if !((I < Interact.AttachedMeshes.Length)) goto 0x0174
+  0106: MeshComp = MeshComponent(I[Interact.AttachedMeshes].Mesh)
+  0130: MeshComp.SetVectorParam(PrimaryColorName, PrimaryColor)
+  014d: MeshComp.SetVectorParam(SecondaryColorName, SecondaryColor)
+  016a: AddAdd_PreInt(I)
+  0171: goto 0x00ed
+  0174: goto 0x0204
+  0177: CharacterApplier.ApplySecondaryColorToMesh(Interact.BaseMesh)
+  0198: I = 0
+  019f: if !((I < Interact.AttachedMeshes.Length)) goto 0x0204
+  01b8: MeshComp = MeshComponent(I[Interact.AttachedMeshes].Mesh)
+  01e2: CharacterApplier.ApplySecondaryColorToMesh(MeshComp)
+  01fa: AddAdd_PreInt(I)
+  0201: goto 0x019f
+  0204: return nothing
+  0206: <eos>

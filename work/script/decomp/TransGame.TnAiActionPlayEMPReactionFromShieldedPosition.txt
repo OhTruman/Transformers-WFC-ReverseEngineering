@@ -1,0 +1,51 @@
+function TnAiActionPlayEMPReactionFromShieldedPosition.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._BuffService = TnBuffService(GetService('TnBuffService', 2))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionPlayEMPReactionFromShieldedPosition.OnSetUpConditions  (script 133 bytes)
+  0000: Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: if !((Interact == none)) goto 0x0035
+  0033: return false
+  0035: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateShieldedPosition') != 1)) goto 0x005a
+  0058: return false
+  005a: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateShieldedPosition', Interact)
+  007c: return true
+  007e: return return
+  0084: <eos>
+
+function TnAiActionPlayEMPReactionFromShieldedPosition.OnIsValidForFutureExecution  (script 61 bytes)
+  0000: if !((get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition') == none)) goto 0x0025
+  0023: return false
+  0025: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0036: return return
+  003c: <eos>
+
+function TnAiActionPlayEMPReactionFromShieldedPosition.OnStart  (script 168 bytes)
+  0000: self._ShieldInteract = TnInteractShieldedPositionBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: if !((self._ShieldInteract == none)) goto 0x003e
+  0033: return Fail()
+  003e: self._ShieldInteract.InteractCommand(self._TransformerPawn, 0)
+  0058: self._BuffService.AddBuff(obj'TnBuffEmpGrenadeAiRobot', 0, self._TransformerPawn)
+  0077: SetCharacterState(1)
+  0082: self._TransformerController.StopMovement()
+  0095: return OnStart(ExpectedEffects)
+  00a1: return return
+  00a7: <eos>
+
+function TnAiActionPlayEMPReactionFromShieldedPosition.OnUpdate  (script 65 bytes)
+  0000: if !(!self._BuffService.HasBuff(obj'TnBuffEmpGrenadeAiRobot')) goto 0x0029
+  001e: return Succeed()
+  0029: return OnUpdate(ExpectedEffects, DeltaTime)
+  003a: return return
+  0040: <eos>
+
+function TnAiActionPlayEMPReactionFromShieldedPosition.OnFinish  (script 92 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((self._ShieldInteract != none)) goto 0x0029
+  0016: self._ShieldInteract.ForceEndUse()
+  0029: if !((cast3a(CurrentState) == cast3a(3))) goto 0x0059
+  0039: get_CurrentWorldState().SetIntValue(obj'TnAiWorldStateReaction', 11, )
+  0059: return nothing
+  005b: <eos>

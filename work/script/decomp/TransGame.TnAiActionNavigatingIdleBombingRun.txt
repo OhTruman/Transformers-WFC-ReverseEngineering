@@ -1,0 +1,27 @@
+function TnAiActionNavigatingIdleBombingRun.OnSetUpConditions  (script 56 bytes)
+  0000: if !((self._TransformerController.GetWorldStateInt(obj'TnAiWorldStateBombingRun') != 1)) goto 0x0020
+  001e: return false
+  0020: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0031: return return
+  0037: <eos>
+
+function TnAiActionNavigatingIdleBombingRun.OnStart  (script 40 bytes)
+  0000: TnAiActionNavigatingIdleBombingRun.UpdateFocus()
+  0006: SetCharacterState((0 | 4))
+  0015: return OnStart(ExpectedEffects)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionNavigatingIdleBombingRun.OnUpdate  (script 30 bytes)
+  0000: TnAiActionNavigatingIdleBombingRun.UpdateFocus()
+  0006: return OnUpdate(ExpectedEffects, DeltaTime)
+  0017: return return
+  001d: <eos>
+
+function TnAiActionNavigatingIdleBombingRun.UpdateFocus  (script 102 bytes)
+  0000: if !((self._TransformerController.MoveTarget == none)) goto 0x0016
+  0014: return nothing
+  0016: self._FocusLocation.SetFocalPoint(self._TransformerController.MoveTarget.GetDestination(self._TransformerController))
+  004a: self._TransformerController.Focus = IFocusible(self._FocusLocation)
+  0063: return nothing
+  0065: <eos>

@@ -1,0 +1,86 @@
+function HmPhysicalMeshDestructionEffect.set_CollideWithPawns  (script 16 bytes)
+  0000: self._CollideWithPawns = Value
+  000d: return nothing
+  000f: <eos>
+
+function HmPhysicalMeshDestructionEffect.SetMeshTemplate  (script 14 bytes)
+  0000: self.MeshTemplate = MeshTemplate_
+  000b: return nothing
+  000d: <eos>
+
+function HmPhysicalMeshDestructionEffect.SetSpawnedActorType  (script 23 bytes)
+  0000: self.RigidBodySpawner.NewActorClass = SpawnedActorType
+  0014: return nothing
+  0016: <eos>
+
+function HmPhysicalMeshDestructionEffect.SetLinearVelocity  (script 14 bytes)
+  0000: self.LinearVelocity = Velocity_
+  000b: return nothing
+  000d: <eos>
+
+function HmPhysicalMeshDestructionEffect.SetAngularVelocity  (script 14 bytes)
+  0000: self.AngularVelocity = Velocity_
+  000b: return nothing
+  000d: <eos>
+
+function HmPhysicalMeshDestructionEffect.SetLifespans  (script 25 bytes)
+  0000: self.LifeSpan = Lifespan_
+  000b: self.CollisionLifeSpan = CollisionLifespan_
+  0016: return nothing
+  0018: <eos>
+
+function HmPhysicalMeshDestructionEffect.BeginEffect  (script 286 bytes)
+  0000: if !((HmPhysicalMeshDestructionEffect.ShouldSpawnLocally() == false)) goto 0x000e
+  000c: return nothing
+  000e: EffectToWorldTransform = GetEffectToWorldTransform()
+  001e: SpawnedActor = HmDestructibleSpawnedChunk(self.RigidBodySpawner.SpawnRigidBodyActor(self.MeshTemplate, EffectToWorldTransform.Position, EffectToWorldTransform.Orientation))
+  0061: SpawnedActor.SetLifeSpan(cast3f(self.LifeSpan))
+  007b: SpawnedActor.SetCollisionLifeSpan(cast3f(self.CollisionLifeSpan))
+  0095: SpawnedActor.InitializeCollision()
+  00a8: if !(self._CollideWithPawns) goto 0x00c4
+  00b1: SpawnedActor.EnablePawnCollision()
+  00c4: SpawnedActor.SetLinearVelocity(obj'Core.Math'.static.RotateVector(self.LinearVelocity, EffectToWorldTransform))
+  00f4: SpawnedActor.SetAngularVelocity(self.AngularVelocity)
+  010c: SendActorSpawnEvent(SpawnedActor)
+  011b: return nothing
+  011d: <eos>
+
+function HmPhysicalMeshDestructionEffect.ShouldSpawnLocally  (script 85 bytes)
+  0000: return ((cast3a(GetOwner().GetAttachingActor().Role) == cast3a(3)) || (cast3a(self.RigidBodySpawner.NewActorClass.static.default.RemoteRole) == cast3a(0)))
+  004e: return return
+  0054: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetMeshTemplate  (script 13 bytes)
+  0000: return self.MeshTemplate
+  0006: return return
+  000c: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetSpawnedActorType  (script 22 bytes)
+  0000: return self.RigidBodySpawner.NewActorClass
+  000f: return return
+  0015: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetLinearVelocity  (script 13 bytes)
+  0000: return self.LinearVelocity
+  0006: return return
+  000c: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetAngularVelocity  (script 13 bytes)
+  0000: return self.AngularVelocity
+  0006: return return
+  000c: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetLifespan  (script 13 bytes)
+  0000: return self.LifeSpan
+  0006: return return
+  000c: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetCollisionLifeSpan  (script 13 bytes)
+  0000: return self.CollisionLifeSpan
+  0006: return return
+  000c: <eos>
+
+function HmPhysicalMeshDestructionEffect.GetRigidBodySpawner  (script 13 bytes)
+  0000: return self.RigidBodySpawner
+  0006: return return
+  000c: <eos>

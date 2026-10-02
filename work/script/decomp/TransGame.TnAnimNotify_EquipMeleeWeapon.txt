@@ -1,0 +1,50 @@
+function TnAnimNotify_EquipMeleeWeapon.Notify  (script 71 bytes)
+  0000: MeleeService = TnAnimNotify_EquipMeleeWeapon.GetMeleeService(AnimSeqInstigator)
+  0011: if !(NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0039
+  0025: MeleeService.EquipMeleeWeapon()
+  0039: Notify(AnimSeqInstigator)
+  0044: return nothing
+  0046: <eos>
+
+function TnAnimNotify_EquipMeleeWeapon.OnAnimSequenceStopped  (script 76 bytes)
+  0000: MeleeService = TnAnimNotify_EquipMeleeWeapon.GetMeleeService(AnimSeqInstigator)
+  0011: if !(NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0039
+  0025: MeleeService.UnequipMeleeWeapon()
+  0039: OnAnimSequenceStopped(Owner, AnimSeqInstigator)
+  0049: return nothing
+  004b: <eos>
+
+function TnAnimNotify_EquipMeleeWeapon.GetMeleeService  (script 98 bytes)
+  0000: Services = TnServiceProvider(AnimSeq.SkelComponent.Owner)
+  0022: if !(EqualEqual_InterfaceInterface(Services, TnServiceProvider(none))) goto 0x0038
+  0036: return none
+  0038: return TnMeleeService(Services.GetService('TnMeleeService'))
+  005b: return return
+  0061: <eos>
+
+function TnAnimNotify_EquipMeleeWeapon.CheckForErrors  (script 615 bytes)
+  0000: CheckForErrors()
+  0006: AnimSeq = AnimSequence(get_Outer())
+  0014: EquipIndex = -1
+  001f: UnequipIndex = -1
+  002a: I = 0
+  0031: if !((I < AnimSequence(get_Outer()).Notifies.Length)) goto 0x01ac
+  004d: if !((I[AnimSeq.Notifies].Notify.get_Class() == obj'TnAnimNotify_EquipMeleeWeapon')) goto 0x00f8
+  007d: if !((EquipIndex == -1)) goto 0x009a
+  008c: EquipIndex = I
+  0097: goto 0x00f5
+  009a: EmitCheckMessage(0, ("Multiple EquipMeleeWeapon notifies are not supported in" @ cast57(AnimSeq.SequenceName)), , )
+  00f3: return nothing
+  00f5: goto 0x01a2
+  00f8: if !((I[AnimSeq.Notifies].Notify.get_Class() == obj'TnAnimNotify_UnequipMeleeWeapon')) goto 0x01a2
+  0128: if !((UnequipIndex == -1)) goto 0x0145
+  0137: UnequipIndex = I
+  0142: goto 0x01a2
+  0145: EmitCheckMessage(0, ("Multiple UnequipMeleeWeapon notifies are not supported in" @ cast57(AnimSeq.SequenceName)), , )
+  01a0: return nothing
+  01a2: AddAdd_PreInt(I)
+  01a9: goto 0x0031
+  01ac: if !(((UnequipIndex != -1) && (EquipIndex[AnimSeq.Notifies].Time >= UnequipIndex[AnimSeq.Notifies].Time))) goto 0x0264
+  0200: EmitCheckMessage(0, (cast57(AnimSeq.SequenceName) @ "has an UnequipMeleeWeapon notify before an EquipMeleeWeapon notify"), , )
+  0264: return nothing
+  0266: <eos>

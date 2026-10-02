@@ -1,0 +1,11 @@
+function TnKillAwardRuleLongRange.ConditionMet  (script 216 bytes)
+  0000: if !((Killer != none)) goto 0x001f
+  000b: KillerPawn = Killer.Pawn
+  001f: if !((Killed != none)) goto 0x003e
+  002a: KilledPawn = Killed.Pawn
+  003e: dt = class<TnDamageType>(DamageType)
+  004e: if !((((((KillerPawn != none) && (KilledPawn != none)) && (dt != none)) && !dt.static.default.ExemptFromAccuracyKills) && (obj'Core.Math'.static.VSizeSq((KillerPawn.Location - KilledPawn.Location)) > (self.LongDistance * self.LongDistance)))) goto 0x00cf
+  00cd: return true
+  00cf: return false
+  00d1: return return
+  00d7: <eos>

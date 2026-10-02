@@ -1,0 +1,220 @@
+function HmDestructibleActorBase.ReplicatedEvent  (script 236 bytes)
+  0000: if !(((VariableName == '_DestructibleBlueprint') && !self.bNoDelete)) goto 0x0029
+  0020: HmDestructibleActorBase.UpdateDestructibleBlueprint()
+  0026: goto 0x00e9
+  0029: if !((VariableName == 'LastHit')) goto 0x00de
+  003c: TraceInfo.HitComponent = self.LastHit.HitComponent
+  005d: TraceInfo.Item = self.LastHit.Item
+  007e: self.DestructibleComponent.NotifyHit(cast3f(self.LastHit.Damage), none, self.LastHit.Location, self.LastHit.Momentum, self.LastHit.DamageType, TraceInfo, none, false)
+  00db: goto 0x00e9
+  00de: ReplicatedEvent(VariableName)
+  00e9: return nothing
+  00eb: <eos>
+
+function HmDestructibleActorBase.ReplicatedArrayEvent  (script 135 bytes)
+  0000: if !((ArrayName == 'ReplicatedPieceStates')) goto 0x003b
+  0013: self.DestructibleComponent.SetPieceState(Index, cast3a(Index[self.ReplicatedPieceStates]))
+  0038: goto 0x0084
+  003b: if !((ArrayName == 'ReplicatedPieceHealth')) goto 0x0074
+  004e: self.DestructibleComponent.SetPieceHealthFromByteValue(Index, Index[self.ReplicatedPieceHealth])
+  0071: goto 0x0084
+  0074: ReplicatedArrayEvent(ArrayName, Index)
+  0084: return nothing
+  0086: <eos>
+
+function HmDestructibleActorBase.SetDestructibleBlueprint  (script 35 bytes)
+  0000: if !((self._DestructibleBlueprint != Blueprint)) goto 0x0020
+  000f: self._DestructibleBlueprint = Blueprint
+  001a: HmDestructibleActorBase.UpdateDestructibleBlueprint()
+  0020: return nothing
+  0022: <eos>
+
+function HmDestructibleActorBase.Destroyed  (script 28 bytes)
+  0000: self.DestructibleComponent.Shutdown()
+  0013: Destroyed()
+  0019: return nothing
+  001b: <eos>
+
+function HmDestructibleActorBase.GetBlueprint  (script 13 bytes)
+  0000: return self._DestructibleBlueprint
+  0006: return return
+  000c: <eos>
+
+function HmDestructibleActorBase.UpdateDestructibleBlueprint  (script 115 bytes)
+  0000: if !((self._DestructibleBlueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: self._CosDamageAngle = ((self._DestructibleBlueprint == none) ? -1.0 : obj'Core.Math'.static.Cos((self._DestructibleBlueprint.DamageAngle * 0.0174533)))
+  0045: self.DestructibleComponent.Initialize(self._DestructibleBlueprint)
+  005d: self.DestructibleComponent.Reset()
+  0070: return nothing
+  0072: <eos>
+
+function HmDestructibleActorBase.OnStateEnter  (script 75 bytes)
+  0000: PieceHandle[self.ReplicatedPieceStates] = cast3d(StateHandle)
+  0013: self.bForceNetUpdate = true
+  001b: self.bNetDirty = true
+  0023: foreach BasedActors(obj'Engine.Pawn', AttachedPawn) (end 0x0047)
+  0033: AttachedPawn.FindBase()
+  0046: iternext
+  0047: iterpop
+  0048: return nothing
+  004a: <eos>
+
+function HmDestructibleActorBase.OnDamage  (script 49 bytes)
+  0000: PieceHandle[self.ReplicatedPieceHealth] = cast43((cast3f(255) * obj'Core.Math'.static.FClamp(NormalizedHealth, 0.0, 1.0)))
+  002e: return nothing
+  0030: <eos>
+
+function HmDestructibleActorBase.OnStateExit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDestructibleActorBase.OnActorSpawn  (script 65 bytes)
+  0000: Chunk = HmDestructibleSpawnedChunk(SpawnedActor)
+  0010: if !((Chunk != none)) goto 0x003e
+  001b: Chunk.StaticMeshComponent.AddLinearVelocity(self.Velocity, , )
+  003e: return nothing
+  0040: <eos>
+
+function HmDestructibleActorBase.Reset  (script 112 bytes)
+  0000: Reset()
+  0006: if !(!self.bDeleteMe) goto 0x0027
+  0011: self.DestructibleComponent.Reset()
+  0024: goto 0x006d
+  0027: LogInternal(("ERROR: Resetting a destroyed destructible. bNoDelete:" @ cast54(self.bNoDelete)), , , )
+  006d: return nothing
+  006f: <eos>
+
+function HmDestructibleActorBase.PostBeginPlay  (script 109 bytes)
+  0000: PostBeginPlay()
+  0006: self._DestructibleBlueprint = self.DestructibleComponent.GetBlueprint()
+  001f: self._CosDamageAngle = ((self._DestructibleBlueprint == none) ? -1.0 : obj'Core.Math'.static.Cos((self._DestructibleBlueprint.DamageAngle * 0.0174533)))
+  0057: self.DestructibleComponent.Reset()
+  006a: return nothing
+  006c: <eos>
+
+function HmDestructibleActorBase.TakeDamage  (script 406 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((((InstigatedBy != none) && (InstigatedBy.Pawn != none)) && ((obj'Core.Math'.static.Normal((InstigatedBy.Pawn.Location - self.Location)) dot cast39(self.Rotation)) < self._CosDamageAngle))) goto 0x0063
+  0061: return nothing
+  0063: Damage = HmDestructibleActorBase.ModifyDamage(Damage, InstigatedBy, HitLocation, DamageType, false)
+  0084: TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  00ad: self.LastHit.Damage = cast44(Damage)
+  00c5: self.LastHit.Location = HitLocation
+  00db: self.LastHit.DamageType = DamageType
+  00f1: self.LastHitInstigator = InstigatedBy
+  00fc: self.LastHit.Momentum = Momentum
+  0112: self.LastHit.HitComponent = HitInfo.HitComponent
+  0133: self.LastHit.Item = HitInfo.Item
+  0154: self.DestructibleComponent.NotifyHit(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser, true)
+  018b: self.bForceNetUpdate = true
+  0193: return nothing
+  0195: <eos>
+
+function HmDestructibleActorBase.ModifyDamage  (script 264 bytes)
+  0000: if !((self._DestructibleBlueprint == none)) goto 0x0011
+  000b: return Damage
+  0011: Index = self._DestructibleBlueprint.DamageModifiers.Find('ModifierDamageType',DamageType)
+  0036: if !((Index != -1)) goto 0x006b
+  0045: (Damage *= Index[self._DestructibleBlueprint.DamageModifiers].ModifierValue)
+  006b: if !(IsRadiusDamage) goto 0x00d6
+  0074: DistanceSqFromInstigator = obj'Core.Math'.static.VSizeSq((HitLocation - self.Location))
+  0099: if !((DistanceSqFromInstigator > (self._DestructibleBlueprint.MinRadiusDamageDistanceForModifier * self._DestructibleBlueprint.MinRadiusDamageDistanceForModifier))) goto 0x00d6
+  00c1: (Damage *= self._DestructibleBlueprint.RadiusDamageModifier)
+  00d6: if !((AIController(InstigatedBy) != none)) goto 0x00fb
+  00e6: (Damage *= self._DestructibleBlueprint.AIDamageModifier)
+  00fb: return Damage
+  0101: return return
+  0107: <eos>
+
+function HmDestructibleActorBase.TakeRadiusDamage  (script 422 bytes)
+  0000: GetComponentsBoundingBox(ActorBox)
+  000f: if !(((obj'Core.Math'.static.Normal((HitLocation - self.Location)) dot cast39(self.Rotation)) < self._CosDamageAngle)) goto 0x003b
+  0039: return nothing
+  003b: MomentumVec = (((ActorBox.Max + ActorBox.Min) / cast3f(2)) - HitLocation)
+  0070: MomentumVec = (Momentum * obj'Core.Math'.static.Normal(MomentumVec))
+  008d: Damage = HmDestructibleActorBase.ModifyDamage(Damage, InstigatedBy, HitLocation, DamageType, true)
+  00ae: self.LastHit.Damage = cast44(Damage)
+  00c6: self.LastHit.Location = HitLocation
+  00dc: self.LastHit.DamageType = DamageType
+  00f2: self.LastHitInstigator = InstigatedBy
+  00fd: self.LastHit.Momentum = MomentumVec
+  0113: self.LastHit.HitComponent = none
+  0125: self.LastHit.Item = -1
+  013b: MaxDamage = self.DestructibleComponent.NotifyRadiusHit(InstigatedBy, Damage, DamageRadius, DamageType, Momentum, HitLocation, bFullDamage, DamageCauser, true)
+  017e: TakeDamage(MaxDamage, InstigatedBy, HitLocation, MomentumVec, DamageType, , DamageCauser)
+  01a3: return nothing
+  01a5: <eos>
+
+function HmDestructibleActorBase.Bump  (script 35 bytes)
+  0000: Bump(Other, OtherComp, HitNormal)
+  0015: HmDestructibleActorBase.OnCollision(Other)
+  0020: return nothing
+  0022: <eos>
+
+function HmDestructibleActorBase.Touch  (script 40 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: HmDestructibleActorBase.OnCollision(Other)
+  0025: return nothing
+  0027: <eos>
+
+function HmDestructibleActorBase.RigidBodyCollision  (script 74 bytes)
+  0000: RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  001a: Other = ((OtherComponent != none) ? OtherComponent.Owner : none)
+  003c: HmDestructibleActorBase.OnCollision(Other)
+  0047: return nothing
+  0049: <eos>
+
+function HmDestructibleActorBase.OnCollision  (script 36 bytes)
+  0000: if !((Pawn(Other) == none)) goto 0x0012
+  0010: return nothing
+  0012: ApplyDestructionTrigger(obj'HmTouchDestructionTrigger')
+  0021: return nothing
+  0023: <eos>
+
+function HmDestructibleActorBase.ApplyDestructionTrigger  (script 32 bytes)
+  0000: self.DestructibleComponent.NotifyTrigger(3.4028234663852886e+38, DestructionTrigger)
+  001d: return nothing
+  001f: <eos>
+
+function HmDestructibleActorBase.CanAcceptRadiusDamage  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmDestructibleActorBase.GetPieceState  (script 76 bytes)
+  0000: Piece = self.DestructibleComponent.FindPiece(PieceName)
+  001e: return ((Piece == none) ? none : Piece.FindStateByName(StateName))
+  0045: return return
+  004b: <eos>
+
+function HmDestructibleActorBase.GetPiece  (script 32 bytes)
+  0000: return self.DestructibleComponent.FindPiece(PieceName)
+  0019: return return
+  001f: <eos>
+
+function HmDestructibleActorBase.GetPieces  (script 27 bytes)
+  0000: return self.DestructibleComponent.GetPieces()
+  0014: return return
+  001a: <eos>
+
+function HmDestructibleActorBase.NotifyPieceStateChanged  (script 103 bytes)
+  0000: I = 0
+  0007: if !((I < self.GeneratedEvents.Length)) goto 0x0064
+  0017: StateEvent = SeqEvent_HmDestructibleStateNotification(I[self.GeneratedEvents])
+  002d: if !((StateEvent != none)) goto 0x005a
+  0038: StateEvent.Notify(DamageInstigator, PieceName, StateName)
+  005a: AddAdd_PreInt(I)
+  0061: goto 0x0007
+  0064: return nothing
+  0066: <eos>
+
+function HmDestructibleActorBase.CheckForErrors  (script 211 bytes)
+  0000: CheckForErrors()
+  0006: FinalScale = (self.DrawScale * self.DrawScale3D)
+  0018: if !((FinalScale != vect(1,1,1))) goto 0x00bd
+  002f: EmitCheckMessage(0, (((((("Scale of <" $ cast55(FinalScale.X)) $ ",") $ cast55(FinalScale.Y)) $ ",") $ cast55(FinalScale.Z)) $ ">. Scaled destructibles are not supported."), , )
+  00bd: self.DestructibleComponent.CheckForErrors()
+  00d0: return nothing
+  00d2: <eos>

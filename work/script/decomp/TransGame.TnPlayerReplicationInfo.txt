@@ -1,0 +1,910 @@
+function TnPlayerReplicationInfo.get_CurrentKillStreak  (script 13 bytes)
+  0000: return self._CurrentKillStreak
+  0006: return return
+  000c: <eos>
+
+function TnPlayerReplicationInfo.get_MultiKillLevel  (script 22 bytes)
+  0000: return self.MultiKillDetector._MultiKillLevel
+  000f: return return
+  0015: <eos>
+
+function TnPlayerReplicationInfo.get_ScoreTracker  (script 13 bytes)
+  0000: return self._ScoreTracker
+  0006: return return
+  000c: <eos>
+
+function TnPlayerReplicationInfo.set_DownedTeammates  (script 14 bytes)
+  0000: self._DownedTeammates = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.get_ClassFormTracker  (script 13 bytes)
+  0000: return self._ClassFormTracker
+  0006: return return
+  000c: <eos>
+
+function TnPlayerReplicationInfo.get_SelectedCharacter  (script 13 bytes)
+  0000: return self._SelectedCharacter
+  0006: return return
+  000c: <eos>
+
+function TnPlayerReplicationInfo.get_CurrentCharacter  (script 13 bytes)
+  0000: return self._CurrentCharacter
+  0006: return return
+  000c: <eos>
+
+function TnPlayerReplicationInfo.set_CurrentCharacter  (script 42 bytes)
+  0000: self._CurrentCharacter = Value
+  000b: self.CurrentCharacterString = self._CurrentCharacter.Specialty
+  0021: TnPlayerReplicationInfo.RefreshProvider()
+  0027: return nothing
+  0029: <eos>
+
+function TnPlayerReplicationInfo.get_PrimeMode  (script 14 bytes)
+  0000: return self.PrimeModeActive
+  0007: return return
+  000d: <eos>
+
+function TnPlayerReplicationInfo.set_PrimeMode  (script 34 bytes)
+  0000: self.PrimeModeActive = Value
+  000d: TnPlayerReplicationInfo.RefreshProvider()
+  0013: TnPlayerReplicationInfo.ServerSetPrimeMode(Value)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerReplicationInfo.ReplicatedEvent  (script 382 bytes)
+  0000: if !((VarName == 'ReplicatedCharacterData')) goto 0x002c
+  0013: TnPlayerReplicationInfo.ClientStartCharacterLoad(self.ReplicatedCharacterData.CD)
+  0029: goto 0x0170
+  002c: if !((VarName == 'Team')) goto 0x0058
+  003f: TnPlayerReplicationInfo.ClientStartCharacterLoad(self.ReplicatedCharacterData.CD)
+  0055: goto 0x0170
+  0058: if !((VarName == 'bBot')) goto 0x00bc
+  006b: if !((self.WorldInfo.GRI != none)) goto 0x00b9
+  007f: self.WorldInfo.GRI.RemovePRI(self)
+  009c: self.WorldInfo.GRI.AddPRI(self)
+  00b9: goto 0x0170
+  00bc: if !((((((((VarName == 'TimeToRespawn') || (VarName == 'IsConnecting')) || (VarName == 'PlayerLevel')) || (VarName == 'PlayerLevelScout')) || (VarName == 'PlayerLevelScientist')) || (VarName == 'PlayerLevelSoldier')) || (VarName == 'PlayerLevelLeader'))) goto 0x0156
+  014d: TnPlayerReplicationInfo.RefreshProvider()
+  0153: goto 0x0170
+  0156: if !((VarName == 'PlayerName')) goto 0x0170
+  0169: TnPlayerReplicationInfo.AddPlayerMet(self)
+  0170: ReplicatedEvent(VarName)
+  017b: return nothing
+  017d: <eos>
+
+function TnPlayerReplicationInfo.AddPlayerMet  (script 264 bytes)
+  0000: if !(self.bBot) goto 0x000b
+  0009: return nothing
+  000b: if !((obj'Engine.GameInfo'.static.default.DefaultPlayerName == PRI.PlayerName)) goto 0x002e
+  002c: return nothing
+  002e: OPI = obj'Engine.GameEngine'.static.GetOnlineSubsystem().PlayerInterface
+  0050: if !(EqualEqual_InterfaceInterface(OPI, OnlinePlayerInterface(none))) goto 0x0066
+  0064: return nothing
+  0066: PC = TnWorldInfo(self.WorldInfo).GetLocalPlayerController()
+  0084: if !((PC == none)) goto 0x0091
+  008f: return nothing
+  0091: if !((PC.PlayerReplicationInfo == PRI)) goto 0x00ab
+  00a9: return nothing
+  00ab: LocalUserNum = LocalPlayer(PC.Player).ControllerId
+  00cd: Players.AddItem(PRI.PlayerName)
+  00e3: OPI.AddPlayersToPlayerHistory(cast3d(LocalUserNum), Players, "")
+  0105: return nothing
+  0107: <eos>
+
+function TnPlayerReplicationInfo.PostBeginPlay  (script 98 bytes)
+  0000: PostBeginPlay()
+  0006: self._ClassFormTracker.SetValueDumpDelegate(delegate.IncrementGameStat)
+  0022: if !(((cast3a(self.Role) == cast3a(3)) && (TnPlayerController(self.Owner) == none))) goto 0x004c
+  0044: self.IsConnecting = true
+  004c: SetTimer(self.UpdateHeadsetInterval, true, 'UpdateHeadset', )
+  005f: return nothing
+  0061: <eos>
+
+function TnPlayerReplicationInfo.OverrideWith  (script 53 bytes)
+  0000: OverrideWith(PRI)
+  000b: SetTeam(TnTeamInfo(PRI.Team))
+  0028: ClearCharacter()
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerReplicationInfo.CopyPropertiesTo  (script 347 bytes)
+  0000: CopyPropertiesTo(PRI)
+  000b: TnPRI = TnPlayerReplicationInfo(PRI)
+  001b: if !((TnPRI == none)) goto 0x0028
+  0026: return nothing
+  0028: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0041: TnPRI.PrimeModeActive = self.PrimeModeActive
+  0057: TnPRI.TeamName = self.TeamName
+  006b: if !((GRI.RetainSelectedCharacterOnTransition && GRI.ValidateCharacterSelection(self, self._SelectedCharacter.CharacterName))) goto 0x00f6
+  00a6: TnPRI._SelectedCharacter = self._SelectedCharacter
+  00ba: TnPRI.SelectedCharacterString = self.SelectedCharacterString
+  00ce: TnPRI.ReplicatedCharacterData = self.ReplicatedCharacterData
+  00e2: TnPRI.PlayerIconicCharacterName = self.PlayerIconicCharacterName
+  00f6: TnPRI.CharacterDataLoader.CopyReferences(self.CharacterDataLoader)
+  0117: TnPRI.LoadCompletePlayers = self.LoadCompletePlayers
+  012b: TnPRI.PlayerLevel = self.PlayerLevel
+  013f: GRI.ReplacingPRI(self, TnPRI)
+  0158: return nothing
+  015a: <eos>
+
+function TnPlayerReplicationInfo.ReplacingPRI  (script 54 bytes)
+  0000: I = self.LoadCompletePlayers.Find(OldPRI)
+  0013: if !((I != -1)) goto 0x0033
+  0022: I[self.LoadCompletePlayers] = NewPRI
+  0033: return nothing
+  0035: <eos>
+
+function TnPlayerReplicationInfo.Reset  (script 54 bytes)
+  0000: Reset()
+  0006: self._CurrentKillStreak = 0
+  000d: self.NumKillsSinceDowned = -1
+  0018: self.MultiKillDetector.Reset()
+  002b: self.ForcedIntoLevel = true
+  0033: return nothing
+  0035: <eos>
+
+function TnPlayerReplicationInfo.UnregisterPlayerFromSession  (script 212 bytes)
+  0000: UnregisterPlayerFromSession()
+  0006: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  001f: if !((((((cast3a(self.WorldInfo.NetMode) == cast3a(3)) && (OnlineSub != none)) && NotEqual_InterfaceInterface(OnlineSub.GameInterface, OnlineGameInterface(none))) && (OnlineSub.GameInterface.GetGameSettings('Party') != none)) && (self.UniqueId != ZeroId))) goto 0x00d1
+  00a6: OnlineSub.GameInterface.UnregisterPlayer('Party', self.UniqueId)
+  00d1: return nothing
+  00d3: <eos>
+
+function TnPlayerReplicationInfo.RefreshProvider  (script 49 bytes)
+  0000: PC = TnPlayerController(self.Owner)
+  0010: if !((PC != none)) goto 0x002e
+  001b: PC.RefreshPlayerSubscribers()
+  002e: return nothing
+  0030: <eos>
+
+function TnPlayerReplicationInfo.ResetStats  (script 11 bytes)
+  0000: self.GameStats.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerReplicationInfo.SendGameStatsToClient  (script 53 bytes)
+  0000: I = 0
+  0007: if !((I < self.GameStats.Length)) goto 0x0032
+  0017: TnPlayerReplicationInfo.ClientUpdateGameStat(I[self.GameStats])
+  0028: AddAdd_PreInt(I)
+  002f: goto 0x0007
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerReplicationInfo.ShouldUpdateState  (script 75 bytes)
+  0000: return (((StatId < 5376) || (StatId > 8191)) || TnGameReplicationInfo(self.WorldInfo.GRI).CanGainXp())
+  0044: return return
+  004a: <eos>
+
+function TnPlayerReplicationInfo.IncrementGameStat  (script 30 bytes)
+  0000: ReportGameStat(Amount, StatId, WhenToSend, 0)
+  001b: return nothing
+  001d: <eos>
+
+function TnPlayerReplicationInfo.ReportGameStat  (script 378 bytes)
+  0000: if !((StatId == -1)) goto 0x0011
+  000f: return nothing
+  0011: if !(!TnPlayerReplicationInfo.ShouldUpdateState(StatId)) goto 0x0023
+  0021: return nothing
+  0023: I = self.GameStats.Find('StatId',StatId)
+  003f: if !((I == -1)) goto 0x0083
+  004e: I = TnPlayerReplicationInfo.CreateGameStat(StatId, Amount)
+  0064: I[self.GameStats].UpdateType = UpdateType
+  0080: goto 0x00fc
+  0083: switch (UpdateType)
+  008a: case 0: (next 0x008f)
+  008f: case 2: (next 0x00b4)
+  0094: (I[self.GameStats].Value += Amount)
+  00b1: goto 0x00fc
+  00b4: case 1: (next 0x00f9)
+  00b9: I[self.GameStats].Value = obj'Core.Math'.static.FMax(Amount, I[self.GameStats].Value)
+  00f6: goto 0x00fc
+  00f9: default:
+  00fc: if !((cast3a(WhenToSend) == cast3a(0))) goto 0x011d
+  010c: TnPlayerReplicationInfo.ClientUpdateGameStat(I[self.GameStats])
+  011d: MappedId = self.ChallengeStatReplacementMap.Find('InputId',StatId)
+  0139: if !((MappedId != -1)) goto 0x0177
+  0148: ReportGameStat(Amount, MappedId[self.ChallengeStatReplacementMap].OutputId, WhenToSend, UpdateType)
+  0177: return nothing
+  0179: <eos>
+
+function TnPlayerReplicationInfo.IncrementKillstreakStats  (script 518 bytes)
+  0000: switch (Specialty)
+  0007: case "Scout": (next 0x0078)
+  0011: switch (NumKills)
+  0018: case 3: (next 0x0036)
+  001d: SingleMatchId = 5969
+  0028: TotalId = 5973
+  0033: goto 0x0075
+  0036: case 5: (next 0x0054)
+  003b: SingleMatchId = 5971
+  0046: TotalId = 5974
+  0051: goto 0x0075
+  0054: case 7: (next 0x0072)
+  0059: SingleMatchId = 5972
+  0064: TotalId = 5975
+  006f: goto 0x0075
+  0072: default:
+  0075: goto 0x01d5
+  0078: case "Soldier": (next 0x00eb)
+  0084: switch (NumKills)
+  008b: case 3: (next 0x00a9)
+  0090: SingleMatchId = 5976
+  009b: TotalId = 5979
+  00a6: goto 0x00e8
+  00a9: case 5: (next 0x00c7)
+  00ae: SingleMatchId = 5977
+  00b9: TotalId = 5980
+  00c4: goto 0x00e8
+  00c7: case 7: (next 0x00e5)
+  00cc: SingleMatchId = 5978
+  00d7: TotalId = 5981
+  00e2: goto 0x00e8
+  00e5: default:
+  00e8: goto 0x01d5
+  00eb: case "Scientist": (next 0x0160)
+  00f9: switch (NumKills)
+  0100: case 3: (next 0x011e)
+  0105: SingleMatchId = 5988
+  0110: TotalId = 5991
+  011b: goto 0x015d
+  011e: case 5: (next 0x013c)
+  0123: SingleMatchId = 5989
+  012e: TotalId = 5992
+  0139: goto 0x015d
+  013c: case 7: (next 0x015a)
+  0141: SingleMatchId = 5990
+  014c: TotalId = 5993
+  0157: goto 0x015d
+  015a: default:
+  015d: goto 0x01d5
+  0160: case "Leader": (next 0x01d2)
+  016b: switch (NumKills)
+  0172: case 3: (next 0x0190)
+  0177: SingleMatchId = 5982
+  0182: TotalId = 5985
+  018d: goto 0x01cf
+  0190: case 5: (next 0x01ae)
+  0195: SingleMatchId = 5983
+  01a0: TotalId = 5986
+  01ab: goto 0x01cf
+  01ae: case 7: (next 0x01cc)
+  01b3: SingleMatchId = 5984
+  01be: TotalId = 5987
+  01c9: goto 0x01cf
+  01cc: default:
+  01cf: goto 0x01d5
+  01d2: default:
+  01d5: ReportGameStat(1.0, SingleMatchId, 0, 2)
+  01ed: IncrementGameStat(1.0, TotalId, 0)
+  0203: return nothing
+  0205: <eos>
+
+function TnPlayerReplicationInfo.CreateGameStat  (script 123 bytes)
+  0000: I = self.GameStats.Find('StatId',StatId)
+  001c: if !((I != -1)) goto 0x0031
+  002b: return -1
+  0031: NewStat.StatId = StatId
+  0047: NewStat.Value = InitialValue
+  005d: self.GameStats.AddItem(NewStat)
+  006a: return (self.GameStats.Length - 1)
+  0074: return return
+  007a: <eos>
+
+function TnPlayerReplicationInfo.GetGameStat  (script 82 bytes)
+  0000: I = self.GameStats.Find('StatId',StatId)
+  001c: if !((I == -1)) goto 0x002d
+  002b: return false
+  002d: Result = I[self.GameStats].Value
+  0049: return true
+  004b: return return
+  0051: <eos>
+
+function TnPlayerReplicationInfo.GetGameStatForUpdate  (script 71 bytes)
+  0000: I = self.GameStats.Find('StatId',StatId)
+  001c: if !((I == -1)) goto 0x002d
+  002b: return false
+  002d: Stat = I[self.GameStats]
+  003e: return true
+  0040: return return
+  0046: <eos>
+
+function TnPlayerReplicationInfo.GetGameStats  (script 14 bytes)
+  0000: Stats = self.GameStats
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.MenuSetReady  (script 32 bytes)
+  0000: self.bReadyToPlay = bIsReadyToPlay
+  000d: self.bForceNetUpdate = true
+  0015: self.bNetDirty = true
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerReplicationInfo.NotifyTeamChanged  (script 157 bytes)
+  0000: SelectCharacter(self.ReplicatedCharacterData.CD)
+  001a: foreach self.WorldInfo.AllPawns(obj'Engine.Pawn', P, , ) (end 0x0099)
+  003c: if !(((P.PlayerReplicationInfo == self) || ((P.DrivenVehicle != none) && (P.DrivenVehicle.PlayerReplicationInfo == self)))) goto 0x0098
+  0085: P.NotifyTeamChanged()
+  0098: iternext
+  0099: iterpop
+  009a: return nothing
+  009c: <eos>
+
+function TnPlayerReplicationInfo.AddShotFired  (script 130 bytes)
+  0000: if !(((WeaponShotFiredStatId != -1) && (self.LastShotTime < self.WorldInfo.TimeSeconds))) goto 0x006b
+  0029: IncrementGameStat(1.0, 268435516, 1)
+  003f: IncrementGameStat(1.0, 4097, 1)
+  0055: IncrementGameStat(1.0, WeaponShotFiredStatId, 1)
+  006b: self.LastShotTime = self.WorldInfo.TimeSeconds
+  007f: return nothing
+  0081: <eos>
+
+function TnPlayerReplicationInfo.AddShotHit  (script 146 bytes)
+  0000: if !((self.LastHitTime >= self.WorldInfo.TimeSeconds)) goto 0x001a
+  0018: return nothing
+  001a: AsTnDamageType = class<TnDamageType>(DamageType)
+  002a: if !((AsTnDamageType.static.default.HitStatId == -1)) goto 0x0044
+  0042: return nothing
+  0044: IncrementGameStat(1.0, 268435517, 1)
+  005a: IncrementGameStat(1.0, 4098, 1)
+  0070: TnPlayerReplicationInfo.AddToWeaponSpecificShotHit(AsTnDamageType)
+  007b: self.LastHitTime = self.WorldInfo.TimeSeconds
+  008f: return nothing
+  0091: <eos>
+
+function TnPlayerReplicationInfo.AddToWeaponSpecificShotHit  (script 34 bytes)
+  0000: IncrementGameStat(1.0, DamageType.static.default.HitStatId, 1)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerReplicationInfo.AddHealedDamage  (script 237 bytes)
+  0000: PC = TnPlayerController(self.Owner)
+  0010: if !((PC == none)) goto 0x001d
+  001b: return nothing
+  001d: GetGameStat(268435460, CurrentValue)
+  0031: NewValue = (CurrentValue + Amount)
+  0043: if !((cast44((CurrentValue / 10.0)) != cast44((NewValue / 10.0)))) goto 0x006f
+  0064: SendTime = 0
+  006c: goto 0x0077
+  006f: SendTime = 1
+  0077: self._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventNonScoringHeal', , Amount, , )
+  0097: IncrementGameStat(Amount, 268435460, SendTime)
+  00b0: if !((HealType.static.default.HealStatId != -1)) goto 0x00ea
+  00c8: IncrementGameStat(Amount, HealType.static.default.HealStatId, SendTime)
+  00ea: return nothing
+  00ec: <eos>
+
+function TnPlayerReplicationInfo.GetHealedDamage  (script 33 bytes)
+  0000: GetGameStat(268435460, HealedDamage)
+  0014: return HealedDamage
+  001a: return return
+  0020: <eos>
+
+function TnPlayerReplicationInfo.AddKills  (script 329 bytes)
+  0000: IncrementGameStat(cast3f(Amount), 268435457, 0)
+  0018: IncrementGameStat(cast3f(Amount), self._ClassFormTracker.GetClassKillStatId(), 0)
+  003e: IncrementGameStat(cast3f(Amount), self._ClassFormTracker.GetFormKillStatId(), 0)
+  0064: if !(self._ClassFormTracker.ShouldRecordVehicleKill()) goto 0x0092
+  007a: IncrementGameStat(cast3f(Amount), 337, 0)
+  0092: TnPlayerReplicationInfo.AddToWeaponSpecificKills(Amount, DamageType)
+  00a2: (self._CurrentKillStreak += Amount)
+  00ae: self.MultiKillDetector.AddKills(Amount)
+  00c6: if !(((self.NumKillsSinceDowned != -1) && (TnAiSentryController(Killed) == none))) goto 0x0131
+  00e7: (self.NumKillsSinceDowned += Amount)
+  00f3: PC = TnPlayerController(self.Owner)
+  0103: if !(((PC != none) && (self.NumKillsSinceDowned >= 3))) goto 0x0131
+  011c: PC.ClientUnlockAchievement(49)
+  0131: AddKills(Amount, DamageType, Killed)
+  0146: return nothing
+  0148: <eos>
+
+function TnPlayerReplicationInfo.AddToWeaponSpecificKills  (script 89 bytes)
+  0000: AsTnDamageType = class<TnDamageType>(DamageType)
+  0010: if !(((AsTnDamageType != none) && (AsTnDamageType.static.default.KillStatId != -1))) goto 0x0056
+  0035: IncrementGameStat(cast3f(Amount), AsTnDamageType.static.default.KillStatId, 0)
+  0056: return nothing
+  0058: <eos>
+
+function TnPlayerReplicationInfo.AddDeaths  (script 165 bytes)
+  0000: AddDeaths(Amount)
+  000b: self._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventKilled', , , , )
+  0027: IncrementGameStat(cast3f(Amount), 268435458, 0)
+  003f: IncrementGameStat(cast3f(Amount), self._ClassFormTracker.GetClassDeathStatId(), 0)
+  0065: IncrementGameStat(cast3f(Amount), self._ClassFormTracker.GetFormDeathStatId(), 0)
+  008b: TnPlayerReplicationInfo.KillStreakEnded()
+  0091: TnPlayerReplicationInfo.MultiKillEnded()
+  0097: self.NumKillsSinceDowned = -1
+  00a2: return nothing
+  00a4: <eos>
+
+function TnPlayerReplicationInfo.AddScore  (script 48 bytes)
+  0000: default=0
+  0005: AddScore(Amount, TeamAmount)
+  0015: IncrementGameStat(cast3f(Amount), 268435465, 0)
+  002d: return nothing
+  002f: <eos>
+
+function TnPlayerReplicationInfo.KillStreakEnded  (script 78 bytes)
+  0000: GetGameStat(268435467, PreviousMax)
+  0014: if !((self._CurrentKillStreak > cast44(PreviousMax))) goto 0x0044
+  0025: IncrementGameStat((cast3f(self._CurrentKillStreak) - PreviousMax), 268435467, 0)
+  0044: self._CurrentKillStreak = 0
+  004b: return nothing
+  004d: <eos>
+
+function TnPlayerReplicationInfo.MultiKillEnded  (script 108 bytes)
+  0000: GetGameStat(268435490, PreviousMax)
+  0014: if !((self.MultiKillDetector._MultiKillLevel > cast44(PreviousMax))) goto 0x0056
+  002e: IncrementGameStat((cast3f(self.MultiKillDetector._MultiKillLevel) - PreviousMax), 268435490, 0)
+  0056: self.MultiKillDetector.Reset()
+  0069: return nothing
+  006b: <eos>
+
+function TnPlayerReplicationInfo.AddGameCompletion  (script 144 bytes)
+  0000: IncrementGameStat(GameTime, 268435496, 1)
+  0016: IncrementGameStat(1.0, 268435494, 1)
+  002c: switch (GameCompletionType)
+  0033: case 0: (next 0x0046)
+  0038: GameCompletionTypeID = 268435492
+  0043: goto 0x006f
+  0046: case 1: (next 0x0059)
+  004b: GameCompletionTypeID = 268435493
+  0056: goto 0x006f
+  0059: case 2: (next 0x006c)
+  005e: GameCompletionTypeID = 268435518
+  0069: goto 0x006f
+  006c: default:
+  006f: IncrementGameStat(1.0, GameCompletionTypeID, 1)
+  0085: self.bForceNetUpdate = true
+  008d: return nothing
+  008f: <eos>
+
+function TnPlayerReplicationInfo.NotifyXpEvent  (script 54 bytes)
+  0000: PC = TnPlayerController(self.Owner)
+  0010: if !((PC != none)) goto 0x0033
+  001b: PC.NotifyXpEvent(EventType)
+  0033: return nothing
+  0035: <eos>
+
+function TnPlayerReplicationInfo.AddAssist  (script 80 bytes)
+  0000: if !((AssistPct > 0.5)) goto 0x001d
+  000f: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeAssist')
+  001a: goto 0x0037
+  001d: if !((AssistPct > 0.25)) goto 0x0037
+  002c: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeWeakAssist')
+  0037: IncrementGameStat(1.0, 268435459, 0)
+  004d: return nothing
+  004f: <eos>
+
+function TnPlayerReplicationInfo.AddFlagScore  (script 36 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeFlagCapture')
+  000b: IncrementGameStat(1.0, 268435463, 0)
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerReplicationInfo.AddFlagReturned  (script 36 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeFlagReturn')
+  000b: IncrementGameStat(1.0, 268435462, 0)
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerReplicationInfo.AddFlagDefend  (script 14 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeFlagDefend')
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.AddFlagCarryTime  (script 47 bytes)
+  0000: IncrementGameStat(CarryTime, 268435519, 1)
+  0016: IncrementGameStat(1.0, 268435520, 1)
+  002c: return nothing
+  002e: <eos>
+
+function TnPlayerReplicationInfo.AddDominationPointCapture  (script 36 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeDominationCapture')
+  000b: IncrementGameStat(1.0, 268435525, 0)
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerReplicationInfo.AddZoneScore  (script 159 bytes)
+  0000: switch ((Amount / 10))
+  000b: case 0: (next 0x001d)
+  000f: XpEvent = obj'TnXpEventTypeZoneHold0'
+  001a: goto 0x0079
+  001d: case 1: (next 0x002f)
+  0021: XpEvent = obj'TnXpEventTypeZoneHold1'
+  002c: goto 0x0079
+  002f: case 2: (next 0x0042)
+  0034: XpEvent = obj'TnXpEventTypeZoneHold2'
+  003f: goto 0x0079
+  0042: case 3: (next 0x0055)
+  0047: XpEvent = obj'TnXpEventTypeZoneHold3'
+  0052: goto 0x0079
+  0055: case 4: (next 0x0068)
+  005a: XpEvent = obj'TnXpEventTypeZoneHold4'
+  0065: goto 0x0079
+  0068: default:
+  006b: XpEvent = obj'TnXpEventTypeZoneHold5'
+  0076: goto 0x0079
+  0079: TnPlayerReplicationInfo.NotifyXpEvent(XpEvent)
+  0084: IncrementGameStat(cast3f(Amount), 268435466, 0)
+  009c: return nothing
+  009e: <eos>
+
+function TnPlayerReplicationInfo.AddBombCarryTime  (script 25 bytes)
+  0000: IncrementGameStat(CarryTime, 268435500, 1)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerReplicationInfo.AddBombPickup  (script 25 bytes)
+  0000: IncrementGameStat(1.0, 268435521, 0)
+  0016: return nothing
+  0018: <eos>
+
+function TnPlayerReplicationInfo.AddBombPlant  (script 14 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeBombPlant')
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.AddBombScore  (script 36 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeBombDetonate')
+  000b: IncrementGameStat(1.0, 268435498, 0)
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerReplicationInfo.AddBombDefuse  (script 36 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeBombDefuse')
+  000b: IncrementGameStat(1.0, 268435499, 0)
+  0021: return nothing
+  0023: <eos>
+
+function TnPlayerReplicationInfo.AddRevive  (script 53 bytes)
+  0000: self._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventRevive', , , , )
+  001c: IncrementGameStat(1.0, 268435501, 0)
+  0032: return nothing
+  0034: <eos>
+
+function TnPlayerReplicationInfo.AddRevived  (script 14 bytes)
+  0000: self.NumKillsSinceDowned = -1
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.AddDowned  (script 60 bytes)
+  0000: self.NumKillsSinceDowned = 0
+  0007: self._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventDowned', , , , )
+  0023: IncrementGameStat(1.0, 268435502, 0)
+  0039: return nothing
+  003b: <eos>
+
+function TnPlayerReplicationInfo.AddSentryKill  (script 42 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeSentryKill')
+  000b: self._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventSentryKill', , , , )
+  0027: return nothing
+  0029: <eos>
+
+function TnPlayerReplicationInfo.AddMineKill  (script 14 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeMineKill')
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.AddRollerMineKill  (script 14 bytes)
+  0000: TnPlayerReplicationInfo.NotifyXpEvent(obj'TnXpEventTypeRollerMineKill')
+  000b: return nothing
+  000d: <eos>
+
+function TnPlayerReplicationInfo.GetAssists  (script 35 bytes)
+  0000: GetGameStat(268435459, Result)
+  0014: return cast44(Result)
+  001c: return return
+  0022: <eos>
+
+function TnPlayerReplicationInfo.GetMaxKillStreak  (script 35 bytes)
+  0000: GetGameStat(268435467, Result)
+  0014: return cast44(Result)
+  001c: return return
+  0022: <eos>
+
+function TnPlayerReplicationInfo.MatchOver  (script 9 bytes)
+  0000: TnPlayerReplicationInfo.KillStreakEnded()
+  0006: return nothing
+  0008: <eos>
+
+function TnPlayerReplicationInfo.SetTeam  (script 119 bytes)
+  0000: self.Team = NewTeam
+  000b: self.TeamID = ((NewTeam != none) ? NewTeam.TeamIndex : 255)
+  002e: TnPlayerReplicationInfo.NotifyTeamChanged()
+  0034: LogInternal((((((("Set" @ self.PlayerName) @ "team to") @ cast56(self.Team)) @ "(") $ cast53(self.TeamID)) $ ")"), 'DevTeams', , )
+  0074: return nothing
+  0076: <eos>
+
+function TnPlayerReplicationInfo.GetCharacterName  (script 35 bytes)
+  0000: return self.ReplicatedCharacterData.CD.CharacterName
+  001c: return return
+  0022: <eos>
+
+function TnPlayerReplicationInfo.SelectCharacter  (script 168 bytes)
+  0000: if !((CD.CharacterName == "")) goto 0x0019
+  0017: return nothing
+  0019: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0032: if !(((GRI == none) || !GRI.ValidateCharacterSelection(self, CD.CharacterName))) goto 0x006a
+  0068: return nothing
+  006a: self.LoadCompletePlayers.Length = 0
+  0072: self.ReplicatedCharacterData.CD = CD
+  0088: TnPlayerReplicationInfo.ClientStartCharacterLoad(CD)
+  0093: AddAdd_PreInt(self.ReplicatedCharacterData.ForceReplicationFlag)
+  00a5: return nothing
+  00a7: <eos>
+
+function TnPlayerReplicationInfo.ClearCharacter  (script 20 bytes)
+  0000: self.ReplicatedCharacterData = EmptyCharacter
+  000b: TnPlayerReplicationInfo.FinalizeCharacter()
+  0011: return nothing
+  0013: <eos>
+
+function TnPlayerReplicationInfo.HasSelectedCharacter  (script 28 bytes)
+  0000: return (self._SelectedCharacter.CharacterName != "")
+  0015: return return
+  001b: <eos>
+
+function TnPlayerReplicationInfo.GetCurrentCharacterReplicated  (script 24 bytes)
+  0000: return self.ReplicatedCharacterData.CD
+  0011: return return
+  0017: <eos>
+
+function TnPlayerReplicationInfo.GetDownedTeammates  (script 78 bytes)
+  0000: I = (self._DownedTeammates.Length - 1)
+  000f: if !((I >= 0)) goto 0x0041
+  001a: if !((I[self._DownedTeammates] == none)) goto 0x0037
+  002b: self._DownedTeammates.Remove(I,1)
+  0037: SubtractSubtract_PreInt(I)
+  003e: goto 0x000f
+  0041: return self._DownedTeammates
+  0047: return return
+  004d: <eos>
+
+function TnPlayerReplicationInfo.ClientStartCharacterLoad  (script 126 bytes)
+  0000: PC = TnPlayerController(self.Owner)
+  0010: if !((((PC != none) && (PC.UIController != none)) && PC.IsLocalPlayerController())) goto 0x0075
+  0049: PC.UIController.OnCharacterConfirmed(CD.CharacterName)
+  0075: TnPlayerReplicationInfo.CharacterLoadComplete()
+  007b: return nothing
+  007d: <eos>
+
+function TnPlayerReplicationInfo.CharacterLoadComplete  (script 9 bytes)
+  0000: TnPlayerReplicationInfo.FinalizeCharacter()
+  0006: return nothing
+  0008: <eos>
+
+function TnPlayerReplicationInfo.ConfirmSelectedCharacter  (script 42 bytes)
+  0000: self._SelectedCharacter = SelectedCharacter
+  000b: self.SelectedCharacterString = self._SelectedCharacter.Specialty
+  0021: TnPlayerReplicationInfo.RefreshProvider()
+  0027: return nothing
+  0029: <eos>
+
+function TnPlayerReplicationInfo.FinalizeCharacter  (script 168 bytes)
+  0000: ConfirmSelectedCharacter(self.ReplicatedCharacterData.CD)
+  001a: self.PlayerIconicCharacterName = GetCharacterName()
+  002a: self.CharacterDataLoader.RemoveLoadCompleteObserver(delegate.CharacterLoadComplete)
+  0046: if !(!CheckDeferredCharacterLoadComplete()) goto 0x0068
+  0055: SetTimer(0.1, true, 'CheckDeferredCharacterLoadComplete', )
+  0068: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0081: if !((GRI != none)) goto 0x009f
+  008c: GRI.RefreshClaimedCharacters()
+  009f: TnPlayerReplicationInfo.RefreshProvider()
+  00a5: return nothing
+  00a7: <eos>
+
+function TnPlayerReplicationInfo.CheckDeferredCharacterLoadComplete  (script 113 bytes)
+  0000: foreach LocalPlayerControllers(obj'TnPlayerController', PlayerWhoLoadedThisCharacter) (end 0x0067)
+  0017: PlayerWhoLoadedThisCharacterPRI = TnPlayerReplicationInfo(PlayerWhoLoadedThisCharacter.PlayerReplicationInfo)
+  0030: if !((PlayerWhoLoadedThisCharacterPRI != none)) goto 0x0066
+  003b: PlayerWhoLoadedThisCharacterPRI.ServerCharacterLoadComplete(self)
+  004f: ClearTimer('CheckDeferredCharacterLoadComplete', )
+  0063: iterpop
+  0064: return true
+  0066: iternext
+  0067: iterpop
+  0068: return false
+  006a: return return
+  0070: <eos>
+
+function TnPlayerReplicationInfo.ServerCharacterLoadComplete  (script 34 bytes)
+  0000: if !((LoadedCharacter == none)) goto 0x000d
+  000b: return nothing
+  000d: LoadedCharacter.LoadCompletePlayers.AddItem(self)
+  001f: return nothing
+  0021: <eos>
+
+function TnPlayerReplicationInfo.HaveAllPlayersLoadedCharacter  (script 83 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'TnPlayerController', PC) (end 0x0049)
+  0020: if !((self.LoadCompletePlayers.Find(TnPlayerReplicationInfo(PC.PlayerReplicationInfo)) == -1)) goto 0x0048
+  0045: iterpop
+  0046: return false
+  0048: iternext
+  0049: iterpop
+  004a: return true
+  004c: return return
+  0052: <eos>
+
+function TnPlayerReplicationInfo.ShouldBroadCastWelcomeMessage  (script 47 bytes)
+  0000: nothing
+  0001: return ((!self.bBot && !self.DisableWelcomeMessages) && ShouldBroadCastWelcomeMessage(bExiting))
+  0028: return return
+  002e: <eos>
+
+function TnPlayerReplicationInfo.SeamlessTravelTo  (script 44 bytes)
+  0000: SeamlessTravelTo(NewPRI)
+  000b: self.DisableWelcomeMessages = true
+  0013: TnPlayerReplicationInfo(NewPRI).ForcedIntoLevel = true
+  0029: return nothing
+  002b: <eos>
+
+function TnPlayerReplicationInfo.WasForcedIntoLevel  (script 14 bytes)
+  0000: return self.ForcedIntoLevel
+  0007: return return
+  000d: <eos>
+
+function TnPlayerReplicationInfo.SetTimeToRespawn  (script 22 bytes)
+  0000: self.TimeToRespawn = cast44(Time)
+  000d: TnPlayerReplicationInfo.RefreshProvider()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerReplicationInfo.ClientUpdateGameStat  (script 325 bytes)
+  0000: I = self.GameStats.Find('StatId',Stat.StatId)
+  0027: if !((I != -1)) goto 0x004a
+  0036: I[self.GameStats] = Stat
+  0047: goto 0x0057
+  004a: self.GameStats.AddItem(Stat)
+  0057: GRI = TnGameReplicationInfo(self.WorldInfo.GRI)
+  0070: if !(((GRI == none) || (cast3a(GRI.GetGameTeamStatus()) == cast3a(4)))) goto 0x009d
+  009b: return nothing
+  009d: PC = TnPlayerController(self.Owner)
+  00ad: if !(((PC != none) && PC.IsLocalPlayerController())) goto 0x0142
+  00d0: Profile = TnProfileSettings(PC.ProfileSettings)
+  00e9: if !((Profile != none)) goto 0x0142
+  00f4: Profile.ChallengeManager.SetValue(Stat.StatId, cast44(Stat.Value), Stat.UpdateType)
+  0142: return nothing
+  0144: <eos>
+
+function TnPlayerReplicationInfo.NotifyPlayerDowned  (script 127 bytes)
+  0000: PC = Controller(self.Owner)
+  0010: if !(((P == none) || (P == PC.Pawn))) goto 0x0037
+  0035: return nothing
+  0037: if !((self._DownedTeammates.Find(P) != -1)) goto 0x0050
+  004e: return nothing
+  0050: if !(!P.OnSameTeamAs(PC)) goto 0x006f
+  006d: return nothing
+  006f: self._DownedTeammates.AddItem(P)
+  007c: return nothing
+  007e: <eos>
+
+function TnPlayerReplicationInfo.NotifyPlayerNotDowned  (script 51 bytes)
+  0000: I = self._DownedTeammates.Find(P)
+  0013: if !((I == -1)) goto 0x0024
+  0022: return nothing
+  0024: self._DownedTeammates.Remove(I,1)
+  0030: return nothing
+  0032: <eos>
+
+function TnPlayerReplicationInfo.SetPlayerLevel  (script 101 bytes)
+  0000: obj'TnXpManager'.static.UnpackLevels(NewPlayerLevel, self.PlayerLevelScout, self.PlayerLevelScientist, self.PlayerLevelSoldier, self.PlayerLevelLeader)
+  002c: self.PlayerLevel = (((self.PlayerLevelScout + self.PlayerLevelScientist) + self.PlayerLevelSoldier) + self.PlayerLevelLeader)
+  004c: self.bForceNetUpdate = true
+  0054: self.bNetDirty = true
+  005c: TnPlayerReplicationInfo.RefreshProvider()
+  0062: return nothing
+  0064: <eos>
+
+function TnPlayerReplicationInfo.GetCurrentSpecialtyLevel  (script 101 bytes)
+  0000: switch (self._CurrentCharacter.Specialty)
+  0012: case "Scout": (next 0x0022)
+  001c: return self.PlayerLevelScout
+  0022: case "Scientist": (next 0x0036)
+  0030: return self.PlayerLevelScientist
+  0036: case "Soldier": (next 0x0048)
+  0042: return self.PlayerLevelSoldier
+  0048: case "Leader": (next 0x0059)
+  0053: return self.PlayerLevelLeader
+  0059: default:
+  005c: return 0
+  005e: return return
+  0064: <eos>
+
+function TnPlayerReplicationInfo.GetPlayerLevel  (script 13 bytes)
+  0000: return self.PlayerLevel
+  0006: return return
+  000c: <eos>
+
+function TnPlayerReplicationInfo.GetCurrentTeamIndex  (script 37 bytes)
+  0000: return ((self.Team == none) ? 255 : self.Team.TeamIndex)
+  001e: return return
+  0024: <eos>
+
+function TnPlayerReplicationInfo.Tick  (script 145 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((self.Owner != none)) goto 0x008e
+  0016: self._ScoreTracker.Tick(DeltaTime)
+  002e: self._ClassFormTracker.Update(TnPawn(Controller(self.Owner).Pawn))
+  0059: if !((((cast3a(self.Role) == cast3a(3)) && self.IsConnecting) && (TnPlayerController(self.Owner) != none))) goto 0x008e
+  0086: self.IsConnecting = false
+  008e: return nothing
+  0090: <eos>
+
+function TnPlayerReplicationInfo.OnTalking  (script 11 bytes)
+  0000: self.IsTalking = true
+  0008: return nothing
+  000a: <eos>
+
+function TnPlayerReplicationInfo.UpdateHeadset  (script 67 bytes)
+  0000: TnPlayerReplicationInfo.UpdateHeadsetPresence()
+  0006: if !(!self.IsHeadsetPresent) goto 0x001b
+  0011: self.HeadsetState = 0
+  0018: goto 0x0038
+  001b: if !(!self.IsTalking) goto 0x0030
+  0026: self.HeadsetState = 1
+  002d: goto 0x0038
+  0030: self.HeadsetState = 2
+  0038: self.IsTalking = false
+  0040: return nothing
+  0042: <eos>
+
+function TnPlayerReplicationInfo.UpdateHeadsetPresence  (script 233 bytes)
+  0000: PC = PlayerController(self.Owner)
+  0010: if !((PC == none)) goto 0x001d
+  001b: return nothing
+  001d: LP = LocalPlayer(PC.Player)
+  0036: if !((LP == none)) goto 0x0043
+  0041: return nothing
+  0043: Online = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  005c: if !(((Online == none) || EqualEqual_InterfaceInterface(Online.VoiceInterface, OnlineVoiceInterface(none)))) goto 0x0088
+  0086: return nothing
+  0088: NewIsHeadsetPresent = Online.VoiceInterface.IsHeadsetPresent(cast3d(LP.ControllerId))
+  00bc: if !((self.IsHeadsetPresent != NewIsHeadsetPresent)) goto 0x00e6
+  00cd: self.IsHeadsetPresent = NewIsHeadsetPresent
+  00da: TnPlayerReplicationInfo.ServerSetHeadsetPresence(NewIsHeadsetPresent)
+  00e6: return nothing
+  00e8: <eos>
+
+function TnPlayerReplicationInfo.ServerSetHeadsetPresence  (script 16 bytes)
+  0000: self.IsHeadsetPresent = NewIsHeadsetPresent
+  000d: return nothing
+  000f: <eos>
+
+function TnPlayerReplicationInfo.ShouldResetScore  (script 42 bytes)
+  0000: return (!self._ScoreTracker.get_Active() && !self.bFromPreviousLevel)
+  0023: return return
+  0029: <eos>
+
+function TnPlayerReplicationInfo.StartCompetitiveScoring  (script 32 bytes)
+  0000: self._ScoreTracker.Activate(self, delegate.ClientAddScoreEvent)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerReplicationInfo.ClientAddScoreEvent  (script 32 bytes)
+  0000: self._ScoreTracker.ClientAddScoreEvent(EventType, ScoreAmount)
+  001d: return nothing
+  001f: <eos>
+
+function TnPlayerReplicationInfo.ServerSetPrimeMode  (script 22 bytes)
+  0000: self.PrimeModeActive = PrimeModeOn
+  000d: TnPlayerReplicationInfo.RefreshProvider()
+  0013: return nothing
+  0015: <eos>
+
+function TnPlayerReplicationInfo.ClientInitialize  (script 162 bytes)
+  0000: ClientInitialize(C)
+  000b: PC = TnPlayerController(C)
+  001b: if !((PC == none)) goto 0x0028
+  0026: return nothing
+  0028: Profile = TnProfileSettings(PC.ProfileSettings)
+  0041: if !((Profile == none)) goto 0x004e
+  004c: return nothing
+  004e: self.bControllerVibrationAllowed = Profile.GetControllerVibrationOption()
+  0068: set_PrimeMode(PC.get_XpManager().GetPrimeModeUnlocked())
+  0093: TnPlayerReplicationInfo.ServerSetPrimeMode(self.PrimeModeActive)
+  009f: return nothing
+  00a1: <eos>

@@ -1,0 +1,151 @@
+function PhysicsVolume.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function PhysicsVolume.CheckForErrors  (script 262 bytes)
+  0000: CheckForErrors()
+  0006: if !(self.bPainCausing) goto 0x0103
+  000f: if !((self.DamagePerSec == cast3f(0))) goto 0x005a
+  001c: EmitCheckMessage(0, (cast56(self) @ "has bPainCausing but DamagePerSec is zero"), , )
+  005a: if !(((self.DamageType == none) || (self.DamageType == obj'DamageType'))) goto 0x0103
+  0076: EmitCheckMessage(0, (((cast56(self) @ "has bPainCausing but invalid DamageType '") $ cast56(self.DamageType)) $ "', it must be filled in and not set to the default of 'DamageType'"), , )
+  0103: return nothing
+  0105: <eos>
+
+function PhysicsVolume.GetGravityZ  (script 18 bytes)
+  0000: return GWorldGetGravityZ()
+  000b: return return
+  0011: <eos>
+
+function PhysicsVolume.GetVolumeRBGravityZ  (script 18 bytes)
+  0000: return GetGravityZ()
+  000b: return return
+  0011: <eos>
+
+function PhysicsVolume.PostBeginPlay  (script 77 bytes)
+  0000: Volume.PostBeginPlay()
+  0006: self.BACKUP_bPainCausing = self.bPainCausing
+  0013: if !((cast3a(self.Role) < cast3a(3))) goto 0x0025
+  0023: return nothing
+  0025: if !(self.bPainCausing) goto 0x004a
+  002e: self.PainTimer = Spawn(obj'VolumeTimer', self, , , , , , )
+  004a: return nothing
+  004c: <eos>
+
+function PhysicsVolume.Reset  (script 24 bytes)
+  0000: self.bPainCausing = self.BACKUP_bPainCausing
+  000d: self.bForceNetUpdate = true
+  0015: return nothing
+  0017: <eos>
+
+function PhysicsVolume.PhysicsChangedFor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.ActorEnteredVolume  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.ActorLeavingVolume  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.PawnEnteredVolume  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.PawnLeavingVolume  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.OnToggle  (script 161 bytes)
+  0000: Volume.OnToggle(inAction)
+  000b: if !(0[inAction.InputLinks].bHasImpulse) goto 0x003a
+  002a: self.bPainCausing = self.BACKUP_bPainCausing
+  0037: goto 0x009e
+  003a: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0064
+  0059: self.bPainCausing = false
+  0061: goto 0x009e
+  0064: if !(2[inAction.InputLinks].bHasImpulse) goto 0x009e
+  0084: self.bPainCausing = (!self.bPainCausing && self.BACKUP_bPainCausing)
+  009e: return nothing
+  00a0: <eos>
+
+function PhysicsVolume.TimerPop  (script 131 bytes)
+  0000: if !((T == self.PainTimer)) goto 0x0080
+  000f: if !(!self.bPainCausing) goto 0x001c
+  001a: return nothing
+  001c: foreach TouchingActors(obj'Actor', A) (end 0x007f)
+  0033: if !((A.bCanBeDamaged && !A.bStatic)) goto 0x007e
+  005b: if !(!IsActorAffected(A)) goto 0x0073
+  006f: iternext
+  0070: goto 0x007f
+  0073: PhysicsVolume.CausePainTo(A)
+  007e: iternext
+  007f: iterpop
+  0080: return nothing
+  0082: <eos>
+
+function PhysicsVolume.Touch  (script 415 bytes)
+  0000: Actor.Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: if !(((Other == none) || Other.bStatic)) goto 0x003b
+  0039: return nothing
+  003b: if !(((self.bNoInventory && (DroppedPickup(Other) != none)) && (Other.Owner == none))) goto 0x0082
+  006c: Other.LifeSpan = 1.5
+  0080: return nothing
+  0082: if !((self.bMoveProjectiles && (self.ZoneVelocity != vect(0,0,0)))) goto 0x0142
+  00a4: if !((cast3a(Other.Physics) == cast3a(6))) goto 0x00d5
+  00bd: (Other.Velocity += self.ZoneVelocity)
+  00d2: goto 0x0142
+  00d5: if !((((Other.Base == none) && (Emitter(Other) != none)) && (cast3a(Other.Physics) == cast3a(0)))) goto 0x0142
+  0116: Other.SetPhysics(6, , )
+  012d: (Other.Velocity += self.ZoneVelocity)
+  0142: if !((self.bPainCausing && IsActorAffected(Other))) goto 0x019c
+  015f: if !(Other.bDestroyInPainVolume) goto 0x017f
+  0171: Other.DestroyActor()
+  017d: return nothing
+  017f: if !(Other.bCanBeDamaged) goto 0x019c
+  0191: PhysicsVolume.CausePainTo(Other)
+  019c: return nothing
+  019e: <eos>
+
+function PhysicsVolume.GetHitLocation  (script 111 bytes)
+  0000: P = Pawn(Other)
+  0010: if !((P == none)) goto 0x0021
+  001b: return self.Location
+  0021: P.TraceComponent(HitLocation, HitNormal, P.CollisionComponent, P.Location, self.Location, , , )
+  0062: return HitLocation
+  0068: return return
+  006e: <eos>
+
+function PhysicsVolume.IsActorAffected  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function PhysicsVolume.CausePainTo  (script 246 bytes)
+  0000: if !((self.DamagePerSec > cast3f(0))) goto 0x00d1
+  000d: if !(self.WorldInfo.bSoftKillZ) goto 0x0021
+  001f: return nothing
+  0021: if !(((self.DamageType == none) || (self.DamageType == obj'DamageType'))) goto 0x0072
+  003d: LogInternal(("Error: No valid damagetype specified for " $ cast56(self)), , , )
+  0072: HitLocation = PhysicsVolume.GetHitLocation(Other)
+  0083: Momentum = obj'Core.Math'.static.Normal((HitLocation - self.Location))
+  00a0: Other.TakeDamage(self.DamagePerSec, self.DamageInstigator, HitLocation, Momentum, self.DamageType, , )
+  00ce: goto 0x00f3
+  00d1: Other.HealDamage(self.DamagePerSec, self.DamageInstigator, self.DamageType)
+  00f3: return nothing
+  00f5: <eos>
+
+function PhysicsVolume.ModifyPlayer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.NotifyPawnBecameViewTarget  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PhysicsVolume.OnSetDamageInstigator  (script 42 bytes)
+  0000: self.DamageInstigator = Action.GetController(Action.DamageInstigator)
+  0027: return nothing
+  0029: <eos>

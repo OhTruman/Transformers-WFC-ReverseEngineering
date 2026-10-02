@@ -1,0 +1,46 @@
+function SeqAct_HmPawnFactory.HaveAllPawnsDied  (script 341 bytes)
+  0000: if !((self.CurrentControllerList.Length == 0)) goto 0x000e
+  000c: return false
+  000e: I = 0
+  0015: if !((I < self.CurrentControllerList.Length)) goto 0x0144
+  0025: if !((((I[self.CurrentControllerList] == none) || (I[self.CurrentControllerList].Pawn == none)) || ((I[self.CurrentControllerList].Pawn != none) && I[self.CurrentControllerList].Pawn.IsDead()))) goto 0x013a
+  0095: self.CurrentControllerList.Remove(I,1)
+  00a1: if !((self.OutputLinks.Length > 3)) goto 0x00c7
+  00ae: 3[self.OutputLinks].bHasImpulse = true
+  00c4: goto 0x0133
+  00c7: LogInternal((("Sequence Action" @ cast56(self)) @ "needs to be recreated in order for the single pawn killed output to be added."), , , )
+  0133: SubtractSubtract_Int(I)
+  013a: AddAdd_PreInt(I)
+  0141: goto 0x0015
+  0144: return (self.CurrentControllerList.Length == 0)
+  014e: return return
+  0154: <eos>
+
+function SeqAct_HmPawnFactory.DestroyPawn  (script 15 bytes)
+  0000: P.DestroyActor()
+  000c: return nothing
+  000e: <eos>
+
+function SeqAct_HmPawnFactory.KillAllPawns  (script 71 bytes)
+  0000: I = 0
+  0007: if !((I < self.CurrentControllerList.Length)) goto 0x0044
+  0017: if !((I[self.CurrentControllerList] != none)) goto 0x003a
+  0028: I[self.CurrentControllerList].DestroyActor()
+  003a: AddAdd_PreInt(I)
+  0041: goto 0x0007
+  0044: return nothing
+  0046: <eos>
+
+function SeqAct_HmPawnFactory.HaveMaxPawnsBeenSpawned  (script 112 bytes)
+  0000: if !((self.MaxNumSpawnedInWorld <= 0)) goto 0x000d
+  000b: return false
+  000d: foreach GetWorldInfo().AllPawns(obj'Engine.Pawn', P, , ) (end 0x0055)
+  0034: if !((AIController(P.Controller) != none)) goto 0x0054
+  004d: AddAdd_PreInt(NumberOfSpawnedPawns)
+  0054: iternext
+  0055: iterpop
+  0056: if !((NumberOfSpawnedPawns >= self.MaxNumSpawnedInWorld)) goto 0x0067
+  0065: return true
+  0067: return false
+  0069: return return
+  006f: <eos>

@@ -1,0 +1,42 @@
+function TnCameraShaker.Reset  (script 25 bytes)
+  0000: self.CurrentFalloff = 0.0
+  000b: self.CurrentRollFalloff = 0.0
+  0016: return nothing
+  0018: <eos>
+
+function TnCameraShaker.Shake  (script 124 bytes)
+  0000: if !((self.YawGenerator == none)) goto 0x0033
+  000b: self.YawGenerator = new(self, nothing, obj'HM_Engine.HmMultiFrequencyWaveGenerator', nothing, DeltaTime)
+  001f: self.PitchGenerator = new(self, nothing, obj'HM_Engine.HmMultiFrequencyWaveGenerator', nothing, DeltaTime)
+  0033: self.YawGenerator.SetSpectrum(YawSpectrum)
+  004b: self.PitchGenerator.SetSpectrum(PitchSpectrum)
+  0063: self.FalloffDuration = FalloffDur
+  006e: self.CurrentFalloff = self.FalloffDuration
+  0079: return nothing
+  007b: <eos>
+
+function TnCameraShaker.Roll  (script 36 bytes)
+  0000: self.DegreesToRoll = RollDeg
+  000b: self.RollFalloffDuration = RollFalloffTime
+  0016: self.CurrentRollFalloff = self.RollFalloffDuration
+  0021: return nothing
+  0023: <eos>
+
+function TnCameraShaker.UpdateRotation  (script 304 bytes)
+  0000: if !((self.FalloffDuration != 0.0)) goto 0x00b5
+  000f: self.CurrentFalloff = obj'Core.Math'.static.FMax(0.0, (self.CurrentFalloff - dt))
+  0031: NormalizedFalloff = (self.CurrentFalloff / self.FalloffDuration)
+  0043: Result.Yaw = cast44(((self.YawGenerator.Update(dt) * 182.0444489) * NormalizedFalloff))
+  007c: Result.Pitch = cast44(((self.PitchGenerator.Update(dt) * 182.0444489) * NormalizedFalloff))
+  00b5: self.CurrentRollFalloff = obj'Core.Math'.static.FMax(0.0, (self.CurrentRollFalloff - dt))
+  00d7: if !((self.RollFalloffDuration > cast3f(0))) goto 0x00f6
+  00e4: NormalizedRollFalloff = (self.CurrentRollFalloff / self.RollFalloffDuration)
+  00f6: Result.Roll = cast44((((self.DegreesToRoll * 182.0444489) * NormalizedRollFalloff) * NormalizedRollFalloff))
+  0123: return Result
+  0129: return return
+  012f: <eos>
+
+function TnCameraShaker.Update  (script 19 bytes)
+  0000: return TnCameraShaker.UpdateRotation(dt)
+  000c: return return
+  0012: <eos>

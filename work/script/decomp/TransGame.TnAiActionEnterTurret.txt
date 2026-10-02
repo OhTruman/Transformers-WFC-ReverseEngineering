@@ -1,0 +1,58 @@
+function TnAiActionEnterTurret.OnSetUpConditions  (script 156 bytes)
+  0000: Turret = TnMountableTurretBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTurret', ExpectedEffects))
+  0028: if !(((Turret == none) || !obj'TnInteractHelper'.static.IsTurretUsableByAI(Turret, self._TransformerController))) goto 0x0059
+  0057: return false
+  0059: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Turret.HotSpotPathNode)
+  0084: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0095: return return
+  009b: <eos>
+
+function TnAiActionEnterTurret.OnIsValidForFutureExecution  (script 113 bytes)
+  0000: Turret = TnMountableTurretBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTurret', ExpectedEffects))
+  0028: if !(((Turret == none) || !obj'TnInteractHelper'.static.IsTurretUsableByAI(Turret, self._TransformerController))) goto 0x0059
+  0057: return false
+  0059: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  006a: return return
+  0070: <eos>
+
+function TnAiActionEnterTurret.OnStart  (script 256 bytes)
+  0000: self._Turret = TnMountableTurretBase(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTurret', ExpectedEffects))
+  0028: if !(((self._Turret == none) || !obj'TnInteractHelper'.static.IsTurretUsableByAI(self._Turret, self._TransformerController))) goto 0x0062
+  0057: return Fail()
+  0062: if !((self._Turret.GetCurrentUser() == self._TransformerPawn)) goto 0x008a
+  007f: return Succeed()
+  008a: self._TransformerController.StopMovement()
+  009d: SetCharacterState((1 | 8))
+  00ac: TnAiActionEnterTurret.AimTurretStraightAhead()
+  00b2: self._Turret.InteractCommand(self._TransformerPawn, 0)
+  00cc: self._TransformerPawn.SetAnchor(self._Turret.HotSpotPathNode)
+  00ed: return OnStart(ExpectedEffects)
+  00f9: return return
+  00ff: <eos>
+
+function TnAiActionEnterTurret.OnUpdate  (script 79 bytes)
+  0000: if !((self._Turret == none)) goto 0x0016
+  000b: return Fail()
+  0016: if !(self._Turret.get_IsTurretInUse()) goto 0x0037
+  002c: return Succeed()
+  0037: return OnUpdate(ExpectedEffects, DeltaTime)
+  0048: return return
+  004e: <eos>
+
+function TnAiActionEnterTurret.OnHalt  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiActionEnterTurret.OnFinish  (script 86 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: get_WeaponAimer().Reset()
+  0035: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateTurret', 1, self._Turret)
+  0053: return nothing
+  0055: <eos>
+
+function TnAiActionEnterTurret.AimTurretStraightAhead  (script 78 bytes)
+  0000: get_WeaponAimer().AimAtLocation((self._TransformerPawn.GetPawnViewLocation() + (vect(1000,0,0) >> self._Turret.Rotation)))
+  004b: return nothing
+  004d: <eos>

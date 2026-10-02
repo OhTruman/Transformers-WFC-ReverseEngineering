@@ -1,0 +1,21 @@
+function BlockingVolume.OnToggle  (script 190 bytes)
+  0000: Volume.OnToggle(Action)
+  000b: if !(0[Action.InputLinks].bHasImpulse) goto 0x0041
+  002a: self.CollisionComponent.SetBlockRigidBody(true)
+  003e: goto 0x00bb
+  0041: if !(1[Action.InputLinks].bHasImpulse) goto 0x0077
+  0060: self.CollisionComponent.SetBlockRigidBody(false)
+  0074: goto 0x00bb
+  0077: if !(2[Action.InputLinks].bHasImpulse) goto 0x00bb
+  0097: self.CollisionComponent.SetBlockRigidBody(!self.CollisionComponent.BlockRigidBody)
+  00bb: return nothing
+  00bd: <eos>
+
+function BlockingVolume.CollisionChanged  (script 28 bytes)
+  0000: self.CollisionComponent.SetBlockRigidBody(self.bCollideActors)
+  0019: return nothing
+  001b: <eos>
+
+function BlockingVolume.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

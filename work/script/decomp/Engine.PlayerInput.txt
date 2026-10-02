@@ -1,0 +1,271 @@
+function PlayerInput.ForceInputKey  (script 27 bytes)
+  0000: ControllerId
+  0005: Key
+  000a: Event
+  000f: AmountDepressed
+  0014: bGamepad
+  0019: nothing
+  001a: <eos>
+
+function PlayerInput.ForceInputAxis  (script 27 bytes)
+  0000: ControllerId
+  0005: Key
+  000a: Delta
+  000f: DeltaTime
+  0014: bGamepad
+  0019: nothing
+  001a: <eos>
+
+function PlayerInput.GetLookRightScale  (script 13 bytes)
+  0000: return self.LookRightScale
+  0006: return return
+  000c: <eos>
+
+function PlayerInput.SetLookRightScale  (script 14 bytes)
+  0000: self.LookRightScale = S
+  000b: return nothing
+  000d: <eos>
+
+function PlayerInput.SetLookUpScale  (script 14 bytes)
+  0000: self.LookUpScale = S
+  000b: return nothing
+  000d: <eos>
+
+function PlayerInput.InvertMouse  (script 32 bytes)
+  0000: self.bInvertMouse = !self.bInvertMouse
+  000f: SaveConfig()
+  0012: return self.bInvertMouse
+  0019: return return
+  001f: <eos>
+
+function PlayerInput.InvertTurn  (script 32 bytes)
+  0000: self.bInvertTurn = !self.bInvertTurn
+  000f: SaveConfig()
+  0012: return self.bInvertTurn
+  0019: return return
+  001f: <eos>
+
+function PlayerInput.SetSensitivity  (script 14 bytes)
+  0000: self.MouseSensitivity = F
+  000b: return nothing
+  000d: <eos>
+
+function PlayerInput.DrawHUD  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerInput.PreProcessInput  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerInput.PostProcessInput  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function PlayerInput.AdjustMouseSensitivity  (script 41 bytes)
+  0000: (self.aMouseX *= (self.MouseSensitivity * FOVScale))
+  0013: (self.aMouseY *= (self.MouseSensitivity * FOVScale))
+  0026: return nothing
+  0028: <eos>
+
+function PlayerInput.PlayerInput  (script 613 bytes)
+  0000: self.RawJoyUp = self.aBaseY
+  000b: self.RawJoyRight = self.aStrafe
+  0016: self.RawJoyLookRight = self.aTurn
+  0021: self.RawJoyLookUp = self.aLookUp
+  002c: (DeltaTime /= get_Outer().WorldInfo.TimeDilation)
+  0048: if !(self.bEnableFOVScaling) goto 0x0072
+  0051: FOVScale = (get_Outer().GetFOVAngle() * 0.01111)
+  006f: goto 0x007d
+  0072: FOVScale = 1.0
+  007d: PlayerInput.AdjustMouseSensitivity(FOVScale)
+  0088: if !(self.bEnableMouseSmoothing) goto 0x00c9
+  0091: self.aMouseX = PlayerInput.SmoothMouse(self.aMouseX, DeltaTime, self.bXAxis, 0)
+  00ad: self.aMouseY = PlayerInput.SmoothMouse(self.aMouseY, DeltaTime, self.bYAxis, 1)
+  00c9: PreProcessInput(DeltaTime)
+  00d8: TimeScale = 1.0
+  00e3: (self.aBaseY *= (TimeScale * self.MoveForwardSpeed))
+  00f6: (self.aStrafe *= (TimeScale * self.MoveStrafeSpeed))
+  0109: (self.aUp *= (TimeScale * self.MoveStrafeSpeed))
+  011c: (self.aTurn *= (TimeScale * self.LookRightScale))
+  012f: (self.aLookUp *= (TimeScale * self.LookUpScale))
+  0142: PostProcessInput(DeltaTime)
+  0151: PlayerInput.ProcessInputMatching(DeltaTime)
+  015c: PlayerInput.CatchDoubleClickInput()
+  0162: (self.aLookUp *= FOVScale)
+  016e: (self.aTurn *= FOVScale)
+  017a: if !((cast3a(self.bStrafe) > 0)) goto 0x019d
+  0187: (self.aStrafe += (self.aBaseX + self.aMouseX))
+  019a: goto 0x01b0
+  019d: (self.aTurn += (self.aBaseX + self.aMouseX))
+  01b0: (self.aLookUp += self.aMouseY)
+  01bc: if !(self.bInvertMouse) goto 0x01d1
+  01c5: (self.aLookUp *= -1.0)
+  01d1: if !(self.bInvertTurn) goto 0x01e6
+  01da: (self.aTurn *= -1.0)
+  01e6: (self.aForward += self.aBaseY)
+  01f2: get_Outer().HandleWalking()
+  0203: if !(get_Outer().IsMoveInputIgnored()) goto 0x0238
+  0217: self.aForward = 0.0
+  0222: self.aStrafe = 0.0
+  022d: self.aUp = 0.0
+  0238: if !(get_Outer().IsLookInputIgnored()) goto 0x0262
+  024c: self.aTurn = 0.0
+  0257: self.aLookUp = 0.0
+  0262: return nothing
+  0264: <eos>
+
+function PlayerInput.CatchDoubleClickInput  (script 193 bytes)
+  0000: if !(!get_Outer().IsMoveInputIgnored()) goto 0x00be
+  0016: self.bEdgeForward = (self.bWasForward ^^ (self.aBaseY > cast3f(0)))
+  002f: self.bEdgeBack = (self.bWasBack ^^ (self.aBaseY < cast3f(0)))
+  0048: self.bEdgeLeft = (self.bWasLeft ^^ (self.aStrafe < cast3f(0)))
+  0061: self.bEdgeRight = (self.bWasRight ^^ (self.aStrafe > cast3f(0)))
+  007a: self.bWasForward = (self.aBaseY > cast3f(0))
+  008b: self.bWasBack = (self.aBaseY < cast3f(0))
+  009c: self.bWasLeft = (self.aStrafe < cast3f(0))
+  00ad: self.bWasRight = (self.aStrafe > cast3f(0))
+  00be: return nothing
+  00c0: <eos>
+
+function PlayerInput.CheckForDoubleClickMove  (script 661 bytes)
+  0000: if !((cast3a(get_Outer().DoubleClickDir) == cast3a(5))) goto 0x0022
+  0017: DoubleClickMove = 5
+  001f: goto 0x002a
+  0022: DoubleClickMove = 0
+  002a: if !((self.DoubleClickTime > 0.0)) goto 0x0288
+  0039: if !((cast3a(get_Outer().DoubleClickDir) == cast3a(5))) goto 0x007f
+  0050: if !((get_Outer().Pawn != none)) goto 0x007c
+  0062: self.DoubleClickTimer = 0.0
+  006d: get_Outer().DoubleClickDir = 6
+  007c: goto 0x01c0
+  007f: if !((cast3a(get_Outer().DoubleClickDir) != cast3a(6))) goto 0x01c0
+  0096: OldDoubleClick = get_Outer().DoubleClickDir
+  00a8: get_Outer().DoubleClickDir = 0
+  00b7: if !((self.bEdgeForward && self.bWasForward)) goto 0x00dd
+  00cb: get_Outer().DoubleClickDir = 3
+  00da: goto 0x014c
+  00dd: if !((self.bEdgeBack && self.bWasBack)) goto 0x0103
+  00f1: get_Outer().DoubleClickDir = 4
+  0100: goto 0x014c
+  0103: if !((self.bEdgeLeft && self.bWasLeft)) goto 0x0129
+  0117: get_Outer().DoubleClickDir = 1
+  0126: goto 0x014c
+  0129: if !((self.bEdgeRight && self.bWasRight)) goto 0x014c
+  013d: get_Outer().DoubleClickDir = 2
+  014c: if !((cast3a(get_Outer().DoubleClickDir) == cast3a(0))) goto 0x0178
+  0163: get_Outer().DoubleClickDir = OldDoubleClick
+  0175: goto 0x01c0
+  0178: if !((cast3a(get_Outer().DoubleClickDir) != cast3a(OldDoubleClick))) goto 0x01ae
+  0192: self.DoubleClickTimer = (self.DoubleClickTime + (0.5 * DeltaTime))
+  01ab: goto 0x01c0
+  01ae: DoubleClickMove = get_Outer().DoubleClickDir
+  01c0: if !((cast3a(get_Outer().DoubleClickDir) == cast3a(6))) goto 0x0225
+  01d7: self.DoubleClickTimer = obj'Core.Math'.static.FMin((self.DoubleClickTimer - DeltaTime), 0.0)
+  01f9: if !((self.DoubleClickTimer < -0.35)) goto 0x0222
+  0208: get_Outer().DoubleClickDir = 0
+  0217: self.DoubleClickTimer = self.DoubleClickTime
+  0222: goto 0x0288
+  0225: if !(((cast3a(get_Outer().DoubleClickDir) != cast3a(0)) && (cast3a(get_Outer().DoubleClickDir) != cast3a(5)))) goto 0x0288
+  0255: (self.DoubleClickTimer -= DeltaTime)
+  0261: if !((self.DoubleClickTimer < cast3f(0))) goto 0x0288
+  026e: get_Outer().DoubleClickDir = 0
+  027d: self.DoubleClickTimer = self.DoubleClickTime
+  0288: return DoubleClickMove
+  028e: return return
+  0294: <eos>
+
+function PlayerInput.ProcessInputMatching  (script 1139 bytes)
+  0000: I = 0
+  0007: if !((I < get_Outer().InputRequests.Length)) goto 0x0470
+  001e: if !((((I[get_Outer().InputRequests].MatchActor != none) && (I[get_Outer().InputRequests].MatchIdx >= 0)) && (I[get_Outer().InputRequests].MatchIdx < I[get_Outer().InputRequests].Inputs.Length))) goto 0x0466
+  00a8: MatchIdx = I[get_Outer().InputRequests].MatchIdx
+  00cb: if !(((MatchIdx != 0) && ((get_Outer().WorldInfo.TimeSeconds - I[get_Outer().InputRequests].LastMatchTime) >= MatchIdx[I[get_Outer().InputRequests].Inputs].TimeDelta))) goto 0x01f7
+  013f: I[get_Outer().InputRequests].LastMatchTime = 0.0
+  0162: I[get_Outer().InputRequests].MatchIdx = 0
+  0181: if !((I[get_Outer().InputRequests].FailedFuncName != 'None')) goto 0x01f4
+  01ac: I[get_Outer().InputRequests].MatchActor.SetTimer(0.01, false, I[get_Outer().InputRequests].FailedFuncName, )
+  01f4: goto 0x0466
+  01f7: Value = 0.0
+  0202: switch (MatchIdx[I[get_Outer().InputRequests].Inputs].Type)
+  0232: case 0: (next 0x0245)
+  0237: Value = self.aStrafe
+  0242: goto 0x025b
+  0245: case 1: (next 0x0258)
+  024a: Value = self.aBaseY
+  0255: goto 0x025b
+  0258: default:
+  025b: switch (MatchIdx[I[get_Outer().InputRequests].Inputs].Action)
+  028b: case 0: (next 0x02cf)
+  0290: bMatch = (Value >= MatchIdx[I[get_Outer().InputRequests].Inputs].Value)
+  02cc: goto 0x0316
+  02cf: case 1: (next 0x0313)
+  02d4: bMatch = (Value <= MatchIdx[I[get_Outer().InputRequests].Inputs].Value)
+  0310: goto 0x0316
+  0313: default:
+  0316: if !(bMatch) goto 0x0466
+  031f: I[get_Outer().InputRequests].LastMatchTime = get_Outer().WorldInfo.TimeSeconds
+  0352: AddAdd_Int(I[get_Outer().InputRequests].MatchIdx)
+  0371: if !((I[get_Outer().InputRequests].MatchIdx >= I[get_Outer().InputRequests].Inputs.Length)) goto 0x0466
+  03b1: if !((I[get_Outer().InputRequests].MatchFuncName != 'None')) goto 0x0424
+  03dc: I[get_Outer().InputRequests].MatchActor.SetTimer(0.01, false, I[get_Outer().InputRequests].MatchFuncName, )
+  0424: I[get_Outer().InputRequests].LastMatchTime = 0.0
+  0447: I[get_Outer().InputRequests].MatchIdx = 0
+  0466: AddAdd_Int(I)
+  046d: goto 0x0007
+  0470: return nothing
+  0472: <eos>
+
+function PlayerInput.Jump  (script 78 bytes)
+  0000: if !((get_Outer().WorldInfo.Pauser == get_Outer().PlayerReplicationInfo)) goto 0x003c
+  0026: get_Outer().SetPause(false, )
+  0039: goto 0x004b
+  003c: get_Outer().bPressedJump = true
+  004b: return nothing
+  004d: <eos>
+
+function PlayerInput.SmartJump  (script 9 bytes)
+  0000: PlayerInput.Jump()
+  0006: return nothing
+  0008: <eos>
+
+function PlayerInput.ClearSmoothing  (script 88 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x003f
+  0013: I[self.ZeroTime] = 0.0
+  0024: I[self.SmoothedMouse] = 0.0
+  0035: AddAdd_Int(I)
+  003c: goto 0x0007
+  003f: self.MouseSamplingTotal = default.MouseSamplingTotal
+  004a: self.MouseSamples = default.MouseSamples
+  0055: return nothing
+  0057: <eos>
+
+function PlayerInput.SmoothMouse  (script 319 bytes)
+  0000: if !((DeltaTime < 0.25)) goto 0x0124
+  000f: MouseSamplingTime = (self.MouseSamplingTotal / cast3f(self.MouseSamples))
+  0023: if !((aMouse == cast3f(0))) goto 0x008d
+  0030: (Index[self.ZeroTime] += DeltaTime)
+  0042: if !((Index[self.ZeroTime] < MouseSamplingTime)) goto 0x0079
+  0057: aMouse = ((Index[self.SmoothedMouse] * DeltaTime) / MouseSamplingTime)
+  0076: goto 0x008a
+  0079: Index[self.SmoothedMouse] = 0.0
+  008a: goto 0x0121
+  008d: Index[self.ZeroTime] = 0.0
+  009e: if !((Index[self.SmoothedMouse] != cast3f(0))) goto 0x0107
+  00b1: if !((DeltaTime < (MouseSamplingTime * cast3f((cast3a(SampleCount) + 1))))) goto 0x00f3
+  00ce: aMouse = ((aMouse * DeltaTime) / (MouseSamplingTime * cast3c(SampleCount)))
+  00f0: goto 0x0107
+  00f3: SampleCount = cast43((DeltaTime / MouseSamplingTime))
+  0107: Index[self.SmoothedMouse] = (aMouse / cast3c(SampleCount))
+  0121: goto 0x012a
+  0124: PlayerInput.ClearSmoothing()
+  012a: SampleCount = 0
+  0132: return aMouse
+  0138: return return
+  013e: <eos>
+
+function PlayerInput.UserInputDetectedThisFrame  (script 77 bytes)
+  0000: return (((((self.PressedKeys.Length > 0) || (self.RawJoyUp != cast3f(0))) || (self.RawJoyRight != cast3f(0))) || (self.RawJoyLookUp != cast3f(0))) || (self.RawJoyLookRight != cast3f(0)))
+  0046: return return
+  004c: <eos>

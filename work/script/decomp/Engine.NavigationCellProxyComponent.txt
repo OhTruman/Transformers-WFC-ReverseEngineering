@@ -1,0 +1,50 @@
+function NavigationCellProxyComponent.CreatePrimitives  (script 212 bytes)
+  0000: Cell = NavigationCell(self.Owner)
+  0010: if !((Cell == none)) goto 0x001d
+  001b: return nothing
+  001d: if !((Cell.get_EditUtil().get_EditorEdges().Length == 3)) goto 0x00c6
+  0046: NavigationCellProxyComponent.DrawEdge(0[Cell.get_EditUtil().get_EditorEdges()], 0)
+  0070: NavigationCellProxyComponent.DrawEdge(1[Cell.get_EditUtil().get_EditorEdges()], 1)
+  009a: NavigationCellProxyComponent.DrawEdge(2[Cell.get_EditUtil().get_EditorEdges()], 2)
+  00c6: NavigationCellProxyComponent.DrawSelectedTriangle(Cell)
+  00d1: return nothing
+  00d3: <eos>
+
+function NavigationCellProxyComponent.DrawCellNormal  (script 112 bytes)
+  0000: AddLine(Cell.Location, (Cell.Location + (Cell.get_EditUtil().GetNormal() * cast3f(200))), MakeLinearColor(1.0, 1.0, 1.0, 1.0))
+  006d: return nothing
+  006f: <eos>
+
+function NavigationCellProxyComponent.DrawNeighbors  (script 190 bytes)
+  0000: Edges = Cell.get_EditUtil().get_EditorEdges()
+  0027: idx = 0
+  002e: if !((idx < Edges.Length)) goto 0x00bb
+  003e: Neighbor = idx[Edges].Neighbor
+  005a: if !((Neighbor == none)) goto 0x0068
+  0065: goto 0x00b1
+  0068: AddDashedLine(Cell.Location, Neighbor.Location, 30.0, MakeLinearColor(1.0, 1.0, 1.0, 1.0))
+  00b1: AddAdd_PreInt(idx)
+  00b8: goto 0x002e
+  00bb: return nothing
+  00bd: <eos>
+
+function NavigationCellProxyComponent.DrawSelectedTriangle  (script 499 bytes)
+  0000: if !((!obj'EditorUtils'.static.IsObjectSelected(Cell) || (Cell.get_EditUtil()._Vertices.Length == 0))) goto 0x0044
+  0042: return nothing
+  0044: Shrink = 150.0
+  004f: Zero = ((obj'Core.Math'.static.Normal((Cell.Location - 0[Cell.get_EditUtil()._Vertices].Location)) * Shrink) + 0[Cell.get_EditUtil()._Vertices].Location)
+  00c7: One = ((obj'Core.Math'.static.Normal((Cell.Location - 1[Cell.get_EditUtil()._Vertices].Location)) * Shrink) + 1[Cell.get_EditUtil()._Vertices].Location)
+  013f: Two = ((obj'Core.Math'.static.Normal((Cell.Location - 2[Cell.get_EditUtil()._Vertices].Location)) * Shrink) + 2[Cell.get_EditUtil()._Vertices].Location)
+  01b9: AddWireTriangle(Zero, One, Two, MakeLinearColor(1.0, 1.0, 0.4, 1.0))
+  01f0: return nothing
+  01f2: <eos>
+
+function NavigationCellProxyComponent.DrawEdge  (script 387 bytes)
+  0000: Col = ((Edge.Neighbor == none) ? MakeLinearColor(1.0, 0.4, 0.0, 1.0) : MakeLinearColor(0.0, 0.04, 0.0, 1.0))
+  005a: AddLine(Edge.Start.Location, Edge.End.Location, Col)
+  009b: if !((Edge.Neighbor == none)) goto 0x0180
+  00b1: SetHitProxy(EdgeIndex, "Border Edge Proxy")
+  00d3: AddSolidCylinder(((Edge.Start.Location + Edge.End.Location) * 0.5), 50.0, 10.0, 5, (Edge.Selected ? MakeLinearColor(1.0, 1.0, 0.4, 1.0) : MakeLinearColor(0.4, 0.4, 1.0, 1.0)))
+  0176: ClearHitProxy()
+  0180: return nothing
+  0182: <eos>

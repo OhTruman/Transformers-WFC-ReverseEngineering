@@ -1,0 +1,37 @@
+function SeqEvent_Touch.CheckTouchActivate  (script 17 bytes)
+  0000: InOriginator
+  0005: InInstigator
+  000a: bTest
+  000f: nothing
+  0010: <eos>
+
+function SeqEvent_Touch.CheckUnTouchActivate  (script 17 bytes)
+  0000: InOriginator
+  0005: InInstigator
+  000a: bTest
+  000f: nothing
+  0010: <eos>
+
+function SeqEvent_Touch.IsClientSideOnlyAllowed  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function SeqEvent_Touch.Toggled  (script 112 bytes)
+  0000: if !(self.bEnabled) goto 0x0065
+  0009: if !((self.Originator != none)) goto 0x0062
+  0014: idx = 0
+  001b: if !((idx < self.Originator.Touching.Length)) goto 0x0062
+  0034: CheckTouchActivate(self.Originator, idx[self.Originator.Touching], )
+  0058: AddAdd_Int(idx)
+  005f: goto 0x001b
+  0062: goto 0x006d
+  0065: self.TouchedList.Length = 0
+  006d: return nothing
+  006f: <eos>
+
+function SeqEvent_Touch.NotifyTouchingPawnDied  (script 31 bytes)
+  0000: if !(!self.bAllowDeadPawns) goto 0x001c
+  000b: SeqEvent_Touch.CheckUnTouchActivate(self.Originator, P, )
+  001c: return nothing
+  001e: <eos>

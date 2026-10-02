@@ -1,0 +1,10 @@
+function TnHudDataObserverGrenadeAmmo.CheckData  (script 203 bytes)
+  0000: Type = 0
+  0008: if !(((PC.Pawn != none) && (PC.Pawn.InvManager != none))) goto 0x00a9
+  003b: Sack = TnGrenadeBag(PC.Pawn.InvManager.FindInventoryType(obj'TnGrenadeBag', true))
+  0071: if !((Sack != none)) goto 0x00a9
+  007c: Ammo = Sack.ReserveAmmoCount
+  0090: Type = Sack.get_GrenadeType()
+  00a9: ProcessNewValue(Movie, cast3f(Ammo), cast3f(cast3a(Type)))
+  00c8: return nothing
+  00ca: <eos>

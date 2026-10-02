@@ -1,0 +1,25 @@
+function TnSeqAct_OpenDebugMenu.Activated  (script 351 bytes)
+  0000: if !((self.DebugMenu == none)) goto 0x000d
+  000b: return nothing
+  000d: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0026: foreach WI.AllObjects(obj'Engine.SeqEvent_Console', ConsoleEvent) (end 0x008c)
+  0046: I = Commands.Find(ConsoleEvent.ConsoleEventName)
+  0062: if !((I != -1)) goto 0x0075
+  0071: iternext
+  0072: goto 0x008c
+  0075: Commands.AddItem(ConsoleEvent.ConsoleEventName)
+  008b: iternext
+  008c: iterpop
+  008d: foreach Commands(Command,) (end 0x00bd)
+  009c: CommandList = (((CommandList $ ",") $ "ce ") $ cast57(Command))
+  00bc: iternext
+  00bd: iterpop
+  00be: args.Insert(0,1)
+  00c6: 0[args].Type = 3
+  00db: 0[args].S = CommandList
+  00f3: self.MenuHandle = self.DebugMenu.StartClone(true)
+  010d: self.MenuHandle.AddExternalInterface(obj'TnDebugActionScriptBinding')
+  0125: self.MenuHandle.Invoke(self.PopulateListFunc, args)
+  0147: self.MenuHandle.SetFocus(true, true)
+  015c: return nothing
+  015e: <eos>

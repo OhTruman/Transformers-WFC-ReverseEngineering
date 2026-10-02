@@ -1,0 +1,43 @@
+function TnKillAwardRulePaybackAndDomination.CheckRule  (script 639 bytes)
+  0000: KilledKillerIndex = -1
+  000b: KilledKilledIndex = -1
+  0016: I = 0
+  001d: if !((I < self.LastKillers.Length)) goto 0x008d
+  002d: if !((I[self.LastKillers].KilledPlayer == Killer)) goto 0x0058
+  004d: KilledKillerIndex = I
+  0058: if !((I[self.LastKillers].KilledPlayer == Killed)) goto 0x0083
+  0078: KilledKilledIndex = I
+  0083: AddAdd_PreInt(I)
+  008a: goto 0x001d
+  008d: if !(((KilledKillerIndex != -1) && (KilledKillerIndex[self.LastKillers].KillerPlayer == Killed))) goto 0x0117
+  00be: if !((cast3a(KilledKillerIndex[self.LastKillers].NumTimes) == 1)) goto 0x00f7
+  00dc: Killer.NotifyXpEvent(obj'TnXpEventTypeKillPayback')
+  00f4: goto 0x010f
+  00f7: Killer.NotifyXpEvent(obj'TnXpEventTypeKillPaybackDomination')
+  010f: RemoveKilledKiller = true
+  0117: if !((KilledKilledIndex != -1)) goto 0x01fe
+  0126: if !((KilledKilledIndex[self.LastKillers].KillerPlayer == Killer)) goto 0x01c6
+  0146: switch (AddAdd_PreByte(KilledKilledIndex[self.LastKillers].NumTimes))
+  0160: case 2: (next 0x0180)
+  0165: Killer.NotifyXpEvent(obj'TnXpEventTypeKillDomination2')
+  017d: goto 0x01c3
+  0180: case 3: (next 0x01a0)
+  0185: Killer.NotifyXpEvent(obj'TnXpEventTypeKillDomination3')
+  019d: goto 0x01c3
+  01a0: case 4: (next 0x01c0)
+  01a5: Killer.NotifyXpEvent(obj'TnXpEventTypeKillDomination4')
+  01bd: goto 0x01c3
+  01c0: default:
+  01c3: goto 0x01fb
+  01c6: KilledKilledIndex[self.LastKillers].KillerPlayer = Killer
+  01e2: KilledKilledIndex[self.LastKillers].NumTimes = 1
+  01fb: goto 0x0267
+  01fe: I = self.LastKillers.Length
+  020a: self.LastKillers.Insert(I,1)
+  0216: I[self.LastKillers].KilledPlayer = Killed
+  0232: I[self.LastKillers].KillerPlayer = Killer
+  024e: I[self.LastKillers].NumTimes = 1
+  0267: if !(RemoveKilledKiller) goto 0x027c
+  0270: self.LastKillers.Remove(KilledKillerIndex,1)
+  027c: return nothing
+  027e: <eos>

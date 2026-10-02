@@ -1,0 +1,254 @@
+function TnAiSquad.set_CoopInfo  (script 14 bytes)
+  0000: self._CoopInfo = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiSquad.set_PendingStartingFormOverride  (script 14 bytes)
+  0000: self._PendingStartingFormOverride = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiSquad.GetMembers  (script 104 bytes)
+  0000: I = 0
+  0007: if !((I < self.Members.Length)) goto 0x005b
+  0017: if !((I[self.Members].CharacterController != none)) goto 0x0051
+  0033: ActiveMembers.AddItem(I[self.Members].CharacterController)
+  0051: AddAdd_PreInt(I)
+  0058: goto 0x0007
+  005b: return ActiveMembers
+  0061: return return
+  0067: <eos>
+
+function TnAiSquad.IsMember  (script 37 bytes)
+  0000: return (self.Members.Find('CharacterName',CharacterName) != -1)
+  001e: return return
+  0024: <eos>
+
+function TnAiSquad.IsActiveMember  (script 84 bytes)
+  0000: MemberIndex = self.Members.Find('CharacterController',PossibleMember)
+  001c: if !((MemberIndex == -1)) goto 0x002d
+  002b: return false
+  002d: if !((MemberIndex[self.Members].CharacterController == none)) goto 0x004b
+  0049: return false
+  004b: return true
+  004d: return return
+  0053: <eos>
+
+function TnAiSquad.AddMember  (script 195 bytes)
+  0000: if !((CharacterName == "")) goto 0x0050
+  000c: LogInternal(("ERROR: Attempting to add empty character name to squad" @ cast56(self)), , , )
+  004e: return nothing
+  0050: if !(IsMember(CharacterName)) goto 0x009d
+  0062: LogInternal(((("ERROR:" @ CharacterName) @ "is already a member of squad") @ cast56(self)), , , )
+  009b: return nothing
+  009d: NewMember.CharacterName = CharacterName
+  00b3: self.Members.AddItem(NewMember)
+  00c0: return nothing
+  00c2: <eos>
+
+function TnAiSquad.RemoveMember  (script 225 bytes)
+  0000: if !((CharacterName == "")) goto 0x0055
+  000c: LogInternal(("ERROR: Attempting to remove empty character name from squad" @ cast56(self)), , , )
+  0053: return nothing
+  0055: I = 0
+  005c: if !((I < self.Members.Length)) goto 0x00de
+  006c: if !((I[self.Members].CharacterName == CharacterName)) goto 0x00d4
+  008c: if !((I[self.Members].CharacterController != none)) goto 0x00c5
+  00a8: I[self.Members].CharacterController.DestroyActor()
+  00c5: self.Members.Remove(I,1)
+  00d1: goto 0x00de
+  00d4: AddAdd_PreInt(I)
+  00db: goto 0x005c
+  00de: return nothing
+  00e0: <eos>
+
+function TnAiSquad.GetMemberNames  (script 44 bytes)
+  0000: foreach self.Members(Member,) (end 0x0028)
+  000f: MemberNames.AddItem(Member.CharacterName)
+  0027: iternext
+  0028: iterpop
+  0029: return nothing
+  002b: <eos>
+
+function TnAiSquad.BeginGame  (script 21 bytes)
+  0000: self.bGameInProgress = true
+  0008: RestartGame()
+  0012: return nothing
+  0014: <eos>
+
+function TnAiSquad.RestartGame  (script 147 bytes)
+  0000: I = 0
+  0007: if !((I < self.Members.Length)) goto 0x0083
+  0017: I[self.Members].CharacterController = none
+  002f: I[self.Members].ShouldSpawnFromCheckpoint = true
+  0048: I[self.Members].ObjectiveActor = none
+  0060: I[self.Members].ObjectiveRange = 0
+  0079: AddAdd_PreInt(I)
+  0080: goto 0x0007
+  0083: self.PendingAiInteracts.Remove(0,self.PendingAiInteracts.Length)
+  0090: return nothing
+  0092: <eos>
+
+function TnAiSquad.EndGame  (script 155 bytes)
+  0000: self.bGameInProgress = false
+  0008: I = 0
+  000f: if !((I < self.Members.Length)) goto 0x008b
+  001f: I[self.Members].CharacterController = none
+  0037: I[self.Members].ShouldSpawnFromCheckpoint = false
+  0050: I[self.Members].ObjectiveActor = none
+  0068: I[self.Members].ObjectiveRange = 0
+  0081: AddAdd_PreInt(I)
+  0088: goto 0x000f
+  008b: self.PendingAiInteracts.Remove(0,self.PendingAiInteracts.Length)
+  0098: return nothing
+  009a: <eos>
+
+function TnAiSquad.Tick  (script 28 bytes)
+  0000: if !(self.bGameInProgress) goto 0x0019
+  0009: SpawnPendingMembers(DeltaTime, false)
+  0019: return nothing
+  001b: <eos>
+
+function TnAiSquad.SpawnPendingMembers  (script 442 bytes)
+  0000: I = 0
+  0007: if !((I < self.Members.Length)) goto 0x01af
+  0017: if !((I[self.Members].CharacterController != none)) goto 0x0036
+  0033: goto 0x01a5
+  0036: if !(!SpawnImmediately) goto 0x007f
+  0041: (I[self.Members].CurrentRespawnTimer -= DeltaTime)
+  005e: if !((I[self.Members].CurrentRespawnTimer > cast3f(0))) goto 0x007f
+  007c: goto 0x01a5
+  007f: SpawnPoint = TnAiSquad.FindSpawnPointFor(I[self.Members])
+  0096: if !((SpawnPoint == none)) goto 0x00a4
+  00a1: goto 0x01a5
+  00a4: SpawnedController = TnAiSquad.SpawnAiCharacter(I[self.Members].CharacterName, SpawnPoint)
+  00cb: if !((SpawnedController == none)) goto 0x00d9
+  00d6: goto 0x01a5
+  00d9: I[self.Members].ShouldSpawnFromCheckpoint = false
+  00f2: I[self.Members].CharacterController = SpawnedController
+  010e: SpawnedController.set_IsAiBuddy(true)
+  0122: TnPawn(SpawnedController.Pawn).DownedEnabled = false
+  0141: SpawnedController.Pawn.ExpandAnchorSearchIfFlying = true
+  015b: TnAiSquad.SetAiUseInteract(SpawnedController)
+  0166: SpawnedController.SetMoveToObjective(I[self.Members].ObjectiveActor, I[self.Members].ObjectiveRange)
+  01a5: AddAdd_PreInt(I)
+  01ac: goto 0x0007
+  01af: self._PendingStartingFormOverride = 2
+  01b7: return nothing
+  01b9: <eos>
+
+function TnAiSquad.FindSpawnPointFor  (script 347 bytes)
+  0000: if !(Member.ShouldSpawnFromCheckpoint) goto 0x0135
+  0014: SpawnPoint = self.SpawnPointFinder.FindFromActiveCheckpoint()
+  002d: if !((SpawnPoint == none)) goto 0x0132
+  0038: if !(obj'Engine.Engine'.static.GetCurrentWorldInfo().IsPlayInEditor()) goto 0x0078
+  005c: SpawnPoint = self.SpawnPointFinder.FindNearAnyPlayer()
+  0075: goto 0x0132
+  0078: CP = CheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager()).GetActiveCheckpoint()
+  00b2: if !((CP != none)) goto 0x0132
+  00bd: LogInternal(((("ERROR: Failed to find spawn point for AI teammate" @ Member.CharacterName) @ "for active checkpoint") @ cast57(CP.Tag)), , , )
+  0132: goto 0x014e
+  0135: SpawnPoint = self.SpawnPointFinder.FindNearAnyPlayer()
+  014e: return SpawnPoint
+  0154: return return
+  015a: <eos>
+
+function TnAiSquad.SpawnAiCharacter  (script 338 bytes)
+  0000: AiCharacterDefinition = self._CoopInfo.GetAiCharacterDefinition(CharacterName)
+  001e: AC = self.ScriptFactory.Spawn(obj'TnAiController', obj'TnAiPawn', SpawnPoint.Location, SpawnPoint.Rotation, AiCharacterDefinition.AiCharacterDataResolved.ChassisType)
+  0076: if !((AC == none)) goto 0x0083
+  0081: return none
+  0083: AC.set_IsAiBuddy(true)
+  0097: AC.SetTeam(self._CoopInfo.Faction.static.default.TeamIndex)
+  00c1: AC.InitializeFromTemplate(AiCharacterDefinition, self._PendingStartingFormOverride)
+  00de: AC.AssignOccupiedNavigationPoint(SpawnPoint)
+  00f6: Game = TnGame(obj'Engine.Engine'.static.GetCurrentWorldInfo().Game)
+  011d: if !((Game != none)) goto 0x0145
+  0128: Game.CheckForSpecialSpawn(AC, CharacterName)
+  0145: return AC
+  014b: return return
+  0151: <eos>
+
+function TnAiSquad.Killed  (script 214 bytes)
+  0000: Member = TnAiController(C)
+  0010: if !((Member == none)) goto 0x001d
+  001b: return nothing
+  001d: MemberIndex = self.Members.Find('CharacterController',Member)
+  0039: if !((MemberIndex == -1)) goto 0x004a
+  0048: return nothing
+  004a: MemberIndex[self.Members].CharacterController = none
+  0062: MemberIndex[self.Members].CurrentRespawnTimer = self.AIRespawnDelay
+  007e: Member.GetMoveToObjective(ObjectiveActor, ObjectiveRange)
+  009b: MemberIndex[self.Members].ObjectiveActor = ObjectiveActor
+  00b7: MemberIndex[self.Members].ObjectiveRange = ObjectiveRange
+  00d3: return nothing
+  00d5: <eos>
+
+function TnAiSquad.SetObjective  (script 179 bytes)
+  0000: MemberIndex = self.Members.Find('CharacterName',CharacterName)
+  001c: if !((MemberIndex == -1)) goto 0x002d
+  002b: return false
+  002d: SquadMember = MemberIndex[self.Members]
+  003e: SquadMember.ObjectiveActor = ObjectiveActor
+  0054: SquadMember.ObjectiveRange = ObjectiveRange
+  006a: if !((SquadMember.CharacterController == none)) goto 0x0082
+  0080: return false
+  0082: SquadMember.CharacterController.SetMoveToObjective(ObjectiveActor, ObjectiveRange)
+  00aa: return true
+  00ac: return return
+  00b2: <eos>
+
+function TnAiSquad.SetAiUseInteract  (script 162 bytes)
+  0000: P = TnPawn(C.Pawn)
+  0019: if !((P == none)) goto 0x0026
+  0024: return nothing
+  0026: Index = self.PendingAiInteracts.Find('CharacterName',P._CurrentCharacter.CharacterName)
+  0056: if !((Index != -1)) goto 0x009f
+  0065: C._ScriptedUseInteract = Index[self.PendingAiInteracts].Action
+  008a: C.RequestReplan(1)
+  009f: return nothing
+  00a1: <eos>
+
+function TnAiSquad.IsCharacterAIControlled  (script 48 bytes)
+  0000: Index = self.Members.Find('CharacterName',CharacterName)
+  001c: return (Index != -1)
+  0029: return return
+  002f: <eos>
+
+function TnAiSquad.AddPendingAiInteract  (script 179 bytes)
+  0000: if !(((self._CoopInfo == none) || !self._CoopInfo.IsPlayableCharacter(CharacterName))) goto 0x002c
+  002a: return nothing
+  002c: Index = self.PendingAiInteracts.Find('CharacterName',CharacterName)
+  0048: if !((Index != -1)) goto 0x0075
+  0057: Index[self.PendingAiInteracts].Action = Action
+  0073: return nothing
+  0075: PendingInteract.CharacterName = CharacterName
+  008b: PendingInteract.Action = Action
+  00a1: self.PendingAiInteracts.AddItem(PendingInteract)
+  00ae: return nothing
+  00b0: return nothing
+  00b2: <eos>
+
+function TnAiSquad.ClearPendingAiInteract  (script 217 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.PendingAiInteracts.Length)) goto 0x00d6
+  0017: Action = Index[self.PendingAiInteracts].Action
+  0033: if !(((Action == none) || (Action.Interact == Interact))) goto 0x00cc
+  0058: if !((Action == none)) goto 0x00b9
+  0063: LogInternal(("ERROR: EngineTeam - PendingAiInteracts[Index].Action was none in " $ cast57(GetFuncName())), , , )
+  00b9: self.PendingAiInteracts.Remove(Index,1)
+  00c5: SubtractSubtract_PreInt(Index)
+  00cc: AddAdd_PreInt(Index)
+  00d3: goto 0x0007
+  00d6: return nothing
+  00d8: <eos>
+
+function TnAiSquad.GetScriptPawnFactory  (script 13 bytes)
+  0000: return self.ScriptFactory
+  0006: return return
+  000c: <eos>
+
+function TnAiSquad.GetSpawnPointFinder  (script 13 bytes)
+  0000: return self.SpawnPointFinder
+  0006: return return
+  000c: <eos>

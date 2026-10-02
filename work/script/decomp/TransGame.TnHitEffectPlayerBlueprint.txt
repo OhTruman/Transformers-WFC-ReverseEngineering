@@ -1,0 +1,16 @@
+function TnHitEffectPlayerBlueprint.CheckForErrors  (script 556 bytes)
+  0000: CheckForErrors()
+  0006: I = 0
+  000d: if !((I < self.Effects.Length)) goto 0x0229
+  001d: if !((I[self.Effects].PSTemplate == none)) goto 0x00af
+  0039: EmitCheckMessage(0, (((("Missing Particle System Template for HitEffect Player" @ cast56(self)) @ "index") @ cast53(I)) @ cast56(I[self.Effects].DamageType)), , )
+  00af: if !((I[self.Effects].HitSound == none)) goto 0x0131
+  00cb: EmitCheckMessage(0, (((("Missing HitSound for HitEffect Player" @ cast56(self)) @ "index") @ cast53(I)) @ cast56(I[self.Effects].HitSound)), , )
+  0131: if !((I[self.Effects].BlockSound == none)) goto 0x01b5
+  014d: EmitCheckMessage(0, (((("Missing BlockSound for HitEffect Player" @ cast56(self)) @ "index") @ cast53(I)) @ cast56(I[self.Effects].BlockSound)), , )
+  01b5: if !((I[self.Effects].DamageType == none)) goto 0x021f
+  01d1: EmitCheckMessage(0, ((("Missing DamageType for HitEffect Player" @ cast56(self)) @ "index") @ cast53(I)), , )
+  021f: AddAdd_PreInt(I)
+  0226: goto 0x000d
+  0229: return nothing
+  022b: <eos>

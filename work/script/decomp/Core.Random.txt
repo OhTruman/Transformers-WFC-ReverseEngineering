@@ -1,0 +1,81 @@
+function Random.Rand  (script 7 bytes, native 167)
+  0000: MaxExclusive
+  0005: nothing
+  0006: <eos>
+
+function Random.FRand  (script 2 bytes, native 195)
+  0000: nothing
+  0001: <eos>
+
+function Random.VRand  (script 2 bytes, native 252)
+  0000: nothing
+  0001: <eos>
+
+function Random.RotRand  (script 7 bytes, native 320)
+  0000: bRoll
+  0005: nothing
+  0006: <eos>
+
+function Random.RandRangeInt  (script 29 bytes)
+  0000: return (Min + Rand((ExclusiveMax - Min)))
+  0016: return return
+  001c: <eos>
+
+function Random.RandRangeFloat  (script 31 bytes)
+  0000: return (Min + ((Max - Min) * FRand()))
+  0018: return return
+  001e: <eos>
+
+function Random.RandomFloat  (script 26 bytes)
+  0000: default=1.0
+  0009: return (FRand() * Max)
+  0013: return return
+  0019: <eos>
+
+function Random.RandomSign  (script 36 bytes)
+  0000: return obj'Math'.static.Sign((FRand() - 0.5))
+  001d: return return
+  0023: <eos>
+
+function Random.RandomInRange  (script 50 bytes)
+  0000: return RandRangeFloat(Range.Min, Range.Max)
+  002b: return return
+  0031: <eos>
+
+function Random.RandomBool  (script 17 bytes)
+  0000: return (FRand() >= 0.5)
+  000a: return return
+  0010: <eos>
+
+function Random.RandomInt  (script 15 bytes)
+  0000: return Rand(ExclusiveMax)
+  0008: return return
+  000e: <eos>
+
+function Random.RandomUnitVector  (script 230 bytes)
+  0000: phi = RandomFloat(3.1415927)
+  0015: theta = RandomFloat((2.0 * 3.1415927))
+  0031: sinPhi = obj'Math'.static.Sin(phi)
+  0047: cosPhi = obj'Math'.static.Cos(phi)
+  005d: sinTheta = obj'Math'.static.Sin(theta)
+  0073: cosTheta = obj'Math'.static.Cos(theta)
+  0089: V.X = (cosTheta * sinPhi)
+  00a6: V.Y = cosPhi
+  00bc: V.Z = (sinTheta * sinPhi)
+  00d9: return V
+  00df: return return
+  00e5: <eos>
+
+function Random.RandomVectorInCone  (script 240 bytes)
+  0000: phi = RandomFloat(coneAngleRadians)
+  0015: theta = RandomFloat((2.0 * 3.1415927))
+  0031: sinPhi = obj'Math'.static.Sin(phi)
+  0047: cosPhi = obj'Math'.static.Cos(phi)
+  005d: sinTheta = obj'Math'.static.Sin(theta)
+  0073: cosTheta = obj'Math'.static.Cos(theta)
+  0089: V.X = cosPhi
+  009f: V.Y = (cosTheta * sinPhi)
+  00bc: V.Z = (sinTheta * sinPhi)
+  00d9: return (V >> cast50(coneDirection))
+  00e9: return return
+  00ef: <eos>

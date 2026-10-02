@@ -1,0 +1,60 @@
+function TnObjectiveMarkerTypeDomination.ShouldDisplayMarker  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnObjectiveMarkerTypeDomination.GetLabelText  (script 66 bytes)
+  0000: PointState = TnObjectiveMarkerTypeDomination.GetPointState(Owner, Data)
+  0016: switch (PointState)
+  001d: case 2: (next 0x0028)
+  0022: return self.DefendLabel
+  0028: case 0: (next 0x002d)
+  002d: case 1: (next 0x0032)
+  0032: default:
+  0035: return self.CaptureLabel
+  003b: return return
+  0041: <eos>
+
+function TnObjectiveMarkerTypeDomination.GetMarkerSetup  (script 44 bytes)
+  0000: CreateInstances(self.MarkerSetup)
+  000f: TnObjectiveMarkerTypeDomination.SetupParameters(Owner, MarkerData)
+  001f: return self.MarkerSetup
+  0025: return return
+  002b: <eos>
+
+function TnObjectiveMarkerTypeDomination.SetupParameters  (script 424 bytes)
+  0000: Point = TnDominationPointBase(MarkerData.MarkerBase)
+  001b: self.MarkerSetup.MatInst.SetScalarParameterValue('NodeID', cast3f(Point.PointNumber), )
+  0053: PointState = TnObjectiveMarkerTypeDomination.GetPointState(Owner, MarkerData)
+  0069: switch (PointState)
+  0070: case 2: (next 0x00bb)
+  0075: self.MarkerSetup.MatInst.SetScalarParameterValue('TeamID', 0.0, )
+  00a2: self.MarkerSetup.LabelColor = self.FriendlyLabelColor
+  00b8: goto 0x0154
+  00bb: case 0: (next 0x0106)
+  00c0: self.MarkerSetup.MatInst.SetScalarParameterValue('TeamID', 2.0, )
+  00ed: self.MarkerSetup.LabelColor = self.NeutralLabelColor
+  0103: goto 0x0154
+  0106: case 1: (next 0x0151)
+  010b: self.MarkerSetup.MatInst.SetScalarParameterValue('TeamID', 1.0, )
+  0138: self.MarkerSetup.LabelColor = self.EnemyLabelColor
+  014e: goto 0x0154
+  0151: default:
+  0154: BeingTaken = cast3d((Point.get_BeingCaptured() ? 1 : 0))
+  0176: self.MarkerSetup.MatInst.SetScalarParameterValue('Flashing', cast3c(BeingTaken), )
+  01a5: return nothing
+  01a7: <eos>
+
+function TnObjectiveMarkerTypeDomination.GetPointState  (script 177 bytes)
+  0000: Point = TnDominationPointBase(MarkerData.MarkerBase)
+  001b: DefenderTeamIndex = Point.GetTeamNum()
+  0034: self.MarkerSetup.MatInst.SetScalarParameterValue('NodeID', cast3f(Point.PointNumber), )
+  006c: if !((cast3a(Owner.GetTeamNum()) == cast3a(DefenderTeamIndex))) goto 0x0093
+  008d: return 2
+  0090: goto 0x00aa
+  0093: if !((cast3a(DefenderTeamIndex) == 255)) goto 0x00a7
+  00a1: return 0
+  00a4: goto 0x00aa
+  00a7: return 1
+  00aa: return return
+  00b0: <eos>

@@ -1,0 +1,36 @@
+function HmClosedCurveTwoVectors.Build  (script 1015 bytes)
+  0000: if !((Outputs.Length < 1)) goto 0x000e
+  000c: return false
+  000e: self.curve.Points.Length = (Outputs.Length + 1)
+  0029: EndIndex = Outputs.Length
+  0035: InputIncrement = (1.0 / cast3f(Outputs.Length))
+  004a: CurrentIndex = 0
+  0051: if !((CurrentIndex < EndIndex)) goto 0x00c7
+  0060: CurrentIndex[self.curve.Points].InVal = (InputIncrement * cast3f(CurrentIndex))
+  0090: CurrentIndex[self.curve.Points].OutVal = CurrentIndex[Outputs]
+  00bd: AddAdd_PreInt(CurrentIndex)
+  00c4: goto 0x0051
+  00c7: EndIndex[self.curve.Points].InVal = 1.0
+  00ee: EndIndex[self.curve.Points].OutVal = 0[self.curve.Points].OutVal
+  012d: CurrentIndex = 1
+  0134: if !((CurrentIndex < EndIndex)) goto 0x0288
+  0143: PreviousIndex = (CurrentIndex - 1)
+  0151: NextIndex = (CurrentIndex + 1)
+  015f: Tangent1 = ((NextIndex[self.curve.Points].OutVal.v1 - PreviousIndex[self.curve.Points].OutVal.v1) / 2.0)
+  01c6: Tangent2 = ((NextIndex[self.curve.Points].OutVal.v2 - PreviousIndex[self.curve.Points].OutVal.v2) / 2.0)
+  022d: pt = CurrentIndex[self.curve.Points]
+  0249: SetCurvePointTangents(pt, Tangent1, Tangent2)
+  0262: CurrentIndex[self.curve.Points] = pt
+  027e: AddAdd_PreInt(CurrentIndex)
+  0285: goto 0x0134
+  0288: Tangent1 = ((1[self.curve.Points].OutVal.v1 - (EndIndex - 1)[self.curve.Points].OutVal.v1) / 2.0)
+  02ee: Tangent2 = ((1[self.curve.Points].OutVal.v2 - (EndIndex - 1)[self.curve.Points].OutVal.v2) / 2.0)
+  0354: pt = 0[self.curve.Points]
+  036c: SetCurvePointTangents(pt, Tangent1, Tangent2)
+  0385: 0[self.curve.Points] = pt
+  039d: pt = EndIndex[self.curve.Points]
+  03b9: SetCurvePointTangents(pt, Tangent1, Tangent2)
+  03d2: EndIndex[self.curve.Points] = pt
+  03ee: return true
+  03f0: return return
+  03f6: <eos>

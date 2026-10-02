@@ -1,0 +1,32 @@
+function TnDrivingOrbitRotationCameraBehavior.SetActor  (script 57 bytes)
+  0000: self.TransformerPawn = TnPawn(A)
+  0010: if !((self.TransformerPawn == none)) goto 0x001d
+  001b: return nothing
+  001d: self.CarForm = TnCarForm(self.TransformerPawn._VehicleForm)
+  0036: return nothing
+  0038: <eos>
+
+function TnDrivingOrbitRotationCameraBehavior.Update  (script 659 bytes)
+  0000: InitialPitch = cast3f(Result.OrbitRotation.Pitch)
+  0023: Result = TnOrbitRotationCameraBehavior.Update(DeltaTime, Result, CI)
+  003e: if !((self.TransformerPawn == none)) goto 0x004f
+  0049: return Result
+  004f: if !((self.CarForm == none)) goto 0x0060
+  005a: return Result
+  0060: if !((self.TransformerPawn.Mesh == none)) goto 0x007a
+  0074: return Result
+  007a: MinPitch = (self.CurrentLookSpeed.PitchRange.Min * 182.0444489)
+  00a2: maxPitch = (self.CurrentLookSpeed.PitchRange.Max * 182.0444489)
+  00ca: TargetPitch = (obj'Core.Math'.static.Lerp(cast3f(self.TransformerPawn.Rotation.Pitch), cast3f(cast50(self.TransformerPawn.Mesh.GetRBLinearVelocity()).Pitch), TnDrivingOrbitRotationCameraBehavior.CalculatePitchVelocityBlend()) + (self.PitchOffset * 182.0444489))
+  0135: (TargetPitch += obj'Core.Math'.static.Lerp(MinPitch, maxPitch, ((((obj'Core.Math'.static.Sign(CI.RightStickInputY) * CI.RightStickInputY) * CI.RightStickInputY) * 0.5) + 0.5)))
+  01a6: Result.OrbitRotation.Yaw = self.TransformerPawn.Rotation.Yaw
+  01db: Result.OrbitRotation.Pitch = cast44(obj'Core.Math'.static.FClamp((InitialPitch + (((TargetPitch - InitialPitch) * self.MatchRotationSpeed) * DeltaTime)), (cast3f(self.TransformerPawn.Rotation.Pitch) + MinPitch), (cast3f(self.TransformerPawn.Rotation.Pitch) + maxPitch)))
+  0269: Result.OrbitRotation.Roll = 0
+  0286: return Result
+  028c: return return
+  0292: <eos>
+
+function TnDrivingOrbitRotationCameraBehavior.CalculatePitchVelocityBlend  (script 79 bytes)
+  0000: return (self.PitchVelocityBlend * obj'Core.Math'.static.FMin(1.0, (obj'Core.Math'.static.VSize(self.TransformerPawn.Mesh.GetRBLinearVelocity()) / cast3f(3000))))
+  0048: return return
+  004e: <eos>

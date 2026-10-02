@@ -1,0 +1,586 @@
+function TnCharacterScriptBinding.set_CharacterDataHelpers  (script 14 bytes)
+  0000: self._CharacterDataHelpers = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnCharacterScriptBinding.GetProfile  (script 43 bytes)
+  0000: PC = GetPlayerController()
+  0010: return TnProfileSettings(PC.ProfileSettings)
+  0024: return return
+  002a: <eos>
+
+function TnCharacterScriptBinding.GetLocalPlayer  (script 32 bytes)
+  0000: return TnLocalPlayer(GetPlayerController().Player)
+  0019: return return
+  001f: <eos>
+
+function TnCharacterScriptBinding.GetNewlyUnlockedSkills  (script 371 bytes)
+  0000: AllNewlyUnlocked = GetPlayerController().get_CustomCharacterData().GetNewlyUnlockedSkills()
+  002c: I = 0
+  0033: if !((I < AllNewlyUnlocked.Length)) goto 0x0147
+  0043: SplitUnlockedSkill = obj'Core.Strings'.static.Split(I[AllNewlyUnlocked], ".")
+  006a: if !((SplitUnlockedSkill.Length != 2)) goto 0x00d6
+  0077: LogInternal(("Error: TnCharacterScriptBinding::GetNewlyUnlockedSkills format incorrect" @ I[AllNewlyUnlocked]), , , )
+  00d3: goto 0x013d
+  00d6: SkillProvider = self.CustomCharacterOptions.FindSkillProvider(1[SplitUnlockedSkill])
+  00f6: if !((((SkillProvider != none) && (0[SplitUnlockedSkill] == Specialty)) && (SkillProvider.SkillType == TypeFilter))) goto 0x013d
+  012e: FilteredNewlyUnlocked.AddItem(1[SplitUnlockedSkill])
+  013d: AddAdd_PreInt(I)
+  0144: goto 0x0033
+  0147: obj'Core.Strings'.static.JoinArray(FilteredNewlyUnlocked, JoinString, , )
+  0166: return JoinString
+  016c: return return
+  0172: <eos>
+
+function TnCharacterScriptBinding.GetNewlyUnlockedAbilities  (script 348 bytes)
+  0000: AllNewlyUnlocked = GetPlayerController().get_CustomCharacterData().GetNewlyUnlockedSkills()
+  002c: I = 0
+  0033: if !((I < AllNewlyUnlocked.Length)) goto 0x0130
+  0043: SplitUnlockedAbility = obj'Core.Strings'.static.Split(I[AllNewlyUnlocked], ".")
+  006a: if !((SplitUnlockedAbility.Length != 2)) goto 0x00d9
+  0077: LogInternal(("Error: TnCharacterScriptBinding::GetNewlyUnlockedAbilities format incorrect" @ I[AllNewlyUnlocked]), , , )
+  00d6: goto 0x0126
+  00d9: AbilityProvider = self.CustomCharacterOptions.FindAbilityProvider(1[SplitUnlockedAbility])
+  00f9: if !(((AbilityProvider != none) && (0[SplitUnlockedAbility] == Specialty))) goto 0x0126
+  0117: FilteredNewlyUnlocked.AddItem(1[SplitUnlockedAbility])
+  0126: AddAdd_PreInt(I)
+  012d: goto 0x0033
+  0130: obj'Core.Strings'.static.JoinArray(FilteredNewlyUnlocked, JoinString, , )
+  014f: return JoinString
+  0155: return return
+  015b: <eos>
+
+function TnCharacterScriptBinding.MarkSkillAsOld  (script 69 bytes)
+  0000: SkillString = ((Specialty $ ".") $ SkillId)
+  0017: GetPlayerController().get_CustomCharacterData().MarkSkillAsOld(SkillString)
+  0042: return nothing
+  0044: <eos>
+
+function TnCharacterScriptBinding.GetCharacterFriendlyName  (script 59 bytes)
+  0000: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  0023: return Character.FriendlyName
+  0034: return return
+  003a: <eos>
+
+function TnCharacterScriptBinding.GetCharacterChassis  (script 80 bytes)
+  0000: if !((CharacterName == "")) goto 0x000f
+  000c: return ""
+  000f: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  0032: return FactionFilter[Character.ChassisTypes]
+  0049: return return
+  004f: <eos>
+
+function TnCharacterScriptBinding.GetCharacterPrimaryColor  (script 218 bytes)
+  0000: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  0023: PrimaryColor = FactionFilter[Character.PrimaryColors]
+  003f: if !((PrimaryColor == MakeColor(0, 0, 0, cast3d(255)))) goto 0x00c7
+  0060: return GetPixelColor(FactionFilter[Character.PrimaryColorPalettes], cast44(FactionFilter[Character.PrimaryColorCoords].X), cast44(FactionFilter[Character.PrimaryColorCoords].Y))
+  00c7: return TnCharacterScriptBinding.ColorToHexString(PrimaryColor)
+  00d3: return return
+  00d9: <eos>
+
+function TnCharacterScriptBinding.GetCharacterSecondaryColor  (script 235 bytes)
+  0000: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  0023: SecondaryColor = FactionFilter[Character.SecondaryColors]
+  003f: if !((SecondaryColor == MakeColor(0, 0, 0, cast3d(255)))) goto 0x00c7
+  0060: return GetPixelColor(FactionFilter[Character.SecondaryColorPalettes], cast44(FactionFilter[Character.SecondaryColorCoords].X), cast44(FactionFilter[Character.SecondaryColorCoords].Y))
+  00c7: return TnCharacterScriptBinding.ColorToHexString(FactionFilter[Character.SecondaryColors])
+  00e4: return return
+  00ea: <eos>
+
+function TnCharacterScriptBinding.GetPrimaryPalette  (script 151 bytes)
+  0000: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  0023: return ((((cast53(FactionFilter[Character.PrimaryColorPalettes]) $ ",") $ cast55(FactionFilter[Character.PrimaryColorCoords].X)) $ ",") $ cast55(FactionFilter[Character.PrimaryColorCoords].Y))
+  0090: return return
+  0096: <eos>
+
+function TnCharacterScriptBinding.GetSecondaryPalette  (script 151 bytes)
+  0000: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  0023: return ((((cast53(FactionFilter[Character.SecondaryColorPalettes]) $ ",") $ cast55(FactionFilter[Character.SecondaryColorCoords].X)) $ ",") $ cast55(FactionFilter[Character.SecondaryColorCoords].Y))
+  0090: return return
+  0096: <eos>
+
+function TnCharacterScriptBinding.GetPixelColor  (script 147 bytes)
+  0000: if !((TextureId < self.OwnerMovie.ExternalTextures.Length)) goto 0x0043
+  0019: SampleTexture = Texture2D(TextureId[self.OwnerMovie.ExternalTextures].Texture)
+  0043: Result = obj'TnCharacterScriptBindingCompilerWorkaround'.static.GetPixelColor(SampleTexture, X, Y)
+  006b: return TnCharacterScriptBinding.PackColorData(TnCharacterScriptBinding.ColorToHexString(Result), TextureId, X, Y)
+  008c: return return
+  0092: <eos>
+
+function TnCharacterScriptBinding.GetCharacterSpecialty  (script 41 bytes)
+  0000: Character = TnCharacterScriptBinding.FindCharacter(CharacterName)
+  0011: return Character.Specialty
+  0022: return return
+  0028: <eos>
+
+function TnCharacterScriptBinding.GetLevelForSpecialty  (script 75 bytes)
+  0000: XPM = GetPlayerController().get_XpManager()
+  001e: if !((XPM == none)) goto 0x002b
+  0029: return 0
+  002b: return XPM.GetLevelForSpecialty(Specialty)
+  0044: return return
+  004a: <eos>
+
+function TnCharacterScriptBinding.GetXpEarnedForSpecialty  (script 75 bytes)
+  0000: XPM = GetPlayerController().get_XpManager()
+  001e: if !((XPM == none)) goto 0x002b
+  0029: return 0
+  002b: return XPM.GetXpEarnedForSpecialty(Specialty)
+  0044: return return
+  004a: <eos>
+
+function TnCharacterScriptBinding.GetXpNeededForLevel  (script 75 bytes)
+  0000: XPM = GetPlayerController().get_XpManager()
+  001e: if !((XPM == none)) goto 0x002b
+  0029: return 0
+  002b: return XPM.GetXpNeededForLevel(Level)
+  0044: return return
+  004a: <eos>
+
+function TnCharacterScriptBinding.GetCharacterSkills  (script 72 bytes)
+  0000: Character = TnCharacterScriptBinding.FindCharacter(CharacterName)
+  0011: obj'Core.Strings'.static.JoinArray(Character.Skills, JoinResult, , )
+  003b: return JoinResult
+  0041: return return
+  0047: <eos>
+
+function TnCharacterScriptBinding.GetCharacterWeaponTypes  (script 243 bytes)
+  0000: Character = TnCharacterScriptBinding.FindCharacter(CharacterName)
+  0011: if !((Character.MeleeWeapons.Length > 0)) goto 0x0062
+  0028: Character.WeaponTypes.Insert(2,1)
+  003c: 2[Character.WeaponTypes] = 0[Character.MeleeWeapons]
+  0062: GameClass = class<TnGame>(GetPlayerController().WorldInfo.GetGameClass())
+  008e: if !((GameClass != none)) goto 0x00bc
+  0099: GameClass.static.OverrideCharacterWeaponTypes(Character.WeaponTypes)
+  00bc: obj'Core.Strings'.static.JoinArray(Character.WeaponTypes, JoinResult, , )
+  00e6: return JoinResult
+  00ec: return return
+  00f2: <eos>
+
+function TnCharacterScriptBinding.GetCharacterVehicleWeapon  (script 72 bytes)
+  0000: Character = TnCharacterScriptBinding.FindCharacter(CharacterName)
+  0011: obj'Core.Strings'.static.JoinArray(Character.VehicleWeapons, JoinResult, , )
+  003b: return JoinResult
+  0041: return return
+  0047: <eos>
+
+function TnCharacterScriptBinding.GetCharacterAbilities  (script 72 bytes)
+  0000: Character = TnCharacterScriptBinding.FindCharacter(CharacterName)
+  0011: obj'Core.Strings'.static.JoinArray(Character.Abilities, JoinResult, , false)
+  003b: return JoinResult
+  0041: return return
+  0047: <eos>
+
+function TnCharacterScriptBinding.GetCustomCharacters  (script 87 bytes)
+  0000: GetPlayerController().get_CustomCharacterData().AppendCharacterNamesToList(Characters)
+  002b: obj'Core.Strings'.static.JoinArray(Characters, JoinResult, , )
+  004a: return JoinResult
+  0050: return return
+  0056: <eos>
+
+function TnCharacterScriptBinding.GetGame  (script 52 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: return TnGame(WI.Game)
+  002d: return return
+  0033: <eos>
+
+function TnCharacterScriptBinding.FindCharacter  (script 104 bytes)
+  0000: GRI = TnCharacterScriptBinding.GetGameReplicationInfo()
+  000c: if !(GRI.UseIconicCharacters()) goto 0x0043
+  0022: return GetPlayerController().FindIconicCharacter(CharacterName)
+  0040: goto 0x0061
+  0043: return GetPlayerController().FindCustomCharacter(CharacterName)
+  0061: return return
+  0067: <eos>
+
+function TnCharacterScriptBinding.GetPlayableCharacters  (script 160 bytes)
+  0000: GRI = TnCharacterScriptBinding.GetGameReplicationInfo()
+  000c: PC = GetPlayerController()
+  001c: if !(GRI.UseIconicCharacters()) goto 0x0059
+  0032: Characters = GRI.GetPlayableIconicCharacterNames()
+  004b: TnCharacterScriptBinding.FilterLockedIconicCharacters(Characters)
+  0056: goto 0x0072
+  0059: Characters = PC.GetCustomCharacterNames()
+  0072: obj'Core.Strings'.static.JoinArray(Characters, JoinResult, ",", )
+  0093: return JoinResult
+  0099: return return
+  009f: <eos>
+
+function TnCharacterScriptBinding.FilterLockedIconicCharacters  (script 72 bytes)
+  0000: I = 0
+  0007: if !((I < Characters.Length)) goto 0x0045
+  0017: if !(!TnCharacterScriptBinding.IsCharacterUnlocked(I[Characters])) goto 0x003b
+  002d: Characters.Remove(SubtractSubtract_Int(I),1)
+  003b: AddAdd_PreInt(I)
+  0042: goto 0x0007
+  0045: return nothing
+  0047: <eos>
+
+function TnCharacterScriptBinding.IsCharacterUnlocked  (script 169 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetChassisProviders()
+  0019: foreach Providers(Provider,) (end 0x009f)
+  0028: Chassis = TnDataProvider_Chassis(Provider)
+  0038: if !((CharacterName == Chassis.UniqueIconicId)) goto 0x009e
+  0050: if !(Chassis.LockedCharacter) goto 0x009b
+  0062: iterpop
+  0063: return GetPlayerController().get_CustomCharacterData().IsChassisUnlocked(Chassis.UniqueId)
+  0098: goto 0x009e
+  009b: iterpop
+  009c: return true
+  009e: iternext
+  009f: iterpop
+  00a0: return true
+  00a2: return return
+  00a8: <eos>
+
+function TnCharacterScriptBinding.LocalizeUniqueIconicId  (script 32 bytes)
+  0000: return obj'TnDataProvider_Chassis'.static.LocalizeUniqueIconicId(UniqueIconicId)
+  0019: return return
+  001f: <eos>
+
+function TnCharacterScriptBinding.SelectCharacter  (script 167 bytes)
+  0000: GRI = TnCharacterScriptBinding.GetGameReplicationInfo()
+  000c: UseIconic = GRI.UseIconicCharacters()
+  0026: PC = GetPlayerController()
+  0036: PC.SelectCharacter(CharacterName, (UseIconic ? 1 : 0))
+  005d: LobbyGame = TnGameLobbyGame(obj'Engine.Engine'.static.GetCurrentWorldInfo().Game)
+  0084: if !((LobbyGame == none)) goto 0x0091
+  008f: return nothing
+  0091: LobbyGame.NotifyCharacterSelected()
+  00a4: return nothing
+  00a6: <eos>
+
+function TnCharacterScriptBinding.ClearCharacter  (script 52 bytes)
+  0000: PC = GetPlayerController()
+  0010: TnPlayerReplicationInfo(PC.PlayerReplicationInfo).ClearCharacter()
+  0031: return nothing
+  0033: <eos>
+
+function TnCharacterScriptBinding.GetCurrentCharacter  (script 68 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !((PC != none)) goto 0x003a
+  001b: return PC.get_SelectedCharacter().CharacterName
+  003a: return ""
+  003d: return return
+  0043: <eos>
+
+function TnCharacterScriptBinding.CommitCharacter  (script 1361 bytes)
+  0000: if !(((CharacterName == "") || (CharacterName == "Enter Name"))) goto 0x0049
+  0024: CharacterName = (Specialty @ cast53(obj'Core.Random'.static.RandRangeInt(1, 100)))
+  0049: Character = GetPlayerController().FindCustomCharacter(CharacterName)
+  006c: Character.CharacterName = CharacterName
+  0082: if !((FriendlyName != "")) goto 0x00a4
+  008e: Character.FriendlyName = FriendlyName
+  00a4: if !((ChassisTypes != "")) goto 0x00dc
+  00b0: Character.ChassisTypes = obj'Core.Strings'.static.Split(ChassisTypes, ",")
+  00dc: if !((Specialty != "")) goto 0x00fe
+  00e8: Character.Specialty = Specialty
+  00fe: if !((Skills != "")) goto 0x015d
+  010a: if !((Skills == "Empty")) goto 0x0131
+  011b: Character.Skills.Length = 0
+  012e: goto 0x015d
+  0131: Character.Skills = obj'Core.Strings'.static.Split(Skills, ",")
+  015d: if !((WeaponTypes_ != "")) goto 0x01d7
+  0169: WeaponTypesTemp = obj'Core.Strings'.static.Split(WeaponTypes_, ",")
+  018a: if !((WeaponTypesTemp.Length >= 1)) goto 0x01b0
+  0196: 0[Character.WeaponTypes] = 0[WeaponTypesTemp]
+  01b0: if !((WeaponTypesTemp.Length >= 2)) goto 0x01d7
+  01bd: 1[Character.WeaponTypes] = 1[WeaponTypesTemp]
+  01d7: if !((Abilities != "")) goto 0x0236
+  01e3: if !((Abilities == "Empty")) goto 0x020a
+  01f4: Character.Abilities.Length = 0
+  0207: goto 0x0236
+  020a: Character.Abilities = obj'Core.Strings'.static.Split(Abilities, ",")
+  0236: if !((VehicleWeapons != "")) goto 0x02b0
+  0242: VehicleWeaponsTemp = obj'Core.Strings'.static.Split(VehicleWeapons, ",")
+  0263: if !((VehicleWeaponsTemp.Length >= 1)) goto 0x0289
+  026f: 0[Character.VehicleWeapons] = 0[VehicleWeaponsTemp]
+  0289: if !((VehicleWeaponsTemp.Length >= 2)) goto 0x02b0
+  0296: 1[Character.VehicleWeapons] = 1[VehicleWeaponsTemp]
+  02b0: if !((PrimaryColorsHex != "")) goto 0x050b
+  02bc: PrimaryColors = obj'Core.Strings'.static.Split(PrimaryColorsHex, ",")
+  02dd: SecondaryColors = obj'Core.Strings'.static.Split(SecondaryColorsHex, ",")
+  02fe: I = 0
+  0305: if !((I < PrimaryColors.Length)) goto 0x050b
+  0315: I[Character.Factions] = cast3d(I)
+  0333: TnCharacterScriptBinding.UnpackColorData(I[PrimaryColors], ParsedColor, ParsedPaletteID, ParsedX, ParsedY)
+  0358: I[Character.PrimaryColors] = TnCharacterScriptBinding.HexStringToColor(ParsedColor)
+  037a: I[Character.PrimaryColorPalettes] = ParsedPaletteID
+  0396: if !((Character.PrimaryColorCoords.Length <= I)) goto 0x03c8
+  03b1: Character.PrimaryColorCoords.Insert(I,1)
+  03c8: I[Character.PrimaryColorCoords].X = cast3f(ParsedX)
+  03f1: I[Character.PrimaryColorCoords].Y = cast3f(ParsedY)
+  041a: TnCharacterScriptBinding.UnpackColorData(I[SecondaryColors], ParsedColor, ParsedPaletteID, ParsedX, ParsedY)
+  043f: I[Character.SecondaryColors] = TnCharacterScriptBinding.HexStringToColor(ParsedColor)
+  0461: I[Character.SecondaryColorPalettes] = ParsedPaletteID
+  047d: if !((Character.SecondaryColorCoords.Length <= I)) goto 0x04af
+  0498: Character.SecondaryColorCoords.Insert(I,1)
+  04af: I[Character.SecondaryColorCoords].X = cast3f(ParsedX)
+  04d8: I[Character.SecondaryColorCoords].Y = cast3f(ParsedY)
+  0501: AddAdd_PreInt(I)
+  0508: goto 0x0305
+  050b: self._CharacterDataHelpers.VerifyCharacterData(Character)
+  0523: GetPlayerController().get_CustomCharacterData().CommitCharacter(Character)
+  054e: return nothing
+  0550: <eos>
+
+function TnCharacterScriptBinding.WriteCustomizationFile  (script 23 bytes)
+  0000: TnCharacterScriptBinding.GetLocalPlayer().WriteCustomizationFile()
+  0014: return nothing
+  0016: <eos>
+
+function TnCharacterScriptBinding.ResetCharacter  (script 28 bytes)
+  0000: TnCharacterScriptBinding.GetLocalPlayer().ResetCharacter(CharacterName)
+  0019: return nothing
+  001b: <eos>
+
+function TnCharacterScriptBinding.FindGround  (script 189 bytes)
+  0000: TraceStart = P.SpawnPoint.Location
+  001d: TraceEnd = TraceStart
+  0028: (TraceEnd.Z -= (P.GetCollisionHeight() * 5.0))
+  0054: if !((P.Trace(HitLocation, HitNormal, none, TraceEnd, TraceStart, true, , , , ) != none)) goto 0x0086
+  0080: return HitLocation
+  0086: LogInternal("Error: Couldn't find ground", , , )
+  00a8: return vect(0,0,0)
+  00b6: return return
+  00bc: <eos>
+
+function TnCharacterScriptBinding.SetupPreviewAnim  (script 144 bytes)
+  0000: if !(((PreviewPawn.Mesh == none) || (PreviewPawn.Mesh.Animations == none))) goto 0x0035
+  0033: return nothing
+  0035: IdleNode = AnimNodeSequence(PreviewPawn.Mesh.Animations.FindAnimNode(self.IdleNodeName))
+  006a: if !((IdleNode != none)) goto 0x008d
+  0075: IdleNode.SetAnim(self.PreviewAnim)
+  008d: return nothing
+  008f: <eos>
+
+function TnCharacterScriptBinding.FindPreviewController  (script 153 bytes)
+  0000: GameSeq = obj'Engine.Engine'.static.GetCurrentWorldInfo().GetGameSequence()
+  0028: VarName = cast60(("PreviewGuy" $ cast53(I)))
+  0045: GameSeq.FindNamedVariables(VarName, true, false, SequenceVars)
+  0064: if !((SequenceVars.Length < 1)) goto 0x0072
+  0070: return none
+  0072: return TnAiController(SeqVar_Object(0[SequenceVars]).GetObjectValue())
+  0092: return return
+  0098: <eos>
+
+function TnCharacterScriptBinding.HexStringToColor  (script 329 bytes)
+  0000: if !((obj'Core.Strings'.static.Left(HexString, 2) != "0x")) goto 0x002d
+  001b: return MakeColor(0, 0, 0, )
+  002d: HexString = obj'Core.Strings'.static.Repl(HexString, "0x", "", )
+  004a: ZeroesToAdd = (6 - obj'Core.Strings'.static.Len(HexString))
+  0064: if !((ZeroesToAdd > 0)) goto 0x0089
+  006f: HexString = ("0" $ HexString)
+  007f: SubtractSubtract_PreInt(ZeroesToAdd)
+  0086: goto 0x0064
+  0089: R = obj'Core.Strings'.static.Mid(HexString, 0, 2)
+  00a2: G = obj'Core.Strings'.static.Mid(HexString, 2, 2)
+  00bc: B = obj'Core.Strings'.static.Mid(HexString, 4, 2)
+  00d6: ReturnColor.R = cast3d(HexToInt(R))
+  00f8: ReturnColor.G = cast3d(HexToInt(G))
+  011a: ReturnColor.B = cast3d(HexToInt(B))
+  013c: return ReturnColor
+  0142: return return
+  0148: <eos>
+
+function TnCharacterScriptBinding.ColorToHexString  (script 29 bytes)
+  0000: return ("0x" $ ColorToHexColor(Col))
+  0016: return return
+  001c: <eos>
+
+function TnCharacterScriptBinding.ParseStringDataIntoPreviewCharacter  (script 252 bytes)
+  0000: 0[Character.ChassisTypes] = ChassisType
+  0018: 0[Character.Factions] = 0
+  002d: if !(TnCharacterScriptBinding.UnpackColorData(PrimaryColorHex, ParsedColor, ParsedPaletteID, ParsedX, ParsedY)) goto 0x0070
+  004f: 0[Character.PrimaryColors] = TnCharacterScriptBinding.HexStringToColor(ParsedColor)
+  006d: goto 0x008e
+  0070: 0[Character.PrimaryColors] = TnCharacterScriptBinding.HexStringToColor(PrimaryColorHex)
+  008e: if !(TnCharacterScriptBinding.UnpackColorData(SecondaryColorHex, ParsedColor, ParsedPaletteID, ParsedX, ParsedY)) goto 0x00d1
+  00b0: 0[Character.SecondaryColors] = TnCharacterScriptBinding.HexStringToColor(ParsedColor)
+  00ce: goto 0x00ef
+  00d1: 0[Character.SecondaryColors] = TnCharacterScriptBinding.HexStringToColor(SecondaryColorHex)
+  00ef: return Character
+  00f5: return return
+  00fb: <eos>
+
+function TnCharacterScriptBinding.UpdatePreviewCharacter  (script 392 bytes)
+  0000: ChassisTypes = obj'Core.Strings'.static.Split(ChassisTypesArray, ",")
+  0021: PrimaryColorHexes = obj'Core.Strings'.static.Split(PrimaryColorHexArray, ",")
+  0042: SecondaryColorHexes = obj'Core.Strings'.static.Split(SecondaryColorHexArray, ",")
+  0063: I = 0
+  006a: if !((I < ChassisTypes.Length)) goto 0x0185
+  007a: PreviewC = FindPreviewController(I)
+  0094: if !((PreviewC != none)) goto 0x012b
+  009f: ChassisType = ((I < ChassisTypes.Length) ? I[ChassisTypes] : "")
+  00c4: PrimaryColorHex = ((I < PrimaryColorHexes.Length) ? I[PrimaryColorHexes] : "")
+  00e9: SecondaryColorHex = ((I < SecondaryColorHexes.Length) ? I[SecondaryColorHexes] : "")
+  010e: TnCharacterScriptBinding.UpdateSinglePreviewCharacter(PreviewC, ChassisType, PrimaryColorHex, SecondaryColorHex)
+  0128: goto 0x017b
+  012b: LogInternal(((("Could not find PreviewGuy" $ cast53(I)) @ "to display preview for") @ I[ChassisTypes]), , , )
+  017b: AddAdd_PreInt(I)
+  0182: goto 0x006a
+  0185: return nothing
+  0187: <eos>
+
+function TnCharacterScriptBinding.UpdateSinglePreviewCharacter  (script 659 bytes)
+  0000: if !((ChassisType == "")) goto 0x000e
+  000c: return nothing
+  000e: PreviewC.bRotateTowardFocus = false
+  001f: PreviewRobot = TnAiPawn(PreviewC.Pawn)
+  0038: if !((PreviewC.PlayerReplicationInfo != none)) goto 0x0065
+  004c: PreviewC.PlayerReplicationInfo.Team = none
+  0065: ChassisChanged = (PreviewRobot.CustomCharacterOptions.FindChassis(ChassisType) != PreviewRobot._CurrentCharacter.ChassisType)
+  00a8: Character = TnCharacterScriptBinding.ParseStringDataIntoPreviewCharacter(ChassisType, PrimaryColorHex, SecondaryColorHex)
+  00c3: CDR = self._CharacterDataHelpers.ResolveCharacterData(Character)
+  00e1: if !(ChassisChanged) goto 0x0218
+  00ea: self.CharacterTextureLoader.UpdateTransformer(PreviewRobot._CurrentCharacter.ChassisType, false)
+  0117: self.CharacterTextureLoader.UpdateTransformer(CDR.ChassisType, true)
+  013b: CustomziationPawnType = PreviewRobot.get_Class()
+  014d: SpawnPoint = PreviewRobot.SpawnPoint
+  0161: PreviewC.UnPossess()
+  0174: PreviewRobot.SetLocation(vect(-1e+06,0,0))
+  018d: PreviewRobot.DestroyActor()
+  0199: PreviewRobot = TnAiPawn(PreviewC.Spawn(CustomziationPawnType, , , vect(100000,0,0), SpawnPoint.Rotation, , true, CDR.ChassisType))
+  01eb: PreviewRobot.SpawnPoint = SpawnPoint
+  01ff: PreviewC.Possess(PreviewRobot, false)
+  0218: PreviewRobot.ApplyCharacter(CDR)
+  0230: if !(ChassisChanged) goto 0x0290
+  0239: PreviewRobot.__OnTickDelegate__Delegate = delegate.OnPreviewPawnTick
+  0251: PreviewC.CreateAndInitializeVehicleAiControlStrategy()
+  0264: TnCharacterScriptBinding.SetupPreviewAnim(PreviewRobot)
+  026f: obj'Engine.Engine'.static.GetCurrentWorldInfo().ForceGarbageCollection()
+  0290: return nothing
+  0292: <eos>
+
+function TnCharacterScriptBinding.OnPreviewPawnTick  (script 109 bytes)
+  0000: GroundLocation = TnCharacterScriptBinding.FindGround(P)
+  0011: NewLocation = GroundLocation
+  001c: (NewLocation.Z += P.GetCollisionHeight())
+  0041: P.SetLocation(NewLocation)
+  0052: P.__OnTickDelegate__Delegate = delegate.None
+  006a: return nothing
+  006c: <eos>
+
+function TnCharacterScriptBinding.TransformToForm  (script 174 bytes)
+  0000: PreviewPawn = PreviewController.get_TransformerPawn()
+  0019: if !((cast3a(PreviewPawn.get_FormType()) != cast3a(NewForm))) goto 0x00ab
+  003a: SpawnLoc = PreviewPawn.SpawnPoint.Location
+  0057: SpawnLoc.Z = PreviewPawn.Location.Z
+  0081: PreviewPawn.SetLocation(SpawnLoc)
+  0092: PreviewController.Transform(NewForm, )
+  00ab: return nothing
+  00ad: <eos>
+
+function TnCharacterScriptBinding.FindPreviewCharacterToTransform  (script 131 bytes)
+  0000: I = 0
+  0007: PreviewController = FindPreviewController(0)
+  001d: if !((PreviewController != none)) goto 0x007a
+  0028: PreviewPawn = PreviewController.get_TransformerPawn()
+  0041: if !(!PreviewPawn.bHidden) goto 0x005b
+  0055: return PreviewController
+  005b: PreviewController = FindPreviewController(AddAdd_PreInt(I))
+  0077: goto 0x001d
+  007a: return none
+  007c: return return
+  0082: <eos>
+
+function TnCharacterScriptBinding.TransformPreviewCharacterToRobot  (script 28 bytes)
+  0000: PreviewController = TnCharacterScriptBinding.FindPreviewCharacterToTransform()
+  000c: TnCharacterScriptBinding.TransformToForm(PreviewController, 0)
+  0019: return nothing
+  001b: <eos>
+
+function TnCharacterScriptBinding.TransformPreviewCharacter  (script 87 bytes)
+  0000: PreviewController = TnCharacterScriptBinding.FindPreviewCharacterToTransform()
+  000c: PreviewPawn = PreviewController.get_TransformerPawn()
+  0025: TnCharacterScriptBinding.TransformToForm(PreviewController, ((cast3a(PreviewPawn.get_FormType()) == cast3a(0)) ? 1 : 0))
+  0054: return nothing
+  0056: <eos>
+
+function TnCharacterScriptBinding.GetXpEarnedForSpecialtyLastMatch  (script 51 bytes)
+  0000: return GetPlayerController().get_XpManager().GetXpEarnedForSpecialtyLastMatch(Specialty)
+  002c: return return
+  0032: <eos>
+
+function TnCharacterScriptBinding.VerifyCharacterOptionsData  (script 22 bytes)
+  0000: self.CustomCharacterOptions.CheckForErrors()
+  0013: return nothing
+  0015: <eos>
+
+function TnCharacterScriptBinding.PackColorData  (script 55 bytes)
+  0000: return ((((((HexColor $ ";") $ cast53(PaletteID)) $ ";") $ cast53(X)) $ ";") $ cast53(Y))
+  0030: return return
+  0036: <eos>
+
+function TnCharacterScriptBinding.UnpackColorData  (script 117 bytes)
+  0000: StringArray = obj'Core.Strings'.static.Split(InString, ";")
+  0021: if !((StringArray.Length != 4)) goto 0x0030
+  002e: return false
+  0030: HexColor = 0[StringArray]
+  003d: PaletteID = cast4a(1[StringArray])
+  004c: X = cast4a(2[StringArray])
+  005c: Y = cast4a(3[StringArray])
+  006c: return true
+  006e: return return
+  0074: <eos>
+
+function TnCharacterScriptBinding.GetGameReplicationInfo  (script 41 bytes)
+  0000: return TnGameReplicationInfo(obj'Engine.Engine'.static.GetCurrentWorldInfo().GRI)
+  0022: return return
+  0028: <eos>
+
+function TnCharacterScriptBinding.IsChassisUnlocked  (script 160 bytes)
+  0000: Providers = obj'TnDataStore_MenuItems'.static.GetChassisProviders()
+  0019: foreach Providers(Provider,) (end 0x006c)
+  0028: Chassis = TnDataProvider_Chassis(Provider)
+  0038: if !((ChassisType == Chassis.UniqueId)) goto 0x006b
+  0050: if !(Chassis.LockedChassis) goto 0x0068
+  0062: goto 0x006c
+  0065: goto 0x006b
+  0068: iterpop
+  0069: return true
+  006b: iternext
+  006c: iterpop
+  006d: return GetPlayerController().get_CustomCharacterData().IsChassisUnlocked(ChassisType)
+  0099: return return
+  009f: <eos>
+
+function TnCharacterScriptBinding.IsPrimeModeAvailable  (script 91 bytes)
+  0000: return (!GetPlayerController().get_XpManager().GetPrimeModeUnlocked() && GetPlayerController().get_XpManager().IsLevelMaxed())
+  0054: return return
+  005a: <eos>
+
+function TnCharacterScriptBinding.UnlockPrimeMode  (script 92 bytes)
+  0000: PC = GetPlayerController()
+  0010: TnPlayerReplicationInfo(PC.PlayerReplicationInfo).set_PrimeMode(true)
+  0032: PC.OnPrimeModeUnlocked()
+  0045: PC.SaveProfileSettings()
+  0059: return nothing
+  005b: <eos>
+
+function TnCharacterScriptBinding.CustomCharacterDataLoaded  (script 72 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !(PC.get_CustomCharactersLoaded()) goto 0x0028
+  0026: return true
+  0028: if !((TnCharacterScriptBinding.GetLocalPlayer()._CurrentStorageDeviceId == 0)) goto 0x003f
+  003d: return true
+  003f: return false
+  0041: return return
+  0047: <eos>
+
+function TnCharacterScriptBinding.CheckCustomCharacterDataLoaded  (script 53 bytes)
+  0000: if !(!TnCharacterScriptBinding.CustomCharacterDataLoaded()) goto 0x0032
+  000b: GetPlayerController().UIController.ShowCustomPopupUI(obj'TnLoadCustomCharactersStatusMessageBox', true)
+  0032: return nothing
+  0034: <eos>
+
+function TnCharacterScriptBinding.GetCharacterSlotUnlockLevels  (script 94 bytes)
+  0000: UnlockLevels = GetPlayerController().get_CustomCharacterData().UnlockCharacterSlotLevels
+  0027: foreach UnlockLevels(I,) (end 0x0050)
+  0036: ConcatEqual_StrStr(ReturnString, (cast53(I) $ ","))
+  004f: iternext
+  0050: iterpop
+  0051: return ReturnString
+  0057: return return
+  005d: <eos>

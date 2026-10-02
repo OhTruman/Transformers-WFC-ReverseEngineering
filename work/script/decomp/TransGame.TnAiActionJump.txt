@@ -1,0 +1,14 @@
+function TnAiActionJump.OnSetUpConditions  (script 50 bytes)
+  0000: if !(!self._TransformerPawn.get_IsInRobotForm()) goto 0x001a
+  0018: return false
+  001a: return OnSetUpConditions(ExpectedEffects, Conditions)
+  002b: return return
+  0031: <eos>
+
+function TnAiActionJump.OnStart  (script 94 bytes)
+  0000: self._TransformerController.StopMovement()
+  0013: self._TransformerController.SetWorldStateInt(obj'TnAiWorldStateReaction', 8, )
+  002e: self._TransformerPawn._RobotForm.Jump(, true)
+  004c: return Succeed()
+  0057: return return
+  005d: <eos>

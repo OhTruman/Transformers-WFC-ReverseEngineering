@@ -1,0 +1,63 @@
+function HmAudioCategoryEffectsManager.Initialize  (script 471 bytes)
+  0000: self.Owner = _Owner
+  000b: Device = obj'Engine.Engine'.static.GetAudioDevice()
+  0024: if !((none == Device)) goto 0x0031
+  002f: return nothing
+  0031: Index = 0
+  0038: if !((Index < self.AudioCategoryEffects.Length)) goto 0x01d4
+  0048: Index[self.AudioCategoryEffects].CategoryPointer = Device.GetCategoryPointer(Index[self.AudioCategoryEffects].Category)
+  0088: if !((none == Index[self.AudioCategoryEffects].EnableAudioComponent)) goto 0x00e9
+  00a4: Index[self.AudioCategoryEffects].EnableAudioComponent = self.Owner.CreateAudioComponent(Index[self.AudioCategoryEffects].EnableSound, false, true, , , )
+  00e9: if !((none != Index[self.AudioCategoryEffects].EnableAudioComponent)) goto 0x0129
+  0105: Index[self.AudioCategoryEffects].EnableAudioComponent.Stop()
+  0129: if !((none == Index[self.AudioCategoryEffects].DisableAudioComponent)) goto 0x018a
+  0145: Index[self.AudioCategoryEffects].DisableAudioComponent = self.Owner.CreateAudioComponent(Index[self.AudioCategoryEffects].DisableSound, false, true, , , )
+  018a: if !((none != Index[self.AudioCategoryEffects].DisableAudioComponent)) goto 0x01ca
+  01a6: Index[self.AudioCategoryEffects].DisableAudioComponent.Stop()
+  01ca: AddAdd_Int(Index)
+  01d1: goto 0x0038
+  01d4: return nothing
+  01d6: <eos>
+
+function HmAudioCategoryEffectsManager.Tick  (script 75 bytes)
+  0000: if !((none == self.Owner)) goto 0x000d
+  000b: return nothing
+  000d: Index = 0
+  0014: if !((Index < self.AudioCategoryEffects.Length)) goto 0x0048
+  0024: UpdateEffect(Index[self.AudioCategoryEffects], DeltaTime)
+  003e: AddAdd_Int(Index)
+  0045: goto 0x0014
+  0048: return nothing
+  004a: <eos>
+
+function HmAudioCategoryEffectsManager.UpdateEffect  (script 611 bytes)
+  0000: Device = obj'Engine.Engine'.static.GetAudioDevice()
+  0019: if !((none == Device)) goto 0x0026
+  0024: return nothing
+  0026: if !((0 == Effect.ChannelCountThreshold)) goto 0x003e
+  003c: return nothing
+  003e: if !((Device.GetCategoryChannelCount(Effect.CategoryPointer) >= Effect.ChannelCountThreshold)) goto 0x0138
+  0076: Effect.DisableTimer = Effect.DisableDelay
+  0097: if !(Effect.Enabled) goto 0x00ad
+  00ab: return nothing
+  00ad: if !((none != Effect.EnableAudioComponent)) goto 0x00ff
+  00c3: Effect.EnableAudioComponent.Stop()
+  00e1: Effect.EnableAudioComponent.Play()
+  00ff: Device.EnableMixerPreset(Effect.MixerPreset)
+  0122: Effect.Enabled = true
+  0135: goto 0x0260
+  0138: if !(!Effect.Enabled) goto 0x0150
+  014e: return nothing
+  0150: (Effect.DisableTimer -= DeltaTime)
+  0167: if !((Effect.DisableTimer > 0.0)) goto 0x0183
+  0181: return nothing
+  0183: if !((none != Effect.EnableAudioComponent)) goto 0x01c1
+  0199: Effect.EnableAudioComponent.FadeOut(0.25, 0.0)
+  01c1: if !((none != Effect.DisableAudioComponent)) goto 0x0213
+  01d7: Effect.DisableAudioComponent.Stop()
+  01f5: Effect.DisableAudioComponent.Play()
+  0213: Device.DisableMixerPreset(Effect.MixerPreset, )
+  0237: Effect.Enabled = false
+  024a: Effect.DisableTimer = 0.0
+  0260: return nothing
+  0262: <eos>

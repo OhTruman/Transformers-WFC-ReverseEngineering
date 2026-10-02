@@ -1,0 +1,13 @@
+function TnCompetitiveScoreDestructionEffect.BeginEffect  (script 185 bytes)
+  0000: DestructibleActor = HmDestructibleActorBase(GetAttachingActor())
+  0015: if !((DestructibleActor == none)) goto 0x0022
+  0020: return nothing
+  0022: Instigator = TnPlayerController(DestructibleActor.LastHitInstigator)
+  003b: if !(((Instigator == none) || (cast3a(Instigator.Role) != cast3a(3)))) goto 0x0063
+  0061: return nothing
+  0063: PRI = TnPlayerReplicationInfo(Instigator.PlayerReplicationInfo)
+  007c: if !((PRI == none)) goto 0x0089
+  0087: return nothing
+  0089: PRI._ScoreTracker.ScoreEvent(obj'TnCompetitiveScoreEventDestructible', , , self.ScoreAmount, self.MultiplierAmount)
+  00b6: return nothing
+  00b8: <eos>

@@ -1,0 +1,16 @@
+function HmDialogDestructionEffectFactory.GetEffectDescription  (script 38 bytes)
+  0000: return ((self.SoundEvent == none) ? "" : PathName(self.SoundEvent))
+  001f: return return
+  0025: <eos>
+
+function HmDialogDestructionEffectFactory.CreatesMeshEffect  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmDialogDestructionEffectFactory.DoCreateInstance  (script 61 bytes)
+  0000: Effect = new(Owner, nothing, obj'HmDialogDestructionEffect', nothing, AttachTreeCallback)
+  0018: Effect.set_SoundEvent(self.SoundEvent)
+  0030: return Effect
+  0036: return return
+  003c: <eos>

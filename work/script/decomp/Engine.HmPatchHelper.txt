@@ -1,0 +1,85 @@
+function HmPatchHelper.GetBaseLayerLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmPatchHelper.GetObjectsPackageName  (script 7 bytes)
+  0000: PackageObject
+  0005: nothing
+  0006: <eos>
+
+function HmPatchHelper.PatchBaseLayer  (script 19 bytes)
+  0000: PatchLevel(HmPatchHelper.GetBaseLayerLevel())
+  0010: return nothing
+  0012: <eos>
+
+function HmPatchHelper.PatchLevel  (script 25 bytes)
+  0000: HmPatchHelper.ApplyCollisionPatches(Level)
+  000b: HmPatchHelper.ApplyVariablePatches(Level)
+  0016: return nothing
+  0018: <eos>
+
+function HmPatchHelper.PatchPackage  (script 14 bytes)
+  0000: HmPatchHelper.ApplyVariablePatches(PackageObject)
+  000b: return nothing
+  000d: <eos>
+
+function HmPatchHelper.ApplyCollisionPatches  (script 327 bytes)
+  0000: MapName = HmPatchHelper.GetObjectsPackageName(Level)
+  0011: LogInternal((("--Applying collision patches for:" @ MapName) $ "--"), , , )
+  0046: I = 0
+  004d: if !((I < default.CollisionPatches.Length)) goto 0x0144
+  005d: Patch = I[default.CollisionPatches]
+  006e: if !((obj'Core.Strings'.static.Caps(Patch.MapName) != obj'Core.Strings'.static.Caps(MapName))) goto 0x00a1
+  009e: goto 0x013a
+  00a1: LogInternal((((((("--Creating collision patch at location:" @ cast58(Patch.Location)) $ ", Radius:") @ cast55(Patch.Radius)) $ ", Height:") @ cast55(Patch.Height)) $ "--"), , , )
+  012b: SpawnCollision(Patch)
+  013a: AddAdd_PreInt(I)
+  0141: goto 0x004d
+  0144: return nothing
+  0146: <eos>
+
+function HmPatchHelper.ApplyVariablePatches  (script 301 bytes)
+  0000: PackageName = HmPatchHelper.GetObjectsPackageName(PackageObject)
+  0011: LogInternal((("--Applying variable patches for:" @ PackageName) $ "--"), , , )
+  0045: I = 0
+  004c: if !((I < default.VariablePatches.Length)) goto 0x012a
+  005c: Patch = AddAdd_Int(I)[default.VariablePatches]
+  006f: if !((PackageName == "")) goto 0x007e
+  007b: goto 0x0127
+  007e: if !((cast3a(Patch.VariableType) == cast3a(6))) goto 0x00b9
+  0099: if !((Patch.VariableName != PackageName)) goto 0x00b6
+  00b3: goto 0x0127
+  00b6: goto 0x00c8
+  00b9: if !((Patches.Length == 0)) goto 0x00c8
+  00c5: goto 0x0127
+  00c8: Patches.AddItem(Patch)
+  00d5: if !(((I < default.VariablePatches.Length) && (cast3a(I[default.VariablePatches].VariableType) != cast3a(6)))) goto 0x010b
+  0108: goto 0x0127
+  010b: PatchVariable(PackageObject, Patches)
+  011f: Patches.Length = 0
+  0127: goto 0x004c
+  012a: return nothing
+  012c: <eos>
+
+function HmPatchHelper.SpawnCollision  (script 361 bytes)
+  0000: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  0019: Blocker = WI.Spawn(obj'TargetPoint', , , Patch.Location, Patch.Rotation, , , )
+  005c: if !((Blocker == none)) goto 0x00a8
+  0067: LogInternal("--Collision patch failed, blocker could not be created--", , , )
+  00a6: return nothing
+  00a8: CylinderComp = new(Blocker, nothing, obj'CylinderComponent', nothing, GetRemoteRole)
+  00c0: CylinderComp.SetCylinderSize(Patch.Radius, Patch.Height)
+  00f3: CylinderComp.SetTraceBlocking(false, true)
+  0108: CylinderComp.SetActorCollision(true, true)
+  011d: Blocker.AttachComponent(CylinderComp)
+  0135: Blocker.bProjTarget = false
+  0146: Blocker.bWorldGeometry = true
+  0157: Blocker.SetCollision(true, true, true)
+  0166: return nothing
+  0168: <eos>
+
+function HmPatchHelper.PatchVariable  (script 12 bytes)
+  0000: PackageObject
+  0005: Patches
+  000a: nothing
+  000b: <eos>

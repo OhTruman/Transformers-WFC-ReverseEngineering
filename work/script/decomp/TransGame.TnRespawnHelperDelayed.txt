@@ -1,0 +1,63 @@
+function TnRespawnHelperDelayed.get_NumPending  (script 14 bytes)
+  0000: return self.PendingRespawns.Length
+  0007: return return
+  000d: <eos>
+
+function TnRespawnHelperDelayed.OnInitialize  (script 14 bytes)
+  0000: self.TimeSinceInitialization = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function TnRespawnHelperDelayed.OnInitialSpawn  (script 68 bytes)
+  0000: if !(WithinInitialSpawnWindow()) goto 0x0032
+  000d: Respawn(PC)
+  001c: if !((PC.Pawn != none)) goto 0x0032
+  0030: return nothing
+  0032: OnDeath(PC)
+  0041: return nothing
+  0043: <eos>
+
+function TnRespawnHelperDelayed.OnTick  (script 15 bytes)
+  0000: (self.TimeSinceInitialization += DeltaTime)
+  000c: return nothing
+  000e: <eos>
+
+function TnRespawnHelperDelayed.OnLogout  (script 58 bytes)
+  0000: I = self.PendingRespawns.Find('C',C)
+  001c: if !((I != -1)) goto 0x0037
+  002b: self.PendingRespawns.Remove(I,1)
+  0037: return nothing
+  0039: <eos>
+
+function TnRespawnHelperDelayed.OnRespawn  (script 58 bytes)
+  0000: I = self.PendingRespawns.Find('C',C)
+  001c: if !((I != -1)) goto 0x0037
+  002b: self.PendingRespawns.Remove(I,1)
+  0037: return nothing
+  0039: <eos>
+
+function TnRespawnHelperDelayed.OnRoundEnded  (script 14 bytes)
+  0000: self.TimeSinceInitialization = 0.0
+  000b: return nothing
+  000d: <eos>
+
+function TnRespawnHelperDelayed.Add  (script 175 bytes)
+  0000: if !((self.PendingRespawns.Find('C',C) != -1)) goto 0x0022
+  0020: return nothing
+  0022: entry.C = C
+  0038: entry.TimeToRespawn = GetTimeToRespawn(C)
+  0058: self.PendingRespawns.AddItem(entry)
+  0065: PRI = TnPlayerReplicationInfo(C.PlayerReplicationInfo)
+  007e: if !((PRI != none)) goto 0x00ac
+  0089: PRI.SetTimeToRespawn(entry.TimeToRespawn)
+  00ac: return nothing
+  00ae: <eos>
+
+function TnRespawnHelperDelayed.WithinInitialSpawnWindow  (script 35 bytes)
+  0000: return ((self.TimeToAllowInstantInitialSpawns < cast3f(0)) || (self.TimeSinceInitialization < self.TimeToAllowInstantInitialSpawns))
+  001c: return return
+  0022: <eos>
+
+function TnRespawnHelperDelayed.GetTimeToRespawn  (script 7 bytes)
+  0000: return return
+  0006: <eos>

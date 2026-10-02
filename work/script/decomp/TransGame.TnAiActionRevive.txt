@@ -1,0 +1,68 @@
+function TnAiActionRevive.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionReviveBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionRevive.OnSetUpConditions  (script 202 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateReviveTarget', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !(!TnAiActionRevive.CanReviveDowned(ExpectedEffects, Target)) goto 0x004c
+  004a: return false
+  004c: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', Target)
+  006e: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActorLOS', Target)
+  0090: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateFacingActor', Target)
+  00b2: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00c3: return return
+  00c9: <eos>
+
+function TnAiActionRevive.OnIsValidForFutureExecution  (script 88 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateReviveTarget', ExpectedEffects))
+  0028: if !((TnAiActionRevive.CanReviveDowned(ExpectedEffects, Target) == false)) goto 0x0040
+  003e: return false
+  0040: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0051: return return
+  0057: <eos>
+
+function TnAiActionRevive.OnStart  (script 213 bytes)
+  0000: self._Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateReviveTarget', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: if !(!self._Target._IsDowned) goto 0x005d
+  0052: return Fail()
+  005d: self._TransformerController.StopMovement()
+  0070: self._TransformerController.Focus = IFocusible(self._Target)
+  0089: self._TransformerPawn.GiveRevive(self._Target, delegate.SucceedCallback, delegate.SucceedCallback, self._Blueprint.UseFullRevive)
+  00c2: return OnStart(ExpectedEffects)
+  00ce: return return
+  00d4: <eos>
+
+function TnAiActionRevive.OnUpdate  (script 70 bytes)
+  0000: if !(((self._Target == none) || self._Target.IsDead())) goto 0x002e
+  0023: return Fail()
+  002e: return OnUpdate(ExpectedEffects, DeltaTime)
+  003f: return return
+  0045: <eos>
+
+function TnAiActionRevive.OnFinish  (script 62 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: self._TransformerController.SetWorldStateBool(obj'TnAiWorldStateReviveTarget', true, self._Target)
+  003b: return nothing
+  003d: <eos>
+
+function TnAiActionRevive.CanReviveDowned  (script 184 bytes)
+  0000: if !(((Target == none) || !Target._IsDowned)) goto 0x0023
+  0021: return false
+  0023: if !((Target._ReviverPawn != self._TransformerPawn)) goto 0x003d
+  003b: return false
+  003d: if !(!Target.get_IsInRobotForm()) goto 0x0057
+  0055: return true
+  0057: AcrobaticsService = TnAcrobaticsService(Target.GetRobotService('TnAcrobaticsService'))
+  007e: if !(EqualEqual_InterfaceInterface(AcrobaticsService, TnAcrobaticsService(none))) goto 0x0094
+  0092: return false
+  0094: return (cast3a(AcrobaticsService.get_AcrobaticsState()) == cast3a(8))
+  00b1: return return
+  00b7: <eos>

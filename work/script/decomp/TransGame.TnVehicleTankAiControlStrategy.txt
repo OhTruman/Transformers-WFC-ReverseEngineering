@@ -1,0 +1,109 @@
+function TnVehicleTankAiControlStrategy.OnInitialize  (script 126 bytes)
+  0000: self.TankForm = TnTankForm(self._TransformerPawn._VehicleForm)
+  0019: self.Blueprint = self.TankForm.get_TankFormBlueprint()
+  0032: if !((self.Blueprint == none)) goto 0x007b
+  003d: LogInternal("Error - TankForm must have TankForm.TankFormBlueprint", , , )
+  0079: return nothing
+  007b: return nothing
+  007d: <eos>
+
+function TnVehicleTankAiControlStrategy.OnUpdate  (script 306 bytes)
+  0000: if !((cast3a(self._TransformerPawn.Role) == cast3a(1))) goto 0x001b
+  0019: return nothing
+  001b: self.TankForm.UpdateAi(DeltaTime, CalculateFinalDesiredLocation(self.TankForm._RigidBody), self._DesiredRotation, (((cast3a(self._IsAvoiding) == cast3a(0)) || (cast3a(self._IsAvoiding) == cast3a(2))) && self._PathFollower.get_OnFinalSegmentInPath()))
+  0087: self._IsAvoiding = 0
+  008f: if !(((!self.TankForm.get_IsBoosting() && self._BoundController.bRotateTowardFocus) && NotEqual_InterfaceInterface(self._BoundController.Focus, IFocusible(none)))) goto 0x012f
+  00da: self._DesiredRotation = cast50((self._BoundController.Focus.GetFocalPoint() - self._TransformerPawn.Mesh.GetRBPosition()))
+  011d: self._DesiredRotation.Pitch = 0
+  012f: return nothing
+  0131: <eos>
+
+function TnVehicleTankAiControlStrategy.OnMoveTowardPoint  (script 33 bytes)
+  0000: self.TankForm.set_BoostingInput(TnVehicleTankAiControlStrategy.ShouldBoostToLocation(Dest))
+  001e: return nothing
+  0020: <eos>
+
+function TnVehicleTankAiControlStrategy.OnMoveTowardPath  (script 105 bytes)
+  0000: Direction = obj'Core.Math'.static.Normal((self._PathFollower._TargetLocation - self._TransformerPawn.Location))
+  002f: Distance = self._PathFollower._PathDistance
+  0043: self.TankForm.set_BoostingInput(TnVehicleTankAiControlStrategy.ShouldBoost(Direction, Distance))
+  0066: return nothing
+  0068: <eos>
+
+function TnVehicleTankAiControlStrategy.OnMoveTowardActor  (script 42 bytes)
+  0000: self.TankForm.set_BoostingInput(TnVehicleTankAiControlStrategy.ShouldBoostToLocation(GoalActor.Location))
+  0027: return nothing
+  0029: <eos>
+
+function TnVehicleTankAiControlStrategy.ShouldBoostToLocation  (script 91 bytes)
+  0000: Direction = (Location - self._TransformerPawn.Location)
+  001b: Distance = obj'Core.Math'.static.VSize(Direction)
+  0031: Direction = (Direction / Distance)
+  0043: return TnVehicleTankAiControlStrategy.ShouldBoost(Direction, Distance)
+  0054: return return
+  005a: <eos>
+
+function TnVehicleTankAiControlStrategy.ShouldBoost  (script 235 bytes)
+  0000: if !(self._BoostOverride) goto 0x000b
+  0009: return true
+  000b: if !(!self.TankForm.get_IsOnTheGround()) goto 0x0037
+  0023: return self.TankForm.get_IsBoosting()
+  0037: CosAngleDelta = obj'Core.Math'.static.NormalizeDot2D(DirectionToTarget, cast39(self._TransformerPawn.Rotation))
+  0065: if !(self.TankForm.get_IsBoosting()) goto 0x00b4
+  007b: if !((DistanceToGoal < self.Blueprint.BoostStopDistance)) goto 0x0095
+  0093: return false
+  0095: if !((CosAngleDelta < self.Blueprint.BoostStopAngle)) goto 0x00af
+  00ad: return false
+  00af: return true
+  00b1: goto 0x00e4
+  00b4: return ((DistanceToGoal > self.Blueprint.BoostStartDistance) && (CosAngleDelta > self.Blueprint.BoostStartAngle))
+  00e4: return return
+  00ea: <eos>
+
+function TnVehicleTankAiControlStrategy.IsStuckInMoveToward  (script 164 bytes)
+  0000: if !((cast3a(self._IsAvoiding) == cast3a(2))) goto 0x001c
+  0010: ClearStuckTime()
+  001a: return false
+  001c: if !((self.TankForm.get_LinearSpeed() <= 5.0)) goto 0x0091
+  0039: IncrementStuckTime()
+  0043: if !(IsStuckTimedOut()) goto 0x008e
+  0050: return !obj'TnObstacleAvoidance'.static.IsPathClearToLocationOnNavMesh(self._TransformerPawn, self.TankForm.get_FormMovementCapabilities().CylinderRadius, self._DesiredLocation)
+  008e: goto 0x009b
+  0091: ClearStuckTime()
+  009b: return false
+  009d: return return
+  00a3: <eos>
+
+function TnVehicleTankAiControlStrategy.OnPostMoveToward  (script 321 bytes)
+  0000: Dest = DestTemp
+  000b: if !(!self._TransformerPawn._IsAvoidanceDisabledInVehicleForm) goto 0x012c
+  001f: self._IsAvoiding = self._TransformerPawn._ObstacleAvoidanceManager.ShouldAvoid(Dest, GoalActor, 1500.0, 20.0, true, SafeLocation)
+  005b: if !((cast3a(self._IsAvoiding) != cast3a(0))) goto 0x012c
+  006b: if !((cast3a(self._IsAvoiding) == cast3a(1))) goto 0x009e
+  007b: self._DesiredLocation = SafeLocation
+  0086: self._DesiredRotation = CalculateRotation(SafeLocation)
+  009b: goto 0x00d6
+  009e: if !((cast3a(self._IsAvoiding) == cast3a(2))) goto 0x00d6
+  00ae: self._DesiredLocation = self._TransformerPawn.Location
+  00c2: self._DesiredRotation = self._TransformerPawn.Rotation
+  00d6: self.TankForm.set_BoostingInput(false)
+  00ea: if !(((self._BoundController != none) && (cast3a(self._BoundController._DebugMode) == cast3a(3)))) goto 0x012c
+  0110: self._TransformerPawn._ObstacleAvoidanceManager.DisplayDebug()
+  012c: self._DesiredRotation.Pitch = 0
+  013e: return nothing
+  0140: <eos>
+
+function TnVehicleTankAiControlStrategy.GetTargetOffset  (script 120 bytes)
+  0000: if !((self.Blueprint == none)) goto 0x0011
+  000b: return 0.0
+  0011: return obj'Core.Math'.static.Lerp(self.Blueprint.PathingMinTargetOffset, self.Blueprint.PathingMaxTargetOffset, obj'Core.Math'.static.FClamp((self.TankForm.get_Speed() / self.Blueprint.PathingMaxSpeed), 0.0, 1.0))
+  0071: return return
+  0077: <eos>
+
+function TnVehicleTankAiControlStrategy.AdjustLookAtTargetLocation  (script 145 bytes)
+  0000: Focus = IFocusible(cast36(self._BoundController.Focus))
+  001b: if !(((NotEqual_InterfaceInterface(Focus, IFocusible(none)) && self._BoundController.bRotateTowardFocus) && EqualEqual_InterfaceInterface(IFocusible(self._BoundController.Enemy), Focus))) goto 0x007e
+  0066: return self._BoundController.Enemy.Location
+  007e: return TnVehicleAiControlStrategy.AdjustLookAtTargetLocation(TargetLocation)
+  008a: return return
+  0090: <eos>

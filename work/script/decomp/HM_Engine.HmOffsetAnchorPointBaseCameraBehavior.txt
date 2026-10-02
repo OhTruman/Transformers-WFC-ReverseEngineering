@@ -1,0 +1,78 @@
+function HmOffsetAnchorPointBaseCameraBehavior.GetDesiredOffset  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.GetOffsetRotation  (script 36 bytes)
+  0000: if !(self.OffsetUsesCameraRotation) goto 0x0012
+  0009: return CamRotation
+  000f: goto 0x001d
+  0012: return GetAnchorRotation()
+  001d: return return
+  0023: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.GetAnchorRotation  (script 22 bytes)
+  0000: return self.AnchorActor.Rotation
+  000f: return return
+  0015: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.GetOffsetOriginWS  (script 139 bytes)
+  0000: if !((self.AnchorActor == none)) goto 0x0019
+  000b: return vect(0,0,0)
+  0019: if !((self.BoneName != 'None')) goto 0x0052
+  002c: OffsetOriginWS = Pawn(self.AnchorActor).GetBoneLocation(self.BoneName)
+  004f: goto 0x007e
+  0052: OffsetOriginWS = (self.AnchorActor.Location + (self._CenterOfMassOffset >> self.AnchorActor.Rotation))
+  007e: return OffsetOriginWS
+  0084: return return
+  008a: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.UpdateAnchorPoint  (script 89 bytes)
+  0000: if !((self.AnchorActor == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self.AnchorPoint != none)) goto 0x0056
+  0018: self.AnchorPoint.Location = (GetOffsetOriginWS() + ((GetDesiredOffset() - self._CenterOfMassOffset) >> GetOffsetRotation(CamRotation)))
+  0056: return nothing
+  0058: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.Activate  (script 36 bytes)
+  0000: HmOffsetAnchorPointBaseCameraBehavior.CalculateCenterOfMassOffset()
+  0006: HmOffsetAnchorPointBaseCameraBehavior.UpdateAnchorPoint(0.0, Result.Rotation)
+  0021: return nothing
+  0023: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.CalculateCenterOfMassOffset  (script 239 bytes)
+  0000: P = Pawn(self.AnchorActor)
+  0010: if !((((P == none) || (cast3a(P.Physics) != cast3a(10))) || (P.Mesh == none))) goto 0x0061
+  004c: self._CenterOfMassOffset = vect(0,0,0)
+  005f: return nothing
+  0061: CenterOfMass = (P.Mesh.GetRBPosition() + (P.Mesh.GetRBCenterOfMassLocal() >> P.Mesh.GetRBRotation()))
+  00c0: self._CenterOfMassOffset = ((CenterOfMass - self.AnchorActor.Location) << self.AnchorActor.Rotation)
+  00ec: return nothing
+  00ee: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.Update  (script 40 bytes)
+  0000: HmOffsetAnchorPointBaseCameraBehavior.UpdateAnchorPoint(DeltaTime, Result.Rotation)
+  001b: return Result
+  0021: return return
+  0027: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.Reset  (script 40 bytes)
+  0000: HmOffsetAnchorPointBaseCameraBehavior.UpdateAnchorPoint(0.0, Result.Rotation)
+  001b: return Result
+  0021: return return
+  0027: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.AnchorActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.InvertYOffset  (script 18 bytes)
+  0000: self.InvertY = !self.InvertY
+  000f: return nothing
+  0011: <eos>
+
+function HmOffsetAnchorPointBaseCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>

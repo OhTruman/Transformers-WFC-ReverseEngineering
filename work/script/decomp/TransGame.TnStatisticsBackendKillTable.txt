@@ -1,0 +1,57 @@
+function TnStatisticsBackendKillTable.RecordKill  (script 1123 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(((self.Capacity > 0) && (self.Kills.Length >= self.Capacity))) goto 0x002c
+  002a: return nothing
+  002c: if !((Killer == none)) goto 0x0039
+  0037: return nothing
+  0039: KillerPRI = TnPlayerReplicationInfo(Killer.PlayerReplicationInfo)
+  0052: if !((KillerPRI == none)) goto 0x005f
+  005d: return nothing
+  005f: if !((KilledPlayer == none)) goto 0x006c
+  006a: return nothing
+  006c: VictimPRI = TnPlayerReplicationInfo(KilledPlayer.PlayerReplicationInfo)
+  0085: if !((VictimPRI == none)) goto 0x0092
+  0090: return nothing
+  0092: if !((self.OnlyPlayerDeath && VictimPRI.bBot)) goto 0x00b1
+  00af: return nothing
+  00b1: K.KID = obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(Killer.PlayerReplicationInfo.UniqueId)
+  00ec: K.KLevel = KillerPRI.GetPlayerLevel()
+  0110: KillerPawn = Killer.Pawn
+  0124: if !((KillerPawn != none)) goto 0x026c
+  012f: K.KX = KillerPawn.Location.X
+  0159: K.KY = KillerPawn.Location.Y
+  0183: K.KZ = KillerPawn.Location.Z
+  01ad: if !((KillerPawn.Weapon != none)) goto 0x01ed
+  01c1: K.KWeapon = TnStatisticsBackendKillTable.GetShortWeaponName(KillerPawn.Weapon.get_Class())
+  01ed: if !((KillerPawn.GetTeam() != none)) goto 0x022c
+  0206: K.KTeam = cast3a(KillerPawn.GetTeamNum())
+  022c: K.KForm = GetFormName(KillerPawn)
+  024c: K.KTrans = GetTransformerName(Killer)
+  026c: K.VID = obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(KilledPlayer.PlayerReplicationInfo.UniqueId)
+  02a7: K.VLevel = VictimPRI.GetPlayerLevel()
+  02cb: if !((KilledPawn != none)) goto 0x0437
+  02d6: K.VX = KilledPawn.Location.X
+  0300: K.VY = KilledPawn.Location.Y
+  032a: K.VZ = KilledPawn.Location.Z
+  0354: if !((KilledPawn.Weapon != none)) goto 0x0394
+  0368: K.VWeapon = TnStatisticsBackendKillTable.GetShortWeaponName(KilledPawn.Weapon.get_Class())
+  0394: if !((KilledPawn.GetTeam() != none)) goto 0x03d3
+  03ad: K.VTeam = cast3a(KilledPawn.GetTeamNum())
+  03d3: K.VAge = KilledPawn.GetAge()
+  03f7: K.VForm = GetFormName(KilledPawn)
+  0417: K.VTrans = GetTransformerName(KilledPlayer)
+  0437: K.DType = TnStatisticsBackendKillTable.GetShortDamageType(DamageType)
+  0453: self.Kills.AddItem(K)
+  0460: return nothing
+  0462: <eos>
+
+function TnStatisticsBackendKillTable.GetShortWeaponName  (script 48 bytes)
+  0000: return obj'Core.Strings'.static.Mid(cast56(W), obj'Core.Strings'.static.Len("TnWeapon"), )
+  0029: return return
+  002f: <eos>
+
+function TnStatisticsBackendKillTable.GetShortDamageType  (script 52 bytes)
+  0000: return obj'Core.Strings'.static.Mid(cast56(D), obj'Core.Strings'.static.Len("TnDamageType"), )
+  002d: return return
+  0033: <eos>

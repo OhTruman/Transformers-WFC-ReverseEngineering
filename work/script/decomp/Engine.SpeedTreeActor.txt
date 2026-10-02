@@ -1,0 +1,20 @@
+function SpeedTreeActor.CheckForErrors  (script 760 bytes)
+  0000: CheckForErrors()
+  0006: if !(((self.SpeedTreeComponent != none) && (self.SpeedTreeComponent.SpeedTree != none))) goto 0x02f5
+  0027: BranchMaterial = ((self.SpeedTreeComponent.BranchMaterial != none) ? self.SpeedTreeComponent.BranchMaterial.GetParentMaterial() : none)
+  0060: LeafMaterial = ((self.SpeedTreeComponent.LeafMaterial != none) ? self.SpeedTreeComponent.LeafMaterial.GetParentMaterial() : none)
+  0099: BillboardMaterial = ((self.SpeedTreeComponent.BillboardMaterial != none) ? self.SpeedTreeComponent.BillboardMaterial.GetParentMaterial() : none)
+  00d2: if !((BranchMaterial == none)) goto 0x0128
+  00dd: BranchMaterial = ((self.SpeedTreeComponent.SpeedTree.BranchMaterial != none) ? self.SpeedTreeComponent.SpeedTree.BranchMaterial.GetParentMaterial() : none)
+  0128: if !((LeafMaterial == none)) goto 0x017e
+  0133: LeafMaterial = ((self.SpeedTreeComponent.SpeedTree.LeafMaterial != none) ? self.SpeedTreeComponent.SpeedTree.LeafMaterial.GetParentMaterial() : none)
+  017e: if !((BillboardMaterial == none)) goto 0x01d4
+  0189: BillboardMaterial = ((self.SpeedTreeComponent.SpeedTree.BillboardMaterial != none) ? self.SpeedTreeComponent.SpeedTree.BillboardMaterial.GetParentMaterial() : none)
+  01d4: if !(((BranchMaterial != none) && BranchMaterial.TwoSided)) goto 0x0234
+  01f3: EmitCheckMessage(1, ("SpeedTree uses two-sided branch material" @ cast56(BranchMaterial)), , )
+  0234: if !(((LeafMaterial != none) && LeafMaterial.TwoSided)) goto 0x0292
+  0253: EmitCheckMessage(1, ("SpeedTree uses two-sided leaf material" @ cast56(LeafMaterial)), , )
+  0292: if !(((BillboardMaterial != none) && BillboardMaterial.TwoSided)) goto 0x02f5
+  02b1: EmitCheckMessage(1, ("SpeedTree uses two-sided billboard material" @ cast56(BillboardMaterial)), , )
+  02f5: return nothing
+  02f7: <eos>

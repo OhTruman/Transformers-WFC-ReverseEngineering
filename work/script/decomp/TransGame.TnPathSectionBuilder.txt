@@ -1,0 +1,104 @@
+function TnPathSectionBuilder.BuildSections  (script 339 bytes)
+  0000: Current = obj'Engine.Allocation'.static.CreateObject(obj'TnPathSection', self)
+  001f: if !(((Current == none) || (RouteCache.Length == 0))) goto 0x003a
+  0038: return none
+  003a: Head = Current
+  0045: idx = (RouteCache.Length - 1)
+  0054: if !((idx > 0)) goto 0x012c
+  005f: Current.AddPoint(idx[RouteCache])
+  007d: Type = TnPathSectionBuilder.CalcSectionType(TransformerPawn, (idx - 1)[RouteCache], idx[RouteCache])
+  00a7: if !((cast3a(Current.GetSectionType()) == cast3a(0))) goto 0x00e0
+  00c5: Current.SetSectionType(Type)
+  00dd: goto 0x0122
+  00e0: if !((cast3a(Current.GetSectionType()) != cast3a(Type))) goto 0x0122
+  0101: Current = TnPathSectionBuilder.StartNewSection(Current, idx[RouteCache], Type)
+  0122: SubtractSubtract_PreInt(idx)
+  0129: goto 0x0054
+  012c: Current.AddPoint(0[RouteCache])
+  0146: return Head
+  014c: return return
+  0152: <eos>
+
+function TnPathSectionBuilder.StartNewSection  (script 140 bytes)
+  0000: NewSection = obj'Engine.Allocation'.static.CreateObject(obj'TnPathSection', self)
+  001f: CurrentSection.SetNext(NewSection)
+  0037: NewSection.SetPrev(CurrentSection)
+  004f: NewSection.AddPoint(NavPoint)
+  0067: NewSection.SetSectionType(SectionType)
+  007f: return NewSection
+  0085: return return
+  008b: <eos>
+
+function TnPathSectionBuilder.CalcSectionType  (script 550 bytes)
+  0000: Spec = Point1.GetReachSpecTo(Point2)
+  001e: if !((Spec != none)) goto 0x00af
+  0029: CanRobo = Spec.SupportsMovementCapabilities(TransformerPawn._RobotForm.get_FormMovementCapabilities())
+  005f: CanVehicle = ((TransformerPawn._VehicleForm == none) ? false : Spec.SupportsMovementCapabilities(TransformerPawn._VehicleForm.get_FormMovementCapabilities()))
+  00ac: goto 0x014a
+  00af: CanRobo = TransformerPawn.ActorReachableInForm(TransformerPawn._RobotForm, Point2)
+  00dc: CanVehicle = TransformerPawn.ActorReachableInForm(TransformerPawn._VehicleForm, Point2)
+  0109: if !((TransformerPawn.Anchor == Point2)) goto 0x014a
+  0121: if !(TransformerPawn.get_IsInRobotForm()) goto 0x0142
+  0137: CanRobo = true
+  013f: goto 0x014a
+  0142: CanVehicle = true
+  014a: if !((((AirPathNode(Point1) != none) && !Point2.bNotBased) && !Point2.bMover)) goto 0x0189
+  0186: return 2
+  0189: if !(((Point1.bMover || Point2.bMover) && ((Spec == none) || !Spec.IsFlyRequired()))) goto 0x01de
+  01d6: CanVehicle = false
+  01de: if !((Point2.bBlockedForVehicles || Point1.bBlockedForVehicles)) goto 0x020c
+  0204: CanVehicle = false
+  020c: return TnPathSectionBuilder.GetSectionType(CanRobo, CanVehicle)
+  021f: return return
+  0225: <eos>
+
+function TnPathSectionBuilder.GetSectionType  (script 57 bytes)
+  0000: if !((CanRobo && CanVehicle)) goto 0x0017
+  0014: return 1
+  0017: if !(CanRobo) goto 0x0023
+  0020: return 2
+  0023: if !(CanVehicle) goto 0x002f
+  002c: return 3
+  002f: return 0
+  0032: return return
+  0038: <eos>
+
+function TnPathSectionBuilder.FindActorReachablePathSection  (script 238 bytes)
+  0000: if !((TransformerPawn.get_IsInVehicleForm() && TnPathSectionBuilder.IsPlaneGoingToGround(TransformerPawn, Destination))) goto 0x002e
+  002b: return 0
+  002e: CanRobo = TransformerPawn.ActorReachableInForm(TransformerPawn._RobotForm, Destination)
+  005b: CanVehicle = TransformerPawn.ActorReachableInForm(TransformerPawn._VehicleForm, Destination)
+  0088: if !((!CanRobo && TransformerPawn.get_IsInRobotForm())) goto 0x00ae
+  00ab: return 0
+  00ae: if !((!CanVehicle && TransformerPawn.get_IsInVehicleForm())) goto 0x00d4
+  00d1: return 0
+  00d4: return TnPathSectionBuilder.GetSectionType(CanRobo, CanVehicle)
+  00e7: return return
+  00ed: <eos>
+
+function TnPathSectionBuilder.IsPlaneGoingToGround  (script 111 bytes)
+  0000: if !((TnPlaneForm(TransformerPawn._VehicleForm) == none)) goto 0x001b
+  0019: return false
+  001b: if !((AirPathNode(Destination) != none)) goto 0x002d
+  002b: return false
+  002d: PawnDestination = Pawn(Destination)
+  003d: if !((PawnDestination != none)) goto 0x005a
+  0048: return !PawnDestination.bIsFlying
+  005a: return (NavigationPoint(Destination) != none)
+  0068: return return
+  006e: <eos>
+
+function TnPathSectionBuilder.BuildActorReachablePathSection  (script 211 bytes)
+  0000: Current = obj'Engine.Allocation'.static.CreateObject(obj'TnPathSection', self)
+  001f: if !((Current == none)) goto 0x002c
+  002a: return none
+  002c: Head = Current
+  0037: Current.AddPoint(Destination)
+  004f: Nav = BoundController.GetDynamicNavPoint()
+  0068: if !((Nav != none)) goto 0x0096
+  0073: Nav.SetLocation(BoundController.Pawn.Location)
+  0096: Current.AddPoint(Nav)
+  00ae: Current.SetSectionType(SectionType)
+  00c6: return Head
+  00cc: return return
+  00d2: <eos>

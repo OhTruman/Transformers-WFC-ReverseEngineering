@@ -1,0 +1,356 @@
+function OnlineReservationInterfaceImpl.OnRequestReservationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.AddRequestReservationCompleteDelegate  (script 44 bytes)
+  0000: if !((self.RequestReservationCompleteDelegates.Find(RequestReservationCompleteDelegate) == -1)) goto 0x0029
+  0017: self.RequestReservationCompleteDelegates.Length[self.RequestReservationCompleteDelegates] = RequestReservationCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineReservationInterfaceImpl.ClearRequestReservationCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.RequestReservationCompleteDelegates.Find(RequestReservationCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.RequestReservationCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineReservationInterfaceImpl.OnReservationRequestCompleteInternal  (script 231 bytes)
+  0000: if !((self.PendingReservationBeaconClient != none)) goto 0x0023
+  000b: self.PendingReservationBeaconClient.__OnReservationRequestComplete__Delegate = delegate.None
+  0023: bWasSuccessful = (cast3a(ReservationResult) == cast3a(4))
+  0037: if !(!bWasSuccessful) goto 0x0057
+  0042: OnlineReservationInterfaceImpl.DestroyReservationClient(self.PendingReservationBeaconClient)
+  004d: self.PendingReservationBeaconClient = none
+  0054: goto 0x00b4
+  0057: self.PendingReservationBeaconClient.BeaconName = SessionName
+  006b: if !((SessionName == 'Party')) goto 0x0097
+  007e: OnlineReservationInterfaceImpl.DestroyReservationClient(self.PartyReservationBeaconClient)
+  0089: self.PartyReservationBeaconClient = self.PendingReservationBeaconClient
+  0094: goto 0x00ad
+  0097: OnlineReservationInterfaceImpl.DestroyReservationClient(self.GameReservationBeaconClient)
+  00a2: self.GameReservationBeaconClient = self.PendingReservationBeaconClient
+  00ad: self.PendingReservationBeaconClient = none
+  00b4: foreach self.RequestReservationCompleteDelegates(TheDelegate,) (end 0x00e3)
+  00c3: OnRequestReservationComplete(bWasSuccessful, SessionName, PlatformSpecificInfo)
+  00e2: iternext
+  00e3: iterpop
+  00e4: return nothing
+  00e6: <eos>
+
+function OnlineReservationInterfaceImpl.DestroyReservationClient  (script 52 bytes)
+  0000: if !((BeaconClient != none)) goto 0x0031
+  000b: BeaconClient.ClearDelegates()
+  001e: BeaconClient.DestroyBeacon()
+  0031: return nothing
+  0033: <eos>
+
+function OnlineReservationInterfaceImpl.IsAlreadyConnectedToHost  (script 87 bytes)
+  0000: return (((self.GameReservationBeaconClient != none) && (self.GameReservationBeaconClient.HostPendingRequest == DesiredHost)) || ((self.PartyReservationBeaconClient != none) && (self.PartyReservationBeaconClient.HostPendingRequest == DesiredHost)))
+  0050: return return
+  0056: <eos>
+
+function OnlineReservationInterfaceImpl.IsDesiredHostThePartyLeader  (script 70 bytes)
+  0000: if !((self.PartyReservationBeaconClient == none)) goto 0x000d
+  000b: return false
+  000d: return (self.PartyReservationBeaconClient.GetConnectionChannel() == DesiredHost.GameSettings.ReservationChannel)
+  003f: return return
+  0045: <eos>
+
+function OnlineReservationInterfaceImpl.RequestReservation  (script 907 bytes)
+  0000: 0[PlatformSpecificInfo] = 0[PlatformSpecificInfo]
+  000f: if !(OnlineReservationInterfaceImpl.IsAlreadyConnectedToHost(DesiredHost)) goto 0x008e
+  001d: LogInternal("Trying to accept a game invite to a game that you are already in: aborting", 'DevOnline', , )
+  0076: OnlineReservationInterfaceImpl.OnReservationRequestCompleteInternal(0, 'None', PlatformSpecificInfo)
+  008c: return nothing
+  008e: if !(((self.PendingReservationBeaconClient != none) && (self.PendingReservationBeaconClient.HostPendingRequest == DesiredHost))) goto 0x0137
+  00b6: LogInternal("Trying to accept a game invite to a game that you are already attempting to join: aborting", 'DevOnline', , )
+  011f: OnlineReservationInterfaceImpl.OnReservationRequestCompleteInternal(0, 'None', PlatformSpecificInfo)
+  0135: return nothing
+  0137: if !((self.PendingReservationBeaconClient != none)) goto 0x01ea
+  0142: LogInternal("Error: There is already a reservation request in the queue, you must cancel the current reservation before requesting another one", 'DevOnline', , )
+  01d2: OnlineReservationInterfaceImpl.OnReservationRequestCompleteInternal(0, 'None', PlatformSpecificInfo)
+  01e8: return nothing
+  01ea: if !(OnlineReservationInterfaceImpl.IsDesiredHostThePartyLeader(DesiredHost)) goto 0x02ce
+  01f8: LogInternal("Found existing connection on the party reservation channel, cancelling party reservation first since we'll go through the game invite route to return to the party", 'DevOnline', , )
+  02a9: SessionNames.AddItem(self.PartyReservationBeaconClient.BeaconName)
+  02bf: CancelReservations(SessionNames)
+  02ce: self.PendingReservationBeaconClient = new(nothing, nothing, obj'PartyBeaconClient', nothing, EventUploadConfigs)
+  02e2: self.PendingReservationBeaconClient.BeaconName = 'PendingReservationClient'
+  02fa: OnlineReservationInterfaceImpl.BuildPartyList(Players, IncludeAllPartyMembers)
+  030b: self.PendingReservationBeaconClient.__OnReservationRequestComplete__Delegate = delegate.OnReservationRequestCompleteInternal
+  0323: self.PendingReservationBeaconClient.__OnHostHasCancelled__Delegate = delegate.OnHostHasCancelledReservationInternal
+  033b: self.PendingReservationBeaconClient.__OnJoinSessionRequestReceived__Delegate = delegate.OnJoinSessionRequestReceived
+  0353: self.PendingReservationBeaconClient.__OnReturnToSessionResponse__Delegate = delegate.OnReturnToSessionResponseInternal
+  036b: self.PendingReservationBeaconClient.RequestReservation(DesiredHost, Players)
+  0388: return nothing
+  038a: <eos>
+
+function OnlineReservationInterfaceImpl.CancelReservations  (script 234 bytes)
+  0000: foreach SessionNames(SessionName,) (end 0x00e6)
+  000f: LogInternal(("CancelReservation requested for session" @ cast57(SessionName)), 'DevOnline', , )
+  004e: if !(((self.GameReservationBeaconClient != none) && (SessionName == self.GameReservationBeaconClient.BeaconName))) goto 0x009b
+  0073: self.GameReservationBeaconClient.CancelReservation()
+  0086: OnlineReservationInterfaceImpl.DestroyReservationClient(self.GameReservationBeaconClient)
+  0091: self.GameReservationBeaconClient = none
+  0098: goto 0x00e5
+  009b: if !(((self.PartyReservationBeaconClient != none) && (SessionName == self.PartyReservationBeaconClient.BeaconName))) goto 0x00e5
+  00c0: self.PartyReservationBeaconClient.CancelReservation()
+  00d3: OnlineReservationInterfaceImpl.DestroyReservationClient(self.PartyReservationBeaconClient)
+  00de: self.PartyReservationBeaconClient = none
+  00e5: iternext
+  00e6: iterpop
+  00e7: return nothing
+  00e9: <eos>
+
+function OnlineReservationInterfaceImpl.BuildPartyList  (script 96 bytes)
+  0000: if !(((self.ReservationBeaconHost != none) && IncludeAllPartyMembers)) goto 0x004a
+  0016: PartyReservations = self.ReservationBeaconHost.GetReservations()
+  002f: PartyReservations.GetAllMembers(Members)
+  0047: goto 0x005d
+  004a: Members.AddItem(OnlineReservationInterfaceImpl.CreateLocalOnlinePlayer())
+  005d: return nothing
+  005f: <eos>
+
+function OnlineReservationInterfaceImpl.GetLocalPlayerController  (script 75 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'Engine.PlayerController', PC) (end 0x003d)
+  0039: goto 0x003d
+  003c: iternext
+  003d: iterpop
+  003e: return PC
+  0044: return return
+  004a: <eos>
+
+function OnlineReservationInterfaceImpl.GetLocalPRI  (script 27 bytes)
+  0000: return GetLocalPlayerController().PlayerReplicationInfo
+  0014: return return
+  001a: <eos>
+
+function OnlineReservationInterfaceImpl.OnJoinSessionRequestReceived  (script 110 bytes)
+  0000: PC = GetLocalPlayerController()
+  0010: LogInternal(("Issuing ClientJoinSession on" @ cast56(PC)), 'DevOnline', , )
+  0044: PC.ClientJoinSession(SessionName, SearchClass, PlatformSpecificInfo, PostJoinSessionOption)
+  006b: return nothing
+  006d: <eos>
+
+function OnlineReservationInterfaceImpl.OnHostHasCancelledReservation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.AddHostHasCancelledReservationDelegate  (script 44 bytes)
+  0000: if !((self.HostHasCancelledReservationDelegates.Find(HostHasCancelledReservationDelegate) == -1)) goto 0x0029
+  0017: self.HostHasCancelledReservationDelegates.Length[self.HostHasCancelledReservationDelegates] = HostHasCancelledReservationDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineReservationInterfaceImpl.ClearHostHasCancelledReservationDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.HostHasCancelledReservationDelegates.Find(HostHasCancelledReservationDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.HostHasCancelledReservationDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineReservationInterfaceImpl.OnHostHasCancelledReservationInternal  (script 217 bytes)
+  0000: SessionName = BeaconClient.BeaconName
+  0014: if !((BeaconClient == self.PendingReservationBeaconClient)) goto 0x004d
+  0023: 0[PlatformSpecificInfo] = 0[PlatformSpecificInfo]
+  0032: OnlineReservationInterfaceImpl.OnReservationRequestCompleteInternal(0, 'None', PlatformSpecificInfo)
+  0048: return nothing
+  004a: goto 0x00b1
+  004d: if !((BeaconClient == self.PartyReservationBeaconClient)) goto 0x0090
+  005c: if !((self.GameReservationBeaconClient != none)) goto 0x007b
+  0067: OnlineReservationInterfaceImpl.DestroyGameSessionForClient(BeaconClient.BeaconName)
+  007b: OnlineReservationInterfaceImpl.DestroyReservationClient(self.PartyReservationBeaconClient)
+  0086: self.PartyReservationBeaconClient = none
+  008d: goto 0x00b1
+  0090: if !((BeaconClient == self.GameReservationBeaconClient)) goto 0x00b1
+  009f: OnlineReservationInterfaceImpl.DestroyReservationClient(self.GameReservationBeaconClient)
+  00aa: self.GameReservationBeaconClient = none
+  00b1: foreach self.HostHasCancelledReservationDelegates(TheDelegate,) (end 0x00d5)
+  00c0: OnHostHasCancelledReservation(SessionName)
+  00d4: iternext
+  00d5: iterpop
+  00d6: return nothing
+  00d8: <eos>
+
+function OnlineReservationInterfaceImpl.DestroyGameSessionForClient  (script 62 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: OnlineSub.GameInterface.DestroyOnlineGame(SessionName)
+  003b: return nothing
+  003d: <eos>
+
+function OnlineReservationInterfaceImpl.OnRequestReturnToPartySessionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.AddRequestReturnToPartySessionDelegate  (script 44 bytes)
+  0000: if !((self.RequestReturnToPartySessionCompleteDelegates.Find(RequestReturnToPartySessionCompleteDelegate) == -1)) goto 0x0029
+  0017: self.RequestReturnToPartySessionCompleteDelegates.Length[self.RequestReturnToPartySessionCompleteDelegates] = RequestReturnToPartySessionCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineReservationInterfaceImpl.ClearRequestReturnToPartySessionDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.RequestReturnToPartySessionCompleteDelegates.Find(RequestReturnToPartySessionCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.RequestReturnToPartySessionCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineReservationInterfaceImpl.OnReturnToSessionResponseInternal  (script 46 bytes)
+  0000: foreach self.RequestReturnToPartySessionCompleteDelegates(TheDelegate,) (end 0x002a)
+  000f: OnRequestReturnToPartySessionComplete(bWasSuccessful, SessionName)
+  0029: iternext
+  002a: iterpop
+  002b: return nothing
+  002d: <eos>
+
+function OnlineReservationInterfaceImpl.RequestReturnToPartySession  (script 52 bytes)
+  0000: if !((self.PartyReservationBeaconClient != none)) goto 0x0021
+  000b: self.PartyReservationBeaconClient.RequestReturnToSession()
+  001e: goto 0x0031
+  0021: OnlineReservationInterfaceImpl.OnReturnToSessionResponseInternal(false, 'None')
+  0031: return nothing
+  0033: <eos>
+
+function OnlineReservationInterfaceImpl.OnReservationHostCreated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.AddReservationHostCreatedDelegate  (script 44 bytes)
+  0000: if !((self.ReservationHostCreatedDelegates.Find(ReservationHostCreatedDelegate) == -1)) goto 0x0029
+  0017: self.ReservationHostCreatedDelegates.Length[self.ReservationHostCreatedDelegates] = ReservationHostCreatedDelegate
+  0029: return nothing
+  002b: <eos>
+
+function OnlineReservationInterfaceImpl.ClearReservationHostCreatedDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.ReservationHostCreatedDelegates.Find(ReservationHostCreatedDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.ReservationHostCreatedDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineReservationInterfaceImpl.OnHostBeaconStarted  (script 46 bytes)
+  0000: foreach self.ReservationHostCreatedDelegates(TheDelegate,) (end 0x002a)
+  000f: OnReservationHostCreated(bWasSuccessful, ReservationChannel)
+  0029: iternext
+  002a: iterpop
+  002b: return nothing
+  002d: <eos>
+
+function OnlineReservationInterfaceImpl.CreateReservationHost  (script 223 bytes)
+  0000: if !((self.ReservationBeaconHost == none)) goto 0x004a
+  000b: Players.AddItem(OnlineReservationInterfaceImpl.CreateLocalOnlinePlayer())
+  001e: self.ReservationBeaconHost = new(nothing, nothing, self.ReservationBeaconHostClass, nothing, EventUploadConfigs)
+  0032: self.ReservationBeaconHost.BeaconName = 'ReservationHost'
+  004a: self.ReservationBeaconHost.__OnHostBeaconStarted__Delegate = delegate.OnHostBeaconStarted
+  0062: self.ReservationBeaconHost.__OnClientReservationAccepted__Delegate = delegate.OnClientReservationAcceptedInternal
+  007a: self.ReservationBeaconHost.__OnClientCancellationReceived__Delegate = delegate.OnClientReservationCancelledInternal
+  0092: self.ReservationBeaconHost.__OnClientReturnToSessionAccepted__Delegate = delegate.OnClientReturnToSessionAcceptedInternal
+  00aa: self.ReservationBeaconHost.InitHostBeacon(NumTeams, NumPlayersPerTeam, NumReservations, SessionName, Players, AccumulateMembersToOneParty)
+  00dc: return nothing
+  00de: <eos>
+
+function OnlineReservationInterfaceImpl.DestroyReservationHost  (script 59 bytes)
+  0000: if !((self.ReservationBeaconHost != none)) goto 0x0038
+  000b: self.ReservationBeaconHost.ClearDelegates()
+  001e: self.ReservationBeaconHost.DestroyBeacon()
+  0031: self.ReservationBeaconHost = none
+  0038: return nothing
+  003a: <eos>
+
+function OnlineReservationInterfaceImpl.CreateLocalOnlinePlayer  (script 118 bytes)
+  0000: PRI = GetLocalPRI()
+  0010: Op.NetId = PRI.UniqueId
+  002f: Op.NickName = PRI.PlayerName
+  004e: Op.Skill = GetLocalSkill()
+  0069: return Op
+  006f: return return
+  0075: <eos>
+
+function OnlineReservationInterfaceImpl.GetLocalSkill  (script 27 bytes)
+  0000: return GetLocalPRI().PlayerSkill
+  0014: return return
+  001a: <eos>
+
+function OnlineReservationInterfaceImpl.CancelReservationsForPlayersThatHaveNotJoinedGame  (script 244 bytes)
+  0000: if !((self.ReservationBeaconHost == none)) goto 0x000d
+  000b: return nothing
+  000d: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0026: Reservations = GetReservations()
+  0036: Reservations.GetAllMembers(Players)
+  004e: foreach Players(Op,) (end 0x00f0)
+  005d: FoundPC = false
+  0065: foreach WI.AllControllers(obj'Engine.PlayerController', PC) (end 0x00c0)
+  0085: if !((PC.PlayerReplicationInfo.UniqueId == Op.NetId)) goto 0x00bf
+  00b4: FoundPC = true
+  00bc: goto 0x00c0
+  00bf: iternext
+  00c0: iterpop
+  00c1: if !(!FoundPC) goto 0x00ef
+  00cc: self.ReservationBeaconHost.CancelReservationForPlayer(Op.NetId)
+  00ef: iternext
+  00f0: iterpop
+  00f1: return nothing
+  00f3: <eos>
+
+function OnlineReservationInterfaceImpl.GetReservations  (script 40 bytes)
+  0000: if !((self.ReservationBeaconHost != none)) goto 0x001f
+  000b: return self.ReservationBeaconHost.GetReservations()
+  001f: return none
+  0021: return return
+  0027: <eos>
+
+function OnlineReservationInterfaceImpl.RefreshReservationTeams  (script 43 bytes)
+  0000: if !((self.ReservationBeaconHost != none)) goto 0x001e
+  000b: self.ReservationBeaconHost.RefreshReservationTeams()
+  001e: DumpReservationState()
+  0028: return nothing
+  002a: <eos>
+
+function OnlineReservationInterfaceImpl.OnClientReservationAcceptedInternal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.OnClientReservationCancelledInternal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.OnClientReturnToSessionAcceptedInternal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineReservationInterfaceImpl.TellPartyToJoinSession  (script 263 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: if !(!OnlineSub.GameInterface.ReadPlatformSpecificSessionInfoBySessionName(SessionName, PlatformSpecificInfo)) goto 0x00d2
+  0045: LogInternal((("Error: Failed to read platform specific session information for session (" $ cast57(SessionName)) $ ") party members will not be able to join"), 'DevOnline', , )
+  00d2: if !((self.ReservationBeaconHost != none)) goto 0x0104
+  00dd: self.ReservationBeaconHost.TellClientsToJoinSession(SessionName, obj'Engine.OnlineGameSearch', PlatformSpecificInfo, PostJoinSessionOption)
+  0104: return nothing
+  0106: <eos>
+
+function OnlineReservationInterfaceImpl.NotifyPlayerConnected  (script 108 bytes)
+  0000: if !((self.ReservationBeaconHost != none)) goto 0x0023
+  000b: self.ReservationBeaconHost.NotifyPlayerConnected(PlayerID)
+  0023: if !((self.GameReservationBeaconClient != none)) goto 0x0046
+  002e: self.GameReservationBeaconClient.NotifyPlayerConnected(PlayerID)
+  0046: if !((self.PartyReservationBeaconClient != none)) goto 0x0069
+  0051: self.PartyReservationBeaconClient.NotifyPlayerConnected(PlayerID)
+  0069: return nothing
+  006b: <eos>
+
+function OnlineReservationInterfaceImpl.DumpReservationState  (script 235 bytes)
+  0000: LogInternal(("ReservationBeaconHost" @ cast56(self.ReservationBeaconHost)), 'DevOnline', , )
+  002d: if !((self.ReservationBeaconHost != none)) goto 0x004b
+  0038: self.ReservationBeaconHost.DumpReservations()
+  004b: LogInternal(("GameReservationBeaconClient" @ cast56(self.GameReservationBeaconClient)), 'DevOnline', , )
+  007e: LogInternal(("PartyReservationBeaconClient" @ cast56(self.PartyReservationBeaconClient)), 'DevOnline', , )
+  00b2: LogInternal(("PendingReservationBeaconClient" @ cast56(self.PendingReservationBeaconClient)), 'DevOnline', , )
+  00e8: return nothing
+  00ea: <eos>
+
+function OnlineReservationInterfaceImpl.ForceDenyAllReservationRequests  (script 33 bytes)
+  0000: if !((self.ReservationBeaconHost != none)) goto 0x001e
+  000b: self.ReservationBeaconHost.ForceDenyAllRequests()
+  001e: return nothing
+  0020: <eos>

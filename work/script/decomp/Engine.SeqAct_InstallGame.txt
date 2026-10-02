@@ -1,0 +1,32 @@
+function SeqAct_InstallGame.Activated  (script 195 bytes)
+  0000: PC = PlayerController(0[self.Targets])
+  0012: if !((PC == none)) goto 0x001f
+  001d: return nothing
+  001f: if !((self.InstallerMonitorClassName != "")) goto 0x00b5
+  002b: InstallerMonitorClass = class<HmInstallerMonitor>(DynamicLoadObject(self.InstallerMonitorClassName, obj'Core.Class', ))
+  004b: if !((InstallerMonitorClass != none)) goto 0x00b5
+  0056: self.InstallMonitor = new(nothing, nothing, InstallerMonitorClass, nothing, GetRemoteRole)
+  006a: self.InstallMonitor.SetInstallingPlayer(PC)
+  0082: self.InstallMonitor.__CleanupInstallMonitor__Delegate = delegate.RemoveInstallerMonitor
+  009a: self.InstallMonitor.Install()
+  00ad: self.HasStartedInstalling = true
+  00b5: ActivateOutputLink(0)
+  00c0: return nothing
+  00c2: <eos>
+
+function SeqAct_InstallGame.RemoveInstallerMonitor  (script 10 bytes)
+  0000: self.InstallMonitor = none
+  0007: return nothing
+  0009: <eos>
+
+function SeqAct_InstallGame.DoUpdate  (script 33 bytes)
+  0000: if !((none == self.InstallMonitor)) goto 0x0018
+  000b: ActivateOutputLink(1)
+  0016: return true
+  0018: return false
+  001a: return return
+  0020: <eos>
+
+function SeqAct_InstallGame.IsInstalling  (script 2 bytes)
+  0000: nothing
+  0001: <eos>

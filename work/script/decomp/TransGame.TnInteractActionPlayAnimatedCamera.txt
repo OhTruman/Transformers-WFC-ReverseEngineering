@@ -1,0 +1,9 @@
+function TnInteractActionPlayAnimatedCamera.TriggerAction  (script 198 bytes)
+  0000: User = Interact.GetCurrentUser()
+  0019: PC = TnPlayerController(User.Controller)
+  0032: if !(((PC != none) && PC.IsLocalPlayerController())) goto 0x00c3
+  0055: PC.PlayCameraAnimation(self.CameraAnims.FindCameraAnimation(User), Interact, , false)
+  0087: if !(self.BlockingAction) goto 0x00c3
+  0090: TnCamera(PC.PlayerCamera).AnimPlayer.AddCameraAnimationCompleteObserver(delegate.ActionComplete)
+  00c3: return nothing
+  00c5: <eos>

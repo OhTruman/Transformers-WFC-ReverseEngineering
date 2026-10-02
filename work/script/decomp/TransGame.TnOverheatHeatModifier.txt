@@ -1,0 +1,15 @@
+function TnOverheatHeatModifier.OnHeatEvent  (script 141 bytes)
+  0000: nothing
+  0001: if !(((cast3a(Type) == cast3a(4)) && (self.TimeLeftOnOverheat > cast3f(0)))) goto 0x0047
+  0020: (self.TimeLeftOnOverheat -= DeltaTime)
+  002c: if !((self.TimeLeftOnOverheat <= cast3f(0))) goto 0x0044
+  0039: Heat = 0.0
+  0044: goto 0x0080
+  0047: if !((cast3a(Type) == cast3a(5))) goto 0x0065
+  0057: self.TimeLeftOnOverheat = self.OverheatDelay
+  0062: goto 0x0080
+  0065: if !((cast3a(Type) == cast3a(6))) goto 0x0080
+  0075: self.TimeLeftOnOverheat = 0.0
+  0080: return Heat
+  0086: return return
+  008c: <eos>

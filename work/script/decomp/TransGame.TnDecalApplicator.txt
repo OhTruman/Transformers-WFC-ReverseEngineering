@@ -1,0 +1,53 @@
+function TnDecalApplicator.GetTraceDirection  (script 21 bytes)
+  0000: return vect(0,0,-1)
+  000e: return return
+  0014: <eos>
+
+function TnDecalApplicator.ShouldDrawDebug  (script 78 bytes)
+  0000: DM = TnDebugManager(Instigator.WorldInfo.GetDebugManager())
+  0027: if !((DM != none)) goto 0x0045
+  0032: return DM.DecalApplicatorDebug
+  0042: goto 0x0047
+  0045: return false
+  0047: return return
+  004d: <eos>
+
+function TnDecalApplicator.DrawDebug  (script 247 bytes)
+  0000: if !(TnDecalApplicator.ShouldDrawDebug(Instigator)) goto 0x00f4
+  000e: obj'Engine.Debug'.static.DrawLine(TraceStartLocation, TraceEndLocation, obj'Core.Colors'.static.White(), true)
+  003f: if !((obj'Core.Math'.static.VSize(self.TraceExtent) > cast3f(0))) goto 0x0088
+  0057: obj'Engine.Debug'.static.DrawBox(HitLocation, self.TraceExtent, obj'Core.Colors'.static.White(), true)
+  0088: if !((HitActor != none)) goto 0x00f4
+  0093: obj'Engine.Debug'.static.DrawText(HitLocation, ((("Hit" @ cast57(HitActor.Name)) @ "Here, Glancing: ") $ cast54(IsGlancing)), obj'Core.Colors'.static.White(), true)
+  00f4: return nothing
+  00f6: <eos>
+
+function TnDecalApplicator.GetDecalTemplate  (script 13 bytes)
+  0000: return self.Template
+  0006: return return
+  000c: <eos>
+
+function TnDecalApplicator.Apply  (script 705 bytes)
+  0000: TraceDirection = GetTraceDirection(Momentum)
+  001a: (TraceDirection *= self.TraceDistance)
+  0026: TraceEndLocation = (TraceStartLocation + TraceDirection)
+  0038: HitActor = Instigator.Trace(HitLocation, HitNormal, none, TraceEndLocation, TraceStartLocation, true, self.TraceExtent, true, HitInfo, 1)
+  006c: CosAngleFromPerp = (HitNormal dot obj'Core.Math'.static.Normal(TraceDirection))
+  0089: IsGlancing = (obj'Core.Math'.static.Abs(CosAngleFromPerp) < self.GlancingThreshold)
+  00a7: TnDecalApplicator.DrawDebug(Instigator, TraceStartLocation, TraceEndLocation, HitLocation, HitActor, IsGlancing)
+  00cc: if !(IsGlancing) goto 0x00d7
+  00d5: return nothing
+  00d7: if !((HitActor != none)) goto 0x02be
+  00e2: DTemplate = GetDecalTemplate(HitInfo)
+  00f7: if !((DTemplate.Material == none)) goto 0x010f
+  010d: return nothing
+  010f: Rotation = cast3f((DTemplate.ApplyRandomRotation ? obj'Core.Random'.static.RandomInt(65535) : 0))
+  0146: decalScale = obj'Core.Random'.static.RandomFloat()
+  0160: decalDepthBias = obj'Core.Random'.static.RandomFloat(-0.0001)
+  017e: Width = (DTemplate.MinWidth + (decalScale * DTemplate.WidthRange))
+  01ad: Height = (DTemplate.UniformScale ? decalScale : obj'Core.Random'.static.RandomFloat())
+  01e2: (Height *= DTemplate.HeightRange)
+  01f9: (Height += DTemplate.MinHeight)
+  0210: HitActor.WorldInfo.MyDecalManager.SpawnDecal(DTemplate.Material, HitLocation, cast50(TraceDirection), Width, Height, DTemplate.Thickness, DTemplate.NoClip, DTemplate.Lifetime, Rotation, none, true, true, HitInfo.BoneName, -1, HitInfo.LevelIndex, decalDepthBias)
+  02be: return nothing
+  02c0: <eos>

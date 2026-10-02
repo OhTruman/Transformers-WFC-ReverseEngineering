@@ -1,0 +1,86 @@
+function HmTargetCirclePositionAdjuster.GetAdjustedPosition  (script 238 bytes)
+  0000: HmTargetCirclePositionAdjuster.CalculateStickyFactors(LastFramePosition, NewRawPosition, DeltaTime, YawStickyFactor, PitchStickyFactor)
+  001f: YawStickyFactor = obj'Core.Math'.static.Lerp(0.0, YawStickyFactor, ExternalStickinessFactor)
+  003f: PitchStickyFactor = obj'Core.Math'.static.Lerp(0.0, PitchStickyFactor, ExternalStickinessFactor)
+  005f: AdjustedPosition.X = obj'Core.Math'.static.Lerp(NewRawPosition.X, LastFramePosition.X, YawStickyFactor)
+  00a0: AdjustedPosition.Y = obj'Core.Math'.static.Lerp(NewRawPosition.Y, LastFramePosition.Y, PitchStickyFactor)
+  00e1: return AdjustedPosition
+  00e7: return return
+  00ed: <eos>
+
+function HmTargetCirclePositionAdjuster.CalculateStickyFactors  (script 159 bytes)
+  0000: Sticker = HmStrafingTargetSticker(get_Outer())
+  000e: CameraToTarget = Sticker.GetCameraToTarget()
+  0027: CombinedStickyFactor = GetCombinedStickyFactor(LastFramePosition, CameraToTarget, DeltaTime)
+  0046: PitchStickyFactor = HmTargetCirclePositionAdjuster.CalcStrafePitchStickyFactor(CameraToTarget, CombinedStickyFactor)
+  005c: YawStickyFactor = obj'Core.Math'.static.FClamp(CombinedStickyFactor, 0.0, self.MaxStrafeSticky)
+  007c: PitchStickyFactor = obj'Core.Math'.static.FClamp(PitchStickyFactor, 0.0, self.MaxStrafeSticky)
+  009c: return nothing
+  009e: <eos>
+
+function HmTargetCirclePositionAdjuster.GetCombinedStickyFactor  (script 182 bytes)
+  0000: Sticker = HmStrafingTargetSticker(get_Outer())
+  000e: TC = Sticker.GetTargetableComponent()
+  0027: StickyFactor = TC.GetTargetAssistStickynessStrafe(CameraToTarget)
+  0045: (StickyFactor *= CalcBothMovingStickyFactor(Sticker))
+  005b: (StickyFactor *= CalcOwnerNotMovingStickyFactor(Sticker, DeltaTime))
+  0076: (StickyFactor *= HmTargetCirclePositionAdjuster.CalcOutsideFullStrafeAreaStickyFactor(Sticker, CameraToTarget, LastFramePosition, TC))
+  0097: (StickyFactor *= HmTargetCirclePositionAdjuster.CalcProximityRampOutStickyFactor(CameraToTarget))
+  00a9: return StickyFactor
+  00af: return return
+  00b5: <eos>
+
+function HmTargetCirclePositionAdjuster.CalcBothMovingStickyFactor  (script 65 bytes)
+  0000: if !((Sticker.IsTargetMoving() && Sticker.IsOwnerMoving())) goto 0x0034
+  002e: return self.BothMovingStrafeStickyFactor
+  0034: return 1.0
+  003a: return return
+  0040: <eos>
+
+function HmTargetCirclePositionAdjuster.CalcOwnerNotMovingStickyFactor  (script 143 bytes)
+  0000: if !(!Sticker.IsOwnerMoving()) goto 0x0077
+  0018: if !((self.RampTimeMovingToStanding > cast3f(0))) goto 0x0051
+  0025: self.RampToNotMovingFactor = obj'Core.Math'.static.FMax(0.0, (self.RampToNotMovingFactor - (DeltaTime / self.RampTimeMovingToStanding)))
+  004e: goto 0x005c
+  0051: self.RampToNotMovingFactor = 0.0
+  005c: return obj'Core.Math'.static.Lerp(self.NotMovingStrafeStickyFactor, 1.0, self.RampToNotMovingFactor)
+  0077: self.RampToNotMovingFactor = 1.0
+  0082: return 1.0
+  0088: return return
+  008e: <eos>
+
+function HmTargetCirclePositionAdjuster.CalcOutsideFullStrafeAreaStickyFactor  (script 201 bytes)
+  0000: if !((self.FullStrafeArea < 1.0)) goto 0x00bc
+  000f: DistanceToTarget = obj'Core.Math'.static.VSize(CameraToTarget)
+  0025: CircleRadius = HmTargetCirclePositionAdjuster.ApparentCircleRadius(DistanceToTarget, TC.GetAdjustedTargetAngle(DistanceToTarget, 1))
+  0050: FlatRadius = (CircleRadius * self.FullStrafeArea)
+  0062: DistanceFromCenterOfTargetCircle = obj'Core.Math'.static.VSize(LastFramePosition)
+  0078: if !((DistanceFromCenterOfTargetCircle > FlatRadius)) goto 0x00bc
+  0087: return obj'Core.Math'.static.SCurve((1.0 - ((DistanceFromCenterOfTargetCircle - FlatRadius) / (CircleRadius - FlatRadius))))
+  00bc: return 1.0
+  00c2: return return
+  00c8: <eos>
+
+function HmTargetCirclePositionAdjuster.ApparentCircleRadius  (script 38 bytes)
+  0000: return (CameraToTargetDist * obj'Core.Math'.static.Tan((0.0174533 * CompAngle)))
+  001f: return return
+  0025: <eos>
+
+function HmTargetCirclePositionAdjuster.CalcProximityRampOutStickyFactor  (script 128 bytes)
+  0000: DistanceToTarget2d = obj'Core.Math'.static.VSize2D(CameraToTarget)
+  001e: if !((DistanceToTarget2d < self.ProximityRampOutFarDistance)) goto 0x0073
+  002d: if !((DistanceToTarget2d > self.ProximityRampOutNearDistance)) goto 0x006d
+  003c: return ((obj'Core.Math'.static.VSize2D(CameraToTarget) - self.ProximityRampOutNearDistance) / (self.ProximityRampOutFarDistance - self.ProximityRampOutNearDistance))
+  006a: goto 0x0073
+  006d: return 0.0
+  0073: return 1.0
+  0079: return return
+  007f: <eos>
+
+function HmTargetCirclePositionAdjuster.CalcStrafePitchStickyFactor  (script 101 bytes)
+  0000: DistanceToTarget = obj'Core.Math'.static.VSize(CameraToTarget)
+  0016: if !(((DistanceToTarget < self.StrafePitchStartRampOutDistance) && (CurrentStickyFactor > self.ZeroDistanceStrafePitchFactor))) goto 0x0058
+  0036: return obj'Core.Math'.static.Lerp(self.ZeroDistanceStrafePitchFactor, CurrentStickyFactor, (DistanceToTarget / self.StrafePitchStartRampOutDistance))
+  0058: return CurrentStickyFactor
+  005e: return return
+  0064: <eos>

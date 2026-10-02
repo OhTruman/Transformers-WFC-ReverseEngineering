@@ -1,0 +1,38 @@
+function Light.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Light.CollectRelevantLights  (script 12 bytes)
+  0000: Component
+  0005: Lights
+  000a: nothing
+  000b: <eos>
+
+function Light.ReplicatedEvent  (script 61 bytes)
+  0000: if !((VarName == 'bEnabled')) goto 0x002f
+  0013: self.LightComponent.SetEnabled(self.bEnabled)
+  002c: goto 0x003a
+  002f: ReplicatedObject.ReplicatedEvent(VarName)
+  003a: return nothing
+  003c: <eos>
+
+function Light.OnToggle  (script 251 bytes)
+  0000: if !(!self.bStatic) goto 0x00f8
+  000b: if !(0[Action.InputLinks].bHasImpulse) goto 0x0041
+  002a: self.LightComponent.SetEnabled(true)
+  003e: goto 0x00bb
+  0041: if !(1[Action.InputLinks].bHasImpulse) goto 0x0077
+  0060: self.LightComponent.SetEnabled(false)
+  0074: goto 0x00bb
+  0077: if !(2[Action.InputLinks].bHasImpulse) goto 0x00bb
+  0097: self.LightComponent.SetEnabled(!self.LightComponent.bEnabled)
+  00bb: self.bEnabled = self.LightComponent.bEnabled
+  00d1: ForceNetRelevant()
+  00db: SetForcedInitialReplicatedProperty(obj'Light.bEnabled', (self.bEnabled == default.bEnabled))
+  00f8: return nothing
+  00fa: <eos>
+
+function Light.GetLightComponent  (script 13 bytes)
+  0000: return self.LightComponent
+  0006: return return
+  000c: <eos>

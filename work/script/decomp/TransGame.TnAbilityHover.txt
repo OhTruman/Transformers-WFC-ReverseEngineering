@@ -1,0 +1,16 @@
+function TnAbilityHover.LocalTriggerAbility  (script 201 bytes)
+  0000: if !((self.OwnerPawn.Controller == none)) goto 0x009f
+  0014: LogInternal(((("ERROR: Attempting to trigger hover locally without a controller. IsDying?" @ cast54(self.OwnerPawn.IsDying())) @ "IsDead?") @ cast54(self.OwnerPawn.IsDead())), , , )
+  009d: return false
+  009f: TnPlayerController(self.OwnerPawn.Controller).Hover()
+  00c0: return true
+  00c2: return return
+  00c8: <eos>
+
+function TnAbilityHover.CanStartCooldown  (script 130 bytes)
+  0000: AS = TnAcrobaticsService(self.OwnerPawn.GetService('TnAcrobaticsService'))
+  0027: if !(EqualEqual_InterfaceInterface(AS, TnAcrobaticsService(none))) goto 0x003d
+  003b: return true
+  003d: return ((cast3a(AS.get_AcrobaticsState()) != cast3a(2)) && (cast3a(AS.get_AcrobaticsState()) != cast3a(3)))
+  007b: return return
+  0081: <eos>

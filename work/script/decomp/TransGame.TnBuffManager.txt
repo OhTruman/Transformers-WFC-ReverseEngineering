@@ -1,0 +1,320 @@
+function TnBuffManager.ReplicatedArrayEvent  (script 89 bytes)
+  0000: switch (VarName)
+  0007: case 'ReplicateToOwnerBuffs': (next 0x0025)
+  0013: ClientRecieveReplicateToOwnerBuff(Index)
+  0022: goto 0x0056
+  0025: case 'ReplicateToAllBuffs': (next 0x0043)
+  0031: ClientRecieveReplicateToAllBuff(Index)
+  0040: goto 0x0056
+  0043: default:
+  0046: ReplicatedArrayEvent(VarName, Index)
+  0056: return nothing
+  0058: <eos>
+
+function TnBuffManager.Initialize  (script 32 bytes)
+  0000: self.SavedReplicateToOwnerBuffClasses.Insert(0,64)
+  0009: self.SavedReplicateToAllBuffClasses.Insert(0,16)
+  0012: self.OwnerPawn = OwnerDude
+  001d: return nothing
+  001f: <eos>
+
+function TnBuffManager.SetHud  (script 14 bytes)
+  0000: self.OwnerHud = NewHud
+  000b: return nothing
+  000d: <eos>
+
+function TnBuffManager.ToggleDebug  (script 18 bytes)
+  0000: self.BuffDebug = !self.BuffDebug
+  000f: return nothing
+  0011: <eos>
+
+function TnBuffManager.BuffLog  (script 34 bytes)
+  0000: if !(self.BuffDebug) goto 0x001f
+  0009: LogInternal(("BUFFALOG" @ logString), , , )
+  001f: return nothing
+  0021: <eos>
+
+function TnBuffManager.CreateBuff  (script 22 bytes)
+  0000: return new(nothing, nothing, BuffClass, nothing, DeltaTime)
+  000f: return return
+  0015: <eos>
+
+function TnBuffManager.SetImmuneToBuff  (script 32 bytes)
+  0000: if !(TnBuffManager.IsImmuneToBuff(BuffClass)) goto 0x0010
+  000e: return nothing
+  0010: self.ImmuneBuffClasses.AddItem(BuffClass)
+  001d: return nothing
+  001f: <eos>
+
+function TnBuffManager.IsImmuneToBuff  (script 28 bytes)
+  0000: return (self.ImmuneBuffClasses.Find(BuffClass) != -1)
+  0015: return return
+  001b: <eos>
+
+function TnBuffManager.FindReplicatedBuffIndexForAdd  (script 270 bytes)
+  0000: BuffIndex = -1
+  000b: NewBuffIndex = -1
+  0016: I = 0
+  001d: if !((I < ReplicatedBuffClasses.Length)) goto 0x008a
+  002d: if !(((NewBuffIndex == -1) && (I[ReplicatedBuffClasses] == none))) goto 0x005d
+  004f: NewBuffIndex = I
+  005a: goto 0x0080
+  005d: if !((I[ReplicatedBuffClasses] == BuffClass)) goto 0x0080
+  0072: BuffIndex = I
+  007d: goto 0x008a
+  0080: AddAdd_PreInt(I)
+  0087: goto 0x001d
+  008a: if !((BuffIndex != -1)) goto 0x00a2
+  0099: return BuffIndex
+  009f: goto 0x0107
+  00a2: if !((NewBuffIndex == -1)) goto 0x0101
+  00b1: LogInternal(("Error: Could not replicate buff, exceeded static limit of" @ cast53(ReplicatedBuffClasses.Length)), , , )
+  00fb: return -1
+  0101: return NewBuffIndex
+  0107: return return
+  010d: <eos>
+
+function TnBuffManager.GetReplicateToOwnerBuff  (script 19 bytes)
+  0000: return BuffIndex[self.ReplicateToOwnerBuffs]
+  000c: return return
+  0012: <eos>
+
+function TnBuffManager.SetReplicateToOwnerBuff  (script 20 bytes)
+  0000: BuffIndex[self.ReplicateToOwnerBuffs] = RB
+  0011: return nothing
+  0013: <eos>
+
+function TnBuffManager.ClientRecieveReplicateToOwnerBuff  (script 224 bytes)
+  0000: if !(((Index[self.SavedReplicateToOwnerBuffClasses] != none) && (Index[self.SavedReplicateToOwnerBuffClasses] != Index[self.ReplicateToOwnerBuffs].BuffClass))) goto 0x0057
+  0039: TnBuffManager.DoRemoveBuff(Index[self.SavedReplicateToOwnerBuffClasses])
+  004a: Index[self.SavedReplicateToOwnerBuffClasses] = none
+  0057: if !((Index[self.ReplicateToOwnerBuffs].BuffClass != none)) goto 0x00dd
+  0073: TnBuffManager.DoAddBuff(Index[self.ReplicateToOwnerBuffs].BuffClass, Index[self.ReplicateToOwnerBuffs].Level, Index[self.ReplicateToOwnerBuffs].Applier)
+  00bb: Index[self.SavedReplicateToOwnerBuffClasses] = Index[self.ReplicateToOwnerBuffs].BuffClass
+  00dd: return nothing
+  00df: <eos>
+
+function TnBuffManager.AddReplicateToOwnerBuff  (script 158 bytes)
+  0000: BuffIndex = TnBuffManager.FindReplicatedBuffIndexForAdd(RB.BuffClass, self.SavedReplicateToOwnerBuffClasses)
+  0021: if !((BuffIndex == -1)) goto 0x0032
+  0030: return nothing
+  0032: if !((BuffIndex[self.SavedReplicateToOwnerBuffClasses] != none)) goto 0x006e
+  0043: RB.TwiddleMe = !BuffIndex[self.ReplicateToOwnerBuffs].TwiddleMe
+  006e: BuffIndex[self.ReplicateToOwnerBuffs] = RB
+  007f: BuffIndex[self.SavedReplicateToOwnerBuffClasses] = RB.BuffClass
+  009b: return nothing
+  009d: <eos>
+
+function TnBuffManager.GetReplicateToAllBuff  (script 19 bytes)
+  0000: return BuffIndex[self.ReplicateToAllBuffs]
+  000c: return return
+  0012: <eos>
+
+function TnBuffManager.SetReplicateToAllBuff  (script 20 bytes)
+  0000: BuffIndex[self.ReplicateToAllBuffs] = RB
+  0011: return nothing
+  0013: <eos>
+
+function TnBuffManager.ClientRecieveReplicateToAllBuff  (script 224 bytes)
+  0000: if !(((Index[self.SavedReplicateToAllBuffClasses] != none) && (Index[self.SavedReplicateToAllBuffClasses] != Index[self.ReplicateToAllBuffs].BuffClass))) goto 0x0057
+  0039: TnBuffManager.DoRemoveBuff(Index[self.SavedReplicateToAllBuffClasses])
+  004a: Index[self.SavedReplicateToAllBuffClasses] = none
+  0057: if !((Index[self.ReplicateToAllBuffs].BuffClass != none)) goto 0x00dd
+  0073: TnBuffManager.DoAddBuff(Index[self.ReplicateToAllBuffs].BuffClass, Index[self.ReplicateToAllBuffs].Level, Index[self.ReplicateToAllBuffs].Applier)
+  00bb: Index[self.SavedReplicateToAllBuffClasses] = Index[self.ReplicateToAllBuffs].BuffClass
+  00dd: return nothing
+  00df: <eos>
+
+function TnBuffManager.AddReplicateToAllBuff  (script 158 bytes)
+  0000: BuffIndex = TnBuffManager.FindReplicatedBuffIndexForAdd(RB.BuffClass, self.SavedReplicateToAllBuffClasses)
+  0021: if !((BuffIndex == -1)) goto 0x0032
+  0030: return nothing
+  0032: if !((BuffIndex[self.SavedReplicateToAllBuffClasses] != none)) goto 0x006e
+  0043: RB.TwiddleMe = !BuffIndex[self.ReplicateToAllBuffs].TwiddleMe
+  006e: BuffIndex[self.ReplicateToAllBuffs] = RB
+  007f: BuffIndex[self.SavedReplicateToAllBuffClasses] = RB.BuffClass
+  009b: return nothing
+  009d: <eos>
+
+function TnBuffManager.AddSelfBuff  (script 33 bytes)
+  0000: return AddBuff(BuffClass, Level, self.OwnerPawn)
+  001a: return return
+  0020: <eos>
+
+function TnBuffManager.AddBuff  (script 128 bytes)
+  0000: if !((cast3a(GetRole()) != cast3a(3))) goto 0x0063
+  0015: LogInternal((("Error: Trying to add buff" @ cast56(BuffClass)) @ "when the role is not authority."), , , )
+  0061: return none
+  0063: return TnBuffManager.DoAddBuff(BuffClass, Level, Applier)
+  0079: return return
+  007f: <eos>
+
+function TnBuffManager.DoAddBuff  (script 787 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return none
+  000d: if !(TnBuffManager.IsImmuneToBuff(BuffClass)) goto 0x001d
+  001b: return none
+  001d: foreach self.Buffs(BuffIter,) (end 0x010f)
+  002c: if !((BuffIter.get_Class() == BuffClass)) goto 0x010e
+  0042: B = BuffIter
+  004d: B.ReApply(Level, Applier)
+  006a: TnBuffManager.BuffLog(((((("ReapplyBuff" @ cast56(BuffClass)) @ "Level") @ cast53(Level)) @ cast55(obj'Engine.Engine'.static.GetWorldTime())) @ cast56(self.OwnerPawn)))
+  00b8: if !((B.ShouldNotifyHud && (self.OwnerHud != none))) goto 0x010b
+  00d7: self.OwnerHud.ReapplyBuff(cast56(B.get_Class()), B.GetBuffTime())
+  010b: goto 0x010f
+  010e: iternext
+  010f: iterpop
+  0110: if !((B == none)) goto 0x0253
+  011b: B = CreateBuff(BuffClass)
+  0135: if !((B == none)) goto 0x0177
+  0140: LogInternal(("Error: could not create buff of class" @ cast56(BuffClass)), , , )
+  0175: return none
+  0177: B.Apply(Level, self.OwnerPawn, Applier)
+  0199: TnBuffManager.BuffLog(((((("ApplyBuff" @ cast56(BuffClass)) @ "Level") @ cast53(Level)) @ cast55(obj'Engine.Engine'.static.GetWorldTime())) @ cast56(self.OwnerPawn)))
+  01e5: self.Buffs.AddItem(B)
+  01f2: if !((B.ShouldNotifyHud && (self.OwnerHud != none))) goto 0x0253
+  0211: self.OwnerHud.ApplyBuff(cast56(B.get_Class()), B.BuffType, B.GetBuffTime())
+  0253: if !((cast3a(GetRole()) == cast3a(3))) goto 0x0306
+  0268: RB.BuffClass = B.get_Class()
+  0285: RB.Level = Level
+  029b: RB.Applier = Applier
+  02b1: if !((cast3a(B.GetBuffReplicationType()) == cast3a(0))) goto 0x02dd
+  02cf: TnBuffManager.AddReplicateToOwnerBuff(RB)
+  02da: goto 0x0306
+  02dd: if !((cast3a(B.GetBuffReplicationType()) == cast3a(1))) goto 0x0306
+  02fb: TnBuffManager.AddReplicateToAllBuff(RB)
+  0306: return B
+  030c: return return
+  0312: <eos>
+
+function TnBuffManager.GetBuff  (script 55 bytes)
+  0000: foreach self.Buffs(B,) (end 0x002d)
+  000f: if !((B.get_Class() == BuffClass)) goto 0x002c
+  0025: iterpop
+  0026: return B
+  002c: iternext
+  002d: iterpop
+  002e: return none
+  0030: return return
+  0036: <eos>
+
+function TnBuffManager.GetDerivedBuffs  (script 56 bytes)
+  0000: foreach self.Buffs(B,) (end 0x0034)
+  000f: if !(ClassIsChildOf(B.get_Class(), BaseClass)) goto 0x0033
+  0026: DerivedBuffs.AddItem(B)
+  0033: iternext
+  0034: iterpop
+  0035: return nothing
+  0037: <eos>
+
+function TnBuffManager.HasBuff  (script 26 bytes)
+  0000: return (GetBuff(BuffClass) != none)
+  0013: return return
+  0019: <eos>
+
+function TnBuffManager.HasDerivedBuff  (script 57 bytes)
+  0000: foreach self.Buffs(B,) (end 0x002f)
+  000f: if !(B.IsA(BuffClass.Name)) goto 0x002e
+  002b: iterpop
+  002c: return true
+  002e: iternext
+  002f: iterpop
+  0030: return false
+  0032: return return
+  0038: <eos>
+
+function TnBuffManager.RemoveBuff  (script 116 bytes)
+  0000: if !((cast3a(GetRole()) != cast3a(3))) goto 0x0066
+  0015: LogInternal((("Error: Trying to remove buff" @ cast56(BuffClass)) @ "when the role is not authority."), , , )
+  0064: return nothing
+  0066: TnBuffManager.DoRemoveBuff(BuffClass)
+  0071: return nothing
+  0073: <eos>
+
+function TnBuffManager.DoRemoveBuff  (script 199 bytes)
+  0000: TnBuffManager.BuffLog(((("RemoveBuff" @ cast56(BuffClass)) @ cast55(obj'Engine.Engine'.static.GetWorldTime())) @ cast56(self.OwnerPawn)))
+  003b: I = 0
+  0042: if !((I < self.Buffs.Length)) goto 0x0085
+  0052: if !((I[self.Buffs].get_Class() == BuffClass)) goto 0x007b
+  006e: TnBuffManager.RemoveBuffAtIndex(I)
+  0079: return nothing
+  007b: AddAdd_PreInt(I)
+  0082: goto 0x0042
+  0085: LogInternal((("Error: Could not find buff of type" @ cast56(BuffClass)) @ "to remove"), , , )
+  00c4: return nothing
+  00c6: <eos>
+
+function TnBuffManager.RemoveBuffAtIndex  (script 239 bytes)
+  0000: RemovedBuff = Index[self.Buffs]
+  0011: self.Buffs.Remove(Index,1)
+  001d: if !((cast3a(self.OwnerPawn.Role) == cast3a(3))) goto 0x0099
+  0036: if !((cast3a(RemovedBuff.GetBuffReplicationType()) == cast3a(0))) goto 0x0069
+  0054: TnBuffManager.RemoveReplicateToOwnerBuff(RemovedBuff.get_Class())
+  0066: goto 0x0099
+  0069: if !((cast3a(RemovedBuff.GetBuffReplicationType()) == cast3a(1))) goto 0x0099
+  0087: TnBuffManager.RemoveReplicateToAllBuff(RemovedBuff.get_Class())
+  0099: RemovedBuff.Unapply()
+  00ac: if !((RemovedBuff.ShouldNotifyHud && (self.OwnerHud != none))) goto 0x00ec
+  00cb: self.OwnerHud.UnapplyBuff(cast56(RemovedBuff.get_Class()))
+  00ec: return nothing
+  00ee: <eos>
+
+function TnBuffManager.RemoveReplicateToOwnerBuff  (script 83 bytes)
+  0000: RemoveIndex = TnBuffManager.FindReplicateBuffIndexToRemove(BuffClass, self.SavedReplicateToOwnerBuffClasses)
+  0016: if !((RemoveIndex == -1)) goto 0x0027
+  0025: return nothing
+  0027: DefaultRB = DefaultRB
+  0032: RemoveIndex[self.ReplicateToOwnerBuffs] = DefaultRB
+  0043: RemoveIndex[self.SavedReplicateToOwnerBuffClasses] = none
+  0050: return nothing
+  0052: <eos>
+
+function TnBuffManager.RemoveReplicateToAllBuff  (script 83 bytes)
+  0000: RemoveIndex = TnBuffManager.FindReplicateBuffIndexToRemove(BuffClass, self.SavedReplicateToAllBuffClasses)
+  0016: if !((RemoveIndex == -1)) goto 0x0027
+  0025: return nothing
+  0027: DefaultRB = DefaultRB
+  0032: RemoveIndex[self.ReplicateToAllBuffs] = DefaultRB
+  0043: RemoveIndex[self.SavedReplicateToAllBuffClasses] = none
+  0050: return nothing
+  0052: <eos>
+
+function TnBuffManager.FindReplicateBuffIndexToRemove  (script 160 bytes)
+  0000: I = 0
+  0007: if !((I < ReplicatedBuffClasses.Length)) goto 0x0039
+  0017: if !((I[ReplicatedBuffClasses] == BuffClass)) goto 0x002f
+  002c: goto 0x0039
+  002f: AddAdd_PreInt(I)
+  0036: goto 0x0007
+  0039: if !((I >= ReplicatedBuffClasses.Length)) goto 0x0093
+  0049: LogInternal(("Error: Did not find buff to remove in replicated array" @ cast56(BuffClass)), , , )
+  008f: return -1
+  0093: return I
+  0099: return return
+  009f: <eos>
+
+function TnBuffManager.Tick  (script 185 bytes)
+  0000: foreach self.Buffs(B,) (end 0x0073)
+  000f: B.ClientTickBuff(DeltaTime)
+  0027: if !(((cast3a(self.OwnerPawn.Role) == cast3a(3)) && (cast3a(B.Tick(DeltaTime)) == cast3a(1)))) goto 0x0072
+  0065: BuffsToRemove.AddItem(B)
+  0072: iternext
+  0073: iterpop
+  0074: if !((cast3a(self.OwnerPawn.Role) < cast3a(3))) goto 0x008f
+  008d: return nothing
+  008f: foreach BuffsToRemove(B,) (end 0x00b5)
+  009e: RemoveBuff(B.get_Class())
+  00b4: iternext
+  00b5: iterpop
+  00b6: return nothing
+  00b8: <eos>
+
+function TnBuffManager.OwnerDied  (script 103 bytes)
+  0000: foreach self.Buffs(Buff,) (end 0x0063)
+  000f: Buff.OwnerDied()
+  0022: if !((Buff.ShouldNotifyHud && (self.OwnerHud != none))) goto 0x0062
+  0041: self.OwnerHud.UnapplyBuff(cast56(Buff.get_Class()))
+  0062: iternext
+  0063: iterpop
+  0064: return nothing
+  0066: <eos>

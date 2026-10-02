@@ -1,0 +1,44 @@
+function TnAbilitySpawnInventory.ServerTriggerAbility  (script 72 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self.SpawnDelay != cast3f(0))) goto 0x0039
+  001a: self.OwnerPawn.SetTimer(self.SpawnDelay, false, 'SpawnInventory', self)
+  0036: goto 0x003f
+  0039: TnAbilitySpawnInventory.SpawnInventory()
+  003f: TnAbility.ServerTriggerAbility()
+  0045: return nothing
+  0047: <eos>
+
+function TnAbilitySpawnInventory.SpawnInventory  (script 227 bytes)
+  0000: if !(IsOwnerDead()) goto 0x000f
+  000d: return nothing
+  000f: I = self.OwnerPawn.Spawn(self.InventoryTypeToSpawn, , , , , , , )
+  0034: if !((I == none)) goto 0x0041
+  003f: return nothing
+  0041: I.Instigator = self.OwnerPawn
+  0055: self.DroppedThing = I.DropFrom(self.OwnerPawn.Location, (self.TossVelocity >> self.OwnerPawn.Rotation), self.OwnerPawn.Rotation)
+  00a0: if !((self.DroppedThing != none)) goto 0x00e0
+  00ab: if !(self.ShouldDestroyOnOwnerDeath) goto 0x00cc
+  00b4: self.OwnerPawn.AddActorToBeDestroyedOnDeath(self.DroppedThing)
+  00cc: OnDropInventory(I, self.DroppedThing)
+  00e0: return nothing
+  00e2: <eos>
+
+function TnAbilitySpawnInventory.OnDropInventory  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAbilitySpawnInventory.ServerCanStartCooldown  (script 76 bytes)
+  0000: if !(self.OwnerPawn.IsTimerActive('SpawnInventory', self)) goto 0x0022
+  0020: return false
+  0022: if !(((self.DroppedThing == none) || self.DroppedThing.bDeleteMe)) goto 0x0043
+  0041: return true
+  0043: return false
+  0045: return return
+  004b: <eos>
+
+function TnAbilitySpawnInventory.ForceEndAbility  (script 33 bytes)
+  0000: if !((self.DroppedThing != none)) goto 0x001e
+  000b: self.DroppedThing.ForceFadeout()
+  001e: return nothing
+  0020: <eos>

@@ -1,0 +1,109 @@
+function NavigationCellVertex.get_Position  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function NavigationCellVertex.set_Position  (script 44 bytes)
+  0000: EditorApplyTranslation((Value - self.Location), false, false, false)
+  0019: NavigationCellVertex.UpdateOwningCells()
+  001f: UpdateSelectionRendering()
+  0029: return nothing
+  002b: <eos>
+
+function NavigationCellVertex.get_Identifier  (script 13 bytes)
+  0000: return self._Identifier
+  0006: return return
+  000c: <eos>
+
+function NavigationCellVertex.set_Identifier  (script 14 bytes)
+  0000: self._Identifier = Value
+  000b: return nothing
+  000d: <eos>
+
+function NavigationCellVertex.get_OwningCells  (script 13 bytes)
+  0000: return self._OwningCells
+  0006: return return
+  000c: <eos>
+
+function NavigationCellVertex.get_NumberOfOwningCells  (script 14 bytes)
+  0000: return self._OwningCells.Length
+  0007: return return
+  000d: <eos>
+
+function NavigationCellVertex.PruneNoneOwners  (script 68 bytes)
+  0000: idx = (self._OwningCells.Length - 1)
+  000f: if !((idx >= 0)) goto 0x0041
+  001a: if !((idx[self._OwningCells] == none)) goto 0x0037
+  002b: self._OwningCells.Remove(idx,1)
+  0037: SubtractSubtract_PreInt(idx)
+  003e: goto 0x000f
+  0041: return nothing
+  0043: <eos>
+
+function NavigationCellVertex.AddOwner  (script 22 bytes)
+  0000: NavigationCellVertex.PruneNoneOwners()
+  0006: self._OwningCells.AddItem(OwningCell)
+  0013: return nothing
+  0015: <eos>
+
+function NavigationCellVertex.RemoveOwner  (script 57 bytes)
+  0000: NavigationCellVertex.PruneNoneOwners()
+  0006: Index = self._OwningCells.Find(OwningCell)
+  0019: if !((-1 == Index)) goto 0x002a
+  0028: return nothing
+  002a: self._OwningCells.Remove(Index,1)
+  0036: return nothing
+  0038: <eos>
+
+function NavigationCellVertex.GetCellsThatShareEdge  (script 147 bytes)
+  0000: StartIdx = 0
+  0007: if !((StartIdx < self._OwningCells.Length)) goto 0x0082
+  0017: EndIdx = 0
+  001e: if !((EndIdx < End._OwningCells.Length)) goto 0x0078
+  0037: if !((StartIdx[self._OwningCells] == EndIdx[End._OwningCells])) goto 0x006e
+  005b: Cells.AddItem(StartIdx[self._OwningCells])
+  006e: AddAdd_PreInt(EndIdx)
+  0075: goto 0x001e
+  0078: AddAdd_PreInt(StartIdx)
+  007f: goto 0x0007
+  0082: return (Cells.Length > 0)
+  008c: return return
+  0092: <eos>
+
+function NavigationCellVertex.UpdateSelectionRendering  (script 34 bytes)
+  0000: if !((self._RenderProxyComponent != none)) goto 0x001f
+  000b: self._RenderProxyComponent.ForceUpdate(false)
+  001f: return nothing
+  0021: <eos>
+
+function NavigationCellVertex.UpdateOwningCells  (script 130 bytes)
+  0000: NavigationCellVertex.PruneNoneOwners()
+  0006: idx = 0
+  000d: if !((idx < self._OwningCells.Length)) goto 0x007f
+  001d: idx[self._OwningCells]._NeedsRebuild = true
+  0034: idx[self._OwningCells].get_EditUtil().PostVertexMove()
+  005b: idx[self._OwningCells].UpdateRendering()
+  0075: AddAdd_PreInt(idx)
+  007c: goto 0x000d
+  007f: return nothing
+  0081: <eos>
+
+function NavigationCellVertex.OnPostEditMove  (script 32 bytes)
+  0000: if !(!bFinished) goto 0x000d
+  000b: return nothing
+  000d: UpdateSelectionRendering()
+  0017: NavigationCellVertex.UpdateOwningCells()
+  001d: return nothing
+  001f: <eos>
+
+function NavigationCellVertex.IsBorderVertex  (script 93 bytes)
+  0000: NavigationCellVertex.PruneNoneOwners()
+  0006: idx = 0
+  000d: if !((idx < self._OwningCells.Length)) goto 0x0054
+  001d: if !(idx[self._OwningCells].get_EditUtil().IsVertexABorderVertex(self)) goto 0x004a
+  0048: return true
+  004a: AddAdd_PreInt(idx)
+  0051: goto 0x000d
+  0054: return false
+  0056: return return
+  005c: <eos>

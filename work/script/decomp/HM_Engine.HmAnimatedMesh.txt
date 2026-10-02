@@ -1,0 +1,35 @@
+function HmAnimatedMesh.Initialize  (script 108 bytes)
+  0000: if !(((self.Mesh != none) && (self.Mesh.AnimTreeTemplate != none))) goto 0x0069
+  0021: self.Mesh.SetAnimTreeTemplate(self.Mesh.AnimTreeTemplate)
+  0042: self.SlotNode = AnimNodeSlot(self.Mesh.FindAnimNode('Custom'))
+  0069: return nothing
+  006b: <eos>
+
+function HmAnimatedMesh.PlayAnimation  (script 228 bytes)
+  0000: default=true
+  0005: nothing
+  0006: if !((self.Mesh == none)) goto 0x0013
+  0011: return nothing
+  0013: if !(self.DisableRestartIfAlreadyPlaying) goto 0x0024
+  001c: bRestartIfAlreadyPlaying = false
+  0024: if !((PlayRate <= 0.0)) goto 0x003e
+  0033: PlayRate = 1.0
+  003e: if !((self.SlotNode != none)) goto 0x007f
+  0049: self.SlotNode.PlayCustomAnim(Sequence, PlayRate, self.BlendInTime, self.BlendOutTime, bLoop, bRestartIfAlreadyPlaying)
+  007c: goto 0x00e1
+  007f: if !((PlayRate != 1.0)) goto 0x00b8
+  008e: Duration = self.Mesh.GetAnimLength(Sequence)
+  00ac: (Duration /= PlayRate)
+  00b8: self.Mesh.PlayAnim(Sequence, Duration, bLoop, bRestartIfAlreadyPlaying)
+  00e1: return nothing
+  00e3: <eos>
+
+function HmAnimatedMesh.StopAnimation  (script 73 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self.SlotNode != none)) goto 0x0033
+  0018: self.SlotNode.StopCustomAnim(self.BlendOutTime)
+  0030: goto 0x0046
+  0033: self.Mesh.StopAnim()
+  0046: return nothing
+  0048: <eos>

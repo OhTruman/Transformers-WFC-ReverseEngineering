@@ -1,0 +1,81 @@
+function SeqAct_InputMatineeController.IsComplete  (script 27 bytes)
+  0000: return 1[self.InputLinks].bHasImpulse
+  0014: return return
+  001a: <eos>
+
+function SeqAct_InputMatineeController.GetWorldTime  (script 27 bytes)
+  0000: return GetWorldInfo().TimeSeconds
+  0014: return return
+  001a: <eos>
+
+function SeqAct_InputMatineeController.InputMatchesDescription  (script 165 bytes)
+  0000: if !(((Value < Description.MinInputRange) || (Value > Description.MaxInputRange))) goto 0x0038
+  0036: return false
+  0038: if !(((Key == 'XboxTypeS_LeftX') && (cast3a(Description.StickAxis) == cast3a(0)))) goto 0x006a
+  0068: return true
+  006a: if !(((Key == 'XboxTypeS_LeftY') && (cast3a(Description.StickAxis) == cast3a(1)))) goto 0x009c
+  009a: return true
+  009c: return false
+  009e: return return
+  00a4: <eos>
+
+function SeqAct_InputMatineeController.OnInputAxis  (script 325 bytes)
+  0000: nothing
+  0001: if !((GetWorldInfo().Pauser != none)) goto 0x001c
+  001a: return false
+  001c: if !((self.Targets.Length == 0)) goto 0x002a
+  0028: return false
+  002a: HPC = HmPlayerController(0[self.Targets])
+  003c: if !((((HPC == none) || (LocalPlayer(HPC.Player) == none)) || (LocalPlayer(HPC.Player).ControllerId != ControllerId))) goto 0x008c
+  008a: return false
+  008c: if !((GetWorldTime() < (self.StartTime + self.InitialPlayTime))) goto 0x00ae
+  00ac: return true
+  00ae: if !(SeqAct_InputMatineeController.InputMatchesDescription(Key, Value, self.Forward)) goto 0x00de
+  00c6: 0[self.OutputLinks].bHasImpulse = true
+  00db: goto 0x013c
+  00de: if !(SeqAct_InputMatineeController.InputMatchesDescription(Key, Value, self.Reverse)) goto 0x010f
+  00f6: 2[self.OutputLinks].bHasImpulse = true
+  010c: goto 0x013c
+  010f: if !(SeqAct_InputMatineeController.InputMatchesDescription(Key, Value, self.Pause)) goto 0x013c
+  0127: 1[self.OutputLinks].bHasImpulse = true
+  013c: return true
+  013e: return return
+  0144: <eos>
+
+function SeqAct_InputMatineeController.Activated  (script 173 bytes)
+  0000: if !((self.Targets.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: HPC = HmPlayerController(0[self.Targets])
+  0020: if !((HPC == none)) goto 0x002d
+  002b: return nothing
+  002d: if !((self.InputObserver == none)) goto 0x0050
+  0038: self.InputObserver = new(HPC, nothing, obj'HmInputObserver', nothing, AttachTreeCallback)
+  0050: HPC.AddGlobalInteraction(self.InputObserver)
+  0068: self.InputObserver.__InputAxisObserver__Delegate = delegate.OnInputAxis
+  0080: 0[self.OutputLinks].bHasImpulse = true
+  0095: self.StartTime = GetWorldTime()
+  00aa: return nothing
+  00ac: <eos>
+
+function SeqAct_InputMatineeController.ClearInteraction  (script 136 bytes)
+  0000: if !((self.Targets.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: HPC = HmPlayerController(0[self.Targets])
+  0020: if !((HPC == none)) goto 0x002d
+  002b: return nothing
+  002d: HPC.RemoveGlobalInteraction(self.InputObserver)
+  0045: 0[self.OutputLinks].bHasImpulse = false
+  005a: 2[self.OutputLinks].bHasImpulse = false
+  0070: 1[self.OutputLinks].bHasImpulse = false
+  0085: return nothing
+  0087: <eos>
+
+function SeqAct_InputMatineeController.Deactivated  (script 9 bytes)
+  0000: SeqAct_InputMatineeController.ClearInteraction()
+  0006: return nothing
+  0008: <eos>
+
+function SeqAct_InputMatineeController.Reset  (script 9 bytes)
+  0000: SeqAct_InputMatineeController.ClearInteraction()
+  0006: return nothing
+  0008: <eos>

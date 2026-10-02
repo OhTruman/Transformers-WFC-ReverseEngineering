@@ -1,0 +1,11 @@
+function TnAnimNotify_SpawnCameraEmitter.Notify  (script 136 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: Controllers = self.PlayerFinder.FindLocalPlayers(AnimSeqInstigator.SkelComponent.Owner)
+  0046: I = 0
+  004d: if !((I < Controllers.Length)) goto 0x0085
+  005d: I[Controllers].SpawnCameraEmitter(self.ParticleEffect)
+  007b: AddAdd_PreInt(I)
+  0082: goto 0x004d
+  0085: return nothing
+  0087: <eos>

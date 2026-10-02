@@ -1,0 +1,66 @@
+function TnAiActionKamikazeAttack.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionKamikazeAttack.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionKamikazeAttack.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionKamikazeAttackBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionKamikazeAttack.OnBind  (script 40 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(TnAiActionKamikazeAttack.get_WeaponClass(), false)
+  0025: return nothing
+  0027: <eos>
+
+function TnAiActionKamikazeAttack.OnPlanStart  (script 38 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._MeleePlanningUtil.PlanStart(ExpectedEffects)
+  0023: return nothing
+  0025: <eos>
+
+function TnAiActionKamikazeAttack.OnSetUpConditions  (script 105 bytes)
+  0000: if !((self._MeleePlanningUtil.PopulatePreconditions(self, ExpectedEffects, Conditions) == false)) goto 0x0026
+  0024: return false
+  0026: if !((self._MeleePlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, true, 2500.0) == false)) goto 0x0051
+  004f: return false
+  0051: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0062: return return
+  0068: <eos>
+
+function TnAiActionKamikazeAttack.OnIsValidForFutureExecution  (script 67 bytes)
+  0000: if !((self._MeleePlanningUtil.AttackDestinationValid(ExpectedEffects, self._TransformerController, true, 2500.0) == false)) goto 0x002b
+  0029: return false
+  002b: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  003c: return return
+  0042: <eos>
+
+function TnAiActionKamikazeAttack.OnStart  (script 226 bytes)
+  0000: Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !(((Target == none) || (TnAiActionKamikazeAttack.IsWithinDetonationRange(Target) == false))) goto 0x0051
+  0046: return Fail()
+  0051: self._TransformerController.StopMovement()
+  0064: self._TransformerPawn.TakeDamage(self._TransformerPawn.HealthMax, none, self._TransformerPawn.Location, vect(0,0,0), obj'TnDamageType', , )
+  00a8: if !(!self._TransformerController.IsDangerous(Target)) goto 0x00d0
+  00c5: return Succeed()
+  00d0: return Fail()
+  00db: return return
+  00e1: <eos>
+
+function TnAiActionKamikazeAttack.OnFinish  (script 45 bytes)
+  0000: OnFinish(CurrentState)
+  000b: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateFacingActor', false, )
+  002a: return nothing
+  002c: <eos>
+
+function TnAiActionKamikazeAttack.IsWithinDetonationRange  (script 89 bytes)
+  0000: return (obj'Core.Math'.static.VSizeSq((self._TransformerPawn.Location - Target.Location)) <= (self._Blueprint.MinimumDetonationDistance * self._Blueprint.MinimumDetonationDistance))
+  0052: return return
+  0058: <eos>

@@ -1,0 +1,18 @@
+function TnPawnCollisionService.set_CollisionController  (script 14 bytes)
+  0000: self._CollisionController = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPawnCollisionService.PushCollisionMode  (script 54 bytes)
+  0000: self.CollisionModes.Length[self.CollisionModes] = self._CollisionController._CollisionMode
+  001b: self._CollisionController.SetCollisionMode(NewMode)
+  0033: return nothing
+  0035: <eos>
+
+function TnPawnCollisionService.PopCollisionMode  (script 67 bytes)
+  0000: if !((self.CollisionModes.Length == 0)) goto 0x000e
+  000c: return nothing
+  000e: self._CollisionController.SetCollisionMode((self.CollisionModes.Length - 1)[self.CollisionModes])
+  0030: self.CollisionModes.Remove((self.CollisionModes.Length - 1),1)
+  0040: return nothing
+  0042: <eos>

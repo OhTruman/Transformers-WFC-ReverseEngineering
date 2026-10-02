@@ -1,0 +1,110 @@
+function TnTankInputState.get_StrafeForwardBack  (script 13 bytes)
+  0000: return self._StrafeForwardBack
+  0006: return return
+  000c: <eos>
+
+function TnTankInputState.set_StrafeForwardBack  (script 14 bytes)
+  0000: self._StrafeForwardBack = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankInputState.get_StrafeRightLeft  (script 13 bytes)
+  0000: return self._StrafeRightLeft
+  0006: return return
+  000c: <eos>
+
+function TnTankInputState.set_StrafeRightLeft  (script 14 bytes)
+  0000: self._StrafeRightLeft = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankInputState.get_Turn  (script 13 bytes)
+  0000: return self._Turn
+  0006: return return
+  000c: <eos>
+
+function TnTankInputState.set_Turn  (script 14 bytes)
+  0000: self._Turn = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankInputState.get_Boosting  (script 14 bytes)
+  0000: return self._Boosting
+  0007: return return
+  000d: <eos>
+
+function TnTankInputState.set_Boosting  (script 16 bytes)
+  0000: self._Boosting = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTankInputState.get_Jumping  (script 14 bytes)
+  0000: return self._Jumping
+  0007: return return
+  000d: <eos>
+
+function TnTankInputState.set_Jumping  (script 16 bytes)
+  0000: self._Jumping = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnTankInputState.get_ViewRotation  (script 13 bytes)
+  0000: return self._ViewRotation
+  0006: return return
+  000c: <eos>
+
+function TnTankInputState.set_ViewRotation  (script 33 bytes)
+  0000: self._ViewRotation = obj'Core.Math'.static.Normalize(Value)
+  001e: return nothing
+  0020: <eos>
+
+function TnTankInputState.get_PackedFlags  (script 13 bytes)
+  0000: return self._PackedFlags
+  0006: return return
+  000c: <eos>
+
+function TnTankInputState.set_PackedFlags  (script 14 bytes)
+  0000: self._PackedFlags = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankInputState.get_PackedViewRotation  (script 13 bytes)
+  0000: return self._PackedViewRotation
+  0006: return return
+  000c: <eos>
+
+function TnTankInputState.set_PackedViewRotation  (script 14 bytes)
+  0000: self._PackedViewRotation = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTankInputState.Reset  (script 52 bytes)
+  0000: self._StrafeForwardBack = 0.0
+  000b: self._StrafeRightLeft = 0.0
+  0016: self._Turn = 0.0
+  0021: self._Boosting = false
+  0029: self._Jumping = false
+  0031: return nothing
+  0033: <eos>
+
+function TnTankInputState.Update  (script 65 bytes)
+  0000: if !((cast3a(GetRole()) == cast3a(3))) goto 0x001f
+  0015: PackInputs()
+  001f: if !((cast3a(GetRole()) == cast3a(1))) goto 0x003e
+  0034: UnpackInputs()
+  003e: return nothing
+  0040: <eos>
+
+function TnTankInputState.PackInputs  (script 70 bytes)
+  0000: self._PackedFlags = cast3d(((self._Boosting ? 1 : 0) | (self._Jumping ? 4 : 0)))
+  0025: self._PackedViewRotation = obj'TnValuePacker'.static.PackRotatorPitchAndYaw(self._ViewRotation)
+  0043: return nothing
+  0045: <eos>
+
+function TnTankInputState.UnpackInputs  (script 95 bytes)
+  0000: self._Boosting = ((cast3a(self._PackedFlags) & 1) > 0)
+  0014: self._Jumping = ((cast3a(self._PackedFlags) & 4) > 0)
+  0029: if !((cast3a(GetRole()) == cast3a(1))) goto 0x005c
+  003e: self._ViewRotation = obj'TnValuePacker'.static.UnpackRotatorPitchAndYaw(self._PackedViewRotation)
+  005c: return nothing
+  005e: <eos>

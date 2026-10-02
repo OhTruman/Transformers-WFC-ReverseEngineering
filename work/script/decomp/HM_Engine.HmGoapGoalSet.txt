@@ -1,0 +1,76 @@
+function HmGoapGoalSet.InitializeFromTemplate  (script 166 bytes)
+  0000: foreach TemplateSet.Goals(Goal,) (end 0x003b)
+  0018: self.Goals.AddItem(HmGoapGoal(Goal.Clone(self, )))
+  003a: iternext
+  003b: iterpop
+  003c: foreach TemplateSet.GoalBlueprints(Blueprint,) (end 0x00a2)
+  0054: NewGoal = obj'Engine.Allocation'.static.CreateObject(Blueprint.GoalClass, self)
+  007c: NewGoal.Initialize(Blueprint)
+  0094: self.Goals.AddItem(NewGoal)
+  00a1: iternext
+  00a2: iterpop
+  00a3: return nothing
+  00a5: <eos>
+
+function HmGoapGoalSet.Bind  (script 66 bytes)
+  0000: I = 0
+  0007: if !((I < self.Goals.Length)) goto 0x003f
+  0017: I[self.Goals].Bind(InController)
+  0035: AddAdd_PreInt(I)
+  003c: goto 0x0007
+  003f: return nothing
+  0041: <eos>
+
+function HmGoapGoalSet.Unbind  (script 61 bytes)
+  0000: I = 0
+  0007: if !((I < self.Goals.Length)) goto 0x003a
+  0017: I[self.Goals].Unbind()
+  0030: AddAdd_PreInt(I)
+  0037: goto 0x0007
+  003a: return nothing
+  003c: <eos>
+
+function HmGoapGoalSet.AddGoal  (script 21 bytes)
+  0000: self.Goals.Length[self.Goals] = Goal
+  0012: return nothing
+  0014: <eos>
+
+function HmGoapGoalSet.PopulateGoals  (script 81 bytes)
+  0000: if !((GoalIndex == -1)) goto 0x0011
+  000f: return false
+  0011: if !((GoalIndex > (self.Goals.Length - 1))) goto 0x0026
+  0024: return false
+  0026: return GoalIndex[self.Goals].PopulateGoals(WorldState, out_PopulatedGoals)
+  004a: return return
+  0050: <eos>
+
+function HmGoapGoalSet.ConditionsMet  (script 87 bytes)
+  0000: default=false
+  0005: if !((GoalIndex == -1)) goto 0x0016
+  0014: return false
+  0016: if !((GoalIndex > (self.Goals.Length - 1))) goto 0x002b
+  0029: return false
+  002b: return GoalIndex[self.Goals].ConditionsMet(WorldState, IsRunning)
+  0050: return return
+  0056: <eos>
+
+function HmGoapGoalSet.CheckForErrors  (script 230 bytes)
+  0000: if !(((self.GoalBlueprints.Length > 0) && (self.Goals.Length > 0))) goto 0x0077
+  001a: EmitCheckMessage(0, "Goals, cannot be added to this Goals set.  Please use Goal blueprints instead", , )
+  0077: foreach self.Goals(Goal,) (end 0x00a9)
+  0086: if !((Goal == none)) goto 0x0095
+  0091: iternext
+  0092: goto 0x00a9
+  0095: Goal.CheckForErrors()
+  00a8: iternext
+  00a9: iterpop
+  00aa: foreach self.GoalBlueprints(Blueprint,) (end 0x00dc)
+  00b9: if !((Blueprint == none)) goto 0x00c8
+  00c4: iternext
+  00c5: goto 0x00dc
+  00c8: Blueprint.CheckForErrors()
+  00db: iternext
+  00dc: iterpop
+  00dd: CheckForErrors()
+  00e3: return nothing
+  00e5: <eos>

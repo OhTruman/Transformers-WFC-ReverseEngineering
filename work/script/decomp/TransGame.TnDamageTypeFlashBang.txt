@@ -1,0 +1,27 @@
+function TnDamageTypeFlashBang.OnClientPlayHit  (script 774 bytes)
+  0000: PC = TnPlayerController(P.Controller)
+  0019: if !((PC == none)) goto 0x0026
+  0024: return nothing
+  0026: C = TnCamera(PC.PlayerCamera)
+  003f: if !((C == none)) goto 0x004c
+  004a: return nothing
+  004c: if !((obj'Core.Math'.static.VSizeSq(P.get_LastTakeHitInfo().Momentum) > cast3f(0))) goto 0x0167
+  0085: PawnToProjectile = cast50(-P.get_LastTakeHitInfo().Momentum)
+  00ad: Angle = obj'Core.Math'.static.RDiff(PawnToProjectile, P.Rotation)
+  00d9: Intensity = obj'Core.Math'.static.FClampRange(Angle, default.FlashAngles)
+  00fc: Intensity = (1.0 - obj'Core.Math'.static.FPctByRange(Intensity, default.FlashAngles.Min, default.FlashAngles.Max))
+  0141: Duration = obj'Core.Math'.static.LerpFloatRange(default.FlashDurations, Intensity)
+  0164: goto 0x017d
+  0167: Duration = default.FlashDurations.Min
+  017d: Effect = C.SpawnEmitter(default.VictimCameraEffect)
+  019b: if !((Effect != none)) goto 0x01c7
+  01a6: Effect.SetFloatParameter('FlashDuration', Duration)
+  01c7: if !(default.DebugFlashBang) goto 0x0303
+  01d0: obj'Engine.Debug'.static.DrawLine(P.Location, (P.Location + (cast3f(500) * cast39(P.Rotation))), obj'Core.Colors'.static.Blue(), true)
+  022e: obj'Engine.Debug'.static.DrawLine(P.Location, (P.Location + (cast3f(500) * cast39(PawnToProjectile))), obj'Core.Colors'.static.Red(), true)
+  0283: DebugString = ((((("Angle:" @ cast55(Angle)) $ "
+Intensity:") @ cast55(Intensity)) $ "
+Duration:") @ cast55(Duration))
+  02c9: obj'Engine.Debug'.static.DrawText(P.Location, DebugString, obj'Core.Colors'.static.White(), true)
+  0303: return nothing
+  0305: <eos>

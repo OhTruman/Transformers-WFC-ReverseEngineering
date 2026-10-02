@@ -1,0 +1,14 @@
+function TnSeqEvent_CausedDamage.HandleDamageCaused  (script 120 bytes)
+  0000: (self._CurrentDamage += DamageCaused)
+  000c: self._CurrentThreshold = self._CurrentThreshold
+  0017: if !((self._CurrentThreshold < self.DamageThresholds.Length)) goto 0x0051
+  0027: if !((self._CurrentThreshold[self.DamageThresholds] > self._CurrentDamage)) goto 0x003f
+  003c: goto 0x0051
+  003f: ShouldActivate = true
+  0047: AddAdd_PreInt(self._CurrentThreshold)
+  004e: goto 0x0017
+  0051: if !(!ShouldActivate) goto 0x005e
+  005c: return nothing
+  005e: CheckActivate(InOriginator, InInstigator, , , )
+  0075: return nothing
+  0077: <eos>

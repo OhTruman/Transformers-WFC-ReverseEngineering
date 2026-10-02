@@ -1,0 +1,35 @@
+function TnTransformerExtensionAttachHealthMonitor.__Constructor__TnTransformerExtensionAttachHealthMonitor_0  (script 21 bytes)
+  0000: self._HealthMonitorClass = none
+  0007: self._Blueprint = Blueprint
+  0012: return nothing
+  0014: <eos>
+
+function TnTransformerExtensionAttachHealthMonitor.PreSave  (script 24 bytes)
+  0000: if !(IsDefaultObject()) goto 0x000f
+  000d: return nothing
+  000f: TnTransformerExtensionAttachHealthMonitor.ConvertOldDataToBlueprint()
+  0015: return nothing
+  0017: <eos>
+
+function TnTransformerExtensionAttachHealthMonitor.ConvertOldDataToBlueprint  (script 98 bytes)
+  0000: if !((self._Blueprint == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((self._HealthMonitorClass == none)) goto 0x001a
+  0018: return nothing
+  001a: self._Blueprint.WoundedThresholdPercentage = self._WoundedThresholdPercentage
+  002e: self._Blueprint.MonitorClass = self._HealthMonitorClass
+  0042: self._Blueprint.TriggerHealthStatusSeqEvent = self._TriggerHealthStatusSeqEvent
+  0058: self._HealthMonitorClass = none
+  005f: return nothing
+  0061: <eos>
+
+function TnTransformerExtensionAttachHealthMonitor.ApplyTransformerExtension  (script 176 bytes)
+  0000: TnTransformerExtensionAttachHealthMonitor.ConvertOldDataToBlueprint()
+  0006: AiPawn = TnAiPawn(P)
+  0016: if !(((AiPawn == none) || (TnAiController(AiPawn.Controller) == none))) goto 0x003e
+  003c: return nothing
+  003e: Monitor = obj'Engine.Allocation'.static.CreateObject(self._Blueprint.MonitorClass, AiPawn)
+  006a: Monitor.Initialize(TnAiController(AiPawn.Controller), self._Blueprint)
+  0095: AiPawn.AddHealthMonitor(Monitor)
+  00ad: return nothing
+  00af: <eos>

@@ -1,0 +1,223 @@
+function TnObjectiveManager.ReplicatedArrayEvent  (script 83 bytes)
+  0000: switch (VarName)
+  0007: case 'ObjectiveMarkers': (next 0x003d)
+  0013: if !((Index[self.ObjectiveMarkers].MarkerId != 0)) goto 0x003a
+  002f: TnObjectiveManager.ClientInitializeObjectiveMarker(Index)
+  003a: goto 0x0050
+  003d: default:
+  0040: ReplicatedArrayEvent(VarName, Index)
+  0050: return nothing
+  0052: <eos>
+
+function TnObjectiveManager.ReplicatedEvent  (script 45 bytes)
+  0000: switch (VarName)
+  0007: case 'CurrentObjective': (next 0x001c)
+  0013: TnObjectiveManager.ClientSetCurrentObjective()
+  0019: goto 0x002a
+  001c: default:
+  001f: ReplicatedEvent(VarName)
+  002a: return nothing
+  002c: <eos>
+
+function TnObjectiveManager.ShouldObjectiveMarkerBeRemoved  (script 58 bytes)
+  0000: return ((MarkerData.MarkerBase == none) || MarkerData.MarkerBase.bDeleteMe)
+  0033: return return
+  0039: <eos>
+
+function TnObjectiveManager.ShouldObjectiveMarkerBeDisplayed  (script 72 bytes)
+  0000: if !((MarkerData.MarkerBase == none)) goto 0x0018
+  0016: return false
+  0018: return MarkerData.MarkerType.ShouldDisplayMarker(ObservingPawn, MarkerData)
+  0041: return return
+  0047: <eos>
+
+function TnObjectiveManager.SpawnObjectiveMarkerType  (script 22 bytes)
+  0000: return new(nothing, nothing, OMT, nothing, DeltaTime)
+  000f: return return
+  0015: <eos>
+
+function TnObjectiveManager.ClientInitializeObjectiveMarker  (script 91 bytes)
+  0000: if !((ObjectiveMarkerArrayIndex[self.ObjectiveMarkers].MarkerBase != none)) goto 0x0058
+  001c: ObjectiveMarkerArrayIndex[self.ObjectiveMarkers].MarkerType = SpawnObjectiveMarkerType(ObjectiveMarkerArrayIndex[self.ObjectiveMarkers].MarkerTypeClass)
+  0058: return nothing
+  005a: <eos>
+
+function TnObjectiveManager.Reset  (script 117 bytes)
+  0000: BlankData = BlankData
+  000b: I = 0
+  0012: if !((I < 16)) goto 0x0039
+  001e: I[self.ObjectiveMarkers] = BlankData
+  002f: AddAdd_PreInt(I)
+  0036: goto 0x0012
+  0039: self.LocalObjectiveMarkers.Length = 0
+  0041: self.DeferredAddObjective = ""
+  0049: self.DeferredCompleteObjective = ""
+  0051: self.CurrentObjective = -1
+  005c: self.LastObjective = -1
+  0067: self.LastCompletedObjective = -1
+  0072: return nothing
+  0074: <eos>
+
+function TnObjectiveManager.Update  (script 499 bytes)
+  0000: if !(((ObservingHud.PlayerOwner != none) && (ObservingHud.PlayerOwner.Pawn != none))) goto 0x0055
+  0033: ObservingPawn = TnPawn(ObservingHud.PlayerOwner.Pawn)
+  0055: if !((ObservingPawn != none)) goto 0x0198
+  0060: I = 0
+  0067: if !((I < 16)) goto 0x011a
+  0073: if !((I[self.ObjectiveMarkers].MarkerId != 0)) goto 0x0110
+  008f: if !(((cast3a(GetRole()) == cast3a(3)) && TnObjectiveManager.ShouldObjectiveMarkerBeRemoved(I[self.ObjectiveMarkers]))) goto 0x00d9
+  00ba: BlankData = BlankData
+  00c5: I[self.ObjectiveMarkers] = BlankData
+  00d6: goto 0x0110
+  00d9: if !(TnObjectiveManager.ShouldObjectiveMarkerBeDisplayed(I[self.ObjectiveMarkers], ObservingPawn)) goto 0x0110
+  00f2: ObservingHud.UpdateObjectiveMarker(I[self.ObjectiveMarkers])
+  0110: AddAdd_PreInt(I)
+  0117: goto 0x0067
+  011a: I = (self.LocalObjectiveMarkers.Length - 1)
+  0129: if !((I >= 0)) goto 0x0198
+  0134: if !(TnObjectiveManager.ShouldObjectiveMarkerBeRemoved(I[self.LocalObjectiveMarkers])) goto 0x0157
+  0148: self.LocalObjectiveMarkers.Remove(I,1)
+  0154: goto 0x018e
+  0157: if !(TnObjectiveManager.ShouldObjectiveMarkerBeDisplayed(I[self.LocalObjectiveMarkers], ObservingPawn)) goto 0x018e
+  0170: ObservingHud.UpdateObjectiveMarker(I[self.LocalObjectiveMarkers])
+  018e: SubtractSubtract_PreInt(I)
+  0195: goto 0x0129
+  0198: if !((self.DeferredAddObjective != "")) goto 0x01c4
+  01a4: ObservingHud.AddObjective(self.DeferredAddObjective)
+  01bc: self.DeferredAddObjective = ""
+  01c4: if !((self.DeferredCompleteObjective != "")) goto 0x01f0
+  01d0: ObservingHud.CompleteObjective(self.DeferredCompleteObjective)
+  01e8: self.DeferredCompleteObjective = ""
+  01f0: return nothing
+  01f2: <eos>
+
+function TnObjectiveManager.AddReplicatedObjectiveMarker  (script 313 bytes)
+  0000: if !((cast3a(GetRole()) < cast3a(3))) goto 0x009c
+  0015: LogInternal(((("Error:  Trying to add replicated objective marker on a non-authority" @ OMD.Description) @ cast56(OMD.MarkerBase)) @ cast56(OMD.MarkerTypeClass)), , , )
+  009a: return false
+  009c: I = 0
+  00a3: if !((I < 16)) goto 0x00f6
+  00af: if !((I[self.ObjectiveMarkers].MarkerId != 0)) goto 0x00ce
+  00cb: goto 0x00ec
+  00ce: I[self.ObjectiveMarkers] = OMD
+  00df: TnObjectiveManager.ClientInitializeObjectiveMarker(I)
+  00ea: return true
+  00ec: AddAdd_PreInt(I)
+  00f3: goto 0x00a3
+  00f6: LogInternal("Error: Maximum number of objective markers exceeded", , , )
+  0130: return false
+  0132: return return
+  0138: <eos>
+
+function TnObjectiveManager.AddLocalObjectiveMarker  (script 64 bytes)
+  0000: OMD.MarkerType = SpawnObjectiveMarkerType(OMD.MarkerTypeClass)
+  0030: self.LocalObjectiveMarkers.AddItem(OMD)
+  003d: return nothing
+  003f: <eos>
+
+function TnObjectiveManager.AddObjectiveMarker  (script 329 bytes)
+  0000: default=false
+  0005: NewMarker.Description = Description
+  001b: NewMarker.MarkerBase = MarkerBase
+  0031: NewMarker.MarkerId = AddAdd_Int(self.ObjectiveMarkerCounter)
+  0049: NewMarker.MarkerTypeClass = MarkerTypeClass
+  005f: if !(DoNotReplicate) goto 0x0087
+  0068: TnObjectiveManager.AddLocalObjectiveMarker(NewMarker)
+  0073: return NewMarker.MarkerId
+  0084: goto 0x0140
+  0087: if !((cast3a(MarkerBase.RemoteRole) == cast3a(0))) goto 0x0121
+  00a0: LogInternal((("Error: Adding objective marker to an actor (" $ cast56(MarkerBase)) $ ") which is not replicated to clients, it will not show up clients"), , , )
+  0121: if !(TnObjectiveManager.AddReplicatedObjectiveMarker(NewMarker)) goto 0x0140
+  012f: return NewMarker.MarkerId
+  0140: return 0
+  0142: return return
+  0148: <eos>
+
+function TnObjectiveManager.RemoveObjectiveMarker  (script 368 bytes)
+  0000: BlankData = BlankData
+  000b: I = 0
+  0012: if !((I < 16)) goto 0x00f7
+  001e: if !((I[self.ObjectiveMarkers].MarkerBase != ObjectiveMarkerBase)) goto 0x0041
+  003e: goto 0x00ed
+  0041: if !((I[self.ObjectiveMarkers].MarkerTypeClass != MarkerTypeClass)) goto 0x0064
+  0061: goto 0x00ed
+  0064: if !((cast3a(GetRole()) < cast3a(3))) goto 0x00dc
+  0079: LogInternal((("Error:  Trying to remove replicated objective marker on a non-authority" @ cast56(ObjectiveMarkerBase)) @ cast56(MarkerTypeClass)), , , )
+  00d9: goto 0x00ed
+  00dc: I[self.ObjectiveMarkers] = BlankData
+  00ed: AddAdd_PreInt(I)
+  00f4: goto 0x0012
+  00f7: I = 0
+  00fe: if !((I < self.LocalObjectiveMarkers.Length)) goto 0x016d
+  010e: if !((I[self.LocalObjectiveMarkers].MarkerBase != ObjectiveMarkerBase)) goto 0x0131
+  012e: goto 0x0163
+  0131: if !((I[self.LocalObjectiveMarkers].MarkerTypeClass != MarkerTypeClass)) goto 0x0154
+  0151: goto 0x0163
+  0154: self.LocalObjectiveMarkers.Remove(I,1)
+  0160: goto 0x016d
+  0163: AddAdd_PreInt(I)
+  016a: goto 0x00fe
+  016d: return nothing
+  016f: <eos>
+
+function TnObjectiveManager.SetObjectiveBank  (script 14 bytes)
+  0000: self.ObjectiveBank = ObjectiveBankIn
+  000b: return nothing
+  000d: <eos>
+
+function TnObjectiveManager.GetObjectiveId  (script 73 bytes)
+  0000: I = 0
+  0007: if !((I < self.ObjectiveBank.Length)) goto 0x003c
+  0017: if !((I[self.ObjectiveBank] == ObjectiveDescription)) goto 0x0032
+  002c: return I
+  0032: AddAdd_PreInt(I)
+  0039: goto 0x0007
+  003c: return -1
+  0042: return return
+  0048: <eos>
+
+function TnObjectiveManager.ClientSetCurrentObjective  (script 137 bytes)
+  0000: if !(((self.LastObjective != -1) && (self.LastObjective[self.ObjectiveBank] != self.DeferredAddObjective))) goto 0x0037
+  0026: self.DeferredCompleteObjective = self.LastObjective[self.ObjectiveBank]
+  0037: if !((self.CurrentObjective != -1)) goto 0x0068
+  0046: self.DeferredAddObjective = self.CurrentObjective[self.ObjectiveBank]
+  0057: self.LastCompletedObjective = (self.CurrentObjective - 1)
+  0065: goto 0x007b
+  0068: self.DeferredAddObjective = ""
+  0070: self.LastCompletedObjective = self.LastObjective
+  007b: self.LastObjective = self.CurrentObjective
+  0086: return nothing
+  0088: <eos>
+
+function TnObjectiveManager.SetCurrentObjective  (script 176 bytes)
+  0000: if !((ObjectiveDescription == "")) goto 0x0020
+  000c: self.CurrentObjective = -1
+  0017: TnObjectiveManager.ClientSetCurrentObjective()
+  001d: goto 0x00ad
+  0020: NewObjectiveId = TnObjectiveManager.GetObjectiveId(ObjectiveDescription)
+  0031: if !(((NewObjectiveId != -1) && (NewObjectiveId != self.CurrentObjective))) goto 0x0065
+  0051: self.CurrentObjective = NewObjectiveId
+  005c: TnObjectiveManager.ClientSetCurrentObjective()
+  0062: goto 0x00ad
+  0065: LogInternal((("Error: objective" @ ObjectiveDescription) @ "not found in world info objective list"), , , )
+  00ad: return nothing
+  00af: <eos>
+
+function TnObjectiveManager.GetActiveObjective  (script 37 bytes)
+  0000: if !((self.CurrentObjective == -1)) goto 0x0012
+  000f: return ""
+  0012: return self.CurrentObjective[self.ObjectiveBank]
+  001e: return return
+  0024: <eos>
+
+function TnObjectiveManager.GetCompletedObjectives  (script 97 bytes)
+  0000: I = 0
+  0007: if !((I <= self.LastCompletedObjective)) goto 0x0054
+  0016: if !((CompletedObjectives != "")) goto 0x0032
+  0022: ConcatEqual_StrStr(CompletedObjectives, "|")
+  0032: ConcatEqual_StrStr(CompletedObjectives, I[self.ObjectiveBank])
+  004a: AddAdd_PreInt(I)
+  0051: goto 0x0007
+  0054: return CompletedObjectives
+  005a: return return
+  0060: <eos>

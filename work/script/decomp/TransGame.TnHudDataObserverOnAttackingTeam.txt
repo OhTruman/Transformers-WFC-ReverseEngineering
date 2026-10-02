@@ -1,0 +1,13 @@
+function TnHudDataObserverOnAttackingTeam.CheckData  (script 164 bytes)
+  0000: GRI = TnGameReplicationInfoMultiplayer(PC.WorldInfo.GRI)
+  0022: if !((GRI == none)) goto 0x002f
+  002d: return nothing
+  002f: AttackingTeamIndex = GRI.get_AttackingTeam()
+  0048: if !((AttackingTeamIndex != -1)) goto 0x0089
+  0057: if !((AttackingTeamIndex == cast3a(PC.GetTeamNum()))) goto 0x0081
+  0076: OAT = 1
+  007e: goto 0x0089
+  0081: OAT = 2
+  0089: ProcessNewValue(Movie, cast3f(cast3a(OAT)))
+  00a1: return nothing
+  00a3: <eos>

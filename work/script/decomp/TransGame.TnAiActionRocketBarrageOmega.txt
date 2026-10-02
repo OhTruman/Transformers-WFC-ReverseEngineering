@@ -1,0 +1,18 @@
+function TnAiActionRocketBarrageOmega.OnSetUpConditions  (script 62 bytes)
+  0000: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 2)) goto 0x0026
+  0024: return false
+  0026: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0037: return return
+  003d: <eos>
+
+function TnAiActionRocketBarrageOmega.OnStart  (script 55 bytes)
+  0000: SetCharacterState(8)
+  000c: TnOmegaSupremePawn(self._TransformerPawn).OnShootingRocketBarrage()
+  0024: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  0030: return return
+  0036: <eos>
+
+function TnAiActionRocketBarrageOmega.DoCalculateAdditionalCost  (script 54 bytes)
+  0000: return (DoCalculateAdditionalCost(Context, ExpectedEffects) + ((cast3a(Context) == cast3a(1)) ? 7.0 : 0.0))
+  002f: return return
+  0035: <eos>

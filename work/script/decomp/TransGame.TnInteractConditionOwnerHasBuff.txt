@@ -1,0 +1,10 @@
+function TnInteractConditionOwnerHasBuff.CanInteractWith  (script 133 bytes)
+  0000: Services = TnServiceProvider(Interacter)
+  0010: if !(EqualEqual_InterfaceInterface(Services, TnServiceProvider(none))) goto 0x0026
+  0024: return false
+  0026: BuffService = TnBuffService(Services.GetService('TnBuffService'))
+  004e: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x0064
+  0062: return false
+  0064: return BuffService.HasBuff(self.Buff)
+  007e: return return
+  0084: <eos>

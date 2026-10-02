@@ -1,0 +1,12 @@
+function TnAiCustomProceduralPreconditionTargetNearestRange.set_Range  (script 14 bytes)
+  0000: self._Range = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiCustomProceduralPreconditionTargetNearestRange.CheckProceduralPrecondition  (script 67 bytes)
+  0000: AsTnAiController = TnAiController(C)
+  0010: if !((AsTnAiController == none)) goto 0x001d
+  001b: return false
+  001d: return (cast3a(self._Range) == cast3a(AsTnAiController.GetEnemyNearestRange()))
+  003c: return return
+  0042: <eos>

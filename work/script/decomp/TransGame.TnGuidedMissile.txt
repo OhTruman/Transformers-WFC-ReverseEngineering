@@ -1,0 +1,31 @@
+function TnGuidedMissile.UpdateData  (script 147 bytes)
+  0000: UpdateData()
+  0006: self.MissileData = TnGuidedMissileData(self.Data)
+  0016: self.CylinderComponent.SetCylinderSize(self.MissileData.CollisionRadius, self.MissileData.CollisionRadius)
+  0045: self.LifeSpan = obj'TnValuePlusSumBuffModifier'.static.ModifyFloatSingle(self.MissileData.FuseTime, obj'TnBuffIncreaseGuidedMissileFuseTime', TnPawn(self.Instigator), )
+  007c: self.Health = self.MissileData.Health
+  0090: return nothing
+  0092: <eos>
+
+function TnGuidedMissile.IsControllable  (script 33 bytes)
+  0000: return (!IsExploding() && !self.bDeleteMe)
+  001a: return return
+  0020: <eos>
+
+function TnGuidedMissile.SetInput  (script 122 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  001f: self.Acceleration = ((LeftRight * Y) + (UpDown * Z))
+  003f: (self.Acceleration *= obj'TnValueTimesProductBuffModifier'.static.ModifyFloatSingle(self.MissileData.ControlStrength, obj'TnBuffIncreaseGuidedMissileControl', TnPawn(self.Instigator), ))
+  0077: return nothing
+  0079: <eos>
+
+function TnGuidedMissile.Detonate  (script 31 bytes)
+  0000: Explode(self.Location, vect(0,0,1))
+  001c: return nothing
+  001e: <eos>
+
+function TnGuidedMissile.ShouldExplodeOnDamage  (script 56 bytes)
+  0000: (self.Health -= Damage)
+  000c: return ((self.Health <= cast3f(0)) && TnProjectile.ShouldExplodeOnDamage(Damage, InstigatedBy, DamageType))
+  0031: return return
+  0037: <eos>

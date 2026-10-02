@@ -1,0 +1,21 @@
+function TnRoundBasedGameMessage.ClientReceive  (script 355 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: TnWorldInfo(P.WorldInfo)._Announcer.PlayEvent(Switch[default.DialogSound])
+  0039: if !((Switch == 2)) goto 0x00ce
+  0045: MusicTrack.SoundCue = default.TimeUpMusic
+  005b: MusicTrack.FadeInTime = 0.0
+  0071: MusicTrack.FadeOutTime = 0.0
+  0087: MusicTrack.Priority = 0
+  0099: TnWorldInfo(P.WorldInfo)._MusicPlayer.PlayMusic(MusicTrack, false, , )
+  00cb: goto 0x0160
+  00ce: if !((Switch == 3)) goto 0x0160
+  00da: MusicTrack.SoundCue = default.SwitchingSidesMusic
+  00f0: MusicTrack.FadeInTime = 0.0
+  0106: MusicTrack.FadeOutTime = 0.0
+  011c: MusicTrack.Priority = 0
+  012e: TnWorldInfo(P.WorldInfo)._MusicPlayer.PlayMusic(MusicTrack, false, , )
+  0160: return nothing
+  0162: <eos>

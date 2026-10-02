@@ -1,0 +1,13 @@
+function HmOrbitResetCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.TargetActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitResetCameraBehavior.Reset  (script 148 bytes)
+  0000: if !((self.TargetActor != none)) goto 0x0040
+  000b: Result.OrbitRotation.Yaw = self.TargetActor.Rotation.Yaw
+  0040: Result.OrbitRotation.Pitch = cast44((self.ResetPitch * 182.0444489))
+  006a: Result.OrbitRotation.Roll = 0
+  0087: return Result
+  008d: return return
+  0093: <eos>

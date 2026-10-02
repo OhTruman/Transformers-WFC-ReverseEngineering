@@ -1,0 +1,83 @@
+function TnAiActionSniperScanning.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._LaserSight = TnAiLaserSight(GetService('TnAiLaserSight', 2))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionSniperScanning.OnSetUpConditions  (script 112 bytes)
+  0000: if !((self._TransformerController._SnipeSearchLocations.Length == 0)) goto 0x0017
+  0015: return false
+  0017: if !((self._TransformerController._AttackFromActor == none)) goto 0x002d
+  002b: return false
+  002d: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', self._TransformerController._AttackFromActor)
+  0058: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0069: return return
+  006f: <eos>
+
+function TnAiActionSniperScanning.OnPlanMade  (script 34 bytes)
+  0000: OnPlanMade(ExpectedEffects)
+  000b: self._DesiredSniperLocation = self._TransformerController._AttackFromActor
+  001f: return nothing
+  0021: <eos>
+
+function TnAiActionSniperScanning.PruneNullSnipeSearchLocations  (script 103 bytes)
+  0000: I = 0
+  0007: if !((I < self._SnipeSearchLocations.Length)) goto 0x0064
+  0017: if !((I[self._SnipeSearchLocations] == none)) goto 0x005a
+  0028: I[self._SnipeSearchLocations] = (self._SnipeSearchLocations.Length - 1)[self._SnipeSearchLocations]
+  0043: self._SnipeSearchLocations.Remove((self._SnipeSearchLocations.Length - 1),1)
+  0053: SubtractSubtract_PreInt(I)
+  005a: AddAdd_PreInt(I)
+  0061: goto 0x0007
+  0064: return nothing
+  0066: <eos>
+
+function TnAiActionSniperScanning.OnStart  (script 267 bytes)
+  0000: SetCharacterState((0 | 0))
+  000e: self._TransformerController.StopMovement()
+  0021: self._SnipeSearchLocations = self._TransformerController._SnipeSearchLocations
+  0035: TnAiActionSniperScanning.PruneNullSnipeSearchLocations()
+  003b: if !((self._SnipeSearchLocations.Length == 0)) goto 0x0052
+  0047: return Fail()
+  0052: self._CurrentIdx = 0
+  0059: self._SearchStep = 1
+  0060: self._TimeSinceLocationChange = 0.0
+  006b: self._LaserSight.Initialize(self._TransformerPawn, 500.0, 500.0, 3.0, 250.0)
+  0097: self._LaserSight.Start(self._CurrentIdx[self._SnipeSearchLocations].Location)
+  00be: self._ScanningLocation.SetFocalPoint(self._LaserSight._SightHitLocation)
+  00df: self._TransformerController.Focus = IFocusible(self._ScanningLocation)
+  00f8: return OnStart(ExpectedEffects)
+  0104: return return
+  010a: <eos>
+
+function TnAiActionSniperScanning.OnUpdate  (script 149 bytes)
+  0000: (self._TimeSinceLocationChange += DeltaTime)
+  000c: if !((self._TimeSinceLocationChange > cast3f(5))) goto 0x0020
+  001a: TnAiActionSniperScanning.SetupNextScanningLocaiton()
+  0020: if !((self._DesiredSniperLocation != self._TransformerController._AttackFromActor)) goto 0x0043
+  0038: return Fail()
+  0043: self._ScanningLocation.SetFocalPoint(self._LaserSight._SightHitLocation)
+  0064: self._TransformerController.Focus = IFocusible(self._ScanningLocation)
+  007d: return OnUpdate(ExpectedEffects, DeltaTime)
+  008e: return return
+  0094: <eos>
+
+function TnAiActionSniperScanning.OnFinish  (script 33 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._LaserSight.Stop()
+  001e: return nothing
+  0020: <eos>
+
+function TnAiActionSniperScanning.SetupNextScanningLocaiton  (script 133 bytes)
+  0000: self._TimeSinceLocationChange = 0.0
+  000b: TnAiActionSniperScanning.PruneNullSnipeSearchLocations()
+  0011: if !((self._SnipeSearchLocations.Length == 1)) goto 0x001f
+  001d: return nothing
+  001f: if !((self._CurrentIdx == (self._SnipeSearchLocations.Length - 1))) goto 0x003d
+  0032: self._SearchStep = -1
+  003d: if !((self._CurrentIdx == 0)) goto 0x004f
+  0048: self._SearchStep = 1
+  004f: (self._CurrentIdx += self._SearchStep)
+  005b: self._LaserSight.Start(self._CurrentIdx[self._SnipeSearchLocations].Location)
+  0082: return nothing
+  0084: <eos>

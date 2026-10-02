@@ -1,0 +1,32 @@
+function TnCoopTestingPolicy.HandleEnterGame  (script 120 bytes)
+  0000: TnMultiplayerGameTestingPolicy.HandleEnterGame(Game)
+  000b: Game.SetTimer((self.RestartChapterInterval + cast3f(obj'Core.Random'.static.RandomInt(60))), false, 'OnRestartChapter', self)
+  0040: Game.SetTimer((self.RestartCheckpointInterval + cast3f(obj'Core.Random'.static.RandomInt(60))), false, 'OnRestartCheckpoint', self)
+  0075: return nothing
+  0077: <eos>
+
+function TnCoopTestingPolicy.GetLocalController  (script 59 bytes)
+  0000: foreach self._Game.WorldInfo.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0031)
+  0029: iterpop
+  002a: return PC
+  0030: iternext
+  0031: iterpop
+  0032: return none
+  0034: return return
+  003a: <eos>
+
+function TnCoopTestingPolicy.OnRestartChapter  (script 103 bytes)
+  0000: PC = TnCoopTestingPolicy.GetLocalController()
+  000c: LogInternal("Causing a chapter restart (reloadmap)", 'DevAutomatedTesting', , )
+  0040: PC.ConsoleCommand("reloadmap", )
+  0064: return nothing
+  0066: <eos>
+
+function TnCoopTestingPolicy.OnRestartCheckpoint  (script 95 bytes)
+  0000: CM = TnCheckpointManager(obj'Engine.Engine'.static.GetEngine().GetCheckpointManager())
+  002c: if !((CM.GetActiveCheckpoint() == none)) goto 0x0047
+  0045: return nothing
+  0047: CM.RestartFromActiveCheckpoint()
+  005a: return nothing
+  005c: return nothing
+  005e: <eos>

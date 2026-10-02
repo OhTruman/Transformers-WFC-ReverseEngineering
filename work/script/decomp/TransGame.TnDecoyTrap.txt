@@ -1,0 +1,28 @@
+function TnDecoyTrap.PickupAllowed  (script 60 bytes)
+  0000: return ((Pickuper != Pickup.Instigator) && !Pickup.OnSameTeamAs(Pickuper))
+  0035: return return
+  003b: <eos>
+
+function TnDecoyTrap.GetApplier  (script 13 bytes)
+  0000: return self.DecoyCreator
+  0006: return return
+  000c: <eos>
+
+function TnDecoyTrap.SetDecoyCreator  (script 14 bytes)
+  0000: self.DecoyCreator = Creator
+  000b: return nothing
+  000d: <eos>
+
+function TnDecoyTrap.DropFrom  (script 113 bytes)
+  0000: nothing
+  0001: DP = TnDroppedPickup(DropFrom(StartLocation, StartVelocity, StartRotation))
+  0021: if !((DP.Instigator != none)) goto 0x0064
+  0035: DP.SetTeamNum(DP.Instigator.GetTeamNum())
+  0064: return DP
+  006a: return return
+  0070: <eos>
+
+function TnDecoyTrap.ShouldDestroyOnDrop  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>

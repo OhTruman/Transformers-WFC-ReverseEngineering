@@ -1,0 +1,18 @@
+function TnStatsWriteAccuracy.CopyExtraStats  (script 337 bytes)
+  0000: TnStatsWrite.CopyExtraStats(PRI, StatsInterface)
+  0010: StatsInterfaceEx = OnlineStatsInterfaceEx(cast36(StatsInterface))
+  0022: ShotsProp.PropertyId = 4097
+  0038: StatsInterfaceEx.GetKeyArchiveValue(ShotsProp)
+  0051: Shots = obj'Engine.Settings'.static.GetSettingsDataInt(ShotsProp.Data)
+  007a: HitsProp.PropertyId = 4098
+  0090: StatsInterfaceEx.GetKeyArchiveValue(HitsProp)
+  00a9: Hits = obj'Engine.Settings'.static.GetSettingsDataInt(HitsProp.Data)
+  00d2: if !((Shots > 0)) goto 0x0112
+  00dd: AccuracyAsFloat = (cast3f(Hits) / cast3f(Shots))
+  00f3: ConversionFactor = 10000.0
+  00fe: Accuracy = cast44((ConversionFactor * AccuracyAsFloat))
+  0112: SetIntStat(268435523, Accuracy)
+  0126: SetIntStat(268435517, Hits)
+  013a: SetIntStat(268435516, Shots)
+  014e: return nothing
+  0150: <eos>

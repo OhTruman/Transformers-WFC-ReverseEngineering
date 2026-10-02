@@ -1,0 +1,33 @@
+function TnSeqAct_StartBombingRun.Activated  (script 53 bytes)
+  0000: I = 0
+  0007: if !((I < self.Targets.Length)) goto 0x0032
+  0017: TnSeqAct_StartBombingRun.SetBombingRunState(I[self.Targets])
+  0028: AddAdd_PreInt(I)
+  002f: goto 0x0007
+  0032: return nothing
+  0034: <eos>
+
+function TnSeqAct_StartBombingRun.GetBombingRunInfo  (script 64 bytes)
+  0000: if !((self.BombingRunInfos.Length == 0)) goto 0x000e
+  000c: return none
+  000e: PathNodeIndex = obj'Core.Random'.static.RandomInt(self.BombingRunInfos.Length)
+  002d: return PathNodeIndex[self.BombingRunInfos]
+  0039: return return
+  003f: <eos>
+
+function TnSeqAct_StartBombingRun.SetBombingRunState  (script 173 bytes)
+  0000: BombingRunInfo = TnSeqAct_StartBombingRun.GetBombingRunInfo()
+  000c: if !((BombingRunInfo == none)) goto 0x0019
+  0017: return nothing
+  0019: TargetController = TnAiController(CurrentTarget)
+  0029: if !((TargetController == none)) goto 0x0077
+  0034: TargetPawn = TnPawn(CurrentTarget)
+  0044: if !((TargetPawn == none)) goto 0x0051
+  004f: return nothing
+  0051: TargetController = TnAiController(TargetPawn.Controller)
+  006a: if !((TargetController == none)) goto 0x0077
+  0075: return nothing
+  0077: TargetController.SetWorldStateInt(obj'TnAiWorldStateBombingRun', 1, BombingRunInfo)
+  0095: TargetController.RequestReplan(1)
+  00aa: return nothing
+  00ac: <eos>

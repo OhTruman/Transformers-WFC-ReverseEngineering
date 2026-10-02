@@ -1,0 +1,112 @@
+function IniLocPatcher.OnReadTitleFileComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function IniLocPatcher.Init  (script 339 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0100
+  0024: self.SystemInterface = OnlineSub.SystemInterface
+  0038: if !(NotEqual_InterfaceInterface(self.SystemInterface, OnlineSystemInterface(none))) goto 0x006c
+  004c: self.SystemInterface.AddReadTitleFileCompleteDelegate(delegate.OnReadFileComplete)
+  0069: goto 0x00fd
+  006c: LogInternal("ERROR: Can't initialize IniLocPatcher without an online system interface", 'DevOnline', , )
+  00c3: Index = 0
+  00ca: if !((Index < self.Files.Length)) goto 0x00fd
+  00da: Index[self.Files].ReadState = 3
+  00f3: AddAdd_Int(Index)
+  00fa: goto 0x00ca
+  00fd: goto 0x0150
+  0100: LogInternal("ERROR: Can't initialize IniLocPatcher without an online subsystem", 'DevOnline', , )
+  0150: return nothing
+  0152: <eos>
+
+function IniLocPatcher.DownloadFiles  (script 187 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.SystemInterface, OnlineSystemInterface(none))) goto 0x00b8
+  0014: Index = 0
+  001b: if !((Index < self.Files.Length)) goto 0x00b8
+  002b: if !((cast3a(Index[self.Files].ReadState) == cast3a(0))) goto 0x00ae
+  004c: if !(self.SystemInterface.ReadTitleFile(Index[self.Files].Filename)) goto 0x0095
+  0079: Index[self.Files].ReadState = 1
+  0092: goto 0x00ae
+  0095: Index[self.Files].ReadState = 3
+  00ae: AddAdd_Int(Index)
+  00b5: goto 0x001b
+  00b8: return nothing
+  00ba: <eos>
+
+function IniLocPatcher.IsIdle  (script 112 bytes)
+  0000: I = 0
+  0007: if !((I < self.Files.Length)) goto 0x0067
+  0017: if !((cast3a(I[self.Files].ReadState) == cast3a(0))) goto 0x003a
+  0038: return false
+  003a: if !((cast3a(I[self.Files].ReadState) == cast3a(1))) goto 0x005d
+  005b: return false
+  005d: AddAdd_PreInt(I)
+  0064: goto 0x0007
+  0067: return true
+  0069: return return
+  006f: <eos>
+
+function IniLocPatcher.OnReadFileComplete  (script 325 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.Files.Length)) goto 0x0142
+  0017: if !((Index[self.Files].Filename == Filename)) goto 0x0138
+  0037: if !((cast3a(Result) == cast3a(1))) goto 0x00c8
+  0047: Index[self.Files].ReadState = 2
+  0060: if !((self.SystemInterface.GetTitleFileContents(Filename, FileData) && (FileData.Length > 0))) goto 0x00ac
+  008f: ProcessIniLocFile(Filename, FileData)
+  00a3: IniLocPatcher.RefreshDatastores()
+  00a9: goto 0x00c5
+  00ac: Index[self.Files].ReadState = 3
+  00c5: goto 0x0138
+  00c8: LogInternal((("Failed to download the file (" $ Index[self.Files].Filename) $ ") from system interface"), , , )
+  011f: Index[self.Files].ReadState = 3
+  0138: AddAdd_Int(Index)
+  013f: goto 0x0007
+  0142: return nothing
+  0144: <eos>
+
+function IniLocPatcher.ProcessIniLocFile  (script 12 bytes)
+  0000: Filename
+  0005: FileData
+  000a: nothing
+  000b: <eos>
+
+function IniLocPatcher.RefreshDatastores  (script 196 bytes)
+  0000: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  0019: foreach self.DatastoresToRefresh(Tag,) (end 0x00c0)
+  0028: DataStore = DataStoreManager.FindDataStore(Tag, )
+  0047: if !((DataStore == none)) goto 0x00a8
+  0052: LogInternal((("ERROR: Failed to find datastore with tag (" $ cast57(Tag)) $ ") to refresh"), 'DevOnline', , )
+  00a4: iternext
+  00a5: goto 0x00c0
+  00a8: DataStore.RefreshSubscribers(, , , )
+  00bf: iternext
+  00c0: iterpop
+  00c1: return nothing
+  00c3: <eos>
+
+function IniLocPatcher.AddFileToDownload  (script 139 bytes)
+  0000: FileIndex = self.Files.Find('Filename',Filename)
+  001c: if !((FileIndex == -1)) goto 0x0065
+  002b: FileIndex = self.Files.Length
+  0037: self.Files.Length = (FileIndex + 1)
+  0046: FileIndex[self.Files].Filename = Filename
+  0062: goto 0x007e
+  0065: FileIndex[self.Files].ReadState = 0
+  007e: DownloadFiles()
+  0088: return nothing
+  008a: <eos>
+
+function IniLocPatcher.AddReadFileDelegate  (script 39 bytes)
+  0000: if !((ReadTitleFileCompleteDelegate != emptydelegate)) goto 0x0024
+  000a: <endparms>
+  000b: self.SystemInterface.AddReadTitleFileCompleteDelegate(ReadTitleFileCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function IniLocPatcher.ClearReadFileDelegate  (script 48 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.SystemInterface, OnlineSystemInterface(none))) goto 0x002d
+  0014: self.SystemInterface.ClearReadTitleFileCompleteDelegate(ReadTitleFileCompleteDelegate)
+  002d: return nothing
+  002f: <eos>

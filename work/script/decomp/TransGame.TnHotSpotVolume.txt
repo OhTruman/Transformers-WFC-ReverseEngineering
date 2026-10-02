@@ -1,0 +1,31 @@
+function TnHotSpotVolume.SetHotSpotInfo  (script 27 bytes)
+  0000: self.AllFactions = UseForAllFactions
+  000d: self.Faction = SpecificFaction
+  0018: return nothing
+  001a: <eos>
+
+function TnHotSpotVolume.VolumeEncompassesLocation  (script 32 bytes)
+  0000: return V.EncompassesPoint(Loc)
+  0019: return return
+  001f: <eos>
+
+function TnHotSpotVolume.Initialize  (script 341 bytes)
+  0000: foreach AllActors(obj'Engine.PathNode', P) (end 0x010c)
+  0017: TacticalInterface = TnTacticalInterface(P)
+  0027: if !(((P.IsDefaultObject() || EqualEqual_InterfaceInterface(TacticalInterface, TnTacticalInterface(none))) || (P.get_Outer() != get_Outer()))) goto 0x006d
+  0069: iternext
+  006a: goto 0x010c
+  006d: Tactical = TacticalInterface.GetTactical()
+  0087: if !(obj'TnHotSpotVolume'.static.VolumeEncompassesLocation(self, P.Location)) goto 0x00f7
+  00ac: Tactical.set_IsHotSpot(true)
+  00c0: Tactical._HotSpotFaction = self.Faction
+  00d4: Tactical.set_HotSpotAllFactions(self.AllFactions)
+  00ed: AddAdd_Int(NumOfTacticalInVolume)
+  00f4: goto 0x010b
+  00f7: Tactical.set_IsHotSpot(false)
+  010b: iternext
+  010c: iterpop
+  010d: if !((NumOfTacticalInVolume == 0)) goto 0x0152
+  0118: EmitCheckMessage(0, "No tactical in this volume, please remove", 1, )
+  0152: return nothing
+  0154: <eos>

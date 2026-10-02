@@ -1,0 +1,38 @@
+function SequenceEvent.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SequenceEvent.CheckForErrors  (script 160 bytes)
+  0000: if !((self.bClientSideOnly && !IsClientSideOnlyAllowed())) goto 0x009d
+  001a: EmitCheckMessage(1, "Kismet event is marked as Client Side Only but this event does not get trigger on clients, your setup will not work", , )
+  009d: return nothing
+  009f: <eos>
+
+function SequenceEvent.IsClientSideOnlyAllowed  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function SequenceEvent.RegisterEvent  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SequenceEvent.CheckActivate  (script 27 bytes)
+  0000: InOriginator
+  0005: InInstigator
+  000a: bTest
+  000f: ActivateIndices
+  0014: bPushTop
+  0019: nothing
+  001a: <eos>
+
+function SequenceEvent.Reset  (script 28 bytes)
+  0000: self.ActivationTime = 0.0
+  000b: self.TriggerCount = 0
+  0012: self.Instigator = none
+  0019: return nothing
+  001b: <eos>
+
+function SequenceEvent.Toggled  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

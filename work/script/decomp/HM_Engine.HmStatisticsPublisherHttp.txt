@@ -1,0 +1,54 @@
+function HmStatisticsPublisherHttp.ShouldPublish  (script 41 bytes)
+  0000: if !(!HmStatisticsPublisher.ShouldPublish(Table)) goto 0x0012
+  0010: return false
+  0012: return Table.WriteToLocalDb
+  0022: return return
+  0028: <eos>
+
+function HmStatisticsPublisherHttp.BeginPublishTable  (script 148 bytes)
+  0000: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0019: self.Uploader = HmStatisticsUploader(OnlineSub.GetNamedInterface('StatisticsUploader'))
+  0040: self.Payload = ""
+  0048: AppendToPayload("<statistics connection_string="")
+  0073: AppendToPayload(self.DatabaseConnectionString)
+  0082: AppendToPayload("">
+")
+  0091: return nothing
+  0093: <eos>
+
+function HmStatisticsPublisherHttp.EndPublishTable  (script 77 bytes)
+  0000: if !((NumRowsProcessed > 0)) goto 0x0042
+  000b: AppendToPayload("</statistics>
+")
+  0025: self.Uploader.UploadData(self.Payload, self.RemoteProxyUrl)
+  0042: self.Payload = ""
+  004a: return nothing
+  004c: <eos>
+
+function HmStatisticsPublisherHttp.ProcessRow  (script 227 bytes)
+  0000: AppendToPayload("    <row table="")
+  001c: AppendToPayload(TableName)
+  002b: AppendToPayload("">
+")
+  003a: foreach Items(Item,) (end 0x00c8)
+  0049: Value = HmStatisticsPublisherHttp.TranslateMetricValue(Item)
+  005a: AppendToPayload("        <field name="")
+  007b: AppendToPayload(Item.MetricName)
+  0095: AppendToPayload("">")
+  00a3: AppendToPayload(Value)
+  00b2: AppendToPayload("</field>
+")
+  00c7: iternext
+  00c8: iterpop
+  00c9: AppendToPayload("    </row>
+")
+  00e0: return nothing
+  00e2: <eos>
+
+function HmStatisticsPublisherHttp.TranslateMetricValue  (script 111 bytes)
+  0000: I = self.Keywords.Find('MetricName',Item.MetricName)
+  0027: if !((I != -1)) goto 0x004d
+  0036: return I[self.Keywords].Replacement
+  004d: return ProcessReplacements(Item.MetricValue)
+  0068: return return
+  006e: <eos>

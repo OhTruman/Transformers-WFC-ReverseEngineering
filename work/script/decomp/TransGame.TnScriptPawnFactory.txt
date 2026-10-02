@@ -1,0 +1,38 @@
+function TnScriptPawnFactory.Spawn  (script 297 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: SpawnedPawn = TnScriptPawnFactory.GetWorldInfo().Spawn(PawnClass, , , SpawnLocation, SpawnRotation, , , Blueprint)
+  0035: if !((SpawnedPawn == none)) goto 0x009f
+  0040: LogInternal(((((("ERROR: Failed to spawn pawn" @ cast56(PawnClass)) @ "at location") @ cast58(SpawnLocation)) @ "with rotation") @ cast59(SpawnRotation)), , , )
+  009d: return none
+  009f: SpawnedController = TnScriptPawnFactory.GetWorldInfo().Spawn(ControllerClass, , , , , , , )
+  00c5: if !((SpawnedController == none)) goto 0x0103
+  00d0: LogInternal(("ERROR: Failed to spawn controller" @ cast56(ControllerClass)), , , )
+  0101: return none
+  0103: SpawnedController.Possess(SpawnedPawn, false)
+  011c: return SpawnedController
+  0122: return return
+  0128: <eos>
+
+function TnScriptPawnFactory.SpawnWithoutFail  (script 297 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: SpawnedPawn = TnScriptPawnFactory.GetWorldInfo().Spawn(PawnClass, , , SpawnLocation, SpawnRotation, , true, Blueprint)
+  0035: if !((SpawnedPawn == none)) goto 0x009f
+  0040: LogInternal(((((("ERROR: Failed to spawn pawn" @ cast56(PawnClass)) @ "at location") @ cast58(SpawnLocation)) @ "with rotation") @ cast59(SpawnRotation)), , , )
+  009d: return none
+  009f: SpawnedController = TnScriptPawnFactory.GetWorldInfo().Spawn(ControllerClass, , , , , , , )
+  00c5: if !((SpawnedController == none)) goto 0x0103
+  00d0: LogInternal(("ERROR: Failed to spawn controller" @ cast56(ControllerClass)), , , )
+  0101: return none
+  0103: SpawnedController.Possess(SpawnedPawn, false)
+  011c: return SpawnedController
+  0122: return return
+  0128: <eos>
+
+function TnScriptPawnFactory.GetWorldInfo  (script 27 bytes)
+  0000: return obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0014: return return
+  001a: <eos>

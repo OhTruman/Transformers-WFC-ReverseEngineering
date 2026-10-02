@@ -1,0 +1,99 @@
+function TnAiActionTrypticonTailAttack.OnInitialize  (script 50 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTrypticonTailAttackBlueprint(Blueprint)
+  001b: self._Attacks = self._Blueprint.Attacks
+  002f: return nothing
+  0031: <eos>
+
+function TnAiActionTrypticonTailAttack.OnBind  (script 57 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: self._Trypticon = TnTrypticonPawn(self._TransformerPawn)
+  0036: return nothing
+  0038: <eos>
+
+function TnAiActionTrypticonTailAttack.OnStart  (script 185 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Blueprint.AttackDelay > cast3f(0))) goto 0x00a0
+  003e: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.IntroAnimation, delegate.None, delegate.None)
+  0072: self._AttackTimer.Start(delegate.PlayAttack, self._Blueprint.AttackDelay, )
+  009d: goto 0x00a6
+  00a0: TnAiActionTrypticonTailAttack.PlayAttack()
+  00a6: return OnStart(ExpectedEffects)
+  00b2: return return
+  00b8: <eos>
+
+function TnAiActionTrypticonTailAttack.OnUpdate  (script 72 bytes)
+  0000: self._AttackTimer.Tick(DeltaTime)
+  0018: self._DamageTimer.Tick(DeltaTime)
+  0030: return OnUpdate(ExpectedEffects, DeltaTime)
+  0041: return return
+  0047: <eos>
+
+function TnAiActionTrypticonTailAttack.PlayAttack  (script 228 bytes)
+  0000: self._AttackIndex = TnAiActionTrypticonTailAttack.PickAttack()
+  000c: if !((self._AttackIndex == -1)) goto 0x0027
+  001b: Fail()
+  0025: return nothing
+  0027: self._Trypticon.TriggerKismetEvent(self._AttackIndex[self._Attacks].KismetEvent)
+  0050: Params = self._Blueprint.Params
+  0064: Params.AnimName = self._AttackIndex[self._Attacks].Animation
+  008b: self._AnimatorService.EnqueueReplicatedAnimation(Params, delegate.OnAnimationComplete, delegate.FailCallback)
+  00b6: self._DamageTimer.Start(delegate.ApplyDamage, self._Blueprint.DamageDelay, )
+  00e1: return nothing
+  00e3: <eos>
+
+function TnAiActionTrypticonTailAttack.OnAnimationComplete  (script 62 bytes)
+  0000: if !(self._TransformerController.AiWorldState.GetBoolValue(obj'TnAiWorldStateTargetIsDead')) goto 0x0031
+  0024: Succeed()
+  002e: goto 0x003b
+  0031: Fail()
+  003b: return nothing
+  003d: <eos>
+
+function TnAiActionTrypticonTailAttack.PickAttack  (script 88 bytes)
+  0000: Index = 0
+  0007: if !((Index < self._Attacks.Length)) goto 0x004b
+  0017: if !(TnAiActionTrypticonTailAttack.IsActorInTriggerVolume(self._Target, Index[self._Attacks].Volume)) goto 0x0041
+  003b: return Index
+  0041: AddAdd_PreInt(Index)
+  0048: goto 0x0007
+  004b: return -1
+  0051: return return
+  0057: <eos>
+
+function TnAiActionTrypticonTailAttack.IsActorInTriggerVolume  (script 51 bytes)
+  0000: return A.IsInVolume(self._Trypticon.GetTriggerVolume(V))
+  002c: return return
+  0032: <eos>
+
+function TnAiActionTrypticonTailAttack.IsActorInDamageVolume  (script 51 bytes)
+  0000: return A.IsInVolume(self._Trypticon.GetDamageVolume(V))
+  002c: return return
+  0032: <eos>
+
+function TnAiActionTrypticonTailAttack.ApplyDamage  (script 243 bytes)
+  0000: foreach self._TransformerController.WorldInfo.AllControllers(obj'Engine.Controller', C) (end 0x00ef)
+  0029: P = TnPawn(C.Pawn)
+  0042: if !((((P != none) && !P.IsSameTeam(self._Trypticon)) && TnAiActionTrypticonTailAttack.IsActorInDamageVolume(P, self._AttackIndex[self._Attacks].Volume))) goto 0x00ee
+  0092: P.TakeDamage(self._Blueprint.Damage, self._TransformerController, P.Location, vect(0,0,0), self._Blueprint.DamageType, , )
+  00e3: TnAiActionTrypticonTailAttack.AddImpulse(P)
+  00ee: iternext
+  00ef: iterpop
+  00f0: return nothing
+  00f2: <eos>
+
+function TnAiActionTrypticonTailAttack.AddImpulse  (script 154 bytes)
+  0000: if !(P.get_IsInRobotForm()) goto 0x005c
+  0016: P.SetPhysics(2, , )
+  002d: P.Velocity = (vect(0,0,1) * self._Blueprint.RobotImpulse)
+  0059: goto 0x0097
+  005c: P.Mesh.AddLinearVelocity((vect(0,0,1) * self._Blueprint.VehicleImpulse), , )
+  0097: return nothing
+  0099: <eos>
+
+function TnAiActionTrypticonTailAttack.OnFinish  (script 41 bytes)
+  0000: self._AttackTimer.Clear()
+  0013: self._DamageTimer.Clear()
+  0026: return nothing
+  0028: <eos>

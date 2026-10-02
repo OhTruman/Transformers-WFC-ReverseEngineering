@@ -1,0 +1,40 @@
+function TnStatisticsShotTable.RecordShotFired  (script 203 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(((W.Instigator == none) || (TnPlayerController(W.Instigator.Controller) == none))) goto 0x0047
+  0045: return nothing
+  0047: PlayerName = W.Instigator.Controller.GetHumanReadableName()
+  0072: WeaponName = W.GetHumanReadableName()
+  008b: Index = TnStatisticsShotTable.FindOrCreateStat(Game.StatisticsSessionId, PlayerName, WeaponName)
+  00af: (Index[self.Shots].ShotsFired += 1)
+  00c8: return nothing
+  00ca: <eos>
+
+function TnStatisticsShotTable.RecordCausedDamage  (script 259 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: PlayerName = Attacker.GetHumanReadableName()
+  0026: if !(((Attacker.Pawn != none) && (Attacker.Pawn.Weapon != none))) goto 0x0084
+  0059: WeaponName = Attacker.Pawn.Weapon.GetHumanReadableName()
+  0084: Index = TnStatisticsShotTable.FindOrCreateStat(Game.StatisticsSessionId, PlayerName, WeaponName)
+  00a8: (Index[self.Shots].ShotsHit += 1)
+  00c1: (Index[self.Shots].DamageDone += Damage)
+  00de: if !(IsFatalDamage) goto 0x0100
+  00e7: (Index[self.Shots].FatalHits += 1)
+  0100: return nothing
+  0102: <eos>
+
+function TnStatisticsShotTable.FindOrCreateStat  (script 201 bytes)
+  0000: I = 0
+  0007: if !((I < self.Shots.Length)) goto 0x0069
+  0017: if !(((I[self.Shots].PlayerName == PlayerName) && (I[self.Shots].WeaponName == WeaponName))) goto 0x005f
+  0059: return I
+  005f: AddAdd_PreInt(I)
+  0066: goto 0x0007
+  0069: Shot.Session_Id = SessionId
+  007f: Shot.PlayerName = PlayerName
+  0095: Shot.WeaponName = WeaponName
+  00ab: self.Shots.AddItem(Shot)
+  00b8: return (self.Shots.Length - 1)
+  00c2: return return
+  00c8: <eos>

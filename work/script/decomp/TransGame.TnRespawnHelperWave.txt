@@ -1,0 +1,55 @@
+function TnRespawnHelperWave.OnDeath  (script 87 bytes)
+  0000: TI = TnTeamInfo(C.PlayerReplicationInfo.Team)
+  0022: if !(((TI != none) && !TI._AllowRespawn)) goto 0x0045
+  0043: return nothing
+  0045: Add(C)
+  0054: return nothing
+  0056: <eos>
+
+function TnRespawnHelperWave.OnTick  (script 287 bytes)
+  0000: TnRespawnHelperDelayed.OnTick(DeltaTime)
+  000b: I = 0
+  0012: if !((I < self.PendingRespawns.Length)) goto 0x00e6
+  0022: (I[self.PendingRespawns].TimeToRespawn -= DeltaTime)
+  003f: PRI = TnPlayerReplicationInfo(I[self.PendingRespawns].C.PlayerReplicationInfo)
+  0069: if !((I[self.PendingRespawns].TimeToRespawn <= cast3f(0))) goto 0x00a8
+  0087: ToRespawn.AddItem(I[self.PendingRespawns].C)
+  00a5: goto 0x00dc
+  00a8: if !((PRI != none)) goto 0x00dc
+  00b3: PRI.SetTimeToRespawn(I[self.PendingRespawns].TimeToRespawn)
+  00dc: AddAdd_PreInt(I)
+  00e3: goto 0x0012
+  00e6: I = 0
+  00ed: if !((I < ToRespawn.Length)) goto 0x011c
+  00fd: Respawn(I[ToRespawn])
+  0112: AddAdd_PreInt(I)
+  0119: goto 0x00ed
+  011c: return nothing
+  011e: <eos>
+
+function TnRespawnHelperWave.DisallowSpawningForTeam  (script 117 bytes)
+  0000: TI._AllowRespawn = false
+  0011: I = 0
+  0018: if !((I < self.PendingRespawns.Length)) goto 0x0072
+  0028: if !((I[self.PendingRespawns].C.PlayerReplicationInfo.Team == TI)) goto 0x0068
+  005a: self.PendingRespawns.Remove(SubtractSubtract_Int(I),1)
+  0068: AddAdd_PreInt(I)
+  006f: goto 0x0018
+  0072: return nothing
+  0074: <eos>
+
+function TnRespawnHelperWave.OnRoundEnded  (script 60 bytes)
+  0000: TnRespawnHelperDelayed.OnRoundEnded()
+  0006: foreach self.Game.AllActors(obj'TnTeamInfo', TI) (end 0x0038)
+  0026: TI._AllowRespawn = true
+  0037: iternext
+  0038: iterpop
+  0039: return nothing
+  003b: <eos>
+
+function TnRespawnHelperWave.GetTimeToRespawn  (script 64 bytes)
+  0000: if !(((TnPlayerController(C) != none) && TnPlayerController(C).ShouldInstantRespawn())) goto 0x0033
+  002d: return 0.0
+  0033: return self.WaveRespawnTime
+  0039: return return
+  003f: <eos>

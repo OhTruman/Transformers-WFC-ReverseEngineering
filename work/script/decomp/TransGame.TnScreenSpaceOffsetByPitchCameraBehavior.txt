@@ -1,0 +1,82 @@
+function TnScreenSpaceOffsetByPitchCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.Activate  (script 111 bytes)
+  0000: TnScreenSpaceOffsetByPitchCameraBehavior.BuildCurves()
+  0006: CurrentOffsetCurve = TnScreenSpaceOffsetByPitchCameraBehavior.GetCurrentOffsetCurve()
+  0012: self.LocationOffset = TnScreenSpaceOffsetByPitchCameraBehavior.GetCameraOffset(Result.OrbitRotation.Pitch, CurrentOffsetCurve.curve, CurrentOffsetCurve.PitchRange)
+  0059: self.OffsetSmoother.Reset()
+  006c: return nothing
+  006e: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.Update  (script 190 bytes)
+  0000: if !(self.bEditingCurves) goto 0x000f
+  0009: TnScreenSpaceOffsetByPitchCameraBehavior.BuildCurves()
+  000f: CurrentOffsetCurve = TnScreenSpaceOffsetByPitchCameraBehavior.GetCurrentOffsetCurve()
+  001b: TargetOffset = TnScreenSpaceOffsetByPitchCameraBehavior.GetCameraOffset(Result.OrbitRotation.Pitch, CurrentOffsetCurve.curve, CurrentOffsetCurve.PitchRange)
+  0062: self.LocationOffset = self.OffsetSmoother.Smooth(self.LocationOffset, TargetOffset, CurrentOffsetCurve.SmoothTime, DeltaTime)
+  009a: (Result.OrbitLocationOffset += self.LocationOffset)
+  00b1: return Result
+  00b7: return return
+  00bd: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.GetCameraOffset  (script 55 bytes)
+  0000: Fraction = TnScreenSpaceOffsetByPitchCameraBehavior.GetPitchFractionOfLimits(OrbitPitch, PitchRange)
+  0016: return InOffsetCurve.Evaluate(Fraction, )
+  0030: return return
+  0036: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.GetPitchFractionOfLimits  (script 140 bytes)
+  0000: if !((PitchRange.Max == PitchRange.Min)) goto 0x002b
+  0025: return 0.0
+  002b: return obj'Core.Math'.static.FClamp((((cast3f(OrbitPitch) * 0.0054932) - PitchRange.Min) / (PitchRange.Max - PitchRange.Min)), 0.0, 1.0)
+  0085: return return
+  008b: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.GetCurrentOffsetCurve  (script 124 bytes)
+  0000: self.CurrentOffsetCurveIndex = 0
+  0007: if !((self.CurrentOffsetCurveIndex < self.OffsetCurvesByPCS.Length)) goto 0x0064
+  0017: if !(self.CameraActor.HasAllPlayerCameraStates(self.CurrentOffsetCurveIndex[self.OffsetCurvesByPCS].PlayerCameraStates)) goto 0x005a
+  0043: return self.CurrentOffsetCurveIndex[self.OffsetCurvesByPCS].OffsetCurve
+  005a: AddAdd_PreInt(self.CurrentOffsetCurveIndex)
+  0061: goto 0x0007
+  0064: self.CurrentOffsetCurveIndex = -1
+  006f: return self.DefaultOffsetCurve
+  0075: return return
+  007b: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.BuildCurves  (script 197 bytes)
+  0000: self.DefaultOffsetCurve.curve = TnScreenSpaceOffsetByPitchCameraBehavior.BuildCurve(self.DefaultOffsetCurve.Offsets, self.DefaultOffsetCurve.curve)
+  0037: I = 0
+  003e: if !((I < self.OffsetCurvesByPCS.Length)) goto 0x00c2
+  004e: I[self.OffsetCurvesByPCS].OffsetCurve.curve = TnScreenSpaceOffsetByPitchCameraBehavior.BuildCurve(I[self.OffsetCurvesByPCS].OffsetCurve.Offsets, I[self.OffsetCurvesByPCS].OffsetCurve.curve)
+  00b8: AddAdd_PreInt(I)
+  00bf: goto 0x003e
+  00c2: return nothing
+  00c4: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.BuildCurve  (script 129 bytes)
+  0000: CurvePoints.Length = 3
+  0009: I = 0
+  0010: if !((I < 3)) goto 0x003d
+  001c: I[CurvePoints] = I[Offsets]
+  0033: AddAdd_PreInt(I)
+  003a: goto 0x0010
+  003d: if !((curve == none)) goto 0x005c
+  0048: curve = new(self, nothing, obj'HM_Engine.HmCurveVector', nothing, DeltaTime)
+  005c: curve.Build(CurvePoints)
+  0074: return curve
+  007a: return return
+  0080: <eos>
+
+function TnScreenSpaceOffsetByPitchCameraBehavior.DisplayDebug  (script 201 bytes)
+  0000: if !((self.CurrentOffsetCurveIndex == -1)) goto 0x0050
+  000f: HUD.Canvas.DrawTextNormal("Screen Space Offset [Default]", , , )
+  004d: goto 0x0094
+  0050: HUD.Canvas.DrawTextNormal((("Screen Space Offset [" $ cast53(self.CurrentOffsetCurveIndex)) $ "]"), , , )
+  0094: (out_YPos += out_YL)
+  00a0: HUD.Canvas.SetPos(16.0, out_YPos)
+  00c6: return nothing
+  00c8: <eos>

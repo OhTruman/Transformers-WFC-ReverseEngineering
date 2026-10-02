@@ -1,0 +1,92 @@
+function HmCheatManager.tdc  (script 13 bytes)
+  0000: ToggleDebugCamera()
+  000a: return nothing
+  000c: <eos>
+
+function HmCheatManager.ToggleDebugCamera  (script 374 bytes)
+  0000: get_Outer().bUseDebugCamera = !get_Outer().bUseDebugCamera
+  001d: if !(get_Outer().bUseDebugCamera) goto 0x014d
+  002d: get_Outer().PlayerCamera.GetCameraViewPoint(get_Outer().DebugCamLocation, get_Outer().DebugCamRotation)
+  005f: get_Outer().ConsoleCommand("PUSHVIEW START", )
+  0086: get_Outer().ConsoleCommand((((((("PUSHVIEW " @ cast55(get_Outer().DebugCamLocation.X)) @ cast55(get_Outer().DebugCamLocation.Y)) @ cast55(get_Outer().DebugCamLocation.Z)) @ cast53(get_Outer().DebugCamRotation.Pitch)) @ cast53(get_Outer().DebugCamRotation.Yaw)) @ cast53(get_Outer().DebugCamRotation.Roll)), )
+  014a: goto 0x0173
+  014d: get_Outer().ConsoleCommand("PUSHVIEW STOP", )
+  0173: return nothing
+  0175: <eos>
+
+function HmCheatManager.ChangeDebugCameraStrategy  (script 262 bytes)
+  0000: C = HmCamera(get_Outer().PlayerCamera)
+  0017: if !((self.DefaultDebugCameraStrategy == none)) goto 0x00bb
+  0022: if !(C.IsDebugStrategyActive()) goto 0x004b
+  0038: C.ToggleDebugStrategy()
+  004b: self.DefaultDebugCameraStrategy = C.GetDebugCameraStrategy()
+  0064: NewCameraStrategy = new(nothing, nothing, NewStrategyClass, nothing, AttachTreeCallback)
+  0078: NewCameraStrategy.Initialize("")
+  008d: C.SetDebugCameraStrategy(NewCameraStrategy)
+  00a5: C.ToggleDebugStrategy()
+  00b8: goto 0x0103
+  00bb: if !(C.IsDebugStrategyActive()) goto 0x00e4
+  00d1: C.ToggleDebugStrategy()
+  00e4: C.SetDebugCameraStrategy(self.DefaultDebugCameraStrategy)
+  00fc: self.DefaultDebugCameraStrategy = none
+  0103: return nothing
+  0105: <eos>
+
+function HmCheatManager.SetupShotMode  (script 105 bytes)
+  0000: self.InShotMode = !self.InShotMode
+  000f: get_Outer().WorldInfo.bTimeStepEnabled = self.InShotMode
+  002c: if !(!self.InShotMode) goto 0x0066
+  0037: obj'Engine.Engine'.static.GetCurrentWorldInfo().GetDebugManager().FlushPersistentDebugText()
+  0066: return nothing
+  0068: <eos>
+
+function HmCheatManager.ToggleDebugQuicktimeShotCameraStrategy  (script 28 bytes)
+  0000: ChangeDebugCameraStrategy(obj'HmDebugQuicktimeShotCameraStrategy')
+  000f: SetupShotMode()
+  0019: return nothing
+  001b: <eos>
+
+function HmCheatManager.ToggleDebugScreenshotCameraStrategy  (script 28 bytes)
+  0000: ChangeDebugCameraStrategy(obj'HmDebugScreenshotCameraStrategy')
+  000f: SetupShotMode()
+  0019: return nothing
+  001b: <eos>
+
+function HmCheatManager.ScreenshotLightMode  (script 13 bytes)
+  0000: ToggleDebugScreenshotCameraStrategy()
+  000a: return nothing
+  000c: <eos>
+
+function HmCheatManager.TeleportToCamera  (script 150 bytes)
+  0000: Cam = HmCamera(get_Outer().PlayerCamera)
+  0017: Rot = Cam.Rotation
+  002b: get_Outer().SetRotation(Rot)
+  003a: Loc = (Cam.Location + (cast39(Rot) * cast3f(300)))
+  0060: get_Outer().SetLocation(Loc)
+  006f: get_Outer().Pawn.Teleport(Loc, Rot)
+  0093: return nothing
+  0095: <eos>
+
+function HmCheatManager.ToggleAIGodMode  (script 172 bytes)
+  0000: foreach get_Outer().AllActors(obj'Engine.Pawn', P) (end 0x00a8)
+  001e: C = AIController(P.Controller)
+  0037: if !((C == none)) goto 0x0046
+  0042: iternext
+  0043: goto 0x00a8
+  0046: C.bGodMode = !C.bGodMode
+  0067: if !(C.bGodMode) goto 0x0091
+  0079: LogInternal("AI God Mode On", , , )
+  008e: goto 0x00a7
+  0091: LogInternal("AI God Mode Off", , , )
+  00a7: iternext
+  00a8: iterpop
+  00a9: return nothing
+  00ab: <eos>
+
+function HmCheatManager.UnlimitedAmmo  (script 52 bytes)
+  0000: foreach get_Outer().AllActors(obj'HmPawn', P) (end 0x0030)
+  001e: P.HasUnlimitedAmmo = true
+  002f: iternext
+  0030: iterpop
+  0031: return nothing
+  0033: <eos>

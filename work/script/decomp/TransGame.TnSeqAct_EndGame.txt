@@ -1,0 +1,53 @@
+function TnSeqAct_EndGame.Activated  (script 110 bytes)
+  0000: Game = GetWorldInfo().Game
+  0019: if !(Game.bTeamGame) goto 0x003a
+  002b: WinningPRI = TnSeqAct_EndGame.GetAPRIFromWinningTeam()
+  0037: goto 0x0046
+  003a: WinningPRI = TnSeqAct_EndGame.GetTopPRI()
+  0046: Game.EndGame(WinningPRI, "JimmySmitts")
+  006b: return nothing
+  006d: <eos>
+
+function TnSeqAct_EndGame.GetAPRIFromWinningTeam  (script 288 bytes)
+  0000: foreach GetWorldInfo().AllActors(obj'TnTeamInfo', CurrentIter) (end 0x00b3)
+  0025: if !((CurrentBest == none)) goto 0x003e
+  0030: CurrentBest = CurrentIter
+  003b: goto 0x00b2
+  003e: if !((CurrentIter.GetScore() == CurrentBest.GetScore())) goto 0x0074
+  0069: TieExists = true
+  0071: goto 0x00b2
+  0074: if !((CurrentIter.GetScore() > CurrentBest.GetScore())) goto 0x00b2
+  009f: CurrentBest = CurrentIter
+  00aa: TieExists = false
+  00b2: iternext
+  00b3: iterpop
+  00b4: if !(TieExists) goto 0x00bf
+  00bd: return none
+  00bf: foreach GetWorldInfo().AllControllers(obj'TnPlayerController', PC) (end 0x0116)
+  00e4: if !((PC.PlayerReplicationInfo.Team == CurrentBest)) goto 0x0115
+  0105: iterpop
+  0106: return PC.PlayerReplicationInfo
+  0115: iternext
+  0116: iterpop
+  0117: return none
+  0119: return return
+  011f: <eos>
+
+function TnSeqAct_EndGame.GetTopPRI  (script 204 bytes)
+  0000: foreach GetWorldInfo().AllActors(obj'Engine.PlayerReplicationInfo', CurrentIter) (end 0x00b3)
+  0025: if !((CurrentBest == none)) goto 0x003e
+  0030: CurrentBest = CurrentIter
+  003b: goto 0x00b2
+  003e: if !((CurrentIter.GetScore() == CurrentBest.GetScore())) goto 0x0074
+  0069: TieExists = true
+  0071: goto 0x00b2
+  0074: if !((CurrentIter.GetScore() > CurrentBest.GetScore())) goto 0x00b2
+  009f: CurrentBest = CurrentIter
+  00aa: TieExists = false
+  00b2: iternext
+  00b3: iterpop
+  00b4: if !(TieExists) goto 0x00bf
+  00bd: return none
+  00bf: return CurrentBest
+  00c5: return return
+  00cb: <eos>

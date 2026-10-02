@@ -1,0 +1,25 @@
+function TnTransformerExtensionAttachedDestructible.ApplyTransformerExtension  (script 270 bytes)
+  0000: if !((cast3a(P.Role) < cast3a(3))) goto 0x001b
+  0019: return nothing
+  001b: PawnMesh = ((cast3a(self.AttachForm) == cast3a(0)) ? P.get_RobotMeshComponent() : P.get_VehicleMeshComponent())
+  0059: DestructibleActor = P.Spawn(obj'TnSpawnableDestructibleActor', , , PawnMesh.GetSocketWorldLocation(self.AttachSocketName), , , true, )
+  0095: DestructibleActor.AttachToPawn(P, self.AttachSocketName, cast3a(self.AttachForm))
+  00b9: DestructibleActor.SetDestructibleBlueprint(self.DestructibleBlueprint)
+  00d1: DestructibleActor.SetHidden(PawnMesh.HiddenGame)
+  00f3: P.AddActorToBeDestroyedOnDeath(DestructibleActor)
+  010b: return nothing
+  010d: <eos>
+
+function TnTransformerExtensionAttachedDestructible.CheckForTransformerErrors  (script 313 bytes)
+  0000: if !((cast3a(self.AttachForm) == cast3a(0))) goto 0x0027
+  0010: PawnMesh = Transformer.SkelMesh
+  0024: goto 0x0058
+  0027: if !((Transformer.TransformerVehicle != none)) goto 0x0058
+  003b: PawnMesh = Transformer.TransformerVehicle.SkeletalMesh
+  0058: if !((self.DestructibleBlueprint == none)) goto 0x00a2
+  0063: get_Outer().EmitCheckMessage(0, "Attached destructible definition not set", , )
+  00a2: if !(((PawnMesh != none) && (PawnMesh.FindSocket(self.AttachSocketName) == none))) goto 0x012b
+  00cd: get_Outer().EmitCheckMessage(0, (("Attached destructible socket '" $ cast57(self.AttachSocketName)) $ "' not found on skeletal mesh"), , )
+  012b: TnTransformerExtension.CheckForTransformerErrors(Transformer)
+  0136: return nothing
+  0138: <eos>

@@ -1,0 +1,45 @@
+function TnGameObjectiveDroppedPickup.get_HomeBase  (script 13 bytes)
+  0000: return self._HomeBase
+  0006: return return
+  000c: <eos>
+
+function TnGameObjectiveDroppedPickup.set_HomeBase  (script 44 bytes)
+  0000: self._HomeBase = Value
+  000b: TnGameObjectiveWeaponInterface(self.Inventory).SetHomeBase(self._HomeBase)
+  0029: return nothing
+  002b: <eos>
+
+function TnGameObjectiveDroppedPickup.PostBeginPlay  (script 20 bytes)
+  0000: TnDroppedPickupWeapon.PostBeginPlay()
+  0006: self.CurrentDropTime = 0.0
+  0011: return nothing
+  0013: <eos>
+
+function TnGameObjectiveDroppedPickup.SendHome  (script 35 bytes)
+  0000: self._HomeBase.ReturnSpawnedObjective(Returner, Reason)
+  001d: DestroyActor()
+  0020: return nothing
+  0022: <eos>
+
+function TnGameObjectiveDroppedPickup.FellOutOfWorld  (script 27 bytes)
+  0000: SendHome(none, 0)
+  000d: FellOutOfWorld(dmgType)
+  0018: return nothing
+  001a: <eos>
+
+function TnGameObjectiveDroppedPickup.Pickup.Tick  (script 72 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((cast3a(self.Role) < cast3a(3))) goto 0x001d
+  001b: return nothing
+  001d: (self.CurrentDropTime += DeltaTime)
+  0029: if !((self.CurrentDropTime >= self.AutoReturnTime)) goto 0x0045
+  0038: SendHome(none, 0)
+  0045: return nothing
+  0047: <eos>
+
+function TnGameObjectiveDroppedPickup.PickedUpBy  (script 74 bytes)
+  0000: self._HomeBase.SetCurrentObjectiveHolder(P, )
+  0019: self._HomeBase.OnObjectiveEvent(1, P.PlayerReplicationInfo)
+  003c: PickedUpBy(P)
+  0047: return nothing
+  0049: <eos>

@@ -1,0 +1,55 @@
+function TnAiActionLockOnBattery.OnInitialize  (script 95 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionLockOnBatteryBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateClassProperty(obj'TnAiWorldStateCurrentWeapon', self._Blueprint.WeaponClass, , , ))
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionLockOnBattery.OnBind  (script 41 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AnimatorService = TnAnimatorService(GetService('TnAnimatorService', 0))
+  0026: return nothing
+  0028: <eos>
+
+function TnAiActionLockOnBattery.OnSetUpConditions  (script 114 bytes)
+  0000: Target = TnOmegaBatteryDestructibleActor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateLockedOnTarget', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateHealthStatus') != 1)) goto 0x005a
+  0058: return false
+  005a: return OnSetUpConditions(ExpectedEffects, Conditions)
+  006b: return return
+  0071: <eos>
+
+function TnAiActionLockOnBattery.OnStart  (script 268 bytes)
+  0000: self._LockOnTimeRemaining = self._Blueprint.LockOnTime
+  0014: self._Target = TnOmegaBatteryDestructibleActor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateLockedOnTarget', ExpectedEffects))
+  003c: if !((self._Target == none)) goto 0x0052
+  0047: return Fail()
+  0052: SetCharacterState(0)
+  005d: self._TransformerController.Focus = IFocusible(self._Target)
+  0076: self._TransformerPawn.set_IkTarget(self._Target)
+  008e: self._TransformerPawn.EnableIkTracking(2)
+  00a3: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  00c5: self._AnimatorService.EnqueueReplicatedAnimation(self._Blueprint.Params, delegate.None, delegate.None)
+  00f9: return OnStart(ExpectedEffects)
+  0105: return return
+  010b: <eos>
+
+function TnAiActionLockOnBattery.OnUpdate  (script 87 bytes)
+  0000: if !(get_WeaponAimer().get_OwnerIsAiming()) goto 0x003f
+  001b: (self._LockOnTimeRemaining -= DeltaTime)
+  0027: if !((self._LockOnTimeRemaining <= cast3f(0))) goto 0x003f
+  0034: return Succeed()
+  003f: return OnUpdate(ExpectedEffects, DeltaTime)
+  0050: return return
+  0056: <eos>
+
+function TnAiActionLockOnBattery.OnFinish  (script 111 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._AnimatorService.StopAnimation(, )
+  0021: get_WeaponAimer().Reset()
+  0039: if !((cast3a(CurrentState) == cast3a(3))) goto 0x006c
+  0049: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateLockedOnTarget', true, self._Target)
+  006c: return nothing
+  006e: <eos>

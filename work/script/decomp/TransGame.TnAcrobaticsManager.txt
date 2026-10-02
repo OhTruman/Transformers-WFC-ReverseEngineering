@@ -1,0 +1,720 @@
+function TnAcrobaticsManager.OnFallComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAcrobaticsManager.set_MaxDodgeDistance  (script 21 bytes)
+  0000: self._MaxDodgeDistanceSquared = (Value * Value)
+  0012: return nothing
+  0014: <eos>
+
+function TnAcrobaticsManager.get_AcrobaticsState  (script 13 bytes)
+  0000: return self._AcrobaticsState
+  0006: return return
+  000c: <eos>
+
+function TnAcrobaticsManager.set_HoverLoopSound  (script 14 bytes)
+  0000: self._HoverLoopSound = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAcrobaticsManager.set_HoverCooldownSound  (script 14 bytes)
+  0000: self._HoverCooldownSound = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAcrobaticsManager.get_DodgeDirection  (script 13 bytes)
+  0000: return self._DodgeDirection
+  0006: return return
+  000c: <eos>
+
+function TnAcrobaticsManager.get_CanDodge  (script 32 bytes)
+  0000: return (self._LandedSinceLastDodge && (cast3a(self._AcrobaticsState) != cast3a(6)))
+  0019: return return
+  001f: <eos>
+
+function TnAcrobaticsManager.get_IsDodging  (script 21 bytes)
+  0000: return (cast3a(self._AcrobaticsState) == cast3a(5))
+  000e: return return
+  0014: <eos>
+
+function TnAcrobaticsManager.get_JumpHeight  (script 40 bytes)
+  0000: return ((self._Blueprint != none) ? self._Blueprint.JumpHeight : 0.0)
+  0021: return return
+  0027: <eos>
+
+function TnAcrobaticsManager.set_OnFallCompleteDelegate  (script 110 bytes)
+  0000: if !((self._OnFallCompleteDelegate != emptydelegate)) goto 0x0060
+  000a: <endparms>
+  000b: LogInternal("Warning: Setting Acrobatics Manager OnFallCompleteDelegate when it isn't none!", , , )
+  0060: self._OnFallCompleteDelegate = Value
+  006b: return nothing
+  006d: <eos>
+
+function TnAcrobaticsManager.get_IsUnderMaxSpeed  (script 148 bytes)
+  0000: MaxSpeed = (self._PhysicsService.get_IsAirborne() ? self._PhysicsService.get_MaxAirSpeed() : self._PhysicsService.get_MaxGroundSpeed())
+  0047: return (obj'Core.Math'.static.VSizeSq((self._PhysicsService.get_Velocity() * vect(0.99,0.99,0))) < (MaxSpeed * MaxSpeed))
+  008d: return return
+  0093: <eos>
+
+function TnAcrobaticsManager.ReplicatedEvent  (script 28 bytes)
+  0000: if !((VarName == '_AcrobaticsState')) goto 0x0019
+  0013: TnAcrobaticsManager.ClientUpdateState()
+  0019: return nothing
+  001b: <eos>
+
+function TnAcrobaticsManager.Initialize  (script 296 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x0016
+  0014: return nothing
+  0016: self._AnimatorService = TnAnimatorService(ServiceProvider.GetService('TnAnimatorService'))
+  003e: self._PhysicsService = TnPhysicsService(ServiceProvider.GetService('TnPhysicsService'))
+  0066: self._WeaponService = TnWeaponService(ServiceProvider.GetService('TnWeaponService'))
+  008e: self._BuffService = TnBuffService(ServiceProvider.GetService('TnBuffService'))
+  00b6: self._AudioService = TnAudioService(ServiceProvider.GetService('TnAudioService'))
+  00de: self._MeleeService = TnMeleeService(ServiceProvider.GetService('TnMeleeService'))
+  0106: self._Blueprint = Blueprint
+  0111: Activate()
+  011b: Fall()
+  0125: return nothing
+  0127: <eos>
+
+function TnAcrobaticsManager.Activate  (script 55 bytes)
+  0000: if !(self._Active) goto 0x000b
+  0009: return nothing
+  000b: if !((TnAcrobaticsManager.ServicesAreValid() == false)) goto 0x0019
+  0017: return nothing
+  0019: self._Active = true
+  0021: self._OverrideJumpVelocity = vect(0,0,0)
+  0034: return nothing
+  0036: <eos>
+
+function TnAcrobaticsManager.Deactivate  (script 47 bytes)
+  0000: if !((TnAcrobaticsManager.ServicesAreValid() == false)) goto 0x000e
+  000c: return nothing
+  000e: self._Active = false
+  0016: GotoState('None', , , )
+  0024: self._AcrobaticsState = 9
+  002c: return nothing
+  002e: <eos>
+
+function TnAcrobaticsManager.NotifyClientAdjusted  (script 85 bytes)
+  0000: if !(((cast3a(self._PhysicsService.get_Physics()) == cast3a(4)) && (cast3a(self._LastFlyingAcrobaticsState) == cast3a(5)))) goto 0x0052
+  0031: self._IsBeingAdjusted = true
+  0039: self._AcrobaticsState = self._LastFlyingAcrobaticsState
+  0044: TnAcrobaticsManager.ClientUpdateState()
+  004a: self._IsBeingAdjusted = false
+  0052: return nothing
+  0054: <eos>
+
+function TnAcrobaticsManager.Hover  (script 31 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: GotoState('JumpingToHover', , , )
+  001c: return nothing
+  001e: <eos>
+
+function TnAcrobaticsManager.Fall  (script 31 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: GotoState('Falling', , , )
+  001c: return nothing
+  001e: <eos>
+
+function TnAcrobaticsManager.Jump  (script 62 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self._Active == false)) goto 0x0010
+  000e: return nothing
+  0010: self._OverrideJumpVelocity = OverrideVelocity
+  001b: if !(ForceJump) goto 0x0031
+  0024: OnForceJump()
+  002e: goto 0x003b
+  0031: OnJump()
+  003b: return nothing
+  003d: <eos>
+
+function TnAcrobaticsManager.Dodge  (script 40 bytes)
+  0000: nothing
+  0001: DodgeTowards(Direction, CalculateDodgeDirection(Direction), ForceDodge)
+  0025: return nothing
+  0027: <eos>
+
+function TnAcrobaticsManager.DodgeTowards  (script 96 bytes)
+  0000: nothing
+  0001: if !((self._Active == false)) goto 0x000f
+  000d: return nothing
+  000f: if !((!ForceDodge && (get_CanDodge() == false))) goto 0x002e
+  002c: return nothing
+  002e: self._DodgeDirection = Direction
+  0039: self._DodgeDirectionVector = obj'Core.Math'.static.Normal(DirectionVector)
+  004f: GotoState('Dodging', , , )
+  005d: return nothing
+  005f: <eos>
+
+function TnAcrobaticsManager.DirClosestToDirectionVector  (script 223 bytes)
+  0000: TurnRot.Yaw = self._PhysicsService.get_Rotation().Yaw
+  0030: obj'Core.Math'.static.GetAxes(TurnRot, X, Y, Z)
+  004f: Best = (DirectionVector dot X)
+  0061: if !((Best >= cast3f(0))) goto 0x0079
+  006e: BestDirection = 3
+  0076: goto 0x008d
+  0079: BestDirection = 4
+  0081: (Best *= -1.0)
+  008d: Next = (DirectionVector dot Y)
+  009f: if !((Next > Best)) goto 0x00b9
+  00ae: BestDirection = 2
+  00b6: goto 0x00d2
+  00b9: if !((-Next > Best)) goto 0x00d2
+  00ca: BestDirection = 1
+  00d2: return BestDirection
+  00d8: return return
+  00de: <eos>
+
+function TnAcrobaticsManager.Rammed  (script 74 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: self._DodgeDirection = DirClosestToDirectionVector(DirectionVector)
+  0023: self._DodgeDirectionVector = obj'Core.Math'.static.Normal(DirectionVector)
+  0039: GotoState('RammedReaction', , , )
+  0047: return nothing
+  0049: <eos>
+
+function TnAcrobaticsManager.NotifyHitWall  (script 27 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: OnHitWall()
+  0018: return nothing
+  001a: <eos>
+
+function TnAcrobaticsManager.Update  (script 57 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: if !((self._CurrentStateTimeRemaining > cast3f(0))) goto 0x0027
+  001b: (self._CurrentStateTimeRemaining -= DeltaTime)
+  0027: OnUpdate(DeltaTime)
+  0036: return nothing
+  0038: <eos>
+
+function TnAcrobaticsManager.CalculateDodgeDirection  (script 182 bytes)
+  0000: TurnRot.Yaw = self._PhysicsService.get_Rotation().Yaw
+  0030: obj'Core.Math'.static.GetAxes(TurnRot, X, Y, Z)
+  004f: switch (Direction)
+  0056: case 3: (next 0x0069)
+  005b: DirectionWS = X
+  0066: goto 0x00a9
+  0069: case 4: (next 0x007e)
+  006e: DirectionWS = -X
+  007b: goto 0x00a9
+  007e: case 2: (next 0x0091)
+  0083: DirectionWS = Y
+  008e: goto 0x00a9
+  0091: case 1: (next 0x00a6)
+  0096: DirectionWS = -Y
+  00a3: goto 0x00a9
+  00a6: default:
+  00a9: return DirectionWS
+  00af: return return
+  00b5: <eos>
+
+function TnAcrobaticsManager.OnJump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAcrobaticsManager.OnForceJump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAcrobaticsManager.OnHitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAcrobaticsManager.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAcrobaticsManager.Falling.BeginState  (script 59 bytes)
+  0000: self._AcrobaticsState = 4
+  0008: self._PhysicsService.set_Physics(2)
+  001e: self._FallBaseHeight = self._PhysicsService.get_Height()
+  0038: return nothing
+  003a: <eos>
+
+function TnAcrobaticsManager.Falling.OnUpdate  (script 115 bytes)
+  0000: if !(TnAcrobaticsManager.IsOnTheGround()) goto 0x0070
+  0009: if !((obj'Core.Math'.static.VSize((self._PhysicsService.get_Velocity() * vect(1,1,0))) < self._PhysicsService.get_MaxGroundSpeed())) goto 0x0062
+  0051: GotoState('OnTheGround', , , )
+  005f: goto 0x0070
+  0062: GotoState('Skidding', , , )
+  0070: return nothing
+  0072: <eos>
+
+function TnAcrobaticsManager.Falling.OnForceJump  (script 17 bytes)
+  0000: GotoState('DoubleJumping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.Falling.NotifyClientAdjusted  (script 83 bytes)
+  0000: if !(((cast3a(self._PhysicsService.get_Physics()) == cast3a(4)) && (cast3a(self._LastFlyingAcrobaticsState) != cast3a(5)))) goto 0x004a
+  0031: self._PhysicsService.set_Physics(2)
+  0047: goto 0x0050
+  004a: TnAcrobaticsManager.NotifyClientAdjusted()
+  0050: return nothing
+  0052: <eos>
+
+function TnAcrobaticsManager.FallingFromJump.OnJump  (script 26 bytes)
+  0000: if !(TnAcrobaticsManager.CanDoubleJump()) goto 0x0017
+  0009: GotoState('DoubleJumping', , , )
+  0017: return nothing
+  0019: <eos>
+
+function TnAcrobaticsManager.FallingFromJump.OnForceJump  (script 17 bytes)
+  0000: GotoState('DoubleJumping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.BeginState  (script 62 bytes)
+  0000: self._OverrideJumpVelocity = vect(0,0,0)
+  0013: self._LandedSinceLastDodge = true
+  001b: PlayLandingAnimation()
+  0021: self._FallBaseHeight = self._PhysicsService.get_Height()
+  003b: return nothing
+  003d: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.PlayLandingAnimation  (script 401 bytes)
+  0000: if !(((((FindLandingAnimationParams(LandingAnimParams) == false) || self._PhysicsService.get_IsTransforming()) || self._MeleeService.IsMeleeing(10)) || self._BuffService.HasBuff(obj'TnBuffDecoyTrap'))) goto 0x0074
+  0063: OnFallComplete()
+  0072: return nothing
+  0074: AnimParams.AnimName = LandingAnimParams.AnimChooser.ChooseSequenceByWeapon(self._WeaponService.get_ActiveWeapon())
+  00b7: if !((AnimParams.AnimName == 'None')) goto 0x00d7
+  00d5: return nothing
+  00d7: AnimParams.BlendOutTime = LandingAnimParams.BlendOutTime
+  00f8: AnimParams.Override = 2
+  010b: AnimParams.Priority = 1
+  011e: AnimParams.RootMotionMode = (LandingAnimParams.DisallowMovement ? 3 : 2)
+  0149: self._AnimatorService.EnqueueReplicatedAnimation(AnimParams, self._OnFallCompleteDelegate, self._OnFallCompleteDelegate)
+  016c: self._AudioService.MakeNoise(self._Blueprint.LandNoiseRadius)
+  018e: return nothing
+  0190: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.FindLandingAnimationParams  (script 174 bytes)
+  0000: ForwardSpeed = obj'Core.Math'.static.Abs((self._PhysicsService.get_Velocity() dot cast39(self._PhysicsService.get_Rotation())))
+  003d: FallDistance = (self._FallBaseHeight - self._PhysicsService.get_Height())
+  005e: foreach self._Blueprint.LandingAnims(LandingAnimParams,) (end 0x00a4)
+  0076: if !((IsMatching(LandingAnimParams, ForwardSpeed, FallDistance) == false)) goto 0x0095
+  0091: iternext
+  0092: goto 0x00a4
+  0095: Params = LandingAnimParams
+  00a0: iterpop
+  00a1: return true
+  00a3: iternext
+  00a4: iterpop
+  00a5: return false
+  00a7: return return
+  00ad: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.IsMatching  (script 59 bytes)
+  0000: return ((ForwardSpeed >= Params.MinSpeed) && (FallDistance >= Params.MinHeight))
+  0034: return return
+  003a: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.OnUpdate  (script 26 bytes)
+  0000: if !(TnAcrobaticsManager.IsFalling()) goto 0x0017
+  0009: GotoState('Falling', , , )
+  0017: return nothing
+  0019: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.OnJump  (script 17 bytes)
+  0000: GotoState('Jumping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.OnTheGroundBase.OnForceJump  (script 17 bytes)
+  0000: GotoState('Jumping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.OnTheGround.BeginState  (script 22 bytes)
+  0000: BeginState(PrevStateName)
+  000b: self._AcrobaticsState = 8
+  0013: return nothing
+  0015: <eos>
+
+function TnAcrobaticsManager.Skidding.BeginState  (script 22 bytes)
+  0000: BeginState(PrevStateName)
+  000b: self._AcrobaticsState = 7
+  0013: return nothing
+  0015: <eos>
+
+function TnAcrobaticsManager.Skidding.OnUpdate  (script 115 bytes)
+  0000: if !(TnAcrobaticsManager.IsFalling()) goto 0x001a
+  0009: GotoState('Falling', , , )
+  0017: goto 0x0070
+  001a: if !((obj'Core.Math'.static.VSize((self._PhysicsService.get_Velocity() * vect(1,1,0))) < self._PhysicsService.get_MaxGroundSpeed())) goto 0x0070
+  0062: GotoState('OnTheGround', , , )
+  0070: return nothing
+  0072: <eos>
+
+function TnAcrobaticsManager.Jumping.BeginState  (script 9 bytes)
+  0000: DoJump()
+  0006: return nothing
+  0008: <eos>
+
+function TnAcrobaticsManager.Jumping.DoJump  (script 140 bytes)
+  0000: TnAcrobaticsManager.SetLastBaseVelocity()
+  0007: self._AcrobaticsState = 0
+  000f: self._PhysicsService.set_Physics(2)
+  0025: self._PhysicsService.set_Velocity(TnAcrobaticsManager.CalculateJumpVelocity(self._Blueprint.JumpHeight))
+  004d: self._AudioService.MakeNoise(self._Blueprint.JumpNoiseRadius)
+  006f: self._JumpBaseHeight = self._PhysicsService.get_Height()
+  0089: return nothing
+  008b: <eos>
+
+function TnAcrobaticsManager.Jumping.OnUpdate  (script 52 bytes)
+  0000: if !(TnAcrobaticsManager.IsOnTheGround()) goto 0x001a
+  0009: GotoState('OnTheGround', , , )
+  0017: goto 0x0031
+  001a: if !(TnAcrobaticsManager.IsDescending()) goto 0x0031
+  0023: GotoState('FallingFromJump', , , )
+  0031: return nothing
+  0033: <eos>
+
+function TnAcrobaticsManager.Jumping.NotifyClientAdjusted  (script 18 bytes)
+  0000: OnUpdate(0.0)
+  000f: return nothing
+  0011: <eos>
+
+function TnAcrobaticsManager.Jumping.OnJump  (script 26 bytes)
+  0000: if !(TnAcrobaticsManager.CanDoubleJump()) goto 0x0017
+  0009: GotoState('DoubleJumping', , , )
+  0017: return nothing
+  0019: <eos>
+
+function TnAcrobaticsManager.Jumping.OnForceJump  (script 17 bytes)
+  0000: GotoState('DoubleJumping', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.DoubleJumping.BeginState  (script 9 bytes)
+  0000: DoDoubleJump()
+  0006: return nothing
+  0008: <eos>
+
+function TnAcrobaticsManager.DoubleJumping.DoDoubleJump  (script 73 bytes)
+  0000: self._AcrobaticsState = 1
+  0008: self._PhysicsService.set_Physics(2)
+  001e: self._PhysicsService.set_Velocity(TnAcrobaticsManager.CalculateJumpVelocity(self._Blueprint.DoubleJumpHeight))
+  0046: return nothing
+  0048: <eos>
+
+function TnAcrobaticsManager.DoubleJumping.OnUpdate  (script 52 bytes)
+  0000: if !(TnAcrobaticsManager.IsOnTheGround()) goto 0x001a
+  0009: GotoState('OnTheGround', , , )
+  0017: goto 0x0031
+  001a: if !(TnAcrobaticsManager.IsDescending()) goto 0x0031
+  0023: GotoState('Falling', , , )
+  0031: return nothing
+  0033: <eos>
+
+function TnAcrobaticsManager.DoubleJumping.NotifyClientAdjusted  (script 18 bytes)
+  0000: OnUpdate(0.0)
+  000f: return nothing
+  0011: <eos>
+
+function TnAcrobaticsManager.DoubleJumping.OnForceJump  (script 9 bytes)
+  0000: DoDoubleJump()
+  0006: return nothing
+  0008: <eos>
+
+function TnAcrobaticsManager.JumpingToHover.BeginState  (script 158 bytes)
+  0000: self._AcrobaticsState = 2
+  0008: self._PhysicsService.set_Physics(2)
+  001e: self._PhysicsService.set_Velocity(TnAcrobaticsManager.CalculateJumpVelocity(self._Blueprint.HoverJumpHeight))
+  0046: self._AudioService.PlayLoopingSound(self._HoverLoopSound)
+  005f: self._AudioService.MakeNoise(self._Blueprint.HoverNoiseRadius)
+  0081: self._JumpBaseHeight = self._PhysicsService.get_Height()
+  009b: return nothing
+  009d: <eos>
+
+function TnAcrobaticsManager.JumpingToHover.EndState  (script 63 bytes)
+  0000: if !((NextStateName != 'Hovering')) goto 0x0031
+  0013: self._AudioService.StopLoopingSound(self._HoverLoopSound, 0.5)
+  0031: EndState(NextStateName)
+  003c: return nothing
+  003e: <eos>
+
+function TnAcrobaticsManager.JumpingToHover.OnUpdate  (script 37 bytes)
+  0000: if !((TnAcrobaticsManager.IsDescending() || TnAcrobaticsManager.IsOnTheGround())) goto 0x0022
+  0014: GotoState('Hovering', , , )
+  0022: return nothing
+  0024: <eos>
+
+function TnAcrobaticsManager.JumpingToHover.NotifyClientAdjusted  (script 52 bytes)
+  0000: if !(TnAcrobaticsManager.IsDescending()) goto 0x001a
+  0009: GotoState('Falling', , , )
+  0017: goto 0x0031
+  001a: if !(TnAcrobaticsManager.IsOnTheGround()) goto 0x0031
+  0023: GotoState('OnTheGround', , , )
+  0031: return nothing
+  0033: <eos>
+
+function TnAcrobaticsManager.Hovering.BeginState  (script 267 bytes)
+  0000: self._LastFlyingAcrobaticsState = 3
+  0008: self._AcrobaticsState = 3
+  0010: IHD = self._BuffService.GetBuff(obj'TnBuffIncreaseHoverDuration')
+  002f: self._CurrentStateTimeRemaining = self._Blueprint.HoverDuration
+  0043: if !((IHD != none)) goto 0x0068
+  004e: (self._CurrentStateTimeRemaining *= IHD.GetFloatModifier())
+  0068: self._PreviousAirSpeed = self._PhysicsService.get_MaxAirSpeed()
+  0082: self._PhysicsService.set_Physics(4)
+  0098: self._PhysicsService.set_MaxAirSpeed(self._Blueprint.HoverAirSpeed)
+  00ba: if !((cast3a(GetRole()) == cast3a(3))) goto 0x0108
+  00cf: self._BuffService.AddSelfBuff(obj'TnBuffIncreaseDamageDuringHover', (self._BuffService.HasBuff(obj'TnBuffModifyHoverDamageIncrease') ? 1 : 0))
+  0108: return nothing
+  010a: <eos>
+
+function TnAcrobaticsManager.Hovering.EndState  (script 129 bytes)
+  0000: self._PhysicsService.set_MaxAirSpeed(self._PreviousAirSpeed)
+  0019: self._AudioService.StopLoopingSound(self._HoverLoopSound, 0.5)
+  0037: self._AudioService.PlaySound(self._HoverCooldownSound)
+  0050: if !((cast3a(GetRole()) == cast3a(3))) goto 0x007e
+  0065: self._BuffService.RemoveBuff(obj'TnBuffIncreaseDamageDuringHover')
+  007e: return nothing
+  0080: <eos>
+
+function TnAcrobaticsManager.Hovering.OnUpdate  (script 26 bytes)
+  0000: if !(TnAcrobaticsManager.CurrentStateHasExpired()) goto 0x0017
+  0009: GotoState('Falling', , , )
+  0017: return nothing
+  0019: <eos>
+
+function TnAcrobaticsManager.Hovering.OnJump  (script 17 bytes)
+  0000: GotoState('Falling', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.Hovering.NotifyClientAdjusted  (script 56 bytes)
+  0000: if !((cast3a(self._PhysicsService.get_Physics()) != cast3a(4))) goto 0x0035
+  001f: self._PhysicsService.set_Physics(4)
+  0035: return nothing
+  0037: <eos>
+
+function TnAcrobaticsManager.Dodging.BeginState  (script 9 bytes)
+  0000: SetupDodge()
+  0006: return nothing
+  0008: <eos>
+
+function TnAcrobaticsManager.Dodging.EndState  (script 267 bytes)
+  0000: self._PhysicsService.RestoreDefaultAirMovement()
+  0014: self._PhysicsService.set_Velocity(obj'Core.Math'.static.ClampLength((self._PhysicsService.get_Velocity() * vect(1,1,0)), (self._PhysicsService.get_IsAirborne() ? self._PhysicsService.get_MaxAirSpeed() : self._PhysicsService.get_MaxGroundSpeed())))
+  00a0: if !((self._MaxDodgeDistanceSquared > cast3f(0))) goto 0x00fd
+  00ad: self._PhysicsService.set_Velocity(obj'Core.Math'.static.MakeVector(0.0, 0.0, self._PhysicsService.get_Velocity().Z))
+  00fd: self._MaxDodgeDistanceSquared = 0.0
+  0108: return nothing
+  010a: <eos>
+
+function TnAcrobaticsManager.Dodging.SetupDodge  (script 358 bytes)
+  0000: self._AcrobaticsState = 5
+  0008: self._LastFlyingAcrobaticsState = 5
+  0010: self._LandedSinceLastDodge = false
+  0018: TnAcrobaticsManager.SetLastBaseVelocity(true)
+  001f: self._PhysicsService.set_Physics(4)
+  0035: ModifiedDodgeSpeed = self._Blueprint.DodgeSpeed
+  0049: IDS = self._BuffService.GetBuff(obj'TnBuffIncreaseDodgeSpeed')
+  0068: if !((IDS != none)) goto 0x008d
+  0073: (ModifiedDodgeSpeed *= IDS.GetFloatModifier())
+  008d: self._PhysicsService.set_MaxAirSpeed(ModifiedDodgeSpeed)
+  00a6: self._PhysicsService.set_Velocity(((self._DodgeDirectionVector * ModifiedDodgeSpeed) + TnAcrobaticsManager.LastBaseVelocity()))
+  00ce: self._PhysicsService.set_Acceleration(obj'Core.Math'.static.Normal(self._PhysicsService.get_Velocity()))
+  0101: self._AudioService.MakeNoise(self._Blueprint.DodgeNoiseRadius)
+  0123: if !(self._IsBeingAdjusted) goto 0x0135
+  012c: SetTimeRemainingFromCurrentLocation()
+  0132: goto 0x0163
+  0135: self._BeginDodgeLocation = self._PhysicsService.get_Location()
+  014f: self._CurrentStateTimeRemaining = self._Blueprint.DodgeTime
+  0163: return nothing
+  0165: <eos>
+
+function TnAcrobaticsManager.Dodging.SetTimeRemainingFromCurrentLocation  (script 85 bytes)
+  0000: self._CurrentStateTimeRemaining = (self._Blueprint.DodgeTime - (obj'Core.Math'.static.VSize((self._BeginDodgeLocation - self._PhysicsService.get_Location())) / self._PhysicsService.get_MaxAirSpeed()))
+  0052: return nothing
+  0054: <eos>
+
+function TnAcrobaticsManager.Dodging.OnUpdate  (script 233 bytes)
+  0000: if !((TnAcrobaticsManager.HasExceededMaxDodgeDistance() || TnAcrobaticsManager.CurrentStateHasExpired())) goto 0x0089
+  0014: if !(TnAcrobaticsManager.IsOnTheGround()) goto 0x002d
+  001d: GotoState('OnTheGround', , , )
+  002b: return nothing
+  002d: if !(!self._PhysicsService.get_IsAirborne()) goto 0x0078
+  0046: self._PhysicsService.set_Physics(2)
+  005c: self._FallBaseHeight = self._PhysicsService.get_Height()
+  0076: return nothing
+  0078: GotoState('Falling', , , )
+  0086: goto 0x00e6
+  0089: if !((cast3a(self._PhysicsService.get_Physics()) != cast3a(4))) goto 0x00e6
+  00a8: if !((cast3a(self._PhysicsService.get_Physics()) == cast3a(1))) goto 0x00d8
+  00c7: GotoState('OnTheGround', , , )
+  00d5: goto 0x00e6
+  00d8: GotoState('Falling', , , )
+  00e6: return nothing
+  00e8: <eos>
+
+function TnAcrobaticsManager.Dodging.NotifyClientAdjusted  (script 24 bytes)
+  0000: SetTimeRemainingFromCurrentLocation()
+  0006: OnUpdate(0.0)
+  0015: return nothing
+  0017: <eos>
+
+function TnAcrobaticsManager.Dodging.OnHitWall  (script 17 bytes)
+  0000: GotoState('Falling', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnAcrobaticsManager.Dodging.DodgeTowards  (script 43 bytes)
+  0000: nothing
+  0001: self._DodgeDirection = Direction
+  000c: self._DodgeDirectionVector = obj'Core.Math'.static.Normal(DirectionVector)
+  0022: SetupDodge()
+  0028: return nothing
+  002a: <eos>
+
+function TnAcrobaticsManager.RammedReaction.BeginState  (script 233 bytes)
+  0000: self._AcrobaticsState = 6
+  0008: self._LastFlyingAcrobaticsState = 6
+  0010: TnAcrobaticsManager.SetLastBaseVelocity(true)
+  0017: self._PhysicsService.set_Physics(4)
+  002d: self._PhysicsService.set_MaxAirSpeed(self._Blueprint.RammedSpeed)
+  004f: self._PhysicsService.set_Velocity(((self._DodgeDirectionVector * self._PhysicsService.get_MaxAirSpeed()) + TnAcrobaticsManager.LastBaseVelocity()))
+  0086: self._PhysicsService.set_Acceleration(obj'Core.Math'.static.Normal(self._PhysicsService.get_Velocity()))
+  00b9: self._AudioService.MakeNoise(self._Blueprint.DodgeNoiseRadius)
+  00db: self._CurrentStateTimeRemaining = 0.5
+  00e6: return nothing
+  00e8: <eos>
+
+function TnAcrobaticsManager.RammedReaction.EndState  (script 89 bytes)
+  0000: self._PhysicsService.RestoreDefaultAirMovement()
+  0014: self._PhysicsService.set_Velocity(obj'Core.Math'.static.MakeVector(0.0, 0.0, TnAcrobaticsManager.LastBaseVelocity().Z))
+  0056: return nothing
+  0058: <eos>
+
+function TnAcrobaticsManager.RammedReaction.OnUpdate  (script 126 bytes)
+  0000: if !(TnAcrobaticsManager.CurrentStateHasExpired()) goto 0x007b
+  0009: if !(TnAcrobaticsManager.IsOnTheGround()) goto 0x0022
+  0012: GotoState('OnTheGround', , , )
+  0020: return nothing
+  0022: if !(!self._PhysicsService.get_IsAirborne()) goto 0x006d
+  003b: self._PhysicsService.set_Physics(2)
+  0051: self._FallBaseHeight = self._PhysicsService.get_Height()
+  006b: return nothing
+  006d: GotoState('Falling', , , )
+  007b: return nothing
+  007d: <eos>
+
+function TnAcrobaticsManager.CalculateJumpVelocity  (script 192 bytes)
+  0000: if !(obj'Core.Math'.static.IsZero(self._OverrideJumpVelocity)) goto 0x00a8
+  0014: TotalVelocity = obj'Core.Math'.static.MakeVector(self._PhysicsService.get_Velocity().X, self._PhysicsService.get_Velocity().Y, obj'Core.Math'.static.Sqrt(((-2.0 * self._PhysicsService.get_Gravity()) * JumpHeight)))
+  0098: (TotalVelocity += TnAcrobaticsManager.LastBaseVelocity())
+  00a5: goto 0x00b3
+  00a8: TotalVelocity = self._OverrideJumpVelocity
+  00b3: return TotalVelocity
+  00b9: return return
+  00bf: <eos>
+
+function TnAcrobaticsManager.CanDoubleJump  (script 125 bytes)
+  0000: if !(((self._WeaponService.get_ActiveWeapon() != none) && self._WeaponService.get_ActiveWeapon().DisallowDoubleJump)) goto 0x003f
+  003d: return false
+  003f: CurrentJumpHeight = (self._PhysicsService.get_Height() - self._JumpBaseHeight)
+  0060: return (CurrentJumpHeight > self._Blueprint.DoubleJumpMinHeight)
+  0076: return return
+  007c: <eos>
+
+function TnAcrobaticsManager.HasExceededMaxDodgeDistance  (script 82 bytes)
+  0000: if !(((self._MaxDodgeDistanceSquared > cast3f(0)) && (obj'Core.Math'.static.VSizeSq((self._PhysicsService.get_Location() - self._BeginDodgeLocation)) > self._MaxDodgeDistanceSquared))) goto 0x0049
+  0047: return true
+  0049: return false
+  004b: return return
+  0051: <eos>
+
+function TnAcrobaticsManager.IsOnTheGround  (script 36 bytes)
+  0000: return (cast3a(self._PhysicsService.get_Physics()) == cast3a(1))
+  001d: return return
+  0023: <eos>
+
+function TnAcrobaticsManager.IsFalling  (script 36 bytes)
+  0000: return (cast3a(self._PhysicsService.get_Physics()) == cast3a(2))
+  001d: return return
+  0023: <eos>
+
+function TnAcrobaticsManager.IsDescending  (script 44 bytes)
+  0000: return (self._PhysicsService.get_Velocity().Z < cast3f(0))
+  0025: return return
+  002b: <eos>
+
+function TnAcrobaticsManager.CurrentStateHasExpired  (script 18 bytes)
+  0000: return (self._CurrentStateTimeRemaining <= cast3f(0))
+  000b: return return
+  0011: <eos>
+
+function TnAcrobaticsManager.ClientUpdateState  (script 247 bytes)
+  0000: if !((self._Active == false)) goto 0x000e
+  000c: return nothing
+  000e: switch (self._AcrobaticsState)
+  0015: case 0: (next 0x002b)
+  001a: GotoState('Jumping', , , )
+  0028: goto 0x00f4
+  002b: case 1: (next 0x0041)
+  0030: GotoState('DoubleJumping', , , )
+  003e: goto 0x00f4
+  0041: case 2: (next 0x0057)
+  0046: GotoState('JumpingToHover', , , )
+  0054: goto 0x00f4
+  0057: case 3: (next 0x006d)
+  005c: GotoState('Hovering', , , )
+  006a: goto 0x00f4
+  006d: case 4: (next 0x0083)
+  0072: GotoState('Falling', , , )
+  0080: goto 0x00f4
+  0083: case 5: (next 0x0099)
+  0088: GotoState('Dodging', , , )
+  0096: goto 0x00f4
+  0099: case 6: (next 0x00af)
+  009e: GotoState('RammedReaction', , , )
+  00ac: goto 0x00f4
+  00af: case 8: (next 0x00c5)
+  00b4: GotoState('OnTheGround', , , )
+  00c2: goto 0x00f4
+  00c5: case 7: (next 0x00db)
+  00ca: GotoState('Skidding', , , )
+  00d8: goto 0x00f4
+  00db: case 9: (next 0x00f1)
+  00e0: GotoState('None', , , )
+  00ee: goto 0x00f4
+  00f1: default:
+  00f4: return nothing
+  00f6: <eos>
+
+function TnAcrobaticsManager.ServicesAreValid  (script 126 bytes)
+  0000: return (((((NotEqual_InterfaceInterface(self._AnimatorService, TnAnimatorService(none)) && NotEqual_InterfaceInterface(self._PhysicsService, TnPhysicsService(none))) && NotEqual_InterfaceInterface(self._WeaponService, TnWeaponService(none))) && NotEqual_InterfaceInterface(self._BuffService, TnBuffService(none))) && NotEqual_InterfaceInterface(self._AudioService, TnAudioService(none))) && (self._Blueprint != none))
+  0077: return return
+  007d: <eos>
+
+function TnAcrobaticsManager.SetLastBaseVelocity  (script 145 bytes)
+  0000: nothing
+  0001: NewBase = self._PhysicsService.get_Base()
+  001b: if !((NewBase == none)) goto 0x0044
+  0026: if !(IgnoreIfNone) goto 0x0042
+  002f: self._LastBaseVelocity = vect(0,0,0)
+  0042: return nothing
+  0044: if !((NewBase != none)) goto 0x007a
+  004f: if !((NewBase.Base != none)) goto 0x007a
+  0063: NewBase = NewBase.Base
+  0077: goto 0x004f
+  007a: self._LastBaseVelocity = NewBase.Velocity
+  008e: return nothing
+  0090: <eos>
+
+function TnAcrobaticsManager.LastBaseVelocity  (script 70 bytes)
+  0000: Velocity = self._LastBaseVelocity
+  000b: if !((Velocity.Z < cast3f(0))) goto 0x0039
+  0023: Velocity.Z = 0.0
+  0039: return Velocity
+  003f: return return
+  0045: <eos>

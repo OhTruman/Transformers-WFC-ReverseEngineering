@@ -1,0 +1,17 @@
+function EmitterSpawnable.SetTemplate  (script 32 bytes)
+  0000: nothing
+  0001: Emitter.SetTemplate(NewTemplate, bDestroyOnFinish)
+  0012: self.ParticleTemplate = NewTemplate
+  001d: return nothing
+  001f: <eos>
+
+function EmitterSpawnable.ReplicatedEvent  (script 102 bytes)
+  0000: if !((VarName == 'ParticleTemplate')) goto 0x0058
+  0013: SetTemplate(self.ParticleTemplate, self.bDestroyOnSystemFinish)
+  0028: self.ParticleSystemComponent.ActivateSystem()
+  003c: if !(((self.ParticleTemplate == none) && self.bDestroyOnSystemFinish)) goto 0x0055
+  0052: DestroyActor()
+  0055: goto 0x0063
+  0058: Emitter.ReplicatedEvent(VarName)
+  0063: return nothing
+  0065: <eos>

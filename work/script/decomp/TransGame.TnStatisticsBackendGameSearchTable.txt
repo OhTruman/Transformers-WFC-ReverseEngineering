@@ -1,0 +1,71 @@
+function TnStatisticsBackendGameSearchTable.RecordSearchStarted  (script 242 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !(((self.Capacity > 0) && (self.Searches.Length >= self.Capacity))) goto 0x002c
+  002a: return nothing
+  002c: self.TimeLastSearchStarted = Game.WorldInfo.TimeSeconds
+  0049: Search.GetIntProperty(268435491, SearchStat.PlaylistId)
+  0071: Search.GetIntProperty(268435526, SearchStat.GamerRegion)
+  0099: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  00b2: SearchStat.NAT = cast3a(OnlineSub.SystemInterface.GetNATType())
+  00e2: self.Searches.AddItem(SearchStat)
+  00ef: return nothing
+  00f1: <eos>
+
+function TnStatisticsBackendGameSearchTable.RecordSearchComplete  (script 432 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((self.Searches.Length == 0)) goto 0x001b
+  0019: return nothing
+  001b: I = (self.Searches.Length - 1)
+  002a: if !((I >= self.Searches.Length)) goto 0x003c
+  003a: return nothing
+  003c: I[self.Searches].Results = Search.Results.Length
+  0062: I[self.Searches].SearchTime = (Game.WorldInfo.TimeSeconds - self.TimeLastSearchStarted)
+  0097: J = 0
+  009e: if !((J < Search.Results.Length)) goto 0x01ad
+  00b7: CurPing = cast3f(J[Search.Results].GameSettings.PingInMs)
+  00e7: I[self.Searches].MaxPing = obj'Core.Math'.static.FMax(I[self.Searches].MaxPing, CurPing)
+  0124: I[self.Searches].MinPing = ((J == 0) ? CurPing : obj'Core.Math'.static.FMin(I[self.Searches].MinPing, CurPing))
+  0173: (I[self.Searches].AvePing += (CurPing / cast3f(Search.Results.Length)))
+  01a3: AddAdd_PreInt(J)
+  01aa: goto 0x009e
+  01ad: return nothing
+  01af: <eos>
+
+function TnStatisticsBackendGameSearchTable.RecordReservationCancelation  (script 87 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((self.Searches.Length == 0)) goto 0x001b
+  0019: return nothing
+  001b: I = (self.Searches.Length - 1)
+  002a: if !((I >= self.Searches.Length)) goto 0x003c
+  003a: return nothing
+  003c: AddAdd_PreInt(I[self.Searches].NumCanceled)
+  0054: return nothing
+  0056: <eos>
+
+function TnStatisticsBackendGameSearchTable.RecordReservationComplete  (script 116 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((self.Searches.Length == 0)) goto 0x001b
+  0019: return nothing
+  001b: I = (self.Searches.Length - 1)
+  002a: if !((I >= self.Searches.Length)) goto 0x003c
+  003a: return nothing
+  003c: I[self.Searches].TimeToComplete = (Game.WorldInfo.TimeSeconds - self.TimeLastSearchStarted)
+  0071: return nothing
+  0073: <eos>
+
+function TnStatisticsBackendGameSearchTable.RecordHostedGame  (script 141 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((self.Searches.Length == 0)) goto 0x001b
+  0019: return nothing
+  001b: I = (self.Searches.Length - 1)
+  002a: if !((I >= self.Searches.Length)) goto 0x003c
+  003a: return nothing
+  003c: I[self.Searches].Hosted = true
+  0055: I[self.Searches].TimeToComplete = (Game.WorldInfo.TimeSeconds - self.TimeLastSearchStarted)
+  008a: return nothing
+  008c: <eos>

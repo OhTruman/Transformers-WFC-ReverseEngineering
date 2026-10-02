@@ -1,0 +1,15 @@
+function TnStatisticsPickupTable.RecordPickup  (script 298 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: if !((P == none)) goto 0x001a
+  0018: return nothing
+  001a: PU.PickupLocationX = Pickup.Location.X
+  0044: PU.PickupLocationY = Pickup.Location.Y
+  006e: PU.PickupLocationZ = Pickup.Location.Z
+  0098: PU.InventoryType = InventoryType
+  00ae: PU.WorldTime = obj'Engine.Engine'.static.GetWorldTime()
+  00d2: PU.Session_Id = Game.StatisticsSessionId
+  00f1: PU.RecipientName = P.GetHumanReadableName()
+  0115: self.Pickups.Length[self.Pickups] = PU
+  0127: return nothing
+  0129: <eos>

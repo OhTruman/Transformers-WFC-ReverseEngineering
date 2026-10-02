@@ -1,0 +1,158 @@
+function TnDataStore_MenuItems.GetResource  (script 76 bytes)
+  0000: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0019: if !((DataStoreManager == none)) goto 0x0026
+  0024: return none
+  0026: return UIDataStore_GameResource(DataStoreManager.FindDataStore(ResourceTag, ))
+  0045: return return
+  004b: <eos>
+
+function TnDataStore_MenuItems.GetMapProviders  (script 62 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: return MenuItems.GetProviders('Maps')
+  0037: return return
+  003d: <eos>
+
+function TnDataStore_MenuItems.GetPlaylistProviders  (script 62 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: return MenuItems.GetProviders('Playlists')
+  0037: return return
+  003d: <eos>
+
+function TnDataStore_MenuItems.GetGameModeProviders  (script 62 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: return MenuItems.GetProviders('GameModes')
+  0037: return return
+  003d: <eos>
+
+function TnDataStore_MenuItems.GetSpecialtyProviders  (script 90 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: if !((MenuItems == none)) goto 0x0036
+  0025: NoSpecialties = NoSpecialties
+  0030: return NoSpecialties
+  0036: return MenuItems.GetProviders('Specialties')
+  0053: return return
+  0059: <eos>
+
+function TnDataStore_MenuItems.GetChassisProviders  (script 62 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: return MenuItems.GetProviders('Chassis')
+  0037: return return
+  003d: <eos>
+
+function TnDataStore_MenuItems.GetWeaponProviders  (script 62 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: return MenuItems.GetProviders('Weapons')
+  0037: return return
+  003d: <eos>
+
+function TnDataStore_MenuItems.GetCheckpointProviders  (script 62 bytes)
+  0000: MenuItems = TnDataStore_MenuItems.GetResource(obj'TnDataStore_MenuItems'.static.default.Tag)
+  001a: return MenuItems.GetProviders('Checkpoints')
+  0037: return return
+  003d: <eos>
+
+function TnDataStore_MenuItems.ConvertMapFilenameToId  (script 132 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.MapFilename == MapFilename)) goto 0x006d
+  005e: return Map.MapId
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return -1
+  007d: return return
+  0083: <eos>
+
+function TnDataStore_MenuItems.ConvertMapFriendlyNameToMapFilename  (script 129 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.FriendlyName == FriendlyName)) goto 0x006d
+  005e: return Map.MapFilename
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return ""
+  007a: return return
+  0080: <eos>
+
+function TnDataStore_MenuItems.ConvertMapFriendlyNameToMapId  (script 132 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.FriendlyName == FriendlyName)) goto 0x006d
+  005e: return Map.MapId
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return -1
+  007d: return return
+  0083: <eos>
+
+function TnDataStore_MenuItems.ConvertMapIdToMapFilename  (script 129 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.MapId == MapId)) goto 0x006d
+  005e: return Map.MapFilename
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return ""
+  007a: return return
+  0080: <eos>
+
+function TnDataStore_MenuItems.ConvertMapIdToPresenceId  (script 132 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.MapId == MapId)) goto 0x006d
+  005e: return Map.PresenceId
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return -1
+  007d: return return
+  0083: <eos>
+
+function TnDataStore_MenuItems.ConvertMapIdToFriendlyName  (script 129 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.MapId == MapId)) goto 0x006d
+  005e: return Map.FriendlyName
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return ""
+  007a: return return
+  0080: <eos>
+
+function TnDataStore_MenuItems.GetMapFaction  (script 132 bytes)
+  0000: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0019: I = 0
+  0020: if !((I < Maps.Length)) goto 0x0077
+  0030: Map = TnDataProvider_MapInfo(I[Maps])
+  0046: if !((Map.MapId == MapId)) goto 0x006d
+  005e: return Map.Faction
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0020
+  0077: return -1
+  007d: return return
+  0083: <eos>
+
+function TnDataStore_MenuItems.HasRequiredMapAssets  (script 146 bytes)
+  0000: if !((MapId < 0)) goto 0x000d
+  000b: return true
+  000d: Maps = obj'TnDataStore_MenuItems'.static.GetMapProviders()
+  0026: I = 0
+  002d: if !((I < Maps.Length)) goto 0x0089
+  003d: Map = TnDataProvider_MapInfo(I[Maps])
+  0053: if !((Map.MapId == MapId)) goto 0x007f
+  006b: return Map.HasRequiredAssets()
+  007f: AddAdd_PreInt(I)
+  0086: goto 0x002d
+  0089: return false
+  008b: return return
+  0091: <eos>

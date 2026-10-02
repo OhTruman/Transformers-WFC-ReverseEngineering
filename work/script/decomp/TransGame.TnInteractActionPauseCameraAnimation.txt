@@ -1,0 +1,9 @@
+function TnInteractActionPauseCameraAnimation.TriggerAction  (script 138 bytes)
+  0000: User = Interact.GetCurrentUser()
+  0019: if !((User == none)) goto 0x0026
+  0024: return nothing
+  0026: PC = TnPlayerController(User.Controller)
+  003f: if !(((PC != none) && (PC.PlayerCamera != none))) goto 0x0087
+  0060: TnCamera(PC.PlayerCamera).SetPauseOnCameraAnimation(self.PauseAnimation)
+  0087: return nothing
+  0089: <eos>

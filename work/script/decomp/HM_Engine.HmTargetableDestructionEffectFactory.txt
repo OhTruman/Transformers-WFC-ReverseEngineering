@@ -1,0 +1,8 @@
+function HmTargetableDestructionEffectFactory.DoCreateInstance  (script 99 bytes)
+  0000: if !((self.TargetableTemplate == none)) goto 0x000d
+  000b: return none
+  000d: Effect = new(Owner, nothing, obj'HmTargetableDestructionEffect', nothing, AttachTreeCallback)
+  0025: Effect.SetTargetable(HmTargetableComponent(self.TargetableTemplate.Clone(Effect, )))
+  0056: return Effect
+  005c: return return
+  0062: <eos>

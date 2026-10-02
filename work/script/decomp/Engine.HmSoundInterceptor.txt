@@ -1,0 +1,43 @@
+function HmSoundInterceptor.Start  (script 19 bytes)
+  0000: self.WorldInfo.SoundInterceptor = self
+  0010: return nothing
+  0012: <eos>
+
+function HmSoundInterceptor.Stop  (script 19 bytes)
+  0000: self.WorldInfo.SoundInterceptor = none
+  0010: return nothing
+  0012: <eos>
+
+function HmSoundInterceptor.Clear  (script 11 bytes)
+  0000: self.SoundEvents.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function HmSoundInterceptor.AddSoundEvent  (script 140 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: ASoundEvent.InSoundCue = InSoundCue
+  0019: ASoundEvent.PlayingActor = PlayingActor
+  002f: ASoundEvent.bNotReplicated = bNotReplicated
+  0047: ASoundEvent.bNoRepToOwner = bNoRepToOwner
+  005f: ASoundEvent.bStopWhenOwnerDestroyed = bStopWhenOwnerDestroyed
+  0077: self.SoundEvents.Length[self.SoundEvents] = ASoundEvent
+  0089: return nothing
+  008b: <eos>
+
+function HmSoundInterceptor.WasSoundPlayed  (script 26 bytes)
+  0000: return (GetSoundPlayedCount(ASound) > 0)
+  0013: return return
+  0019: <eos>
+
+function HmSoundInterceptor.GetSoundPlayedCount  (script 85 bytes)
+  0000: I = 0
+  0007: if !((I < self.SoundEvents.Length)) goto 0x0048
+  0017: if !((I[self.SoundEvents].InSoundCue == ASound)) goto 0x003e
+  0037: AddAdd_PreInt(J)
+  003e: AddAdd_PreInt(I)
+  0045: goto 0x0007
+  0048: return J
+  004e: return return
+  0054: <eos>

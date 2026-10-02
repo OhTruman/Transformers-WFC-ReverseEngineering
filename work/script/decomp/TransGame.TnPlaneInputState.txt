@@ -1,0 +1,133 @@
+function TnPlaneInputState.get_StrafeForwardBack  (script 13 bytes)
+  0000: return self._StrafeForwardBack
+  0006: return return
+  000c: <eos>
+
+function TnPlaneInputState.set_StrafeForwardBack  (script 14 bytes)
+  0000: self._StrafeForwardBack = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneInputState.get_StrafeRightLeft  (script 13 bytes)
+  0000: return self._StrafeRightLeft
+  0006: return return
+  000c: <eos>
+
+function TnPlaneInputState.set_StrafeRightLeft  (script 14 bytes)
+  0000: self._StrafeRightLeft = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneInputState.get_Yaw  (script 13 bytes)
+  0000: return self._Yaw
+  0006: return return
+  000c: <eos>
+
+function TnPlaneInputState.set_Yaw  (script 14 bytes)
+  0000: self._Yaw = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneInputState.get_Pitch  (script 13 bytes)
+  0000: return self._Pitch
+  0006: return return
+  000c: <eos>
+
+function TnPlaneInputState.set_Pitch  (script 14 bytes)
+  0000: self._Pitch = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneInputState.get_Boosting  (script 14 bytes)
+  0000: return self._Boosting
+  0007: return return
+  000d: <eos>
+
+function TnPlaneInputState.set_Boosting  (script 16 bytes)
+  0000: self._Boosting = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlaneInputState.get_Ascending  (script 14 bytes)
+  0000: return self._Ascending
+  0007: return return
+  000d: <eos>
+
+function TnPlaneInputState.set_Ascending  (script 16 bytes)
+  0000: self._Ascending = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlaneInputState.get_Descending  (script 14 bytes)
+  0000: return self._Descending
+  0007: return return
+  000d: <eos>
+
+function TnPlaneInputState.set_Descending  (script 16 bytes)
+  0000: self._Descending = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlaneInputState.get_Rolling  (script 14 bytes)
+  0000: return self._Rolling
+  0007: return return
+  000d: <eos>
+
+function TnPlaneInputState.set_Rolling  (script 16 bytes)
+  0000: self._Rolling = Value
+  000d: return nothing
+  000f: <eos>
+
+function TnPlaneInputState.get_ViewRotation  (script 13 bytes)
+  0000: return self._ViewRotation
+  0006: return return
+  000c: <eos>
+
+function TnPlaneInputState.set_ViewRotation  (script 33 bytes)
+  0000: self._ViewRotation = obj'Core.Math'.static.Normalize(Value)
+  001e: return nothing
+  0020: <eos>
+
+function TnPlaneInputState.get_PackedFlags  (script 13 bytes)
+  0000: return self._PackedFlags
+  0006: return return
+  000c: <eos>
+
+function TnPlaneInputState.set_PackedFlags  (script 14 bytes)
+  0000: self._PackedFlags = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPlaneInputState.Reset  (script 98 bytes)
+  0000: self._StrafeForwardBack = 0.0
+  000b: self._StrafeRightLeft = 0.0
+  0016: self._Yaw = 0.0
+  0021: self._Pitch = 0.0
+  002c: self._Boosting = false
+  0034: self._Ascending = false
+  003c: self._Descending = false
+  0044: self._Rolling = false
+  004c: self._ViewRotation = rot(0,0,0)
+  005f: return nothing
+  0061: <eos>
+
+function TnPlaneInputState.Update  (script 65 bytes)
+  0000: if !((cast3a(GetRole()) == cast3a(3))) goto 0x001f
+  0015: PackFlags()
+  001f: if !((cast3a(GetRole()) == cast3a(1))) goto 0x003e
+  0034: UnpackFlags()
+  003e: return nothing
+  0040: <eos>
+
+function TnPlaneInputState.PackFlags  (script 72 bytes)
+  0000: self._PackedFlags = cast3d(((((self._Boosting ? 1 : 0) | (self._Ascending ? 2 : 0)) | (self._Descending ? 4 : 0)) | (self._Rolling ? 8 : 0)))
+  0045: return nothing
+  0047: <eos>
+
+function TnPlaneInputState.UnpackFlags  (script 135 bytes)
+  0000: self._Boosting = obj'TnValuePacker'.static.UnpackFlag(self._PackedFlags, 1)
+  0021: self._Ascending = obj'TnValuePacker'.static.UnpackFlag(self._PackedFlags, 2)
+  0042: self._Descending = obj'TnValuePacker'.static.UnpackFlag(self._PackedFlags, 4)
+  0063: self._Rolling = obj'TnValuePacker'.static.UnpackFlag(self._PackedFlags, 8)
+  0084: return nothing
+  0086: <eos>

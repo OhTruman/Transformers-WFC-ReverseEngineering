@@ -1,0 +1,1923 @@
+function Actor.FindActorComponent  (script 7 bytes)
+  0000: ComponentClass
+  0005: nothing
+  0006: <eos>
+
+function Actor.CheckForErrorsNative  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.NetTraffic  (script 77 bytes)
+  0000: if !((self.WorldInfo.Game != none)) goto 0x004a
+  0014: self.WorldInfo.Game.NotifyNetTraffic(PropertyName, TrafficType, OwnerClassName, Size, NetInitial)
+  004a: return nothing
+  004c: <eos>
+
+function Actor.ForceUpdateComponents  (script 12 bytes)
+  0000: bCollisionUpdate
+  0005: bTransformOnly
+  000a: nothing
+  000b: <eos>
+
+function Actor.ConsoleCommand  (script 12 bytes)
+  0000: Command
+  0005: bWriteToLog
+  000a: nothing
+  000b: <eos>
+
+function Actor.Sleep  (script 7 bytes, native 256)
+  0000: Seconds
+  0005: nothing
+  0006: <eos>
+
+function Actor.FinishAnim  (script 7 bytes, native 261)
+  0000: SeqNode
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetCollision  (script 17 bytes, native 262)
+  0000: bNewColActors
+  0005: bNewBlockActors
+  000a: bNewIgnoreEncroachers
+  000f: nothing
+  0010: <eos>
+
+function Actor.SetCollisionSize  (script 12 bytes, native 283)
+  0000: NewRadius
+  0005: NewHeight
+  000a: nothing
+  000b: <eos>
+
+function Actor.SetCollisionPreset  (script 7 bytes)
+  0000: NewCollisionPreset
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetDrawScale  (script 7 bytes)
+  0000: NewScale
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetDrawScale3D  (script 7 bytes)
+  0000: NewScale3D
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetBlockRigidBody  (script 39 bytes)
+  0000: if !((self.CollisionComponent != none)) goto 0x0024
+  000b: self.CollisionComponent.SetBlockRigidBody(CanBlock)
+  0024: return nothing
+  0026: <eos>
+
+function Actor.ChartData  (script 12 bytes)
+  0000: DataName
+  0005: DataValue
+  000a: nothing
+  000b: <eos>
+
+function Actor.Move  (script 7 bytes, native 266)
+  0000: Delta
+  0005: nothing
+  0006: <eos>
+
+function Actor.MoveWithFlags  (script 12 bytes)
+  0000: Delta
+  0005: ExtraMoveFlags
+  000a: nothing
+  000b: <eos>
+
+function Actor.SetLocation  (script 7 bytes, native 267)
+  0000: NewLocation
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetRotation  (script 7 bytes, native 299)
+  0000: NewRotation
+  0005: nothing
+  0006: <eos>
+
+function Actor.MovingWhichWay  (script 7 bytes)
+  0000: Amount
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetZone  (script 7 bytes)
+  0000: bForceRefresh
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetRelativeRotation  (script 7 bytes)
+  0000: NewRotation
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetRelativeLocation  (script 7 bytes)
+  0000: NewLocation
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetHardAttach  (script 7 bytes)
+  0000: bNewHardAttach
+  0005: nothing
+  0006: <eos>
+
+function Actor.IsHardAttached  (script 14 bytes)
+  0000: return self.bHardAttach
+  0007: return return
+  000d: <eos>
+
+function Actor.MoveSmooth  (script 7 bytes, native 3969)
+  0000: Delta
+  0005: nothing
+  0006: <eos>
+
+function Actor.AutonomousPhysics  (script 7 bytes, native 3971)
+  0000: DeltaSeconds
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetTerminalVelocity  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.OnPostEditMove  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetBase  (script 22 bytes)
+  0000: NewBase
+  0005: NewFloor
+  000a: SkelComp
+  000f: AttachName
+  0014: nothing
+  0015: <eos>
+
+function Actor.SetOwner  (script 7 bytes, native 272)
+  0000: NewOwner
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetActorBase  (script 13 bytes)
+  0000: return self.Base
+  0006: return return
+  000c: <eos>
+
+function Actor.SetVolumes  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.ApplyNewRBState  (script 7 bytes)
+  0000: NewState
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetCurrentRBState  (script 7 bytes)
+  0000: OutState
+  0005: nothing
+  0006: <eos>
+
+function Actor.BeginTouch  (script 22 bytes)
+  0000: Other
+  0005: OtherComp
+  000a: HitLocation
+  000f: HitNormal
+  0014: nothing
+  0015: <eos>
+
+function Actor.IsInLevel  (script 7 bytes)
+  0000: TestLevel
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetLevel  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.FindBase  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.IsBasedOn  (script 7 bytes)
+  0000: TestActor
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetBaseMost  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.IsOwnedBy  (script 7 bytes)
+  0000: TestActor
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetForcedInitialReplicatedProperty  (script 12 bytes)
+  0000: PropToReplicate
+  0005: bAdd
+  000a: nothing
+  000b: <eos>
+
+function Actor.GetEngine  (script 27 bytes)
+  0000: return obj'Engine'.static.GetEngine()
+  0014: return return
+  001a: <eos>
+
+function Actor.SetHidden  (script 7 bytes)
+  0000: bNewHidden
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetOnlyOwnerSee  (script 7 bytes)
+  0000: bNewOnlyOwnerSee
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetLastRenderTime  (script 13 bytes)
+  0000: return self.LastRenderTime
+  0006: return return
+  000c: <eos>
+
+function Actor.SetPhysics  (script 17 bytes)
+  0000: NewPhysics
+  0005: NewFloor
+  000a: NewFloorV
+  000f: nothing
+  0010: <eos>
+
+function Actor.GetPhysics  (script 13 bytes)
+  0000: return self.Physics
+  0006: return return
+  000c: <eos>
+
+function Actor.Clock  (script 7 bytes)
+  0000: Time
+  0005: nothing
+  0006: <eos>
+
+function Actor.UnClock  (script 7 bytes)
+  0000: Time
+  0005: nothing
+  0006: <eos>
+
+function Actor.AttachComponent  (script 7 bytes)
+  0000: NewComponent
+  0005: nothing
+  0006: <eos>
+
+function Actor.DetachComponent  (script 7 bytes)
+  0000: ExComponent
+  0005: nothing
+  0006: <eos>
+
+function Actor.FindComponent  (script 41 bytes)
+  0000: foreach ComponentList(ComponentType, Comp) (end 0x001f)
+  0017: iterpop
+  0018: return Comp
+  001e: iternext
+  001f: iterpop
+  0020: return none
+  0022: return return
+  0028: <eos>
+
+function Actor.FindOrCreateComponent  (script 80 bytes)
+  0000: Comp = FindComponent(ComponentType)
+  0015: if !((Comp == none)) goto 0x0043
+  0020: Comp = new(self, nothing, ComponentType, nothing, GetRemoteRole)
+  0034: AttachComponent(Comp)
+  0043: return Comp
+  0049: return return
+  004f: <eos>
+
+function Actor.MapHitComponentToIndex  (script 13 bytes)
+  0000: return -1
+  0006: return return
+  000c: <eos>
+
+function Actor.MapIndexToHitComponent  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function Actor.SetTickGroup  (script 7 bytes)
+  0000: NewTickGroup
+  0005: nothing
+  0006: <eos>
+
+function Actor.ForwardEventToComponents  (script 7 bytes)
+  0000: EventName
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetSemiTransparentOpacity  (script 7 bytes)
+  0000: OpacityValue
+  0005: nothing
+  0006: <eos>
+
+function Actor.SetSemiTransparentOpacityOverride  (script 12 bytes)
+  0000: OpacityOverrideValue
+  0005: bUsePostProcess
+  000a: nothing
+  000b: <eos>
+
+function Actor.TickForTesting  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.Destroyed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GainedChild  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.LostChild  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Tick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Timer  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.HitWall  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Falling  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Landed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PhysicsVolumeChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Touch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PostTouch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.UnTouch  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Bump  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.BaseChange  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.Attach  (script 107 bytes)
+  0000: if !(((((cast3a(self.RemoteRole) == cast3a(1)) && (cast3a(Other.RemoteRole) == cast3a(0))) && Other.bNoDelete) && !Other.bStatic)) goto 0x0068
+  0055: Other.ForceNetRelevant()
+  0068: return nothing
+  006a: <eos>
+
+function Actor.Detach  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SpecialHandling  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.CollisionChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.EncroachingOn  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.EncroachedBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.RanInto  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.ClampRotation  (script 22 bytes)
+  0000: out_Rot
+  0005: rBase
+  000a: rUpperLimits
+  000f: rLowerLimits
+  0014: nothing
+  0015: <eos>
+
+function Actor.OverRotated  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.UsedBy  (script 34 bytes)
+  0000: return TriggerEventClass(obj'SeqEvent_Used', User, -1, )
+  001b: return return
+  0021: <eos>
+
+function Actor.FellOutOfWorld  (script 37 bytes)
+  0000: SetPhysics(0, , )
+  000e: SetHidden(true)
+  0019: SetCollision(false, false, )
+  001f: DestroyActor()
+  0022: return nothing
+  0024: <eos>
+
+function Actor.OutsideWorldBounds  (script 26 bytes)
+  0000: DestroyActor()
+  0003: SetCollision(false, false, )
+  0009: SetPhysics(0, , )
+  0017: return nothing
+  0019: <eos>
+
+function Actor.GetSkipPawnsTraceFlag  (script 10 bytes)
+  0000: return 32
+  0003: return return
+  0009: <eos>
+
+function Actor.GetSkipPawnsMoveFlag  (script 9 bytes)
+  0000: return 1
+  0002: return return
+  0008: <eos>
+
+function Actor.GetBlockingFlag  (script 10 bytes)
+  0000: return 8
+  0003: return return
+  0009: <eos>
+
+function Actor.GetPawnSeeThroughFlag  (script 10 bytes)
+  0000: return 16
+  0003: return return
+  0009: <eos>
+
+function Actor.Trace  (script 52 bytes, native 277)
+  0000: HitLocation
+  0005: HitNormal
+  000a: TargetActor
+  000f: TraceEnd
+  0014: TraceStart
+  0019: bTraceActors
+  001e: Extent
+  0023: bFillHitInfo
+  0028: HitInfo
+  002d: ExtraTraceFlags
+  0032: nothing
+  0033: <eos>
+
+function Actor.DeferredTrace  (script 146 bytes)
+  0000: default=self.Location
+  0009: default=self.bCollideActors
+  0013: nothing
+  0014: default=false
+  0019: nothing
+  001a: default=4
+  0020: DeferredTraceExecuter = obj'Engine'.static.GetEngine().GetDeferredTraceExecuter()
+  0047: DeferredTraceExecuter.ActorTrace(DeferredTraceId, self, TargetActor, FinishedDelegate, TraceEnd, TraceStart, bTraceActors, Extent, bFillHitInfo, ExtraTraceFlags, MaxFrameDelay)
+  008f: return nothing
+  0091: <eos>
+
+function Actor.TraceLength  (script 82 bytes)
+  0000: if !((Trace(HitLocation, HitNormal, none, (self.Location + (Direction * Length)), , , , , , ) == none)) goto 0x0033
+  002d: return Length
+  0033: return obj'Core.Math'.static.VSize((HitLocation - self.Location))
+  004b: return return
+  0051: <eos>
+
+function Actor.ClearLineOfSight  (script 32 bytes, native 278)
+  0000: TargetActor
+  0005: TraceEnd
+  000a: TraceStart
+  000f: bTraceActors
+  0014: Extent
+  0019: ExtraTraceFlags
+  001e: nothing
+  001f: <eos>
+
+function Actor.MultiPointCheck  (script 27 bytes)
+  0000: ImpactInfos
+  0005: PointLocation
+  000a: PointExtent
+  000f: TraceActors
+  0014: ExtraTraceFlags
+  0019: nothing
+  001a: <eos>
+
+function Actor.MultiTrace  (script 37 bytes)
+  0000: ImpactInfos
+  0005: TargetActor
+  000a: TraceEnd
+  000f: TraceStart
+  0014: Extent
+  0019: ExtraTraceFlags
+  001e: bStopAtFirstWorldHit
+  0023: nothing
+  0024: <eos>
+
+function Actor.TraceComponent  (script 42 bytes)
+  0000: HitLocation
+  0005: HitNormal
+  000a: InComponent
+  000f: TraceEnd
+  0014: TraceStart
+  0019: Extent
+  001e: bFillHitInfo
+  0023: HitInfo
+  0028: nothing
+  0029: <eos>
+
+function Actor.PointCheckComponent  (script 17 bytes)
+  0000: InComponent
+  0005: PointLocation
+  000a: PointExtent
+  000f: nothing
+  0010: <eos>
+
+function Actor.FastTrace  (script 22 bytes, native 548)
+  0000: TraceEnd
+  0005: TraceStart
+  000a: BoxExtent
+  000f: bTraceBullet
+  0014: nothing
+  0015: <eos>
+
+function Actor.FindSpot  (script 12 bytes)
+  0000: BoxExtent
+  0005: SpotLocation
+  000a: nothing
+  000b: <eos>
+
+function Actor.FindSpotAwayFromPawns  (script 17 bytes)
+  0000: Searcher
+  0005: BoxExtent
+  000a: SpotLocation
+  000f: nothing
+  0010: <eos>
+
+function Actor.TraceCamera  (script 42 bytes)
+  0000: HitLocation
+  0005: HitNormal
+  000a: TraceEnd
+  000f: TraceStart
+  0014: bTraceActors
+  0019: Extent
+  001e: bFillHitInfo
+  0023: HitInfo
+  0028: nothing
+  0029: <eos>
+
+function Actor.TraceSight  (script 86 bytes)
+  0000: default=self.Location
+  0009: default=self.bCollideActors
+  0013: nothing
+  0014: default=false
+  0019: nothing
+  001a: return Trace(HitLocation, HitNormal, TargetActor, TraceEnd, TraceStart, bTraceActors, Extent, bFillHitInfo, HitInfo, 16)
+  004f: return return
+  0055: <eos>
+
+function Actor.ContainsPoint  (script 7 bytes)
+  0000: Spot
+  0005: nothing
+  0006: <eos>
+
+function Actor.IsOverlapping  (script 7 bytes)
+  0000: A
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetComponentsBoundingBox  (script 7 bytes)
+  0000: ActorBox
+  0005: nothing
+  0006: <eos>
+
+function Actor.GetBoundingCylinder  (script 12 bytes)
+  0000: CollisionRadius
+  0005: CollisionHeight
+  000a: nothing
+  000b: <eos>
+
+function Actor.IsOverlappingBox  (script 12 bytes)
+  0000: BoxCenter
+  0005: BoxExtent
+  000a: nothing
+  000b: <eos>
+
+function Actor.Spawn  (script 42 bytes)
+  0000: SpawnClass
+  0005: SpawnOwner
+  000a: SpawnTag
+  000f: SpawnLocation
+  0014: SpawnRotation
+  0019: ActorTemplate
+  001e: bNoCollisionFail
+  0023: Blueprint
+  0028: nothing
+  0029: <eos>
+
+function Actor.SpawnInstance  (script 32 bytes)
+  0000: Instance
+  0005: SpawnOwner
+  000a: SpawnTag
+  000f: SpawnLocation
+  0014: SpawnRotation
+  0019: bNoCollisionFail
+  001e: nothing
+  001f: <eos>
+
+function Actor.DestroyActor  (script 2 bytes, native 279)
+  0000: nothing
+  0001: <eos>
+
+function Actor.SetTimer  (script 22 bytes, native 280)
+  0000: InRate
+  0005: inbLoop
+  000a: inTimerFunc
+  000f: inObj
+  0014: nothing
+  0015: <eos>
+
+function Actor.ClearTimer  (script 12 bytes)
+  0000: inTimerFunc
+  0005: inObj
+  000a: nothing
+  000b: <eos>
+
+function Actor.ClearTimerOnAllObjects  (script 7 bytes)
+  0000: inTimerFunc
+  0005: nothing
+  0006: <eos>
+
+function Actor.IsTimerActive  (script 12 bytes)
+  0000: inTimerFunc
+  0005: inObj
+  000a: nothing
+  000b: <eos>
+
+function Actor.GetTimerCount  (script 12 bytes)
+  0000: inTimerFunc
+  0005: inObj
+  000a: nothing
+  000b: <eos>
+
+function Actor.GetTimerRate  (script 12 bytes)
+  0000: TimerFuncName
+  0005: inObj
+  000a: nothing
+  000b: <eos>
+
+function Actor.CreateAudioComponent  (script 32 bytes)
+  0000: InSoundCue
+  0005: bPlay
+  000a: bStopWhenOwnerDestroyed
+  000f: bUseLocation
+  0014: SourceLocation
+  0019: bAttachToSelf
+  001e: nothing
+  001f: <eos>
+
+function Actor.PlaySound  (script 32 bytes)
+  0000: InSoundCue
+  0005: bNotReplicated
+  000a: bNoRepToOwner
+  000f: bStopWhenOwnerDestroyed
+  0014: SoundLocation
+  0019: bNoRepToRelevant
+  001e: nothing
+  001f: <eos>
+
+function Actor.GetSoundLocation  (script 7 bytes)
+  0000: SocketName
+  0005: nothing
+  0006: <eos>
+
+function Actor.MakeNoise  (script 12 bytes)
+  0000: Loudness
+  0005: NoiseType
+  000a: nothing
+  000b: <eos>
+
+function Actor.PlayerCanSeeMe  (script 2 bytes, native 532)
+  0000: nothing
+  0001: <eos>
+
+function Actor.TriggerStimulus  (script 242 bytes)
+  0000: nothing
+  0001: if !(((StimulusInstigator != none) && !StimulusInstigator.ShouldTriggerStimulus())) goto 0x0028
+  0026: return nothing
+  0028: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  0041: if !((WI == none)) goto 0x004e
+  004c: return nothing
+  004e: foreach WI.AllControllers(obj'AIController', AiC) (end 0x00ee)
+  006e: if !((((AiC.Pawn == none) || ((AIController(self) != none) && (AiC == self))) || ((Pawn(self) != none) && (AiC == Pawn(self).Controller)))) goto 0x00ca
+  00c6: iternext
+  00c7: goto 0x00ee
+  00ca: AiC.ReactToStimulus(self, Stimulus, StimulusLocation, StimulusInstigator)
+  00ed: iternext
+  00ee: iterpop
+  00ef: return nothing
+  00f1: <eos>
+
+function Actor.SuggestTossVelocity  (script 42 bytes)
+  0000: TossVelocity
+  0005: Destination
+  000a: Start
+  000f: TossSpeed
+  0014: BaseTossZ
+  0019: DesiredZPct
+  001e: CollisionSize
+  0023: TerminalVelocity
+  0028: nothing
+  0029: <eos>
+
+function Actor.GetDestination  (script 7 bytes)
+  0000: C
+  0005: nothing
+  0006: <eos>
+
+function Actor.PreTeleport  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.PostTeleport  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GetURLMap  (script 2 bytes, native 547)
+  0000: nothing
+  0001: <eos>
+
+function Actor.AllActors  (script 12 bytes)
+  0000: BaseClass
+  0005: Actor
+  000a: nothing
+  000b: <eos>
+
+function Actor.DynamicActors  (script 12 bytes)
+  0000: BaseClass
+  0005: Actor
+  000a: nothing
+  000b: <eos>
+
+function Actor.ChildActors  (script 12 bytes, native 305)
+  0000: BaseClass
+  0005: Actor
+  000a: nothing
+  000b: <eos>
+
+function Actor.BasedActors  (script 12 bytes, native 306)
+  0000: BaseClass
+  0005: Actor
+  000a: nothing
+  000b: <eos>
+
+function Actor.TouchingActors  (script 12 bytes)
+  0000: BaseClass
+  0005: Actor
+  000a: nothing
+  000b: <eos>
+
+function Actor.TraceActors  (script 47 bytes, native 309)
+  0000: BaseClass
+  0005: Actor
+  000a: HitLoc
+  000f: HitNorm
+  0014: End
+  0019: Start
+  001e: Extent
+  0023: HitInfo
+  0028: ExtraTraceFlags
+  002d: nothing
+  002e: <eos>
+
+function Actor.VisibleActors  (script 22 bytes, native 311)
+  0000: BaseClass
+  0005: Actor
+  000a: Radius
+  000f: Loc
+  0014: nothing
+  0015: <eos>
+
+function Actor.VisibleCollidingActors  (script 27 bytes, native 312)
+  0000: BaseClass
+  0005: Actor
+  000a: Radius
+  000f: Loc
+  0014: bIgnoreHidden
+  0019: nothing
+  001a: <eos>
+
+function Actor.CollidingActors  (script 27 bytes)
+  0000: BaseClass
+  0005: Actor
+  000a: Radius
+  000f: Loc
+  0014: bUseOverlapCheck
+  0019: nothing
+  001a: <eos>
+
+function Actor.OverlappingActors  (script 27 bytes)
+  0000: BaseClass
+  0005: out_Actor
+  000a: Radius
+  000f: Loc
+  0014: bIgnoreHidden
+  0019: nothing
+  001a: <eos>
+
+function Actor.ComponentList  (script 12 bytes)
+  0000: BaseClass
+  0005: out_Component
+  000a: nothing
+  000b: <eos>
+
+function Actor.AllOwnedComponents  (script 12 bytes)
+  0000: BaseClass
+  0005: OutComponent
+  000a: nothing
+  000b: <eos>
+
+function Actor.LocalPlayerControllers  (script 12 bytes)
+  0000: BaseClass
+  0005: PC
+  000a: nothing
+  000b: <eos>
+
+function Actor.FindActorsOfClass  (script 68 bytes)
+  0000: out_Actors.Length = 0
+  0008: foreach AllActors(ActorClass, TestActor) (end 0x0032)
+  001f: out_Actors.Length[out_Actors] = TestActor
+  0031: iternext
+  0032: iterpop
+  0033: return (out_Actors.Length > 0)
+  003d: return return
+  0043: <eos>
+
+function Actor.PreBeginPlay  (script 115 bytes)
+  0000: if !((((!self.bGameRelevant && !self.bStatic) && (cast3a(self.WorldInfo.NetMode) != cast3a(3))) && !self.WorldInfo.Game.CheckRelevance(self))) goto 0x0070
+  0057: if !(self.bNoDelete) goto 0x006d
+  0060: Shutdown()
+  006a: goto 0x0070
+  006d: DestroyActor()
+  0070: return nothing
+  0072: <eos>
+
+function Actor.BroadcastLocalizedMessage  (script 61 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: self.WorldInfo.Game.BroadcastLocalized(self, InMessageClass, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  003a: return nothing
+  003c: <eos>
+
+function Actor.BroadcastLocalizedTeamMessage  (script 66 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: self.WorldInfo.Game.BroadcastLocalizedTeam(TeamIndex, self, InMessageClass, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  003f: return nothing
+  0041: <eos>
+
+function Actor.PostBeginPlay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetInitialState  (script 57 bytes)
+  0000: self.bScriptInitialized = true
+  0008: if !((self.InitialState != 'None')) goto 0x0028
+  001b: GotoState(self.InitialState, , , )
+  0025: goto 0x0036
+  0028: GotoState('Auto', , , )
+  0036: return nothing
+  0038: <eos>
+
+function Actor.OnStreamedOut  (script 11 bytes)
+  0000: self.bScriptInitialized = false
+  0008: return nothing
+  000a: <eos>
+
+function Actor.ConstraintBrokenNotify  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.NotifySkelControlBeyondLimit  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.StopsProjectile  (script 25 bytes)
+  0000: return (self.bProjTarget || self.bBlockActors)
+  0012: return return
+  0018: <eos>
+
+function Actor.HurtRadius  (script 442 bytes)
+  0000: nothing
+  0001: default=((self.Instigator != none) ? self.Instigator.Controller : none)
+  0021: nothing
+  0022: if !(self.bHurtEntry) goto 0x002d
+  002b: return false
+  002d: self.bHurtEntry = true
+  0035: bCausedDamage = false
+  003d: foreach CollidingActors(obj'Actor', Victim, DamageRadius, HurtOrigin, ) (end 0x018a)
+  005f: if !((((!Victim.CanAcceptRadiusDamage() || (Victim == self)) || (Victim == IgnoredActor)) || (!Victim.bProjTarget && (NavigationPoint(Victim) != none)))) goto 0x00c1
+  00bd: iternext
+  00be: goto 0x018a
+  00c1: if !(!Victim.IsRadiusDamageWithinHeightLimit(self, HurtOrigin, DamageRadius, DamageHeightLimit)) goto 0x00ed
+  00e9: iternext
+  00ea: goto 0x018a
+  00ed: HitActor = Trace(HitLocation, HitNormal, Victim, Victim.Location, HurtOrigin, true, , , , (1 | 32))
+  0121: if !((HitActor != none)) goto 0x0130
+  012c: iternext
+  012d: goto 0x018a
+  0130: Victim.TakeRadiusDamage(InstigatedByController, BaseDamage, DamageRadius, DamageType, Momentum, HurtOrigin, bDoFullDamage, self)
+  0168: bCausedDamage = (bCausedDamage || Victim.bProjTarget)
+  0189: iternext
+  018a: iterpop
+  018b: self.bHurtEntry = false
+  0193: TriggerStimulus(obj'StimulusType_RadialDamage', HurtOrigin, InstigatedByController)
+  01ac: return bCausedDamage
+  01b3: return return
+  01b9: <eos>
+
+function Actor.IsRadiusDamageWithinHeightLimit  (script 136 bytes)
+  0000: if !(((DamageHeightLimit <= 0.0) || (DamageHeightLimit > DamageRadius))) goto 0x0022
+  0020: return true
+  0022: obj'Core.Math'.static.GetAxes(HurtInstigatorActor.Rotation, AxisX, AxisY, AxisZ)
+  004a: HurtToVictimVector = (self.Location - HurtLocation)
+  005c: HurtVerticalDistance = (AxisZ dot HurtToVictimVector)
+  006e: if !((HurtVerticalDistance < DamageHeightLimit)) goto 0x007f
+  007d: return true
+  007f: return false
+  0081: return return
+  0087: <eos>
+
+function Actor.CanAcceptRadiusDamage  (script 16 bytes)
+  0000: return !self.bWorldGeometry
+  0009: return return
+  000f: <eos>
+
+function Actor.KilledBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.TakeDamage  (script 106 bytes)
+  0000: nothing
+  0001: nothing
+  0002: idx = 0
+  0009: if !((idx < self.GeneratedEvents.Length)) goto 0x0067
+  0019: dmgEvent = SeqEvent_TakeDamage(idx[self.GeneratedEvents])
+  002f: if !((dmgEvent != none)) goto 0x005d
+  003a: dmgEvent.HandleDamage(self, EventInstigator, DamageType, DamageAmount)
+  005d: AddAdd_Int(idx)
+  0064: goto 0x0009
+  0067: return nothing
+  0069: <eos>
+
+function Actor.HealDamage  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.TakeRadiusDamage  (script 308 bytes)
+  0000: Direction = (self.Location - HurtOrigin)
+  0012: Distance = obj'Core.Math'.static.VSize(Direction)
+  0028: Direction = obj'Core.Math'.static.Normal(Direction)
+  003e: if !(bFullDamage) goto 0x0055
+  0047: DamageScale = 1.0
+  0052: goto 0x006f
+  0055: DamageScale = GetRadiusDamageScale(Distance, DamageRadius)
+  006f: if !((DamageScale > 0.0)) goto 0x0131
+  007e: if !(self.ShouldCalculateTakeRadiusDamageHitInfo) goto 0x00b4
+  0087: DamageCauser.Trace(HitLocation, HitNormal, none, self.Location, HurtOrigin, true, , true, THI, 1)
+  00b1: goto 0x00ef
+  00b4: GetBoundingCylinder(CylinderRadius, CylinderHeight)
+  00c8: HitLocation = (self.Location - ((0.5 * (CylinderRadius + CylinderHeight)) * Direction))
+  00ef: TakeDamage((DamageScale * BaseDamage), InstigatedBy, HitLocation, ((DamageScale * Momentum) * Direction), DamageType, THI, DamageCauser)
+  0131: return nothing
+  0133: <eos>
+
+function Actor.GetRadiusDamageScale  (script 97 bytes)
+  0000: GetBoundingCylinder(CylinderRadius, CylinderHeight)
+  0014: DistanceToHurtOrigin = obj'Core.Math'.static.FClamp((DistanceToHurtOrigin - CylinderRadius), 0.0, DamageRadius)
+  003b: return obj'Core.Math'.static.Square((1.0 - (DistanceToHurtOrigin / DamageRadius)))
+  005a: return return
+  0060: <eos>
+
+function Actor.CheckHitInfo  (script 602 bytes)
+  0000: if !(((SkeletalMeshComponent(HitInfo.HitComponent) != none) && (HitInfo.BoneName != 'None'))) goto 0x003d
+  003b: return nothing
+  003d: LogInternal("Performance Warning - CheckHitInfo will re-trace the hit, check to see if HitInfo passed to TakeDamage", , , )
+  00aa: if !(((HitInfo.HitComponent == none) || ((SkeletalMeshComponent(HitInfo.HitComponent) == none) && (SkeletalMeshComponent(FallBackComponent) != none)))) goto 0x0105
+  00ef: HitInfo.HitComponent = FallBackComponent
+  0105: if !(((SkeletalMeshComponent(HitInfo.HitComponent) != none) && (HitInfo.BoneName == 'None'))) goto 0x0257
+  0140: if !(obj'Core.Math'.static.IsZero(Dir)) goto 0x0161
+  0154: Dir = cast39(self.Rotation)
+  0161: if !(obj'Core.Math'.static.IsZero(out_HitLocation)) goto 0x0180
+  0175: out_HitLocation = self.Location
+  0180: TraceStart = (out_HitLocation - (cast3f(128) * obj'Core.Math'.static.Normal(Dir)))
+  01a3: TraceEnd = (out_HitLocation + (cast3f(128) * obj'Core.Math'.static.Normal(Dir)))
+  01c6: if !(TraceComponent(out_NewHitLocation, out_HitNormal, HitInfo.HitComponent, TraceEnd, TraceStart, vect(0,0,0), true, newHitInfo)) goto 0x0257
+  020a: HitInfo.BoneName = newHitInfo.BoneName
+  022b: HitInfo.PhysMaterial = newHitInfo.PhysMaterial
+  024c: out_HitLocation = out_NewHitLocation
+  0257: return nothing
+  0259: <eos>
+
+function Actor.GWorldGetGravityZ  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.GetGravityZ  (script 142 bytes)
+  0000: if !((cast3a(self.Physics) == cast3a(10))) goto 0x005d
+  0010: if !((self.PhysicsVolume != none)) goto 0x003f
+  001b: return (self.WorldInfo.RBPhysicsGravityScaling * self.PhysicsVolume.GetVolumeRBGravityZ())
+  003f: return (self.WorldInfo.RBPhysicsGravityScaling * GWorldGetGravityZ())
+  005a: goto 0x0087
+  005d: if !((self.PhysicsVolume != none)) goto 0x007c
+  0068: return self.PhysicsVolume.GetGravityZ()
+  007c: return GWorldGetGravityZ()
+  0087: return return
+  008d: <eos>
+
+function Actor.DebugFreezeGame  (script 88 bytes)
+  0000: obj'Core.Profiling'.static.PrintScriptBacktrace()
+  0013: foreach LocalPlayerControllers(obj'PlayerController', PC) (end 0x0054)
+  002a: PC.ConsoleCommand("PlayersOnly", )
+  0050: iterpop
+  0051: return nothing
+  0053: iternext
+  0054: iterpop
+  0055: return nothing
+  0057: <eos>
+
+function Actor.BecomeViewTarget  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.EndViewTarget  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.CalcCamera  (script 149 bytes)
+  0000: GetBoundingCylinder(Radius, Height)
+  0014: if !((Trace(out_CamLoc, HitNormal, none, (self.Location - ((cast39(out_CamRot) * Radius) * cast3f(20))), self.Location, false, , , , ) == none)) goto 0x0071
+  004d: out_CamLoc = (self.Location - ((cast39(out_CamRot) * Radius) * cast3f(20)))
+  006e: goto 0x008c
+  0071: out_CamLoc = (self.Location + (Height * cast39(self.Rotation)))
+  008c: return false
+  008e: return return
+  0094: <eos>
+
+function Actor.GetItemName  (script 131 bytes)
+  0000: Pos = obj'Core.Strings'.static.InStr(FullName, ".", )
+  001a: if !((Pos != -1)) goto 0x0076
+  0029: FullName = obj'Core.Strings'.static.Right(FullName, ((obj'Core.Strings'.static.Len(FullName) - Pos) - 1))
+  0059: Pos = obj'Core.Strings'.static.InStr(FullName, ".", )
+  0073: goto 0x001a
+  0076: return FullName
+  007c: return return
+  0082: <eos>
+
+function Actor.GetHumanReadableName  (script 23 bytes)
+  0000: return GetItemName(cast56(get_Class()))
+  0010: return return
+  0016: <eos>
+
+function Actor.ReplaceText  (script 201 bytes)
+  0000: Input = Text
+  000b: Text = ""
+  0013: I = obj'Core.Strings'.static.InStr(Input, Replace, )
+  002f: if !((I != -1)) goto 0x00b4
+  003e: Text = ((Text $ obj'Core.Strings'.static.Left(Input, I)) $ With)
+  0067: Input = obj'Core.Strings'.static.Mid(Input, (I + obj'Core.Strings'.static.Len(Replace)), )
+  0095: I = obj'Core.Strings'.static.InStr(Input, Replace, )
+  00b1: goto 0x002f
+  00b4: Text = (Text $ Input)
+  00c6: return nothing
+  00c8: <eos>
+
+function Actor.GetLocalString  (script 13 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: return ""
+  0006: return return
+  000c: <eos>
+
+function Actor.MatchStarting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetGRI  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GetDebugName  (script 21 bytes)
+  0000: return GetItemName(cast56(self))
+  000e: return return
+  0014: <eos>
+
+function Actor.DisplayDebug  (script 2302 bytes)
+  0000: Canvas = HUD.Canvas
+  0014: Canvas.SetPos(4.0, out_YPos)
+  0031: Canvas.SetDrawColor(cast3d(255), 0, 0, cast3d(255))
+  0050: T = GetDebugName()
+  0060: if !(self.bDeleteMe) goto 0x0094
+  0069: T = (T $ " DELETED (bDeleteMe == true)")
+  0094: if !((T != "")) goto 0x00e4
+  00a0: Canvas.DrawTextNormal(T, false, , )
+  00bb: (out_YPos += out_YL)
+  00c7: Canvas.SetPos(4.0, out_YPos)
+  00e4: Canvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), cast3d(255))
+  0107: if !(HUD.ShouldDisplayDebug('net')) goto 0x01ef
+  0126: if !((cast3a(self.WorldInfo.NetMode) != cast3a(0))) goto 0x01ef
+  013f: T = ((((("ROLE:" @ cast52(self.Role)) @ "RemoteRole:") @ cast52(self.RemoteRole)) @ "NetMode:") @ cast52(self.WorldInfo.NetMode))
+  018b: if !(self.bTearOff) goto 0x01ab
+  0194: T = (T @ "Tear Off")
+  01ab: Canvas.DrawTextNormal(T, false, , )
+  01c6: (out_YPos += out_YL)
+  01d2: Canvas.SetPos(4.0, out_YPos)
+  01ef: Canvas.DrawTextNormal(((("Location:" @ cast58(self.Location)) @ "Rotation:") @ cast59(self.Rotation)), false, , )
+  022f: (out_YPos += out_YL)
+  023b: Canvas.SetPos(4.0, out_YPos)
+  0258: if !(HUD.ShouldDisplayDebug('Physics')) goto 0x05ac
+  0277: T = ((((((("Physics" @ GetPhysicsName()) @ "in physicsvolume") @ GetItemName(cast56(self.PhysicsVolume))) @ "on base") @ GetItemName(cast56(self.Base))) @ "gravity") @ cast55(GetGravityZ()))
+  02f0: if !(self.bBounce) goto 0x0316
+  02f9: T = (T $ " - will bounce")
+  0316: Canvas.DrawTextNormal(T, false, , )
+  0331: (out_YPos += out_YL)
+  033d: Canvas.SetPos(4.0, out_YPos)
+  035a: Canvas.DrawTextNormal(((((((((("bHardAttach:" @ cast54(self.bHardAttach)) @ "RelativeLoc:") @ cast58(self.RelativeLocation)) @ "RelativeRot:") @ cast59(self.RelativeRotation)) @ "SkelComp:") @ cast56(self.BaseSkelComponent)) @ "Bone:") @ cast57(self.BaseBoneName)), false, , )
+  03e2: (out_YPos += out_YL)
+  03ee: Canvas.SetPos(4.0, out_YPos)
+  040b: Canvas.DrawTextNormal(((((((((("bHardAttach:" @ cast54(self.bHardAttach)) @ "RelativeLoc:") @ cast58(self.RelativeLocation)) @ "RelativeRot:") @ cast59(self.RelativeRotation)) @ "SkelComp:") @ cast56(self.BaseSkelComponent)) @ "Bone:") @ cast57(self.BaseBoneName)), false, , )
+  0493: (out_YPos += out_YL)
+  049f: Canvas.SetPos(4.0, out_YPos)
+  04bc: Canvas.DrawTextNormal(((((("Velocity:" @ cast58(self.Velocity)) @ "Speed:") @ cast55(obj'Core.Math'.static.VSize(self.Velocity))) @ "Speed2D:") @ cast55(obj'Core.Math'.static.VSize2D(self.Velocity))), false, , )
+  052c: (out_YPos += out_YL)
+  0538: Canvas.SetPos(4.0, out_YPos)
+  0555: Canvas.DrawTextNormal(("Acceleration:" @ cast58(self.Acceleration)), false, , )
+  0583: (out_YPos += out_YL)
+  058f: Canvas.SetPos(4.0, out_YPos)
+  05ac: if !(HUD.ShouldDisplayDebug('Collision')) goto 0x0811
+  05cb: Canvas.DrawColor.B = 0
+  05e7: GetBoundingCylinder(MyRadius, MyHeight)
+  05fb: Canvas.DrawTextNormal(((("Collision Radius:" @ cast55(MyRadius)) @ "Height:") @ cast55(MyHeight)), , , )
+  0641: (out_YPos += out_YL)
+  064d: Canvas.SetPos(4.0, out_YPos)
+  066a: Canvas.DrawTextNormal(((((("Collides with Actors:" @ cast54(self.bCollideActors)) @ " world:") @ cast54(self.bCollideWorld)) @ "proj. target:") @ cast54(self.bProjTarget)), , , )
+  06d1: (out_YPos += out_YL)
+  06dd: Canvas.SetPos(4.0, out_YPos)
+  06fa: Canvas.DrawTextNormal(("Blocks Actors:" @ cast54(self.bBlockActors)), , , )
+  072a: (out_YPos += out_YL)
+  0736: Canvas.SetPos(4.0, out_YPos)
+  0753: T = "Touching "
+  0764: foreach TouchingActors(obj'Actor', A) (end 0x079f)
+  077b: T = ((T $ GetItemName(cast56(A))) $ " ")
+  079e: iternext
+  079f: iterpop
+  07a0: if !((T == "Touching ")) goto 0x07cd
+  07b5: T = "Touching nothing"
+  07cd: Canvas.DrawTextNormal(T, false, , )
+  07e8: (out_YPos += out_YL)
+  07f4: Canvas.SetPos(4.0, out_YPos)
+  0811: Canvas.DrawColor.B = cast3d(255)
+  082f: Canvas.DrawTextNormal((" STATE:" @ cast57(GetStateName())), false, , )
+  0855: (out_YPos += out_YL)
+  0861: Canvas.SetPos(4.0, out_YPos)
+  087e: Canvas.DrawTextNormal((((" Instigator:" @ GetItemName(cast56(self.Instigator))) @ "Owner:") @ GetItemName(cast56(self.Owner))), , , )
+  08d2: (out_YPos += out_YL)
+  08de: Canvas.SetPos(4.0, out_YPos)
+  08fb: return nothing
+  08fd: <eos>
+
+function Actor.GetPhysicsName  (script 213 bytes)
+  0000: switch (self.Physics)
+  0007: case 0: (next 0x0013)
+  000c: return "None"
+  0013: case 1: (next 0x0022)
+  0018: return "Walking"
+  0022: case 2: (next 0x0031)
+  0027: return "Falling"
+  0031: case 3: (next 0x0041)
+  0036: return "Swimming"
+  0041: case 4: (next 0x004f)
+  0046: return "Flying"
+  004f: case 5: (next 0x005f)
+  0054: return "Rotating"
+  005f: case 6: (next 0x0071)
+  0064: return "Projectile"
+  0071: case 7: (next 0x0086)
+  0076: return "Interpolating"
+  0086: case 8: (next 0x0094)
+  008b: return "Spider"
+  0094: case 9: (next 0x00a2)
+  0099: return "Ladder"
+  00a2: case 10: (next 0x00b3)
+  00a7: return "RigidBody"
+  00b3: case 12: (next 0x00c1)
+  00b8: return "Unused"
+  00c1: default:
+  00c4: return "Unknown"
+  00ce: return return
+  00d4: <eos>
+
+function Actor.ModifyHearSoundComponent  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GetFaceFXAudioComponent  (script 9 bytes)
+  0000: return none
+  0002: return return
+  0008: <eos>
+
+function Actor.Reset  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreCleanupWorld  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.IsInVolume  (script 52 bytes)
+  0000: foreach TouchingActors(obj'Volume', V) (end 0x002a)
+  0017: if !((V == aVolume)) goto 0x0029
+  0026: iterpop
+  0027: return true
+  0029: iternext
+  002a: iterpop
+  002b: return false
+  002d: return return
+  0033: <eos>
+
+function Actor.IsInPain  (script 79 bytes)
+  0000: foreach TouchingActors(obj'PhysicsVolume', V) (end 0x0045)
+  0017: if !((V.bPainCausing && (V.DamagePerSec > cast3f(0)))) goto 0x0044
+  0041: iterpop
+  0042: return true
+  0044: iternext
+  0045: iterpop
+  0046: return false
+  0048: return return
+  004e: <eos>
+
+function Actor.PlayTeleportEffect  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.CanSplash  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Actor.CheckMaxEffectDistance  (script 284 bytes)
+  0000: nothing
+  0001: if !((P.ViewTarget == none)) goto 0x0017
+  0015: return true
+  0017: if !(((cast39(P.Rotation) dot (SpawnLocation - P.ViewTarget.Location)) < 0.0)) goto 0x0084
+  0051: return (obj'Core.Math'.static.VSize((P.ViewTarget.Location - SpawnLocation)) < cast3f(1600))
+  0084: Dist = obj'Core.Math'.static.VSize((SpawnLocation - P.ViewTarget.Location))
+  00b3: if !(((CullDistance > cast3f(0)) && (CullDistance < (Dist * P.LODDistanceFactor)))) goto 0x00e3
+  00e1: return false
+  00e3: return !P.BeyondFogDistance(P.ViewTarget.Location, SpawnLocation)
+  0115: return return
+  011b: <eos>
+
+function Actor.EffectIsRelevant  (script 469 bytes)
+  0000: nothing
+  0001: if !((cast3a(self.WorldInfo.NetMode) == cast3a(1))) goto 0x0021
+  001a: return bForceDedicated
+  0021: if !(((cast3a(self.WorldInfo.NetMode) == cast3a(2)) && (self.WorldInfo.Game.NumPlayers > 1))) goto 0x00a4
+  0059: if !(bForceDedicated) goto 0x0064
+  0062: return true
+  0064: if !((((self.Instigator != none) && self.Instigator.IsHumanControlled()) && self.Instigator.IsLocallyControlled())) goto 0x00a1
+  009f: return true
+  00a1: goto 0x00c9
+  00a4: if !(((self.Instigator != none) && self.Instigator.IsHumanControlled())) goto 0x00c9
+  00c7: return true
+  00c9: if !((SpawnLocation == self.Location)) goto 0x00fe
+  00d8: bResult = ((self.WorldInfo.TimeSeconds - self.LastRenderTime) < 0.5)
+  00fb: goto 0x013b
+  00fe: if !(((self.Instigator != none) && ((self.WorldInfo.TimeSeconds - self.Instigator.LastRenderTime) < 1.0))) goto 0x013b
+  0133: bResult = true
+  013b: if !(bResult) goto 0x01c7
+  0144: bResult = false
+  014c: foreach LocalPlayerControllers(obj'PlayerController', P) (end 0x01c6)
+  0163: if !((P.ViewTarget != none)) goto 0x01c5
+  0177: if !(((P.Pawn == self.Instigator) && (self.Instigator != none))) goto 0x01a2
+  019c: iterpop
+  019d: return true
+  019f: goto 0x01c5
+  01a2: bResult = CheckMaxEffectDistance(P, SpawnLocation, CullDistance)
+  01c2: goto 0x01c6
+  01c5: iternext
+  01c6: iterpop
+  01c7: return bResult
+  01ce: return return
+  01d4: <eos>
+
+function Actor.TimeSince  (script 29 bytes)
+  0000: return (self.WorldInfo.TimeSeconds - Time)
+  0016: return return
+  001c: <eos>
+
+function Actor.TriggerEventClass  (script 87 bytes)
+  0000: default=-1
+  0009: nothing
+  000a: if !((ActivateIndex >= 0)) goto 0x0022
+  0015: 0[ActivateIndices] = ActivateIndex
+  0022: self.GeneratedEvents.RemoveItem(none)
+  002b: return ActivateEventClass(InEventClass, InInstigator, self.GeneratedEvents, ActivateIndices, bTest)
+  0050: return return
+  0056: <eos>
+
+function Actor.ActivateEventClass  (script 155 bytes)
+  0000: nothing
+  0001: nothing
+  0002: idx = 0
+  0009: if !((idx < EventList.Length)) goto 0x008b
+  0019: if !((idx[EventList] == none)) goto 0x002d
+  002a: goto 0x0081
+  002d: if !((ClassIsChildOf(idx[EventList].get_Class(), InClass) && idx[EventList].CheckActivate(self, InInstigator, bTest, ActivateIndices, ))) goto 0x0081
+  007a: AddAdd_Int(ActivateCnt)
+  0081: AddAdd_Int(idx)
+  0088: goto 0x0009
+  008b: return (ActivateCnt > 0)
+  0094: return return
+  009a: <eos>
+
+function Actor.FindEventsOfClass  (script 230 bytes)
+  0000: nothing
+  0001: idx = 0
+  0008: if !((idx < self.GeneratedEvents.Length)) goto 0x00d8
+  0018: if !((idx[self.GeneratedEvents] == none)) goto 0x002c
+  0029: goto 0x00ce
+  002c: if !(((ClassIsChildOf(idx[self.GeneratedEvents].get_Class(), EventClass) && idx[self.GeneratedEvents].bEnabled) && ((idx[self.GeneratedEvents].MaxTriggerCount == 0) || (idx[self.GeneratedEvents].MaxTriggerCount > idx[self.GeneratedEvents].TriggerCount)))) goto 0x00ce
+  00ae: out_EventList.Length[out_EventList] = idx[self.GeneratedEvents]
+  00c6: bFoundEvent = true
+  00ce: AddAdd_Int(idx)
+  00d5: goto 0x0008
+  00d8: return bFoundEvent
+  00df: return return
+  00e5: <eos>
+
+function Actor.ClearLatentAction  (script 173 bytes)
+  0000: nothing
+  0001: nothing
+  0002: idx = 0
+  0009: if !((idx < self.LatentActions.Length)) goto 0x00aa
+  0019: if !((idx[self.LatentActions] == none)) goto 0x003b
+  002a: self.LatentActions.Remove(SubtractSubtract_Int(idx),1)
+  0038: goto 0x00a0
+  003b: if !((ClassIsChildOf(idx[self.LatentActions].get_Class(), actionClass) && (idx[self.LatentActions] != exceptionAction))) goto 0x00a0
+  006f: if !(bAborted) goto 0x0092
+  0078: idx[self.LatentActions].AbortFor(self)
+  0092: self.LatentActions.Remove(SubtractSubtract_Int(idx),1)
+  00a0: AddAdd_Int(idx)
+  00a7: goto 0x0009
+  00aa: return nothing
+  00ac: <eos>
+
+function Actor.OnDestroy  (script 57 bytes)
+  0000: if !((self.bNoDelete || (cast3a(self.Role) < cast3a(3)))) goto 0x0028
+  001b: Shutdown()
+  0025: goto 0x0036
+  0028: if !(!self.bDeleteMe) goto 0x0036
+  0033: DestroyActor()
+  0036: return nothing
+  0038: <eos>
+
+function Actor.ForceNetRelevant  (script 78 bytes)
+  0000: if !((((cast3a(self.RemoteRole) == cast3a(0)) && self.bNoDelete) && !self.bStatic)) goto 0x0043
+  0028: self.RemoteRole = 1
+  0030: self.bAlwaysRelevant = true
+  0038: self.NetUpdateFrequency = 0.1
+  0043: self.bForceNetUpdate = true
+  004b: return nothing
+  004d: <eos>
+
+function Actor.SetNetUpdateTime  (script 7 bytes)
+  0000: NewUpdateTime
+  0005: nothing
+  0006: <eos>
+
+function Actor.Shutdown  (script 240 bytes)
+  0000: SetPhysics(0, self.Base, )
+  0012: SetCollision(false, false, )
+  0018: if !((self.CollisionComponent != none)) goto 0x0037
+  0023: self.CollisionComponent.SetBlockRigidBody(false)
+  0037: SetHidden(true)
+  0042: self.bStasis = true
+  004a: ForceNetRelevant()
+  0054: if !((cast3a(self.RemoteRole) != cast3a(0))) goto 0x00da
+  0064: SetForcedInitialReplicatedProperty(obj'Actor.bCollideActors', (self.bCollideActors == default.bCollideActors))
+  0081: SetForcedInitialReplicatedProperty(obj'Actor.bBlockActors', (self.bBlockActors == default.bBlockActors))
+  009e: SetForcedInitialReplicatedProperty(obj'Actor.bHidden', (self.bHidden == default.bHidden))
+  00bb: SetForcedInitialReplicatedProperty(obj'Actor.Physics', (cast3a(self.Physics) == cast3a(default.Physics)))
+  00da: self.NetUpdateFrequency = 0.1
+  00e5: self.bForceNetUpdate = true
+  00ed: return nothing
+  00ef: <eos>
+
+function Actor.OnCauseDamage  (script 170 bytes)
+  0000: InstigatorController = Controller(Action.Instigator)
+  0019: if !((InstigatorController == none)) goto 0x005c
+  0024: InstigatorPawn = Pawn(Action.Instigator)
+  003d: if !((InstigatorPawn != none)) goto 0x005c
+  0048: InstigatorController = InstigatorPawn.Controller
+  005c: TakeDamage(Action.DamageAmount, InstigatorController, self.Location, (cast39(self.Rotation) * -Action.Momentum), Action.DamageType, , )
+  00a7: return nothing
+  00a9: <eos>
+
+function Actor.OnHealDamage  (script 138 bytes)
+  0000: InstigatorController = Controller(Action.Instigator)
+  0019: if !((InstigatorController == none)) goto 0x005c
+  0024: InstigatorPawn = Pawn(Action.Instigator)
+  003d: if !((InstigatorPawn != none)) goto 0x005c
+  0048: InstigatorController = InstigatorPawn.Controller
+  005c: HealDamage(Action.HealAmount, InstigatorController, Action.DamageType)
+  0087: return nothing
+  0089: <eos>
+
+function Actor.OnTeleport  (script 330 bytes)
+  0000: Action.GetObjectVars(objVars, "Destination")
+  0025: idx = 0
+  002c: if !(((idx < objVars.Length) && (destActor == none))) goto 0x00c0
+  0049: destActor = Actor(idx[objVars])
+  005f: C = Controller(destActor)
+  006f: if !(((C != none) && (C.Pawn != none))) goto 0x00a4
+  0090: destActor = C.Pawn
+  00a4: ForceNetRelevant()
+  00ae: self.bUpdateSimulatedPosition = true
+  00b6: AddAdd_Int(idx)
+  00bd: goto 0x002c
+  00c0: if !(((destActor != none) && SetLocation(destActor.Location))) goto 0x0125
+  00e1: PlayTeleportEffect(false, true)
+  00ed: if !(Action.bUpdateRotation) goto 0x0110
+  00ff: SetRotation(destActor.Rotation)
+  0110: ForceNetRelevant()
+  011a: self.bUpdateSimulatedPosition = true
+  0122: goto 0x0147
+  0125: WarnInternal(("Unable to teleport to" @ cast56(destActor)))
+  0147: return nothing
+  0149: <eos>
+
+function Actor.OnSetBlockRigidBody  (script 119 bytes)
+  0000: if !((self.CollisionComponent != none)) goto 0x0074
+  000b: if !(0[Action.InputLinks].bHasImpulse) goto 0x0041
+  002a: self.CollisionComponent.SetBlockRigidBody(true)
+  003e: goto 0x0074
+  0041: if !(1[Action.InputLinks].bHasImpulse) goto 0x0074
+  0060: self.CollisionComponent.SetBlockRigidBody(false)
+  0074: return nothing
+  0076: <eos>
+
+function Actor.OnSetPhysics  (script 86 bytes)
+  0000: ForceNetRelevant()
+  000a: SetPhysics(Action.NewPhysics, , )
+  0024: if !((cast3a(self.RemoteRole) != cast3a(0))) goto 0x0053
+  0034: SetForcedInitialReplicatedProperty(obj'Actor.Physics', (cast3a(self.Physics) == cast3a(default.Physics)))
+  0053: return nothing
+  0055: <eos>
+
+function Actor.OnChangeCollision  (script 156 bytes)
+  0000: SetCollisionPreset(Action.CollisionPreset)
+  0018: if !((self.CollisionComponent != none)) goto 0x0045
+  0023: self.CollisionComponent.SetBlockRigidBody(self.CollisionComponent.BlockRigidBody)
+  0045: ForceNetRelevant()
+  004f: if !((cast3a(self.RemoteRole) != cast3a(0))) goto 0x0099
+  005f: SetForcedInitialReplicatedProperty(obj'Actor.bCollideActors', (self.bCollideActors == default.bCollideActors))
+  007c: SetForcedInitialReplicatedProperty(obj'Actor.bBlockActors', (self.bBlockActors == default.bBlockActors))
+  0099: return nothing
+  009b: <eos>
+
+function Actor.OnToggleHidden  (script 166 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x002d
+  001f: SetHidden(true)
+  002a: goto 0x006c
+  002d: if !(1[Action.InputLinks].bHasImpulse) goto 0x005a
+  004c: SetHidden(false)
+  0057: goto 0x006c
+  005a: SetHidden(!self.bHidden)
+  006c: ForceNetRelevant()
+  0076: if !((cast3a(self.RemoteRole) != cast3a(0))) goto 0x00a3
+  0086: SetForcedInitialReplicatedProperty(obj'Actor.bHidden', (self.bHidden == default.bHidden))
+  00a3: return nothing
+  00a5: <eos>
+
+function Actor.OnAttachToActor  (script 324 bytes)
+  0000: Action.GetObjectVars(objVars, "Attachment")
+  0024: idx = 0
+  002b: if !((idx < objVars.Length)) goto 0x0141
+  003b: Attachment = Actor(idx[objVars])
+  0051: C = Controller(Attachment)
+  0061: if !(((C != none) && (C.Pawn != none))) goto 0x0096
+  0082: Attachment = C.Pawn
+  0096: if !((Attachment != none)) goto 0x0137
+  00a1: if !(Action.bDetach) goto 0x00cd
+  00b3: Attachment.SetBase(none, , , )
+  00ca: goto 0x0137
+  00cd: C = Controller(self)
+  00d9: if !(((C != none) && (C.Pawn != none))) goto 0x0123
+  00fa: C.Pawn.DoKismetAttachment(Attachment, Action)
+  0120: goto 0x0137
+  0123: DoKismetAttachment(Attachment, Action)
+  0137: AddAdd_Int(idx)
+  013e: goto 0x002b
+  0141: return nothing
+  0143: <eos>
+
+function Actor.DoKismetAttachment  (script 425 bytes)
+  0000: Attachment.SetBase(none, , , )
+  0017: Attachment.SetHardAttach(Action.bHardAttach)
+  0039: if !((Action.bUseRelativeOffset || Action.bUseRelativeRotation)) goto 0x018f
+  005f: bOldCollideActors = Attachment.bCollideActors
+  0075: bOldBlockActors = Attachment.bBlockActors
+  008b: Attachment.SetCollision(false, false, )
+  009a: if !(Action.bUseRelativeRotation) goto 0x00ce
+  00ac: Attachment.SetRotation((self.Rotation + Action.RelativeRotation))
+  00ce: if !(Action.bUseRelativeOffset) goto 0x0176
+  00e0: obj'Core.Math'.static.GetAxes(self.Rotation, X, Y, Z)
+  00ff: Attachment.SetLocation((((self.Location + (Action.RelativeOffset.X * X)) + (Action.RelativeOffset.Y * Y)) + (Action.RelativeOffset.Z * Z)))
+  0176: Attachment.SetCollision(bOldCollideActors, bOldBlockActors, )
+  018f: Attachment.SetBase(self, , , )
+  01a6: return nothing
+  01a8: <eos>
+
+function Actor.OnMakeNoise  (script 36 bytes)
+  0000: MakeNoise(Action.Loudness, 'ScriptNoise')
+  0021: return nothing
+  0023: <eos>
+
+function Actor.OnAnimEnd  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.OnAnimPlay  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.BeginAnimControl  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetAnimPosition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetAnimWeights  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.FinishAnimControl  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GetAnimControlSlotDesc  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewBeginAnimControl  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewSetAnimPosition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewSetAnimWeights  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewFinishAnimControl  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewUpdateFaceFX  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewActorPlayFaceFX  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PreviewActorStopFaceFX  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PlayActorFaceFXAnim  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.StopActorFaceFXAnim  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.StopActorFaceFXAnimByName  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetMorphWeight  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetSkelControlScale  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.IsActorPlayingFaceFXAnim  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function Actor.GetActorFaceFXAsset  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.IsStationary  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Actor.IsLifeSpanDestructionAllowed  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function Actor.GetActorEyesViewPoint  (script 25 bytes)
+  0000: out_Location = self.Location
+  000b: out_Rotation = self.Rotation
+  0016: return nothing
+  0018: <eos>
+
+function Actor.IsPlayerOwned  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.PawnBaseDied  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GetTeamNum  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.ScriptGetTeamNum  (script 12 bytes)
+  0000: return cast3d(255)
+  0005: return return
+  000b: <eos>
+
+function Actor.GetLocationStringFor  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.NotifyLocalPlayerTeamReceived  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.FindGoodEndView  (script 23 bytes)
+  0000: GoodRotation = PC.Rotation
+  0014: return nothing
+  0016: <eos>
+
+function Actor.GetTargetLocation  (script 12 bytes)
+  0000: RequestedBy
+  0005: bRequestAlternateLoc
+  000a: nothing
+  000b: <eos>
+
+function Actor.SpawnedByKismet  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PickedUpBy  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.InterpolationStarted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.InterpolationFinished  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.InterpolationChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.RigidBodyCollision  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.RigidBodyTrigger  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.OnRanOver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.SetHUDLocation  (script 7 bytes)
+  0000: NewHUDLocation
+  0005: nothing
+  0006: <eos>
+
+function Actor.NativePostRenderFor  (script 22 bytes)
+  0000: PC
+  0005: Canvas
+  000a: CameraPosition
+  000f: CameraDir
+  0014: nothing
+  0015: <eos>
+
+function Actor.PostRenderFor  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.RootMotionModeChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.RootMotionExtracted  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.PostInitAnimTree  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.GetPackageGuid  (script 7 bytes)
+  0000: PackageName
+  0005: nothing
+  0006: <eos>
+
+function Actor.TornOff  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function Actor.RegisterReplicatedObject  (script 12 bytes)
+  0000: Object
+  0005: Key
+  000a: nothing
+  000b: <eos>
+
+function Actor.UnregisterReplicatedObject  (script 12 bytes)
+  0000: Object
+  0005: Key
+  000a: nothing
+  000b: <eos>
+
+function Actor.UnregisterAllReplicatedObjects  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function Actor.TestOnlyUnregisterAllReplicatedObjects  (script 98 bytes)
+  0000: I = (self.ReplicatedObjects.Length - 1)
+  000f: if !((I >= 0)) goto 0x005f
+  001a: Desc = I[self.ReplicatedObjects]
+  002b: UnregisterReplicatedObject(Desc.Object, Desc.Key)
+  0055: SubtractSubtract_PreInt(I)
+  005c: goto 0x000f
+  005f: return nothing
+  0061: <eos>
+
+function Actor.GetRemoteRole  (script 13 bytes)
+  0000: return self.RemoteRole
+  0006: return return
+  000c: <eos>
+
+function Actor.GetRole  (script 13 bytes)
+  0000: return self.Role
+  0006: return return
+  000c: <eos>
+
+function Actor.EditorApplyTranslation  (script 22 bytes)
+  0000: DeltaTranslation
+  0005: bAltDown
+  000a: bShiftDown
+  000f: bCtrlDown
+  0014: nothing
+  0015: <eos>
+
+function Actor.GetDoubleClickDir  (script 52 bytes)
+  0000: switch (XYDir)
+  0007: case 0: (next 0x000f)
+  000c: return 3
+  000f: case 1: (next 0x0017)
+  0014: return 4
+  0017: case 2: (next 0x001f)
+  001c: return 2
+  001f: case 3: (next 0x0027)
+  0024: return 1
+  0027: default:
+  002a: return 0
+  002d: return return
+  0033: <eos>
+
+function Actor.GetDoubleClickDirString  (script 159 bytes)
+  0000: switch (DCDir)
+  0007: case 0: (next 0x001a)
+  000c: return "DCLICK_None"
+  001a: case 1: (next 0x002d)
+  001f: return "DCLICK_Left"
+  002d: case 2: (next 0x0041)
+  0032: return "DCLICK_Right"
+  0041: case 3: (next 0x0057)
+  0046: return "DCLICK_Forward"
+  0057: case 4: (next 0x006a)
+  005c: return "DCLICK_Back"
+  006a: case 5: (next 0x007f)
+  006f: return "DCLICK_Active"
+  007f: case 6: (next 0x0092)
+  0084: return "DCLICK_Done"
+  0092: default:
+  0095: return ""
+  0098: return return
+  009e: <eos>
+
+function Actor.HoldsActor  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function Actor.SetMaterialInstanceVectorParameter  (script 98 bytes)
+  0000: I = 0
+  0007: if !((I < self.Components.Length)) goto 0x005f
+  0017: Mesh = MeshComponent(I[self.Components])
+  002d: if !((Mesh != none)) goto 0x0055
+  0038: Mesh.SetVectorParam(ParameterName, Value)
+  0055: AddAdd_PreInt(I)
+  005c: goto 0x0007
+  005f: return nothing
+  0061: <eos>
+
+function Actor.SetMaterialInstanceScalarParameter  (script 98 bytes)
+  0000: I = 0
+  0007: if !((I < self.Components.Length)) goto 0x005f
+  0017: Mesh = MeshComponent(I[self.Components])
+  002d: if !((Mesh != none)) goto 0x0055
+  0038: Mesh.SetScalarParam(ParameterName, Value)
+  0055: AddAdd_PreInt(I)
+  005c: goto 0x0007
+  005f: return nothing
+  0061: <eos>
+
+function Actor.ClearMaterialInstanceVectorParameter  (script 93 bytes)
+  0000: I = 0
+  0007: if !((I < self.Components.Length)) goto 0x005a
+  0017: Mesh = MeshComponent(I[self.Components])
+  002d: if !((Mesh != none)) goto 0x0050
+  0038: Mesh.ClearVectorParam(ParameterName)
+  0050: AddAdd_PreInt(I)
+  0057: goto 0x0007
+  005a: return nothing
+  005c: <eos>
+
+function Actor.ClearMaterialInstanceScalarParameter  (script 93 bytes)
+  0000: I = 0
+  0007: if !((I < self.Components.Length)) goto 0x005a
+  0017: Mesh = MeshComponent(I[self.Components])
+  002d: if !((Mesh != none)) goto 0x0050
+  0038: Mesh.ClearScalarParam(ParameterName)
+  0050: AddAdd_PreInt(I)
+  0057: goto 0x0007
+  005a: return nothing
+  005c: <eos>
+
+function Actor.GetFocalPoint  (script 13 bytes)
+  0000: return self.Location
+  0006: return return
+  000c: <eos>
+
+function Actor.PostConstruct  (script 20 bytes)
+  0000: PostConstruct()
+  0006: self.ActorIndex = -1
+  0011: return nothing
+  0013: <eos>
+
+function Actor.PostDuplicate  (script 25 bytes)
+  0000: PostDuplicate(OriginalObject)
+  000b: self.ActorIndex = -1
+  0016: return nothing
+  0018: <eos>
+
+function Actor.OnSameTeamAs  (script 64 bytes)
+  0000: if !((self.WorldInfo.GRI == none)) goto 0x0016
+  0014: return false
+  0016: return self.WorldInfo.GRI.OnSameTeam(self, A)
+  0039: return return
+  003f: <eos>
+
+function Actor.PostMoveToSeamlessTravelWorld  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

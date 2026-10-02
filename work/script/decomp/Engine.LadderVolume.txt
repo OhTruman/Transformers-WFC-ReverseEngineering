@@ -1,0 +1,79 @@
+function LadderVolume.PostBeginPlay  (script 351 bytes)
+  0000: PhysicsVolume.PostBeginPlay()
+  0006: self.WallDir = self.Rotation
+  0011: self.LookDir = cast39(self.WallDir)
+  001e: if !((!self.bAutoPath && (self.LookDir.Z != cast3f(0)))) goto 0x015c
+  0043: self.ClimbDir = vect(0,0,1)
+  0056: L = self.LadderList
+  0061: if !((L != none)) goto 0x011c
+  006c: M = self.LadderList
+  0077: if !((M != none)) goto 0x0105
+  0082: if !((M != L)) goto 0x00ee
+  0091: Dir = obj'Core.Math'.static.Normal((M.Location - L.Location))
+  00c0: if !(((Dir dot self.ClimbDir) < cast3f(0))) goto 0x00e2
+  00d4: (Dir *= cast3f(-1))
+  00e2: (self.ClimbDir += Dir)
+  00ee: M = M.LadderList
+  0102: goto 0x0077
+  0105: L = L.LadderList
+  0119: goto 0x0061
+  011c: self.ClimbDir = obj'Core.Math'.static.Normal(self.ClimbDir)
+  0132: if !(((self.ClimbDir dot vect(0,0,1)) < cast3f(0))) goto 0x015c
+  014e: (self.ClimbDir *= cast3f(-1))
+  015c: return nothing
+  015e: <eos>
+
+function LadderVolume.InUse  (script 279 bytes)
+  0000: foreach TouchingActors(obj'Pawn', StillClimbing) (end 0x0052)
+  0017: if !((((StillClimbing != Ignored) && StillClimbing.bCollideActors) && StillClimbing.bBlockActors)) goto 0x0051
+  004e: iterpop
+  004f: return true
+  0051: iternext
+  0052: iterpop
+  0053: if !((self.PendingClimber != none)) goto 0x00f6
+  005e: if !((((((self.PendingClimber.Controller == none) || !self.PendingClimber.bCollideActors) || !self.PendingClimber.bBlockActors) || (Ladder(self.PendingClimber.Controller.MoveTarget) == none)) || (Ladder(self.PendingClimber.Controller.MoveTarget).MyLadder != self))) goto 0x00f6
+  00ef: self.PendingClimber = none
+  00f6: return ((self.PendingClimber != none) && (self.PendingClimber != Ignored))
+  0110: return return
+  0116: <eos>
+
+function LadderVolume.PawnEnteredVolume  (script 256 bytes)
+  0000: PhysicsVolume.PawnEnteredVolume(P)
+  000b: if !(!P.CanGrabLadder()) goto 0x0025
+  0023: return nothing
+  0025: PawnRot = P.Rotation
+  0039: PawnRot.Pitch = 0
+  004b: if !((((cast39(PawnRot) dot self.LookDir) > 0.9) || ((AIController(P.Controller) != none) && (Ladder(P.Controller.MoveTarget) != none)))) goto 0x00b9
+  00a2: P.ClimbLadder(self)
+  00b6: goto 0x00fd
+  00b9: if !((!P.bDeleteMe && (P.Controller != none))) goto 0x00fd
+  00e3: Spawn(obj'PotentialClimbWatcher', P, , , , , , )
+  00fd: return nothing
+  00ff: <eos>
+
+function LadderVolume.PawnLeavingVolume  (script 269 bytes)
+  0000: if !((P.OnLadder != self)) goto 0x0016
+  0014: return nothing
+  0016: PhysicsVolume.PawnLeavingVolume(P)
+  0021: P.OnLadder = none
+  0031: P.EndClimbLadder(self)
+  0045: if !((P == self.PendingClimber)) goto 0x005b
+  0054: self.PendingClimber = none
+  005b: if !(!InUse(P)) goto 0x010a
+  006f: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x0109)
+  008f: if !(((C.bPreparingMove && (Ladder(C.MoveTarget) != none)) && (Ladder(C.MoveTarget).MyLadder == self))) goto 0x0108
+  00e0: C.bPreparingMove = false
+  00f1: self.PendingClimber = C.Pawn
+  0105: iterpop
+  0106: return nothing
+  0108: iternext
+  0109: iterpop
+  010a: return nothing
+  010c: <eos>
+
+function LadderVolume.PhysicsChangedFor  (script 148 bytes)
+  0000: if !((((((cast3a(Other.Physics) == cast3a(2)) || (cast3a(Other.Physics) == cast3a(9))) || Other.bDeleteMe) || (Pawn(Other) == none)) || (Pawn(Other).Controller == none))) goto 0x0077
+  0075: return nothing
+  0077: Spawn(obj'PotentialClimbWatcher', Other, , , , , , )
+  0091: return nothing
+  0093: <eos>

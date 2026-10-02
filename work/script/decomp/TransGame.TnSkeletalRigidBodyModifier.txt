@@ -1,0 +1,39 @@
+function TnSkeletalRigidBodyModifier.get_Owner  (script 13 bytes)
+  0000: return self._Owner
+  0006: return return
+  000c: <eos>
+
+function TnSkeletalRigidBodyModifier.get_SkeletalRigidBody  (script 13 bytes)
+  0000: return self._SkeletalRigidBody
+  0006: return return
+  000c: <eos>
+
+function TnSkeletalRigidBodyModifier.Start  (script 127 bytes)
+  0000: self._Owner = Owner_
+  000b: self._SkeletalRigidBody = SkeletalRigidBody_
+  0016: OnInitialize()
+  0020: if !((self.Delay.Max > 0.0)) goto 0x0072
+  003a: self.DelayTimer.Start(delegate.OnStart, obj'Core.Random'.static.RandomInRange(self.Delay), )
+  006f: goto 0x007c
+  0072: OnStart()
+  007c: return nothing
+  007e: <eos>
+
+function TnSkeletalRigidBodyModifier.Tick  (script 66 bytes)
+  0000: self.DelayTimer.Tick(DeltaTime)
+  0018: if !(!self.DelayTimer.IsActive()) goto 0x003f
+  0030: OnTick(DeltaTime)
+  003f: return nothing
+  0041: <eos>
+
+function TnSkeletalRigidBodyModifier.OnTick  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSkeletalRigidBodyModifier.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnSkeletalRigidBodyModifier.OnStart  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

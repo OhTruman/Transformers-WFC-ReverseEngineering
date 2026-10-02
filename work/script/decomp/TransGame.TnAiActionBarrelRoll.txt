@@ -1,0 +1,85 @@
+function TnAiActionBarrelRoll.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionBarrelRollBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionBarrelRoll.OnBind  (script 34 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._PlaneForm = TnPlaneForm(self._TransformerPawn._VehicleForm)
+  001f: return nothing
+  0021: <eos>
+
+function TnAiActionBarrelRoll.OnSetUpConditions  (script 116 bytes)
+  0000: if !((self._PlaneForm == none)) goto 0x000d
+  000b: return false
+  000d: if !((self._TransformerPawn.get_IsInVehicleForm() == false)) goto 0x0028
+  0026: return false
+  0028: if !((get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDamageThreat') < cast3a(self._Blueprint.MinDamageThreat))) goto 0x005c
+  005a: return false
+  005c: return OnSetUpConditions(ExpectedEffects, Conditions)
+  006d: return return
+  0073: <eos>
+
+function TnAiActionBarrelRoll.OnStart  (script 118 bytes)
+  0000: if !((self._TransformerPawn.get_IsInVehicleForm() == false)) goto 0x0024
+  0019: return Fail()
+  0024: TnAiActionBarrelRoll.InvalidateTacticalPathNode()
+  002a: SetCharacterState(2)
+  0036: self._PlaneForm.set_StrafeRightLeftInput(TnAiActionBarrelRoll.CalculateRollDirection())
+  004f: self._PlaneForm.set_RollingInput(true)
+  0063: return OnStart(ExpectedEffects)
+  006f: return return
+  0075: <eos>
+
+function TnAiActionBarrelRoll.OnUpdate  (script 76 bytes)
+  0000: if !(self._PlaneForm.get_CanRoll()) goto 0x0034
+  0016: self._TransformerController.ClearDamageThreatHistory()
+  0029: return Succeed()
+  0034: return OnUpdate(ExpectedEffects, DeltaTime)
+  0045: return return
+  004b: <eos>
+
+function TnAiActionBarrelRoll.OnFinish  (script 34 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._PlaneForm.set_RollingInput(false)
+  001f: return nothing
+  0021: <eos>
+
+function TnAiActionBarrelRoll.CalculateRollDirection  (script 260 bytes)
+  0000: YawRotation = obj'Core.Math'.static.MakeRotator(0, self._TransformerPawn.Rotation.Yaw, 0)
+  0034: RightVector = (vect(0,1,0) >> YawRotation)
+  004f: TraceEnd = (self._TransformerPawn.Location + (RightVector * cast3f(2500)))
+  0073: RightHitActor = self._TransformerPawn.Trace(HitLocation, HitNormal, none, TraceEnd, , , , , , )
+  009b: TraceEnd = (self._TransformerPawn.Location - (RightVector * cast3f(2500)))
+  00bf: LeftHitActor = self._TransformerPawn.Trace(HitLocation, HitNormal, none, TraceEnd, , , , , , )
+  00e7: return TnAiActionBarrelRoll.GetBestRollDirection(RightHitActor, LeftHitActor, RightVector)
+  00fd: return return
+  0103: <eos>
+
+function TnAiActionBarrelRoll.GetBestRollDirection  (script 137 bytes)
+  0000: Direction = (obj'Core.Math'.static.Normal(self._TransformerPawn.Velocity) dot RightVector)
+  0026: if !((Direction >= 0.0)) goto 0x005a
+  0035: if !((RightHitActor == none)) goto 0x0046
+  0040: return 1.0
+  0046: if !((LeftHitActor == none)) goto 0x0057
+  0051: return -1.0
+  0057: goto 0x007c
+  005a: if !((LeftHitActor == none)) goto 0x006b
+  0065: return -1.0
+  006b: if !((RightHitActor == none)) goto 0x007c
+  0076: return 1.0
+  007c: return 0.0
+  0082: return return
+  0088: <eos>
+
+function TnAiActionBarrelRoll.InvalidateTacticalPathNode  (script 123 bytes)
+  0000: TacticalAirPathNode = TnTacticalAirPathNode(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateAtActor'))
+  0028: if !((TacticalAirPathNode == none)) goto 0x0035
+  0033: return nothing
+  0035: Tactical = TacticalAirPathNode.GetTactical()
+  004e: if !((Tactical == none)) goto 0x005b
+  0059: return nothing
+  005b: self._TransformerController.InvalidateTactical(Tactical, 2.0)
+  0078: return nothing
+  007a: <eos>

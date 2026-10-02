@@ -1,0 +1,26 @@
+function TnAiActionHoldShieldedPosition.OnSetUpConditions  (script 96 bytes)
+  0000: Interact = TnInteractBase(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateShieldedPosition'))
+  0028: if !((Interact == none)) goto 0x0035
+  0033: return false
+  0035: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateShieldedPosition', Interact)
+  0057: return true
+  0059: return return
+  005f: <eos>
+
+function TnAiActionHoldShieldedPosition.OnStart  (script 38 bytes)
+  0000: self._TransformerController.StopMovement()
+  0013: return OnStart(ExpectedEffects)
+  001f: return return
+  0025: <eos>
+
+function TnAiActionHoldShieldedPosition.OnUpdate  (script 77 bytes)
+  0000: self._TransformerController.OnEnemyChangeAllowed()
+  0013: self._TransformerController.Focus = IFocusible(self._TransformerController.Enemy)
+  0035: return OnUpdate(ExpectedEffects, DeltaTime)
+  0046: return return
+  004c: <eos>
+
+function TnAiActionHoldShieldedPosition.OnFinish  (script 14 bytes)
+  0000: OnFinish(CurrentState)
+  000b: return nothing
+  000d: <eos>

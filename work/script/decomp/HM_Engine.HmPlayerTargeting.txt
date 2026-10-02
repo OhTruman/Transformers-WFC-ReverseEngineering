@@ -1,0 +1,390 @@
+function HmPlayerTargeting.get_ViewpointLocation  (script 13 bytes)
+  0000: return self._ViewpointLocation
+  0006: return return
+  000c: <eos>
+
+function HmPlayerTargeting.get_TargetLocation  (script 13 bytes)
+  0000: return self._TargetLocation
+  0006: return return
+  000c: <eos>
+
+function HmPlayerTargeting.get_TargetingOwner  (script 13 bytes)
+  0000: return self._TargetingOwner
+  0006: return return
+  000c: <eos>
+
+function HmPlayerTargeting.set_TargetingOwner  (script 14 bytes)
+  0000: self._TargetingOwner = Value
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerTargeting.SetTarget  (script 59 bytes)
+  0000: 0[self.PickedTargets].TargetActor = NewTarget
+  0018: if !((NewTarget != none)) goto 0x0038
+  0023: self._TargetLocation = GetTargetLocationFromActor(NewTarget)
+  0038: return nothing
+  003a: <eos>
+
+function HmPlayerTargeting.GetTarget  (script 26 bytes)
+  0000: return 0[self.PickedTargets].TargetActor
+  0013: return return
+  0019: <eos>
+
+function HmPlayerTargeting.GetActorLocation  (script 73 bytes)
+  0000: if !((0[self.PickedTargets].TargetActor != none)) goto 0x0034
+  0018: return 0[self.PickedTargets].TargetActor.Location
+  0034: return vect(0,0,0)
+  0042: return return
+  0048: <eos>
+
+function HmPlayerTargeting.GetTargetAssistTarget  (script 26 bytes)
+  0000: return 1[self.PickedTargets].TargetActor
+  0013: return return
+  0019: <eos>
+
+function HmPlayerTargeting.SetTargetAssistTargetTestsOnly  (script 14 bytes)
+  0000: HmPlayerTargeting.SetTargetAssistTarget(NewTarget)
+  000b: return nothing
+  000d: <eos>
+
+function HmPlayerTargeting.SetTargetAssistTarget  (script 132 bytes)
+  0000: 1[self.PickedTargets].TargetActor = NewTarget
+  0018: if !((NewTarget != none)) goto 0x0062
+  0023: 1[self.PickedTargets].TargetDistanceSquared = obj'Core.Math'.static.VSizeSq((GetTargetLocationFromActor(NewTarget) - self._ViewpointLocation))
+  005f: goto 0x0081
+  0062: 1[self.PickedTargets].TargetDistanceSquared = (self.Range * self.Range)
+  0081: return nothing
+  0083: <eos>
+
+function HmPlayerTargeting.SetTargetFromImpactInfo  (script 77 bytes)
+  0000: SetTarget(Impact.HitActor)
+  001a: if !((self.bAlwaysUseImpactTarget || !HasValidTarget())) goto 0x004a
+  0034: self._TargetLocation = Impact.HitLocation
+  004a: return nothing
+  004c: <eos>
+
+function HmPlayerTargeting.IsActorA  (script 34 bytes)
+  0000: return (cast3a(GetTargetTypeForActor(SomeActor)) == cast3a(TargetType))
+  001b: return return
+  0021: <eos>
+
+function HmPlayerTargeting.IsTargetA  (script 29 bytes)
+  0000: return HmPlayerTargeting.IsActorA(GetTarget(), TargetType)
+  0016: return return
+  001c: <eos>
+
+function HmPlayerTargeting.IsValidTarget  (script 100 bytes)
+  0000: if !(HmPlayerTargeting.IsActorA(SomeActor, 0)) goto 0x0012
+  0010: return false
+  0012: if !(SomeActor.bDeleteMe) goto 0x0026
+  0024: return false
+  0026: ActorAsPawn = Pawn(SomeActor)
+  0036: if !(((ActorAsPawn != none) && (ActorAsPawn.Health <= cast3f(0)))) goto 0x005b
+  0059: return false
+  005b: return true
+  005d: return return
+  0063: <eos>
+
+function HmPlayerTargeting.HasValidTarget  (script 28 bytes)
+  0000: return IsValidTarget(GetTarget())
+  0015: return return
+  001b: <eos>
+
+function HmPlayerTargeting.HasValidAssistTarget  (script 28 bytes)
+  0000: return IsValidTarget(GetTargetAssistTarget())
+  0015: return return
+  001b: <eos>
+
+function HmPlayerTargeting.GetTargetLocationFromActor  (script 108 bytes)
+  0000: TC = A.FindActorComponent(obj'HmTargetableComponent')
+  001e: if !(((TC == none) || (TC.Owner == none))) goto 0x0051
+  003f: return A.Location
+  004e: goto 0x0065
+  0051: return TC.GetTargetLocation()
+  0065: return return
+  006b: <eos>
+
+function HmPlayerTargeting.GetTargetAssistTargetLocation  (script 28 bytes)
+  0000: return GetTargetLocationFromActor(GetTargetAssistTarget())
+  0015: return return
+  001b: <eos>
+
+function HmPlayerTargeting.GetTargetAssistStickiness  (script 200 bytes)
+  0000: TC = obj'HmTargetableComponent'.static.GetFromActor(GetTargetAssistTarget())
+  0023: if !((TC != none)) goto 0x008f
+  002e: Stickiness.YawStickiness = obj'Core.Math'.static.FMax(0.1, TC.TargetAssistStickynessYaw)
+  005d: Stickiness.PitchStickiness = obj'Core.Math'.static.FMax(0.1, TC.TargetAssistStickynessPitch)
+  008c: goto 0x00bb
+  008f: Stickiness.YawStickiness = 1.0
+  00a5: Stickiness.PitchStickiness = 1.0
+  00bb: return Stickiness
+  00c1: return return
+  00c7: <eos>
+
+function HmPlayerTargeting.GetTargetTypeForActor  (script 189 bytes)
+  0000: TargetableComp = obj'HmTargetableComponent'.static.GetFromActor(A)
+  001e: if !((TargetableComp != none)) goto 0x0038
+  0029: return TargetableComp.TargetType
+  0038: Agent = CrowdAgent(A)
+  0048: if !((Agent != none)) goto 0x006b
+  0053: if !(OnSameTeam(Agent)) goto 0x0068
+  0065: return 2
+  0068: return 3
+  006b: Proj = Projectile(A)
+  007b: if !((((Proj != none) && Proj.bProjTarget) && !OnSameTeam(Proj))) goto 0x00b3
+  00b0: return 3
+  00b3: return 0
+  00b6: return return
+  00bc: <eos>
+
+function HmPlayerTargeting.GetTargetType  (script 28 bytes)
+  0000: return GetTargetTypeForActor(GetTarget())
+  0015: return return
+  001b: <eos>
+
+function HmPlayerTargeting.ToggleDebug  (script 18 bytes)
+  0000: self.bEnableDebug = !self.bEnableDebug
+  000f: return nothing
+  0011: <eos>
+
+function HmPlayerTargeting.GetRangeForTestingOnly  (script 13 bytes)
+  0000: return self.Range
+  0006: return return
+  000c: <eos>
+
+function HmPlayerTargeting.Update  (script 121 bytes)
+  0000: if !((self._TargetingOwner == none)) goto 0x000d
+  000b: return nothing
+  000d: UpdateViewpoint(TargetingViewpointLocation, TargetingViewpointRotation)
+  0021: self.Range = TargetingRange
+  002c: if !((cast3a(self.TargetingUpdatePhase) == cast3a(0))) goto 0x0051
+  003c: CalculateCurrentTarget()
+  0046: self.TargetingUpdatePhase = 1
+  004e: goto 0x0063
+  0051: UpdateTargetPickers()
+  005b: self.TargetingUpdatePhase = 0
+  0063: if !(self.bEnableDebug) goto 0x0076
+  006c: DrawDebug()
+  0076: return nothing
+  0078: <eos>
+
+function HmPlayerTargeting.UpdateViewpoint  (script 65 bytes)
+  0000: self._ViewpointLocation = NewViewpointLocation
+  000b: self.ViewpointRotation = NewViewpointRotation
+  0016: self._ViewDirection = cast39(self.ViewpointRotation)
+  0023: self._TargetingEndLocation = (self._ViewpointLocation + (cast39(self.ViewpointRotation) * self.Range))
+  003e: return nothing
+  0040: <eos>
+
+function HmPlayerTargeting.FindLocationOfBoneClosestToTargetingRay  (script 244 bytes)
+  0000: TargetPawn = Pawn(GetTarget())
+  0015: if !(((TargetPawn == none) || (TargetPawn.Mesh == none))) goto 0x003c
+  0036: return self._TargetLocation
+  003c: StartPoint = self._ViewpointLocation
+  0047: aimingDirection = self._ViewDirection
+  0052: Delta = (GetTargetLocationFromActor(TargetPawn) - StartPoint)
+  006e: newaiminglocation = (((Delta dot aimingDirection) * aimingDirection) + StartPoint)
+  008e: closestBoneName = TargetPawn.Mesh.FindClosestBone(newaiminglocation, alternateBoneLocation, )
+  00bb: if !((closestBoneName == 'None')) goto 0x00dc
+  00ce: closestWorldBoneOrigin = self._TargetLocation
+  00d9: goto 0x00e7
+  00dc: closestWorldBoneOrigin = alternateBoneLocation
+  00e7: return closestWorldBoneOrigin
+  00ed: return return
+  00f3: <eos>
+
+function HmPlayerTargeting.CalculateCurrentTarget  (script 173 bytes)
+  0000: Impact.HitActor = self._TargetingOwner.Trace(Impact.HitLocation, Impact.HitNormal, none, self._TargetingEndLocation, self._ViewpointLocation, true, vect(0,0,0), true, Impact.HitInfo, self.TraceFlags)
+  006c: if !((Impact.HitActor != none)) goto 0x0094
+  0082: SetTargetFromImpactInfo(Impact)
+  0091: goto 0x00aa
+  0094: SetTarget(none)
+  009f: self._TargetLocation = self._TargetingEndLocation
+  00aa: return nothing
+  00ac: <eos>
+
+function HmPlayerTargeting.UpdateTargetPickers  (script 384 bytes)
+  0000: self.PickedTarget = none
+  0007: if !((self._TargetingOwner != none)) goto 0x002b
+  0012: WI = HmWorldInfo(self._TargetingOwner.WorldInfo)
+  002b: if !((WI != none)) goto 0x004f
+  0036: TCS = WI.GetTargetableComponents()
+  004f: I = 0
+  0056: if !((I != TCS.Length)) goto 0x0126
+  0066: CurrentTargetActor = I[TCS].Owner
+  0080: if !((self._TargetingOwner == CurrentTargetActor)) goto 0x0092
+  008f: goto 0x011c
+  0092: if !(!IsActorEligibleForTargetPicking(CurrentTargetActor, I[TCS])) goto 0x00b4
+  00b1: goto 0x011c
+  00b4: LargestTargetPickingType = GetLargestTargetPickingAngle()
+  00c4: if !(!IsActorWithinTargetPickingAngle(CurrentTargetActor, LargestTargetPickingType, I[TCS])) goto 0x00eb
+  00e8: goto 0x011c
+  00eb: if !(!HmPlayerTargeting.IsActorInLineOfSight(CurrentTargetActor)) goto 0x00fe
+  00fb: goto 0x011c
+  00fe: if !(!HmPlayerTargeting.IsActorCloserThanCurrentPickedTarget(CurrentTargetActor)) goto 0x0111
+  010e: goto 0x011c
+  0111: self.PickedTarget = CurrentTargetActor
+  011c: AddAdd_PreInt(I)
+  0123: goto 0x0056
+  0126: PickedTC = obj'HmTargetableComponent'.static.GetFromActor(self.PickedTarget)
+  0144: if !(((self.PickedTarget != none) && IsActorEligibleForTargetAssist(self.PickedTarget, PickedTC))) goto 0x0176
+  0168: HmPlayerTargeting.SetTargetAssistTarget(self.PickedTarget)
+  0173: goto 0x017d
+  0176: HmPlayerTargeting.SetTargetAssistTarget(none)
+  017d: return nothing
+  017f: <eos>
+
+function HmPlayerTargeting.DebugApparentAssistRadius  (script 59 bytes)
+  0000: return (CameraToTargetDist * obj'Core.Math'.static.Tan((0.0174533 * TargetableComp.GetAdjustedTargetAngle(CameraToTargetDist, 1))))
+  0034: return return
+  003a: <eos>
+
+function HmPlayerTargeting.DebugApparentConeRadius  (script 59 bytes)
+  0000: return (CameraToTargetDist * obj'Core.Math'.static.Tan((0.0174533 * TargetableComp.GetAdjustedTargetAngle(CameraToTargetDist, 0))))
+  0034: return return
+  003a: <eos>
+
+function HmPlayerTargeting.DrawOneDebug  (script 533 bytes)
+  0000: if !(((CurrentTargetPawn.Controller != none) && (PlayerController(CurrentTargetPawn.Controller) != none))) goto 0x0031
+  002f: return nothing
+  0031: if !(HmPawn(CurrentTargetPawn).IsDying()) goto 0x004e
+  004c: return nothing
+  004e: TargetableComp = obj'HmTargetableComponent'.static.GetFromActor(CurrentTargetPawn)
+  006c: if !((TargetableComp == none)) goto 0x0079
+  0077: return nothing
+  0079: CameraToTarget = (GetTargetLocationFromActor(CurrentTargetPawn) - self._ViewpointLocation)
+  0095: CameraToTargetDist = obj'Core.Math'.static.VSize(CameraToTarget)
+  00ab: Radius = HmPlayerTargeting.DebugApparentAssistRadius(CameraToTargetDist, TargetableComp)
+  00c1: if !((GetTargetAssistTarget() == CurrentTargetPawn)) goto 0x0115
+  00d5: obj'Engine.Debug'.static.DrawSphere(GetTargetLocationFromActor(CurrentTargetPawn), Radius, 10, obj'Core.Colors'.static.Red(), )
+  0112: goto 0x0152
+  0115: obj'Engine.Debug'.static.DrawSphere(GetTargetLocationFromActor(CurrentTargetPawn), Radius, 10, obj'Core.Colors'.static.Yellow(), )
+  0152: Radius = HmPlayerTargeting.DebugApparentConeRadius(CameraToTargetDist, TargetableComp)
+  0168: if !((IsPawnAPossibleTarget(CurrentTargetPawn, HitLocation) && (GetTarget() == CurrentTargetPawn))) goto 0x01d5
+  0195: obj'Engine.Debug'.static.DrawSphere(GetTargetLocationFromActor(CurrentTargetPawn), Radius, 10, obj'Core.Colors'.static.Magenta(), )
+  01d2: goto 0x0212
+  01d5: obj'Engine.Debug'.static.DrawSphere(GetTargetLocationFromActor(CurrentTargetPawn), Radius, 10, obj'Core.Colors'.static.Blue(), )
+  0212: return nothing
+  0214: <eos>
+
+function HmPlayerTargeting.DrawDebug  (script 198 bytes)
+  0000: QueryLocation = (self._ViewpointLocation + ((self.Range * 0.5) * self._ViewDirection))
+  0020: obj'Engine.Debug'.static.DrawLine(self._ViewpointLocation, self._TargetLocation, MakeColor(cast3d(255), 0, 0, ), )
+  0051: foreach self._TargetingOwner.CollidingActors(obj'HmPawn', CurrentTargetPawn, (self.Range * 0.5), QueryLocation, ) (end 0x008f)
+  0083: HmPlayerTargeting.DrawOneDebug(CurrentTargetPawn)
+  008e: iternext
+  008f: iterpop
+  0090: obj'Engine.Debug'.static.DrawSphere(self._TargetLocation, 10.0, 10, obj'Core.Colors'.static.White(), )
+  00c3: return nothing
+  00c5: <eos>
+
+function HmPlayerTargeting.GetCameraToSelected  (script 30 bytes)
+  0000: return (GetTargetLocationFromActor(SelectedActor) - self._ViewpointLocation)
+  0017: return return
+  001d: <eos>
+
+function HmPlayerTargeting.GetAngleToTestTarget  (script 122 bytes)
+  0000: CameraToTarget = GetCameraToSelected(SelectedActor)
+  0015: CameraToTarget = obj'Core.Math'.static.Normal(CameraToTarget)
+  002b: Angle = (CameraToTarget dot self._ViewDirection)
+  003d: Angle = obj'Core.Math'.static.Acos(Angle)
+  005b: Angle = (Angle * 57.2957802)
+  006d: return Angle
+  0073: return return
+  0079: <eos>
+
+function HmPlayerTargeting.GetTargetAssistCheckLocationFromActor  (script 23 bytes)
+  0000: return GetTargetLocationFromActor(SelectedActor)
+  0010: return return
+  0016: <eos>
+
+function HmPlayerTargeting.GetLargestTargetPickingAngle  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function HmPlayerTargeting.IsActorWithinTargetPickingAngle  (script 110 bytes)
+  0000: if !((TargetableComp != none)) goto 0x0065
+  000b: CameraToTargetDist = obj'Core.Math'.static.VSize((GetTargetLocationFromActor(SelectedActor) - self._ViewpointLocation))
+  0032: if !((GetAngleToTestTarget(SelectedActor) < TargetableComp.GetAdjustedTargetAngle(CameraToTargetDist, TargetPickingType))) goto 0x0065
+  0063: return true
+  0065: return false
+  0067: return return
+  006d: <eos>
+
+function HmPlayerTargeting.IsActorInLineOfSight  (script 179 bytes)
+  0000: Impact.HitActor = self._TargetingOwner.Trace(Impact.HitLocation, Impact.HitNormal, SelectedActor, GetTargetAssistCheckLocationFromActor(SelectedActor), self._ViewpointLocation, true, vect(0,0,0), true, Impact.HitInfo, )
+  0076: if !(((Impact.HitActor == none) || (Impact.HitActor == SelectedActor))) goto 0x00aa
+  00a8: return true
+  00aa: return false
+  00ac: return return
+  00b2: <eos>
+
+function HmPlayerTargeting.IsActorEligibleForTargetAssist  (script 77 bytes)
+  0000: if !(((TC == none) || !TC.IsEligibleForTargetAssist())) goto 0x0027
+  0025: return false
+  0027: if !(!IsActorWithinTargetPickingAngle(TestActor, 1, TC)) goto 0x0044
+  0042: return false
+  0044: return true
+  0046: return return
+  004c: <eos>
+
+function HmPlayerTargeting.IsActorEligibleForTargetPicking  (script 106 bytes)
+  0000: if !((((SelectedActor == self._TargetingOwner) || SelectedActor.bHidden) || ((HmPawn(SelectedActor) != none) && HmPawn(SelectedActor).IsDying()))) goto 0x0054
+  0052: return false
+  0054: if !((TC == none)) goto 0x0061
+  005f: return false
+  0061: return true
+  0063: return return
+  0069: <eos>
+
+function HmPlayerTargeting.IsActorCloserThanCurrentPickedTarget  (script 144 bytes)
+  0000: if !((self.PickedTarget == none)) goto 0x000d
+  000b: return true
+  000d: TargetStart = self._ViewpointLocation
+  0018: BestDistSq = obj'Core.Math'.static.VSizeSq((TargetStart - GetTargetLocationFromActor(self.PickedTarget)))
+  0047: CurDistSq = obj'Core.Math'.static.VSizeSq((TargetStart - GetTargetLocationFromActor(SelectedActor)))
+  0076: if !((CurDistSq < BestDistSq)) goto 0x0087
+  0085: return true
+  0087: return false
+  0089: return return
+  008f: <eos>
+
+function HmPlayerTargeting.IsTargetWithinCone  (script 41 bytes)
+  0000: return (Angle < TargetableComp.GetAdjustedTargetAngle(CameraToTargetDist, 0))
+  0022: return return
+  0028: <eos>
+
+function HmPlayerTargeting.IsPawnAPossibleTarget  (script 622 bytes)
+  0000: if !(((((SelectedPawn == self._TargetingOwner) || SelectedPawn.bHidden) || SelectedPawn.IsInState('Dying', )) || OnSameTeam(SelectedPawn))) goto 0x0054
+  0052: return false
+  0054: PawnIsEligible = false
+  005c: CurrentTargetPawnHitLocation = vect(0,0,0)
+  006f: TargetableComp = obj'HmTargetableComponent'.static.GetFromActor(SelectedPawn)
+  008d: if !((TargetableComp != none)) goto 0x0260
+  0098: SelectedPawnTargetLocation = GetTargetLocationFromActor(SelectedPawn)
+  00ad: CameraToTarget = (SelectedPawnTargetLocation - self._ViewpointLocation)
+  00bf: CameraToTargetDist = obj'Core.Math'.static.VSize(CameraToTarget)
+  00d5: CameraToTarget = obj'Core.Math'.static.Normal(CameraToTarget)
+  00eb: Angle = (CameraToTarget dot self._ViewDirection)
+  00fd: Angle = obj'Core.Math'.static.Acos(Angle)
+  011b: Angle = (Angle * 57.2957802)
+  012d: if !(IsTargetWithinCone(Angle, TargetableComp, CameraToTargetDist)) goto 0x0260
+  0149: Impact.HitActor = self._TargetingOwner.Trace(Impact.HitLocation, Impact.HitNormal, SelectedPawn, self._TargetingEndLocation, self._ViewpointLocation, true, vect(0,0,0), true, Impact.HitInfo, )
+  01b5: if !((Impact.HitActor == SelectedPawn)) goto 0x01f0
+  01cf: CurrentTargetPawnHitLocation = Impact.HitLocation
+  01e5: PawnIsEligible = true
+  01ed: goto 0x0260
+  01f0: if !(((Impact.HitActor == none) || ((obj'Core.Math'.static.VSize((SelectedPawnTargetLocation - self._ViewpointLocation)) - obj'Core.Math'.static.VSize((Impact.HitLocation - self._ViewpointLocation))) < self.ConeTargetingShieldingDistance))) goto 0x0260
+  024d: CurrentTargetPawnHitLocation = SelectedPawnTargetLocation
+  0258: PawnIsEligible = true
+  0260: return PawnIsEligible
+  0267: return return
+  026d: <eos>
+
+function HmPlayerTargeting.OnSameTeam  (script 99 bytes)
+  0000: if !(((self._TargetingOwner != none) && (self._TargetingOwner.WorldInfo.GRI != none))) goto 0x005a
+  002a: return self._TargetingOwner.WorldInfo.GRI.OnSameTeam(self._TargetingOwner, A)
+  005a: return false
+  005c: return return
+  0062: <eos>

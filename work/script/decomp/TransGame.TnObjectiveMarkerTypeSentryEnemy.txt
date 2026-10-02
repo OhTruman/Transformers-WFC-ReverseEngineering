@@ -1,0 +1,36 @@
+function TnObjectiveMarkerTypeSentryEnemy.ShouldDisplayMarker  (script 235 bytes)
+  0000: if !(!TnObjectiveMarkerType.ShouldDisplayMarker(Displayer, Marker)) goto 0x0017
+  0015: return false
+  0017: MarkerAsSentry = TnSentryPawn(Marker.MarkerBase)
+  0032: if !(((MarkerAsSentry._Invulnerable || MarkerAsSentry.IsWaitingForRevival()) || MarkerAsSentry.IsDead())) goto 0x0076
+  0074: return false
+  0076: DisplayerToMarker = obj'Core.Math'.static.Normal((MarkerAsSentry.Location - Displayer.Location))
+  00a5: if !(((cast39(MarkerAsSentry.Rotation) dot DisplayerToMarker) > cast3f(0))) goto 0x00c6
+  00c4: return false
+  00c6: return obj'TnLineOfSightDetector'.static.HasLOSToActor(Displayer, MarkerAsSentry)
+  00e4: return return
+  00ea: <eos>
+
+function TnObjectiveMarkerTypeSentryEnemy.GetMarkerSetup  (script 91 bytes)
+  0000: MarkerPawn = Pawn(MarkerData.MarkerBase)
+  001b: CreateInstances(self.SentryEnemyMarkerSetup)
+  002a: self.SentryEnemyMarkerSetup.LabelZOffsetWS = MarkerPawn.GetCollisionHeight()
+  004e: return self.SentryEnemyMarkerSetup
+  0054: return return
+  005a: <eos>
+
+function TnObjectiveMarkerTypeSentryEnemy.Draw  (script 436 bytes)
+  0000: PC = TnPlayerController(Owner.Controller)
+  0019: if !(Owner.IsSameTeam(Pawn(MarkerData.MarkerBase))) goto 0x0046
+  0044: return false
+  0046: Setup = GetMarkerSetup(Owner, MarkerData)
+  0060: MarkerLocationSS = C.Project((MarkerLocationWS + obj'Core.Math'.static.MakeVector(0.0, 0.0, Setup.MarkerZOffsetWS)))
+  00ad: if !(((PC != none) && !PC.IsUsingFineAim())) goto 0x0188
+  00d2: if !(IsOffscreen(MarkerLocationSS, C)) goto 0x00eb
+  00e9: return false
+  00eb: LabelLocationSS = (C.Project((MarkerLocationWS + obj'Core.Math'.static.MakeVector(0.0, 0.0, Setup.LabelZOffsetWS))) + SizeInPixelsV(Setup.LabelOffset, C))
+  0159: DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, 1.0)
+  0186: return true
+  0188: return TnObjectiveMarkerTypeSprite.Draw(Owner, MarkerData, MarkerLocationWS, ObserverLocationWS, ObserverDirectionWS, C)
+  01ad: return return
+  01b3: <eos>

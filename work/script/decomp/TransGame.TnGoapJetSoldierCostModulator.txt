@@ -1,0 +1,58 @@
+function TnGoapJetSoldierCostModulator.set_JetFormPenaltyCost  (script 14 bytes)
+  0000: self._JetFormPenaltyCost = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapJetSoldierCostModulator.set_RobotFormPenaltyCost  (script 14 bytes)
+  0000: self._RobotFormPenaltyCost = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapJetSoldierCostModulator.set_RecentTransformPenaltyCost  (script 14 bytes)
+  0000: self._RecentTransformPenaltyCost = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapJetSoldierCostModulator.set_TransformToRobotDistance  (script 14 bytes)
+  0000: self._TransformToRobotDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapJetSoldierCostModulator.set_TransformToJetDistance  (script 14 bytes)
+  0000: self._TransformToJetDistance = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapJetSoldierCostModulator.set_DesiredTimeBetweenTransforms  (script 14 bytes)
+  0000: self._DesiredTimeBetweenTransforms = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnGoapJetSoldierCostModulator.DoCalculateAdditionalCost  (script 352 bytes)
+  0000: TransformerController = TnAiController(Controller_)
+  0010: if !((TransformerController == none)) goto 0x0021
+  001b: return 0.0
+  0021: AddedCost = TnGoapJetSoldierCostModulator.GetFormPenaltyCost(TransformerController)
+  0032: if !((TransformerController.Enemy == none)) goto 0x004c
+  0046: return AddedCost
+  004c: EnemyToPawn = ((TransformerController.get_TransformerPawn().Location - TransformerController.Enemy.Location) * vect(1,1,0))
+  0097: DistanceToCheck = (TransformerController.get_TransformerPawn().get_IsInRobotForm() ? self._TransformToJetDistance : self._TransformToRobotDistance)
+  00cd: DistanceToEnemySq = obj'Core.Math'.static.VSizeSq(EnemyToPawn)
+  00eb: if !(((cast3a(self.DesiredForm) == cast3a(1)) && (DistanceToEnemySq < (DistanceToCheck * DistanceToCheck)))) goto 0x011f
+  0113: (AddedCost += self._JetFormPenaltyCost)
+  011f: if !(((cast3a(self.DesiredForm) == cast3a(0)) && (DistanceToEnemySq > (DistanceToCheck * DistanceToCheck)))) goto 0x0153
+  0147: (AddedCost += self._RobotFormPenaltyCost)
+  0153: return AddedCost
+  0159: return return
+  015f: <eos>
+
+function TnGoapJetSoldierCostModulator.GetFormPenaltyCost  (script 210 bytes)
+  0000: TransformerPawn = TransformerController.get_TransformerPawn()
+  0019: if !(((cast3a(self.DesiredForm) == cast3a(0)) && TransformerPawn.get_IsInRobotForm())) goto 0x0047
+  0041: return 0.0
+  0047: if !(((cast3a(self.DesiredForm) == cast3a(1)) && TransformerPawn.get_IsInVehicleForm())) goto 0x0075
+  006f: return 0.0
+  0075: TimeSinceTransform = obj'Core.Math'.static.FMin((TransformerPawn.WorldInfo.TimeSeconds - TransformerPawn._LastTransformTime), self._DesiredTimeBetweenTransforms)
+  00b2: return (self._RecentTransformPenaltyCost * (cast3f(1) - (TimeSinceTransform / self._DesiredTimeBetweenTransforms)))
+  00cb: return return
+  00d1: <eos>

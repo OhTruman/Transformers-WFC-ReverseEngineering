@@ -1,0 +1,26 @@
+function TnAiActionTrypticonScriptedAttack.OnInitialize  (script 30 bytes)
+  0000: TnAiActionPlayAnimation.OnInitialize(Blueprint)
+  000b: self._AttackBlueprint = TnAiActionTrypticonScriptedAttackBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTrypticonScriptedAttack.OnBind  (script 66 bytes)
+  0000: TnAiActionPlayAnimation.OnBind()
+  0006: self._Trypticon = TnTrypticonPawn(self._TransformerPawn)
+  0016: self._NextAllowedUseTime = (obj'Engine.Engine'.static.GetWorldTime() + self._AttackBlueprint.DelayBeforeAvailable)
+  003f: return nothing
+  0041: <eos>
+
+function TnAiActionTrypticonScriptedAttack.OnSetUpConditions  (script 55 bytes)
+  0000: if !((obj'Engine.Engine'.static.GetWorldTime() < self._NextAllowedUseTime)) goto 0x001f
+  001d: return false
+  001f: return OnSetUpConditions(ExpectedEffects, Conditions)
+  0030: return return
+  0036: <eos>
+
+function TnAiActionTrypticonScriptedAttack.OnStart  (script 93 bytes)
+  0000: self._Trypticon.TriggerKismetEvent(self._AttackBlueprint.Attack)
+  0021: self._NextAllowedUseTime = (obj'Engine.Engine'.static.GetWorldTime() + self._AttackBlueprint.DelayBetweenAvailableUses)
+  004a: return TnAiActionPlayAnimation.OnStart(ExpectedEffects)
+  0056: return return
+  005c: <eos>

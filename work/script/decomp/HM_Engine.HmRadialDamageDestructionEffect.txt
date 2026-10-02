@@ -1,0 +1,54 @@
+function HmRadialDamageDestructionEffect.BeginEffect  (script 166 bytes)
+  0000: if !((cast3a(GetAttachingActor().Role) != cast3a(3))) goto 0x0020
+  001e: return nothing
+  0020: DestructibleActor = HmDestructibleActorBase(GetAttachingActor())
+  0035: if !((DestructibleActor == none)) goto 0x0042
+  0040: return nothing
+  0042: if !(self.bHurtEntry) goto 0x004d
+  004b: return nothing
+  004d: DestructibleActor.HurtRadius(self.Damage, self.DamageRadius, -1.0, self.DamageType, self.DamageMomentum, GetEffectToWorldTransform().Position, none, DestructibleActor.LastHitInstigator, self.bDoFullDamage)
+  00a3: return nothing
+  00a5: <eos>
+
+function HmRadialDamageDestructionEffect.DrawDebugDisplay  (script 110 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: if !((AttachingActor == none)) goto 0x001d
+  001b: return nothing
+  001d: EffectToWorldTransform = GetEffectToWorldTransform()
+  002d: obj'Engine.Debug'.static.DrawSphere(EffectToWorldTransform.Position, self.DamageRadius, 12, MakeColor(cast3d(255), 0, 0, ), )
+  006b: return nothing
+  006d: <eos>
+
+function HmRadialDamageDestructionEffect.SetDamageProperties  (script 60 bytes)
+  0000: self.DamageType = inDamageType
+  000b: self.Damage = inDamage
+  0016: self.DamageRadius = inDamageRadius
+  0021: self.DamageMomentum = inDamageMomentum
+  002c: self.bDoFullDamage = inbDoFullDamage
+  0039: return nothing
+  003b: <eos>
+
+function HmRadialDamageDestructionEffect.GetDamageType  (script 13 bytes)
+  0000: return self.DamageType
+  0006: return return
+  000c: <eos>
+
+function HmRadialDamageDestructionEffect.GetDamage  (script 13 bytes)
+  0000: return self.Damage
+  0006: return return
+  000c: <eos>
+
+function HmRadialDamageDestructionEffect.GetDamageRadius  (script 13 bytes)
+  0000: return self.DamageRadius
+  0006: return return
+  000c: <eos>
+
+function HmRadialDamageDestructionEffect.GetDamageMomentum  (script 13 bytes)
+  0000: return self.DamageMomentum
+  0006: return return
+  000c: <eos>
+
+function HmRadialDamageDestructionEffect.GetDoFullDamage  (script 14 bytes)
+  0000: return self.bDoFullDamage
+  0007: return return
+  000d: <eos>

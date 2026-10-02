@@ -1,0 +1,30 @@
+function ColorScaleVolume.Touch  (script 152 bytes)
+  0000: Actor.Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: P = Pawn(Other)
+  002a: if !((P != none)) goto 0x0095
+  0035: PC = PlayerController(P.Controller)
+  004e: if !(((PC != none) && (PC.PlayerCamera != none))) goto 0x0095
+  006f: PC.PlayerCamera.SetDesiredColorScale(self.ColorScale, self.InterpTime)
+  0095: return nothing
+  0097: <eos>
+
+function ColorScaleVolume.UnTouch  (script 308 bytes)
+  0000: Actor.UnTouch(Other)
+  000b: P = Pawn(Other)
+  001b: if !((P != none)) goto 0x0131
+  0026: PC = PlayerController(P.Controller)
+  003f: if !(((PC != none) && (PC.PlayerCamera != none))) goto 0x0131
+  0060: DesiredColorScale = self.WorldInfo.DefaultColorScale
+  0074: DesiredInterpTime = 1.0
+  007f: idx = P.Touching.Length
+  0094: if !((idx >= 0)) goto 0x010b
+  009f: CSV = ColorScaleVolume(idx[P.Touching])
+  00be: if !(((CSV != none) && (CSV != self))) goto 0x0101
+  00d6: DesiredColorScale = CSV.ColorScale
+  00ea: DesiredInterpTime = CSV.InterpTime
+  00fe: goto 0x010b
+  0101: SubtractSubtract_PreInt(idx)
+  0108: goto 0x0094
+  010b: PC.PlayerCamera.SetDesiredColorScale(DesiredColorScale, DesiredInterpTime)
+  0131: return nothing
+  0133: <eos>

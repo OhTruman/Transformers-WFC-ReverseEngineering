@@ -1,0 +1,14 @@
+function TnCompetitiveScoreComboMultiKill.ComboEvent  (script 85 bytes)
+  0000: self.MultiKillDetector.AddKills(1)
+  0014: NumKillInCurrentMultiKill = cast44(obj'Core.Math'.static.FMin(cast3f(self.MultiKillDetector._MultiKillLevel), cast3f((self.KillEvents.Length - 1))))
+  0042: return NumKillInCurrentMultiKill[self.KillEvents]
+  004e: return return
+  0054: <eos>
+
+function TnCompetitiveScoreComboMultiKill.CheckCombo  (script 58 bytes)
+  0000: AsKillAssist = class<TnCompetitiveScoreEventKillAssist>(EventType)
+  0010: if !((AsKillAssist != none)) goto 0x001d
+  001b: return none
+  001d: return TnCompetitiveScoreCombo.CheckCombo(EventType, TargetActor, Amount)
+  0033: return return
+  0039: <eos>

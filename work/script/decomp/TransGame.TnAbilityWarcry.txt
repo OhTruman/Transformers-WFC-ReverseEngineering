@@ -1,0 +1,36 @@
+function TnAbilityWarcry.ServerTriggerAbility  (script 362 bytes)
+  0000: AdjustedAoeRange = self.AoeRangeModifier.ModifyFloat(self.AoeRange, self.OwnerPawn, )
+  0024: TnAbilityWarcry.GetFriendliesInRange(AdjustedAoeRange, FriendliesInRange)
+  0034: BuffLevel = obj'Core.Math'.static.Clamp((FriendliesInRange.Length - 1), 0, (2 - 1))
+  0054: if !(self.OwnerPawn.HasSkill(obj'TnSkillImprovedWarcry')) goto 0x0076
+  006f: AddAdd_PreInt(BuffLevel)
+  0076: foreach FriendliesInRange(P,) (end 0x0160)
+  0085: BuffService = TnBuffService(P.GetService('TnBuffService'))
+  00ac: if !(NotEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x015f
+  00c0: foreach self.BuffsToApply(BuffIter,) (end 0x00f3)
+  00cf: BuffService.AddBuff(BuffIter, BuffLevel, self.OwnerPawn)
+  00f2: iternext
+  00f3: iterpop
+  00f4: foreach self.BuffsToRemove(BuffIter,) (end 0x0139)
+  0103: if !(BuffService.HasBuff(BuffIter)) goto 0x0138
+  011f: BuffService.RemoveBuff(BuffIter)
+  0138: iternext
+  0139: iterpop
+  013a: BuffService.AddBuff(BuffLevel[self.EffectBuffs], 0, self.OwnerPawn)
+  015f: iternext
+  0160: iterpop
+  0161: TnAbility.ServerTriggerAbility()
+  0167: return nothing
+  0169: <eos>
+
+function TnAbilityWarcry.GetFriendliesInRange  (script 149 bytes)
+  0000: if !((cast3a(self.OwnerPawn.GetTeamNum()) == 255)) goto 0x002c
+  001c: FriendliesInRange.AddItem(self.OwnerPawn)
+  0029: goto 0x0092
+  002c: foreach self.OwnerPawn.WorldInfo.AllPawns(obj'TnPawn', P, self.OwnerPawn.Location, Range) (end 0x0091)
+  0068: if !(P.IsSameTeam(self.OwnerPawn)) goto 0x0090
+  0083: FriendliesInRange.AddItem(P)
+  0090: iternext
+  0091: iterpop
+  0092: return nothing
+  0094: <eos>

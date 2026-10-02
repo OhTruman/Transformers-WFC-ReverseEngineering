@@ -1,0 +1,24 @@
+function SeqAct_Teleport.CheckForErrors  (script 834 bytes)
+  0000: CheckForErrors()
+  0006: PublishLinkedVariableValues()
+  0010: idx = 0
+  0017: if !((idx < 0[self.VariableLinks].LinkedVariables.Length)) goto 0x00a2
+  0034: CurrentVar = idx[0[self.VariableLinks].LinkedVariables]
+  0052: if !((CurrentVar == none)) goto 0x0060
+  005d: goto 0x0098
+  0060: if !((CurrentVar.IsA('TnSeqVar_Buddy') || CurrentVar.IsA('TnSeqVar_Character'))) goto 0x0098
+  0090: TeleportingAi = true
+  0098: AddAdd_PreInt(idx)
+  009f: goto 0x0017
+  00a2: if !(!TeleportingAi) goto 0x00af
+  00ad: return nothing
+  00af: if !((self.DestinationActor == none)) goto 0x0157
+  00ba: EmitCheckMessage(3, "Teleport location is empty.  If teleporting AI, it might not be able to anchor after teleport.  Please use a navigation point if possible.", , )
+  0154: goto 0x033f
+  0157: TeleportingToNavPoint = (NavigationPoint(self.DestinationActor) != none)
+  016b: if !(!TeleportingToNavPoint) goto 0x022a
+  0176: self.DestinationActor.EmitCheckMessage(3, "Teleport location is not a navigation point.  If teleporting AI, it might not be able to anchor after teleport.  Please use a navigation point if possible.", , )
+  022a: if !(((TeleportingToNavPoint && (NavigationPoint(self.DestinationActor).PathList.Length == 0)) && (NavigationPoint(self.DestinationActor).StaticAnchor.Nav == none))) goto 0x033f
+  0275: self.DestinationActor.EmitCheckMessage(3, "Teleporting to a navigation point that is not connected to any other navigation points.  If teleporting AI, it might not be able to navigate after teleport.  Please build paths.", , )
+  033f: return nothing
+  0341: <eos>

@@ -1,0 +1,139 @@
+function TnRobotAnimator.get_FullBodyCustomAnimationPlayer  (script 15 bytes)
+  0000: return 0[self.Players]
+  0008: return return
+  000e: <eos>
+
+function TnRobotAnimator.get_UpperBodyCustomAnimationPlayer  (script 15 bytes)
+  0000: return 1[self.Players]
+  0008: return return
+  000e: <eos>
+
+function TnRobotAnimator.get_LeftArmCustomAnimationPlayer  (script 16 bytes)
+  0000: return 2[self.Players]
+  0009: return return
+  000f: <eos>
+
+function TnRobotAnimator.get_IsPlayingAnimation  (script 52 bytes)
+  0000: foreach self.Players(Player,) (end 0x002a)
+  000f: if !(Player.IsPlayingAnimation()) goto 0x0029
+  0026: iterpop
+  0027: return true
+  0029: iternext
+  002a: iterpop
+  002b: return false
+  002d: return return
+  0033: <eos>
+
+function TnRobotAnimator.CustomAnimationComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnRobotAnimator.CustomAnimationFailed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnRobotAnimator.Initialize  (script 55 bytes)
+  0000: self.Mesh = Mesh_
+  000b: foreach self.Players(Player,) (end 0x0033)
+  001a: Player.Initialize(self.Mesh)
+  0032: iternext
+  0033: iterpop
+  0034: return nothing
+  0036: <eos>
+
+function TnRobotAnimator.EnqueueReplicatedAnimation  (script 25 bytes)
+  0000: TnRobotAnimator.EnqueueAnimation(Params, CompleteCallback, FailedCallback, true)
+  0016: return nothing
+  0018: <eos>
+
+function TnRobotAnimator.EnqueueLocalAnimation  (script 25 bytes)
+  0000: TnRobotAnimator.EnqueueAnimation(Params, CompleteCallback, FailedCallback, false)
+  0016: return nothing
+  0018: <eos>
+
+function TnRobotAnimator.EnqueueAnimation  (script 62 bytes)
+  0000: cast3a(Params.MaskType)[self.Players].EnqueueAnimation(Params, CompleteCallback, FailedCallback, Replicate)
+  003b: return nothing
+  003d: <eos>
+
+function TnRobotAnimator.IsPlayingMaskedAnimation  (script 35 bytes)
+  0000: return cast3a(MaskType)[self.Players].IsPlayingAnimationOrBlendingOut()
+  001c: return return
+  0022: <eos>
+
+function TnRobotAnimator.IsPlayingNamedAnimation  (script 56 bytes)
+  0000: foreach self.Players(Player,) (end 0x002e)
+  000f: if !(Player.IsPlayingAnimation(AnimationName)) goto 0x002d
+  002a: iterpop
+  002b: return true
+  002d: iternext
+  002e: iterpop
+  002f: return false
+  0031: return return
+  0037: <eos>
+
+function TnRobotAnimator.Suspend  (script 39 bytes)
+  0000: foreach self.Players(Player,) (end 0x0023)
+  000f: Player.Suspend()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function TnRobotAnimator.Resume  (script 39 bytes)
+  0000: foreach self.Players(Player,) (end 0x0023)
+  000f: Player.Resume()
+  0022: iternext
+  0023: iterpop
+  0024: return nothing
+  0026: <eos>
+
+function TnRobotAnimator.Update  (script 44 bytes)
+  0000: foreach self.Players(Player,) (end 0x0028)
+  000f: Player.Update(DeltaTime)
+  0027: iternext
+  0028: iterpop
+  0029: return nothing
+  002b: <eos>
+
+function TnRobotAnimator.StopAnimation  (script 64 bytes)
+  0000: nothing
+  0001: nothing
+  0002: if !((self.Mesh == none)) goto 0x000f
+  000d: return nothing
+  000f: foreach self.Players(Player,) (end 0x003c)
+  001e: Player.StopAnimation(BlendOutTime, AnimationToStop)
+  003b: iternext
+  003c: iterpop
+  003d: return nothing
+  003f: <eos>
+
+function TnRobotAnimator.GetAnimationLength  (script 49 bytes)
+  0000: if !((self.Mesh == none)) goto 0x0011
+  000b: return 0.0
+  0011: return self.Mesh.GetAnimLength(AnimationName)
+  002a: return return
+  0030: <eos>
+
+function TnRobotAnimator.GetAnimationSequence  (script 45 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return none
+  000d: return self.Mesh.FindAnimSequence(AnimationName)
+  0026: return return
+  002c: <eos>
+
+function TnRobotAnimator.IgnoreCustomAnimation  (script 49 bytes)
+  0000: foreach self.Players(Player,) (end 0x002d)
+  000f: Player.IgnoreCustomAnimation(AnimationName, AnimationTimeStamp)
+  002c: iternext
+  002d: iterpop
+  002e: return nothing
+  0030: <eos>
+
+function TnRobotAnimator.SetReplicateCustomAnimToOwningPlayer  (script 45 bytes)
+  0000: foreach self.Players(Player,) (end 0x0029)
+  000f: Player.SetReplicateCustomAnimToOwningPlayer(Replicate)
+  0028: iternext
+  0029: iterpop
+  002a: return nothing
+  002c: <eos>

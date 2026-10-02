@@ -1,0 +1,134 @@
+function TnAiActionShootFromSniperLocation.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self._Blueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionShootFromSniperLocation.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionShootFromSniperLocation.get_Target  (script 13 bytes)
+  0000: return self._Target
+  0006: return return
+  000c: <eos>
+
+function TnAiActionShootFromSniperLocation.OnBind  (script 76 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._LaserSight = TnAiLaserSight(GetService('TnAiLaserSight', 2))
+  0026: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0049: return nothing
+  004b: <eos>
+
+function TnAiActionShootFromSniperLocation.OnInitialize  (script 97 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionShootFromSniperLocationBlueprint(Blueprint)
+  001b: obj'HM_Engine.HmGoap'.static.SetProperty(self._Preconditions, obj'HM_Engine.HmGoap'.static.CreateIntProperty(obj'TnAiWorldStateTransformerForm', cast3a(self._Blueprint.RequiredForm), , , ))
+  005e: return nothing
+  0060: <eos>
+
+function TnAiActionShootFromSniperLocation.OnSetUpConditions  (script 186 bytes)
+  0000: if !((self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))) == false)) goto 0x003d
+  003b: return false
+  003d: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x0061
+  005f: return false
+  0061: if !((self._TransformerController._AttackFromActor == none)) goto 0x0077
+  0075: return false
+  0077: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', self._TransformerController._AttackFromActor)
+  00a2: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00b3: return return
+  00b9: <eos>
+
+function TnAiActionShootFromSniperLocation.OnPlanMade  (script 34 bytes)
+  0000: OnPlanMade(ExpectedEffects)
+  000b: self._DesiredSniperLocation = self._TransformerController._AttackFromActor
+  001f: return nothing
+  0021: <eos>
+
+function TnAiActionShootFromSniperLocation.OnIsValidForFutureExecution  (script 110 bytes)
+  0000: if !(!self._TransformerController.IsDangerous(Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects)))) goto 0x003c
+  003a: return false
+  003c: if !((self._DesiredSniperLocation != self._TransformerController._AttackFromActor)) goto 0x0056
+  0054: return false
+  0056: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0067: return return
+  006d: <eos>
+
+function TnAiActionShootFromSniperLocation.OnStart  (script 373 bytes)
+  0000: self._Target = Actor(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((self._Target == none)) goto 0x003e
+  0033: return Fail()
+  003e: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x006b
+  0060: return Fail()
+  006b: SetCharacterState(0)
+  0076: self._TransformerController.StopMovement()
+  0089: TnAiActionShootFromSniperLocation.ActivateShooting()
+  008f: self.TimeSinceStart = 0.0
+  009a: SightTarget = self._Target.Location
+  00ae: if !(((TnPawn(self._Target) != none) && TnPawn(self._Target).get_IsInRobotForm())) goto 0x011e
+  00db: SightTarget = (Pawn(self._Target).GetPawnViewLocation() + obj'Core.Math'.static.MakeVector(0.0, 0.0, cast3f(-25)))
+  011e: self._LaserSight.Initialize(self._TransformerPawn, 50.0, 50.0, 1.0, 25.0)
+  014a: self._LaserSight.Start(SightTarget)
+  0162: return OnStart(ExpectedEffects)
+  016e: return return
+  0174: <eos>
+
+function TnAiActionShootFromSniperLocation.OnUpdate  (script 446 bytes)
+  0000: if !((self._TransformerController.IsDangerous(self._Target) == false)) goto 0x0029
+  001e: return Succeed()
+  0029: if !((self._Target != get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTargetIsDead'))) goto 0x005b
+  0050: return Fail()
+  005b: if !((self._DesiredSniperLocation != self._TransformerController._AttackFromActor)) goto 0x007e
+  0073: return Fail()
+  007e: if !(((get_WeaponShooter().get_ActiveWeapon() == none) || get_WeaponShooter().get_ActiveWeapon().IsOverheating())) goto 0x00d2
+  00c7: return Fail()
+  00d2: if !(!get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x00ff
+  00f4: return Fail()
+  00ff: SightTarget = self._Target.Location
+  0113: if !(((TnPawn(self._Target) != none) && TnPawn(self._Target).get_IsInRobotForm())) goto 0x0183
+  0140: SightTarget = (Pawn(self._Target).GetPawnViewLocation() + obj'Core.Math'.static.MakeVector(0.0, 0.0, cast3f(-25)))
+  0183: self._LaserSight.SetSightTarget(SightTarget)
+  019b: TnAiActionShootFromSniperLocation.UpdateFiring(DeltaTime)
+  01a6: return OnUpdate(ExpectedEffects, DeltaTime)
+  01b7: return return
+  01bd: <eos>
+
+function TnAiActionShootFromSniperLocation.OnFinish  (script 95 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._DesiredSniperLocation = none
+  0012: self._LaserSight.Stop()
+  0025: TnAiActionShootFromSniperLocation.DeactivateShooting()
+  002b: if !((cast3a(CurrentState) != cast3a(3))) goto 0x003d
+  003b: return nothing
+  003d: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTargetIsDead', true, )
+  005c: return nothing
+  005e: <eos>
+
+function TnAiActionShootFromSniperLocation.ActivateShooting  (script 130 bytes)
+  0000: self._TransformerController.Enemy = Pawn(self._Target)
+  0019: self._TransformerController.Focus = IFocusible(self._Target)
+  0032: get_WeaponShooter().Activate(get_WeaponClass(), delegate.FailCallback)
+  005d: get_WeaponAimer().AimAtTarget(IFocusible(self._Target))
+  007f: return nothing
+  0081: <eos>
+
+function TnAiActionShootFromSniperLocation.DeactivateShooting  (script 75 bytes)
+  0000: get_WeaponAimer().Reset()
+  0018: get_WeaponShooter().StopFire()
+  0030: get_WeaponShooter().Deactivate()
+  0048: return nothing
+  004a: <eos>
+
+function TnAiActionShootFromSniperLocation.UpdateFiring  (script 222 bytes)
+  0000: (self.TimeSinceStart += DeltaTime)
+  000c: if !((self.TimeSinceStart < self._Blueprint.AimingDelayTillFirstShot)) goto 0x0026
+  0024: return nothing
+  0026: Firing = get_WeaponShooter().IsFiring()
+  0045: if !((get_WeaponAimer().get_OwnerIsAiming() && !Firing)) goto 0x0088
+  006d: get_WeaponShooter().StartFire()
+  0085: goto 0x00db
+  0088: if !((!get_WeaponAimer().get_OwnerIsAiming() && Firing)) goto 0x00db
+  00b0: self._TransformerController.OnEnemyChangeAllowed()
+  00c3: get_WeaponShooter().StopFire()
+  00db: return nothing
+  00dd: <eos>

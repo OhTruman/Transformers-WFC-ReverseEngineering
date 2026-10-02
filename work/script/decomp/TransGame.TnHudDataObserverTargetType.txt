@@ -1,0 +1,20 @@
+function TnHudDataObserverTargetType.CheckData  (script 327 bytes)
+  0000: NewValue = 2
+  0008: if !((PC.Pawn != none)) goto 0x012c
+  001c: if !(PC.PlayerTargeting.HasValidAssistTarget()) goto 0x006d
+  003b: NewValue = 1
+  0043: TargetPawn = Pawn(PC.PlayerTargeting.GetTargetAssistTarget())
+  006a: goto 0x00e5
+  006d: if !(PC.PlayerTargeting.HasValidTarget()) goto 0x00be
+  008c: NewValue = 1
+  0094: TargetPawn = Pawn(PC.PlayerTargeting.GetTarget())
+  00bb: goto 0x00e5
+  00be: TargetPawn = Pawn(PC.PlayerTargeting.GetRepairTarget())
+  00e5: if !((TargetPawn != none)) goto 0x012c
+  00f0: if !(obj'TnTeamInfo'.static.AreOnSameTeam(PC.Pawn, TargetPawn)) goto 0x0124
+  0119: NewValue = 0
+  0121: goto 0x012c
+  0124: NewValue = 1
+  012c: ProcessNewValue(Movie, cast3f(cast3a(NewValue)))
+  0144: return nothing
+  0146: <eos>

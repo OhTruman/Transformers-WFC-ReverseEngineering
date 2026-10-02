@@ -1,0 +1,20 @@
+function TnTacticalPathNodeEvaluatorAwayFromTarget.Score  (script 196 bytes)
+  0000: Target = Actor(Searcher.AiWorldState.GetSubject(obj'TnAiWorldStateTargetIsDead'))
+  002c: if !((Searcher._DefendActor != none)) goto 0x0046
+  0040: return 0.0
+  0046: if !((Target == none)) goto 0x0057
+  0051: return 1.0
+  0057: TargetToSearcher = (Searcher.get_TransformerPawn().Location - Target.Location)
+  0089: return cast3f((((TargetToSearcher dot (Tactical._Location - Target.Location)) > cast3f(0)) ? 1 : 0))
+  00bd: return return
+  00c3: <eos>
+
+function TnTacticalPathNodeEvaluatorAwayFromTarget.DrawDebug  (script 255 bytes)
+  0000: if !((Searcher._DefendActor != none)) goto 0x0016
+  0014: return nothing
+  0016: Target = Actor(Searcher.AiWorldState.GetSubject(obj'TnAiWorldStateTargetIsDead'))
+  0042: TargetToSearcher = obj'Core.Math'.static.Normal((Searcher.get_TransformerPawn().Location - Target.Location))
+  007f: Right = (TargetToSearcher cross vect(0,0,1))
+  0099: obj'Engine.Debug'.static.DrawLine((Target.Location + (Right * cast3f(7000))), (Target.Location + (Right * cast3f(-7000))), obj'Core.Colors'.static.Green(), true)
+  00fc: return nothing
+  00fe: <eos>

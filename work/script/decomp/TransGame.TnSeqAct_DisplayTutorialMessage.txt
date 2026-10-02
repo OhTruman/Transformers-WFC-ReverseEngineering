@@ -1,0 +1,16 @@
+function TnSeqAct_DisplayTutorialMessage.Activated  (script 92 bytes)
+  0000: Activated()
+  0006: WI = obj'Engine.GameEngine'.static.GetCurrentWorldInfo()
+  001f: foreach WI.AllControllers(obj'TnPlayerController', PC) (end 0x0058)
+  003f: PC.ClientDisplayTutorialMessage(self.MessageType)
+  0057: iternext
+  0058: iterpop
+  0059: return nothing
+  005b: <eos>
+
+function TnSeqAct_DisplayTutorialMessage.CheckForErrors  (script 68 bytes)
+  0000: CheckForErrors()
+  0006: if !((cast3a(self.MessageType) == cast3a(0))) goto 0x0041
+  0016: EmitCheckMessage(0, "Unset tutorial message type", , )
+  0041: return nothing
+  0043: <eos>

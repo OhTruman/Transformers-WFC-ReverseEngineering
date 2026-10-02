@@ -1,0 +1,247 @@
+function TnTacticalPathNodePicker.get_BestNode  (script 38 bytes)
+  0000: if !((self._BestTactical == none)) goto 0x000d
+  000b: return none
+  000d: return TnTacticalInterface(self._BestTactical.get_Outer())
+  001f: return return
+  0025: <eos>
+
+function TnTacticalPathNodePicker.get_BestScore  (script 13 bytes)
+  0000: return self._BestScore
+  0006: return return
+  000c: <eos>
+
+function TnTacticalPathNodePicker.get_LastUpdateTime  (script 13 bytes)
+  0000: return self._LastUpdateTime
+  0006: return return
+  000c: <eos>
+
+function TnTacticalPathNodePicker.Initialize  (script 97 bytes)
+  0000: self._OwnerController = OwnerController
+  000b: self._OwnerTeamNum = TnTacticalPathNodePicker.GetPawnTeamNum(OwnerController.get_TransformerPawn())
+  002a: self._TacticalSystem = TnGame(obj'Engine.Engine'.static.GetGame())._TacticalSystem
+  0051: self._UseBasedTactical = UseBasedTactical
+  005e: return nothing
+  0060: <eos>
+
+function TnTacticalPathNodePicker.GetPawnTeamNum  (script 258 bytes)
+  0000: TeamNum = P.GetTeamNum()
+  0019: if !(((cast3a(TeamNum) != 0) && (cast3a(TeamNum) != 1))) goto 0x00f5
+  0035: if !((TnPawn(P) != none)) goto 0x0099
+  0045: LogInternal((("ERROR: Enemy" @ TnPawn(P).get_FriendlyName()) @ "is not and Autobot or Decepticon"), , , )
+  0096: goto 0x00d9
+  0099: LogInternal((("ERROR: Enemy" @ cast56(P)) @ "is not and Autobot or Decepticon"), , , )
+  00d9: TeamNum = cast3d(obj'Core.Math'.static.Clamp(cast3a(TeamNum), 0, 1))
+  00f5: return TeamNum
+  00fb: return return
+  0101: <eos>
+
+function TnTacticalPathNodePicker.Update  (script 129 bytes)
+  0000: if !((((self._OwnerController == none) || (self._OwnerController.Enemy == none)) || (self._OwnerController.Pawn == none))) goto 0x0039
+  0037: return nothing
+  0039: self._EnemyTeamNum = TnTacticalPathNodePicker.GetPawnTeamNum(self._OwnerController.Enemy)
+  0053: TnTacticalPathNodePicker.UpdateSelectionFromEnemy()
+  0059: TnTacticalPathNodePicker.RescoreBestNode()
+  005f: TnTacticalPathNodePicker.FindNewBestTactical()
+  0065: self._LastUpdateTime = obj'Engine.Engine'.static.GetWorldTime()
+  007e: return nothing
+  0080: <eos>
+
+function TnTacticalPathNodePicker.CalculateNodeScore  (script 183 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(TacticalNode, TnTacticalInterface(none))) goto 0x001a
+  0014: return 0.0
+  001a: Tactical = TacticalNode.GetTactical()
+  0034: if !((Tactical == self._BestTactical)) goto 0x0049
+  0043: return self._BestScore
+  0049: if !(TnTacticalPathNodePicker.ShouldDiscard(Tactical)) goto 0x005d
+  0057: return 0.0
+  005d: if !(((self._TacticalCollection != none) && !obj'Core.Math'.static.IsPointInBox(Tactical._Location, self._TacticalCollection._SelectionBounds))) goto 0x00a4
+  009e: return 0.0
+  00a4: return TnTacticalPathNodePicker.CalculateScore(Tactical)
+  00b0: return return
+  00b6: <eos>
+
+function TnTacticalPathNodePicker.CanUseTactical  (script 69 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(TacticalNode, TnTacticalInterface(none))) goto 0x0016
+  0014: return false
+  0016: Tactical = TacticalNode.GetTactical()
+  0030: return !TnTacticalPathNodePicker.ShouldDiscard(Tactical)
+  003e: return return
+  0044: <eos>
+
+function TnTacticalPathNodePicker.RescoreBestNode  (script 212 bytes)
+  0000: if !(((self._BestTactical == none) || (self._TacticalCollection == none))) goto 0x001a
+  0018: return nothing
+  001a: TacticalVolume = self._OwnerController.GetTacticalVolume()
+  0033: if !(((TacticalVolume != none) && !TacticalVolume.EncompassesPoint(self._BestTactical._Location))) goto 0x006e
+  0066: TnTacticalPathNodePicker.ClearBestTactical()
+  006c: return nothing
+  006e: if !(TnTacticalPathNodePicker.ShouldDiscard(self._BestTactical)) goto 0x0084
+  007c: TnTacticalPathNodePicker.ClearBestTactical()
+  0082: return nothing
+  0084: if !(!obj'Core.Math'.static.IsPointInBox(self._BestTactical._Location, self._TacticalCollection._SelectionBounds)) goto 0x00c0
+  00b8: TnTacticalPathNodePicker.ClearBestTactical()
+  00be: return nothing
+  00c0: self._BestScore = TnTacticalPathNodePicker.CalculateScore(self._BestTactical)
+  00d1: return nothing
+  00d3: <eos>
+
+function TnTacticalPathNodePicker.UpdateSelectionFromEnemy  (script 154 bytes)
+  0000: self._TacticalCollection = self._TacticalSystem.FindTacticalCollectionForPawn(self._OwnerController.Enemy)
+  0027: if !((self._TacticalCollection == none)) goto 0x0034
+  0032: return nothing
+  0034: self._TacticalCollection.UpdateTactical()
+  0047: obj'TnTactical'.static.SortByDistance(self._SortedTactical, self._TacticalCollection.Collection, self._OwnerController.Pawn.Location, self._OwnerController.GetTacticalVolume())
+  0097: return nothing
+  0099: <eos>
+
+function TnTacticalPathNodePicker.FindNewBestTactical  (script 204 bytes)
+  0000: BestTactical = self._BestTactical
+  000b: BestScore = self._BestScore
+  0016: I = 0
+  001d: if !(((I < self._SortedTactical.Length) && (NumEvaluated < 100))) goto 0x00b9
+  003b: if !((I[self._SortedTactical] == none)) goto 0x004f
+  004c: goto 0x00af
+  004f: if !(TnTacticalPathNodePicker.ShouldDiscard(I[self._SortedTactical])) goto 0x0066
+  0063: goto 0x00af
+  0066: CurrentScore = TnTacticalPathNodePicker.CalculateScore(I[self._SortedTactical])
+  007d: if !((CurrentScore > BestScore)) goto 0x00a8
+  008c: BestTactical = I[self._SortedTactical]
+  009d: BestScore = CurrentScore
+  00a8: AddAdd_PreInt(NumEvaluated)
+  00af: AddAdd_PreInt(I)
+  00b6: goto 0x001d
+  00b9: TnTacticalPathNodePicker.SetBestTactical(BestTactical, BestScore)
+  00c9: return nothing
+  00cb: <eos>
+
+function TnTacticalPathNodePicker.ShouldDiscard  (script 170 bytes)
+  0000: if !((self._UseBasedTactical && (Tactical._OuterNavPoint.get_Class() == obj'TnTacticalAirPathNode'))) goto 0x002c
+  002a: return true
+  002c: if !((!self._UseBasedTactical && (Tactical._OuterNavPoint.get_Class() != obj'TnTacticalAirPathNode'))) goto 0x005a
+  0058: return true
+  005a: return (((Tactical._Claimer != none) && (Tactical._Claimer != self._OwnerController)) || Tactical._OuterNavPoint.bBlocked)
+  00a3: return return
+  00a9: <eos>
+
+function TnTacticalPathNodePicker.CalculateScore  (script 185 bytes)
+  0000: I = 0
+  0007: if !((I < self.Evaluators.Length)) goto 0x00ac
+  0017: if !((I[self.Evaluators] != none)) goto 0x005f
+  0028: (TotalScore += I[self.Evaluators].Evaluate(Tactical, self._OwnerController, self._OwnerTeamNum, self._EnemyTeamNum))
+  005c: goto 0x00a2
+  005f: LogInternal(("ERROR: EngineTeam - Evaluators[i] was none in " $ cast57(GetFuncName())), , , )
+  00a2: AddAdd_PreInt(I)
+  00a9: goto 0x0007
+  00ac: return TotalScore
+  00b2: return return
+  00b8: <eos>
+
+function TnTacticalPathNodePicker.SetBestTactical  (script 95 bytes)
+  0000: if !((self._BestTactical != none)) goto 0x0023
+  000b: self._BestTactical.Release(self._OwnerController)
+  0023: self._BestScore = Score
+  002e: self._BestTactical = Best
+  0039: if !((self._BestTactical != none)) goto 0x005c
+  0044: self._BestTactical.Claim(self._OwnerController)
+  005c: return nothing
+  005e: <eos>
+
+function TnTacticalPathNodePicker.ClearBestTactical  (script 56 bytes)
+  0000: if !((self._BestTactical != none)) goto 0x0023
+  000b: self._BestTactical.Release(self._OwnerController)
+  0023: self._BestTactical = none
+  002a: self._BestScore = -1.0
+  0035: return nothing
+  0037: <eos>
+
+function TnTacticalPathNodePicker.DisplayBestTacticalDebug  (script 371 bytes)
+  0000: TnTacticalPathNodePicker.DrawAllTacticalScores()
+  0006: ClaimedTacticalPathNode = TnTacticalInterface(self._OwnerController._OccupiedNavigationPoint)
+  001f: if !(NotEqual_InterfaceInterface(ClaimedTacticalPathNode, TnTacticalInterface(none))) goto 0x004d
+  0033: ClaimedTactical = ClaimedTacticalPathNode.GetTactical()
+  004d: ClaimedIsBest = (ClaimedTactical == self._BestTactical)
+  0060: if !((!ClaimedIsBest && (ClaimedTactical != none))) goto 0x00d5
+  0078: TnTacticalPathNodePicker.DrawTacticalDisplay("Claimed Tactical", MakeColor(128, 50, 0, 200), ClaimedTactical, HUD.Canvas, (HUD.Canvas.ClipX - cast3f(550)))
+  00d5: TnTacticalPathNodePicker.DrawTacticalDisplay((ClaimedIsBest ? "Best & Claimed Tactical" : "Best Tactical"), (ClaimedIsBest ? MakeColor(64, 64, 0, 200) : MakeColor(0, 128, 0, 200)), self._BestTactical, HUD.Canvas, (HUD.Canvas.ClipX - cast3f(275)))
+  0170: return nothing
+  0172: <eos>
+
+function TnTacticalPathNodePicker.DrawTacticalDisplay  (script 1527 bytes)
+  0000: if !(((Tactical == none) || (self._OwnerController.Enemy == none))) goto 0x0023
+  0021: return nothing
+  0023: Projected = HudCanvas.Project(Tactical._Location)
+  004a: LineHeight = HudCanvas.Font.GetMaxCharHeight()
+  006c: Margin = 5.0
+  0077: Width = 250.0
+  0082: Height = ((cast3f((self.Evaluators.Length + 1)) * LineHeight) + (cast3f(3) * Margin))
+  00a7: Top = 25.0
+  00b2: if !((Projected.Z > cast3f(0))) goto 0x0200
+  00ca: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), 128)
+  00eb: HudCanvas.Draw2DLine((Left + (Width * 0.5)), (Top + Height), Projected.X, Projected.Y, obj'Core.Colors'.static.White())
+  0150: HudCanvas.SetDrawColor(TitleColor.R, TitleColor.G, TitleColor.B, TitleColor.A)
+  01a3: HudCanvas.SetPos((Projected.X - cast3f(5)), (Projected.Y - cast3f(5)))
+  01e2: HudCanvas.DrawRect(10.0, 10.0, )
+  0200: HudCanvas.SetDrawColor(0, 0, 0, 200)
+  021b: HudCanvas.SetPos(Left, ((Top + Margin) + LineHeight))
+  0246: HudCanvas.DrawRect(Width, ((Height - Margin) - LineHeight), )
+  0272: HudCanvas.SetDrawColor(TitleColor.R, TitleColor.G, TitleColor.B, TitleColor.A)
+  02c5: HudCanvas.SetPos(Left, Top)
+  02e2: HudCanvas.DrawRect(Width, (LineHeight + Margin), )
+  0307: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), 128)
+  0328: HudCanvas.SetPos(Left, Top)
+  0345: HudCanvas.DrawBox(Width, Height)
+  0362: (Top += ((Margin * cast3f(2)) + LineHeight))
+  037b: (Left += Margin)
+  0387: (Width -= (cast3f(2) * Margin))
+  0399: (Height -= ((cast3f(3) * Margin) + LineHeight))
+  03b2: HeightPerBar = (Height / cast3f(self.Evaluators.Length))
+  03c7: I = 0
+  03ce: if !((I < self.Evaluators.Length)) goto 0x0584
+  03de: Score = I[self.Evaluators].Evaluate(Tactical, self._OwnerController, self._OwnerTeamNum, self._EnemyTeamNum)
+  0411: (ScoreSum += Score)
+  041d: DrawColor = obj'Core.Colors'.static.Sequence(I, )
+  043c: HudCanvas.SetDrawColor(DrawColor.R, DrawColor.G, DrawColor.B, cast3d(255))
+  0483: HudCanvas.SetPos(Left, (Top + (cast3f(I) * HeightPerBar)))
+  04b0: HudCanvas.DrawTextNormal(I[self.Evaluators]._DisplayName, , , )
+  04da: HudCanvas.SetPos(((Left + (0.75 * Width)) + ((Score < cast3f(0)) ? (Score * cast3f(10)) : 0.0)), ((Top + (cast3f(I) * HeightPerBar)) + (Margin * 0.5)))
+  0544: HudCanvas.DrawRect((obj'Core.Math'.static.Abs(Score) * cast3f(10)), (HeightPerBar - Margin), )
+  057a: AddAdd_PreInt(I)
+  0581: goto 0x03ce
+  0584: HudCanvas.SetDrawColor(cast3d(255), cast3d(255), cast3d(255), 200)
+  05a5: HudCanvas.SetPos(Left, ((Top - LineHeight) - Margin))
+  05d0: HudCanvas.DrawTextNormal((Title @ cast55(ScoreSum)), , , )
+  05f4: return nothing
+  05f6: <eos>
+
+function TnTacticalPathNodePicker.DrawTacticalLocations  (script 141 bytes)
+  0000: T = 0
+  0007: if !((T < self._SortedTactical.Length)) goto 0x008a
+  0017: obj'Engine.Debug'.static.DrawDisk(T[self._SortedTactical]._Location, vect(0,0,1), 0.0, 50.0, 4, MakeColor(0, cast3d(255), cast3d(255), cast3d(((T < 100) ? 255 : 32))), )
+  0080: AddAdd_PreInt(T)
+  0087: goto 0x0007
+  008a: return nothing
+  008c: <eos>
+
+function TnTacticalPathNodePicker.DrawAllTacticalScores  (script 381 bytes)
+  0000: T = 0
+  0007: if !(((T < self._SortedTactical.Length) && (NumEvaluated < 100))) goto 0x017a
+  0025: Radius = 0.0
+  0030: if !((T[self._SortedTactical] == none)) goto 0x0044
+  0041: goto 0x0170
+  0044: if !(TnTacticalPathNodePicker.ShouldDiscard(T[self._SortedTactical])) goto 0x005b
+  0058: goto 0x0170
+  005b: AddAdd_PreInt(NumEvaluated)
+  0062: I = 0
+  0069: if !((I < self.Evaluators.Length)) goto 0x0170
+  0079: Score = I[self.Evaluators].Evaluate(T[self._SortedTactical], self._OwnerController, self._OwnerTeamNum, self._EnemyTeamNum)
+  00b2: NegativeScore = (Score < cast3f(0))
+  00c3: Score = obj'Core.Math'.static.Abs(Score)
+  00d9: OuterRadius = (Radius + (Score * cast3f(10)))
+  00f1: obj'Engine.Debug'.static.DrawDisk(T[self._SortedTactical]._Location, vect(0,0,1), Radius, OuterRadius, 4, obj'Core.Colors'.static.Sequence(I, cast3d((NegativeScore ? 32 : 255))), )
+  015b: Radius = OuterRadius
+  0166: AddAdd_PreInt(I)
+  016d: goto 0x0069
+  0170: AddAdd_PreInt(T)
+  0177: goto 0x0007
+  017a: return nothing
+  017c: <eos>

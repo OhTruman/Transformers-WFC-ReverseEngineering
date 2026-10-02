@@ -1,0 +1,55 @@
+function TnGoapGoalHeal.Initialize  (script 30 bytes)
+  0000: Initialize(Blueprint)
+  000b: self._Blueprint = TnGoapGoalHealBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnGoapGoalHeal.Bind  (script 55 bytes)
+  0000: Bind(InAiController)
+  000b: self.TransformerAiController = TnAiController(self.BoundController)
+  001b: self.TransformerPawn = TnAiPawn(self.TransformerAiController.Pawn)
+  0034: return nothing
+  0036: <eos>
+
+function TnGoapGoalHeal.GetHealCandidate  (script 451 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: BestCandidatePawn = none
+  0020: ClosestDistanceSq = 1000000000.0
+  002b: foreach WI.CollidingActors(obj'TnPawn', CurrentPawn, self._Blueprint._MaxSearchDistance, self.BoundController.Pawn.Location, ) (end 0x01b5)
+  0071: if !((((((CurrentPawn == self.BoundController.Pawn) || (CurrentPawn == none)) || CurrentPawn.IsDying()) || CurrentPawn.IsDead()) || !CurrentPawn.IsSameTeam(self.BoundController.Pawn))) goto 0x00f2
+  00ee: iternext
+  00ef: goto 0x01b5
+  00f2: if !(((self._Blueprint.RevivePlayerAndBuddiesOnly && CurrentPawn._IsDowned) && !TnGoapGoalHeal.IsValidPlayerOrBuddy(CurrentPawn))) goto 0x012e
+  012a: iternext
+  012b: goto 0x01b5
+  012e: if !((CurrentPawn.GetNormalizedHealth() > Threshold)) goto 0x014f
+  014b: iternext
+  014c: goto 0x01b5
+  014f: CurrentDistanceSq = obj'Core.Math'.static.VSizeSq((CurrentPawn.Location - self.BoundController.Pawn.Location))
+  018f: if !((CurrentDistanceSq < ClosestDistanceSq)) goto 0x01b4
+  019e: BestCandidatePawn = CurrentPawn
+  01a9: ClosestDistanceSq = CurrentDistanceSq
+  01b4: iternext
+  01b5: iterpop
+  01b6: return BestCandidatePawn
+  01bc: return return
+  01c2: <eos>
+
+function TnGoapGoalHeal.IsValidPlayerOrBuddy  (script 85 bytes)
+  0000: PawnAiController = TnAiController(CurrentPawn.Controller)
+  0019: if !((PawnAiController != none)) goto 0x0040
+  0024: return (cast3a(PawnAiController.get_AiType()) == cast3a(1))
+  0040: return (TnPlayerPawn(CurrentPawn) != none)
+  004e: return return
+  0054: <eos>
+
+function TnGoapGoalHeal.PopulateGoals  (script 105 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: HealCandidate = TnGoapGoalHeal.GetHealCandidate(self._Blueprint._MinHealthThreshold)
+  0031: if !((HealCandidate != none)) goto 0x0060
+  003c: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateHealTarget', HealCandidate)
+  005e: return true
+  0060: return false
+  0062: return return
+  0068: <eos>

@@ -1,0 +1,45 @@
+function TnKillBasedMultiplayerTestingPolicy.HandleEnterGame  (script 64 bytes)
+  0000: TnMultiplayerGameTestingPolicy.HandleEnterGame(Game)
+  000b: Game.SetTimer(self.KillInterval, true, 'CauseRandomKill', self)
+  0027: GetChildClasses(obj'TnDamageType', self.DamageTypes, false, false)
+  003d: return nothing
+  003f: <eos>
+
+function TnKillBasedMultiplayerTestingPolicy.RemoveDeadPlayers  (script 79 bytes)
+  0000: I = (Players.Length - 1)
+  000f: if !((I >= 0)) goto 0x004c
+  001a: if !(I[Players].IsDead()) goto 0x0042
+  0036: Players.Remove(I,1)
+  0042: SubtractSubtract_PreInt(I)
+  0049: goto 0x000f
+  004c: return nothing
+  004e: <eos>
+
+function TnKillBasedMultiplayerTestingPolicy.PopulatePotentialKillers  (script 52 bytes)
+  0000: self._Game.WorldInfo.GetAllControllers(obj'TnPlayerController', Killers)
+  0026: TnKillBasedMultiplayerTestingPolicy.RemoveDeadPlayers(Killers)
+  0031: return nothing
+  0033: <eos>
+
+function TnKillBasedMultiplayerTestingPolicy.PopulatePotentialVictims  (script 52 bytes)
+  0000: self._Game.WorldInfo.GetAllControllers(obj'TnPlayerController', Victims)
+  0026: TnKillBasedMultiplayerTestingPolicy.RemoveDeadPlayers(Victims)
+  0031: return nothing
+  0033: <eos>
+
+function TnKillBasedMultiplayerTestingPolicy.CauseRandomKill  (script 327 bytes)
+  0000: PopulatePotentialKillers(Killers)
+  000f: PopulatePotentialVictims(Victims)
+  001e: if !(((Killers.Length == 0) || (Victims.Length == 0))) goto 0x003a
+  0038: return nothing
+  003a: KillerIndex = obj'Core.Random'.static.RandomInt(Killers.Length)
+  0059: Killer = KillerIndex[Killers]
+  006a: VictimIndex = obj'Core.Random'.static.RandomInt(Victims.Length)
+  0089: Victim = VictimIndex[Victims]
+  009a: DamageIndex = obj'Core.Random'.static.RandomInt(self.DamageTypes.Length)
+  00b9: DType = class<DamageType>(DamageIndex[self.DamageTypes])
+  00cf: if !((Victim.Pawn == none)) goto 0x00e5
+  00e3: return nothing
+  00e5: Victim.Pawn.TakeDamage(Victim.Pawn.GetHealth(), Killer, Victim.Location, vect(0,0,1), DType, , )
+  0144: return nothing
+  0146: <eos>

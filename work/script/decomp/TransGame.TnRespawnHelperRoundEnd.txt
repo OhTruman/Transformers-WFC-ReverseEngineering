@@ -1,0 +1,19 @@
+function TnRespawnHelperRoundEnd.OnDeath  (script 18 bytes)
+  0000: Add(C)
+  000f: return nothing
+  0011: <eos>
+
+function TnRespawnHelperRoundEnd.OnRoundEnded  (script 63 bytes)
+  0000: TnRespawnHelperDelayed.OnRoundEnded()
+  0006: CopiedList = self.PendingRespawns
+  0011: foreach CopiedList(entry,) (end 0x003b)
+  0020: Respawn(entry.C)
+  003a: iternext
+  003b: iterpop
+  003c: return nothing
+  003e: <eos>
+
+function TnRespawnHelperRoundEnd.GetTimeToRespawn  (script 13 bytes)
+  0000: return -1.0
+  0006: return return
+  000c: <eos>

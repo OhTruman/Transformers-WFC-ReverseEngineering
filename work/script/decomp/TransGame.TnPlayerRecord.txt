@@ -1,0 +1,57 @@
+function TnPlayerRecord.GetPlayer  (script 13 bytes)
+  0000: return self.Player
+  0006: return return
+  000c: <eos>
+
+function TnPlayerRecord.InitializeRecord  (script 96 bytes)
+  0000: self.Player = PC
+  000b: self.Records.Length = self.kNumRecordsToKeep
+  0017: self.FilledBuffer = false
+  001f: self.CurrentIndex = -1
+  002a: self.LocationTolerenceSquared = obj'Core.Math'.static.Square((PC.Pawn.GetCollisionRadius() * cast3f(2)))
+  005d: return nothing
+  005f: <eos>
+
+function TnPlayerRecord.GetNumRecords  (script 32 bytes)
+  0000: return (self.FilledBuffer ? self.kNumRecordsToKeep : (self.CurrentIndex + 1))
+  0019: return return
+  001f: <eos>
+
+function TnPlayerRecord.AddRecord  (script 214 bytes)
+  0000: if !((Level == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(((self.CurrentIndex != -1) && (obj'Core.Math'.static.VSizeSq((self.CurrentIndex[self.Records].Location - Location)) < self.LocationTolerenceSquared))) goto 0x005a
+  0058: return nothing
+  005a: AddAdd_PreInt(self.CurrentIndex)
+  0061: if !((self.CurrentIndex == self.kNumRecordsToKeep)) goto 0x007f
+  0070: self.FilledBuffer = true
+  0078: self.CurrentIndex = 0
+  007f: self.CurrentIndex[self.Records].Location = Location
+  009b: self.CurrentIndex[self.Records].Rotation = Rotation
+  00b7: self.CurrentIndex[self.Records].Level = Level
+  00d3: return nothing
+  00d5: <eos>
+
+function TnPlayerRecord.GetRecord  (script 170 bytes)
+  0000: if !(((self.CurrentIndex == -1) || (Index >= self.kNumRecordsToKeep))) goto 0x0022
+  0020: return false
+  0022: IndexToGet = (self.CurrentIndex - Index)
+  0034: if !((IndexToGet < 0)) goto 0x004b
+  003f: (IndexToGet += self.kNumRecordsToKeep)
+  004b: if !((IndexToGet[self.Records].Level == none)) goto 0x0069
+  0067: return false
+  0069: Location = IndexToGet[self.Records].Location
+  0085: Rotation = IndexToGet[self.Records].Rotation
+  00a1: return true
+  00a3: return return
+  00a9: <eos>
+
+function TnPlayerRecord.NotifyLevelStreamedOut  (script 92 bytes)
+  0000: I = 0
+  0007: if !((I < self.Records.Length)) goto 0x0059
+  0017: if !((I[self.Records].Level == Level)) goto 0x004f
+  0037: I[self.Records].Level = none
+  004f: AddAdd_PreInt(I)
+  0056: goto 0x0007
+  0059: return nothing
+  005b: <eos>

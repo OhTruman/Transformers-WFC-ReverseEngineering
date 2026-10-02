@@ -1,0 +1,11 @@
+function RB_Thruster.OnToggle  (script 134 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x002a
+  001f: self.bThrustEnabled = true
+  0027: goto 0x0083
+  002a: if !(1[Action.InputLinks].bHasImpulse) goto 0x0054
+  0049: self.bThrustEnabled = false
+  0051: goto 0x0083
+  0054: if !(2[Action.InputLinks].bHasImpulse) goto 0x0083
+  0074: self.bThrustEnabled = !self.bThrustEnabled
+  0083: return nothing
+  0085: <eos>

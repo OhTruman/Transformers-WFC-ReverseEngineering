@@ -1,0 +1,37 @@
+function TnTacticalCollection.set_LocationChangeThreshold  (script 14 bytes)
+  0000: self._LocationChangeThreshold = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTacticalCollection.get_BoundPawn  (script 13 bytes)
+  0000: return self._BoundPawn
+  0006: return return
+  000c: <eos>
+
+function TnTacticalCollection.get_SelectionBounds  (script 13 bytes)
+  0000: return self._SelectionBounds
+  0006: return return
+  000c: <eos>
+
+function TnTacticalCollection.Initialize  (script 25 bytes)
+  0000: self._BoundPawn = BoundPawn
+  000b: self._Radius = Radius
+  0016: return nothing
+  0018: <eos>
+
+function TnTacticalCollection.UpdateTactical  (script 343 bytes)
+  0000: DistanceSq = obj'Core.Math'.static.VSizeSq((self._BoundPawn.Location - self._PreviousLocation))
+  002e: if !((DistanceSq < (self._LocationChangeThreshold * self._LocationChangeThreshold))) goto 0x0047
+  0044: return 1
+  0047: self._SelectionBounds.Min = (self._BoundPawn.Location + obj'Core.Math'.static.MakeVector(-self._Radius, -self._Radius, -self._Radius))
+  0090: self._SelectionBounds.Max = (self._BoundPawn.Location + obj'Core.Math'.static.MakeVector(self._Radius, self._Radius, self._Radius))
+  00d3: self.Collection.Length = 0
+  00db: TnGame(obj'Engine.Engine'.static.GetGame())._TacticalOctree.Find(self._SelectionBounds, FoundTactical)
+  0114: foreach FoundTactical(FoundElement,) (end 0x0138)
+  0123: self.Collection.AddItem(TnTactical(cast36(FoundElement)))
+  0137: iternext
+  0138: iterpop
+  0139: self._PreviousLocation = self._BoundPawn.Location
+  014d: return 0
+  0150: return return
+  0156: <eos>

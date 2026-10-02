@@ -1,0 +1,47 @@
+function HmAnimHelperObject.FindAnimNodeWithWeight  (script 12 bytes)
+  0000: startSearchFrom
+  0005: InNodeName
+  000a: nothing
+  000b: <eos>
+
+function HmAnimHelperObject.FindAnimSwitchWeightedBySelectorProperty  (script 12 bytes)
+  0000: startSearchFrom
+  0005: switchSelectorProp
+  000a: nothing
+  000b: <eos>
+
+function HmAnimHelperObject.ResetChildAnimations  (script 7 bytes)
+  0000: startFrom
+  0005: nothing
+  0006: <eos>
+
+function HmAnimHelperObject.CreateAnimSequence  (script 180 bytes)
+  0000: AnimSeq = new(BaseTree, nothing, obj'Engine.AnimNodeSequence', nothing, AttachTreeCallback)
+  0018: 0[AnimSeq.RootBoneOption] = 3
+  002b: 1[AnimSeq.RootBoneOption] = 3
+  003e: 2[AnimSeq.RootBoneOption] = 3
+  0052: AnimSeq.bZeroRootRotation = false
+  0063: AnimSeq.SetAnim(SequenceName)
+  007b: ABC.Anim = AnimSeq
+  0091: ABC.Name = SequenceName
+  00a7: return ABC
+  00ad: return return
+  00b3: <eos>
+
+function HmAnimHelperObject.CreateCrossFadeCondition  (script 101 bytes)
+  0000: CrossFade = new(BaseTree, nothing, obj'AmpCrossFadeCondition', nothing, AttachTreeCallback)
+  0018: CrossFade.TransitionTime = CrossFadeTime
+  002c: ABC.Anim = CrossFade
+  0042: ABC.Name = CrossFadeName
+  0058: return ABC
+  005e: return return
+  0064: <eos>
+
+function HmAnimHelperObject.CreateAnimState  (script 103 bytes)
+  0000: AnimState = new(BaseTree, nothing, obj'AmpAnimState', nothing, AttachTreeCallback)
+  0018: 0[AnimState.Children] = InChild
+  002e: ABC.Anim = AnimState
+  0044: ABC.Name = StateName
+  005a: return ABC
+  0060: return return
+  0066: <eos>

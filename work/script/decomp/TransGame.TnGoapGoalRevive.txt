@@ -1,0 +1,89 @@
+function TnGoapGoalRevive.Initialize  (script 30 bytes)
+  0000: Initialize(Blueprint)
+  000b: self._Blueprint = TnGoapGoalReviveBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnGoapGoalRevive.GetReviveCandidate  (script 123 bytes)
+  0000: PRI = TnPlayerReplicationInfo(self.BoundController.PlayerReplicationInfo)
+  0019: if !((PRI == none)) goto 0x0026
+  0024: return none
+  0026: Teammates = PRI.GetDownedTeammates()
+  003f: if !(((Teammates.Length == 0) && !self._Blueprint.RevivePlayersOnly)) goto 0x0068
+  0061: return TnGoapGoalRevive.FindClosestPawn()
+  0068: return TnGoapGoalRevive.FindClosestTeammate(Teammates)
+  0074: return return
+  007a: <eos>
+
+function TnGoapGoalRevive.FindClosestPawn  (script 402 bytes)
+  0000: ClosestDistanceSq = 1000000000.0
+  000b: PDM = self.BoundController.Pawn.get_PawnDistancesManager()
+  002d: if !((PDM == none)) goto 0x003a
+  0038: return none
+  003a: foreach PDM.PawnsInDistance(obj'TnPawn', CurrentPawn, self.BoundController.Pawn, self._Blueprint.MaxSearchDistance) (end 0x0184)
+  0076: if !(((((CurrentPawn == self.BoundController.Pawn) || (CurrentPawn == none)) || !CurrentPawn._IsDowned) || !CurrentPawn.IsSameTeam(self.BoundController.Pawn))) goto 0x00dd
+  00d9: iternext
+  00da: goto 0x0184
+  00dd: if !((self._Blueprint.RevivePlayersOnly && (TnPlayerPawn(CurrentPawn) == none))) goto 0x0105
+  0101: iternext
+  0102: goto 0x0184
+  0105: CurrentDistanceSq = obj'Core.Math'.static.VSizeSq((CurrentPawn.Location - self.BoundController.Pawn.Location))
+  0145: if !(!TnGoapGoalRevive.HasEnoughTimeElapsedForRevive(CurrentPawn, CurrentDistanceSq)) goto 0x015e
+  015a: iternext
+  015b: goto 0x0184
+  015e: if !((CurrentDistanceSq < ClosestDistanceSq)) goto 0x0183
+  016d: BestCandidatePawn = CurrentPawn
+  0178: ClosestDistanceSq = CurrentDistanceSq
+  0183: iternext
+  0184: iterpop
+  0185: return BestCandidatePawn
+  018b: return return
+  0191: <eos>
+
+function TnGoapGoalRevive.HasEnoughTimeElapsedForRevive  (script 127 bytes)
+  0000: DistanceScalar = (1.0 - obj'Core.Math'.static.FClamp((obj'Core.Math'.static.Sqrt(DistanceSqToPawn) / self._Blueprint.DistanceForNoWaitingBeforeRevive), 0.0, 1.0))
+  0042: RequiredTime = (self._Blueprint.TimeDownedBeforeRevive * DistanceScalar)
+  005d: return (CurrentPawn.get_TimeSinceRevived() >= RequiredTime)
+  0078: return return
+  007e: <eos>
+
+function TnGoapGoalRevive.FindClosestTeammate  (script 245 bytes)
+  0000: ClosestDistanceSq = 1000000000.0
+  000b: I = 0
+  0012: if !((I < CandidatePawns.Length)) goto 0x00e8
+  0022: CurrentPawn = I[CandidatePawns]
+  0033: if !((CurrentPawn == none)) goto 0x0041
+  003e: goto 0x00de
+  0041: CurrentDistanceSq = obj'Core.Math'.static.VSizeSq((CurrentPawn.Location - self.BoundController.Pawn.Location))
+  0081: if !(!TnGoapGoalRevive.HasEnoughTimeElapsedForRevive(CurrentPawn, CurrentDistanceSq)) goto 0x0099
+  0096: goto 0x00de
+  0099: if !(!TnGoapGoalRevive.ShouldRevivePawn(CurrentPawn)) goto 0x00ac
+  00a9: goto 0x00de
+  00ac: if !(((BestCandidatePawn == none) || (CurrentDistanceSq < ClosestDistanceSq))) goto 0x00de
+  00c8: BestCandidatePawn = CurrentPawn
+  00d3: ClosestDistanceSq = CurrentDistanceSq
+  00de: AddAdd_PreInt(I)
+  00e5: goto 0x0012
+  00e8: return BestCandidatePawn
+  00ee: return return
+  00f4: <eos>
+
+function TnGoapGoalRevive.ShouldRevivePawn  (script 98 bytes)
+  0000: if !((self._Blueprint.RevivePlayersOnly && (TnPlayerPawn(DownedPawn) == none))) goto 0x0026
+  0024: return false
+  0026: return ((DownedPawn._ReviverPawn == none) || (DownedPawn._ReviverPawn == self.BoundController.Pawn))
+  005b: return return
+  0061: <eos>
+
+function TnGoapGoalRevive.PopulateGoals  (script 169 bytes)
+  0000: if !(!PopulateGoals(WorldState, out_PopulatedGoals)) goto 0x0017
+  0015: return false
+  0017: ReviveCandidate = TnGoapGoalRevive.GetReviveCandidate()
+  0023: TnAiController(self.BoundController).AiWorldState.SetBoolValue(obj'TnAiWorldStateReviveTarget', false, ReviveCandidate)
+  004f: obj'HM_Engine.HmGoap'.static.SetSubject(out_PopulatedGoals, obj'TnAiWorldStateReviveTarget', ReviveCandidate)
+  0071: if !((ReviveCandidate == none)) goto 0x007e
+  007c: return false
+  007e: ReviveCandidate._ReviverPawn = TnPawn(self.BoundController.Pawn)
+  00a0: return true
+  00a2: return return
+  00a8: <eos>

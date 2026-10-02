@@ -1,0 +1,43 @@
+function TnDeathBlueprint.CheckForErrors  (script 415 bytes)
+  0000: TnDeathBlueprint.CheckModifierArrayForErrors(self.DefaultModifiers, "Default Modifiers")
+  001e: Index = 0
+  0025: if !((Index < self.Deaths.Length)) goto 0x017d
+  0035: Death = Index[self.Deaths]
+  0046: Tag = (("Death [" $ cast53(Index)) $ "]")
+  0063: foreach Death.Types(DeathType,) (end 0x014a)
+  007d: if !((DeathType == none)) goto 0x00bc
+  0088: EmitCheckMessage(0, (Tag @ "Death Type cannot be none."), , )
+  00b9: goto 0x0149
+  00bc: if !(!self.Picker.IsSupported(DeathType)) goto 0x0149
+  00d9: EmitCheckMessage(0, (((((Tag @ "'") $ cast56(DeathType)) $ "' is not supported by") @ cast56(self.Picker.get_Class())) $ ". Open picker for supported types."), , )
+  0149: iternext
+  014a: iterpop
+  014b: TnDeathBlueprint.CheckModifierArrayForErrors(Death.Modifiers, (Tag @ "Modifiers"))
+  0173: AddAdd_PreInt(Index)
+  017a: goto 0x0025
+  017d: self.SkeletalGibs.CheckForErrors()
+  0190: TnDeathBlueprint.CheckForUncookedPhysics()
+  0196: CheckForErrors()
+  019c: return nothing
+  019e: <eos>
+
+function TnDeathBlueprint.CheckModifierArrayForErrors  (script 96 bytes)
+  0000: foreach Modifiers(Modifier,) (end 0x005c)
+  000f: if !((Modifier == none)) goto 0x0048
+  001a: EmitCheckMessage(0, (Tag @ "has a none modifier."), , )
+  0045: goto 0x005b
+  0048: Modifier.CheckForErrors()
+  005b: iternext
+  005c: iterpop
+  005d: return nothing
+  005f: <eos>
+
+function TnDeathBlueprint.CheckForUncookedPhysics  (script 228 bytes)
+  0000: Opts = self.DefaultGibsBlueprint.GetPhysicsCookingOptions()
+  0019: foreach Opts(Opt,) (end 0x00e0)
+  0028: if !(!Opt.Mesh.HasPreCookedScale(vect(1,1,1))) goto 0x00df
+  0058: Opt.Mesh.EmitCheckMessage(1, (("Missing a pre-cooked physics scale <1,1,1> on gib used by " $ cast56(self)) $ ". This will cause frame hitches."), , )
+  00df: iternext
+  00e0: iterpop
+  00e1: return nothing
+  00e3: <eos>

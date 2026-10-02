@@ -1,0 +1,195 @@
+function TnTacticalAnalyzer.NewEnemyObserver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTacticalAnalyzer.Initialize  (script 29 bytes)
+  0000: self.Owner = OwningController
+  000b: SetSensorSet(Sensors)
+  001a: return nothing
+  001c: <eos>
+
+function TnTacticalAnalyzer.SetSensorSet  (script 118 bytes)
+  0000: self.SensorSet = Sensors
+  000b: if !((self.SensorSet == none)) goto 0x0018
+  0016: return nothing
+  0018: I = 0
+  001f: if !((I < self.SensorSet.Sensors.Length)) goto 0x0073
+  0038: TnAiSensor(I[self.SensorSet.Sensors]).Initialize(self.Owner, self.TacticalData)
+  0069: AddAdd_PreInt(I)
+  0070: goto 0x001f
+  0073: return nothing
+  0075: <eos>
+
+function TnTacticalAnalyzer.GetSensorSet  (script 13 bytes)
+  0000: return self.SensorSet
+  0006: return return
+  000c: <eos>
+
+function TnTacticalAnalyzer.AddSensor  (script 59 bytes)
+  0000: self.SensorSet.Sensors.AddItem(Sensor)
+  0016: TnAiSensor(Sensor).Initialize(self.Owner, self.TacticalData)
+  0038: return nothing
+  003a: <eos>
+
+function TnTacticalAnalyzer.RemoveSensor  (script 67 bytes)
+  0000: Index = self.SensorSet.Sensors.Find(Sensor)
+  001c: if !((Index != -1)) goto 0x0040
+  002b: self.SensorSet.Sensors.Remove(Index,1)
+  0040: return nothing
+  0042: <eos>
+
+function TnTacticalAnalyzer.GetMoveToRangeSensor  (script 130 bytes)
+  0000: I = 0
+  0007: if !((I < self.SensorSet.Sensors.Length)) goto 0x0079
+  0020: S = TnAiMoveToRangeSensor(I[self.SensorSet.Sensors])
+  003f: if !(((S != none) && (S.get_MoveType() == WorldStateClass))) goto 0x006f
+  0069: return S
+  006f: AddAdd_Int(I)
+  0076: goto 0x0007
+  0079: return none
+  007b: return return
+  0081: <eos>
+
+function TnTacticalAnalyzer.HearNoise  (script 48 bytes)
+  0000: if !((Pawn(NoiseMaker) != none)) goto 0x002d
+  0010: RegisterEnemy(Pawn(NoiseMaker).Controller)
+  002d: return nothing
+  002f: <eos>
+
+function TnTacticalAnalyzer.NotAllowedByDebugManager  (script 109 bytes)
+  0000: DM = TnDebugManager(self.Owner.WorldInfo.GetDebugManager())
+  0027: if !(((C == none) || ((DM != none) && (DM.InvisibleToAIPawn == C.Pawn)))) goto 0x0064
+  0062: return true
+  0064: return false
+  0066: return return
+  006c: <eos>
+
+function TnTacticalAnalyzer.RegisterEnemy  (script 329 bytes)
+  0000: if !(((((((C == none) || (self.Owner == none)) || IsAwareOfEnemy(C)) || self.Owner.Pawn.IsSameTeam(C.Pawn)) || ((C.Pawn != none) && (C.Pawn.IsDying() || C.Pawn.IsDead()))) || TnTacticalAnalyzer.NotAllowedByDebugManager(C))) goto 0x00c5
+  00c3: return nothing
+  00c5: self.TacticalData.RegisterEnemy(C)
+  00dd: I = 0
+  00e4: if !((I < self.SensorSet.Sensors.Length)) goto 0x012e
+  00fd: I[self.SensorSet.Sensors].RegisterEnemy(C)
+  0124: AddAdd_PreInt(I)
+  012b: goto 0x00e4
+  012e: NotifyNewEnemyObservers(C.Pawn)
+  0146: return nothing
+  0148: <eos>
+
+function TnTacticalAnalyzer.UnregisterEnemy  (script 119 bytes)
+  0000: if !((self.SensorSet != none)) goto 0x005c
+  000b: I = 0
+  0012: if !((I < self.SensorSet.Sensors.Length)) goto 0x005c
+  002b: I[self.SensorSet.Sensors].UnregisterEnemy(C)
+  0052: AddAdd_PreInt(I)
+  0059: goto 0x0012
+  005c: self.TacticalData.UnregisterEnemy(C)
+  0074: return nothing
+  0076: <eos>
+
+function TnTacticalAnalyzer.IsEnemyValid  (script 103 bytes)
+  0000: if !((C == none)) goto 0x000d
+  000b: return false
+  000d: P = C.Pawn
+  0021: if !((P == none)) goto 0x002e
+  002c: return false
+  002e: if !(P.IsDying()) goto 0x0046
+  0044: return false
+  0046: if !(P.IsDead()) goto 0x005e
+  005c: return false
+  005e: return true
+  0060: return return
+  0066: <eos>
+
+function TnTacticalAnalyzer.UnregisterDyingEnemies  (script 128 bytes)
+  0000: I = 0
+  0007: if !((I < self.TacticalData.Enemies.Length)) goto 0x007d
+  0020: if !(!TnTacticalAnalyzer.IsEnemyValid(I[self.TacticalData.Enemies].EnemyController)) goto 0x0073
+  004a: UnregisterEnemy(I[self.TacticalData.Enemies].EnemyController)
+  0073: AddAdd_PreInt(I)
+  007a: goto 0x0007
+  007d: return nothing
+  007f: <eos>
+
+function TnTacticalAnalyzer.IsAwareOfEnemy  (script 32 bytes)
+  0000: return self.TacticalData.IsAwareOfEnemy(C)
+  0019: return return
+  001f: <eos>
+
+function TnTacticalAnalyzer.Update  (script 108 bytes)
+  0000: TnTacticalAnalyzer.UnregisterDyingEnemies()
+  0006: if !((self.SensorSet == none)) goto 0x0013
+  0011: return nothing
+  0013: I = 0
+  001a: if !((I < self.SensorSet.Sensors.Length)) goto 0x0069
+  0033: TnAiSensor(I[self.SensorSet.Sensors]).Update(DeltaTime)
+  005f: AddAdd_PreInt(I)
+  0066: goto 0x001a
+  0069: return nothing
+  006b: <eos>
+
+function TnTacticalAnalyzer.RefreshEnemyWorldState  (script 178 bytes)
+  0000: if !((self.Owner.Enemy != none)) goto 0x004e
+  0014: IndexOfEnemy = self.TacticalData.Enemies.Find('EnemyController',self.Owner.Enemy.Controller)
+  004b: goto 0x0059
+  004e: IndexOfEnemy = -1
+  0059: I = 0
+  0060: if !((I < self.SensorSet.Sensors.Length)) goto 0x00af
+  0079: TnAiSensor(I[self.SensorSet.Sensors]).PublishToWorldState(IndexOfEnemy)
+  00a5: AddAdd_PreInt(I)
+  00ac: goto 0x0060
+  00af: return nothing
+  00b1: <eos>
+
+function TnTacticalAnalyzer.DrawDebug  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTacticalAnalyzer.GetDebugStrings  (script 89 bytes)
+  0000: I = 0
+  0007: if !((I < self.SensorSet.Sensors.Length)) goto 0x0056
+  0020: TnAiSensor(I[self.SensorSet.Sensors]).GetDebugStrings(Strings)
+  004c: AddAdd_PreInt(I)
+  0053: goto 0x0007
+  0056: return nothing
+  0058: <eos>
+
+function TnTacticalAnalyzer.GetEnemyNearestRange  (script 32 bytes)
+  0000: return self.TacticalData.GetEnemyNearestRange(Enemy)
+  0019: return return
+  001f: <eos>
+
+function TnTacticalAnalyzer.GetEnemyCenterPointRange  (script 32 bytes)
+  0000: return self.TacticalData.GetEnemyCenterPointRange(Enemy)
+  0019: return return
+  001f: <eos>
+
+function TnTacticalAnalyzer.AddNewEnemyObserver  (script 46 bytes)
+  0000: if !((self.NewEnemyObservers.Find(N) != -1)) goto 0x0019
+  0017: return nothing
+  0019: self.NewEnemyObservers.Length[self.NewEnemyObservers] = N
+  002b: return nothing
+  002d: <eos>
+
+function TnTacticalAnalyzer.RemoveNewEnemyObserver  (script 49 bytes)
+  0000: Index = self.NewEnemyObservers.Find(N)
+  0013: if !((Index != -1)) goto 0x002e
+  0022: self.NewEnemyObservers.Remove(Index,1)
+  002e: return nothing
+  0030: <eos>
+
+function TnTacticalAnalyzer.ClearNewEnemyObservers  (script 11 bytes)
+  0000: self.NewEnemyObservers.Length = 0
+  0008: return nothing
+  000a: <eos>
+
+function TnTacticalAnalyzer.NotifyNewEnemyObservers  (script 73 bytes)
+  0000: I = 0
+  0007: if !((I < self.NewEnemyObservers.Length)) goto 0x0046
+  0017: N = I[self.NewEnemyObservers]
+  0028: NewEnemyObserver(X)
+  003c: AddAdd_PreInt(I)
+  0043: goto 0x0007
+  0046: return nothing
+  0048: <eos>

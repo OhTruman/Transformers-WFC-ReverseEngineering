@@ -1,0 +1,12 @@
+function TnDataProvider_Checkpoint.GetCheckpointsForMap  (script 146 bytes)
+  0000: CheckpointsProviders = obj'TnDataStore_MenuItems'.static.GetCheckpointProviders()
+  0019: foreach CheckpointsProviders(Provider,) (end 0x0084)
+  0028: CP = TnDataProvider_Checkpoint(Provider)
+  0038: if !((CP.MapId == CheckpointMapId)) goto 0x0083
+  0050: PatchedPath = obj'Core.Strings'.static.Repl(CP.CheckpointPath, "|", ":", )
+  0076: CheckpointPaths.AddItem(PatchedPath)
+  0083: iternext
+  0084: iterpop
+  0085: return CheckpointPaths
+  008b: return return
+  0091: <eos>

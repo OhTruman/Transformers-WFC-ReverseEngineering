@@ -1,0 +1,58 @@
+function TnSeqAct_LockPlayerInTurret.Activated  (script 39 bytes)
+  0000: PC = TnSeqAct_LockPlayerInTurret.GetPlayerTargetController()
+  000c: if !((PC == none)) goto 0x0019
+  0017: return nothing
+  0019: TnSeqAct_LockPlayerInTurret.ProcessPlayerTarget(PC)
+  0024: return nothing
+  0026: <eos>
+
+function TnSeqAct_LockPlayerInTurret.ProcessPlayerTarget  (script 269 bytes)
+  0000: TargetPawn = PC.Pawn
+  0014: if !((TargetPawn == none)) goto 0x0021
+  001f: return nothing
+  0021: if !((0[self.InputLinks].bHasImpulse && !self.Turret.get_IsTurretInUse())) goto 0x00c2
+  0051: TargetPawn.Teleport(self.Turret.GetDesiredHotSpotLocation(), self.Turret.Rotation)
+  0085: PC.SetRotation(self.Turret.Rotation)
+  009f: PC.SetCinematicMode(true, false, false, true, true, true)
+  00b8: self._WaitingForInteract = true
+  00c0: return nothing
+  00c2: if !((1[self.InputLinks].bHasImpulse && (self.Turret.GetCurrentUser() == TargetPawn))) goto 0x010a
+  00f7: PC.ForceEndInteract()
+  010a: return nothing
+  010c: <eos>
+
+function TnSeqAct_LockPlayerInTurret.GetPlayerTargetController  (script 167 bytes)
+  0000: if !((self.Targets.Length != 1)) goto 0x004a
+  000c: LogInternal("Error! Can't lock two players into a turret together!", , , )
+  0048: return none
+  004a: C = TnPlayerController(0[self.Targets])
+  005c: if !((C != none)) goto 0x006d
+  0067: return C
+  006d: P = Pawn(0[self.Targets])
+  007f: if !((P != none)) goto 0x009e
+  008a: return TnPlayerController(P.Controller)
+  009e: return none
+  00a0: return return
+  00a6: <eos>
+
+function TnSeqAct_LockPlayerInTurret.Update  (script 297 bytes)
+  0000: if !(!self._WaitingForInteract) goto 0x0022
+  000b: 1[self.OutputLinks].bHasImpulse = true
+  0020: return false
+  0022: PC = TnSeqAct_LockPlayerInTurret.GetPlayerTargetController()
+  002e: if !((PC == none)) goto 0x0050
+  0039: 1[self.OutputLinks].bHasImpulse = true
+  004e: return false
+  0050: if !(!PC.get_HasUseableInteract()) goto 0x00d7
+  0068: TargetPawn = PC.Pawn
+  007c: if !((TargetPawn != none)) goto 0x00d5
+  0087: TargetPawn.Teleport(self.Turret.GetDesiredHotSpotLocation(), self.Turret.Rotation)
+  00bb: PC.SetRotation(self.Turret.Rotation)
+  00d5: return true
+  00d7: PC.Interact()
+  00ea: PC.SetCinematicMode(false, false, false, true, true, true)
+  0103: self._WaitingForInteract = false
+  010b: 0[self.OutputLinks].bHasImpulse = true
+  0120: return false
+  0122: return return
+  0128: <eos>

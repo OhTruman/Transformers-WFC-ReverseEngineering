@@ -1,0 +1,17 @@
+function HmCameraBehaviorHelper.TraceImpenetrableObjectsOnly  (script 252 bytes)
+  0000: default=true
+  0005: TraceActor = OwningActor
+  0010: I = 0
+  0017: if !((I < 5)) goto 0x00f3
+  0023: HitActor = TraceActor.Trace(HitLoc, HitNorm, OwningActor, End, Start, true, TraceExtents, , , )
+  0057: if !(((HitActor == none) || (HitActor == OwningActor))) goto 0x0075
+  0073: return none
+  0075: if !((((CollidePawns && (Pawn(HitActor) != none)) || (StaticMeshActor(HitActor) != none)) || ((BlockingVolume(HitActor) != none) && BlockingVolume(HitActor).bContainsGeometry))) goto 0x00d3
+  00cd: return HitActor
+  00d3: TraceActor = HitActor
+  00de: Start = HitLoc
+  00e9: AddAdd_PreInt(I)
+  00f0: goto 0x0017
+  00f3: return none
+  00f5: return return
+  00fb: <eos>

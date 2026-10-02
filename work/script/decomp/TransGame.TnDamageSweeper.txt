@@ -1,0 +1,40 @@
+function TnDamageSweeper.Initialize  (script 62 bytes)
+  0000: self.Owner = P
+  000b: self.TraceSweeper.Initialize(P)
+  0023: self.TraceSweeper.__NotifyHitActor__Delegate = delegate.OnHitActor
+  003b: return nothing
+  003d: <eos>
+
+function TnDamageSweeper.BeginSweep  (script 99 bytes)
+  0000: default=0.0
+  0009: default=0.0
+  0012: self.TraceSweeper.BeginSweep(SweepDuration, SocketName, TraceExtent)
+  0034: self.ZOverride = ZDirectionOverride
+  003f: self.DamageOverride = ImpactDamageOverride
+  004a: self.MomentumScalar = ImpactMomentumScalar
+  0055: self.SweeperHitType = HitType
+  0060: return nothing
+  0062: <eos>
+
+function TnDamageSweeper.Update  (script 27 bytes)
+  0000: self.TraceSweeper.Update(DeltaTime)
+  0018: return nothing
+  001a: <eos>
+
+function TnDamageSweeper.EndSweep  (script 22 bytes)
+  0000: self.TraceSweeper.EndSweep()
+  0013: return nothing
+  0015: <eos>
+
+function TnDamageSweeper.OnHitActor  (script 263 bytes)
+  0000: if !((self.ZOverride != cast3f(0))) goto 0x009f
+  000d: Scaler = (1.0 - obj'Core.Math'.static.Abs(self.ZOverride))
+  002a: Impact.RayDir.Z = 0.0
+  004b: Impact.RayDir = (Scaler * obj'Core.Math'.static.Normal(Impact.RayDir))
+  007e: Impact.RayDir.Z = self.ZOverride
+  009f: MeleeService = TnMeleeService(self.Owner.GetRobotService('TnMeleeService'))
+  00c6: if !(EqualEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x00dc
+  00da: return nothing
+  00dc: MeleeService.ProcessHit(Impact, self.SweeperHitType, self.DamageOverride, self.MomentumScalar)
+  0104: return nothing
+  0106: <eos>

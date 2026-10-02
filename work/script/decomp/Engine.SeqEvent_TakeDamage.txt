@@ -1,0 +1,49 @@
+function SeqEvent_TakeDamage.IsValidDamageType  (script 177 bytes)
+  0000: if !((self.DamageTypes.Length > 0)) goto 0x0063
+  000c: bValidDamageType = false
+  0014: idx = 0
+  001b: if !((idx < self.DamageTypes.Length)) goto 0x0056
+  002b: if !(ClassIsChildOf(inDamageType, idx[self.DamageTypes])) goto 0x004c
+  0041: bValidDamageType = true
+  0049: goto 0x0056
+  004c: AddAdd_Int(idx)
+  0053: goto 0x001b
+  0056: if !(!bValidDamageType) goto 0x0063
+  0061: return false
+  0063: if !((self.IgnoreDamageTypes.Length > 0)) goto 0x00a8
+  006f: idx = 0
+  0076: if !((idx < self.IgnoreDamageTypes.Length)) goto 0x00a8
+  0086: if !(ClassIsChildOf(inDamageType, idx[self.IgnoreDamageTypes])) goto 0x009e
+  009c: return false
+  009e: AddAdd_Int(idx)
+  00a5: goto 0x0076
+  00a8: return true
+  00aa: return return
+  00b0: <eos>
+
+function SeqEvent_TakeDamage.HandleDamage  (script 348 bytes)
+  0000: PublishLinkedVariableValues()
+  000a: if !((((((InOriginator != none) && self.bEnabled) && (inAmount >= self.MinDamageAmount)) && SeqEvent_TakeDamage.IsValidDamageType(inDamageType)) && (!self.bPlayerOnly || ((InInstigator != none) && InInstigator.IsPlayerOwned())))) goto 0x0159
+  0073: (self.CurrentDamage += inAmount)
+  007f: if !((self.CurrentDamage >= self.DamageThreshold)) goto 0x0159
+  008e: bAlreadyActivatedThisTick = (self.bActive && (self.ActivationTime ~= GetWorldInfo().TimeSeconds))
+  00ba: if !(CheckActivate(InOriginator, InInstigator, false, , )) goto 0x0159
+  00d4: foreach LinkedVariables(obj'SeqVar_Float', FloatVar, "Damage Taken") (end 0x012f)
+  00f9: if !(bAlreadyActivatedThisTick) goto 0x011a
+  0102: (FloatVar.FloatValue += self.CurrentDamage)
+  0117: goto 0x012e
+  011a: FloatVar.FloatValue = self.CurrentDamage
+  012e: iternext
+  012f: iterpop
+  0130: if !((self.DamageThreshold <= 0.0)) goto 0x014d
+  013f: self.CurrentDamage = 0.0
+  014a: goto 0x0159
+  014d: (self.CurrentDamage -= self.DamageThreshold)
+  0159: return nothing
+  015b: <eos>
+
+function SeqEvent_TakeDamage.Reset  (script 20 bytes)
+  0000: SequenceEvent.Reset()
+  0006: self.CurrentDamage = 0.0
+  0011: return nothing
+  0013: <eos>

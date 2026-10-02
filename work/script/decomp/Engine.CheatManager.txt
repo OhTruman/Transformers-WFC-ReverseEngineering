@@ -1,0 +1,391 @@
+function CheatManager.NotifyCheatUsed  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function CheatManager.TimeStepDisable  (script 27 bytes)
+  0000: get_Outer().WorldInfo.bTimeStepEnabled = false
+  0018: return nothing
+  001a: <eos>
+
+function CheatManager.TimeStepRun  (script 51 bytes)
+  0000: get_Outer().WorldInfo.bTimeStepEnabled = true
+  0018: get_Outer().WorldInfo.bRunTimeStep = true
+  0030: return nothing
+  0032: <eos>
+
+function CheatManager.TimeStepSeconds  (script 30 bytes)
+  0000: get_Outer().WorldInfo.TimeStepSeconds = Seconds
+  001b: return nothing
+  001d: <eos>
+
+function CheatManager.ListDynamicActors  (script 99 bytes)
+  0000: foreach get_Outer().DynamicActors(obj'Actor', A) (end 0x003b)
+  001e: AddAdd_Int(I)
+  0025: LogInternal((cast53(I) @ cast56(A)), , , )
+  003a: iternext
+  003b: iterpop
+  003c: LogInternal(("Num dynamic actors: " $ cast53(I)), , , )
+  0060: return nothing
+  0062: <eos>
+
+function CheatManager.FreezeFrame  (script 103 bytes)
+  0000: get_Outer().WorldInfo.Game.SetPause(get_Outer(), get_Outer().__CanUnpause__Delegate)
+  0032: get_Outer().WorldInfo.PauseDelay = (get_Outer().WorldInfo.TimeSeconds + Delay)
+  0064: return nothing
+  0066: <eos>
+
+function CheatManager.WriteToLog  (script 22 bytes)
+  0000: LogInternal(("NOW! " $ Param), , , )
+  0013: return nothing
+  0015: <eos>
+
+function CheatManager.KillViewedActor  (script 149 bytes)
+  0000: if !((get_Outer().ViewTarget != none)) goto 0x0092
+  0012: if !(((Pawn(get_Outer().ViewTarget) != none) && (Pawn(get_Outer().ViewTarget).Controller != none))) goto 0x006c
+  004b: Pawn(get_Outer().ViewTarget).Controller.DestroyActor()
+  006c: get_Outer().ViewTarget.DestroyActor()
+  007f: get_Outer().SetViewTarget(none, )
+  0092: return nothing
+  0094: <eos>
+
+function CheatManager.Teleport  (script 144 bytes)
+  0000: get_Outer().GetPlayerViewPoint(ViewLocation, ViewRotation)
+  001b: HitActor = get_Outer().Trace(HitLocation, HitNormal, none, (ViewLocation + (cast3f(1000000) * cast39(ViewRotation))), ViewLocation, true, , , , )
+  0057: if !((HitActor != none)) goto 0x0075
+  0062: (HitLocation += (HitNormal * 4.0))
+  0075: get_Outer().ViewTarget.SetLocation(HitLocation)
+  008d: return nothing
+  008f: <eos>
+
+function CheatManager.BugItGo  (script 151 bytes)
+  0000: TheLocation.X = X
+  0016: TheLocation.Y = Y
+  002c: TheLocation.Z = Z
+  0042: TheRotation.Pitch = Pitch
+  0058: TheRotation.Yaw = Yaw
+  006e: TheRotation.Roll = Roll
+  0084: CheatManager.BugItWorker(TheLocation, TheRotation)
+  0094: return nothing
+  0096: <eos>
+
+function CheatManager.BugItGoString  (script 31 bytes)
+  0000: CheatManager.BugItWorker(CheatManager.GetFVectorFromString(TheLocation), CheatManager.GetFRotatorFromString(TheRotation))
+  001c: return nothing
+  001e: <eos>
+
+function CheatManager.BugItWorker  (script 114 bytes)
+  0000: LogInternal((("BugItGo to:" @ cast58(TheLocation)) @ cast59(TheRotation)), , , )
+  0024: get_Outer().ViewTarget.SetLocation(TheLocation)
+  003c: get_Outer().Pawn.FaceRotation(TheRotation, 0.0)
+  0060: get_Outer().SetRotation(TheRotation)
+  006f: return nothing
+  0071: <eos>
+
+function CheatManager.BugIt  (script 470 bytes)
+  0000: nothing
+  0001: get_Outer().ConsoleCommand(("bugscreenshot " $ ScreenShotDescription), )
+  002f: get_Outer().GetPlayerViewPoint(ViewLocation, ViewRotation)
+  004a: ViewLocation = get_Outer().Pawn.Location
+  0065: LogInternal(((((((((((("BugIt " $ cast55(ViewLocation.X)) $ " ") $ cast55(ViewLocation.Y)) $ " ") $ cast55(ViewLocation.Z)) $ " ") $ cast53(ViewRotation.Pitch)) $ " ") $ cast53(ViewRotation.Yaw)) $ " ") $ cast53(ViewRotation.Roll)), , , )
+  0103: LogInternal(((((((((((((((("?BugLoc=(" $ "X=") $ cast55(ViewLocation.X)) $ ",Y=") $ cast55(ViewLocation.Y)) $ ",Z=") $ cast55(ViewLocation.Z)) $ ")") $ "?BugRot=(") $ "Pitch=") $ cast53(ViewRotation.Pitch)) $ ",Yaw=") $ cast53(ViewRotation.Yaw)) $ ",Roll=") $ cast53(ViewRotation.Roll)) $ ")"), , , )
+  01d3: return nothing
+  01d5: <eos>
+
+function CheatManager.GetFVectorFromString  (script 7 bytes)
+  0000: InStr
+  0005: nothing
+  0006: <eos>
+
+function CheatManager.GetFRotatorFromString  (script 7 bytes)
+  0000: InStr
+  0005: nothing
+  0006: <eos>
+
+function CheatManager.ChangeSize  (script 183 bytes)
+  0000: get_Outer().Pawn.CylinderComponent.SetCylinderSize((get_Outer().Pawn.default.CylinderComponent.CollisionRadius * F), (get_Outer().Pawn.default.CylinderComponent.CollisionHeight * F))
+  006d: get_Outer().Pawn.SetDrawScale(F)
+  008c: get_Outer().Pawn.SetLocation(get_Outer().Pawn.Location)
+  00b4: return nothing
+  00b6: <eos>
+
+function CheatManager.AllAmmo  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function CheatManager.God  (script 116 bytes)
+  0000: if !(get_Outer().bGodMode) goto 0x0042
+  0010: get_Outer().bGodMode = false
+  001f: get_Outer().ClientMessage("God mode off", , )
+  0040: return nothing
+  0042: get_Outer().bGodMode = true
+  0051: get_Outer().ClientMessage("God Mode on", , )
+  0071: return nothing
+  0073: <eos>
+
+function CheatManager.AffectedByHitEffects  (script 136 bytes)
+  0000: if !(get_Outer().bAffectedByHitEffects) goto 0x004c
+  0010: get_Outer().bAffectedByHitEffects = false
+  001f: get_Outer().ClientMessage("EffectsAffect mode off", , )
+  004a: return nothing
+  004c: get_Outer().bAffectedByHitEffects = true
+  005b: get_Outer().ClientMessage("EffectsAffect Mode on", , )
+  0085: return nothing
+  0087: <eos>
+
+function CheatManager.PseudoGod  (script 130 bytes)
+  0000: if !(get_Outer().bPseudoGodMode) goto 0x0049
+  0010: get_Outer().bPseudoGodMode = false
+  001f: get_Outer().ClientMessage("Pseudo God mode off", , )
+  0047: return nothing
+  0049: get_Outer().bPseudoGodMode = true
+  0058: get_Outer().ClientMessage("Pseudo God mode on", , )
+  007f: return nothing
+  0081: <eos>
+
+function CheatManager.SloMo  (script 43 bytes)
+  0000: get_Outer().WorldInfo.Game.SetGameSpeed(T)
+  0028: return nothing
+  002a: <eos>
+
+function CheatManager.SetJumpZ  (script 30 bytes)
+  0000: get_Outer().Pawn.JumpZ = F
+  001b: return nothing
+  001d: <eos>
+
+function CheatManager.SetGravity  (script 30 bytes)
+  0000: get_Outer().WorldInfo.WorldGravityZ = F
+  001b: return nothing
+  001d: <eos>
+
+function CheatManager.SetSpeed  (script 103 bytes)
+  0000: get_Outer().Pawn.GroundSpeed = (get_Outer().Pawn.default.GroundSpeed * F)
+  0032: get_Outer().Pawn.WaterSpeed = (get_Outer().Pawn.default.WaterSpeed * F)
+  0064: return nothing
+  0066: <eos>
+
+function CheatManager.KillAll  (script 241 bytes)
+  0000: foreach get_Outer().WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x0053)
+  0027: PC.ClientMessage(("Killed all " $ cast56(aClass)), , )
+  0052: iternext
+  0053: iterpop
+  0054: if !(ClassIsChildOf(aClass, obj'AIController')) goto 0x0089
+  0064: get_Outer().WorldInfo.Game.KillBots()
+  0087: return nothing
+  0089: if !(ClassIsChildOf(aClass, obj'Pawn')) goto 0x00ab
+  0099: CheatManager.KillAllPawns(class<Pawn>(aClass))
+  00a9: return nothing
+  00ab: foreach get_Outer().DynamicActors(obj'Actor', A) (end 0x00ed)
+  00c9: if !(ClassIsChildOf(A.get_Class(), aClass)) goto 0x00ec
+  00e0: A.DestroyActor()
+  00ec: iternext
+  00ed: iterpop
+  00ee: return nothing
+  00f0: <eos>
+
+function CheatManager.KillAllPawns  (script 172 bytes)
+  0000: get_Outer().WorldInfo.Game.KillBots()
+  0023: foreach get_Outer().DynamicActors(obj'Pawn', P) (end 0x00a8)
+  0041: if !((ClassIsChildOf(P.get_Class(), aClass) && !P.IsPlayerPawn())) goto 0x00a7
+  0072: if !((P.Controller != none)) goto 0x009b
+  0086: P.Controller.DestroyActor()
+  009b: P.DestroyActor()
+  00a7: iternext
+  00a8: iterpop
+  00a9: return nothing
+  00ab: <eos>
+
+function CheatManager.KillPawns  (script 82 bytes)
+  0000: get_Outer().WorldInfo.Game.KillBots()
+  0023: foreach get_Outer().DynamicActors(obj'AIController', AiC) (end 0x004e)
+  0041: AiC.DestroyActor()
+  004d: iternext
+  004e: iterpop
+  004f: return nothing
+  0051: <eos>
+
+function CheatManager.Avatar  (script 377 bytes)
+  0000: foreach get_Outer().DynamicActors(obj'Pawn', P) (end 0x0080)
+  001e: if !((P == get_Outer().Pawn)) goto 0x003f
+  0034: bPickNextPawn = true
+  003c: goto 0x007f
+  003f: if !(P.IsA(ClassName)) goto 0x007f
+  0052: if !((FirstPawn == none)) goto 0x0068
+  005d: FirstPawn = P
+  0068: if !(bPickNextPawn) goto 0x007f
+  0071: TargetPawn = P
+  007c: goto 0x0080
+  007f: iternext
+  0080: iterpop
+  0081: if !((TargetPawn == none)) goto 0x0097
+  008c: TargetPawn = FirstPawn
+  0097: if !((TargetPawn != none)) goto 0x012d
+  00a2: TargetPawn.DetachFromController(true)
+  00b6: if !((get_Outer().Pawn != none)) goto 0x00f5
+  00c8: OldPawn = get_Outer().Pawn
+  00da: get_Outer().Pawn.DetachFromController()
+  00f5: get_Outer().Possess(TargetPawn, false)
+  010c: if !((OldPawn != none)) goto 0x012a
+  0117: OldPawn.SpawnDefaultController()
+  012a: goto 0x0176
+  012d: LogInternal((("Avatar: Couldn't find any Pawn to possess of class '" $ cast57(ClassName)) $ "'"), , , )
+  0176: return nothing
+  0178: <eos>
+
+function CheatManager.Summon  (script 238 bytes)
+  0000: nothing
+  0001: LogInternal(("Fabricate " $ ClassName), , , )
+  0019: NewClass = class<Actor>(DynamicLoadObject(ClassName, obj'Core.Class', ))
+  0039: if !((NewClass != none)) goto 0x00eb
+  0044: if !((get_Outer().Pawn != none)) goto 0x0074
+  0056: SpawnLoc = get_Outer().Pawn.Location
+  0071: goto 0x0086
+  0074: SpawnLoc = get_Outer().Location
+  0086: if !((Distance == cast3f(0))) goto 0x009e
+  0093: Distance = 150.0
+  009e: get_Outer().Spawn(NewClass, , , ((SpawnLoc + (Distance * cast39(get_Outer().Rotation))) + (vect(0,0,1) * cast3f(15))), , , , )
+  00eb: return nothing
+  00ed: <eos>
+
+function CheatManager.GiveWeapon  (script 137 bytes)
+  0000: WeaponClass = class<Weapon>(DynamicLoadObject(WeaponClassStr, obj'Core.Class', ))
+  0020: Weap = Weapon(get_Outer().Pawn.FindInventoryType(WeaponClass, ))
+  004b: if !((Weap != none)) goto 0x005c
+  0056: return Weap
+  005c: return Weapon(get_Outer().Pawn.CreateInventory(WeaponClass, ))
+  0082: return return
+  0088: <eos>
+
+function CheatManager.PlayersOnly  (script 50 bytes)
+  0000: get_Outer().WorldInfo.bPlayersOnly = !get_Outer().WorldInfo.bPlayersOnly
+  002f: return nothing
+  0031: <eos>
+
+function CheatManager.RememberSpot  (script 83 bytes)
+  0000: if !((get_Outer().Pawn != none)) goto 0x0037
+  0012: get_Outer().Destination = get_Outer().Pawn.Location
+  0034: goto 0x0050
+  0037: get_Outer().Destination = get_Outer().Location
+  0050: return nothing
+  0052: <eos>
+
+function CheatManager.ViewSelf  (script 160 bytes)
+  0000: nothing
+  0001: get_Outer().ResetCameraMode()
+  0012: if !((get_Outer().Pawn != none)) goto 0x0045
+  0024: get_Outer().SetViewTarget(get_Outer().Pawn, )
+  0042: goto 0x005a
+  0045: get_Outer().SetViewTarget(get_Outer(), )
+  005a: if !(!bQuiet) goto 0x008c
+  0065: get_Outer().ClientMessage(get_Outer().OwnCamera, 'Event', )
+  008c: get_Outer().FixFOV()
+  009d: return nothing
+  009f: <eos>
+
+function CheatManager.ViewPlayer  (script 226 bytes)
+  0000: foreach get_Outer().WorldInfo.AllControllers(obj'Controller', P) (end 0x0065)
+  0027: if !((P.bIsPlayer && (P.PlayerReplicationInfo.GetPlayerAlias() ~= S))) goto 0x0064
+  0061: goto 0x0065
+  0064: iternext
+  0065: iterpop
+  0066: if !((P.Pawn != none)) goto 0x00df
+  007a: get_Outer().ClientMessage((get_Outer().ViewingFrom @ P.PlayerReplicationInfo.GetPlayerAlias()), 'Event', )
+  00bf: get_Outer().SetViewTarget(P.Pawn, )
+  00df: return nothing
+  00e1: <eos>
+
+function CheatManager.ViewActor  (script 111 bytes)
+  0000: foreach get_Outer().AllActors(obj'Actor', A) (end 0x006b)
+  001e: if !((A.Name == actorName)) goto 0x006a
+  0036: get_Outer().SetViewTarget(A, )
+  004d: get_Outer().SetCameraMode('ThirdPerson')
+  0067: iterpop
+  0068: return nothing
+  006a: iternext
+  006b: iterpop
+  006c: return nothing
+  006e: <eos>
+
+function CheatManager.ViewFlag  (script 128 bytes)
+  0000: foreach get_Outer().WorldInfo.AllControllers(obj'AIController', C) (end 0x007c)
+  0027: if !(((C.PlayerReplicationInfo != none) && C.PlayerReplicationInfo.bHasFlag)) goto 0x007b
+  0058: get_Outer().SetViewTarget(C.Pawn, )
+  0078: iterpop
+  0079: return nothing
+  007b: iternext
+  007c: iterpop
+  007d: return nothing
+  007f: <eos>
+
+function CheatManager.ViewBot  (script 278 bytes)
+  0000: foreach get_Outer().WorldInfo.AllControllers(obj'AIController', C) (end 0x00a6)
+  0027: if !(((C.Pawn != none) && (C.PlayerReplicationInfo != none))) goto 0x00a5
+  0051: if !((bFound || (first == none))) goto 0x007e
+  0067: first = C
+  0072: if !(bFound) goto 0x007e
+  007b: goto 0x00a6
+  007e: if !((C.PlayerReplicationInfo == get_Outer().RealViewTarget)) goto 0x00a5
+  009d: bFound = true
+  00a5: iternext
+  00a6: iterpop
+  00a7: if !((first != none)) goto 0x010c
+  00b2: LogInternal(("view " $ cast56(first)), , , )
+  00c7: get_Outer().SetViewTarget(first, )
+  00de: get_Outer().SetCameraMode('ThirdPerson')
+  00f8: get_Outer().FixFOV()
+  0109: goto 0x0113
+  010c: CheatManager.ViewSelf(true)
+  0113: return nothing
+  0115: <eos>
+
+function CheatManager.ViewClass  (script 305 bytes)
+  0000: first = none
+  0007: foreach get_Outer().AllActors(aClass, Other) (end 0x0071)
+  0025: if !((bFound || (first == none))) goto 0x0052
+  003b: first = Other
+  0046: if !(bFound) goto 0x0052
+  004f: goto 0x0071
+  0052: if !((Other == get_Outer().ViewTarget)) goto 0x0070
+  0068: bFound = true
+  0070: iternext
+  0071: iterpop
+  0072: if !((first != none)) goto 0x0127
+  007d: if !((Pawn(first) != none)) goto 0x00cc
+  008d: get_Outer().ClientMessage((get_Outer().ViewingFrom @ first.GetHumanReadableName()), 'Event', )
+  00c9: goto 0x00fc
+  00cc: get_Outer().ClientMessage((get_Outer().ViewingFrom @ cast56(first)), 'Event', )
+  00fc: get_Outer().SetViewTarget(first, )
+  0113: get_Outer().FixFOV()
+  0124: goto 0x012e
+  0127: CheatManager.ViewSelf(false)
+  012e: return nothing
+  0130: <eos>
+
+function CheatManager.Loaded  (script 49 bytes)
+  0000: if !((cast3a(get_Outer().WorldInfo.NetMode) != cast3a(0))) goto 0x0022
+  0020: return nothing
+  0022: CheatManager.AllWeapons()
+  0028: CheatManager.AllAmmo()
+  002e: return nothing
+  0030: <eos>
+
+function CheatManager.AllWeapons  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function CheatManager.ToggleDebugCamera  (script 227 bytes)
+  0000: foreach get_Outer().WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x008a)
+  0027: if !((PC.bIsPlayer && PC.IsLocalPlayerController())) goto 0x0089
+  0051: DCC = DebugCameraController(PC)
+  0061: if !(((DCC != none) && (DCC.OryginalControllerRef == none))) goto 0x0086
+  0082: iternext
+  0083: goto 0x008a
+  0086: goto 0x008a
+  0089: iternext
+  008a: iterpop
+  008b: if !(((DCC != none) && (DCC.OryginalControllerRef != none))) goto 0x00c2
+  00ac: DCC.DisableDebugCamera()
+  00bf: goto 0x00e0
+  00c2: if !((PC != none)) goto 0x00e0
+  00cd: PC.EnableDebugCamera()
+  00e0: return nothing
+  00e2: <eos>

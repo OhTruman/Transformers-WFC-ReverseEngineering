@@ -1,0 +1,15 @@
+function TnAiCustomProceduralPreconditionTargetIsCloaked.__Constructor__TnAiCustomProceduralPreconditionTargetIsCloaked_0  (script 16 bytes)
+  0000: self._TargetMustBeCloaked = TargetMustBeCloaked
+  000d: return nothing
+  000f: <eos>
+
+function TnAiCustomProceduralPreconditionTargetIsCloaked.CheckProceduralPrecondition  (script 117 bytes)
+  0000: TnAiC = TnAiController(C)
+  0010: if !((TnAiC == none)) goto 0x001d
+  001b: return false
+  001d: TargetTransformer = TnPawn(TnAiC.AiWorldState.GetSubject(obj'TnAiWorldStateTargetIsDead'))
+  0049: if !((TargetTransformer == none)) goto 0x0056
+  0054: return false
+  0056: return (TargetTransformer._IsCloaking == self._TargetMustBeCloaked)
+  006e: return return
+  0074: <eos>

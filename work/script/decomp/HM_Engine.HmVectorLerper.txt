@@ -1,0 +1,44 @@
+function HmVectorLerper.Initialize  (script 36 bytes)
+  0000: self.StartVector = Start
+  000b: self.EndVector = End
+  0016: self.CurTime = 0.0
+  0021: return nothing
+  0023: <eos>
+
+function HmVectorLerper.ChangeEndVector  (script 14 bytes)
+  0000: self.EndVector = End
+  000b: return nothing
+  000d: <eos>
+
+function HmVectorLerper.GetValue  (script 68 bytes)
+  0000: if !((self.RampTime == cast3f(0))) goto 0x0013
+  000d: return self.StartVector
+  0013: return obj'Core.Math'.static.VLerp(self.StartVector, self.EndVector, (self.CurTime / self.RampTime))
+  003d: return return
+  0043: <eos>
+
+function HmVectorLerper.Update  (script 47 bytes)
+  0000: (self.CurTime += DeltaTime)
+  000c: self.CurTime = obj'Core.Math'.static.FClamp(self.CurTime, 0.0, self.RampTime)
+  002c: return nothing
+  002e: <eos>
+
+function HmVectorLerper.SetTime  (script 14 bytes)
+  0000: self.CurTime = Time
+  000b: return nothing
+  000d: <eos>
+
+function HmVectorLerper.SetRampTime  (script 76 bytes)
+  0000: if !((self.RampTime == cast3f(0))) goto 0x001a
+  000d: self.RampTime = NewRampTime
+  0018: return nothing
+  001a: NormalizedTime = (self.CurTime / self.RampTime)
+  002c: self.RampTime = NewRampTime
+  0037: self.CurTime = (self.RampTime * NormalizedTime)
+  0049: return nothing
+  004b: <eos>
+
+function HmVectorLerper.IsDoneLerping  (script 20 bytes)
+  0000: return (self.CurTime >= self.RampTime)
+  000d: return return
+  0013: <eos>

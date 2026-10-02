@@ -1,0 +1,239 @@
+function HmDialogComponentImpl.GetIsPlaying  (script 88 bytes)
+  0000: if !((none == self.AudioComponent)) goto 0x000d
+  000b: return false
+  000d: if !((false == self.AudioComponent.IsPlaying())) goto 0x0028
+  0026: return false
+  0028: if !((none == _SoundCue)) goto 0x0035
+  0033: return true
+  0035: if !((self.AudioComponent.SoundCue == _SoundCue)) goto 0x004f
+  004d: return true
+  004f: return false
+  0051: return return
+  0057: <eos>
+
+function HmDialogComponentImpl.TickInternal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDialogComponentImpl.PlayInternal  (script 431 bytes)
+  0000: bCallbackSpecified = IsCallable(DialogCallback)
+  0016: if !((none == _SoundCue)) goto 0x003d
+  0021: if !(bCallbackSpecified) goto 0x003b
+  002a: DialogEventCallback(1)
+  003b: return nothing
+  003d: if !(((none != get_Outer().Owner) && (none != get_Outer().Owner.WorldInfo.SoundInterceptor))) goto 0x00b5
+  0075: get_Outer().Owner.WorldInfo.SoundInterceptor.AddSoundEvent(self.SoundCue, get_Outer().Owner, , , )
+  00b5: if !((false == HmDialogComponentImpl.CanPlayDialogType(Type))) goto 0x00e2
+  00c6: if !(bCallbackSpecified) goto 0x00e0
+  00cf: DialogEventCallback(4)
+  00e0: return nothing
+  00e2: if !((false == HmDialogComponentImpl.IsHigherPriority(_SoundCue))) goto 0x010f
+  00f3: if !(bCallbackSpecified) goto 0x010d
+  00fc: DialogEventCallback(3)
+  010d: return nothing
+  010f: if !((true == Replicate)) goto 0x0131
+  011b: HmDialogComponentImpl.ReplicatePlay(_SoundCue, Type, Deactivate)
+  0131: GotoState('Stopped', , , )
+  013f: self.SoundCue = _SoundCue
+  014a: get_Outer().__DialogEventCallback__Delegate = DialogCallback
+  015c: self.DialogTypePrevious = Type
+  0167: if !((cast3a(Type) == cast3a(0))) goto 0x0188
+  0177: GotoState('PlayingDialog', , , )
+  0185: goto 0x0196
+  0188: GotoState('PlayingConversation', , , )
+  0196: if !((true == Deactivate)) goto 0x01ac
+  01a2: DeactivateInternal()
+  01ac: return nothing
+  01ae: <eos>
+
+function HmDialogComponentImpl.StopInternal  (script 78 bytes)
+  0000: if !(((true == ConversationOnly) && (false == IsInState('PlayingConversation', )))) goto 0x0023
+  0021: return nothing
+  0023: if !((true == Replicate)) goto 0x003b
+  002f: HmDialogComponentImpl.ReplicateStop(ConversationOnly)
+  003b: GotoState('Stopped', , , )
+  0049: return nothing
+  004b: return nothing
+  004d: <eos>
+
+function HmDialogComponentImpl.DeactivateInternal  (script 17 bytes)
+  0000: GotoState('Deactivated', , , )
+  000e: return nothing
+  0010: <eos>
+
+function HmDialogComponentImpl.CanPlayDialogType  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function HmDialogComponentImpl.IsHigherPriority  (script 168 bytes)
+  0000: if !(((none == self.AudioComponent) || !self.AudioComponent.IsPlaying())) goto 0x0027
+  0025: return true
+  0027: RootNodeCurrent = SoundNodeRoot(self.AudioComponent.SoundCue.FirstNode)
+  0049: if !((none == RootNodeCurrent)) goto 0x0056
+  0054: return false
+  0056: RootNodeNew = SoundNodeRoot(_SoundCue.FirstNode)
+  006f: if !((none == RootNodeNew)) goto 0x007c
+  007a: return false
+  007c: if !((RootNodeCurrent.Priority >= RootNodeNew.Priority)) goto 0x009f
+  009d: return false
+  009f: return true
+  00a1: return return
+  00a7: <eos>
+
+function HmDialogComponentImpl.GetRandomDialogCharacter  (script 135 bytes)
+  0000: if !((none == get_Outer().Owner)) goto 0x0014
+  0012: return none
+  0014: SoundEventInterface = HmSoundEventInterface(get_Outer().Owner)
+  002b: if !(EqualEqual_InterfaceInterface(HmSoundEventInterface(none), SoundEventInterface)) goto 0x0041
+  003f: return none
+  0041: SoundEventInterface.GetDialogCharacters(DialogCharacters)
+  005a: if !((0 == DialogCharacters.Length)) goto 0x0068
+  0066: return none
+  0068: return obj'Core.Random'.static.Rand(DialogCharacters.Length)[DialogCharacters]
+  0080: return return
+  0086: <eos>
+
+function HmDialogComponentImpl.SoloTrackForDialogCharacter  (script 437 bytes)
+  0000: if !((none == self.SoundCue.FirstNode)) goto 0x0016
+  0014: return false
+  0016: if !((none == self.DialogCharacter)) goto 0x0023
+  0021: return false
+  0023: DialogCharacterCurrent = self.DialogCharacter
+  002e: if !((none != DialogCharacterCurrent)) goto 0x012c
+  0039: Index = 0
+  0040: if !((Index < self.SoundCue.FirstNode.ChildNodes.Length)) goto 0x0109
+  0062: WaveEvent = SoundNodeWaveEvent(Index[self.SoundCue.FirstNode.ChildNodes])
+  008a: if !((none == WaveEvent)) goto 0x0098
+  0095: goto 0x00ff
+  0098: if !((none == WaveEvent.DialogCharacter)) goto 0x00c7
+  00ac: self.AudioComponent.SoloTrack(Index)
+  00c4: goto 0x00ff
+  00c7: if !((DialogCharacterCurrent == WaveEvent.DialogCharacter)) goto 0x00ff
+  00df: self.AudioComponent.SoloTrack(Index)
+  00f7: FoundMatchingDialogCharacter = true
+  00ff: AddAdd_Int(Index)
+  0106: goto 0x0040
+  0109: if !(FoundMatchingDialogCharacter) goto 0x0115
+  0112: goto 0x012c
+  0115: DialogCharacterCurrent = DialogCharacterCurrent.Parent
+  0129: goto 0x002e
+  012c: if !((false == FoundMatchingDialogCharacter)) goto 0x01ac
+  0138: LogInternal(((((("WARN:" @ "ERROR:  SoundCue ") $ cast56(self.SoundCue)) $ " is not authored for DialogCharacter ") $ cast57(self.DialogCharacter.Name)) $ "!"), 'HmDialogComponent', , )
+  01aa: return false
+  01ac: return true
+  01ae: return return
+  01b4: <eos>
+
+function HmDialogComponentImpl.ReplicatePlay  (script 293 bytes)
+  0000: if !((none == get_Outer().Owner)) goto 0x0014
+  0012: return nothing
+  0014: WI = get_Outer().Owner.WorldInfo
+  002f: if !((none == WI)) goto 0x00b5
+  003a: LogInternal(((("WARN:" @ "ERROR ") $ cast57(self.Name)) $ ":  Could not find WorldInfo! Dialog replication must occur on the server."), 'HmDialogComponent', , )
+  00b3: return nothing
+  00b5: foreach WI.AllControllers(obj'HmPlayerController', PC) (end 0x0121)
+  00d5: if !((true == PC.IsLocalPlayerController())) goto 0x0120
+  00ee: PC.ServerPlayDialog(get_Outer().Owner, _SoundCue, Type, Deactivate)
+  011d: goto 0x0121
+  0120: iternext
+  0121: iterpop
+  0122: return nothing
+  0124: <eos>
+
+function HmDialogComponentImpl.ReplicateStop  (script 288 bytes)
+  0000: if !((none == get_Outer().Owner)) goto 0x0014
+  0012: return nothing
+  0014: WI = get_Outer().Owner.WorldInfo
+  002f: if !((none == WI)) goto 0x00b5
+  003a: LogInternal(((("WARN:" @ "ERROR ") $ cast57(self.Name)) $ ":  Could not find WorldInfo! Dialog replication must occur on the server."), 'HmDialogComponent', , )
+  00b3: return nothing
+  00b5: foreach WI.AllControllers(obj'HmPlayerController', PC) (end 0x011c)
+  00d5: if !((true == PC.IsLocalPlayerController())) goto 0x011b
+  00ee: PC.ServerStopDialog(get_Outer().Owner, self.SoundCue, ConversationOnly)
+  0118: goto 0x011c
+  011b: iternext
+  011c: iterpop
+  011d: return nothing
+  011f: <eos>
+
+function HmDialogComponentImpl.Stopped.BeginState  (script 251 bytes)
+  0000: bCallbackSpecified = IsCallable(get_Outer().__DialogEventCallback__Delegate)
+  001d: if !((none != self.AudioComponent)) goto 0x00ba
+  0028: if !((true == self.AudioComponent.bFinished)) goto 0x0061
+  003d: if !(bCallbackSpecified) goto 0x005e
+  0046: get_Outer().DialogEventCallback(2)
+  005e: goto 0x0082
+  0061: if !(bCallbackSpecified) goto 0x0082
+  006a: get_Outer().DialogEventCallback(1)
+  0082: self.AudioComponent.bAutoDestroy = true
+  0093: self.AudioComponent.FadeOut(0.1, 0.0)
+  00b0: self.AudioComponent = none
+  00b7: goto 0x00db
+  00ba: if !(bCallbackSpecified) goto 0x00db
+  00c3: get_Outer().DialogEventCallback(1)
+  00db: self.SoundCue = none
+  00e2: get_Outer().__DialogEventCallback__Delegate = delegate.None
+  00f8: return nothing
+  00fa: <eos>
+
+function HmDialogComponentImpl.Playing.BeginState  (script 490 bytes)
+  0000: if !((none == self.DialogCharacter)) goto 0x0017
+  000b: self.DialogCharacter = HmDialogComponentImpl.GetRandomDialogCharacter()
+  0017: self.AudioComponent = get_Outer().Owner.CreateAudioComponent(self.SoundCue, false, true, , , )
+  0041: if !((none == self.AudioComponent)) goto 0x005c
+  004c: GotoState('Stopped', , , )
+  005a: return nothing
+  005c: if !((false == HmDialogComponentImpl.SoloTrackForDialogCharacter())) goto 0x0078
+  0068: GotoState('Stopped', , , )
+  0076: return nothing
+  0078: self.AudioComponent.SocketName = self.SocketName
+  008c: P = Pawn(get_Outer().Owner)
+  00a3: if !((((none != P) && P.IsHumanControlled()) && P.IsLocallyControlled())) goto 0x00ef
+  00de: self.AudioComponent.bAllowSpatialization = false
+  00ef: if !((P != none)) goto 0x016e
+  00fa: OwnerAiController = AIController(P.Controller)
+  0113: if !((OwnerAiController != none)) goto 0x014a
+  011e: OwnerAiController.ReactToStimulus(P, obj'HmStimulusType_DialogSpeak', P.Location, )
+  014a: P.MakeNoise(5000.0, 'Dialog')
+  016b: goto 0x01a3
+  016e: get_Outer().Owner.TriggerStimulus(obj'HmStimulusType_DialogHearEmitter', get_Outer().Owner.Location, )
+  01a3: self.AudioComponent.Play()
+  01b6: if !(IsCallable(get_Outer().__DialogEventCallback__Delegate)) goto 0x01e7
+  01cf: get_Outer().DialogEventCallback(0)
+  01e7: return nothing
+  01e9: <eos>
+
+function HmDialogComponentImpl.Playing.TickInternal  (script 55 bytes)
+  0000: if !(((none == self.AudioComponent) || (false == self.AudioComponent.IsPlaying()))) goto 0x0034
+  0026: GotoState('Stopped', , , )
+  0034: return nothing
+  0036: <eos>
+
+function HmDialogComponentImpl.PlayingConversation.BeginState  (script 64 bytes)
+  0000: HmWorldInfo(get_Outer().Owner.WorldInfo)._DialogEventManager.DisablePlayback(true)
+  0032: BeginState(PreviousStateName)
+  003d: return nothing
+  003f: <eos>
+
+function HmDialogComponentImpl.PlayingConversation.EndState  (script 64 bytes)
+  0000: HmWorldInfo(get_Outer().Owner.WorldInfo)._DialogEventManager.DisablePlayback(false)
+  0032: EndState(NextStateName)
+  003d: return nothing
+  003f: <eos>
+
+function HmDialogComponentImpl.Deactivated.BeginState  (script 55 bytes)
+  0000: if !((none != self.AudioComponent)) goto 0x0034
+  000b: self.AudioComponent.bStopWhenOwnerDestroyed = false
+  001c: self.AudioComponent.bAutoDestroy = true
+  002d: self.AudioComponent = none
+  0034: return nothing
+  0036: <eos>
+
+function HmDialogComponentImpl.Deactivated.PlayInternal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function HmDialogComponentImpl.Deactivated.StopInternal  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

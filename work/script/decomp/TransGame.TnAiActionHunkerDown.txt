@@ -1,0 +1,65 @@
+function TnAiActionHunkerDown.get_WeaponClass  (script 40 bytes)
+  0000: return ((self._OverrideWeaponClass != none) ? self._OverrideWeaponClass : self.HunkerDownBlueprint.WeaponClass)
+  0021: return return
+  0027: <eos>
+
+function TnAiActionHunkerDown.set_WeaponClass  (script 14 bytes)
+  0000: self._OverrideWeaponClass = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAiActionHunkerDown.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self.HunkerDownBlueprint = TnAiActionHunkerDownBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionHunkerDown.OnBind  (script 44 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: get_InvManager().FindOrCreateInventory(get_WeaponClass(), true)
+  0029: return nothing
+  002b: <eos>
+
+function TnAiActionHunkerDown.OnStart  (script 264 bytes)
+  0000: W = TnWeapon(get_InvManager().FindInventoryType(get_WeaponClass(), false))
+  002e: get_InvManager().SetCurrentWeapon(W)
+  004b: self._TransformerPawn._HunkerDown = true
+  005c: self._TransformerController.WeaponShooter.Activate(get_WeaponClass(), delegate.FailCallback)
+  008b: self.EnemyPawn = Pawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateDefending', ExpectedEffects))
+  00b3: SetCharacterState(0)
+  00be: self._TransformerController.Focus = IFocusible(self.EnemyPawn)
+  00d7: self._TransformerController.StopMovement()
+  00ea: self.TimeInAction = 0.0
+  00f5: return OnStart(ExpectedEffects)
+  0101: return return
+  0107: <eos>
+
+function TnAiActionHunkerDown.OnUpdate  (script 301 bytes)
+  0000: (self.TimeInAction += DeltaTime)
+  000c: if !((self.TimeInAction >= self.HunkerDownBlueprint.MinTimeInAction)) goto 0x0115
+  0024: if !((self.TimeInAction >= self.HunkerDownBlueprint.MaxTimeInAction)) goto 0x0047
+  003c: return Fail()
+  0047: if !((self._TransformerController.Enemy == none)) goto 0x0066
+  005b: return Fail()
+  0066: if !((self._TransformerController.Enemy != self.EnemyPawn)) goto 0x0089
+  007e: return Fail()
+  0089: EnemyRange = self._TransformerController.GetEnemyCenterPointRange()
+  00a2: if !((cast3a(EnemyRange) < cast3a(self.HunkerDownBlueprint.MinEnemyRange))) goto 0x00c9
+  00be: return Fail()
+  00c9: CurrentDamageThreat = cast3d(get_CurrentWorldState().GetIntValue(obj'TnAiWorldStateDamageThreat'))
+  00ee: if !((cast3a(CurrentDamageThreat) <= cast3a(self.HunkerDownBlueprint.DamageThreatRecoveryThreshold))) goto 0x0115
+  010a: return Succeed()
+  0115: return OnUpdate(ExpectedEffects, DeltaTime)
+  0126: return return
+  012c: <eos>
+
+function TnAiActionHunkerDown.OnFinish  (script 144 bytes)
+  0000: OnFinish(CurrentState)
+  000b: self._TransformerController.WeaponShooter.Deactivate()
+  0027: self._TransformerPawn._HunkerDown = false
+  0038: if !((cast3a(CurrentState) == cast3a(3))) goto 0x006e
+  0048: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateDefending', true, self.EnemyPawn)
+  006b: goto 0x008d
+  006e: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateDefending', false, )
+  008d: return nothing
+  008f: <eos>

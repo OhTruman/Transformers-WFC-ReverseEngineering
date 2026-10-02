@@ -1,0 +1,73 @@
+function TnCampaignStatistics.RecordSessionStart  (script 27 bytes)
+  0000: self.SessionTable.RecordSession(Game)
+  0018: return nothing
+  001a: <eos>
+
+function TnCampaignStatistics.RecordSessionComplete  (script 164 bytes)
+  0000: self.CompletionTable.RecordCompletion(Game, Reason)
+  001d: self.TextureMipTable.RecordTextureMipStats(Game.StatisticsSessionId)
+  003e: self.MatchTable.RecordMatch(Game, Reason)
+  005b: self.PartyTable.RecordParties()
+  006e: if !(Game.HasRule(obj'TnGameRules_CompetitiveScoring')) goto 0x00a1
+  0089: self.ScoreTable.RecordScores(Game)
+  00a1: return nothing
+  00a3: <eos>
+
+function TnCampaignStatistics.RecordCheckpointReached  (script 27 bytes)
+  0000: self.CheckpointTable.RecordCheckpointReached(CP)
+  0018: return nothing
+  001a: <eos>
+
+function TnCampaignStatistics.RecordStartingFromCheckpoint  (script 51 bytes)
+  0000: self.CheckpointTable.RecordStartingFromCheckpoint(CP)
+  0018: self.MatchTable.RecordInitialCheckpoint(CP)
+  0030: return nothing
+  0032: <eos>
+
+function TnCampaignStatistics.RecordKill  (script 91 bytes)
+  0000: self.KillTable.RecordKill(Killer, KilledPlayer, KilledPawn, DamageType, Game)
+  002c: self.PlayerDeathTable.RecordKill(Killer, KilledPlayer, KilledPawn, DamageType, Game)
+  0058: return nothing
+  005a: <eos>
+
+function TnCampaignStatistics.RecordPickup  (script 42 bytes)
+  0000: self.PickupTable.RecordPickup(P, Pickup, InventoryType, Game)
+  0027: return nothing
+  0029: <eos>
+
+function TnCampaignStatistics.RecordPlayerSample  (script 214 bytes)
+  0000: self.SampleTable.RecordPlayerSample(P, Game)
+  001d: if !(((P == none) || (P.PlayerReplicationInfo == none))) goto 0x0040
+  003e: return nothing
+  0040: if !(P.PlayerReplicationInfo.IsLocalPlayerPRI()) goto 0x0099
+  005f: self.PerformanceTable.sample(P, Game)
+  007c: self.StreamingTable.sample(P, Game)
+  0099: self.FormTable.TakeFormSample(Game, TimeInterval)
+  00b6: self.EquippedWeaponTable.TakeWeaponSample(Game, TimeInterval)
+  00d3: return nothing
+  00d5: <eos>
+
+function TnCampaignStatistics.RecordError  (script 42 bytes)
+  0000: self.ErrorTable.RecordError(Player, Game, ErrorString, Callstack)
+  0027: return nothing
+  0029: <eos>
+
+function TnCampaignStatistics.RecordCheat  (script 37 bytes)
+  0000: self.CheatTable.RecordCheat(Cheater, CheatName, Game)
+  0022: return nothing
+  0024: <eos>
+
+function TnCampaignStatistics.RecordShotFired  (script 32 bytes)
+  0000: self.ShotTable.RecordShotFired(W, Game)
+  001d: return nothing
+  001f: <eos>
+
+function TnCampaignStatistics.RecordCausedDamage  (script 58 bytes)
+  0000: self.ShotTable.RecordCausedDamage(Attacker, DamagedPawn, Damage, DamageType, IsFatalDamage, HitInfo, Game)
+  0037: return nothing
+  0039: <eos>
+
+function TnCampaignStatistics.RecordPathFailure  (script 37 bytes)
+  0000: self.PathFailureTable.RecordPathFailure(Start, End, Game)
+  0022: return nothing
+  0024: <eos>

@@ -1,0 +1,37 @@
+function TnPlayerCharacterData.CheckForErrors  (script 922 bytes)
+  0000: _CustomCharacterOptions = new(nothing, nothing, obj'TnCustomCharacterOptions', nothing, DeltaTime)
+  0014: foreach self.Data.Skills(SkillString,) (end 0x00d1)
+  002e: obj'TnSkill'.static.SplitSkill(SkillString, SkillUniqueId, SkillLevel)
+  0050: SkillClass = _CustomCharacterOptions.FindSkill(SkillUniqueId)
+  006e: if !((SkillClass == none)) goto 0x00d0
+  0079: EmitCheckMessage(0, (((("Skill" @ SkillUniqueId) @ "on character") @ self.Data.CharacterName) @ "does not map to asset"), , )
+  00d0: iternext
+  00d1: iterpop
+  00d2: foreach self.Data.WeaponTypes(WeaponString,) (end 0x016e)
+  00ec: WeaponClass = _CustomCharacterOptions.FindWeapon(WeaponString)
+  010a: if !((WeaponClass == none)) goto 0x016d
+  0115: EmitCheckMessage(0, (((("Weapon" @ WeaponString) @ "on character") @ self.Data.CharacterName) @ "does not map to asset"), , )
+  016d: iternext
+  016e: iterpop
+  016f: foreach self.Data.VehicleWeapons(WeaponString,) (end 0x0213)
+  0189: WeaponClass = _CustomCharacterOptions.FindWeapon(WeaponString)
+  01a7: if !((WeaponClass == none)) goto 0x0212
+  01b2: EmitCheckMessage(0, (((("Vehicle weapon" @ WeaponString) @ "on character") @ self.Data.CharacterName) @ "does not map to asset"), , )
+  0212: iternext
+  0213: iterpop
+  0214: foreach self.Data.Abilities(AbilityString,) (end 0x02b1)
+  022e: AbilityClass = _CustomCharacterOptions.FindAbility(AbilityString)
+  024c: if !((AbilityClass == none)) goto 0x02b0
+  0257: EmitCheckMessage(0, (((("Ability" @ AbilityString) @ "on character") @ self.Data.CharacterName) @ "does not map to asset"), , )
+  02b0: iternext
+  02b1: iterpop
+  02b2: I = 0
+  02b9: if !((I < self.Data.ChassisTypes.Length)) goto 0x0397
+  02d4: if !((I[self.Data.ChassisTypes] == "")) goto 0x02f4
+  02f1: goto 0x038d
+  02f4: if !((_CustomCharacterOptions.FindChassis(I[self.Data.ChassisTypes]) == none)) goto 0x038d
+  0323: EmitCheckMessage(0, (((("Chassis" @ I[self.Data.ChassisTypes]) @ "on character") @ self.Data.CharacterName) @ "does not map to asset"), , )
+  038d: AddAdd_PreInt(I)
+  0394: goto 0x02b9
+  0397: return nothing
+  0399: <eos>

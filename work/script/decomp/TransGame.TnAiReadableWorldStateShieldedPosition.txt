@@ -1,0 +1,10 @@
+function TnAiReadableWorldStateShieldedPosition.__Constructor__TnAiReadableWorldStateShieldedPosition_0  (script 14 bytes)
+  0000: self._ShieldedPositionStatus = PositionStatus
+  000b: return nothing
+  000d: <eos>
+
+function TnAiReadableWorldStateShieldedPosition.OnGetWorldStateProperty  (script 57 bytes)
+  0000: self._WorldStateProperty.Value.IntVal = cast3a(self._ShieldedPositionStatus)
+  0023: self._WorldStateProperty.EvaluateWhileRunning = false
+  0036: return nothing
+  0038: <eos>

@@ -1,0 +1,52 @@
+function TnTargetCirclePositionAdjuster.GetCombinedStickyFactor  (script 87 bytes)
+  0000: if !(!HasValidAssistTarget()) goto 0x0015
+  000f: return 0.0
+  0015: StickyFactor = GetCombinedStickyFactor(LastFramePosition, CameraToTarget, DeltaTime)
+  0030: (StickyFactor *= TnTargetCirclePositionAdjuster.CalculateJumpStrafeStickyFactor())
+  003d: (StickyFactor *= TnTargetCirclePositionAdjuster.CalcTargetSpeedRampStickyFactor())
+  004a: return StickyFactor
+  0050: return return
+  0056: <eos>
+
+function TnTargetCirclePositionAdjuster.CalcBothMovingStickyFactor  (script 54 bytes)
+  0000: if !(!TnTargetSticker(Sticker).IsOwnerJumping()) goto 0x0029
+  001d: return CalcBothMovingStickyFactor(Sticker)
+  0029: return 1.0
+  002f: return return
+  0035: <eos>
+
+function TnTargetCirclePositionAdjuster.CalcOwnerNotMovingStickyFactor  (script 59 bytes)
+  0000: if !(!TnTargetSticker(Sticker).IsOwnerJumping()) goto 0x002e
+  001d: return CalcOwnerNotMovingStickyFactor(Sticker, DeltaTime)
+  002e: return 1.0
+  0034: return return
+  003a: <eos>
+
+function TnTargetCirclePositionAdjuster.CalculateJumpStrafeStickyFactor  (script 55 bytes)
+  0000: Sticker = TnTargetSticker(get_Outer())
+  000e: if !(Sticker.IsOwnerJumping()) goto 0x002a
+  0024: return self.JumpStrafeStickyFactor
+  002a: return 1.0
+  0030: return return
+  0036: <eos>
+
+function TnTargetCirclePositionAdjuster.CalcTargetSpeedRampStickyFactor  (script 205 bytes)
+  0000: TargetSpeed = HmStrafingTargetSticker(get_Outer()).GetTargetSpeed()
+  001c: if !((TargetSpeed < self.TargetSpeedRamp.Max)) goto 0x00c0
+  0036: if !((TargetSpeed > self.TargetSpeedRamp.Min)) goto 0x00ba
+  0050: StickyFactor = ((self.TargetSpeedRamp.Max - TargetSpeed) / (self.TargetSpeedRamp.Max - self.TargetSpeedRamp.Min))
+  0091: StickyFactor = obj'Core.Math'.static.FClamp(StickyFactor, 0.0, 1.0)
+  00b1: return StickyFactor
+  00b7: goto 0x00c0
+  00ba: return 1.0
+  00c0: return 0.0
+  00c6: return return
+  00cc: <eos>
+
+function TnTargetCirclePositionAdjuster.HasValidAssistTarget  (script 54 bytes)
+  0000: Sticker = TnTargetSticker(get_Outer())
+  000e: if !((Sticker != none)) goto 0x002d
+  0019: return Sticker.HasValidAssistTarget()
+  002d: return true
+  002f: return return
+  0035: <eos>

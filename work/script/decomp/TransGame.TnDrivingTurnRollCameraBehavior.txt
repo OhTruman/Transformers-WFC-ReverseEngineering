@@ -1,0 +1,66 @@
+function TnDrivingTurnRollCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnDrivingTurnRollCameraBehavior.GetMaxRollDeg  (script 141 bytes)
+  0000: if !((self.CurrentTurnRoll.FullRollSpeedThreshold > 0.0)) goto 0x0063
+  001a: VelocityScaler = obj'Core.Math'.static.FClamp((obj'Core.Math'.static.VSize(self.Pawn.Velocity) / self.CurrentTurnRoll.FullRollSpeedThreshold), 0.0, 1.0)
+  0060: goto 0x006e
+  0063: VelocityScaler = 1.0
+  006e: return (self.CurrentTurnRoll.MaxRoll * VelocityScaler)
+  0086: return return
+  008c: <eos>
+
+function TnDrivingTurnRollCameraBehavior.GetSmoothTime  (script 24 bytes)
+  0000: return self.CurrentTurnRoll.SmoothTime
+  0011: return return
+  0017: <eos>
+
+function TnDrivingTurnRollCameraBehavior.GetCurrentRollFraction  (script 55 bytes)
+  0000: VehiclePawn = Vehicle(self.Pawn)
+  0010: if !((VehiclePawn == none)) goto 0x0021
+  001b: return 0.0
+  0021: return VehiclePawn.Steering
+  0030: return return
+  0036: <eos>
+
+function TnDrivingTurnRollCameraBehavior.UpdateCurrentTurnRoll  (script 162 bytes)
+  0000: self.CurrentSettingsIndex = -1
+  000b: Index = 0
+  0012: if !((Index < self.TurnRollByPCS.Length)) goto 0x0066
+  0022: if !(self.CameraActor.HasAllPlayerCameraStates(Index[self.TurnRollByPCS].PlayerCameraStates)) goto 0x005c
+  004e: self.CurrentSettingsIndex = Index
+  0059: goto 0x0066
+  005c: AddAdd_PreInt(Index)
+  0063: goto 0x0012
+  0066: if !((self.CurrentSettingsIndex != -1)) goto 0x0094
+  0075: self.CurrentTurnRoll = self.CurrentSettingsIndex[self.TurnRollByPCS].TurnRoll
+  0091: goto 0x009f
+  0094: self.CurrentTurnRoll = self.DefaultTurnRoll
+  009f: return nothing
+  00a1: <eos>
+
+function TnDrivingTurnRollCameraBehavior.Update  (script 35 bytes)
+  0000: TnDrivingTurnRollCameraBehavior.UpdateCurrentTurnRoll()
+  0006: return Update(DeltaTime, Result, CI)
+  001c: return return
+  0022: <eos>
+
+function TnDrivingTurnRollCameraBehavior.DisplayDebug  (script 244 bytes)
+  0000: if !((self.CurrentSettingsIndex == -1)) goto 0x005d
+  000f: HUD.Canvas.DrawTextNormal(("Driving Turn Roll [Default] =" @ TnDrivingTurnRollCameraBehavior.GetDrivingTurnRollSettingsDebug(self.DefaultTurnRoll)), , , )
+  005a: goto 0x00bf
+  005d: HUD.Canvas.DrawTextNormal(((("Driving Turn Roll [" $ cast53(self.CurrentSettingsIndex)) $ "] =") @ TnDrivingTurnRollCameraBehavior.GetDrivingTurnRollSettingsDebug(self.CurrentSettingsIndex[self.TurnRollByPCS].TurnRoll)), , , )
+  00bf: (out_YPos += out_YL)
+  00cb: HUD.Canvas.SetPos(16.0, out_YPos)
+  00f1: return nothing
+  00f3: <eos>
+
+function TnDrivingTurnRollCameraBehavior.GetDrivingTurnRollSettingsDebug  (script 158 bytes)
+  0000: DebugString = ("Max Roll:" @ cast55(DTRS.MaxRoll))
+  0025: ConcatEqual_StrStr(DebugString, ("Smooth Time:" @ cast55(DTRS.SmoothTime)))
+  0054: ConcatEqual_StrStr(DebugString, ("Full Roll Speed Threshold:" @ cast55(DTRS.FullRollSpeedThreshold)))
+  0091: return DebugString
+  0097: return return
+  009d: <eos>

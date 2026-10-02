@@ -1,0 +1,60 @@
+function TnOcclusionAnimBlend.OnBecomeRelevant  (script 261 bytes)
+  0000: if !(obj'Engine.Engine'.static.GetCurrentWorldInfo().IsInEditor()) goto 0x0026
+  0024: return nothing
+  0026: if !((!TnOcclusionAnimBlend.GetLocalOcclusion(Amount, Direction) || (Amount < 0.25))) goto 0x0055
+  004c: TnOcclusionAnimBlend.SetWeight(0)
+  0053: return nothing
+  0055: if !(((Direction dot vect(1,0,0)) > 0.92)) goto 0x007e
+  0073: TnOcclusionAnimBlend.SetWeight(2)
+  007b: goto 0x0102
+  007e: if !(((Direction dot obj'Core.Math'.static.MakeVector(0.70711, 0.70711, 0.0)) > 0.92)) goto 0x00bc
+  00b1: TnOcclusionAnimBlend.SetWeight(3)
+  00b9: goto 0x0102
+  00bc: if !(((Direction dot obj'Core.Math'.static.MakeVector(0.70711, -0.70711, 0.0)) > 0.92)) goto 0x00fb
+  00f1: TnOcclusionAnimBlend.SetWeight(1)
+  00f8: goto 0x0102
+  00fb: TnOcclusionAnimBlend.SetWeight(0)
+  0102: return nothing
+  0104: <eos>
+
+function TnOcclusionAnimBlend.GetLocalOcclusion  (script 290 bytes)
+  0000: if !((self.SkelComponent == none)) goto 0x000d
+  000b: return false
+  000d: Owner = Pawn(self.SkelComponent.Owner)
+  0026: if !((Owner == none)) goto 0x0033
+  0031: return false
+  0033: C = TnAiController(Owner.Controller)
+  004c: if !(((C == none) || (C.Enemy == none))) goto 0x006f
+  006d: return false
+  006f: TacticalPathNode = TnTacticalInterface(C._OccupiedNavigationPoint)
+  0088: if !(EqualEqual_InterfaceInterface(TacticalPathNode, TnTacticalInterface(none))) goto 0x009e
+  009c: return false
+  009e: Tactical = TacticalPathNode.GetTactical()
+  00b8: if !((Tactical == none)) goto 0x00c5
+  00c3: return false
+  00c5: Amount = Tactical._Occlusion
+  00d9: Direction = (Tactical._OcclusionDirection << cast50((C.Enemy.Location - Owner.Location)))
+  0119: return true
+  011b: return return
+  0121: <eos>
+
+function TnOcclusionAnimBlend.SetWeight  (script 121 bytes)
+  0000: I = 0
+  0007: if !((I < self.Children.Length)) goto 0x0076
+  0017: I[self.Children].Weight = cast3f(((I == Index) ? 1 : 0))
+  0043: I[self.Children].Anim.SetNormalizedPosition(0.0)
+  006c: AddAdd_PreInt(I)
+  0073: goto 0x0007
+  0076: return nothing
+  0078: <eos>
+
+function TnOcclusionAnimBlend.SliderMove  (script 253 bytes)
+  0000: OldIndex = cast44((SliderIdx[self.Sliders].Position * cast3f((self.Children.Length - 1))))
+  002b: NewIndex = cast44((NewValue * cast3f((self.Children.Length - 1))))
+  0045: SliderIdx[self.Sliders].Position = (cast3f(NewIndex) / cast3f((self.Children.Length - 1)))
+  0070: OldIndex[self.Children].Weight = 0.0
+  008c: OldIndex[self.Children].Anim.SetNormalizedPosition(0.0)
+  00b5: NewIndex[self.Children].Weight = 1.0
+  00d1: NewIndex[self.Children].Anim.SetNormalizedPosition(0.0)
+  00fa: return nothing
+  00fc: <eos>

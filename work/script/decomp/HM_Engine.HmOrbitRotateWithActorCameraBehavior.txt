@@ -1,0 +1,22 @@
+function HmOrbitRotateWithActorCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.FollowActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmOrbitRotateWithActorCameraBehavior.Activate  (script 23 bytes)
+  0000: self.PreviousRotation = self.FollowActor.Rotation
+  0014: return nothing
+  0016: <eos>
+
+function HmOrbitRotateWithActorCameraBehavior.Update  (script 242 bytes)
+  0000: RotationDelta = obj'Core.Math'.static.Normalize((self.FollowActor.Rotation - self.PreviousRotation))
+  002f: if !(self.bAdjustPitch) goto 0x0065
+  0038: (Result.OrbitRotation.Pitch += RotationDelta.Pitch)
+  0065: if !(self.bAdjustYaw) goto 0x009b
+  006e: (Result.OrbitRotation.Yaw += RotationDelta.Yaw)
+  009b: if !(self.bAdjustRoll) goto 0x00d1
+  00a4: (Result.OrbitRotation.Roll += RotationDelta.Roll)
+  00d1: self.PreviousRotation = self.FollowActor.Rotation
+  00e5: return Result
+  00eb: return return
+  00f1: <eos>

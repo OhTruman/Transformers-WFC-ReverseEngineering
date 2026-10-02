@@ -1,0 +1,47 @@
+function TnGameTypeMessage.ClientReceive  (script 706 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: if !(((P == none) || (P.myHUD == none))) goto 0x0027
+  0025: return nothing
+  0027: WI = TnWorldInfo(P.WorldInfo)
+  0040: if !((WI == none)) goto 0x00b4
+  004b: LogInternal("Error:  TnGameTypeMessage::ClientReceive: Null worldinfo, what in the shennaniganus is going on?", , , )
+  00b2: return nothing
+  00b4: switch (Switch)
+  00bb: case 0: (next 0x01ae)
+  00bf: if !((default.GameTypeMessage != "")) goto 0x00f1
+  00cb: TnHUD(P.myHUD).LocalizedGameAnnouncement(default.GameTypeMessage)
+  00f1: WI._Announcer.PlayEvent(default.GameTypeDialog)
+  0112: WI._Announcer.PlayEvent(default.GameDescriptionDialog)
+  0133: MusicTrack.SoundCue = default.GameTypeMusic
+  0149: MusicTrack.FadeInTime = 0.0
+  015f: MusicTrack.FadeOutTime = 0.0
+  0175: MusicTrack.Priority = 0
+  0187: WI._MusicPlayer.PlayMusic(MusicTrack, false, , )
+  01ab: goto 0x02bf
+  01ae: case 1: (next 0x022d)
+  01b2: MusicTrack.SoundCue = default.GameNearlyCompleteMusic
+  01c8: MusicTrack.FadeInTime = 0.0
+  01de: MusicTrack.FadeOutTime = 0.0
+  01f4: MusicTrack.Priority = 0
+  0206: WI._MusicPlayer.PlayMusic(MusicTrack, false, , )
+  022a: goto 0x02bf
+  022d: case 2: (next 0x02bc)
+  0232: MusicTrack.SoundCue = GetEndGameMusic(P, RelatedPRI_1)
+  0257: MusicTrack.FadeInTime = 0.0
+  026d: MusicTrack.FadeOutTime = 0.0
+  0283: MusicTrack.Priority = 1
+  0295: WI._MusicPlayer.PlayMusic(MusicTrack, false, , )
+  02b9: goto 0x02bf
+  02bc: default:
+  02bf: return nothing
+  02c1: <eos>
+
+function TnGameTypeMessage.GetEndGameMusic  (script 64 bytes)
+  0000: if !((none == Winner)) goto 0x0011
+  000b: return default.TieMusic
+  0011: return ((cast3a(Winner.GetTeamNum()) == 0) ? default.AutobotsWinMusic : default.DecepticonsWinMusic)
+  0039: return return
+  003f: <eos>

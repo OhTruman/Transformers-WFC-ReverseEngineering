@@ -1,0 +1,64 @@
+function TnInstallerMonitor.SetInstallingPlayer  (script 19 bytes)
+  0000: self.InstallingPlayer = TnPlayerController(PC)
+  0010: return nothing
+  0012: <eos>
+
+function TnInstallerMonitor.UpdateInstallProgress  (script 295 bytes)
+  0000: if !((self.PopupInterface == none)) goto 0x000d
+  000b: return nothing
+  000d: if !(((cast3a(self.InstallType) == cast3a(1)) && FilesNeedFreshInstall())) goto 0x0034
+  002c: self.InstallType = 0
+  0034: if !((cast3a(self.InstallType) == cast3a(0))) goto 0x008a
+  0044: self.PopupInterface.SetText("$UIText.MessagePrompts.InstallGameTitle", TnInstallerMonitor.FormMessageString(), true)
+  0087: goto 0x0124
+  008a: if !((cast3a(self.InstallType) == cast3a(1))) goto 0x00de
+  009a: self.PopupInterface.SetText("$UIText.MessagePrompts.CheckGameTitle", TnInstallerMonitor.FormMessageString(), true)
+  00db: goto 0x0124
+  00de: self.PopupInterface.SetText("$UIText.MessagePrompts.UpdateLanguageTitle", TnInstallerMonitor.FormMessageString(), true)
+  0124: return nothing
+  0126: <eos>
+
+function TnInstallerMonitor.FormMessageString  (script 29 bytes)
+  0000: return (("(" $ GetCompletionPercentage()) $ "%)")
+  0016: return return
+  001c: <eos>
+
+function TnInstallerMonitor.OnInstallStarted  (script 398 bytes)
+  0000: if !((self.InstallingPlayer == none)) goto 0x000d
+  000b: return nothing
+  000d: self.InstallType = InInstallType
+  0018: self.InstallingPlayer.SetTimer(0.1, true, 'UpdateInstallProgress', self)
+  0034: if !((cast3a(self.InstallType) == cast3a(0))) goto 0x0099
+  0044: self.PopupInterface = self.InstallingPlayer.UIController.ShowPopupUI("$UIText.MessagePrompts.InstallGameTitle", TnInstallerMonitor.FormMessageString(), false)
+  0096: goto 0x0151
+  0099: if !((cast3a(self.InstallType) == cast3a(1))) goto 0x00fc
+  00a9: self.PopupInterface = self.InstallingPlayer.UIController.ShowPopupUI("$UIText.MessagePrompts.CheckGameTitle", TnInstallerMonitor.FormMessageString(), false)
+  00f9: goto 0x0151
+  00fc: self.PopupInterface = self.InstallingPlayer.UIController.ShowPopupUI("$UIText.MessagePrompts.UpdateLanguageTitle", TnInstallerMonitor.FormMessageString(), false)
+  0151: self.PopupInterface.bShowDefaultButtons = false
+  0162: self.PopupInterface.SetIconType(1, )
+  0178: self.PopupInterface.Show()
+  018b: return nothing
+  018d: <eos>
+
+function TnInstallerMonitor.OnInstallFinished  (script 133 bytes)
+  0000: OnInstallFinished()
+  0006: self.InstallingPlayer.ClearTimer('UpdateInstallProgress', self)
+  0023: if !((self.PopupInterface != none)) goto 0x0041
+  002e: self.PopupInterface.Close()
+  0041: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  005a: if !((OnlineSub != none)) goto 0x0082
+  0065: OnlineSub.SystemInterface.OnInstallEnd()
+  0082: return nothing
+  0084: <eos>
+
+function TnInstallerMonitor.OnInstallCancelled  (script 133 bytes)
+  0000: OnInstallCancelled()
+  0006: self.InstallingPlayer.ClearTimer('UpdateInstallProgress', self)
+  0023: if !((self.PopupInterface != none)) goto 0x0041
+  002e: self.PopupInterface.Close()
+  0041: OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  005a: if !((OnlineSub != none)) goto 0x0082
+  0065: OnlineSub.SystemInterface.OnInstallEnd()
+  0082: return nothing
+  0084: <eos>

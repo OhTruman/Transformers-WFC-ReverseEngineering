@@ -1,0 +1,9 @@
+function TnInteractActionConditionPawnEMPFree.IsSatisfied  (script 141 bytes)
+  0000: if !((User == none)) goto 0x000d
+  000b: return false
+  000d: BuffService = TnBuffService(User.GetRobotService('TnBuffService'))
+  0034: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x004a
+  0048: return true
+  004a: return (!BuffService.HasBuff(obj'TnBuffEmpGrenadeAiRobot') && !BuffService.HasBuff(obj'TnBuffEmpGrenadeAiVehicle'))
+  0086: return return
+  008c: <eos>

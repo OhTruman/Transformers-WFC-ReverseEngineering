@@ -1,0 +1,176 @@
+function TnAvoidClippingCameraBehavior.set_OriginOffset  (script 14 bytes)
+  0000: self._OriginOffset = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnAvoidClippingCameraBehavior.get_NearPlaneHalfWidth  (script 58 bytes)
+  0000: return (obj'Core.Math'.static.Tan(((self._Camera.GetFOVAngle() * 0.0174533) * 0.5)) * cast3f(100))
+  0033: return return
+  0039: <eos>
+
+function TnAvoidClippingCameraBehavior.get_NearPlaneHalfHeight  (script 51 bytes)
+  0000: return (TnAvoidClippingCameraBehavior.get_NearPlaneHalfWidth() / obj'Core.Math'.static.FMax(1.0, self._Camera.GetAspectRatio()))
+  002c: return return
+  0032: <eos>
+
+function TnAvoidClippingCameraBehavior.Activate  (script 11 bytes)
+  0000: self._OldOffsetIsValid = false
+  0008: return nothing
+  000a: <eos>
+
+function TnAvoidClippingCameraBehavior.SetActor  (script 14 bytes)
+  0000: self._Target = A
+  000b: return nothing
+  000d: <eos>
+
+function TnAvoidClippingCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self._Camera = TnCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function TnAvoidClippingCameraBehavior.Update  (script 75 bytes)
+  0000: TnAvoidClippingCameraBehavior.UpdateCameraState(Result)
+  000b: CameraLocation = TnAvoidClippingCameraBehavior.CalculateCameraLocation(TnAvoidClippingCameraBehavior.FindBestNearPlaneLocation())
+  001d: Result.Location = TnAvoidClippingCameraBehavior.CalculateSmoothMoveLocation(DeltaTime, CameraLocation)
+  003e: return Result
+  0044: return return
+  004a: <eos>
+
+function TnAvoidClippingCameraBehavior.UpdateCameraState  (script 1145 bytes)
+  0000: if !(self._Camera.IsDebugStrategyActive()) goto 0x0018
+  0016: return nothing
+  0018: self._DesiredRotation = Result.Rotation
+  002e: self._DesiredLocation = TnAvoidClippingCameraBehavior.CalculateClipPlaneCenter(Result.Location)
+  004a: self._CurrentLocation = TnAvoidClippingCameraBehavior.CalculateClipPlaneCenter(self._Camera.GetCameraLocation())
+  0069: self._Origin = ((self._OriginOffset >> self._Target.Rotation) + self._Target.Location)
+  0095: self._InflatedNearPlaneExtents = obj'Core.Math'.static.MakeVector(0.01, TnAvoidClippingCameraBehavior.get_NearPlaneHalfWidth(), TnAvoidClippingCameraBehavior.get_NearPlaneHalfHeight())
+  00bf: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  012d: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  019d: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  020d: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  027f: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  02ef: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  0361: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  03d3: obj'Core.Math'.static.AddPointToBox(NearPlaneBounds, (obj'Core.Math'.static.MakeVector(-self._InflatedNearPlaneExtents.X, -self._InflatedNearPlaneExtents.Y, -self._InflatedNearPlaneExtents.Z) >> Result.Rotation))
+  0447: self._InflatedNearPlaneExtentsWS = ((NearPlaneBounds.Max - NearPlaneBounds.Min) * 0.5)
+  0476: return nothing
+  0478: <eos>
+
+function TnAvoidClippingCameraBehavior.FindBestNearPlaneLocation  (script 238 bytes)
+  0000: if !(self._ShowDebugDisplay) goto 0x009b
+  0009: obj'Engine.Debug'.static.DrawOrientedBox(self._Origin, self._DesiredRotation, self._InflatedNearPlaneExtents, obj'Core.Colors'.static.Blue(), )
+  003f: obj'Engine.Debug'.static.DrawSphere(TnAvoidClippingCameraBehavior.CalculateCameraLocation(self._CurrentLocation), 20.0, 8, obj'Core.Colors'.static.Green(), )
+  0078: TnAvoidClippingCameraBehavior.DrawFrame(self._DesiredRotation, self._DesiredLocation, obj'Core.Colors'.static.Blue())
+  009b: if !(TnAvoidClippingCameraBehavior.IsClearPath(self._Origin, self._DesiredLocation)) goto 0x00b4
+  00ae: return self._DesiredLocation
+  00b4: TnAvoidClippingCameraBehavior.BuildSafeOptions()
+  00ba: TnAvoidClippingCameraBehavior.RankSafeOptions()
+  00c0: if !(self._ShowDebugDisplay) goto 0x00cf
+  00c9: TnAvoidClippingCameraBehavior.DrawSafeOptions()
+  00cf: return TnAvoidClippingCameraBehavior.PickBestSafeOption()[self._SafeOptions].Location
+  00e7: return return
+  00ed: <eos>
+
+function TnAvoidClippingCameraBehavior.BuildSafeOptions  (script 372 bytes)
+  0000: OriginToCameraCS = ((self._DesiredLocation - self._Origin) << self._DesiredRotation)
+  001a: Up = (vect(0,0,1) >> self._DesiredRotation)
+  0035: Back = (vect(-1,0,0) >> self._DesiredRotation)
+  0050: Diagonal = ((OriginToCameraCS * vect(1,1,0.5)) >> self._DesiredRotation)
+  0073: MaxDistanceUp = TnAvoidClippingCameraBehavior.TraceNearClipPlane(self._Origin, (self._Origin + (Up * OriginToCameraCS.Z)))
+  00a2: MaxDistanceBackHigh = TnAvoidClippingCameraBehavior.TraceNearClipPlane((self._Origin + (Up * MaxDistanceUp)), ((self._Origin + (Up * MaxDistanceUp)) + (Back * -OriginToCameraCS.X)))
+  00ef: MaxDistanceDiagonal = TnAvoidClippingCameraBehavior.TraceNearClipPlane(self._Origin, (self._Origin + Diagonal))
+  010c: 0[self._SafeOptions].Location = (self._Origin + (obj'Core.Math'.static.Normal(Diagonal) * MaxDistanceDiagonal))
+  013d: 1[self._SafeOptions].Location = ((self._Origin + (Up * MaxDistanceUp)) + (Back * MaxDistanceBackHigh))
+  0171: return nothing
+  0173: <eos>
+
+function TnAvoidClippingCameraBehavior.RankSafeOptions  (script 212 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x00d1
+  0013: DistanceFromDesiredWeight = (1.0 - obj'Core.Math'.static.FMin(1.0, (obj'Core.Math'.static.VSize((I[self._SafeOptions].Location - self._DesiredLocation)) * 0.002)))
+  005f: DistanceAwayFromOriginWeight = obj'Core.Math'.static.FMin(1.0, (obj'Core.Math'.static.VSize((I[self._SafeOptions].Location - self._Origin)) * 0.002))
+  00a4: I[self._SafeOptions].Weight = (DistanceFromDesiredWeight + DistanceAwayFromOriginWeight)
+  00c7: AddAdd_PreInt(I)
+  00ce: goto 0x0007
+  00d1: return nothing
+  00d3: <eos>
+
+function TnAvoidClippingCameraBehavior.PickBestSafeOption  (script 113 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x0064
+  0013: if !((I[self._SafeOptions].Weight > BestWeight)) goto 0x005a
+  0033: BestWeight = I[self._SafeOptions].Weight
+  004f: BestIndex = I
+  005a: AddAdd_PreInt(I)
+  0061: goto 0x0007
+  0064: return BestIndex
+  006a: return return
+  0070: <eos>
+
+function TnAvoidClippingCameraBehavior.CalculateSmoothMoveLocation  (script 541 bytes)
+  0000: Temp = obj'Core.Math'.static.MakeAffineTransform(self._DesiredRotation, self._Target.Location)
+  002c: Offset = obj'Core.Math'.static.ReverseTransformPoint(NewLocation, Temp)
+  004f: if !(!self._OldOffsetIsValid) goto 0x006d
+  005a: self._OldOffsetCS = Offset
+  0065: self._OldOffsetIsValid = true
+  006d: Diff = (Offset - self._OldOffsetCS)
+  007f: (self._OldOffsetCS.X += (obj'Core.Math'.static.Sign(Diff.X) * obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(Diff.X), (((Diff.X < cast3f(0)) ? self._SlowMoveSpeed : self._QuickMoveSpeed) * DeltaTime))))
+  0107: (self._OldOffsetCS.Y += (obj'Core.Math'.static.Sign(Diff.Y) * obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(Diff.Y), (self._SlowMoveSpeed * DeltaTime))))
+  0170: (self._OldOffsetCS.Z += (obj'Core.Math'.static.Sign(Diff.Z) * obj'Core.Math'.static.FMin(obj'Core.Math'.static.Abs(Diff.Z), (((Diff.Z > cast3f(0)) ? self._SlowMoveSpeed : self._QuickMoveSpeed) * DeltaTime))))
+  01f8: return obj'Core.Math'.static.TransformPoint(self._OldOffsetCS, Temp)
+  0216: return return
+  021c: <eos>
+
+function TnAvoidClippingCameraBehavior.IsClearPath  (script 131 bytes)
+  0000: HitActor = self._Camera.TraceCamera(HitLocation, HitNormal, TraceEnd, TraceBegin, , , , )
+  0031: if !((HitActor != none)) goto 0x003e
+  003c: return false
+  003e: HitActor = self._Camera.TraceCamera(HitLocation, HitNormal, TraceEnd, TraceEnd, , self._InflatedNearPlaneExtentsWS, , )
+  0073: return (HitActor == none)
+  007c: return return
+  0082: <eos>
+
+function TnAvoidClippingCameraBehavior.TraceNearClipPlane  (script 120 bytes)
+  0000: HitActor = self._Camera.TraceCamera(HitLocation, HitNormal, TraceEnd, TraceBegin, , self._InflatedNearPlaneExtentsWS, , )
+  0035: return ((HitActor == none) ? obj'Core.Math'.static.VSize((TraceEnd - TraceBegin)) : obj'Core.Math'.static.VSize((HitLocation - TraceBegin)))
+  0071: return return
+  0077: <eos>
+
+function TnAvoidClippingCameraBehavior.CalculateClipPlaneCenter  (script 28 bytes)
+  0000: return (CameraLocation + (cast39(self._DesiredRotation) * cast3f(100)))
+  0015: return return
+  001b: <eos>
+
+function TnAvoidClippingCameraBehavior.CalculateCameraLocation  (script 28 bytes)
+  0000: return (ClipPlaneCenter - (cast39(self._DesiredRotation) * cast3f(100)))
+  0015: return return
+  001b: <eos>
+
+function TnAvoidClippingCameraBehavior.DrawSafeOptions  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x0051
+  0013: TnAvoidClippingCameraBehavior.DrawFrame(self._DesiredRotation, I[self._SafeOptions].Location, obj'Core.Colors'.static.Yellow())
+  0047: AddAdd_PreInt(I)
+  004e: goto 0x0007
+  0051: return nothing
+  0053: <eos>
+
+function TnAvoidClippingCameraBehavior.DrawFrame  (script 671 bytes)
+  0000: Transform = obj'Core.Math'.static.MakeAffineTransform(Orientation, Location)
+  0023: HalfWidth = TnAvoidClippingCameraBehavior.get_NearPlaneHalfWidth()
+  002f: HalfHeight = TnAvoidClippingCameraBehavior.get_NearPlaneHalfHeight()
+  003b: BL = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, -HalfWidth, -HalfHeight), Transform)
+  007f: TL = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, -HalfWidth, HalfHeight), Transform)
+  00c1: BR = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, HalfWidth, -HalfHeight), Transform)
+  0103: TR = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(0.0, HalfWidth, HalfHeight), Transform)
+  0143: CameraLocation = obj'Core.Math'.static.TransformPoint(obj'Core.Math'.static.MakeVector(cast3f(-100), 0.0, 0.0), Transform)
+  0184: obj'Engine.Debug'.static.DrawLine(BL, BR, DrawColor, )
+  01a7: obj'Engine.Debug'.static.DrawLine(BR, TR, DrawColor, )
+  01ca: obj'Engine.Debug'.static.DrawLine(TR, TL, DrawColor, )
+  01ed: obj'Engine.Debug'.static.DrawLine(TL, BL, DrawColor, )
+  0210: obj'Engine.Debug'.static.DrawLine(CameraLocation, BL, DrawColor, )
+  0233: obj'Engine.Debug'.static.DrawLine(CameraLocation, TL, DrawColor, )
+  0256: obj'Engine.Debug'.static.DrawLine(CameraLocation, BR, DrawColor, )
+  0279: obj'Engine.Debug'.static.DrawLine(CameraLocation, TR, DrawColor, )
+  029c: return nothing
+  029e: <eos>

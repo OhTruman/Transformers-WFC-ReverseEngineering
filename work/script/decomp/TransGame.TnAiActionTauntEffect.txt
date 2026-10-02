@@ -1,0 +1,29 @@
+function TnAiActionTauntEffect.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionTauntEffectBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionTauntEffect.OnStart  (script 164 bytes)
+  0000: EffectManagerComponent = self._TransformerPawn.FindOrCreateComponent(obj'HM_Engine.HmParticleEffectManagerComponent')
+  001e: if !((EffectManagerComponent == none)) goto 0x0034
+  0029: return Fail()
+  0034: self._ParticleSystemComponent = EffectManagerComponent.PlayEffect(self._TransformerPawn.Mesh, self._Blueprint.Socket, self._Blueprint.ParticleSystemTemplate, , , , )
+  007b: if !((self._ParticleSystemComponent == none)) goto 0x0091
+  0086: return Fail()
+  0091: return OnStart(ExpectedEffects)
+  009d: return return
+  00a3: <eos>
+
+function TnAiActionTauntEffect.OnUpdate  (script 59 bytes)
+  0000: if !(!self._ParticleSystemComponent.IsActive()) goto 0x0023
+  0018: return Succeed()
+  0023: return OnUpdate(ExpectedEffects, DeltaTime)
+  0034: return return
+  003a: <eos>
+
+function TnAiActionTauntEffect.OnFinish  (script 45 bytes)
+  0000: get_CurrentWorldState().SetBoolValue(obj'TnAiWorldStateTaunted', true, )
+  001f: OnFinish(CurrentState)
+  002a: return nothing
+  002c: <eos>

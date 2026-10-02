@@ -1,0 +1,23 @@
+function SeqAct_SetObservableByVolume.Activated  (script 357 bytes)
+  0000: ActivateOutputLink(0)
+  000b: J = 0
+  0012: if !((J < self.Volumes.Length)) goto 0x00bc
+  0022: if !(!J[self.Volumes].bProcessObservableActorsOnly) goto 0x00b2
+  003c: LogInternal((("Error: Trying to make actors observable to volume" @ cast56(J[self.Volumes])) @ "but bProcessObservableActorsOnly is false"), , , )
+  00b0: return nothing
+  00b2: AddAdd_PreInt(J)
+  00b9: goto 0x0012
+  00bc: I = 0
+  00c3: if !((I < self.Targets.Length)) goto 0x0162
+  00d3: Target = Actor(I[self.Targets])
+  00e9: if !((Target != none)) goto 0x0158
+  00f4: J = 0
+  00fb: if !((J < self.Volumes.Length)) goto 0x0145
+  010b: J[self.Volumes].ObservableActors.Length[J[self.Volumes].ObservableActors] = Target
+  013b: AddAdd_PreInt(J)
+  0142: goto 0x00fb
+  0145: Target.SetVolumes()
+  0158: AddAdd_PreInt(I)
+  015f: goto 0x00c3
+  0162: return nothing
+  0164: <eos>

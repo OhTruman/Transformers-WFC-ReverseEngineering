@@ -1,0 +1,26 @@
+function HmOrbitSmootherCameraBehavior.Activate  (script 25 bytes)
+  0000: HmOrbitSmootherCameraBehavior.ResetOrbitRotation(Result.OrbitRotation)
+  0016: return nothing
+  0018: <eos>
+
+function HmOrbitSmootherCameraBehavior.Reset  (script 35 bytes)
+  0000: HmOrbitSmootherCameraBehavior.ResetOrbitRotation(Result.OrbitRotation)
+  0016: return Result
+  001c: return return
+  0022: <eos>
+
+function HmOrbitSmootherCameraBehavior.ResetOrbitRotation  (script 33 bytes)
+  0000: self.Smoother.Reset()
+  0013: self.SmoothedOrbitRotation = OrbitRotation
+  001e: return nothing
+  0020: <eos>
+
+function HmOrbitSmootherCameraBehavior.Update  (script 157 bytes)
+  0000: if !(Result.Teleport) goto 0x002d
+  0014: HmOrbitSmootherCameraBehavior.ResetOrbitRotation(Result.OrbitRotation)
+  002a: goto 0x0090
+  002d: self.SmoothedOrbitRotation = self.Smoother.Smooth(self.SmoothedOrbitRotation, Result.OrbitRotation, self.SmoothTime, DeltaTime)
+  0065: (Result.OrbitRotationAdjustment += (self.SmoothedOrbitRotation - Result.OrbitRotation))
+  0090: return Result
+  0096: return return
+  009c: <eos>

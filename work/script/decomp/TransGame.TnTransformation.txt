@@ -1,0 +1,111 @@
+function TnTransformation.get_SourceAnimationName  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformation.get_TargetAnimationName  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnTransformation.get_CanComplete  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnTransformation.get_IsActive  (script 14 bytes)
+  0000: return self._IsActive
+  0007: return return
+  000d: <eos>
+
+function TnTransformation.get_BlendInTime  (script 13 bytes)
+  0000: return self._BlendInTime
+  0006: return return
+  000c: <eos>
+
+function TnTransformation.set_BlendInTime  (script 14 bytes)
+  0000: self._BlendInTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformation.get_BlendOutTime  (script 13 bytes)
+  0000: return self._BlendOutTime
+  0006: return return
+  000c: <eos>
+
+function TnTransformation.set_BlendOutTime  (script 14 bytes)
+  0000: self._BlendOutTime = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnTransformation.get_RemainingTimeAsFactor  (script 58 bytes)
+  0000: return ((self._Duration == 0.0) ? 0.0 : (obj'Core.Math'.static.FMax(self._RemainingTime, 0.0) / self._Duration))
+  0033: return return
+  0039: <eos>
+
+function TnTransformation.SetForms  (script 129 bytes)
+  0000: if !(((SourceForm == none) || (TargetForm == none))) goto 0x001a
+  0018: return nothing
+  001a: self._SourceForm = SourceForm
+  0025: self._TargetForm = TargetForm
+  0030: self._SourceAnimatorService = TnAnimatorService(self._SourceForm.GetService('TnAnimatorService'))
+  0057: self._TargetAnimatorService = TnAnimatorService(self._TargetForm.GetService('TnAnimatorService'))
+  007e: return nothing
+  0080: <eos>
+
+function TnTransformation.Execute  (script 437 bytes)
+  0000: if !(((((self._SourceForm == none) || (self._TargetForm == none)) || EqualEqual_InterfaceInterface(self._SourceAnimatorService, TnAnimatorService(none))) || EqualEqual_InterfaceInterface(self._TargetAnimatorService, TnAnimatorService(none)))) goto 0x0046
+  0044: return nothing
+  0046: self._IsActive = true
+  004e: self._SourceForm.EndPlay()
+  0061: self._TargetForm.Activate()
+  0074: Rate = (bFasterDownedTransformation ? 4.0 : 1.0)
+  008f: if !((get_SourceAnimationName() != 'None')) goto 0x00ec
+  00a7: self._SourceAnimatorService.EnqueueLocalAnimation(TnTransformation.CreateAnimationParams(get_SourceAnimationName(), self._BlendInTime, 0.0, Rate), delegate.None, delegate.None)
+  00ec: if !((get_TargetAnimationName() != 'None')) goto 0x0149
+  0104: self._TargetAnimatorService.EnqueueLocalAnimation(TnTransformation.CreateAnimationParams(get_TargetAnimationName(), 0.0, self._BlendOutTime, Rate), delegate.None, delegate.None)
+  0149: OnBeginTransform()
+  0153: self._Duration = (obj'Core.Math'.static.FMin(self._SourceAnimatorService.GetAnimationLength(get_SourceAnimationName()), self._TargetAnimatorService.GetAnimationLength(get_TargetAnimationName())) / Rate)
+  01a7: self._RemainingTime = self._Duration
+  01b2: return nothing
+  01b4: <eos>
+
+function TnTransformation.ForceComplete  (script 9 bytes)
+  0000: TnTransformation.OnTransformationComplete()
+  0006: return nothing
+  0008: <eos>
+
+function TnTransformation.Update  (script 64 bytes)
+  0000: if !(!self._IsActive) goto 0x000d
+  000b: return nothing
+  000d: (self._RemainingTime -= DeltaTime)
+  0019: if !(((self._RemainingTime <= 0.0) && get_CanComplete())) goto 0x003d
+  0037: TnTransformation.OnTransformationComplete()
+  003d: return nothing
+  003f: <eos>
+
+function TnTransformation.OnTransformationComplete  (script 59 bytes)
+  0000: self._SourceForm.Deactivate()
+  0013: self._TargetForm.BeginPlay()
+  0026: OnEndTransform()
+  0030: self._IsActive = false
+  0038: return nothing
+  003a: <eos>
+
+function TnTransformation.OnBeginTransform  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformation.OnEndTransform  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnTransformation.CreateAnimationParams  (script 158 bytes)
+  0000: Params.AnimName = AnimName
+  0016: Params.BlendInTime = BlendInTime
+  002c: Params.BlendOutTime = BlendOutTime
+  0042: Params.RootMotionMode = 2
+  0055: Params.Priority = 1
+  0068: Params.PlayRate = Rate
+  007e: Params.Override = 2
+  0091: return Params
+  0097: return return
+  009d: <eos>

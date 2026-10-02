@@ -1,0 +1,310 @@
+function DebugManager.OnPieSessionEnding  (script 10 bytes)
+  0000: self.AnimDebugSMC = none
+  0007: return nothing
+  0009: <eos>
+
+function DebugManager.IsDisplayingAnimDebugForMesh  (script 20 bytes)
+  0000: return (SMC == self.AnimDebugSMC)
+  000d: return return
+  0013: <eos>
+
+function DebugManager.ShouldDisplayBuildInfo  (script 14 bytes)
+  0000: return self.ShowBuildInfo
+  0007: return return
+  000d: <eos>
+
+function DebugManager.GetBuildInfo  (script 20 bytes)
+  0000: return (self.BuildDateAndTime @ self.BuildLabel)
+  000d: return return
+  0013: <eos>
+
+function DebugManager.FlushDebug  (script 41 bytes)
+  0000: obj'Debug'.static.FlushPersistentLines()
+  0013: obj'Debug'.static.FlushPersistentText()
+  0026: return nothing
+  0028: <eos>
+
+function DebugManager.GetLocalPlayerPawn  (script 71 bytes)
+  0000: foreach obj'Engine'.static.GetCurrentWorldInfo().LocalPlayerControllers(obj'PlayerController', PC) (end 0x003f)
+  002e: iterpop
+  002f: return PC.Pawn
+  003e: iternext
+  003f: iterpop
+  0040: return return
+  0046: <eos>
+
+function DebugManager.FindPawn  (script 90 bytes)
+  0000: foreach obj'Engine'.static.GetCurrentWorldInfo().AllPawns(obj'Pawn', P, , ) (end 0x004c)
+  0030: if !((P.Name == PawnName)) goto 0x004b
+  0048: goto 0x004c
+  004b: iternext
+  004c: iterpop
+  004d: return P
+  0053: return return
+  0059: <eos>
+
+function DebugManager.AddDebugText  (script 187 bytes)
+  0000: nothing
+  0001: nothing
+  0002: NewText.Location = Location
+  0018: NewText.Text = Text
+  002e: NewText.R = R
+  0044: NewText.G = G
+  005a: NewText.B = B
+  0070: NewText.Is2D = bIs2D
+  0088: if !(bPersistentText) goto 0x00a6
+  0091: self.PersistentDebugText.Length[self.PersistentDebugText] = NewText
+  00a3: goto 0x00b8
+  00a6: self.DebugText.Length[self.DebugText] = NewText
+  00b8: return nothing
+  00ba: <eos>
+
+function DebugManager.FlushPersistentDebugText  (script 16 bytes)
+  0000: self.PersistentDebugText.Remove(0,self.PersistentDebugText.Length)
+  000d: return nothing
+  000f: <eos>
+
+function DebugManager.DrawDebug  (script 75 bytes)
+  0000: DebugManager.DrawAnimDebug(C)
+  000b: DrawParticleSystemsInfo()
+  0015: DebugManager.DrawLightEnvComponentInfo()
+  001b: DebugManager.DrawDebugTextInternal(C, self.DebugText)
+  002b: DebugManager.DrawDebugTextInternal(C, self.PersistentDebugText)
+  003b: self.DebugText.Remove(0,self.DebugText.Length)
+  0048: return nothing
+  004a: <eos>
+
+function DebugManager.DrawDebugTextInternal  (script 473 bytes)
+  0000: C.Font = obj'Engine'.static.GetSmallFont()
+  0022: I = 0
+  0029: if !((I < Text.Length)) goto 0x01d6
+  0039: if !(I[Text].Is2D) goto 0x0072
+  0053: Location = I[Text].Location
+  006f: goto 0x00bc
+  0072: Location = C.Project(I[Text].Location)
+  00a1: if !((Location.Z <= cast3f(0))) goto 0x00bc
+  00b9: goto 0x01cc
+  00bc: C.SetPos(Location.X, Location.Y)
+  00ef: C.SetDrawColor(I[Text].R, I[Text].G, I[Text].B, cast3d(255))
+  0148: if !((obj'Core.Strings'.static.InStr(I[Text].Text, "
+", ) == -1)) goto 0x01a3
+  0177: C.DrawTextCA(I[Text].Text)
+  01a0: goto 0x01cc
+  01a3: C.DrawTextCentered(I[Text].Text)
+  01cc: AddAdd_PreInt(I)
+  01d3: goto 0x0029
+  01d6: return nothing
+  01d8: <eos>
+
+function DebugManager.SetAnimDebug  (script 95 bytes)
+  0000: nothing
+  0001: if !((self.AnimDebugSMC == SMC)) goto 0x0046
+  0010: if !((self.AnimDebugStartPoint != DebugStartPoint)) goto 0x002d
+  001f: self.AnimDebugStartPoint = DebugStartPoint
+  002a: goto 0x0043
+  002d: self.AnimDebugSMC = none
+  0034: self.AnimDebugStartPoint = 'None'
+  0043: goto 0x005c
+  0046: self.AnimDebugSMC = SMC
+  0051: self.AnimDebugStartPoint = DebugStartPoint
+  005c: return nothing
+  005e: <eos>
+
+function DebugManager.DrawAnimDebug  (script 43 bytes)
+  0000: if !((self.AnimDebugSMC != none)) goto 0x0028
+  000b: self.AnimDebugSMC.DrawAnimDebug(C, self.AnimDebugStartPoint)
+  0028: return nothing
+  002a: <eos>
+
+function DebugManager.ShowAnimDebug  (script 38 bytes)
+  0000: nothing
+  0001: SetAnimDebug(GetLocalPlayerPawn().Mesh, StartingPoint)
+  0023: return nothing
+  0025: <eos>
+
+function DebugManager.ShowPawnAnimDebug  (script 263 bytes)
+  0000: nothing
+  0001: PlayerPawn = GetLocalPlayerPawn()
+  0011: ClosestPawn = none
+  0018: ClosestPawnDistance = 10000000.0
+  0023: foreach obj'Engine'.static.GetCurrentWorldInfo().AllPawns(obj'Pawn', P, , ) (end 0x00d0)
+  0053: if !((ClassIsChildOf(P.get_Class(), aClass) && (P != PlayerPawn))) goto 0x00cf
+  007b: ThisDistance = obj'Core.Math'.static.VSize((P.Location - PlayerPawn.Location))
+  00aa: if !((ThisDistance < ClosestPawnDistance)) goto 0x00cf
+  00b9: ClosestPawn = P
+  00c4: ClosestPawnDistance = ThisDistance
+  00cf: iternext
+  00d0: iterpop
+  00d1: if !((ClosestPawn != none)) goto 0x00f0
+  00dc: SMC = ClosestPawn.Mesh
+  00f0: SetAnimDebug(SMC, DebugStartPoint)
+  0104: return nothing
+  0106: <eos>
+
+function DebugManager.ShowNamedPawnAnimDebug  (script 65 bytes)
+  0000: nothing
+  0001: P = FindPawn(PawnName)
+  0016: if !((P != none)) goto 0x003e
+  0021: SetAnimDebug(P.Mesh, DebugStartPoint)
+  003e: return nothing
+  0040: <eos>
+
+function DebugManager.DrawParticleSystemsInfo  (script 147 bytes)
+  0000: if !(((!self.bShowActiveParticleSystems && !self.bShowRenderedParticleSystems) && !self.bShowParticleLODInfo)) goto 0x0027
+  0025: return nothing
+  0027: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  0040: DebugManager.DrawActorParticleSystemsInfo(WI, WI.GetEmitterPool())
+  005e: foreach WI.AllActors(obj'Actor', A) (end 0x008f)
+  007e: DebugManager.DrawActorParticleSystemsInfo(WI, A)
+  008e: iternext
+  008f: iterpop
+  0090: return nothing
+  0092: <eos>
+
+function DebugManager.DrawActorParticleSystemsInfo  (script 216 bytes)
+  0000: foreach Owner.AllOwnedComponents(obj'ParticleSystemComponent', Comp) (end 0x00d4)
+  0020: if !(!Comp.bIsActive) goto 0x0038
+  0034: iternext
+  0035: goto 0x00d4
+  0038: if !(self.bShowRenderedParticleSystems) goto 0x0077
+  0041: if !((Comp.LastRenderTime > (WI.TimeSeconds - 1.0))) goto 0x0074
+  0069: DebugManager.DrawParticleSystemName(Comp)
+  0074: goto 0x00d3
+  0077: if !(self.bShowActiveParticleSystems) goto 0x008e
+  0080: DebugManager.DrawParticleSystemName(Comp)
+  008b: goto 0x00d3
+  008e: if !(self.bShowParticleLODInfo) goto 0x00d3
+  0097: if !(((self.ShowLODInfoParticleSystemName == "") || (self.ShowLODInfoParticleSystemName == cast57(Comp.Template.Name)))) goto 0x00d3
+  00c8: DebugManager.DrawParticleSystemLODInfo(Comp)
+  00d3: iternext
+  00d4: iterpop
+  00d5: return nothing
+  00d7: <eos>
+
+function DebugManager.DrawParticleSystemName  (script 56 bytes)
+  0000: AddDebugText(Comp.GetPosition(), cast56(Comp.Template), 200, 200, 0, false, )
+  0035: return nothing
+  0037: <eos>
+
+function DebugManager.DrawParticleSystemLODInfo  (script 226 bytes)
+  0000: LODInfoString = ((("LOD Level: " $ cast53(Comp.LODLevel)) $ " 
+ Distance: ") $ cast55(Comp.CameraDistance))
+  0048: MaxLODLevel = cast3f((Comp.Template.GetLODLevelCount() - 1))
+  006f: LODPercentage = (cast3f(Comp.LODLevel) / MaxLODLevel)
+  008c: Red = cast43((cast3f(255) - (cast3f(100) * LODPercentage)))
+  00a5: AddDebugText(Comp.GetPosition(), LODInfoString, Red, cast3d(255), cast3d((255 - cast3a(Red))), false, )
+  00df: return nothing
+  00e1: <eos>
+
+function DebugManager.ShowActiveParticleSystems  (script 26 bytes)
+  0000: self.bShowActiveParticleSystems = !self.bShowActiveParticleSystems
+  000f: self.bShowRenderedParticleSystems = false
+  0017: return nothing
+  0019: <eos>
+
+function DebugManager.ShowRenderedParticleSystems  (script 26 bytes)
+  0000: self.bShowRenderedParticleSystems = !self.bShowRenderedParticleSystems
+  000f: self.bShowActiveParticleSystems = false
+  0017: return nothing
+  0019: <eos>
+
+function DebugManager.ShowParticleSystemLODInfo  (script 89 bytes)
+  0000: if !(((TemplateName != "") && (TemplateName != self.ShowLODInfoParticleSystemName))) goto 0x0028
+  001d: self.bShowParticleLODInfo = true
+  0025: goto 0x0037
+  0028: self.bShowParticleLODInfo = !self.bShowParticleLODInfo
+  0037: if !(self.bShowParticleLODInfo) goto 0x004e
+  0040: self.ShowLODInfoParticleSystemName = TemplateName
+  004b: goto 0x0056
+  004e: self.ShowLODInfoParticleSystemName = ""
+  0056: return nothing
+  0058: <eos>
+
+function DebugManager.DrawLightEnvComponentInfo  (script 301 bytes)
+  0000: if !(!self.bShowLightEnvComponent) goto 0x000d
+  000b: return nothing
+  000d: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  0026: foreach WI.AllActors(obj'Actor', A) (end 0x0129)
+  0046: foreach A.AllOwnedComponents(obj'LightEnvironmentComponent', Comp) (end 0x0127)
+  0066: if !((Comp.GetLastUpdateTime() > (WI.TimeSeconds - 0.1))) goto 0x00bf
+  0093: AddDebugText(A.Location, cast56(A), cast3d(255), 0, 0, false, )
+  00bc: goto 0x0126
+  00bf: if !(Comp.bEnabled) goto 0x00ff
+  00d1: AddDebugText(A.Location, cast56(A), cast3d(255), cast3d(255), 0, false, )
+  00fc: goto 0x0126
+  00ff: AddDebugText(A.Location, cast56(A), 100, 100, 100, false, )
+  0126: iternext
+  0127: iterpop
+  0128: iternext
+  0129: iterpop
+  012a: return nothing
+  012c: <eos>
+
+function DebugManager.ShowLightEnvComponent  (script 18 bytes)
+  0000: self.bShowLightEnvComponent = !self.bShowLightEnvComponent
+  000f: return nothing
+  0011: <eos>
+
+function DebugManager.SetEmitterPoolSize  (script 51 bytes)
+  0000: obj'Engine'.static.GetCurrentWorldInfo().GetEmitterPool().MaxActiveEffects = Size
+  0030: return nothing
+  0032: <eos>
+
+function DebugManager.DumpSessionState  (script 47 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: OnlineSub.DumpSessionState()
+  002c: return nothing
+  002e: <eos>
+
+function DebugManager.DumpVoiceRegistration  (script 47 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: OnlineSub.DumpVoiceRegistration()
+  002c: return nothing
+  002e: <eos>
+
+function DebugManager.DumpReservations  (script 57 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: OnlineSub.ReservationInterface.DumpReservationState()
+  0036: return nothing
+  0038: <eos>
+
+function DebugManager.DumpAsyncTasks  (script 47 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: OnlineSub.PrintAsyncTasks()
+  002c: return nothing
+  002e: <eos>
+
+function DebugManager.MultiFrameProfileScript  (script 98 bytes)
+  0000: if !((Cmd == "start")) goto 0x0030
+  0011: obj'Engine'.static.GetCurrentWorldInfo().MultiFrameProfileScript = true
+  0030: if !((Cmd == "stop")) goto 0x005f
+  0040: obj'Engine'.static.GetCurrentWorldInfo().MultiFrameProfileScript = false
+  005f: return nothing
+  0061: <eos>
+
+function DebugManager.KillPawn  (script 96 bytes)
+  0000: foreach obj'Engine'.static.GetCurrentWorldInfo().AllPawns(obj'Pawn', P, , ) (end 0x005c)
+  0030: if !((P.Name == PawnName)) goto 0x005b
+  0048: P.Suicide()
+  005b: iternext
+  005c: iterpop
+  005d: return nothing
+  005f: <eos>
+
+function DebugManager.SetPacketSimulationSettings  (script 441 bytes)
+  0000: if !((SimulationLevel > self.PacketSimulationSettings.Length)) goto 0x0066
+  0010: LogInternal(((("Error: Packet simulation level" @ cast53(SimulationLevel)) @ "is out of bounds, max is") @ cast53(self.PacketSimulationSettings.Length)), , , )
+  0064: return nothing
+  0066: WI = obj'Engine'.static.GetCurrentWorldInfo()
+  007f: WI.ConsoleCommand(("PktLoss=" $ cast53(SimulationLevel[self.PacketSimulationSettings].PktLoss)), )
+  00bc: WI.ConsoleCommand(("PktOrder=" $ cast53(SimulationLevel[self.PacketSimulationSettings].PktOrder)), )
+  00fa: WI.ConsoleCommand(("PktDup=" $ cast53(SimulationLevel[self.PacketSimulationSettings].PktDup)), )
+  0136: WI.ConsoleCommand(("PktLag=" $ cast53(SimulationLevel[self.PacketSimulationSettings].PktLag)), )
+  0172: WI.ConsoleCommand(("PktLagVariance=" $ cast53(SimulationLevel[self.PacketSimulationSettings].PktLagVariance)), )
+  01b6: return nothing
+  01b8: <eos>
+
+function DebugManager.SPSS  (script 18 bytes)
+  0000: SetPacketSimulationSettings(SimulationLevel)
+  000f: return nothing
+  0011: <eos>

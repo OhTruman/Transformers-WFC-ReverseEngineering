@@ -1,0 +1,53 @@
+function TnSavedMove.Clear  (script 25 bytes)
+  0000: Clear()
+  0006: self.bUsingFineAim = false
+  000e: self.bPressedHover = false
+  0016: return nothing
+  0018: <eos>
+
+function TnSavedMove.SetMoveFor  (script 93 bytes)
+  0000: SetMoveFor(P, DeltaTime, newAccel, InDoubleClick)
+  001a: PC = TnPlayerController(P)
+  002a: self.bUsingFineAim = PC.IsUsingFineAim()
+  0044: self.bPressedHover = PC._PressedHover
+  005a: return nothing
+  005c: <eos>
+
+function TnSavedMove.CompressedFlags  (script 67 bytes)
+  0000: Result = CompressedFlags()
+  000c: if !(self.bUsingFineAim) goto 0x0021
+  0015: (Result += 512)
+  0021: if !(self.bPressedHover) goto 0x0036
+  002a: (Result += 1024)
+  0036: return Result
+  003c: return return
+  0042: <eos>
+
+function TnSavedMove.SetFlags  (script 192 bytes)
+  0000: Result = SetFlags(Flags, PC)
+  0016: if !((PC.Pawn == none)) goto 0x0030
+  002a: return Result
+  0030: TPC = TnPlayerController(PC)
+  0040: if !((cast3a(PC.Role) != cast3a(2))) goto 0x0094
+  0059: if !(((Flags & 512) != 0)) goto 0x0081
+  006b: TPC.FineAim()
+  007e: goto 0x0094
+  0081: TPC.StopFineAim()
+  0094: TPC._PressedHover = ((Flags & 1024) != 0)
+  00b3: return Result
+  00b9: return return
+  00bf: <eos>
+
+function TnSavedMove.IsImportantMove  (script 30 bytes)
+  0000: if !(self.bPressedHover) goto 0x000b
+  0009: return true
+  000b: return IsImportantMove(CompareAccel)
+  0017: return return
+  001d: <eos>
+
+function TnSavedMove.CanCombineWith  (script 65 bytes)
+  0000: if !((self.bPressedHover || TnSavedMove(NewMove).bPressedHover)) goto 0x0024
+  0022: return false
+  0024: return CanCombineWith(NewMove, inPawn, MaxDelta)
+  003a: return return
+  0040: <eos>

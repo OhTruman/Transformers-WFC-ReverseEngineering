@@ -1,0 +1,185 @@
+function OnlineDisconnector.Tick  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
+
+function OnlineDisconnector.UpdateTimers  (script 92 bytes)
+  0000: TimerCopy = self.Timers
+  000b: foreach TimerCopy(T,) (end 0x0058)
+  001a: T.Tick(DeltaTime)
+  0032: if !(!T.IsActive()) goto 0x0057
+  004a: self.Timers.RemoveItem(T)
+  0057: iternext
+  0058: iterpop
+  0059: return nothing
+  005b: <eos>
+
+function OnlineDisconnector.OnDisconnectFromSessionsComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineDisconnector.AddDisconnectFromSessionsCompleteDelegate  (script 122 bytes)
+  0000: LogInternal(("Error: Trying to add a DisconnectFromSessionsComplete delegate when not in the Ready state, current state" @ cast57(GetStateName())), , , )
+  0077: return nothing
+  0079: <eos>
+
+function OnlineDisconnector.ClearDisconnectFromSessionsCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.DisconnectFromSessionsCompleteDelegates.Find(DisconnectFromSessionsCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DisconnectFromSessionsCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function OnlineDisconnector.DisconnectFromSessions  (script 96 bytes)
+  0000: LogInternal(("Error: DisconnectFromSessions called when not in the Ready state, current state" @ cast57(GetStateName())), , , )
+  005d: return nothing
+  005f: <eos>
+
+function OnlineDisconnector.Ready.BeginState  (script 39 bytes)
+  0000: if !((self._OnlineSub == none)) goto 0x0024
+  000b: self._OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0024: return nothing
+  0026: <eos>
+
+function OnlineDisconnector.Ready.DisconnectFromSessions  (script 172 bytes)
+  0000: self.SessionNames = _SessionNames
+  000b: foreach self.SessionNames(SessionName,) (end 0x002f)
+  001a: AllSessionNames = (AllSessionNames @ cast57(SessionName))
+  002e: iternext
+  002f: iterpop
+  0030: LogInternal((("Disconnect chain: DisconnectFromSessions for sessions (" $ AllSessionNames) @ ")"), 'DevOnline', , )
+  0082: self.StartTime = obj'Engine'.static.GetWorldTime()
+  009b: GotoState('DisbandingParty', , , )
+  00a9: return nothing
+  00ab: <eos>
+
+function OnlineDisconnector.Ready.AddDisconnectFromSessionsCompleteDelegate  (script 138 bytes)
+  0000: if !((self.DisconnectFromSessionsCompleteDelegates.Find(DisconnectFromSessionsCompleteDelegate) == -1)) goto 0x0029
+  0017: self.DisconnectFromSessionsCompleteDelegates.Length[self.DisconnectFromSessionsCompleteDelegates] = DisconnectFromSessionsCompleteDelegate
+  0029: if !((self.DisconnectFromSessionsCompleteDelegates.Length > 1)) goto 0x0087
+  0035: LogInternal("Error: More than 1 disconnect delegate, maybe somebody forgot to clear one?", , , )
+  0087: return nothing
+  0089: <eos>
+
+function OnlineDisconnector.OnDisbandGracePeriodCompleteGotoDisconnecting  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineDisconnector.DisbandingParty.BeginState  (script 53 bytes)
+  0000: if !((self.SessionNames.Find('Party') == -1)) goto 0x002c
+  001b: GotoState('Disconnecting', , , )
+  0029: goto 0x0032
+  002c: DisbandParty()
+  0032: return nothing
+  0034: <eos>
+
+function OnlineDisconnector.DisbandingParty.DisbandParty  (script 203 bytes)
+  0000: WI = obj'GameEngine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'PlayerController', C) (end 0x006d)
+  0039: if !(!C.IsLocalPlayerController()) goto 0x006c
+  0051: C.ClientPartyDisbanded()
+  0064: HasPartyMembers = true
+  006c: iternext
+  006d: iterpop
+  006e: if !(HasPartyMembers) goto 0x00be
+  0077: T = new(nothing, nothing, obj'HmTimer', nothing, GetRemoteRole)
+  008b: T.Start(delegate.OnDisbandGracePeriodCompleteGotoDisconnecting, 1.0, 0)
+  00ae: self.Timers.AddItem(T)
+  00bb: goto 0x00c8
+  00be: OnDisbandGracePeriodCompleteGotoDisconnecting()
+  00c8: return nothing
+  00ca: <eos>
+
+function OnlineDisconnector.DisbandingParty.OnDisbandGracePeriodCompleteGotoDisconnecting  (script 17 bytes)
+  0000: GotoState('Disconnecting', , , )
+  000e: return nothing
+  0010: <eos>
+
+function OnlineDisconnector.CheckForAsyncTasksCompletion  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function OnlineDisconnector.Disconnecting.BeginState  (script 13 bytes)
+  0000: CheckForAsyncTasksCompletion()
+  000a: return nothing
+  000c: <eos>
+
+function OnlineDisconnector.Disconnecting.CheckForAsyncTasksCompletion  (script 9 bytes)
+  0000: DisconnectFromSessionsInternal()
+  0006: return nothing
+  0008: <eos>
+
+function OnlineDisconnector.Disconnecting.DisconnectFromSessionsInternal  (script 420 bytes)
+  0000: RegisterDelegates()
+  0006: UnModifiedSessionNames = self.SessionNames
+  0011: foreach UnModifiedSessionNames(SessionName,) (end 0x01a0)
+  0020: LogInternal((("Disconnect chain: Disconnect called for session (" $ cast57(SessionName)) $ ")"), 'DevOnline', , )
+  006e: if !((self._OnlineSub.GameInterface.GetGameSettings(SessionName) != none)) goto 0x00f8
+  0096: if !(self._OnlineSub.GameInterface.GetGameSettings(SessionName).bIsLanMatch) goto 0x00d3
+  00c5: BeginDestroyingOnlineGame(SessionName)
+  00d0: goto 0x00f5
+  00d3: self._OnlineSub.GameInterface.EndOnlineGame(SessionName)
+  00f5: goto 0x019f
+  00f8: LogInternal((("Disconnect chain: No game settings for session (" $ cast57(SessionName)) $ ") immediately calling FinishDisconnectForSession, something might be wrong here."), 'DevOnline', , )
+  0194: FinishDisconnectForSession(SessionName)
+  019f: iternext
+  01a0: iterpop
+  01a1: return nothing
+  01a3: <eos>
+
+function OnlineDisconnector.Disconnecting.RegisterDelegates  (script 79 bytes)
+  0000: self._OnlineSub.GameInterface.AddEndOnlineGameCompleteDelegate(delegate.OnEndOnlineGameComplete)
+  0026: self._OnlineSub.GameInterface.AddDestroyOnlineGameCompleteDelegate(delegate.OnDestroyOnlineGameComplete)
+  004c: return nothing
+  004e: <eos>
+
+function OnlineDisconnector.Disconnecting.ClearDelegates  (script 79 bytes)
+  0000: self._OnlineSub.GameInterface.ClearEndOnlineGameCompleteDelegate(delegate.OnEndOnlineGameComplete)
+  0026: self._OnlineSub.GameInterface.ClearDestroyOnlineGameCompleteDelegate(delegate.OnDestroyOnlineGameComplete)
+  004c: return nothing
+  004e: <eos>
+
+function OnlineDisconnector.Disconnecting.OnEndOnlineGameComplete  (script 83 bytes)
+  0000: LogInternal((("Disconnect chain: Online session (" $ cast57(SessionName)) $ ") ended"), 'DevOnline', , )
+  0045: BeginDestroyingOnlineGame(SessionName)
+  0050: return nothing
+  0052: <eos>
+
+function OnlineDisconnector.Disconnecting.BeginDestroyingOnlineGame  (script 104 bytes)
+  0000: LogInternal((("Disconnect chain: Destroying session (" $ cast57(SessionName)) $ ")"), 'DevOnline', , )
+  0043: self._OnlineSub.GameInterface.DestroyOnlineGame(SessionName)
+  0065: return nothing
+  0067: <eos>
+
+function OnlineDisconnector.Disconnecting.OnDestroyOnlineGameComplete  (script 251 bytes)
+  0000: if !(!bWasSuccessful) goto 0x0092
+  000b: LogInternal((("ERROR: Disconnect chain: Failed to destroy online game session (" $ cast57(SessionName)) $ ").  This is BAD.  Retrying."), 'DevOnline', , )
+  0082: FinishDisconnectForSession(SessionName)
+  008d: return nothing
+  008f: goto 0x00f8
+  0092: LogInternal(((("Disconnect chain: Online session (" $ cast57(SessionName)) $ ") destroyed with ") $ cast54(bWasSuccessful)), 'DevOnline', , )
+  00eb: FinishDisconnectForSession(SessionName)
+  00f6: return nothing
+  00f8: return nothing
+  00fa: <eos>
+
+function OnlineDisconnector.Disconnecting.FinishDisconnectForSession  (script 132 bytes)
+  0000: LogInternal((("Disconnect chain: Disconnect Complete for session (" $ cast57(SessionName)) $ ")"), 'DevOnline', , )
+  0050: I = self.SessionNames.Find(SessionName)
+  0063: self.SessionNames.Remove(I,1)
+  006f: if !((self.SessionNames.Length == 0)) goto 0x0081
+  007b: FinishDisconnectForAllSessions()
+  0081: return nothing
+  0083: <eos>
+
+function OnlineDisconnector.Disconnecting.FinishDisconnectForAllSessions  (script 179 bytes)
+  0000: EndTime = obj'Engine'.static.GetWorldTime()
+  0019: LogInternal(("Disconnect chain: Disconnect Complete for all sessions, elapsed time" @ cast55((EndTime - self.StartTime))), 'DevOnline', , )
+  007c: ClearDelegates()
+  0082: foreach self.DisconnectFromSessionsCompleteDelegates(CurrentDelegate,) (end 0x00a1)
+  0091: OnDisconnectFromSessionsComplete()
+  00a0: iternext
+  00a1: iterpop
+  00a2: GotoState('Ready', , , )
+  00b0: return nothing
+  00b2: <eos>

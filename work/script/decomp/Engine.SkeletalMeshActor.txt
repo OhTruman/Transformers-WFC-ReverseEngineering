@@ -1,0 +1,224 @@
+function SkeletalMeshActor.PreviewBeginAnimControl  (script 7 bytes)
+  0000: InAnimSets
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActor.PreviewSetAnimPosition  (script 27 bytes)
+  0000: SlotName
+  0005: ChannelIndex
+  000a: InAnimSeqName
+  000f: InPosition
+  0014: bLooping
+  0019: nothing
+  001a: <eos>
+
+function SkeletalMeshActor.PreviewSetAnimWeights  (script 7 bytes)
+  0000: SlotInfos
+  0005: nothing
+  0006: <eos>
+
+function SkeletalMeshActor.PreviewFinishAnimControl  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshActor.PreviewUpdateFaceFX  (script 22 bytes)
+  0000: bForceAnim
+  0005: GroupName
+  000a: SeqName
+  000f: InPosition
+  0014: nothing
+  0015: <eos>
+
+function SkeletalMeshActor.PreviewActorPlayFaceFX  (script 12 bytes)
+  0000: GroupName
+  0005: SeqName
+  000a: nothing
+  000b: <eos>
+
+function SkeletalMeshActor.PreviewActorStopFaceFX  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function SkeletalMeshActor.PostBeginPlay  (script 127 bytes)
+  0000: if !((self.SkeletalMeshComponent != none)) goto 0x001f
+  000b: self.ReplicatedMesh = self.SkeletalMeshComponent.SkeletalMesh
+  001f: Actor.PostBeginPlay()
+  0025: if !((((self.SkeletalMeshComponent != none) && self.SkeletalMeshComponent.bEnableFullAnimWeightBodies) && (self.SkeletalMeshComponent.PhysicsAssetInstance != none))) goto 0x007c
+  005a: self.SkeletalMeshComponent.PhysicsAssetInstance.SetFullAnimWeightBonesFixed(false, self.SkeletalMeshComponent)
+  007c: return nothing
+  007e: <eos>
+
+function SkeletalMeshActor.ReplicatedEvent  (script 93 bytes)
+  0000: if !((VarName == 'ReplicatedMesh')) goto 0x002f
+  0013: self.SkeletalMeshComponent.SetSkeletalMesh(self.ReplicatedMesh, )
+  002c: goto 0x005a
+  002f: if !(((VarName == 'ReplicatedSetMaterialAction') && (self.ReplicatedSetMaterialAction != none))) goto 0x005a
+  004f: SkeletalMeshActor.OnSetMaterial(self.ReplicatedSetMaterialAction)
+  005a: return nothing
+  005c: <eos>
+
+function SkeletalMeshActor.OnToggle  (script 331 bytes)
+  0000: SeqNode = AnimNodeSequence(self.SkeletalMeshComponent.Animations)
+  0019: if !(0[Action.InputLinks].bHasImpulse) goto 0x0084
+  0038: if !(!SeqNode.bPlaying) goto 0x0081
+  004c: SeqNode.PlayAnim(SeqNode.bLooping, SeqNode.Rate, 0.0)
+  0081: goto 0x0148
+  0084: if !(1[Action.InputLinks].bHasImpulse) goto 0x00cb
+  00a3: if !(SeqNode.bPlaying) goto 0x00c8
+  00b5: SeqNode.StopAnim()
+  00c8: goto 0x0148
+  00cb: if !(2[Action.InputLinks].bHasImpulse) goto 0x0148
+  00eb: if !(SeqNode.bPlaying) goto 0x0113
+  00fd: SeqNode.StopAnim()
+  0110: goto 0x0148
+  0113: SeqNode.PlayAnim(SeqNode.bLooping, SeqNode.Rate, 0.0)
+  0148: return nothing
+  014a: <eos>
+
+function SkeletalMeshActor.BeginAnimControl  (script 119 bytes)
+  0000: if !((self.SkeletalMeshComponent == none)) goto 0x000d
+  000b: return nothing
+  000d: self.SkeletalMeshComponent.SaveAnimSets()
+  0020: self.SkeletalMeshComponent.AnimSets = InAnimSets
+  0034: SeqNode = AnimNodeSequence(self.SkeletalMeshComponent.Animations)
+  004d: if !((SeqNode != none)) goto 0x0074
+  0058: SeqNode.SetAnim('None')
+  0074: return nothing
+  0076: <eos>
+
+function SkeletalMeshActor.SetAnimPosition  (script 152 bytes)
+  0000: if !((self.SkeletalMeshComponent == none)) goto 0x000d
+  000b: return nothing
+  000d: SeqNode = AnimNodeSequence(self.SkeletalMeshComponent.Animations)
+  0026: if !((SeqNode != none)) goto 0x0095
+  0031: if !((SeqNode.AnimSeqName != InAnimSeqName)) goto 0x0061
+  0049: SeqNode.SetAnim(InAnimSeqName)
+  0061: SeqNode.bLooping = bLooping
+  0077: SeqNode.SetPosition(InPosition, bFireNotifies)
+  0095: return nothing
+  0097: <eos>
+
+function SkeletalMeshActor.SetAnimWeights  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function SkeletalMeshActor.FinishAnimControl  (script 35 bytes)
+  0000: if !((self.SkeletalMeshComponent == none)) goto 0x000d
+  000b: return nothing
+  000d: self.SkeletalMeshComponent.RestoreSavedAnimSets()
+  0020: return nothing
+  0022: <eos>
+
+function SkeletalMeshActor.PlayActorFaceFXAnim  (script 42 bytes)
+  0000: return self.SkeletalMeshComponent.PlayFaceFXAnim(AnimSet, SeqName, GroupName)
+  0023: return return
+  0029: <eos>
+
+function SkeletalMeshActor.StopActorFaceFXAnim  (script 22 bytes)
+  0000: self.SkeletalMeshComponent.StopFaceFXAnim()
+  0013: return nothing
+  0015: <eos>
+
+function SkeletalMeshActor.StopActorFaceFXAnimByName  (script 32 bytes)
+  0000: self.SkeletalMeshComponent.StopFaceFXAnimByName(SeqName, GroupName)
+  001d: return nothing
+  001f: <eos>
+
+function SkeletalMeshActor.GetFaceFXAudioComponent  (script 13 bytes)
+  0000: return self.FacialAudioComp
+  0006: return return
+  000c: <eos>
+
+function SkeletalMeshActor.OnPlayFaceFXAnim  (script 185 bytes)
+  0000: self.SkeletalMeshComponent.PlayFaceFXAnim(inAction.FaceFXAnimSetRef, inAction.FaceFXAnimName, inAction.FaceFXGroupName)
+  003d: foreach self.WorldInfo.AllControllers(obj'PlayerController', PC) (end 0x00b5)
+  005d: if !((NetConnection(PC.Player) != none)) goto 0x00b4
+  0076: PC.ClientPlayActorFaceFXAnim(self, inAction.FaceFXAnimSetRef, inAction.FaceFXGroupName, inAction.FaceFXAnimName)
+  00b4: iternext
+  00b5: iterpop
+  00b6: return nothing
+  00b8: <eos>
+
+function SkeletalMeshActor.GetActorFaceFXAsset  (script 56 bytes)
+  0000: if !((self.SkeletalMeshComponent.SkeletalMesh != none)) goto 0x002f
+  0014: return self.SkeletalMeshComponent.SkeletalMesh.FaceFXAsset
+  002c: goto 0x0031
+  002f: return none
+  0031: return return
+  0037: <eos>
+
+function SkeletalMeshActor.IsActorPlayingFaceFXAnim  (script 40 bytes)
+  0000: return ((self.SkeletalMeshComponent != none) && self.SkeletalMeshComponent.IsPlayingFaceFXAnim())
+  0021: return return
+  0027: <eos>
+
+function SkeletalMeshActor.OnSetSkeletalMesh  (script 292 bytes)
+  0000: if !(((Action.NewSkeletalMesh != none) && (Action.NewSkeletalMesh != self.SkeletalMeshComponent.SkeletalMesh))) goto 0x0121
+  0037: if !((((self.SkeletalMeshComponent.SkeletalMesh != none) && self.WorldInfo.bBegunPlay) && !Action.bDisableWarning)) goto 0x00eb
+  0075: LogInternal(((((("Error: Performance warning - assigning skelmesh" @ cast56(Action.NewSkeletalMesh)) @ "when") @ cast56(self)) @ "already has") @ cast56(self.SkeletalMeshComponent.SkeletalMesh)), , , )
+  00eb: self.SkeletalMeshComponent.SetSkeletalMesh(Action.NewSkeletalMesh, )
+  010d: self.ReplicatedMesh = Action.NewSkeletalMesh
+  0121: return nothing
+  0123: <eos>
+
+function SkeletalMeshActor.OnSetMaterial  (script 87 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0025
+  0010: ForceNetRelevant()
+  001a: self.ReplicatedSetMaterialAction = Action
+  0025: self.SkeletalMeshComponent.SetMaterial(Action.MaterialIndex, Action.NewMaterial)
+  0054: return nothing
+  0056: <eos>
+
+function SkeletalMeshActor.DoKismetAttachment  (script 786 bytes)
+  0000: if !(((self.SkeletalMeshComponent != none) && (Action.BoneName != 'None'))) goto 0x011a
+  0029: bValidSocket = (self.SkeletalMeshComponent.GetSocketByName(Action.BoneName) != none)
+  0054: bValidBone = (self.SkeletalMeshComponent.MatchRefBone(Action.BoneName) != -1)
+  0083: if !((!bValidBone && !bValidSocket)) goto 0x011a
+  009b: LogInternal(((((((((cast55(self.WorldInfo.TimeSeconds) @ cast56(get_Class())) @ cast57(GetFuncName())) @ "bone or socket") @ cast57(Action.BoneName)) @ "not found on actor") @ cast56(self)) @ "with mesh") @ cast56(self.SkeletalMeshComponent)), , , )
+  011a: if !((bValidBone || bValidSocket)) goto 0x02ff
+  012e: bOldCollideActors = Attachment.bCollideActors
+  0144: bOldBlockActors = Attachment.bBlockActors
+  015a: Attachment.SetCollision(false, false, )
+  0169: Attachment.SetHardAttach(Action.bHardAttach)
+  018b: if !((bValidBone && !bValidSocket)) goto 0x0234
+  01a1: if !(Action.bUseRelativeOffset) goto 0x01e1
+  01b3: Attachment.SetLocation(self.SkeletalMeshComponent.GetBoneLocation(Action.BoneName, ))
+  01e1: if !(Action.bUseRelativeRotation) goto 0x0234
+  01f3: Attachment.SetRotation(obj'Core.Math'.static.QuatToRotator(self.SkeletalMeshComponent.GetBoneQuaternion(Action.BoneName, )))
+  0234: Attachment.SetBase(self, , self.SkeletalMeshComponent, Action.BoneName)
+  025c: if !(Action.bUseRelativeRotation) goto 0x02a0
+  026e: Attachment.SetRelativeRotation((Attachment.RelativeRotation + Action.RelativeRotation))
+  02a0: if !(Action.bUseRelativeOffset) goto 0x02e3
+  02b2: Attachment.SetRelativeLocation((Attachment.RelativeLocation + Action.RelativeOffset))
+  02e3: Attachment.SetCollision(bOldCollideActors, bOldBlockActors, )
+  02fc: goto 0x030f
+  02ff: Actor.DoKismetAttachment(Attachment, Action)
+  030f: return nothing
+  0311: <eos>
+
+function SkeletalMeshActor.GetBoneLocation  (script 33 bytes)
+  0000: return self.SkeletalMeshComponent.GetBoneLocation(BoneName, )
+  001a: return return
+  0020: <eos>
+
+function SkeletalMeshActor.GetBoneOrientation  (script 52 bytes)
+  0000: return obj'Core.Math'.static.QuatToRotator(self.SkeletalMeshComponent.GetBoneQuaternion(BoneName, ))
+  002d: return return
+  0033: <eos>
+
+function SkeletalMeshActor.GetRigidBodyIsAwake  (script 41 bytes)
+  0000: if !((self.SkeletalMeshComponent == none)) goto 0x000d
+  000b: return false
+  000d: return self.SkeletalMeshComponent.RigidBodyIsAwake()
+  0022: return return
+  0028: <eos>
+
+function SkeletalMeshActor.GetSkeletonBounds  (script 27 bytes)
+  0000: return self.SkeletalMeshComponent.GetBounds()
+  0014: return return
+  001a: <eos>
+
+function SkeletalMeshActor.GetSoundLocation  (script 7 bytes)
+  0000: SocketName
+  0005: nothing
+  0006: <eos>

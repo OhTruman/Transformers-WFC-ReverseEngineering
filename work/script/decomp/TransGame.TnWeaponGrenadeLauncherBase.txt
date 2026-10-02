@@ -1,0 +1,78 @@
+function TnWeaponGrenadeLauncherBase.UpdateData  (script 25 bytes)
+  0000: TnWeapon.UpdateData()
+  0006: self.GrenadeData = TnWeaponDataGrenadeLauncher(self.Data)
+  0016: return nothing
+  0018: <eos>
+
+function TnWeaponGrenadeLauncherBase.OnBeginStateWeaponFiring  (script 31 bytes)
+  0000: TnWeapon.OnBeginStateWeaponFiring()
+  0006: PlayDialogNotify(5, TnPawn(self.Owner))
+  001c: return nothing
+  001e: <eos>
+
+function TnWeaponGrenadeLauncherBase.ActiveGrenadeCount  (script 36 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0017
+  0010: return self.ActiveGrenades.Length
+  0017: return self.ReplicatedActiveGrenadeCount
+  001d: return return
+  0023: <eos>
+
+function TnWeaponGrenadeLauncherBase.ServerSpawnedProjectile  (script 90 bytes)
+  0000: if !((self.ActiveGrenades.Length >= self.GrenadeData.NumberOfActiveGrenades)) goto 0x002e
+  0019: TnWeaponGrenadeLauncherBase.DetonateGrenade(0[self.ActiveGrenades])
+  0026: self.ActiveGrenades.Remove(0,1)
+  002e: self.ActiveGrenades.AddItem(TnProjectile(Proj))
+  0040: self.ReplicatedActiveGrenadeCount = self.ActiveGrenades.Length
+  004c: ServerSpawnedProjectile(Proj)
+  0057: return nothing
+  0059: <eos>
+
+function TnWeaponGrenadeLauncherBase.AttemptToDetonate  (script 54 bytes)
+  0000: if !((ActiveGrenadeCount() > 0)) goto 0x0020
+  0010: CurrentWeaponMeshPlaySoundEvent(2, )
+  001d: goto 0x002d
+  0020: CurrentWeaponMeshPlaySoundEvent(14, )
+  002d: TnWeaponGrenadeLauncherBase.ServerDetonateGrenades()
+  0033: return nothing
+  0035: <eos>
+
+function TnWeaponGrenadeLauncherBase.ServerDetonateGrenades  (script 46 bytes)
+  0000: foreach self.ActiveGrenades(ActiveGrenade,) (end 0x001b)
+  000f: TnWeaponGrenadeLauncherBase.DetonateGrenade(ActiveGrenade)
+  001a: iternext
+  001b: iterpop
+  001c: self.ActiveGrenades.Length = 0
+  0024: self.ReplicatedActiveGrenadeCount = 0
+  002b: return nothing
+  002d: <eos>
+
+function TnWeaponGrenadeLauncherBase.DetonateGrenade  (script 49 bytes)
+  0000: Grenade.Explode(Grenade.Location, vect(0,0,1))
+  002e: return nothing
+  0030: <eos>
+
+function TnWeaponGrenadeLauncherBase.DidGrenadeExplode  (script 60 bytes)
+  0000: return (((Grenade == none) || Grenade.bDeleteMe) || Grenade.IsExploding())
+  0035: return return
+  003b: <eos>
+
+function TnWeaponGrenadeLauncherBase.Tick  (script 110 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0060
+  0010: I = (self.ActiveGrenades.Length - 1)
+  001f: if !((I >= 0)) goto 0x0054
+  002a: if !(TnWeaponGrenadeLauncherBase.DidGrenadeExplode(I[self.ActiveGrenades])) goto 0x004a
+  003e: self.ActiveGrenades.Remove(I,1)
+  004a: SubtractSubtract_PreInt(I)
+  0051: goto 0x001f
+  0054: self.ReplicatedActiveGrenadeCount = self.ActiveGrenades.Length
+  0060: TnWeapon.Tick(DeltaTime)
+  006b: return nothing
+  006d: <eos>
+
+function TnWeaponGrenadeLauncherBase.DropFrom  (script 52 bytes)
+  0000: nothing
+  0001: if !((cast3a(self.Role) == cast3a(3))) goto 0x0017
+  0011: TnWeaponGrenadeLauncherBase.ServerDetonateGrenades()
+  0017: return TnWeapon.DropFrom(StartLocation, StartVelocity, StartRotation)
+  002d: return return
+  0033: <eos>

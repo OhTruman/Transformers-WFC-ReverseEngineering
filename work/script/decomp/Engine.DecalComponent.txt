@@ -1,0 +1,10 @@
+function DecalComponent.ResetToDefaults  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function DecalComponent.CheckForErrors  (script 60 bytes)
+  0000: PrimitiveComponent.CheckForErrors()
+  0006: if !((self.DecalMaterial == none)) goto 0x0039
+  0011: EmitCheckMessage(1, "Decal's material is none", , )
+  0039: return nothing
+  003b: <eos>

@@ -1,0 +1,27 @@
+function HmJoystickFlickDetector.Update  (script 207 bytes)
+  0000: InputLengthSqrd = ((JoystickInputX * JoystickInputX) + (JoystickInputY * JoystickInputY))
+  0020: self.bWasFlicked = false
+  0028: if !((InputLengthSqrd > (self.LowerThreshhold * self.LowerThreshhold))) goto 0x0097
+  003e: (self.FlickDetectionTimeSinceLowerThreshhold += DeltaTime)
+  004a: if !((InputLengthSqrd > (self.UpperThreshhold * self.UpperThreshhold))) goto 0x0094
+  0060: self.bFlickDetectionReachedUpperThreshhold = true
+  0068: self.FlickDirection.X = JoystickInputX
+  007e: self.FlickDirection.Y = JoystickInputY
+  0094: goto 0x00cc
+  0097: if !((self.bFlickDetectionReachedUpperThreshhold && (self.FlickDetectionTimeSinceLowerThreshhold < self.MaximumFlickTime))) goto 0x00b9
+  00b1: self.bWasFlicked = true
+  00b9: self.bFlickDetectionReachedUpperThreshhold = false
+  00c1: self.FlickDetectionTimeSinceLowerThreshhold = 0.0
+  00cc: return nothing
+  00ce: <eos>
+
+function HmJoystickFlickDetector.WasFlicked  (script 14 bytes)
+  0000: return self.bWasFlicked
+  0007: return return
+  000d: <eos>
+
+function HmJoystickFlickDetector.GetFlickDirection  (script 27 bytes)
+  0000: assert(WasFlicked())
+  000e: return self.FlickDirection
+  0014: return return
+  001a: <eos>

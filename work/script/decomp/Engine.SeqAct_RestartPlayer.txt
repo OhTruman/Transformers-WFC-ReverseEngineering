@@ -1,0 +1,12 @@
+function SeqAct_RestartPlayer.Activated  (script 97 bytes)
+  0000: SequenceOp.Activated()
+  0006: I = 0
+  000d: if !((I < self.Targets.Length)) goto 0x005e
+  001d: PC = PlayerController(I[self.Targets])
+  0033: if !((PC == none)) goto 0x0041
+  003e: goto 0x0054
+  0041: PC.ServerRestartPlayer()
+  0054: AddAdd_PreInt(I)
+  005b: goto 0x000d
+  005e: return nothing
+  0060: <eos>

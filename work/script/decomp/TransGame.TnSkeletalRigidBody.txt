@@ -1,0 +1,13 @@
+function TnSkeletalRigidBody.AddModifier  (script 16 bytes)
+  0000: self._Modifiers.AddItem(Modifier)
+  000d: return nothing
+  000f: <eos>
+
+function TnSkeletalRigidBody.Tick  (script 55 bytes)
+  0000: Tick(DeltaTime)
+  000b: foreach self._Modifiers(Modifier,) (end 0x0033)
+  001a: Modifier.Tick(DeltaTime)
+  0032: iternext
+  0033: iterpop
+  0034: return nothing
+  0036: <eos>

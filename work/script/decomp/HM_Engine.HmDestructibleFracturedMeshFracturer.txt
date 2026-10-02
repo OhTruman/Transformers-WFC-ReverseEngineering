@@ -1,0 +1,26 @@
+function HmDestructibleFracturedMeshFracturer.SetPieceHandle  (script 14 bytes)
+  0000: self.PieceHandle = NewPieceHandle
+  000b: return nothing
+  000d: <eos>
+
+function HmDestructibleFracturedMeshFracturer.NotifyOfSpawn  (script 71 bytes)
+  0000: Observer = HmDestructionObserver(self.Owner)
+  0010: if !(EqualEqual_InterfaceInterface(Observer, HmDestructionObserver(none))) goto 0x0026
+  0024: return nothing
+  0026: Observer.OnActorSpawn(self.PieceHandle, A)
+  0044: return nothing
+  0046: <eos>
+
+function HmDestructibleFracturedMeshFracturer.SpawnPart  (script 62 bytes)
+  0000: Part = SpawnPart(ChunkIndex, InitialVel, InitialAngVel, RelativeScale, bExplosion)
+  0026: HmDestructibleFracturedMeshFracturer.NotifyOfSpawn(Part)
+  0031: return Part
+  0037: return return
+  003d: <eos>
+
+function HmDestructibleFracturedMeshFracturer.SpawnPartMulti  (script 62 bytes)
+  0000: Part = SpawnPartMulti(ChunkIndices, InitialVel, InitialAngVel, RelativeScale, bExplosion)
+  0026: HmDestructibleFracturedMeshFracturer.NotifyOfSpawn(Part)
+  0031: return Part
+  0037: return return
+  003d: <eos>

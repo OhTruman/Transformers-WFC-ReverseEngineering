@@ -1,0 +1,171 @@
+function TnMessageBoxActionScriptInterface.OnButtonPress  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnMessageBoxActionScriptInterface.Show  (script 58 bytes)
+  0000: self.OwnerMovie.Advance(0.0)
+  0018: UpdateText()
+  0022: self.OwnerMovie.SetFocus(true, true)
+  0037: return nothing
+  0039: <eos>
+
+function TnMessageBoxActionScriptInterface.Close  (script 23 bytes)
+  0000: self.OwnerMovie.Close()
+  0014: return nothing
+  0016: <eos>
+
+function TnMessageBoxActionScriptInterface.Reset  (script 112 bytes)
+  0000: nothing
+  0001: SetIconType(0, )
+  000e: SetAButton("", delegate.None, , true)
+  0025: SetBButton("", , , )
+  0034: SetXButton("", , , )
+  0043: SetYButton("", , , )
+  0052: self.bShowDefaultButtons = true
+  005a: if !(ForceUpdate) goto 0x006d
+  0063: UpdateText()
+  006d: return nothing
+  006f: <eos>
+
+function TnMessageBoxActionScriptInterface.UpdateText  (script 167 bytes)
+  0000: Buttons = TnMessageBoxActionScriptInterface.GenerateButtonString()
+  000c: obj'TnScaleformHelpers'.static.AddStringArgument(args, self.Title)
+  0029: obj'TnScaleformHelpers'.static.AddStringArgument(args, self.Message)
+  0046: obj'TnScaleformHelpers'.static.AddStringArgument(args, Buttons)
+  0063: obj'TnScaleformHelpers'.static.AddFloatArgument(args, cast3c(self.IconType))
+  0082: self.OwnerMovie.Invoke(self.MessageFunctionName, args)
+  00a4: return nothing
+  00a6: <eos>
+
+function TnMessageBoxActionScriptInterface.GenerateButtonString  (script 373 bytes)
+  0000: if !((self.AText != "")) goto 0x0035
+  000c: ConcatEqual_StrStr(ButtonString, (self.AText $ ",MessageBox.OnA,"))
+  0032: goto 0x0046
+  0035: ConcatEqual_StrStr(ButtonString, ",,")
+  0046: if !((self.bText != "")) goto 0x007b
+  0052: ConcatEqual_StrStr(ButtonString, (self.bText $ ",MessageBox.OnB,"))
+  0078: goto 0x008c
+  007b: ConcatEqual_StrStr(ButtonString, ",,")
+  008c: if !((self.XText != "")) goto 0x00c1
+  0098: ConcatEqual_StrStr(ButtonString, (self.XText $ ",MessageBox.OnX,"))
+  00be: goto 0x00d2
+  00c1: ConcatEqual_StrStr(ButtonString, ",,")
+  00d2: if !((self.YText != "")) goto 0x0107
+  00de: ConcatEqual_StrStr(ButtonString, (self.YText $ ",MessageBox.OnY,"))
+  0104: goto 0x0117
+  0107: ConcatEqual_StrStr(ButtonString, ",")
+  0117: if !((self.bShowDefaultButtons && (ButtonString == ",,,,,,,"))) goto 0x0168
+  0135: ButtonString = "$UIText.ButtonHints.Ok,MessageBox.OnA,,,,,,"
+  0168: return ButtonString
+  016e: return return
+  0174: <eos>
+
+function TnMessageBoxActionScriptInterface.SetText  (script 45 bytes)
+  0000: nothing
+  0001: self.Title = NewTitle
+  000c: self.Message = NewMessage
+  0017: if !(ForceUpdate) goto 0x002a
+  0020: UpdateText()
+  002a: return nothing
+  002c: <eos>
+
+function TnMessageBoxActionScriptInterface.SetIconType  (script 34 bytes)
+  0000: nothing
+  0001: self.IconType = NewIconType
+  000c: if !(ForceUpdate) goto 0x001f
+  0015: UpdateText()
+  001f: return nothing
+  0021: <eos>
+
+function TnMessageBoxActionScriptInterface.SetPostConfirmMessage  (script 14 bytes)
+  0000: self.PostConfirmMessage = NewMessage
+  000b: return nothing
+  000d: <eos>
+
+function TnMessageBoxActionScriptInterface.SetAButton  (script 61 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=self.AShouldCloseOnPress
+  000c: self.ACallback = C
+  0017: self.AParameter = Parameter
+  0022: self.AText = Text
+  002d: self.AShouldCloseOnPress = ShouldCloseOnPress
+  003a: return nothing
+  003c: <eos>
+
+function TnMessageBoxActionScriptInterface.SetBButton  (script 61 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=self.BShouldCloseOnPress
+  000c: self.BCallback = C
+  0017: self.BParameter = Parameter
+  0022: self.bText = Text
+  002d: self.BShouldCloseOnPress = ShouldCloseOnPress
+  003a: return nothing
+  003c: <eos>
+
+function TnMessageBoxActionScriptInterface.SetXButton  (script 61 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=self.XShouldCloseOnPress
+  000c: self.XCallback = C
+  0017: self.XParameter = Parameter
+  0022: self.XText = Text
+  002d: self.XShouldCloseOnPress = ShouldCloseOnPress
+  003a: return nothing
+  003c: <eos>
+
+function TnMessageBoxActionScriptInterface.SetYButton  (script 61 bytes)
+  0000: nothing
+  0001: nothing
+  0002: default=self.YShouldCloseOnPress
+  000c: self.YCallback = C
+  0017: self.YParameter = Parameter
+  0022: self.YText = Text
+  002d: self.YShouldCloseOnPress = ShouldCloseOnPress
+  003a: return nothing
+  003c: <eos>
+
+function TnMessageBoxActionScriptInterface.ClearButtons  (script 84 bytes)
+  0000: SetAButton("", , , )
+  000f: SetBButton("", , , )
+  001e: SetXButton("", , , )
+  002d: SetYButton("", , , )
+  003c: self.Message = self.PostConfirmMessage
+  0047: UpdateText()
+  0051: return nothing
+  0053: <eos>
+
+function TnMessageBoxActionScriptInterface.HandleButtonPress  (script 98 bytes)
+  0000: TmpCallback = ButtonCallback
+  000b: TmpParameter = Parameter
+  0016: if !(CloseOnPress) goto 0x002c
+  001f: Close()
+  0029: goto 0x003f
+  002c: SetIconType(1, )
+  0039: TnMessageBoxActionScriptInterface.ClearButtons()
+  003f: if !((TmpCallback != emptydelegate)) goto 0x005f
+  0049: <endparms>
+  004a: OnButtonPress(self, TmpParameter)
+  005f: return nothing
+  0061: <eos>
+
+function TnMessageBoxActionScriptInterface.OnA  (script 25 bytes)
+  0000: TnMessageBoxActionScriptInterface.HandleButtonPress(self.ACallback, self.AParameter, self.AShouldCloseOnPress)
+  0016: return nothing
+  0018: <eos>
+
+function TnMessageBoxActionScriptInterface.OnB  (script 25 bytes)
+  0000: TnMessageBoxActionScriptInterface.HandleButtonPress(self.BCallback, self.BParameter, self.BShouldCloseOnPress)
+  0016: return nothing
+  0018: <eos>
+
+function TnMessageBoxActionScriptInterface.OnX  (script 25 bytes)
+  0000: TnMessageBoxActionScriptInterface.HandleButtonPress(self.XCallback, self.XParameter, self.XShouldCloseOnPress)
+  0016: return nothing
+  0018: <eos>
+
+function TnMessageBoxActionScriptInterface.OnY  (script 25 bytes)
+  0000: TnMessageBoxActionScriptInterface.HandleButtonPress(self.YCallback, self.YParameter, self.YShouldCloseOnPress)
+  0016: return nothing
+  0018: <eos>

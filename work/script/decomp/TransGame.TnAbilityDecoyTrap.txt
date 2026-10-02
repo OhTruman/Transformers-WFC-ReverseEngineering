@@ -1,0 +1,8 @@
+function TnAbilityDecoyTrap.OnDropInventory  (script 124 bytes)
+  0000: dt = TnDecoyTrap(I)
+  0010: dt.SetDecoyCreator(self.OwnerPawn)
+  0028: if !((self.OwnerPawn.Weapon != none)) goto 0x0079
+  003c: DPDT = TnDroppedPickupDecoyTrap(DP)
+  004c: DPDT.SetDecoyWeapon(class<TnWeapon>(self.OwnerPawn.Weapon.get_Class()))
+  0079: return nothing
+  007b: <eos>

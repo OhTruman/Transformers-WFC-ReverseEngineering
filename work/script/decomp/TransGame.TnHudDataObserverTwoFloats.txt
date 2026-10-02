@@ -1,0 +1,9 @@
+function TnHudDataObserverTwoFloats.ProcessNewValue  (script 133 bytes)
+  0000: if !(((self.SavedValueA != NewValueA) || (self.SavedValueB != NewValueB))) goto 0x0082
+  0020: self.SavedValueA = NewValueA
+  002b: self.SavedValueB = NewValueB
+  0036: AddNumberValue(args, 0, NewValueA)
+  004b: AddNumberValue(args, 1, NewValueB)
+  0060: Movie.Invoke(self.CallbackBindingName, args)
+  0082: return nothing
+  0084: <eos>

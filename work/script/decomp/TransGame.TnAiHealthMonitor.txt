@@ -1,0 +1,71 @@
+function TnAiHealthMonitor.get_OwningPawn  (script 13 bytes)
+  0000: return self._OwningPawn
+  0006: return return
+  000c: <eos>
+
+function TnAiHealthMonitor.get_OwningController  (script 13 bytes)
+  0000: return self._OwningController
+  0006: return return
+  000c: <eos>
+
+function TnAiHealthMonitor.get_WoundedThresholdPercentage  (script 22 bytes)
+  0000: return self._Blueprint.WoundedThresholdPercentage
+  000f: return return
+  0015: <eos>
+
+function TnAiHealthMonitor.get_TimeWhenWasLastHealthy  (script 13 bytes)
+  0000: return self._TimeWhenWasLastHealthy
+  0006: return return
+  000c: <eos>
+
+function TnAiHealthMonitor.Initialize  (script 60 bytes)
+  0000: self._Blueprint = Blueprint
+  000b: self._OwningController = InAiController
+  0016: self._OwningPawn = self._OwningController.get_TransformerPawn()
+  002f: OnInitialize()
+  0039: return nothing
+  003b: <eos>
+
+function TnAiHealthMonitor.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiHealthMonitor.Update  (script 185 bytes)
+  0000: if !((self._OwningController == none)) goto 0x000d
+  000b: return nothing
+  000d: NormalizedHealth = self._OwningPawn.GetNormalizedHealth()
+  0026: if !(((NormalizedHealth < self._Blueprint.WoundedThresholdPercentage) && (self._PreviousHealth >= self._Blueprint.WoundedThresholdPercentage))) goto 0x0065
+  0058: SetWounded()
+  0062: goto 0x00a1
+  0065: if !(((NormalizedHealth >= self._Blueprint.WoundedThresholdPercentage) && (self._PreviousHealth < self._Blueprint.WoundedThresholdPercentage))) goto 0x00a1
+  0097: SetHealthy()
+  00a1: self._PreviousHealth = NormalizedHealth
+  00ac: OnUpdate()
+  00b6: return nothing
+  00b8: <eos>
+
+function TnAiHealthMonitor.AdjustDamage  (script 13 bytes)
+  0000: return Damage
+  0006: return return
+  000c: <eos>
+
+function TnAiHealthMonitor.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAiHealthMonitor.SetHealthy  (script 87 bytes)
+  0000: self._OwningController.AiWorldState.SetIntValue(obj'TnAiWorldStateHealthStatus', 0, )
+  0023: if !(self._Blueprint.TriggerHealthStatusSeqEvent) goto 0x0054
+  0035: self._OwningController.TriggerEventClass(obj'TnSeqEvent_HealthStatus', self._OwningController, 0, )
+  0054: return nothing
+  0056: <eos>
+
+function TnAiHealthMonitor.SetWounded  (script 173 bytes)
+  0000: self._TimeWhenWasLastHealthy = self._OwningPawn.WorldInfo.TimeSeconds
+  001d: self._OwningController.AiWorldState.SetIntValue(obj'TnAiWorldStateHealthStatus', 1, )
+  0040: self._OwningController.AiWorldState.SetIntValue(obj'TnAiWorldStateReaction', 3, )
+  0064: self._OwningController.RequestReplan(1)
+  0079: if !(self._Blueprint.TriggerHealthStatusSeqEvent) goto 0x00aa
+  008b: self._OwningController.TriggerEventClass(obj'TnSeqEvent_HealthStatus', self._OwningController, 1, )
+  00aa: return nothing
+  00ac: <eos>

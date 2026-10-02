@@ -1,0 +1,14 @@
+function TnHudDataObserverContextualCommands.CheckData  (script 277 bytes)
+  0000: Commander = PC.ContextualCommander
+  0014: if !(Commander.PendingUINotifications()) goto 0x0112
+  002a: Notification = Commander.PopUINotification()
+  0043: OutputString = Notification.Command.GetLocalizedDescription()
+  0067: OutputString = PC.get_InputCommandToBindingMapper().TranslateCommandsInString(PC, OutputString)
+  0098: args.Length = 0
+  00a0: AddNumberValue(args, 0, 0.0)
+  00b5: AddNumberValue(args, 1, cast3c(Notification.Action))
+  00d7: AddStringValue(args, 2, OutputString)
+  00ed: Movie.Invoke(self.CallbackBindingName, args)
+  010f: goto 0x0014
+  0112: return nothing
+  0114: <eos>

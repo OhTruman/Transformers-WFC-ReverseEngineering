@@ -1,0 +1,70 @@
+function TnRadialForceVolume.IsAffected  (script 124 bytes)
+  0000: if !((Pawn == none)) goto 0x000e
+  000b: return 0
+  000e: switch (Pawn.get_VehicleType())
+  0023: case 2: (next 0x0038)
+  0028: return (self.AffectsPlanes ? 1 : 0)
+  0038: case 3: (next 0x004d)
+  003d: return (self.AffectsTanks ? 1 : 0)
+  004d: case 0: (next 0x0052)
+  0052: case 1: (next 0x0067)
+  0057: return (self.AffectsCars ? 1 : 0)
+  0067: case 4: (next 0x006f)
+  006c: return 2
+  006f: default:
+  0072: return 0
+  0075: return return
+  007b: <eos>
+
+function TnRadialForceVolume.Affects  (script 35 bytes)
+  0000: Pawn = TnPawn(P)
+  0010: return TnRadialForceVolume.IsAffected(Pawn)
+  001c: return return
+  0022: <eos>
+
+function TnRadialForceVolume.HardBlock  (script 94 bytes)
+  0000: P = TnPawn(Other)
+  0010: if !((P == none)) goto 0x001d
+  001b: return false
+  001d: if !(P.get_IsInRobotForm()) goto 0x0055
+  0033: return (self.bBlockPawns && (cast3a(TnRadialForceVolume.IsAffected(P)) == cast3a(1)))
+  0052: goto 0x0057
+  0055: return false
+  0057: return return
+  005d: <eos>
+
+function TnRadialForceVolume.Touch  (script 71 bytes)
+  0000: Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: Pawn = TnPawn(Other)
+  002a: if !((Pawn == none)) goto 0x0037
+  0035: return nothing
+  0037: self.TouchingTransformers.AddItem(Pawn)
+  0044: return nothing
+  0046: <eos>
+
+function TnRadialForceVolume.UnTouch  (script 61 bytes)
+  0000: UnTouch(Other)
+  000b: Pawn = TnPawn(Other)
+  001b: if !((Pawn == none)) goto 0x0028
+  0026: return nothing
+  0028: self.TouchingTransformers.RemoveItem(TnPawn(Other))
+  003a: return nothing
+  003c: <eos>
+
+function TnRadialForceVolume.StopsProjectile  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnRadialForceVolume.NumTouchingTransformers  (script 14 bytes)
+  0000: return self.TouchingTransformers.Length
+  0007: return return
+  000d: <eos>
+
+function TnRadialForceVolume.OnPostEditChange  (script 72 bytes)
+  0000: OnPostEditChange(PropertyName)
+  000b: if !((PropertyName == 'bBlockPawns')) goto 0x0045
+  001e: self.bBlockActors = self.bBlockPawns
+  002b: self.CollisionComponent.SetActorCollision(true, self.bBlockPawns)
+  0045: return nothing
+  0047: <eos>

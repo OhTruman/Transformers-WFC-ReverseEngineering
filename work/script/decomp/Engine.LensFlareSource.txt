@@ -1,0 +1,52 @@
+function LensFlareSource.CheckForErrors  (script 112 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.LensFlareComp == none)) goto 0x006d
+  0011: EmitCheckMessage(1, "LensFlareSource actor has NULL LensFlareComponent property - please delete!", 1, )
+  006d: return nothing
+  006f: <eos>
+
+function LensFlareSource.SetTemplate  (script 7 bytes)
+  0000: NewTemplate
+  0005: nothing
+  0006: <eos>
+
+function LensFlareSource.OnToggle  (script 269 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x003e
+  001f: self.LensFlareComp.SetIsActive(true)
+  0033: self.bCurrentlyActive = true
+  003b: goto 0x00e3
+  003e: if !(1[Action.InputLinks].bHasImpulse) goto 0x007c
+  005d: self.LensFlareComp.SetIsActive(false)
+  0071: self.bCurrentlyActive = false
+  0079: goto 0x00e3
+  007c: if !(2[Action.InputLinks].bHasImpulse) goto 0x00e3
+  009c: if !((self.bCurrentlyActive == false)) goto 0x00c7
+  00a8: self.LensFlareComp.SetIsActive(true)
+  00bc: self.bCurrentlyActive = true
+  00c4: goto 0x00e3
+  00c7: self.LensFlareComp.SetIsActive(false)
+  00db: self.bCurrentlyActive = false
+  00e3: self.LensFlareComp.LastRenderTime = self.WorldInfo.TimeSeconds
+  0100: ForceNetRelevant()
+  010a: return nothing
+  010c: <eos>
+
+function LensFlareSource.SetFloatParameter  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function LensFlareSource.SetVectorParameter  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function LensFlareSource.SetColorParameter  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function LensFlareSource.SetExtColorParameter  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function LensFlareSource.SetActorParameter  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

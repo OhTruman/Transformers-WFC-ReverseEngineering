@@ -1,0 +1,296 @@
+function GameReplicationInfo.get_NumPlayers  (script 74 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x003c)
+  000f: if !((PRI == none)) goto 0x001e
+  001a: iternext
+  001b: goto 0x003c
+  001e: if !(PRI.bBot) goto 0x0034
+  0030: iternext
+  0031: goto 0x003c
+  0034: AddAdd_PreInt(N)
+  003b: iternext
+  003c: iterpop
+  003d: return N
+  0043: return return
+  0049: <eos>
+
+function GameReplicationInfo.get_NumHumanPlayers  (script 59 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x002d)
+  000f: if !(PRI.bBot) goto 0x0025
+  0021: iternext
+  0022: goto 0x002d
+  0025: AddAdd_PreInt(N)
+  002c: iternext
+  002d: iterpop
+  002e: return N
+  0034: return return
+  003a: <eos>
+
+function GameReplicationInfo.PostBeginPlay  (script 228 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x0031
+  0019: self.ServerName = ""
+  0021: self.AdminName = ""
+  0029: self.AdminEmail = ""
+  0031: self.SecondCount = self.WorldInfo.TimeSeconds
+  0045: SetTimer(self.WorldInfo.TimeDilation, true, , )
+  0059: self.WorldInfo.GRI = self
+  0069: GameReplicationInfo.InitializeGameDataStore()
+  006f: foreach DynamicActors(obj'PlayerReplicationInfo', PRI) (end 0x0096)
+  0086: AddPRI(PRI)
+  0095: iternext
+  0096: iterpop
+  0097: foreach DynamicActors(obj'TeamInfo', TI) (end 0x00e0)
+  00ae: if !((TI.TeamIndex >= 0)) goto 0x00df
+  00c2: SetTeam(TI.TeamIndex, TI)
+  00df: iternext
+  00e0: iterpop
+  00e1: return nothing
+  00e3: <eos>
+
+function GameReplicationInfo.ReplicatedEvent  (script 118 bytes)
+  0000: if !((VarName == 'bMatchHasBegun')) goto 0x001f
+  0013: if !(self.bMatchHasBegun) goto 0x001c
+  001c: goto 0x0073
+  001f: if !((VarName == 'bMatchIsOver')) goto 0x0048
+  0032: if !(self.bMatchIsOver) goto 0x0045
+  003b: EndGame()
+  0045: goto 0x0073
+  0048: if !((VarName == 'GameClass')) goto 0x0068
+  005b: ReceivedGameClass()
+  0065: goto 0x0073
+  0068: ReplicatedObject.ReplicatedEvent(VarName)
+  0073: return nothing
+  0075: <eos>
+
+function GameReplicationInfo.ReceivedGameClass  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameReplicationInfo.Reset  (script 16 bytes)
+  0000: Actor.Reset()
+  0006: self.Winner = none
+  000d: return nothing
+  000f: <eos>
+
+function GameReplicationInfo.Destroyed  (script 15 bytes)
+  0000: Actor.Destroyed()
+  0006: GameReplicationInfo.CleanupGameDataStore()
+  000c: return nothing
+  000e: <eos>
+
+function GameReplicationInfo.Timer  (script 256 bytes)
+  0000: if !(((self.WorldInfo.Game == none) || self.WorldInfo.Game.MatchIsInProgress())) goto 0x003c
+  0035: AddAdd_Int(self.ElapsedTime)
+  003c: if !((cast3a(self.WorldInfo.NetMode) == cast3a(3))) goto 0x007c
+  0055: if !((self.RemainingMinute != 0)) goto 0x007c
+  0060: self.RemainingTime = self.RemainingMinute
+  006b: self.RemainingMinute = 0
+  0072: OnRemainingTimeUpdated()
+  007c: if !(((self.RemainingTime > 0) && !self.bStopCountDown)) goto 0x00de
+  0094: SubtractSubtract_Int(self.RemainingTime)
+  009b: OnRemainingTimeUpdated()
+  00a5: if !((cast3a(self.WorldInfo.NetMode) != cast3a(3))) goto 0x00de
+  00be: if !(((cast3f(self.RemainingTime) % cast3f(60)) == cast3f(0))) goto 0x00de
+  00d3: self.RemainingMinute = self.RemainingTime
+  00de: if !((self.CurrentGameData != none)) goto 0x00e9
+  00e9: SetTimer(self.WorldInfo.TimeDilation, true, , )
+  00fd: return nothing
+  00ff: <eos>
+
+function GameReplicationInfo.OnRemainingTimeUpdated  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function GameReplicationInfo.OnSameTeam  (script 12 bytes)
+  0000: A
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function GameReplicationInfo.FindPlayerByID  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < self.PRIArray.Length)) goto 0x004b
+  0017: if !((I[self.PRIArray].PlayerID == PlayerID)) goto 0x0041
+  0035: return I[self.PRIArray]
+  0041: AddAdd_Int(I)
+  0048: goto 0x0007
+  004b: return none
+  004d: return return
+  0053: <eos>
+
+function GameReplicationInfo.FindPlayerByUniqueNetId  (script 60 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x0032)
+  000f: if !((PRI.UniqueId == NetId)) goto 0x0031
+  002a: iterpop
+  002b: return PRI
+  0031: iternext
+  0032: iterpop
+  0033: return none
+  0035: return return
+  003b: <eos>
+
+function GameReplicationInfo.AddPRI  (script 252 bytes)
+  0000: if !(PRI.bFromPreviousLevel) goto 0x0014
+  0012: return nothing
+  0014: if !(!PRI.bIsInactive) goto 0x0075
+  0028: I = 0
+  002f: if !((I < self.PRIArray.Length)) goto 0x0060
+  003f: if !((I[self.PRIArray] == PRI)) goto 0x0056
+  0054: return nothing
+  0056: AddAdd_Int(I)
+  005d: goto 0x002f
+  0060: self.PRIArray.Length[self.PRIArray] = PRI
+  0072: goto 0x009e
+  0075: if !((self.InactivePRIArray.Find(PRI) == -1)) goto 0x009e
+  008c: self.InactivePRIArray.Length[self.InactivePRIArray] = PRI
+  009e: if !((self.CurrentGameData == none)) goto 0x00af
+  00a9: GameReplicationInfo.InitializeGameDataStore()
+  00af: if !(((self.CurrentGameData != none) && UsesPlayerDataProvider(PRI))) goto 0x00f9
+  00ce: self.CurrentGameData.AddPlayerDataProvider(PRI)
+  00e6: PRI.BindPlayerOwnerDataProvider()
+  00f9: return nothing
+  00fb: <eos>
+
+function GameReplicationInfo.UsesPlayerDataProvider  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function GameReplicationInfo.RemovePRI  (script 106 bytes)
+  0000: I = 0
+  0007: if !((I < self.PRIArray.Length)) goto 0x0067
+  0017: if !((I[self.PRIArray] == PRI)) goto 0x005d
+  002c: if !((self.CurrentGameData != none)) goto 0x004f
+  0037: self.CurrentGameData.RemovePlayerDataProvider(PRI)
+  004f: self.PRIArray.Remove(I,1)
+  005b: return nothing
+  005d: AddAdd_Int(I)
+  0064: goto 0x0007
+  0067: return nothing
+  0069: <eos>
+
+function GameReplicationInfo.SetTeam  (script 159 bytes)
+  0000: if !((Index >= 0)) goto 0x009c
+  000b: if !((self.CurrentGameData == none)) goto 0x001c
+  0016: GameReplicationInfo.InitializeGameDataStore()
+  001c: if !((self.CurrentGameData != none)) goto 0x008b
+  0027: if !(((Index < self.Teams.Length) && (Index[self.Teams] != none))) goto 0x0068
+  004a: self.CurrentGameData.RemoveTeamDataProvider(Index[self.Teams])
+  0068: if !((TI != none)) goto 0x008b
+  0073: self.CurrentGameData.AddTeamDataProvider(TI)
+  008b: Index[self.Teams] = TI
+  009c: return nothing
+  009e: <eos>
+
+function GameReplicationInfo.GetPRIArray  (script 91 bytes)
+  0000: pris.Remove(0,pris.Length)
+  000d: I = 0
+  0014: if !((I < self.PRIArray.Length)) goto 0x0058
+  0024: if !((I[self.PRIArray] != none)) goto 0x004e
+  0035: AddAdd_Int(num)[pris] = I[self.PRIArray]
+  004e: AddAdd_Int(I)
+  0055: goto 0x0014
+  0058: return nothing
+  005a: <eos>
+
+function GameReplicationInfo.InOrder  (script 308 bytes)
+  0000: if !(P1.bOnlySpectator) goto 0x0025
+  0012: return P2.bOnlySpectator
+  0022: goto 0x0039
+  0025: if !(P2.bOnlySpectator) goto 0x0039
+  0037: return true
+  0039: P1Score = GetSortScoreDelegate(P1)
+  0053: P2Score = GetSortScoreDelegate(P2)
+  006d: if !((P1Score < P2Score)) goto 0x007e
+  007c: return false
+  007e: if !((P1Score == P2Score)) goto 0x012b
+  008d: if !((P1.GetDeaths() > P2.GetDeaths())) goto 0x00ba
+  00b8: return false
+  00ba: if !((((P1.GetDeaths() == P2.GetDeaths()) && (PlayerController(P2.Owner) != none)) && (LocalPlayer(PlayerController(P2.Owner).Player) != none))) goto 0x012b
+  0129: return false
+  012b: return true
+  012d: return return
+  0133: <eos>
+
+function GameReplicationInfo.GetPRIScore  (script 27 bytes)
+  0000: return PRI.GetScore()
+  0014: return return
+  001a: <eos>
+
+function GameReplicationInfo.GetSortScoreDelegate  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function GameReplicationInfo.SortPRIArray  (script 174 bytes)
+  0000: I = 0
+  0007: if !((I < (self.PRIArray.Length - 1))) goto 0x00ab
+  001a: J = (I + 1)
+  0028: if !((J < self.PRIArray.Length)) goto 0x00a1
+  0038: if !(!GameReplicationInfo.InOrder(I[self.PRIArray], J[self.PRIArray], GetSortScore)) goto 0x0097
+  005e: tmp = I[self.PRIArray]
+  006f: I[self.PRIArray] = J[self.PRIArray]
+  0086: J[self.PRIArray] = tmp
+  0097: AddAdd_Int(J)
+  009e: goto 0x0028
+  00a1: AddAdd_Int(I)
+  00a8: goto 0x0007
+  00ab: return nothing
+  00ad: <eos>
+
+function GameReplicationInfo.InitializeGameDataStore  (script 154 bytes)
+  0000: DataStoreManager = obj'UIInteraction'.static.GetDataStoreClient()
+  0019: if !((DataStoreManager != none)) goto 0x0097
+  0024: self.CurrentGameData = CurrentGameDataStore(DataStoreManager.FindDataStore('CurrentGame', ))
+  004c: if !((self.CurrentGameData != none)) goto 0x006e
+  0057: self.CurrentGameData.CreateGameDataProvider(self)
+  006b: goto 0x0097
+  006e: LogInternal("Primary game data store not found!", , , )
+  0097: return nothing
+  0099: <eos>
+
+function GameReplicationInfo.CleanupGameDataStore  (script 40 bytes)
+  0000: if !((self.CurrentGameData != none)) goto 0x001e
+  000b: self.CurrentGameData.ClearDataProviders()
+  001e: self.CurrentGameData = none
+  0025: return nothing
+  0027: <eos>
+
+function GameReplicationInfo.RefreshGameDataStore  (script 42 bytes)
+  0000: nothing
+  0001: if !((self.CurrentGameData != none)) goto 0x0027
+  000c: self.CurrentGameData.RefreshSubscribers(PropertyTag, , , )
+  0027: return nothing
+  0029: <eos>
+
+function GameReplicationInfo.StartMatch  (script 11 bytes)
+  0000: self.bMatchHasBegun = true
+  0008: return nothing
+  000a: <eos>
+
+function GameReplicationInfo.EndGame  (script 11 bytes)
+  0000: self.bMatchIsOver = true
+  0008: return nothing
+  000a: <eos>
+
+function GameReplicationInfo.IsMultiplayerGame  (script 30 bytes)
+  0000: return (cast3a(self.WorldInfo.NetMode) != cast3a(0))
+  0017: return return
+  001d: <eos>
+
+function GameReplicationInfo.IsCoopMultiplayerGame  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function GameReplicationInfo.GetLocalPlayerId  (script 90 bytes)
+  0000: foreach self.PRIArray(PRI,) (end 0x004c)
+  000f: if !((PRI == none)) goto 0x001e
+  001a: iternext
+  001b: goto 0x004c
+  001e: if !(PRI.IsLocalPlayerPRI()) goto 0x004b
+  0034: Result = PRI.UniqueId
+  0048: goto 0x004c
+  004b: iternext
+  004c: iterpop
+  004d: return Result
+  0053: return return
+  0059: <eos>

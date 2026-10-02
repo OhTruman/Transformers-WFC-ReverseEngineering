@@ -1,0 +1,19 @@
+function TnAbilityCooldownConditionBuffEnded.Reset  (script 36 bytes)
+  0000: self.HadBuff = false
+  0008: self.StartTime = obj'Engine.Engine'.static.GetWorldTime()
+  0021: return nothing
+  0023: <eos>
+
+function TnAbilityCooldownConditionBuffEnded.Update  (script 194 bytes)
+  0000: BS = TnBuffService(OwnerPawn.GetService('TnBuffService'))
+  0027: HasBuff = BS.HasDerivedBuff(self.BuffType)
+  0047: if !((!self.HadBuff && ((obj'Engine.Engine'.static.GetWorldTime() - self.StartTime) > 1.0))) goto 0x0080
+  0078: self.HadBuff = true
+  0080: if !((!self.HadBuff && HasBuff)) goto 0x00a1
+  0096: self.HadBuff = true
+  009e: goto 0x00b9
+  00a1: if !((self.HadBuff && !HasBuff)) goto 0x00b9
+  00b7: return true
+  00b9: return false
+  00bb: return return
+  00c1: <eos>

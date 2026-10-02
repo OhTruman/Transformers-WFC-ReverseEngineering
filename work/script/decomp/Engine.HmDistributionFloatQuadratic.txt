@@ -1,0 +1,77 @@
+function HmDistributionFloatQuadratic.GetNumKeys  (script 10 bytes)
+  0000: return 3
+  0003: return return
+  0009: <eos>
+
+function HmDistributionFloatQuadratic.GetNumSubCurves  (script 9 bytes)
+  0000: return 1
+  0002: return return
+  0008: <eos>
+
+function HmDistributionFloatQuadratic.GetKeyIn  (script 54 bytes)
+  0000: switch (KeyIndex)
+  0007: case 0: (next 0x0011)
+  000b: return self.X1
+  0011: case 1: (next 0x001b)
+  0015: return self.X2
+  001b: case 2: (next 0x0026)
+  0020: return self.X3
+  0026: default:
+  0029: return 0.0
+  002f: return return
+  0035: <eos>
+
+function HmDistributionFloatQuadratic.GetKeyOut  (script 12 bytes)
+  0000: SubIndex
+  0005: KeyIndex
+  000a: nothing
+  000b: <eos>
+
+function HmDistributionFloatQuadratic.GetKeyColor  (script 27 bytes)
+  0000: return MakeColor(cast3d(255), 0, 0, )
+  0014: return return
+  001a: <eos>
+
+function HmDistributionFloatQuadratic.EvalSub  (script 12 bytes)
+  0000: SubIndex
+  0005: InVal
+  000a: nothing
+  000b: <eos>
+
+function HmDistributionFloatQuadratic.GetKeyInterpMode  (script 7 bytes)
+  0000: KeyIndex
+  0005: nothing
+  0006: <eos>
+
+function HmDistributionFloatQuadratic.GetTangents  (script 22 bytes)
+  0000: SubIndex
+  0005: KeyIndex
+  000a: ArriveTangent
+  000f: LeaveTangent
+  0014: nothing
+  0015: <eos>
+
+function HmDistributionFloatQuadratic.GetInRange  (script 25 bytes)
+  0000: MinIn = 0.0
+  000b: MaxIn = 1.0
+  0016: return nothing
+  0018: <eos>
+
+function HmDistributionFloatQuadratic.GetOutRange  (script 25 bytes)
+  0000: MinOut = 0.0
+  000b: MaxOut = 1.0
+  0016: return nothing
+  0018: <eos>
+
+function HmDistributionFloatQuadratic.SetKeyIn  (script 12 bytes)
+  0000: KeyIndex
+  0005: NewInVal
+  000a: nothing
+  000b: <eos>
+
+function HmDistributionFloatQuadratic.SetKeyOut  (script 17 bytes)
+  0000: SubIndex
+  0005: KeyIndex
+  000a: NewOutVal
+  000f: nothing
+  0010: <eos>

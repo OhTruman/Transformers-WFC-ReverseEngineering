@@ -1,0 +1,58 @@
+function ParticleSystem.FindEmitterByName  (script 84 bytes)
+  0000: I = 0
+  0007: if !((I < self.Emitters.Length)) goto 0x004b
+  0017: if !((I[self.Emitters].EmitterName == EmitterName)) goto 0x0041
+  0035: return I[self.Emitters]
+  0041: AddAdd_PreInt(I)
+  0048: goto 0x0007
+  004b: return none
+  004d: return return
+  0053: <eos>
+
+function ParticleSystem.GetCurrentLODMethod  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleSystem.GetLODLevelCount  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleSystem.GetLODDistance  (script 7 bytes)
+  0000: LODLevelIndex
+  0005: nothing
+  0006: <eos>
+
+function ParticleSystem.SetCurrentLODMethod  (script 7 bytes)
+  0000: InMethod
+  0005: nothing
+  0006: <eos>
+
+function ParticleSystem.SetLODDistance  (script 12 bytes)
+  0000: LODLevelIndex
+  0005: InDistance
+  000a: nothing
+  000b: <eos>
+
+function ParticleSystem.CheckForErrors  (script 493 bytes)
+  0000: bAllEmittersDisabled = true
+  0008: foreach self.Emitters(Emitter,) (end 0x0045)
+  0017: Emitter.CheckForErrors()
+  002a: if !(Emitter.bEnabled) goto 0x0044
+  003c: bAllEmittersDisabled = false
+  0044: iternext
+  0045: iterpop
+  0046: if !(bAllEmittersDisabled) goto 0x00a7
+  004f: EmitCheckMessage(1, "All emitters of this particle system are disabled. It should be removed.", , )
+  00a7: LODIdx = 0
+  00ae: if !((LODIdx < self.LODDistances.Length)) goto 0x01ea
+  00be: if !((LODIdx[self.LODDistances] >= self.CullDistance)) goto 0x01e0
+  00d3: if !((LODIdx == (self.LODDistances.Length - 1))) goto 0x014a
+  00e6: if !(!self.bIgnoreLastLOD) goto 0x0147
+  00f1: EmitCheckMessage(1, "The last LODDistance is >= CullDistance, but bIgnoreLastLOD is not set", , )
+  0147: goto 0x01dd
+  014a: EmitCheckMessage(1, (((((("LODDistance " @ cast55(LODIdx[self.LODDistances])) @ " >= CullDistance ") @ cast55(self.CullDistance)) @ ", meaning that all LODs from ") @ cast53(LODIdx)) @ " on will not show up in-game"), , )
+  01dd: goto 0x01ea
+  01e0: AddAdd_PreInt(LODIdx)
+  01e7: goto 0x00ae
+  01ea: return nothing
+  01ec: <eos>

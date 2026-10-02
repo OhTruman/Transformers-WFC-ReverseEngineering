@@ -1,0 +1,31 @@
+function TnAnimNotify_SpawnProjectile.Notify  (script 294 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: Owner = AnimSeqInstigator.SkelComponent.Owner
+  0033: if !((Owner == none)) goto 0x0040
+  003e: return nothing
+  0040: if !((cast3a(Owner.Role) < cast3a(3))) goto 0x005b
+  0059: return nothing
+  005b: I = 0
+  0062: if !((I < self.SpawnCount)) goto 0x0123
+  0071: SpawnedProjectile = obj'TnProjectileSpawner'.static.SpawnProjectile(Owner, self.ProjectileClass, self.SocketName, self.ConeAngle, , )
+  00a0: TnAnimNotify_SpawnProjectile.CheckForFlightEffectErrors(Owner, SpawnedProjectile)
+  00b0: if !(((self.TargetingBlueprint == none) || (self.TargetingBlueprint.TargetableComponent == none))) goto 0x00d4
+  00d1: goto 0x0119
+  00d4: TargetableComponent = TnTargetableComponent(self.TargetingBlueprint.TargetableComponent.Clone(SpawnedProjectile, ))
+  0101: SpawnedProjectile.AttachComponent(TargetableComponent)
+  0119: AddAdd_PreInt(I)
+  0120: goto 0x0062
+  0123: return nothing
+  0125: <eos>
+
+function TnAnimNotify_SpawnProjectile.CheckForFlightEffectErrors  (script 405 bytes)
+  0000: if !(((FiringActor == none) || (Proj == none))) goto 0x001a
+  0018: return nothing
+  001a: if !(((Pawn(FiringActor) == none) && !Proj.get_SpawnsFromNonPawn())) goto 0x00e3
+  0044: LogInternal((((("Error:" @ cast56(FiringActor)) @ "is not a pawn and") @ cast56(Proj)) @ "does not have SpawnsFromNonPawn set in its ProjectileMesh. Flight effects won't spawn on the client."), , , )
+  00e0: goto 0x0192
+  00e3: if !(((Pawn(FiringActor) != none) && Proj.get_SpawnsFromNonPawn())) goto 0x0192
+  010b: LogInternal((((("Error:" @ cast56(FiringActor)) @ "is a pawn") @ cast56(Proj)) @ "and has SpawnsFromNonPawn set in its ProjectileMesh. Flight effects might be invisible."), , , )
+  0192: return nothing
+  0194: <eos>

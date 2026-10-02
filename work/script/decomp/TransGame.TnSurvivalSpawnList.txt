@@ -1,0 +1,13 @@
+function TnSurvivalSpawnList.CheckForErrors  (script 233 bytes)
+  0000: I = 0
+  0007: if !((I < self.Waves.Length)) goto 0x00e6
+  0017: J = 0
+  001e: if !((J < I[self.Waves].Buffs.Length)) goto 0x00dc
+  003f: if !((J[I[self.Waves].Buffs].BuffClass == none)) goto 0x00d2
+  006c: EmitCheckMessage(0, ((("Survival wave data has none buff class specified in wave:" @ cast53(I)) $ ", Buff:") @ cast53(J)), , )
+  00d2: AddAdd_PreInt(J)
+  00d9: goto 0x001e
+  00dc: AddAdd_PreInt(I)
+  00e3: goto 0x0007
+  00e6: return nothing
+  00e8: <eos>

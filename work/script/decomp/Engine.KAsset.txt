@@ -1,0 +1,85 @@
+function KAsset.CheckForErrors  (script 315 bytes)
+  0000: CheckForErrors()
+  0006: if !((self.SkeletalMeshComponent == none)) goto 0x006a
+  0011: EmitCheckMessage(1, "KAsset actor has none SkeletalMeshComponent property - please delete!", 1, )
+  0067: goto 0x0138
+  006a: if !((self.SkeletalMeshComponent.SkeletalMesh == none)) goto 0x00d1
+  007e: EmitCheckMessage(1, "KAsset actor has a SkeletalMeshComponent with a none skeletal mesh", 0, )
+  00d1: if !((self.SkeletalMeshComponent.PhysicsAsset == none)) goto 0x0138
+  00e5: EmitCheckMessage(1, "KAsset actor has a SkeletalMeshComponent with a none physics asset", 0, )
+  0138: return nothing
+  013a: <eos>
+
+function KAsset.PostBeginPlay  (script 102 bytes)
+  0000: Actor.PostBeginPlay()
+  0006: if !(self.bWakeOnLevelStart) goto 0x0023
+  000f: self.SkeletalMeshComponent.WakeRigidBody()
+  0023: self.ReplicatedMesh = self.SkeletalMeshComponent.SkeletalMesh
+  0037: self.ReplicatedPhysAsset = self.SkeletalMeshComponent.PhysicsAsset
+  004b: if !(self.SkeletalMeshComponent.bNotifyRigidBodyCollision) goto 0x0063
+  005d: KAsset.SetPhysicalCollisionProperties()
+  0063: return nothing
+  0065: <eos>
+
+function KAsset.SetPhysicalCollisionProperties  (script 114 bytes)
+  0000: self.ImpactSoundComponent = new(get_Outer(), nothing, obj'AudioComponent', nothing, GetRemoteRole)
+  0016: AttachComponent(self.ImpactSoundComponent)
+  0025: self.ImpactSoundComponent2 = new(get_Outer(), nothing, obj'AudioComponent', nothing, GetRemoteRole)
+  003b: AttachComponent(self.ImpactSoundComponent2)
+  004a: self.SlideSoundComponent = new(get_Outer(), nothing, obj'AudioComponent', nothing, GetRemoteRole)
+  0060: AttachComponent(self.SlideSoundComponent)
+  006f: return nothing
+  0071: <eos>
+
+function KAsset.ReplicatedEvent  (script 94 bytes)
+  0000: if !((VarName == 'ReplicatedMesh')) goto 0x002f
+  0013: self.SkeletalMeshComponent.SetSkeletalMesh(self.ReplicatedMesh, )
+  002c: goto 0x005b
+  002f: if !((VarName == 'ReplicatedPhysAsset')) goto 0x005b
+  0042: self.SkeletalMeshComponent.SetPhysicsAsset(self.ReplicatedPhysAsset, )
+  005b: return nothing
+  005d: <eos>
+
+function KAsset.TakeDamage  (script 325 bytes)
+  0000: nothing
+  0001: nothing
+  0002: Actor.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser)
+  002b: if !((self.bDamageAppliesImpulse && (DamageType.static.default.KDamageImpulse > cast3f(0)))) goto 0x0142
+  004c: if !((obj'Core.Math'.static.VSize(Momentum) < 0.001)) goto 0x0091
+  0066: LogInternal("Zero momentum to KActor.TakeDamage", , , )
+  008f: return nothing
+  0091: CheckHitInfo(HitInfo, self.SkeletalMeshComponent, obj'Core.Math'.static.Normal(Momentum), HitLocation)
+  00ba: ApplyImpulse = (obj'Core.Math'.static.Normal(Momentum) * DamageType.static.default.KDamageImpulse)
+  00e0: if !((HitInfo.HitComponent != none)) goto 0x0142
+  00f6: self.SkeletalMeshComponent.WakeRigidBody()
+  010a: HitInfo.HitComponent.AddLinearImpulse(ApplyImpulse, HitLocation, HitInfo.BoneName)
+  0142: return nothing
+  0144: <eos>
+
+function KAsset.TakeRadiusDamage  (script 181 bytes)
+  0000: Actor.TakeRadiusDamage(InstigatedBy, BaseDamage, DamageRadius, DamageType, Momentum, HurtOrigin, bFullDamage, DamageCauser)
+  002f: if !(((self.bDamageAppliesImpulse && (DamageType.static.default.RadialDamageImpulse > cast3f(0))) && (cast3a(self.Role) == cast3a(3)))) goto 0x00b2
+  0062: self.SkeletalMeshComponent.WakeRigidBody()
+  0076: self.CollisionComponent.AddRadialImpulse(HurtOrigin, DamageRadius, DamageType.static.default.RadialDamageImpulse, 1, DamageType.static.default.bRadialDamageVelChange)
+  00b2: return nothing
+  00b4: <eos>
+
+function KAsset.OnToggle  (script 54 bytes)
+  0000: if !(0[Action.InputLinks].bHasImpulse) goto 0x0033
+  001f: self.SkeletalMeshComponent.WakeRigidBody()
+  0033: return nothing
+  0035: <eos>
+
+function KAsset.OnTeleport  (script 170 bytes)
+  0000: destActor = Actor(SeqVar_Object(0[1[inAction.VariableLinks].LinkedVariables]).GetObjectValue())
+  003b: if !((destActor != none)) goto 0x006b
+  0046: self.SkeletalMeshComponent.SetRBPosition(destActor.Location, )
+  0068: goto 0x00a7
+  006b: inAction.ScriptLog(((("No Destination for" @ cast56(inAction)) @ "on") @ cast56(self)), )
+  00a7: return nothing
+  00a9: <eos>
+
+function KAsset.DoKismetAttachment  (script 43 bytes)
+  0000: Attachment.SetBase(self, , self.SkeletalMeshComponent, Action.BoneName)
+  0028: return nothing
+  002a: <eos>

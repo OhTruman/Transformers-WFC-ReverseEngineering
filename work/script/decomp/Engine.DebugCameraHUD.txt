@@ -1,0 +1,44 @@
+function DebugCameraHUD.PostBeginPlay  (script 9 bytes)
+  0000: HUD.PostBeginPlay()
+  0006: return nothing
+  0008: <eos>
+
+function DebugCameraHUD.PostRender  (script 1077 bytes)
+  0000: HUD.PostRender()
+  0006: DCC = DebugCameraController(self.PlayerOwner)
+  001b: if !((DCC != none)) goto 0x0432
+  0026: self.Canvas.SetDrawColor(0, 0, cast3d(255), cast3d(255))
+  0045: MyText = "DebugCameraHUD"
+  005b: self.Canvas.Font = obj'Engine'.static.GetSmallFont()
+  007d: self.Canvas.StrLen(MyText, XL, YL)
+  009f: Y = YL
+  00aa: (YL += (cast3f(2) * Y))
+  00bc: self.Canvas.SetPos(4.0, YL)
+  00d9: self.Canvas.DrawTextNormal(MyText, true, , )
+  00f4: self.Canvas.SetDrawColor(128, 128, 128, cast3d(255))
+  0111: CamLoc = DCC.PlayerCamera.CameraCache.POV.Location
+  0144: CamRot = DCC.PlayerCamera.CameraCache.POV.Rotation
+  0177: (YL += Y)
+  0183: self.Canvas.SetPos(4.0, YL)
+  01a0: self.Canvas.DrawTextNormal(((("CamLoc:" $ cast58(CamLoc)) @ "CamRot:") $ cast59(CamRot)), , , )
+  01dc: HitActor = Trace(HitLoc, HitNormal, none, (((cast39(CamRot) * cast3f(5000)) * cast3f(20)) + CamLoc), CamLoc, true, ZeroVec, true, HitInfo, )
+  021f: if !((HitActor != none)) goto 0x03e4
+  022a: (YL += Y)
+  0236: self.Canvas.SetPos(4.0, YL)
+  0253: self.Canvas.DrawTextNormal(((("HitLoc:" $ cast58(HitLoc)) @ "HitNorm:") $ cast58(HitNormal)), , , )
+  0290: (YL += Y)
+  029c: self.Canvas.SetPos(4.0, YL)
+  02b9: self.Canvas.DrawTextNormal((("HitActor: '" $ cast57(HitActor.Name)) $ "'"), , , )
+  02f3: (YL += Y)
+  02ff: self.Canvas.SetPos(4.0, YL)
+  031c: if !((HitInfo.Material != none)) goto 0x0376
+  0332: self.Canvas.DrawTextNormal(("HitMaterial:" $ cast57(HitInfo.Material.Name)), , , )
+  0373: goto 0x039f
+  0376: self.Canvas.DrawTextNormal("HitMaterial: NONE", , , )
+  039f: obj'Debug'.static.DrawLine(HitLoc, (HitLoc + (HitNormal * cast3f(30))), MakeColor(cast3d(255), cast3d(255), cast3d(255), ), )
+  03e1: goto 0x0432
+  03e4: (YL += Y)
+  03f0: self.Canvas.SetPos(4.0, YL)
+  040d: self.Canvas.DrawTextNormal("Not trace hit", , , )
+  0432: return nothing
+  0434: <eos>

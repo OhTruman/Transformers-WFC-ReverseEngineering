@@ -1,0 +1,14 @@
+function TnStatisticsCompletionTable.RecordCompletion  (script 270 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: GRI = TnGameReplicationInfo(Game.GameReplicationInfo)
+  0026: C.Session_Id = Game.StatisticsSessionId
+  0045: C.Duration = cast3f(GRI.ElapsedTime)
+  0066: MPGRI = TnGameReplicationInfoMultiplayer(GRI)
+  0076: if !(((MPGRI != none) && (MPGRI.Winner != none))) goto 0x00c4
+  0097: C.Winner = MPGRI.Winner.GetHumanReadableName()
+  00c4: C.Resets = Game.GetNumResets()
+  00e8: C.Reason = Reason
+  00fe: self.Completions.AddItem(C)
+  010b: return nothing
+  010d: <eos>

@@ -1,0 +1,83 @@
+function TnOrbitRotateToTargetCameraBehavior.get_TargetingSpeed  (script 27 bytes)
+  0000: return self.Settings.get_TargetingSpeed()
+  0014: return return
+  001a: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.set_TargetingSpeed  (script 14 bytes)
+  0000: set_TargetingSpeed(Value)
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.get_TargetAngleOffset  (script 27 bytes)
+  0000: return self.Settings.get_TargetAngleOffset()
+  0014: return return
+  001a: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.set_TargetAngleOffset  (script 14 bytes)
+  0000: set_TargetAngleOffset(Value)
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.SetCameraActor  (script 32 bytes)
+  0000: self.Settings.Initialize(TnCamera(A))
+  001d: return nothing
+  001f: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.Activate  (script 14 bytes)
+  0000: Activate(Result)
+  000b: return nothing
+  000d: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.GetLookAtTargetLocation  (script 80 bytes)
+  0000: TC = TnTargetableComponent(obj'TnTargetableComponent'.static.GetFromActor(self.LookAtTarget))
+  0023: if !((TC != none)) goto 0x0042
+  002e: return TC.GetTargetSnapDesiredLocation()
+  0042: return GetLookAtTargetLocation()
+  0049: return return
+  004f: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.FocusOnLookAtTarget  (script 27 bytes)
+  0000: self.CanLookAtTarget = true
+  0008: return FocusOnLookAtTarget(Result)
+  0014: return return
+  001a: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.Update  (script 91 bytes)
+  0000: if !(self.CanLookAtTarget) goto 0x003e
+  0009: self.CanLookAtTarget = (self.Settings.get_ShouldStickToTarget() || TnOrbitRotateToTargetCameraBehavior.IsSnappingToTarget(Result.Location))
+  003e: return Update(DeltaTime, Result, CI)
+  0054: return return
+  005a: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.IsSnappingToTarget  (script 157 bytes)
+  0000: if !(!self.Settings.get_ShouldSnapToTarget()) goto 0x001a
+  0018: return false
+  001a: if !(!IsCameraResetting()) goto 0x002b
+  0029: return false
+  002b: W = TnWeapon(Pawn(self.Player).Weapon)
+  0049: if !(((W != none) && !W.IsWithinTargetSnapRangeSq(obj'Core.Math'.static.VSizeSq((CameraLocation - GetLookAtTargetLocation()))))) goto 0x0094
+  0092: return false
+  0094: return true
+  0096: return return
+  009c: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.ShouldLookAtTarget  (script 14 bytes)
+  0000: return self.CanLookAtTarget
+  0007: return return
+  000d: <eos>
+
+function TnOrbitRotateToTargetCameraBehavior.DisplayDebug  (script 414 bytes)
+  0000: DebugString = "Target Snap:"
+  0014: if !(self.CanLookAtTarget) goto 0x0044
+  001d: AtEqual_StrStr(DebugString, (("Looking at" @ cast56(self.LookAtTarget)) $ "."))
+  0044: if !(IsCameraResetting()) goto 0x0074
+  0051: AtEqual_StrStr(DebugString, "Camera is resetting.")
+  0074: AtEqual_StrStr(DebugString, "Settings:")
+  008c: AtEqual_StrStr(DebugString, (("ShouldStickToTarget(" $ cast54(self.Settings.get_ShouldStickToTarget())) $ ") "))
+  00cc: AtEqual_StrStr(DebugString, (("TargetingSpeed(" $ cast55(self.Settings.get_TargetingSpeed())) $ ") "))
+  0107: AtEqual_StrStr(DebugString, (("TargetAngleOffset(" $ cast55(self.Settings.get_TargetAngleOffset())) $ ") "))
+  0145: HUD.Canvas.DrawTextNormal(DebugString, , , )
+  0169: (out_YPos += out_YL)
+  0175: HUD.Canvas.SetPos(16.0, out_YPos)
+  019b: return nothing
+  019d: <eos>

@@ -1,0 +1,18 @@
+function TnAbilityCooldownConditionGuidedMissile.Reset  (script 11 bytes)
+  0000: self.HasStartedGuidingMissile = false
+  0008: return nothing
+  000a: <eos>
+
+function TnAbilityCooldownConditionGuidedMissile.Update  (script 130 bytes)
+  0000: PC = TnPlayerController(OwnerPawn.Controller)
+  0019: if !((PC == none)) goto 0x0026
+  0024: return false
+  0026: IsGuidingMissile = PC.IsGuidingMissile()
+  0040: if !((!self.HasStartedGuidingMissile && IsGuidingMissile)) goto 0x0061
+  0056: self.HasStartedGuidingMissile = true
+  005e: goto 0x0079
+  0061: if !((self.HasStartedGuidingMissile && !IsGuidingMissile)) goto 0x0079
+  0077: return true
+  0079: return false
+  007b: return return
+  0081: <eos>

@@ -1,0 +1,38 @@
+function HmDebugQuicktimeShotCameraBehavior.Update  (script 661 bytes)
+  0000: Result = HmDebugCameraBehavior.Update(DeltaTime, Result, CI)
+  001b: if !((CI.PressedKeys.Find('XboxTypeS_DPad_Right') != -1)) goto 0x005e
+  0041: Result.Rotation.Roll = 0
+  005e: if !((CI.PressedKeys.Find('XboxTypeS_LeftTrigger') != -1)) goto 0x00af
+  0084: (Result.Rotation.Roll -= cast44((DeltaTime * self.RollSpeed)))
+  00af: if !((CI.PressedKeys.Find('XboxTypeS_RightTrigger') != -1)) goto 0x0100
+  00d5: (Result.Rotation.Roll += cast44((DeltaTime * self.RollSpeed)))
+  0100: if !((CI.PressedKeys.Find('XboxTypeS_Y') != -1)) goto 0x014f
+  0126: (Result.Location.Z += (DeltaTime * self.VerticalSpeed))
+  014f: if !((CI.PressedKeys.Find('XboxTypeS_A') != -1)) goto 0x019e
+  0175: (Result.Location.Z -= (DeltaTime * self.VerticalSpeed))
+  019e: if !((CI.PressedKeys.Find('XboxTypeS_DPad_Up') != -1)) goto 0x0214
+  01c4: (Result.Fov += (DeltaTime * self.FovChangeSpeed))
+  01e2: if !((Result.Fov > cast3f(360))) goto 0x0214
+  01fe: Result.Fov = 360.0
+  0214: if !((CI.PressedKeys.Find('XboxTypeS_DPad_Down') != -1)) goto 0x0288
+  023a: (Result.Fov -= (DeltaTime * self.FovChangeSpeed))
+  0258: if !((Result.Fov < 0.1)) goto 0x0288
+  0272: Result.Fov = 0.1
+  0288: return Result
+  028e: return return
+  0294: <eos>
+
+function HmDebugQuicktimeShotCameraBehavior.SetRollSpeed  (script 14 bytes)
+  0000: self.RollSpeed = S
+  000b: return nothing
+  000d: <eos>
+
+function HmDebugQuicktimeShotCameraBehavior.SetVerticalSpeed  (script 14 bytes)
+  0000: self.VerticalSpeed = S
+  000b: return nothing
+  000d: <eos>
+
+function HmDebugQuicktimeShotCameraBehavior.SetFovChangeSpeed  (script 14 bytes)
+  0000: self.FovChangeSpeed = S
+  000b: return nothing
+  000d: <eos>

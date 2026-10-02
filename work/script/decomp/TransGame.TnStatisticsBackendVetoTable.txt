@@ -1,0 +1,9 @@
+function TnStatisticsBackendVetoTable.RecordVeto  (script 140 bytes)
+  0000: if !(!self.Enabled) goto 0x000d
+  000b: return nothing
+  000d: GRI = TnGameReplicationInfo(Game.GameReplicationInfo)
+  0026: Stat.Id = obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(PRI.UniqueId)
+  0058: Stat.MapId = GRI.GetMapID()
+  007c: self.Vetoes.AddItem(Stat)
+  0089: return nothing
+  008b: <eos>

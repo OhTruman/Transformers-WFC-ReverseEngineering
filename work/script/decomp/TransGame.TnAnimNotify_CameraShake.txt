@@ -1,0 +1,26 @@
+function TnAnimNotify_CameraShake.CheckForErrors  (script 83 bytes)
+  0000: if !((self.PlayerFinder == none)) goto 0x0050
+  000b: EmitCheckMessage(0, (("AnimNotify" @ cast56(self)) @ "has no PlayerFinder, will not work"), , )
+  0050: return nothing
+  0052: <eos>
+
+function TnAnimNotify_CameraShake.Notify  (script 323 bytes)
+  0000: LocalParams = self.ShakeParams
+  000b: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0021
+  001f: return nothing
+  0021: OwnerActor = AnimSeqInstigator.SkelComponent.Owner
+  003e: Controllers = self.PlayerFinder.FindLocalPlayers(OwnerActor)
+  005c: I = 0
+  0063: if !((I < Controllers.Length)) goto 0x0140
+  0073: if !(self.UseFalloff) goto 0x0118
+  007c: DistanceFromSource = obj'Core.Math'.static.VSize((OwnerActor.Location - I[Controllers].Pawn.Location))
+  00ba: if !((DistanceFromSource > self.FalloffRadius)) goto 0x00cc
+  00c9: goto 0x0136
+  00cc: FalloffScale = (DistanceFromSource / self.FalloffRadius)
+  00de: FalloffScale = (1.0 - FalloffScale)
+  00f0: LocalParams.Intensity = (self.ShakeParams.Intensity * FalloffScale)
+  0118: I[Controllers].StartCameraShake(LocalParams)
+  0136: AddAdd_PreInt(I)
+  013d: goto 0x0063
+  0140: return nothing
+  0142: <eos>

@@ -1,0 +1,48 @@
+function TnXpTransactionHandler.get_OpenTransaction  (script 20 bytes)
+  0000: return (self._OpenTransactionId != -1)
+  000d: return return
+  0013: <eos>
+
+function TnXpTransactionHandler.ToggleTransaction  (script 41 bytes)
+  0000: if !(get_OpenTransaction()) goto 0x001a
+  000d: self._OpenTransactionId = -1
+  0018: return nothing
+  001a: self._OpenTransactionId = TnXpTransactionHandler.AddTransaction()
+  0026: return nothing
+  0028: <eos>
+
+function TnXpTransactionHandler.AddEvent  (script 91 bytes)
+  0000: if !(get_OpenTransaction()) goto 0x002e
+  000d: self._OpenTransactionId[self.Transactions].Events.AddItem(XpEvent)
+  002b: goto 0x0058
+  002e: Index = TnXpTransactionHandler.AddTransaction()
+  003a: Index[self.Transactions].Events.AddItem(XpEvent)
+  0058: return nothing
+  005a: <eos>
+
+function TnXpTransactionHandler.AddTransaction  (script 67 bytes)
+  0000: Index = self.Transactions.Length
+  000c: self.Transactions.Insert(Index,1)
+  0018: Index[self.Transactions].TransactionId = AddAdd_PreInt(self.NextTransactionId)
+  0036: return Index
+  003c: return return
+  0042: <eos>
+
+function TnXpTransactionHandler.HasFinishedTransaction  (script 48 bytes)
+  0000: return ((self.Transactions.Length > 1) || ((self.Transactions.Length == 1) && !get_OpenTransaction()))
+  0029: return return
+  002f: <eos>
+
+function TnXpTransactionHandler.PopTransaction  (script 132 bytes)
+  0000: I = 0
+  0007: if !((I < self.Transactions.Length)) goto 0x0077
+  0017: ReturnId = I[self.Transactions].TransactionId
+  0033: if !((I == self._OpenTransactionId)) goto 0x0045
+  0042: goto 0x006d
+  0045: Events = I[self.Transactions].Events
+  0061: self.Transactions.Remove(I,1)
+  006d: AddAdd_PreInt(I)
+  0074: goto 0x0007
+  0077: return ReturnId
+  007d: return return
+  0083: <eos>

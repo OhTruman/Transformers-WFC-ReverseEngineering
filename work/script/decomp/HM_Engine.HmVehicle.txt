@@ -1,0 +1,189 @@
+function HmVehicle.get_DialogComponent  (script 13 bytes)
+  0000: return self.DialogComp
+  0006: return return
+  000c: <eos>
+
+function HmVehicle.Destroyed  (script 45 bytes)
+  0000: if !(!self.WorldInfo.IsInEditor()) goto 0x0024
+  0018: StopDialog(false, false)
+  0024: Destroyed()
+  002a: return nothing
+  002c: <eos>
+
+function HmVehicle.Tick  (script 20 bytes)
+  0000: HmVehicle.UpdateSpeedMPH()
+  0006: Tick(DeltaTime)
+  0011: return nothing
+  0013: <eos>
+
+function HmVehicle.MoveToward  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function HmVehicle.GetSpeedMPH  (script 13 bytes)
+  0000: return self.SpeedMPH
+  0006: return return
+  000c: <eos>
+
+function HmVehicle.ComputeSpeedMPHNormalized  (script 20 bytes)
+  0000: return (InSpeed / 70.0)
+  000d: return return
+  0013: <eos>
+
+function HmVehicle.GetSpeedMPHNormalized  (script 23 bytes)
+  0000: return ComputeSpeedMPHNormalized(self.SpeedMPH)
+  0010: return return
+  0016: <eos>
+
+function HmVehicle.PostBeginPlay  (script 133 bytes)
+  0000: PostBeginPlay()
+  0006: SetIsBodyImpactsActivated(true)
+  0011: if !((none != self.Mesh)) goto 0x0082
+  001c: if !((self.Mesh.ScriptRigidBodyCollisionThreshold > 0.0)) goto 0x0069
+  0034: self.Mesh.ScriptRigidBodyCollisionThreshold = obj'Core.Math'.static.FMin(self.Mesh.ScriptRigidBodyCollisionThreshold, GetMinimumBodyImpactSpeedThreshold())
+  0066: goto 0x0082
+  0069: self.Mesh.ScriptRigidBodyCollisionThreshold = GetMinimumBodyImpactSpeedThreshold()
+  0082: return nothing
+  0084: <eos>
+
+function HmVehicle.PlayDialog  (script 91 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: self.DialogComp.Play(SoundCue, Replicate, Type, Deactivate, DialogCallback)
+  0058: return nothing
+  005a: <eos>
+
+function HmVehicle.PlayDialogEvent  (script 92 bytes)
+  0000: default=true
+  0005: default=0
+  000b: default=false
+  0010: default=delegate.None
+  001d: if !((none == self.DialogComp)) goto 0x002a
+  0028: return nothing
+  002a: PlayDialog(FindSoundCue(SoundEvent), Replicate, Type, Deactivate, DialogCallback)
+  0059: return nothing
+  005b: <eos>
+
+function HmVehicle.StopDialog  (script 57 bytes)
+  0000: default=false
+  0005: default=true
+  000a: if !((none == self.DialogComp)) goto 0x0017
+  0015: return nothing
+  0017: self.DialogComp.Stop(ConversationOnly, Replicate)
+  0036: return nothing
+  0038: <eos>
+
+function HmVehicle.GetIsDialogPlaying  (script 45 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return self.DialogComp.GetIsPlaying(SoundCueTarget)
+  0026: return return
+  002c: <eos>
+
+function HmVehicle.GetIsDialogPlayingEvent  (script 46 bytes)
+  0000: if !((none == self.DialogComp)) goto 0x000d
+  000b: return false
+  000d: return GetIsDialogPlaying(FindSoundCue(SoundEvent))
+  0027: return return
+  002d: <eos>
+
+function HmVehicle.SetDialogCharacter  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_DialogCharacter(DialogCharacter)
+  0023: return nothing
+  0025: <eos>
+
+function HmVehicle.SetDialogSocketName  (script 38 bytes)
+  0000: if !((self.DialogComp != none)) goto 0x0023
+  000b: self.DialogComp.set_SocketName(_SocketName)
+  0023: return nothing
+  0025: <eos>
+
+function HmVehicle.FindSoundCue  (script 116 bytes)
+  0000: if !((((self.Mesh != none) && (self.Mesh.SkeletalMesh != none)) && (self.Mesh.SkeletalMesh.SoundEventSet != none))) goto 0x006b
+  0040: return self.Mesh.SkeletalMesh.SoundEventSet.FindSoundCue(Event)
+  006b: return none
+  006d: return return
+  0073: <eos>
+
+function HmVehicle.PlaySoundEvent  (script 56 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: PlaySound(FindSoundCue(InSoundEvent), bNotReplicated, bNoRepToOwner, bStopWhenOwnerDestroyed, SoundLocation, )
+  0035: return nothing
+  0037: <eos>
+
+function HmVehicle.GetDialogCharacters  (script 113 bytes)
+  0000: DialogCharacters.Length = 0
+  0008: if !((((self.Mesh != none) && (self.Mesh.SkeletalMesh != none)) && (self.Mesh.SkeletalMesh.SoundEventSet != none))) goto 0x006e
+  0048: DialogCharacters = self.Mesh.SkeletalMesh.SoundEventSet.DialogCharacters
+  006e: return nothing
+  0070: <eos>
+
+function HmVehicle.SetIsBodyImpactsActivated  (script 39 bytes)
+  0000: if !((none != self.BodyImpactComponent)) goto 0x0024
+  000b: self.BodyImpactComponent.SetIsActivated(IsBodyImpactsActivated)
+  0024: return nothing
+  0026: <eos>
+
+function HmVehicle.GetMinimumBodyImpactSpeedThreshold  (script 47 bytes)
+  0000: if !((none != self.BodyImpactComponent)) goto 0x0022
+  000b: return self.BodyImpactComponent.GetMinimumBodyImpactSpeedThreshold()
+  001f: goto 0x0028
+  0022: return 0.0
+  0028: return return
+  002e: <eos>
+
+function HmVehicle.HandleRigidBodyCollision  (script 48 bytes)
+  0000: if !((none != self.BodyImpactComponent)) goto 0x002d
+  000b: self.BodyImpactComponent.HandleRigidBodyCollision(ContactInfos, ContactIndex, ContactSpeed)
+  002d: return nothing
+  002f: <eos>
+
+function HmVehicle.RigidBodyCollision  (script 72 bytes)
+  0000: HmVehicle.HandleRigidBodyCollision(RigidCollisionData.ContactInfos, ContactIndex, RigidCollisionData.ContactSpeed)
+  002b: RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex)
+  0045: return nothing
+  0047: <eos>
+
+function HmVehicle.ComputeSpeedMPH  (script 31 bytes)
+  0000: return (obj'Core.Math'.static.VSize(InVelocity) * 0.0223694)
+  0018: return return
+  001e: <eos>
+
+function HmVehicle.UpdateSpeedMPH  (script 24 bytes)
+  0000: self.SpeedMPH = ComputeSpeedMPH(self.Velocity)
+  0015: return nothing
+  0017: <eos>
+
+function HmVehicle.GetIsOnGround  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmVehicle.GetWheelSlipRatio  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmVehicle.GetGroundMaterial  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function HmVehicle.NotifyNearlyShot  (script 220 bytes)
+  0000: NotifyNearlyShot(FiringPawn, ClosestPoint)
+  0010: if !((FiringPawn == self)) goto 0x001d
+  001b: return nothing
+  001d: if !(((none == self.Controller) || (false == self.Controller.IsLocalPlayerController()))) goto 0x0045
+  0043: return nothing
+  0045: FiringWeapon = HmWeapon(FiringPawn.Weapon)
+  005e: if !((((none == FiringWeapon) || (none == FiringWeapon.GetWeaponMesh())) || (none == FiringWeapon.GetWeaponMesh().BulletBySound))) goto 0x00aa
+  00a8: return nothing
+  00aa: PlaySound(FiringWeapon.GetWeaponMesh().BulletBySound, , , , ClosestPoint, )
+  00d9: return nothing
+  00db: <eos>

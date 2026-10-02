@@ -1,0 +1,9 @@
+function TnAiCustomProceduralPreconditionTargetIsAirborne.CheckProceduralPrecondition  (script 133 bytes)
+  0000: Target = TnPawn(obj'HM_Engine.HmGoap'.static.GetSubject(obj'TnAiWorldStateTargetIsDead', ExpectedEffects))
+  0028: if !((Target == none)) goto 0x0035
+  0033: return false
+  0035: if !(self.TargetVehicleFormRequired) goto 0x006a
+  003e: return (Target.get_IsInVehicleForm() && Target.get_IsAirborne())
+  006a: return Target.get_IsAirborne()
+  007e: return return
+  0084: <eos>

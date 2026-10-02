@@ -1,0 +1,23 @@
+function SeqAct_MuteActorWhenHidden.Activated  (script 353 bytes)
+  0000: Index = 0
+  0007: if !((Index < self.Target.Length)) goto 0x015e
+  0017: C = Controller(Index[self.Target])
+  002d: if !((none == C)) goto 0x00a3
+  0038: A = Actor(Index[self.Target])
+  004e: if !((none == A)) goto 0x00a0
+  0059: LogInternal((("WARN:" @ cast56(self)) @ "called with object that is not an actor"), 'SeqAct_MuteActorWhenHidden', , )
+  009d: goto 0x0154
+  00a0: goto 0x0103
+  00a3: A = C.Pawn
+  00b7: if !((none == A)) goto 0x0103
+  00c2: LogInternal((("WARN:" @ cast56(self)) @ "called on controller with no pawn"), 'SeqAct_MuteActorWhenHidden', , )
+  0100: goto 0x0154
+  0103: if !(0[self.InputLinks].bHasImpulse) goto 0x012d
+  0119: A.bNoSoundWhenHidden = true
+  012a: goto 0x0154
+  012d: if !(1[self.InputLinks].bHasImpulse) goto 0x0154
+  0143: A.bNoSoundWhenHidden = false
+  0154: AddAdd_PreInt(Index)
+  015b: goto 0x0007
+  015e: return nothing
+  0160: <eos>

@@ -1,0 +1,83 @@
+function TnOnlineGameSettingsBase.GetGameRules  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnOnlineGameSettingsBase.BuildURL  (script 507 bytes)
+  0000: IconicMode = (self.OnlyAllowIconicCharacters ? 1 : 0)
+  0013: MaxPlayers = GetMaxPlayers()
+  0023: GameRules = GetGameRules()
+  0033: if !(!self.bIsLanMatch) goto 0x0087
+  003e: foreach self.StatsWriters(Write,) (end 0x0086)
+  004d: if !((StatsWritersString != "")) goto 0x0069
+  0059: ConcatEqual_StrStr(StatsWritersString, ",")
+  0069: ConcatEqual_StrStr(StatsWritersString, PathName(Write))
+  0085: iternext
+  0086: iterpop
+  0087: AppendPropertiesToURL(OutURL)
+  0096: AppendContextsToURL(OutURL)
+  00a5: ConcatEqual_StrStr(OutURL, ((((((((((((((("?Game=" $ self.GameClass) $ "?GameModeTag=") $ self.GameModeTag) $ "?GameTeamStatus=") $ cast53(cast3a(self.TeamType))) $ "?GameRules=") $ GameRules) $ "?MaxPlayers=") $ cast53(MaxPlayers)) $ "?StatsWriters=") $ StatsWritersString) $ "?LobbyGameClassName=") $ self.LobbyGameClass) $ "?IconicMode=") $ cast53(IconicMode)))
+  0178: if !((GetStringSettingValue(1073741831, TimeLimitIndex) && (TimeLimitIndex < self.TimeLimits.Length))) goto 0x01ca
+  01a1: ConcatEqual_StrStr(OutURL, ("?TimeLimit=" $ cast55(TimeLimitIndex[self.TimeLimits])))
+  01ca: if !(((self.NumPublicConnections > 0) || (self.NumPrivateConnections > 0))) goto 0x01f8
+  01e2: OutURL = (OutURL $ "?listen")
+  01f8: return nothing
+  01fa: <eos>
+
+function TnOnlineGameSettingsBase.BuildLobbyURL  (script 171 bytes)
+  0000: IconicMode = (self.OnlyAllowIconicCharacters ? 1 : 0)
+  0013: MaxPlayers = GetMaxPlayers()
+  0023: LobbyURL = ((((((((((self.LobbyMapName $ "?Game=") $ self.LobbyGameClass) $ "?GameModeTag=") $ self.GameModeTag) $ "?GameTeamStatus=") $ cast53(cast3a(self.TeamType))) $ "?MaxPlayers=") $ cast53(MaxPlayers)) $ "?IconicMode=") $ cast53(IconicMode))
+  00a8: return nothing
+  00aa: <eos>
+
+function TnOnlineGameSettingsBase.BuildInfoURL  (script 131 bytes)
+  0000: foreach self.RulePairs(Rule,) (end 0x0075)
+  000f: PropertyName = GetPropertyName(Rule.PropertyId)
+  002f: PropertyValue = GetPropertyAsString(Rule.PropertyId)
+  004f: ConcatEqual_StrStr(Props, ((("?" $ cast57(PropertyName)) $ "=") $ PropertyValue))
+  0074: iternext
+  0075: iterpop
+  0076: return Props
+  007c: return return
+  0082: <eos>
+
+function TnOnlineGameSettingsBase.FormatedRules  (script 154 bytes)
+  0000: Result = default.RulesFormat
+  000b: I = 0
+  0012: if !((I < self.RulePairs.Length)) goto 0x008d
+  0022: if !(!GetIntProperty(I[self.RulePairs].PropertyId, SettingsValue)) goto 0x004f
+  004c: goto 0x0083
+  004f: Result = obj'Core.Strings'.static.Repl(Result, I[self.RulePairs].Token, cast53(SettingsValue), )
+  0083: AddAdd_PreInt(I)
+  008a: goto 0x0012
+  008d: return Result
+  0093: return return
+  0099: <eos>
+
+function TnOnlineGameSettingsBase.GetMaxPlayers  (script 20 bytes)
+  0000: return (self.NumPublicConnections + self.NumPrivateConnections)
+  000d: return return
+  0013: <eos>
+
+function TnOnlineGameSettingsBase.GetGameModeTag  (script 13 bytes)
+  0000: return self.GameModeTag
+  0006: return return
+  000c: <eos>
+
+function TnOnlineGameSettingsBase.GameModeTagToProperty  (script 93 bytes)
+  0000: I = obj'TnOnlineGameSettingsBase'.static.default.TagToModeMap.Find('Tag',Tag)
+  0025: if !((I == -1)) goto 0x0036
+  0034: return 0
+  0036: return I[obj'TnOnlineGameSettingsBase'.static.default.TagToModeMap].PropertyId
+  0056: return return
+  005c: <eos>
+
+function TnOnlineGameSettingsBase.GetNumPlayersAllowedInParty  (script 62 bytes)
+  0000: if !((self.NumPrivateConnections > 0)) goto 0x0014
+  000b: return self.NumPrivateConnections
+  0011: goto 0x0035
+  0014: if !((self.NumPublicConnections > 0)) goto 0x0035
+  001f: return (self.NumPublicConnections / (self.AllowPartyToFillPublicGame ? 1 : 2))
+  0035: return 0
+  0037: return return
+  003d: <eos>

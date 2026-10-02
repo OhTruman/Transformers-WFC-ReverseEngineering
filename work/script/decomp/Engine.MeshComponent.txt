@@ -1,0 +1,177 @@
+function MeshComponent.GetMaterial  (script 7 bytes)
+  0000: ElementIndex
+  0005: nothing
+  0006: <eos>
+
+function MeshComponent.SetMaterialForAllElements  (script 60 bytes)
+  0000: I = 0
+  0007: if !((I < GetDefaultMaterialCount())) goto 0x0039
+  001b: SetMaterial(I, NewMat)
+  002f: AddAdd_PreInt(I)
+  0036: goto 0x0007
+  0039: return nothing
+  003b: <eos>
+
+function MeshComponent.SetMaterial  (script 12 bytes)
+  0000: ElementIndex
+  0005: Material
+  000a: nothing
+  000b: <eos>
+
+function MeshComponent.ClearMaterials  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MeshComponent.ClearMaterial  (script 7 bytes)
+  0000: ElementIndex
+  0005: nothing
+  0006: <eos>
+
+function MeshComponent.GetNumElements  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function MeshComponent.GetDefaultMaterialCount  (script 14 bytes)
+  0000: return self.Materials.Length
+  0007: return return
+  000d: <eos>
+
+function MeshComponent.SetScalarParam  (script 252 bytes)
+  0000: NumMaterials = GetDefaultMaterialCount()
+  0010: if !((self.Owner == none)) goto 0x001d
+  001b: return nothing
+  001d: I = 0
+  0024: if !((I < NumMaterials)) goto 0x00f9
+  0033: Mat = GetMaterial(I)
+  0048: if !((Mat == none)) goto 0x0056
+  0053: goto 0x00ef
+  0056: MatInstC = MaterialInstanceConstant(Mat)
+  0066: if !((MatInstC == none)) goto 0x0074
+  0071: goto 0x00ef
+  0074: if !((MatInstC.get_Outer() != self)) goto 0x00d1
+  0086: ClonedMatInstC = MaterialInstanceConstant(MatInstC.CreateInstanceAndSetScalarParameterValue(ParameterName, Value, self))
+  00af: if !((ClonedMatInstC != none)) goto 0x00ce
+  00ba: SetMaterial(I, ClonedMatInstC)
+  00ce: goto 0x00ef
+  00d1: MatInstC.SetScalarParameterValue(ParameterName, Value, )
+  00ef: AddAdd_PreInt(I)
+  00f6: goto 0x0024
+  00f9: return nothing
+  00fb: <eos>
+
+function MeshComponent.SetVectorParam  (script 239 bytes)
+  0000: NumMaterials = GetDefaultMaterialCount()
+  0010: I = 0
+  0017: if !((I < NumMaterials)) goto 0x00ec
+  0026: Mat = GetMaterial(I)
+  003b: if !((Mat == none)) goto 0x0049
+  0046: goto 0x00e2
+  0049: MatInstC = MaterialInstanceConstant(Mat)
+  0059: if !((MatInstC == none)) goto 0x0067
+  0064: goto 0x00e2
+  0067: if !((MatInstC.get_Outer() != self)) goto 0x00c4
+  0079: ClonedMatInstC = MaterialInstanceConstant(MatInstC.CreateInstanceAndSetVectorParameterValue(ParameterName, Value, self))
+  00a2: if !((ClonedMatInstC != none)) goto 0x00c1
+  00ad: SetMaterial(I, ClonedMatInstC)
+  00c1: goto 0x00e2
+  00c4: MatInstC.SetVectorParameterValue(ParameterName, Value, )
+  00e2: AddAdd_PreInt(I)
+  00e9: goto 0x0017
+  00ec: return nothing
+  00ee: <eos>
+
+function MeshComponent.GetVectorParam  (script 188 bytes)
+  0000: NumMaterials = GetDefaultMaterialCount()
+  0010: I = 0
+  0017: if !((I < NumMaterials)) goto 0x00b3
+  0026: MI = GetMaterial(I)
+  003b: if !((MI == none)) goto 0x0087
+  0046: LogInternal(("ERROR: EngineTeam - Material was none in " $ cast57(GetFuncName())), , , )
+  0084: goto 0x00a9
+  0087: if !(MI.GetVectorParameterValue(ParameterName, LinColor)) goto 0x00a9
+  00a7: return true
+  00a9: AddAdd_PreInt(I)
+  00b0: goto 0x0017
+  00b3: return false
+  00b5: return return
+  00bb: <eos>
+
+function MeshComponent.ClearVectorParam  (script 263 bytes)
+  0000: NumMaterials = GetDefaultMaterialCount()
+  0010: I = 0
+  0017: if !((I < NumMaterials)) goto 0x0104
+  0026: Mat = GetMaterial(I)
+  003b: if !((Mat == none)) goto 0x0049
+  0046: goto 0x00fa
+  0049: MatInstC = MaterialInstanceConstant(Mat)
+  0059: if !((MatInstC == none)) goto 0x0067
+  0064: goto 0x00fa
+  0067: if !((MatInstC.get_Outer() == self)) goto 0x00fa
+  0079: MatInstC.ClearVectorParameterValue(ParameterName)
+  0091: if !(!MatInstC.HasOverrides()) goto 0x00fa
+  00a9: Mat = MatInstC.Parent
+  00bd: if !(IsMaterialOverridden(I, Mat)) goto 0x00eb
+  00d4: SetMaterial(I, Mat)
+  00e8: goto 0x00fa
+  00eb: ClearMaterial(I)
+  00fa: AddAdd_PreInt(I)
+  0101: goto 0x0017
+  0104: return nothing
+  0106: <eos>
+
+function MeshComponent.GetScalarParam  (script 126 bytes)
+  0000: NumMaterials = GetDefaultMaterialCount()
+  0010: I = 0
+  0017: if !((I < NumMaterials)) goto 0x0075
+  0026: MI = GetMaterial(I)
+  003b: if !((MI == none)) goto 0x0049
+  0046: goto 0x006b
+  0049: if !(MI.GetScalarParameterValue(ParameterName, Scalar)) goto 0x006b
+  0069: return true
+  006b: AddAdd_PreInt(I)
+  0072: goto 0x0017
+  0075: return false
+  0077: return return
+  007d: <eos>
+
+function MeshComponent.ClearScalarParam  (script 263 bytes)
+  0000: NumMaterials = GetDefaultMaterialCount()
+  0010: I = 0
+  0017: if !((I < NumMaterials)) goto 0x0104
+  0026: Mat = GetMaterial(I)
+  003b: if !((Mat == none)) goto 0x0049
+  0046: goto 0x00fa
+  0049: MatInstC = MaterialInstanceConstant(Mat)
+  0059: if !((MatInstC == none)) goto 0x0067
+  0064: goto 0x00fa
+  0067: if !((MatInstC.get_Outer() == self)) goto 0x00fa
+  0079: MatInstC.ClearScalarParameterValue(ParameterName)
+  0091: if !(!MatInstC.HasOverrides()) goto 0x00fa
+  00a9: Mat = MatInstC.Parent
+  00bd: if !(IsMaterialOverridden(I, Mat)) goto 0x00eb
+  00d4: SetMaterial(I, Mat)
+  00e8: goto 0x00fa
+  00eb: ClearMaterial(I)
+  00fa: AddAdd_PreInt(I)
+  0101: goto 0x0017
+  0104: return nothing
+  0106: <eos>
+
+function MeshComponent.IsMaterialOverridden  (script 12 bytes)
+  0000: MaterialIndex
+  0005: Mat
+  000a: nothing
+  000b: <eos>
+
+function MeshComponent.CheckForErrors  (script 155 bytes)
+  0000: PrimitiveComponent.CheckForErrors()
+  0006: ElementCount = GetNumElements()
+  0016: I = 0
+  001d: if !((I < ElementCount)) goto 0x0098
+  002c: MI = GetMaterial(I)
+  0041: if !((none == MI)) goto 0x008e
+  004c: EmitCheckMessage(1, ((PathName(self) @ "uses empty material at index") @ cast53(I)), , )
+  008e: AddAdd_PreInt(I)
+  0095: goto 0x001d
+  0098: return nothing
+  009a: <eos>

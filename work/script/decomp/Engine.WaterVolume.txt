@@ -1,0 +1,32 @@
+function WaterVolume.Touch  (script 62 bytes)
+  0000: PhysicsVolume.Touch(Other, OtherComp, HitLocation, HitNormal)
+  001a: if !(Other.CanSplash()) goto 0x003b
+  0030: WaterVolume.PlayEntrySplash(Other)
+  003b: return nothing
+  003d: <eos>
+
+function WaterVolume.PlayEntrySplash  (script 121 bytes)
+  0000: if !((self.EntrySound != none)) goto 0x0055
+  000b: Other.PlaySound(self.EntrySound, , , , , )
+  0028: if !((Other.Instigator != none)) goto 0x0055
+  003c: Other.MakeNoise(1.0, )
+  0055: if !((self.EntryActor != none)) goto 0x0076
+  0060: Spawn(self.EntryActor, , , , , , , )
+  0076: return nothing
+  0078: <eos>
+
+function WaterVolume.UnTouch  (script 36 bytes)
+  0000: if !(Other.CanSplash()) goto 0x0021
+  0016: WaterVolume.PlayExitSplash(Other)
+  0021: return nothing
+  0023: <eos>
+
+function WaterVolume.PlayExitSplash  (script 121 bytes)
+  0000: if !((self.ExitSound != none)) goto 0x0055
+  000b: Other.PlaySound(self.ExitSound, , , , , )
+  0028: if !((Other.Instigator != none)) goto 0x0055
+  003c: Other.MakeNoise(1.0, )
+  0055: if !((self.ExitActor != none)) goto 0x0076
+  0060: Spawn(self.ExitActor, , , , , , , )
+  0076: return nothing
+  0078: <eos>

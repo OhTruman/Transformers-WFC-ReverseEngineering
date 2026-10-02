@@ -1,0 +1,28 @@
+function TnCloakMaterialOverrider.GetDefaultMaterial  (script 28 bytes)
+  0000: if !(TnCloakMaterialOverrider.IsAutobot()) goto 0x000f
+  0009: return self.AutobotCloakMaterial
+  000f: return self.DecepticonCloakMaterial
+  0015: return return
+  001b: <eos>
+
+function TnCloakMaterialOverrider.IsAutobot  (script 109 bytes)
+  0000: if !((self.OwnerPawn == none)) goto 0x000d
+  000b: return false
+  000d: OwnerTeam = TnTeamInfo(self.OwnerPawn.GetTeam())
+  002b: if !((OwnerTeam != none)) goto 0x0044
+  0036: return (TnFactionTeamAutobots(OwnerTeam) != none)
+  0044: return (cast3a(self.OwnerPawn._CurrentCharacter.Faction) == cast3a(0))
+  0066: return return
+  006c: <eos>
+
+function TnCloakMaterialOverrider.StartOverride  (script 42 bytes)
+  0000: TnCharacterMaterialOverrider.StartOverride(MeshMaterialOverride)
+  000b: MeshMaterialOverride.Mesh.CastShadow = false
+  0027: return nothing
+  0029: <eos>
+
+function TnCloakMaterialOverrider.StopOverride  (script 42 bytes)
+  0000: TnCharacterMaterialOverrider.StopOverride(MeshMaterialOverride)
+  000b: MeshMaterialOverride.Mesh.CastShadow = true
+  0027: return nothing
+  0029: <eos>

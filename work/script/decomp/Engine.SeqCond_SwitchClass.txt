@@ -1,0 +1,24 @@
+function SeqCond_SwitchClass.VerifyDefaultCaseValue  (script 87 bytes)
+  0000: SeqCond_SwitchBase.VerifyDefaultCaseValue()
+  0006: self.ClassArray.Length = self.OutputLinks.Length
+  0013: (self.ClassArray.Length - 1)[self.ClassArray].ClassName = 'Default'
+  0037: (self.ClassArray.Length - 1)[self.ClassArray].bFallThru = 0
+  0054: return nothing
+  0056: <eos>
+
+function SeqCond_SwitchClass.IsFallThruEnabled  (script 66 bytes)
+  0000: return (((ValueIndex >= 0) && (ValueIndex < self.ClassArray.Length)) && (cast3a(ValueIndex[self.ClassArray].bFallThru) != 0))
+  003b: return return
+  0041: <eos>
+
+function SeqCond_SwitchClass.InsertValueEntry  (script 44 bytes)
+  0000: InsertIndex = obj'Core.Math'.static.Clamp(InsertIndex, 0, self.ClassArray.Length)
+  001d: self.ClassArray.Insert(InsertIndex,1)
+  0029: return nothing
+  002b: <eos>
+
+function SeqCond_SwitchClass.RemoveValueEntry  (script 44 bytes)
+  0000: if !(((RemoveIndex >= 0) && (RemoveIndex < self.ClassArray.Length))) goto 0x0029
+  001d: self.ClassArray.Remove(RemoveIndex,1)
+  0029: return nothing
+  002b: <eos>

@@ -1,0 +1,167 @@
+function DemonwareSessionAdvertiser.OnCreateOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.OnDestroyOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.OnUpdateOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.OnRegisterPlayerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.OnUnregisterPlayerComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.OnStartOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.OnEndOnlineGameComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function DemonwareSessionAdvertiser.CreateOnlineGame  (script 12 bytes)
+  0000: HostingPlayerNum
+  0005: SessionName
+  000a: nothing
+  000b: <eos>
+
+function DemonwareSessionAdvertiser.AddCreateOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.CreateOnlineGameCompleteDelegates.Find(CreateOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.CreateOnlineGameCompleteDelegates.Length[self.CreateOnlineGameCompleteDelegates] = CreateOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function DemonwareSessionAdvertiser.ClearCreateOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.CreateOnlineGameCompleteDelegates.Find(CreateOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.CreateOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.UpdateOnlineGame  (script 12 bytes)
+  0000: SessionName
+  0005: UpdatedGameSettings
+  000a: nothing
+  000b: <eos>
+
+function DemonwareSessionAdvertiser.AddUpdateOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.UpdateOnlineGameCompleteDelegates.Find(UpdateOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.UpdateOnlineGameCompleteDelegates.Length[self.UpdateOnlineGameCompleteDelegates] = UpdateOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function DemonwareSessionAdvertiser.ClearUpdateOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.UpdateOnlineGameCompleteDelegates.Find(UpdateOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.UpdateOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.DestroyOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function DemonwareSessionAdvertiser.AddDestroyOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.DestroyOnlineGameCompleteDelegates.Find(DestroyOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.DestroyOnlineGameCompleteDelegates.Length[self.DestroyOnlineGameCompleteDelegates] = DestroyOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function DemonwareSessionAdvertiser.ClearDestroyOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.DestroyOnlineGameCompleteDelegates.Find(DestroyOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DestroyOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.RegisterPlayer  (script 12 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function DemonwareSessionAdvertiser.AddRegisterPlayerCompleteDelegate  (script 39 bytes)
+  0000: if !((self.RegisterPlayerCompleteDelegates.Find(RegisterPlayerCompleteDelegate) == -1)) goto 0x0024
+  0017: self.RegisterPlayerCompleteDelegates.AddItem(RegisterPlayerCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareSessionAdvertiser.ClearRegisterPlayerCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.RegisterPlayerCompleteDelegates.Find(RegisterPlayerCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DestroyOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.UnregisterPlayer  (script 12 bytes)
+  0000: SessionName
+  0005: PlayerID
+  000a: nothing
+  000b: <eos>
+
+function DemonwareSessionAdvertiser.AddUnregisterPlayerCompleteDelegate  (script 39 bytes)
+  0000: if !((self.UnregisterPlayerCompleteDelegates.Find(UnregisterPlayerCompleteDelegate) == -1)) goto 0x0024
+  0017: self.UnregisterPlayerCompleteDelegates.AddItem(UnregisterPlayerCompleteDelegate)
+  0024: return nothing
+  0026: <eos>
+
+function DemonwareSessionAdvertiser.ClearUnregisterPlayerCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.UnregisterPlayerCompleteDelegates.Find(UnregisterPlayerCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.DestroyOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.StartOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function DemonwareSessionAdvertiser.AddStartOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.StartOnlineGameCompleteDelegates.Find(StartOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.StartOnlineGameCompleteDelegates.Length[self.StartOnlineGameCompleteDelegates] = StartOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function DemonwareSessionAdvertiser.ClearStartOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.StartOnlineGameCompleteDelegates.Find(StartOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.StartOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.EndOnlineGame  (script 7 bytes)
+  0000: SessionName
+  0005: nothing
+  0006: <eos>
+
+function DemonwareSessionAdvertiser.AddEndOnlineGameCompleteDelegate  (script 44 bytes)
+  0000: if !((self.EndOnlineGameCompleteDelegates.Find(EndOnlineGameCompleteDelegate) == -1)) goto 0x0029
+  0017: self.EndOnlineGameCompleteDelegates.Length[self.EndOnlineGameCompleteDelegates] = EndOnlineGameCompleteDelegate
+  0029: return nothing
+  002b: <eos>
+
+function DemonwareSessionAdvertiser.ClearEndOnlineGameCompleteDelegate  (script 49 bytes)
+  0000: RemoveIndex = self.EndOnlineGameCompleteDelegates.Find(EndOnlineGameCompleteDelegate)
+  0013: if !((RemoveIndex != -1)) goto 0x002e
+  0022: self.EndOnlineGameCompleteDelegates.Remove(RemoveIndex,1)
+  002e: return nothing
+  0030: <eos>
+
+function DemonwareSessionAdvertiser.GetPlayerNickname  (script 35 bytes)
+  0000: return self.PlayerInterface.GetPlayerNickname(cast3d(LocalUserNum))
+  001c: return return
+  0022: <eos>
+
+function DemonwareSessionAdvertiser.FindGameType  (script 7 bytes)
+  0000: Settings
+  0005: nothing
+  0006: <eos>

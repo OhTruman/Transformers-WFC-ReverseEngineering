@@ -1,0 +1,294 @@
+function TnGrabber.get_IsActive  (script 21 bytes)
+  0000: return (cast3a(self._CurrentState) != cast3a(0))
+  000e: return return
+  0014: <eos>
+
+function TnGrabber.get_IsLockedOn  (script 21 bytes)
+  0000: return (cast3a(self._CurrentState) == cast3a(1))
+  000e: return return
+  0014: <eos>
+
+function TnGrabber.get_IsLifting  (script 21 bytes)
+  0000: return (cast3a(self._CurrentState) == cast3a(2))
+  000e: return return
+  0014: <eos>
+
+function TnGrabber.get_IsTractoring  (script 21 bytes)
+  0000: return (cast3a(self._CurrentState) == cast3a(3))
+  000e: return return
+  0014: <eos>
+
+function TnGrabber.get_IsHolding  (script 21 bytes)
+  0000: return (cast3a(self._CurrentState) == cast3a(4))
+  000e: return return
+  0014: <eos>
+
+function TnGrabber.get_Victim  (script 13 bytes)
+  0000: return self._Victim
+  0006: return return
+  000c: <eos>
+
+function TnGrabber.Initialize  (script 28 bytes)
+  0000: self._Attacker = OwnerPawn
+  000b: GotoState('Inactive', , , )
+  0019: return nothing
+  001b: <eos>
+
+function TnGrabber.AttemptGrab  (script 35 bytes)
+  0000: self._Description = Description
+  000b: self._Victim = Victim
+  0016: OnAttemptLockOn()
+  0020: return nothing
+  0022: <eos>
+
+function TnGrabber.AbortGrab  (script 17 bytes)
+  0000: GotoState('Inactive', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnGrabber.Throw  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGrabber.Update  (script 18 bytes)
+  0000: OnUpdate(DeltaTime)
+  000f: return nothing
+  0011: <eos>
+
+function TnGrabber.OnAttemptLockOn  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGrabber.OnUpdate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGrabber.IsGrabVictim  (script 46 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(P, TnServiceProvider(none))) goto 0x0016
+  0014: return false
+  0016: return EqualEqual_InterfaceInterface(P, self._Victim)
+  0027: return return
+  002d: <eos>
+
+function TnGrabber.Inactive.BeginState  (script 46 bytes)
+  0000: self._CurrentState = 0
+  0008: self._Victim = none
+  000f: self._LockOnVictimService = none
+  0016: self._GrabVictimService = none
+  001d: self._PhysicsService = none
+  0024: self._AttacheeService = none
+  002b: return nothing
+  002d: <eos>
+
+function TnGrabber.Inactive.OnAttemptLockOn  (script 126 bytes)
+  0000: self._LockOnVictimService = TnLockOnVictimService(self._Victim.GetService('TnLockOnVictimService'))
+  0028: if !((EqualEqual_InterfaceInterface(self._LockOnVictimService, TnLockOnVictimService(none)) || (self._LockOnVictimService.CanBeLockedOnToByAttacker(self._Attacker) == false))) goto 0x006d
+  005d: self._Victim = none
+  0064: self._LockOnVictimService = none
+  006b: return nothing
+  006d: GotoState('LockedOn', , , )
+  007b: return nothing
+  007d: <eos>
+
+function TnGrabber.LockedOn.BeginState  (script 42 bytes)
+  0000: self._CurrentState = 1
+  0008: self._LockOnVictimService.NotifyLockOnBegin(self._Attacker)
+  0021: AttemptBeginGrab()
+  0027: return nothing
+  0029: <eos>
+
+function TnGrabber.LockedOn.EndState  (script 28 bytes)
+  0000: self._LockOnVictimService.NotifyLockOnEnd(self._Attacker)
+  0019: return nothing
+  001b: <eos>
+
+function TnGrabber.LockedOn.OnUpdate  (script 52 bytes)
+  0000: if !((self._LockOnVictimService.CanBeLockedOnToByAttacker(self._Attacker) == false)) goto 0x002b
+  001f: AbortGrab()
+  0029: return nothing
+  002b: AttemptBeginGrab()
+  0031: return nothing
+  0033: <eos>
+
+function TnGrabber.LockedOn.AttemptBeginGrab  (script 351 bytes)
+  0000: GrabVictim = self._LockOnVictimService.GetGrabVictim(self._Attacker)
+  001f: if !(EqualEqual_InterfaceInterface(GrabVictim, TnServiceProvider(none))) goto 0x0035
+  0033: return nothing
+  0035: self._GrabVictimService = TnGrabVictimService(GrabVictim.GetService('TnGrabVictimService'))
+  005d: self._PhysicsService = TnPhysicsService(GrabVictim.GetService('TnPhysicsService'))
+  0085: self._AttacheeService = TnAttacheeService(GrabVictim.GetService('TnAttacheeService'))
+  00ad: if !((((EqualEqual_InterfaceInterface(self._GrabVictimService, TnGrabVictimService(none)) || EqualEqual_InterfaceInterface(self._PhysicsService, TnPhysicsService(none))) || EqualEqual_InterfaceInterface(self._AttacheeService, TnAttacheeService(none))) || (self._GrabVictimService.CanBeGrabbedByAttacker(self._Attacker) == false))) goto 0x011a
+  010e: AbortGrab()
+  0118: return nothing
+  011a: self._Victim = GrabVictim
+  0125: if !((self._Description.LiftTime > cast3f(0))) goto 0x014e
+  013d: GotoState('Lifting', , , )
+  014b: goto 0x015c
+  014e: GotoState('Tractoring', , , )
+  015c: return nothing
+  015e: <eos>
+
+function TnGrabber.Lifting.BeginState  (script 53 bytes)
+  0000: self._CurrentState = 2
+  0008: self._GrabVictimService.NotifyGrabBegin(self._Attacker)
+  0021: self._TimeSinceLiftBegan = 0.0
+  002c: PushPhysicsAttributes()
+  0032: return nothing
+  0034: <eos>
+
+function TnGrabber.Lifting.EndState  (script 74 bytes)
+  0000: PopPhysicsAttributes()
+  0006: if !(((NextStateName != 'Holding') && (NextStateName != 'Tractoring'))) goto 0x0047
+  002e: self._GrabVictimService.NotifyGrabEnd(self._Attacker)
+  0047: return nothing
+  0049: <eos>
+
+function TnGrabber.Lifting.OnUpdate  (script 204 bytes)
+  0000: (self._TimeSinceLiftBegan += DeltaTime)
+  000c: self._PhysicsService.set_Acceleration((vect(0,0,1) * self._Description.LiftAcceleration))
+  003f: self._PhysicsService.set_DesiredRotation((self._PhysicsService.get_Rotation() + obj'Core.Math'.static.MakeRotator(0, cast44(((self._Description.RotationRateDegreesPerSecond * 182.0444489) * DeltaTime)), 0)))
+  009f: if !((self._TimeSinceLiftBegan >= self._Description.LiftTime)) goto 0x00c9
+  00b9: GotoState('Tractoring', , , )
+  00c7: return nothing
+  00c9: return nothing
+  00cb: <eos>
+
+function TnGrabber.Lifting.PushPhysicsAttributes  (script 179 bytes)
+  0000: self._PreviousMaxAcceleration = self._PhysicsService.get_MaxAcceleration()
+  001a: self._PreviousMaxAirSpeed = self._PhysicsService.get_MaxAirSpeed()
+  0034: self._PreviousRotationRate = self._PhysicsService.get_RotationRate()
+  004e: self._PhysicsService.set_MaxAcceleration(self._Description.LiftAcceleration)
+  0072: self._PhysicsService.set_MaxAirSpeed(self._Description.LiftSpeed)
+  0096: self._PhysicsService.set_RotationRate(TnGrabber.GetRotationRate())
+  00b0: return nothing
+  00b2: <eos>
+
+function TnGrabber.Lifting.PopPhysicsAttributes  (script 78 bytes)
+  0000: self._PhysicsService.set_MaxAcceleration(self._PreviousMaxAcceleration)
+  0019: self._PhysicsService.set_MaxAirSpeed(self._PreviousMaxAirSpeed)
+  0032: self._PhysicsService.set_RotationRate(self._PreviousRotationRate)
+  004b: return nothing
+  004d: <eos>
+
+function TnGrabber.Tractoring.BeginState  (script 61 bytes)
+  0000: self._CurrentState = 3
+  0008: if !((PreviousStateName != 'Lifting')) goto 0x0034
+  001b: self._GrabVictimService.NotifyGrabBegin(self._Attacker)
+  0034: PushPhysicsAttributes()
+  003a: return nothing
+  003c: <eos>
+
+function TnGrabber.Tractoring.EndState  (script 53 bytes)
+  0000: PopPhysicsAttributes()
+  0006: if !((NextStateName != 'Holding')) goto 0x0032
+  0019: self._GrabVictimService.NotifyGrabEnd(self._Attacker)
+  0032: return nothing
+  0034: <eos>
+
+function TnGrabber.Tractoring.OnUpdate  (script 352 bytes)
+  0000: if !((DeltaTime == 0.0)) goto 0x0011
+  000f: return nothing
+  0011: AttachmentLocation = FindAttachmentLocation()
+  001d: VictimToSocket = (AttachmentLocation - self._PhysicsService.get_Location())
+  003e: DistanceToSocket = obj'Core.Math'.static.VSize(VictimToSocket)
+  0054: if !((DistanceToSocket < cast3f(100))) goto 0x0072
+  0062: GotoState('Holding', , , )
+  0070: return nothing
+  0072: AttackerDirection = obj'Core.Math'.static.Normal(VictimToSocket)
+  0088: DesiredVelocity = (AttackerDirection * self._Description.TractorSpeed)
+  00a5: DesiredAcceleration = ((DesiredVelocity - self._PhysicsService.get_Velocity()) / DeltaTime)
+  00cd: if !((obj'Core.Math'.static.VSizeSq(DesiredAcceleration) > (self._Description.TractorAcceleration * self._Description.TractorAcceleration))) goto 0x0134
+  010c: DesiredAcceleration = (obj'Core.Math'.static.Normal(DesiredAcceleration) * self._Description.TractorAcceleration)
+  0134: self._PhysicsService.set_Acceleration(DesiredAcceleration)
+  014d: UpdateDesiredRotation(AttachmentLocation, DeltaTime)
+  015d: return nothing
+  015f: <eos>
+
+function TnGrabber.Tractoring.UpdateDesiredRotation  (script 212 bytes)
+  0000: if !((obj'Core.Math'.static.VSizeSq((self._PhysicsService.get_Location() - AttachmentLocation)) > (self._Description.RotateToDestinationDistanceThreshold * self._Description.RotateToDestinationDistanceThreshold))) goto 0x00b7
+  0055: self._PhysicsService.set_DesiredRotation((self._PhysicsService.get_Rotation() + obj'Core.Math'.static.MakeRotator(0, cast44(((self._Description.RotationRateDegreesPerSecond * 182.0444489) * DeltaTime)), 0)))
+  00b5: return nothing
+  00b7: self._PhysicsService.set_DesiredRotation(TnGrabber.FindAttachmentRotation())
+  00d1: return nothing
+  00d3: <eos>
+
+function TnGrabber.Tractoring.PushPhysicsAttributes  (script 179 bytes)
+  0000: self._PreviousMaxAcceleration = self._PhysicsService.get_MaxAcceleration()
+  001a: self._PreviousMaxAirSpeed = self._PhysicsService.get_MaxAirSpeed()
+  0034: self._PreviousRotationRate = self._PhysicsService.get_RotationRate()
+  004e: self._PhysicsService.set_MaxAcceleration(self._Description.TractorAcceleration)
+  0072: self._PhysicsService.set_MaxAirSpeed(self._Description.TractorSpeed)
+  0096: self._PhysicsService.set_RotationRate(TnGrabber.GetRotationRate())
+  00b0: return nothing
+  00b2: <eos>
+
+function TnGrabber.Tractoring.PopPhysicsAttributes  (script 78 bytes)
+  0000: self._PhysicsService.set_MaxAcceleration(self._PreviousMaxAcceleration)
+  0019: self._PhysicsService.set_MaxAirSpeed(self._PreviousMaxAirSpeed)
+  0032: self._PhysicsService.set_RotationRate(self._PreviousRotationRate)
+  004b: return nothing
+  004d: <eos>
+
+function TnGrabber.Tractoring.FindAttachmentLocation  (script 139 bytes)
+  0000: Mesh = ((cast3a(self._Description.AttachMode) == cast3a(0)) ? self._Attacker.Mesh : HmWeapon(self._Attacker.Weapon).GetWeaponMesh().GetAnimatedMeshComponent())
+  0060: return Mesh.GetSocketWorldLocation(self._Description.AttachSocket)
+  0084: return return
+  008a: <eos>
+
+function TnGrabber.FindAttachmentRotation  (script 139 bytes)
+  0000: Mesh = ((cast3a(self._Description.AttachMode) == cast3a(0)) ? self._Attacker.Mesh : HmWeapon(self._Attacker.Weapon).GetWeaponMesh().GetAnimatedMeshComponent())
+  0060: return Mesh.GetSocketWorldRotation(self._Description.AttachSocket)
+  0084: return return
+  008a: <eos>
+
+function TnGrabber.Holding.BeginState  (script 169 bytes)
+  0000: self._CurrentState = 4
+  0008: if !((self._Description.RotateToDestinationDistanceThreshold > cast3f(0))) goto 0x003a
+  0020: self._PhysicsService.set_Rotation(TnGrabber.FindAttachmentRotation())
+  003a: self._AttacheeService.AttachToSocket(self._Attacker, self._Description.AttachMode, self._Description.AttachSocket, self._Description.RootMotionMode, self._Description.RootMotionRotationMode)
+  0093: self._DetachDirection = vect(0,0,0)
+  00a6: return nothing
+  00a8: <eos>
+
+function TnGrabber.Holding.EndState  (script 91 bytes)
+  0000: self._GrabVictimService.NotifyGrabEnd(self._Attacker)
+  0019: self._AttacheeService.DetachFromSocketWithDamage(self._Attacker, self._Description.DetachDamage, CalculateDamageMomentum(), self._Description.DetachDamageType)
+  0058: return nothing
+  005a: <eos>
+
+function TnGrabber.Holding.CalculateDamageMomentum  (script 233 bytes)
+  0000: if !((self._DetachDirection != vect(0,0,0))) goto 0x0030
+  0017: Direction = obj'Core.Math'.static.Normal(self._DetachDirection)
+  002d: goto 0x00ca
+  0030: if !((cast3a(self._Description.AttachMode) == cast3a(0))) goto 0x005a
+  004b: Direction = CalculatePawnDetachDirection()
+  0057: goto 0x00ca
+  005a: if !((cast3a(self._Description.AttachMode) == cast3a(1))) goto 0x00ca
+  0075: if !((self._Attacker.Controller != none)) goto 0x00ab
+  0089: Direction = cast39(self._Attacker.Controller.Rotation)
+  00a8: goto 0x00ca
+  00ab: Direction = cast39(self._Attacker.Weapon.Rotation)
+  00ca: return (Direction * self._Description.DetachImpulse)
+  00e2: return return
+  00e8: <eos>
+
+function TnGrabber.Holding.CalculatePawnDetachDirection  (script 122 bytes)
+  0000: SocketRotation = self._Attacker.Mesh.GetSocketWorldRotation(self._Description.AttachSocket)
+  0032: if !(self._Description.DetachFromZAxis) goto 0x006b
+  0046: obj'Core.Math'.static.GetAxes(SocketRotation, X, Y, Z)
+  0065: return Z
+  006b: return cast39(SocketRotation)
+  0073: return return
+  0079: <eos>
+
+function TnGrabber.Holding.Throw  (script 24 bytes)
+  0000: self._DetachDirection = Direction
+  000b: AbortGrab()
+  0015: return nothing
+  0017: <eos>
+
+function TnGrabber.GetRotationRate  (script 73 bytes)
+  0000: Rate = cast44((self._Description.RotationRateDegreesPerSecond * 182.0444489))
+  001f: return obj'Core.Math'.static.MakeRotator(Rate, Rate, Rate)
+  0042: return return
+  0048: <eos>

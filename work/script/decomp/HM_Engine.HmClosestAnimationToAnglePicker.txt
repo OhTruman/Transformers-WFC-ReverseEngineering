@@ -1,0 +1,21 @@
+function HmClosestAnimationToAnglePicker.FindAnimation  (script 45 bytes)
+  0000: Result = PickAnimation(AngleRadians)
+  0015: return Result.Animation
+  0026: return return
+  002c: <eos>
+
+function HmClosestAnimationToAnglePicker.PickAnimation  (script 298 bytes)
+  0000: I = 0
+  0007: if !((I < self.Animations.Length)) goto 0x0099
+  0017: CurDelta = obj'Core.Math'.static.Abs(obj'Core.Math'.static.FindDeltaAngle(AngleRadians, (I[self.Animations].AngleInDegrees * 0.0174533)))
+  005d: if !(((I == 0) || (CurDelta < BestDelta))) goto 0x008f
+  0079: BestDelta = CurDelta
+  0084: Best = I
+  008f: AddAdd_PreInt(I)
+  0096: goto 0x0007
+  0099: AnimNameIndex = obj'Core.Random'.static.RandomInt(Best[self.Animations].Animations.Length)
+  00c9: Result.Animation = AnimNameIndex[Best[self.Animations].Animations]
+  00f6: Result.AngleInDegrees = Best[self.Animations].AngleInDegrees
+  011d: return Result
+  0123: return return
+  0129: <eos>

@@ -1,0 +1,23 @@
+function TnScaleformHelpers.AddFloatArgument  (script 80 bytes)
+  0000: Index = args.Length
+  000c: args.Insert(Index,1)
+  0018: Index[args].Type = 2
+  0031: Index[args].N = Value
+  004d: return nothing
+  004f: <eos>
+
+function TnScaleformHelpers.AddStringArgument  (script 80 bytes)
+  0000: Index = args.Length
+  000c: args.Insert(Index,1)
+  0018: Index[args].Type = 3
+  0031: Index[args].S = Value
+  004d: return nothing
+  004f: <eos>
+
+function TnScaleformHelpers.AddBoolArgument  (script 82 bytes)
+  0000: Index = args.Length
+  000c: args.Insert(Index,1)
+  0018: Index[args].Type = 4
+  0031: Index[args].B = Value
+  004f: return nothing
+  0051: <eos>

@@ -1,0 +1,16 @@
+function Trigger.Touch  (script 49 bytes)
+  0000: if !(FindEventsOfClass(obj'SeqEvent_Touch', )) goto 0x002e
+  0013: self.bRecentlyTriggered = true
+  001b: SetTimer(self.AITriggerDelay, false, 'UnTrigger', )
+  002e: return nothing
+  0030: <eos>
+
+function Trigger.UnTrigger  (script 11 bytes)
+  0000: self.bRecentlyTriggered = false
+  0008: return nothing
+  000a: <eos>
+
+function Trigger.StopsProjectile  (script 14 bytes)
+  0000: return self.bBlockActors
+  0007: return return
+  000d: <eos>

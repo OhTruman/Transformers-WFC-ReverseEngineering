@@ -1,0 +1,37 @@
+function TnLoadCustomCharactersStatusMessageBox.Initialize  (script 20 bytes)
+  0000: Initialize(NewOwnerMovie)
+  000b: TnLoadCustomCharactersStatusMessageBox.UpdateStatus()
+  0011: return nothing
+  0013: <eos>
+
+function TnLoadCustomCharactersStatusMessageBox.Tick  (script 46 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !(TnLoadCustomCharactersStatusMessageBox.UpdateStatus()) goto 0x0021
+  0014: Close()
+  001e: goto 0x002b
+  0021: UpdateText()
+  002b: return nothing
+  002d: <eos>
+
+function TnLoadCustomCharactersStatusMessageBox.UpdateStatus  (script 171 bytes)
+  0000: SetAButton("", , , )
+  000f: SetBButton("", , , )
+  001e: self.bShowDefaultButtons = false
+  0026: if !(TnLoadCustomCharactersStatusMessageBox.GetPlayerController().get_CustomCharactersLoaded()) goto 0x0042
+  003d: return true
+  003f: goto 0x00a4
+  0042: SetText("$UIText.MessagePrompts.LoadingTitle", "$UIText.MessagePrompts.LoadingCustomCharacters", )
+  00a2: return false
+  00a4: return return
+  00aa: <eos>
+
+function TnLoadCustomCharactersStatusMessageBox.GetPlayerController  (script 75 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.LocalPlayerControllers(obj'TnPlayerController', PC) (end 0x0041)
+  0039: iterpop
+  003a: return PC
+  0040: iternext
+  0041: iterpop
+  0042: return none
+  0044: return return
+  004a: <eos>

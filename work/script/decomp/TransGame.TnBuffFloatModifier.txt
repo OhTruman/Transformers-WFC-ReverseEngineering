@@ -1,0 +1,23 @@
+function TnBuffFloatModifier.GetFloatModifierHelper  (script 159 bytes)
+  0000: if !((self.BuffLevel < Modifiers.Length)) goto 0x001f
+  0010: return self.BuffLevel[Modifiers]
+  001c: goto 0x0098
+  001f: LogInternal((((((("Error:" @ cast56(self.get_Class())) @ "is level") @ cast53(self.BuffLevel)) @ "but only") @ cast53(Modifiers.Length)) @ "levels were specified in ini file"), , , )
+  0088: return (Modifiers.Length - 1)[Modifiers]
+  0098: return return
+  009e: <eos>
+
+function TnBuffFloatModifier.GetSpFloatModifier  (script 43 bytes)
+  0000: if !((self.FloatModifierSP.Length == 0)) goto 0x0018
+  000c: return TnBuffFloatModifier.GetFloatModifierHelper(self.FloatModifier)
+  0018: return TnBuffFloatModifier.GetFloatModifierHelper(self.FloatModifierSP)
+  0024: return return
+  002a: <eos>
+
+function TnBuffFloatModifier.GetFloatModifier  (script 54 bytes)
+  0000: if !((obj'TnGame'.static.GetCurrentSkillDataIndex() == 0)) goto 0x0028
+  0019: return TnBuffFloatModifier.GetFloatModifierHelper(self.FloatModifier)
+  0025: goto 0x002f
+  0028: return TnBuffFloatModifier.GetSpFloatModifier()
+  002f: return return
+  0035: <eos>

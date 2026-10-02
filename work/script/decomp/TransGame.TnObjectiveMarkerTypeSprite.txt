@@ -1,0 +1,181 @@
+function TnObjectiveMarkerTypeSprite.DrawsSelf  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnObjectiveMarkerTypeSprite.Draw  (script 385 bytes)
+  0000: Setup = GetMarkerSetup(Owner, MarkerData)
+  001a: AdjustedMarkerLocationWS = (MarkerLocationWS + obj'Core.Math'.static.MakeVector(0.0, 0.0, Setup.MarkerZOffsetWS))
+  0054: MarkerLocationSS = C.Project(AdjustedMarkerLocationWS)
+  0072: if !(IsOffscreen(MarkerLocationSS, C)) goto 0x00b5
+  0089: TnObjectiveMarkerTypeSprite.DrawOffscreen(Owner, MarkerData, Setup, AdjustedMarkerLocationWS, ObserverLocationWS, ObserverDirectionWS, C)
+  00b2: goto 0x0178
+  00b5: if !((TnObjectiveMarkerTypeSprite.IsFocused(MarkerLocationSS, C) || TnObjectiveMarkerTypeSprite.IsWithinAutoFocusRange(Owner, MarkerData))) goto 0x00fa
+  00dd: self.TimeLastFocused = Owner.WorldInfo.TimeSeconds
+  00fa: TimeSinceFocused = (Owner.WorldInfo.TimeSeconds - self.TimeLastFocused)
+  011e: if !((TimeSinceFocused < self.FocusHysterisis)) goto 0x0154
+  012d: TnObjectiveMarkerTypeSprite.DrawFocused(Owner, MarkerData, Setup, MarkerLocationSS, AdjustedMarkerLocationWS, C)
+  0151: goto 0x0178
+  0154: TnObjectiveMarkerTypeSprite.DrawUnfocused(Owner, MarkerData, Setup, MarkerLocationSS, AdjustedMarkerLocationWS, C)
+  0178: return true
+  017a: return return
+  0180: <eos>
+
+function TnObjectiveMarkerTypeSprite.GetMarkerSetup  (script 7 bytes)
+  0000: return return
+  0006: <eos>
+
+function TnObjectiveMarkerTypeSprite.DrawUnfocused  (script 581 bytes)
+  0000: if !((Setup.MatInst != none)) goto 0x0193
+  0016: if !((Setup.OnScreenParam != 'None')) goto 0x0068
+  0034: Setup.MatInst.SetScalarParameterValue(Setup.OnScreenParam, 1.0, )
+  0068: if !((Setup.FocusParam != 'None')) goto 0x00ba
+  0086: Setup.MatInst.SetScalarParameterValue(Setup.FocusParam, 0.0, )
+  00ba: SizeSS = SizeInPixels(Setup.UnfocusedMarkerSize, C)
+  00df: C.SetPos((MarkerLocationSS.X - (SizeSS * 0.5)), (MarkerLocationSS.Y - (SizeSS * 0.5)))
+  012e: C.DrawMaterialTile(Setup.MatInst, SizeInPixels(Setup.UnfocusedMarkerSize, C), SizeInPixels(Setup.UnfocusedMarkerSize, C), , , , )
+  0193: if !(Setup.DrawLabelWhenUnfocused) goto 0x0242
+  01a7: LabelLocationSS = (C.Project((MarkerLocationWS + obj'Core.Math'.static.MakeVector(0.0, 0.0, Setup.LabelZOffsetWS))) + SizeInPixelsV(Setup.LabelOffset, C))
+  0215: DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, 1.0)
+  0242: return nothing
+  0244: <eos>
+
+function TnObjectiveMarkerTypeSprite.DrawFocused  (script 665 bytes)
+  0000: if !((Setup.MatInst != none)) goto 0x0193
+  0016: if !((Setup.OnScreenParam != 'None')) goto 0x0068
+  0034: Setup.MatInst.SetScalarParameterValue(Setup.OnScreenParam, 1.0, )
+  0068: if !((Setup.FocusParam != 'None')) goto 0x00ba
+  0086: Setup.MatInst.SetScalarParameterValue(Setup.FocusParam, 1.0, )
+  00ba: SizeSS = SizeInPixels(Setup.FocusedMarkerSize, C)
+  00df: C.SetPos((MarkerLocationSS.X - (SizeSS * 0.5)), (MarkerLocationSS.Y - (SizeSS * 0.5)))
+  012e: C.DrawMaterialTile(Setup.MatInst, SizeInPixels(Setup.FocusedMarkerSize, C), SizeInPixels(Setup.FocusedMarkerSize, C), , , , )
+  0193: if !(Setup.DrawLabelWhenFocused) goto 0x0296
+  01a7: if !(Setup.DrawLabelWhenUnfocused) goto 0x01c9
+  01bb: LabelTransparency = 1.0
+  01c6: goto 0x01fb
+  01c9: LabelTransparency = (1.0 - ((Owner.WorldInfo.TimeSeconds - self.TimeLastFocused) / self.FocusHysterisis))
+  01fb: LabelLocationSS = (C.Project((MarkerLocationWS + obj'Core.Math'.static.MakeVector(0.0, 0.0, Setup.LabelZOffsetWS))) + SizeInPixelsV(Setup.LabelOffset, C))
+  0269: DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, LabelTransparency)
+  0296: return nothing
+  0298: <eos>
+
+function TnObjectiveMarkerTypeSprite.DrawOffscreen  (script 951 bytes)
+  0000: if !(((Setup.MatInst == none) || !Setup.DrawWhenOffscreen)) goto 0x0030
+  002e: return nothing
+  0030: ToMarkerSS = C.Project(MarkerLocationWS)
+  004e: HalfCanvas = (obj'Core.Math'.static.MakeVector(cast3f(C.SizeX), cast3f(C.SizeY), 0.0) * 0.5)
+  0093: ToMarkerN = (ToMarkerSS - HalfCanvas)
+  00a5: ToMarkerN.Z = 0.0
+  00bb: ToMarkerN = obj'Core.Math'.static.Normal(ToMarkerN)
+  00d1: if !((ToMarkerSS.Z < cast3f(0))) goto 0x00f7
+  00e9: (ToMarkerN *= cast3f(-1))
+  00f7: RadialMarkerSS = (ToMarkerN * obj'Core.Math'.static.FMax(cast3f(C.SizeX), cast3f(C.SizeY)))
+  012f: (RadialMarkerSS += HalfCanvas)
+  013b: RadialMarkerSS = TnObjectiveMarkerTypeSprite.IntersectWithSafeFrame(RadialMarkerSS, C)
+  0151: Rotation = (((obj'Core.Math'.static.Acos(ToMarkerN.Y) * 57.2957802) * obj'Core.Math'.static.Sign(ToMarkerN.X)) + cast3f(180))
+  01ac: if !((Setup.RotationParam != 'None')) goto 0x01fe
+  01ca: Setup.MatInst.SetScalarParameterValue(Setup.RotationParam, Rotation, )
+  01fe: if !((Setup.OnScreenParam != 'None')) goto 0x0250
+  021c: Setup.MatInst.SetScalarParameterValue(Setup.OnScreenParam, 0.0, )
+  0250: if !((Setup.FocusParam != 'None')) goto 0x02a2
+  026e: Setup.MatInst.SetScalarParameterValue(Setup.FocusParam, 0.0, )
+  02a2: SizeSS = SizeInPixels(Setup.OffscreenMarkerSize, C)
+  02c7: C.SetPos((RadialMarkerSS.X - (SizeSS * 0.5)), (RadialMarkerSS.Y - (SizeSS * 0.5)))
+  0316: C.DrawMaterialTile(Setup.MatInst, SizeSS, SizeSS, , , , )
+  0347: if !(Setup.DrawLabelWhenOffscreen) goto 0x03b4
+  035b: LabelLocationSS = (RadialMarkerSS + SizeInPixelsV(Setup.LabelOffset, C))
+  0387: DrawLabel(Owner, MarkerData, Setup, LabelLocationSS, MarkerLocationWS, C, 1.0)
+  03b4: return nothing
+  03b6: <eos>
+
+function TnObjectiveMarkerTypeSprite.SizeInPixels  (script 31 bytes)
+  0000: return (SizeInPercent * cast3f(C.SizeX))
+  0018: return return
+  001e: <eos>
+
+function TnObjectiveMarkerTypeSprite.SizeInPixelsV  (script 31 bytes)
+  0000: return (SizeInPercent * cast3f(C.SizeX))
+  0018: return return
+  001e: <eos>
+
+function TnObjectiveMarkerTypeSprite.CreateInstances  (script 195 bytes)
+  0000: if !(((Setup.Mat != none) && (Setup.MatInst == none))) goto 0x0060
+  002e: Setup.MatInst = Setup.Mat.CreateMaterialInstance(get_Outer())
+  0060: if !(((Setup.HealthBarMat != none) && (Setup.HealthBarMatInst == none))) goto 0x00c0
+  008e: Setup.HealthBarMatInst = Setup.HealthBarMat.CreateMaterialInstance(get_Outer())
+  00c0: return nothing
+  00c2: <eos>
+
+function TnObjectiveMarkerTypeSprite.GetLabelText  (script 24 bytes)
+  0000: return MarkerData.Description
+  0011: return return
+  0017: <eos>
+
+function TnObjectiveMarkerTypeSprite.DrawLabel  (script 259 bytes)
+  0000: OldFont = C.Font
+  0014: C.Font = self.LabelFont
+  0028: C.DrawColor = Setup.LabelColor
+  0047: C.DrawColor.A = cast43((LabelTransparency * cast3c(Setup.LabelColor.A)))
+  0087: C.SetPos(LabelLocationSS.X, LabelLocationSS.Y)
+  00ba: LabelText = GetLabelText(Owner, MarkerData)
+  00d4: C.DrawTextCA(LabelText)
+  00ec: C.Font = OldFont
+  0100: return nothing
+  0102: <eos>
+
+function TnObjectiveMarkerTypeSprite.IsWithinAutoFocusRange  (script 97 bytes)
+  0000: if !((self.AutoFocusRange <= cast3f(0))) goto 0x000f
+  000d: return false
+  000f: return (obj'Core.Math'.static.VSizeSq((Owner.Location - MarkerData.MarkerBase.Location)) < (self.AutoFocusRange * self.AutoFocusRange))
+  005a: return return
+  0060: <eos>
+
+function TnObjectiveMarkerTypeSprite.IsFocused  (script 152 bytes)
+  0000: ScreenCenter.X = (cast3f(C.SizeX) / 2.0)
+  0028: ScreenCenter.Y = (cast3f(C.SizeY) / 2.0)
+  0050: DistanceToCenter = obj'Core.Math'.static.VSize2D((ScreenCoords - ScreenCenter))
+  0075: return (DistanceToCenter < SizeInPixels(self.DistanceFromCenterFocusThreshold, C))
+  0091: return return
+  0097: <eos>
+
+function TnObjectiveMarkerTypeSprite.IsOffscreen  (script 255 bytes)
+  0000: if !((ScreenCoords.Z < cast3f(0))) goto 0x001a
+  0018: return true
+  001a: if !(((ScreenCoords.X < (default.SafeFramePaddingPercent * cast3f(C.SizeX))) || (ScreenCoords.X >= (cast3f(C.SizeX) - (default.SafeFramePaddingPercent * cast3f(C.SizeX)))))) goto 0x0088
+  0086: return true
+  0088: if !(((ScreenCoords.Y < (default.SafeFramePaddingPercent * cast3f(C.SizeY))) || (ScreenCoords.Y >= (cast3f(C.SizeY) - (default.SafeFramePaddingPercent * cast3f(C.SizeY)))))) goto 0x00f6
+  00f4: return true
+  00f6: return false
+  00f8: return return
+  00fe: <eos>
+
+function TnObjectiveMarkerTypeSprite.IntersectWithSafeFrame  (script 678 bytes)
+  0000: CenterScreen = (obj'Core.Math'.static.MakeVector(cast3f(C.SizeX), cast3f(C.SizeY), 0.0) * 0.5)
+  0045: LL = obj'Core.Math'.static.MakeVector((cast3f(C.SizeX) * default.SafeFramePaddingPercent), (cast3f(C.SizeY) - (cast3f(C.SizeY) * default.SafeFramePaddingPercent)), 0.0)
+  00a3: UL = obj'Core.Math'.static.MakeVector((cast3f(C.SizeX) * default.SafeFramePaddingPercent), (cast3f(C.SizeY) * default.SafeFramePaddingPercent), 0.0)
+  00ef: LR = obj'Core.Math'.static.MakeVector((cast3f(C.SizeX) - (cast3f(C.SizeX) * default.SafeFramePaddingPercent)), (cast3f(C.SizeY) - (cast3f(C.SizeY) * default.SafeFramePaddingPercent)), 0.0)
+  015f: UR = obj'Core.Math'.static.MakeVector((cast3f(C.SizeX) - (cast3f(C.SizeX) * default.SafeFramePaddingPercent)), (cast3f(C.SizeY) * default.SafeFramePaddingPercent), 0.0)
+  01bd: if !(obj'Core.Math'.static.Line2DIntersection(LL, UL, CenterScreen, PositionSS, IntersectionSS)) goto 0x01f2
+  01ec: return IntersectionSS
+  01f2: if !(obj'Core.Math'.static.Line2DIntersection(UL, UR, CenterScreen, PositionSS, IntersectionSS)) goto 0x0227
+  0221: return IntersectionSS
+  0227: if !(obj'Core.Math'.static.Line2DIntersection(UR, LR, CenterScreen, PositionSS, IntersectionSS)) goto 0x025c
+  0256: return IntersectionSS
+  025c: if !(obj'Core.Math'.static.Line2DIntersection(LR, LL, CenterScreen, PositionSS, IntersectionSS)) goto 0x0291
+  028b: return IntersectionSS
+  0291: return vect(0,0,0)
+  029f: return return
+  02a5: <eos>
+
+function TnObjectiveMarkerTypeSprite.DrawHealthBar  (script 340 bytes)
+  0000: if !((Setup.HealthBarMatInst == none)) goto 0x0018
+  0016: return nothing
+  0018: SizeSS = SizeInPixelsV(Size, C)
+  0032: LocationSS = (LocationSS + SizeInPixelsV(Offset, C))
+  0053: CornerSS = (LocationSS - (0.5 * SizeSS))
+  006c: Setup.HealthBarMatInst.SetScalarParameterValue('Neutral', cast3f(((cast3a(FillColor) == cast3a(0)) ? 1 : 0)), )
+  00aa: Setup.HealthBarMatInst.SetScalarParameterValue('Health', NormalizedHealth, )
+  00d7: C.SetPos(CornerSS.X, CornerSS.Y)
+  010a: C.DrawMaterialTile(Setup.HealthBarMatInst, SizeSS.X, SizeSS.Y, , , , )
+  0151: return nothing
+  0153: <eos>

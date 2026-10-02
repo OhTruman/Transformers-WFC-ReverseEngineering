@@ -1,0 +1,224 @@
+function HmObjectInterpolator.Tick  (script 946 bytes)
+  0000: (self.Time += DeltaTime)
+  000c: I = 0
+  0013: if !((I < self.FloatInterpolatedFields.Length)) goto 0x010a
+  0023: (I[self.FloatInterpolatedFields].Time += DeltaTime)
+  0040: if !((I[self.FloatInterpolatedFields].Time > I[self.FloatInterpolatedFields].Duration)) goto 0x00c6
+  0071: self.OwnerMovie.SetVariableNumber(I[self.FloatInterpolatedFields].Target, I[self.FloatInterpolatedFields].To)
+  00b0: self.FloatInterpolatedFields.Remove(I,1)
+  00bc: SubtractSubtract_PreInt(I)
+  00c3: goto 0x0100
+  00c6: self.OwnerMovie.SetVariableNumber(I[self.FloatInterpolatedFields].Target, HmObjectInterpolator.FindFloatInterpValue(I[self.FloatInterpolatedFields]))
+  0100: AddAdd_PreInt(I)
+  0107: goto 0x0013
+  010a: I = 0
+  0111: if !((I < self.ColorInterpolatedFields.Length)) goto 0x02c5
+  0121: (I[self.ColorInterpolatedFields].Time += DeltaTime)
+  013e: if !((I[self.ColorInterpolatedFields].Time > I[self.ColorInterpolatedFields].Duration)) goto 0x022e
+  016f: self.OwnerMovie.SetVariableColor((I[self.ColorInterpolatedFields].Target $ ".objTrans.colorTransform"), I[self.ColorInterpolatedFields].To.X, I[self.ColorInterpolatedFields].To.Y, I[self.ColorInterpolatedFields].To.Z, )
+  0218: self.ColorInterpolatedFields.Remove(I,1)
+  0224: SubtractSubtract_PreInt(I)
+  022b: goto 0x02bb
+  022e: colorVect = HmObjectInterpolator.FindColorInterpValue(I[self.ColorInterpolatedFields])
+  0245: self.OwnerMovie.SetVariableColor((I[self.ColorInterpolatedFields].Target $ ".objTrans.colorTransform"), colorVect.X, colorVect.Y, colorVect.Z, )
+  02bb: AddAdd_PreInt(I)
+  02c2: goto 0x0111
+  02c5: I = 0
+  02cc: if !((I < self.CallbackInterpolatedFields.Length)) goto 0x03af
+  02dc: (I[self.CallbackInterpolatedFields].Time += DeltaTime)
+  02f9: if !((I[self.CallbackInterpolatedFields].Time > I[self.CallbackInterpolatedFields].Duration)) goto 0x03a5
+  032a: self.OwnerMovie.CallASFunction(I[self.CallbackInterpolatedFields].Target, I[self.CallbackInterpolatedFields].Callback)
+  0369: self.OwnerMovie.DecrementRefCount(I[self.CallbackInterpolatedFields].Callback)
+  0392: self.CallbackInterpolatedFields.Remove(I,1)
+  039e: SubtractSubtract_PreInt(I)
+  03a5: AddAdd_PreInt(I)
+  03ac: goto 0x02cc
+  03af: return nothing
+  03b1: <eos>
+
+function HmObjectInterpolator.Shutdown  (script 112 bytes)
+  0000: Shutdown(NewOwnerMovie)
+  000b: I = 0
+  0012: if !((I < self.CallbackInterpolatedFields.Length)) goto 0x0055
+  0022: self.OwnerMovie.DecrementRefCount(I[self.CallbackInterpolatedFields].Callback)
+  004b: AddAdd_PreInt(I)
+  0052: goto 0x0012
+  0055: self.FloatInterpolatedFields.Length = 0
+  005d: self.ColorInterpolatedFields.Length = 0
+  0065: self.CallbackInterpolatedFields.Length = 0
+  006d: return nothing
+  006f: <eos>
+
+function HmObjectInterpolator.addInterp  (script 1661 bytes)
+  0000: if !((InterpTime == cast3f(0))) goto 0x0018
+  000d: InterpTime = 1.0
+  0018: if !(obj'Core.Math'.static.IsNaN(overshoot)) goto 0x003e
+  0033: overshoot = 0.0
+  003e: self.OwnerMovie.GetObjectFields(interpParams, Fields)
+  005b: foreach Fields(F,) (end 0x0679)
+  006a: if !((F.Name == "color")) goto 0x0377
+  0086: VarName = ActionSciptObject
+  0091: I = 0
+  0098: if !((I < self.ColorInterpolatedFields.Length)) goto 0x00e1
+  00a8: if !((I[self.ColorInterpolatedFields].Target == VarName)) goto 0x00d7
+  00c8: self.ColorInterpolatedFields.Remove(I,1)
+  00d4: goto 0x00e1
+  00d7: AddAdd_PreInt(I)
+  00de: goto 0x0098
+  00e1: colorField.To.X = (cast3f(((cast44(F.Value.N) / 65536) & 255)) / 255.0)
+  012e: colorField.To.Y = (cast3f(((cast44(F.Value.N) / 256) & 255)) / 255.0)
+  017b: colorField.To.Z = (cast3f((cast44(F.Value.N) & 255)) / 255.0)
+  01c1: if !(!self.OwnerMovie.GetVariableColor((VarName $ ".objTrans.colorTransform"), colorField.From.X, colorField.From.Y, colorField.From.Z, Alpha)) goto 0x02dd
+  0250: self.OwnerMovie.SetVariableColor((VarName $ ".objTrans.colorTransform"), colorField.To.X, colorField.To.Y, colorField.To.Z, -1.0)
+  02da: goto 0x0374
+  02dd: colorField.Target = VarName
+  02f3: colorField.Time = 0.0
+  0309: colorField.Duration = InterpTime
+  031f: colorField.Type = HmObjectInterpolator.ToInterpolationType(animType)
+  033b: colorField.overshoot = overshoot
+  0351: colorField.Exponent = Exponent
+  0367: self.ColorInterpolatedFields.AddItem(colorField)
+  0374: goto 0x0678
+  0377: if !((F.Name == "callback")) goto 0x051a
+  0396: VarName = ((ActionSciptObject $ ".") $ F.Name)
+  03b8: I = 0
+  03bf: if !((I < self.CallbackInterpolatedFields.Length)) goto 0x0431
+  03cf: if !((I[self.CallbackInterpolatedFields].Target == VarName)) goto 0x0427
+  03ef: self.OwnerMovie.DecrementRefCount(I[self.CallbackInterpolatedFields].Callback)
+  0418: self.CallbackInterpolatedFields.Remove(I,1)
+  0424: goto 0x0431
+  0427: AddAdd_PreInt(I)
+  042e: goto 0x03bf
+  0431: callbackField.Target = VarName
+  0447: callbackField.Time = 0.0
+  045d: callbackField.Duration = InterpTime
+  0473: callbackField.Type = HmObjectInterpolator.ToInterpolationType(animType)
+  048f: callbackField.overshoot = overshoot
+  04a5: callbackField.Exponent = Exponent
+  04bb: callbackField.Callback = F.Value.F
+  04e7: self.CallbackInterpolatedFields.AddItem(callbackField)
+  04f4: self.OwnerMovie.IncrementRefCount(callbackField.Callback)
+  0517: goto 0x0678
+  051a: VarName = ((ActionSciptObject $ ".") $ F.Name)
+  053c: I = 0
+  0543: if !((I < self.FloatInterpolatedFields.Length)) goto 0x058c
+  0553: if !((I[self.FloatInterpolatedFields].Target == VarName)) goto 0x0582
+  0573: self.FloatInterpolatedFields.Remove(I,1)
+  057f: goto 0x058c
+  0582: AddAdd_PreInt(I)
+  0589: goto 0x0543
+  058c: floatField.Target = VarName
+  05a2: floatField.Time = 0.0
+  05b8: floatField.Duration = InterpTime
+  05ce: floatField.Type = HmObjectInterpolator.ToInterpolationType(animType)
+  05ea: floatField.overshoot = overshoot
+  0600: floatField.Exponent = Exponent
+  0616: floatField.From = self.OwnerMovie.GetVariableNumber(VarName)
+  063f: floatField.To = F.Value.N
+  066b: self.FloatInterpolatedFields.AddItem(floatField)
+  0678: iternext
+  0679: iterpop
+  067a: return nothing
+  067c: <eos>
+
+function HmObjectInterpolator.applyOvershootToAlpha  (script 264 bytes)
+  0000: if !((cast3a(Type) == cast3a(1))) goto 0x0039
+  0010: (Alpha += ((overshoot * Alpha) * (overshoot * (cast3f(1) - Alpha))))
+  0036: goto 0x00fb
+  0039: if !((cast3a(Type) == cast3a(2))) goto 0x0072
+  0049: (Alpha -= ((overshoot * Alpha) * (overshoot * (cast3f(1) - Alpha))))
+  006f: goto 0x00fb
+  0072: if !((Alpha > 0.5)) goto 0x00c3
+  0081: subAlpha = ((Alpha - 0.5) / 0.5)
+  009a: (Alpha += ((overshoot * subAlpha) * (overshoot * (cast3f(1) - subAlpha))))
+  00c0: goto 0x00fb
+  00c3: subAlpha = (Alpha / 0.5)
+  00d5: (Alpha -= ((overshoot * subAlpha) * (overshoot * (cast3f(1) - subAlpha))))
+  00fb: return Alpha
+  0101: return return
+  0107: <eos>
+
+function HmObjectInterpolator.FindFloatInterpValue  (script 257 bytes)
+  0000: if !(((Desc.Exponent == cast3f(0)) || (cast3a(Desc.Type) == cast3a(0)))) goto 0x0083
+  0035: return obj'Core.Math'.static.Lerp(Desc.From, Desc.To, (Desc.Time / Desc.Duration))
+  0083: return HmObjectInterpolator.FindFloatInterpValueHelper(Desc.From, Desc.To, Desc.Time, Desc.Duration, Desc.Type, Desc.Exponent, Desc.overshoot)
+  00fa: return return
+  0100: <eos>
+
+function HmObjectInterpolator.FindFloatInterpValueHelper  (script 625 bytes)
+  0000: T = _timeNow
+  000b: B = _propInit
+  0016: C = (_propDest - _propInit)
+  0028: D = _timeDest
+  0033: S = _overShoot
+  003e: O = _interpCurve
+  0049: switch (_animType)
+  0050: case 1: (next 0x009d)
+  0055: (T /= D)
+  0061: return ((((C * T) * (T ** O)) * (((S + cast3f(1)) * T) - S)) + B)
+  009d: case 2: (next 0x01c4)
+  00a2: if !((_interpCurve < cast3f(2))) goto 0x00f5
+  00b0: (T /= D)
+  00bc: return (((-C * T) * (((S + cast3f(1)) * (T - cast3f(2))) + S)) + B)
+  00f2: goto 0x01c4
+  00f5: if !(((cast44(O) & 1) == 0)) goto 0x0165
+  0105: T = ((T / D) - cast3f(1))
+  011c: return ((C * (((T * (T ** (O - cast3f(1)))) * (((S + cast3f(1)) * T) + S)) + cast3f(1))) + B)
+  0162: goto 0x01c4
+  0165: T = ((T / D) - cast3f(1))
+  017c: return ((-C * (((T * (T ** (O - cast3f(1)))) * (((S + cast3f(1)) * T) + S)) - cast3f(1))) + B)
+  01c4: default:
+  01c7: if !((T < (D / cast3f(2)))) goto 0x021a
+  01dc: return ((HmObjectInterpolator.FindFloatInterpValueHelper(0.0, C, (T * cast3f(2)), D, 1, O, S) * 0.5) + B)
+  0217: goto 0x026a
+  021a: return (((HmObjectInterpolator.FindFloatInterpValueHelper(0.0, C, ((T * cast3f(2)) - D), D, 2, O, S) * 0.5) + (C * 0.5)) + B)
+  026a: return return
+  0270: <eos>
+
+function HmObjectInterpolator.FindColorInterpValue  (script 265 bytes)
+  0000: if !(((Desc.Exponent == cast3f(0)) || (cast3a(Desc.Type) == cast3a(0)))) goto 0x008b
+  0035: return obj'Core.Math'.static.VLerp(Desc.From, Desc.To, (Desc.Time / Desc.Duration))
+  008b: return HmObjectInterpolator.FindColorInterpValueHelper(Desc.From, Desc.To, Desc.Time, Desc.Duration, Desc.Type, Desc.Exponent, Desc.overshoot)
+  0102: return return
+  0108: <eos>
+
+function HmObjectInterpolator.FindColorInterpValueHelper  (script 641 bytes)
+  0000: T = _timeNow
+  000b: B = _propInit
+  0016: C = (_propDest - _propInit)
+  0028: D = _timeDest
+  0033: S = _overShoot
+  003e: O = _interpCurve
+  0049: switch (_animType)
+  0050: case 1: (next 0x009d)
+  0055: (T /= D)
+  0061: return ((((C * T) * (T ** O)) * (((S + cast3f(1)) * T) - S)) + B)
+  009d: case 2: (next 0x01c4)
+  00a2: if !((O < cast3f(2))) goto 0x00f5
+  00b0: (T /= D)
+  00bc: return (((-C * T) * (((S + cast3f(1)) * (T - cast3f(2))) + S)) + B)
+  00f2: goto 0x01c4
+  00f5: if !(((cast44(O) & 1) == 0)) goto 0x0165
+  0105: T = ((T / D) - cast3f(1))
+  011c: return ((C * (((T * (T ** (O - cast3f(1)))) * (((S + cast3f(1)) * T) + S)) + cast3f(1))) + B)
+  0162: goto 0x01c4
+  0165: T = ((T / D) - cast3f(1))
+  017c: return ((-C * (((T * (T ** (O - cast3f(1)))) * (((S + cast3f(1)) * T) + S)) - cast3f(1))) + B)
+  01c4: default:
+  01c7: if !((T < (D / cast3f(2)))) goto 0x0222
+  01dc: return ((HmObjectInterpolator.FindColorInterpValueHelper(vect(0,0,0), C, (T * cast3f(2)), D, 1, O, S) * 0.5) + B)
+  021f: goto 0x027a
+  0222: return (((HmObjectInterpolator.FindColorInterpValueHelper(vect(0,0,0), C, ((T * cast3f(2)) - D), D, 2, O, S) * 0.5) + (C * 0.5)) + B)
+  027a: return return
+  0280: <eos>
+
+function HmObjectInterpolator.ToInterpolationType  (script 77 bytes)
+  0000: if !((animType == "easein")) goto 0x0015
+  0012: return 1
+  0015: if !((animType == "easeout")) goto 0x002b
+  0028: return 2
+  002b: if !((animType == "easeinout")) goto 0x0043
+  0040: return 3
+  0043: return 0
+  0046: return return
+  004c: <eos>

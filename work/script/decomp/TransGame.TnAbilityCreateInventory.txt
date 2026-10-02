@@ -1,0 +1,9 @@
+function TnAbilityCreateInventory.ServerTriggerAbility  (script 139 bytes)
+  0000: InventoryType = class<Inventory>(FindObject(self.InventoryTypeAsString, obj'Core.Class'))
+  001f: if !((InventoryType == none)) goto 0x0069
+  002a: LogInternal(((("Error:" @ cast56(self)) @ "couldn't find class from string") @ self.InventoryTypeAsString), , , )
+  0066: goto 0x0082
+  0069: self.OwnerPawn.CreateInventory(InventoryType, )
+  0082: TnAbility.ServerTriggerAbility()
+  0088: return nothing
+  008a: <eos>

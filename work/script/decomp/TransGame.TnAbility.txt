@@ -1,0 +1,83 @@
+function TnAbility.Initialize  (script 63 bytes)
+  0000: self.OwnerPawn = P
+  000b: self.OwnerBuffService = TnBuffService(P.GetService('TnBuffService'))
+  0032: OnInitialize()
+  003c: return nothing
+  003e: <eos>
+
+function TnAbility.IsOwnerDead  (script 64 bytes)
+  0000: return (((self.OwnerPawn == none) || self.OwnerPawn.IsDying()) || self.OwnerPawn.IsDead())
+  0039: return return
+  003f: <eos>
+
+function TnAbility.OnInitialize  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnAbility.GetCooldownTime  (script 227 bytes)
+  0000: if !((self.OwnerPawn != none)) goto 0x0032
+  000b: BS = TnBuffService(self.OwnerPawn.GetService('TnBuffService'))
+  0032: DataIndex = obj'TnGame'.static.GetCurrentSkillDataIndex()
+  004b: if !((DataIndex < self.Cooldown.Length)) goto 0x006f
+  005b: BaseCooldown = DataIndex[self.Cooldown]
+  006c: goto 0x0096
+  006f: if !((self.Cooldown.Length >= 1)) goto 0x008b
+  007b: BaseCooldown = 0[self.Cooldown]
+  0088: goto 0x0096
+  008b: BaseCooldown = 0.0
+  0096: return (BaseCooldown * ((NotEqual_InterfaceInterface(BS, TnBuffService(none)) && BS.HasBuff(obj'TnBuffAbilityCooldown')) ? self.CooldownReductionModifier : 1.0))
+  00dc: return return
+  00e2: <eos>
+
+function TnAbility.ReceiveServerCanStartCooldown  (script 11 bytes)
+  0000: self.bServerCanStartCooldown = true
+  0008: return nothing
+  000a: <eos>
+
+function TnAbility.UpdateServerCanStartCooldown  (script 45 bytes)
+  0000: if !((!self.bServerCanStartCooldown && ServerCanStartCooldown())) goto 0x0024
+  001a: self.bServerCanStartCooldown = true
+  0022: return true
+  0024: return false
+  0026: return return
+  002c: <eos>
+
+function TnAbility.ServerCanStartCooldown  (script 9 bytes)
+  0000: return false
+  0002: return return
+  0008: <eos>
+
+function TnAbility.CanStartCooldown  (script 56 bytes)
+  0000: if !((self.RequiresServerStartCooldown && !self.bServerCanStartCooldown)) goto 0x0018
+  0016: return false
+  0018: return self.CooldownCondition.Update(self.OwnerPawn)
+  0031: return return
+  0037: <eos>
+
+function TnAbility.GetResourceRequired  (script 69 bytes)
+  0000: if !((obj'TnGame'.static.GetCurrentSkillDataIndex() != 1)) goto 0x001f
+  0019: return 0.0
+  001f: return self.ResourceAmountModifier.ModifyFloat(self.ResourceRequired, self.OwnerPawn, )
+  003e: return return
+  0044: <eos>
+
+function TnAbility.ServerTriggerAbility  (script 190 bytes)
+  0000: self.bServerCanStartCooldown = false
+  0008: self.OwnerPawn.PlaySound(self.OnTriggerSound, false, false, false, , )
+  0025: if !((self.AbilityStimulusType != none)) goto 0x0064
+  0030: self.OwnerPawn.TriggerStimulus(self.AbilityStimulusType, self.OwnerPawn.Location, self.OwnerPawn.Controller)
+  0064: if !((self.AnnouncementMessageType != none)) goto 0x00bb
+  006f: obj'Engine.Engine'.static.GetCurrentWorldInfo().Game.BroadcastLocalized(self.OwnerPawn, self.AnnouncementMessageType, 0, self.OwnerPawn.PlayerReplicationInfo, none, self.get_Class())
+  00bb: return nothing
+  00bd: <eos>
+
+function TnAbility.LocalTriggerAbility  (script 36 bytes)
+  0000: self.bServerCanStartCooldown = false
+  0008: self.CooldownCondition.Reset()
+  001b: return true
+  001d: return return
+  0023: <eos>
+
+function TnAbility.ForceEndAbility  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>

@@ -1,0 +1,34 @@
+function TnSeqAct_SetCoopSpawnPointSet.SetSpawnPoints  (script 115 bytes)
+  0000: foreach self.NavPoints(obj,) (end 0x0041)
+  000f: NP = NavigationPoint(obj)
+  001f: if !((NP == none)) goto 0x002e
+  002a: iternext
+  002b: goto 0x0041
+  002e: SpawnPointArray.Length[SpawnPointArray] = NP
+  0040: iternext
+  0041: iterpop
+  0042: SpawnPointSetInterface.set_SpawnPointArray(SpawnPointArray)
+  005b: SpawnPointSetInterface.set_UseSpawnPointArray(true)
+  0070: return nothing
+  0072: <eos>
+
+function TnSeqAct_SetCoopSpawnPointSet.ClearSpawnPoints  (script 57 bytes)
+  0000: SpawnPointArray.Length = 0
+  0008: SpawnPointSetInterface.set_SpawnPointArray(SpawnPointArray)
+  0021: SpawnPointSetInterface.set_UseSpawnPointArray(false)
+  0036: return nothing
+  0038: <eos>
+
+function TnSeqAct_SetCoopSpawnPointSet.Activated  (script 131 bytes)
+  0000: SpawnPointSetInterface = HmSpawnPointSetInterface(GetWorldInfo().Game)
+  001e: if !(EqualEqual_InterfaceInterface(SpawnPointSetInterface, HmSpawnPointSetInterface(none))) goto 0x0034
+  0032: return nothing
+  0034: Activated()
+  003a: if !(0[self.InputLinks].bHasImpulse) goto 0x005d
+  0050: TnSeqAct_SetCoopSpawnPointSet.SetSpawnPoints(SpawnPointSetInterface)
+  005b: return nothing
+  005d: if !(1[self.InputLinks].bHasImpulse) goto 0x0080
+  0073: TnSeqAct_SetCoopSpawnPointSet.ClearSpawnPoints(SpawnPointSetInterface)
+  007e: return nothing
+  0080: return nothing
+  0082: <eos>

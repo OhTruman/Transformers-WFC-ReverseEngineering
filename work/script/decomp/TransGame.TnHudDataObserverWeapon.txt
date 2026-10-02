@@ -1,0 +1,10 @@
+function TnHudDataObserverWeapon.CheckData  (script 162 bytes)
+  0000: if !(((PC.Pawn == none) || (PC.Pawn.InvManager == none))) goto 0x0035
+  0033: return nothing
+  0035: W = TnInventoryManager(PC.Pawn.InvManager).GetWeaponByType(self.WeaponType)
+  006a: if !((W == none)) goto 0x0077
+  0075: return nothing
+  0077: WeaponTypeAsString = cast56(W.get_Class())
+  008b: ProcessNewValue(Movie, WeaponTypeAsString)
+  009f: return nothing
+  00a1: <eos>

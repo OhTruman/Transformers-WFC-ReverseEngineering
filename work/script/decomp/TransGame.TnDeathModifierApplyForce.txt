@@ -1,0 +1,8 @@
+function TnDeathModifierApplyForce.OnStart  (script 205 bytes)
+  0000: RandomDirection.X = obj'Core.Random'.static.RandomInRange(self.ForwardRange)
+  0029: RandomDirection.Y = obj'Core.Random'.static.RandomInRange(self.SideRange)
+  0052: RandomDirection.Z = obj'Core.Random'.static.RandomInRange(self.VerticalRange)
+  007b: RandomDirection = (RandomDirection << self._Owner.Rotation)
+  0097: self._Owner.Mesh.AddLinearImpulse((RandomDirection * self._Owner.Mass), , )
+  00ca: return nothing
+  00cc: <eos>

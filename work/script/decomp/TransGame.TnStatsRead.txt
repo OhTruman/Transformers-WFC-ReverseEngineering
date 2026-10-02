@@ -1,0 +1,58 @@
+function TnStatsRead.PopulateStatsWrite  (script 37 bytes)
+  0000: TnStatsWrite(StatsWrite).CopyGameStats(TnPlayerReplicationInfo(PRI))
+  0022: return nothing
+  0024: <eos>
+
+function TnStatsRead.PropertyConverter  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnStatsRead.PropertyToPercentage  (script 124 bytes)
+  0000: ConversionFactor = 0.01
+  000b: IntValue = obj'Engine.Settings'.static.GetSettingsDataInt(Data)
+  0029: Text = cast55((cast3f(IntValue) * ConversionFactor))
+  003f: Text = (obj'Core.Strings'.static.Left(Text, 5) $ "%")
+  005c: obj'Engine.Settings'.static.SetSettingsDataString(Data, Text)
+  0079: return nothing
+  007b: <eos>
+
+function TnStatsRead.PropertyToTimespan  (script 278 bytes)
+  0000: Seconds = obj'Engine.Settings'.static.GetSettingsDataInt(Data)
+  001e: Days = (Seconds / 86400)
+  0030: (Seconds -= (Days * 86400))
+  0043: Hours = (Seconds / 3600)
+  0055: (Seconds -= (Hours * 3600))
+  0068: Minutes = (Seconds / 60)
+  0077: if !((Days == 0)) goto 0x0090
+  0082: Text = self.TimespanNoDaysFormat
+  008d: goto 0x00b2
+  0090: Text = obj'Core.Strings'.static.Repl(self.TimespanFormat, "`d", cast53(Days), )
+  00b2: Text = obj'Core.Strings'.static.Repl(Text, "`h", cast53(Hours), )
+  00d4: Text = obj'Core.Strings'.static.Repl(Text, "`m", cast53(Minutes), )
+  00f6: obj'Engine.Settings'.static.SetSettingsDataString(Data, Text)
+  0113: return nothing
+  0115: <eos>
+
+function TnStatsRead.ConvertColumn  (script 209 bytes)
+  0000: RowIndex = 0
+  0007: if !((RowIndex < self.Rows.Length)) goto 0x00ce
+  0017: ColumnIndex = RowIndex[self.Rows].Columns.Find('ColumnNo',ColumnId)
+  0044: if !((ColumnIndex == -1)) goto 0x0056
+  0053: goto 0x00c4
+  0056: Prop = ColumnIndex[RowIndex[self.Rows].Columns].StatValue
+  0083: PropertyConverter(Prop)
+  0097: ColumnIndex[RowIndex[self.Rows].Columns].StatValue = Prop
+  00c4: AddAdd_PreInt(RowIndex)
+  00cb: goto 0x0007
+  00ce: return nothing
+  00d0: <eos>
+
+function TnStatsRead.ConvertColumnToTimespan  (script 23 bytes)
+  0000: TnStatsRead.ConvertColumn(ColumnId, delegate.PropertyToTimespan)
+  0014: return nothing
+  0016: <eos>
+
+function TnStatsRead.ConvertColumnToPercentage  (script 23 bytes)
+  0000: TnStatsRead.ConvertColumn(ColumnId, delegate.PropertyToPercentage)
+  0014: return nothing
+  0016: <eos>

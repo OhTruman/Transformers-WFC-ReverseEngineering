@@ -1,0 +1,37 @@
+function TnValuePacker.PackRotatorPitchAndYaw  (script 147 bytes)
+  0000: Rot = obj'Core.Math'.static.Normalize(Rot)
+  001e: PackedValue1 = (obj'Core.Math'.static.Clamp(Rot.Pitch, -32768, 32767) + 32768)
+  0050: PackedValue2 = (obj'Core.Math'.static.Clamp(Rot.Yaw, -32768, 32767) << 16)
+  007f: return (PackedValue1 | PackedValue2)
+  008c: return return
+  0092: <eos>
+
+function TnValuePacker.UnpackRotatorPitchAndYaw  (script 56 bytes)
+  0000: return obj'Core.Math'.static.MakeRotator(((PackedValue & 65535) - 32768), (PackedValue >> 16), 0)
+  0031: return return
+  0037: <eos>
+
+function TnValuePacker.PackUnitFloat  (script 49 bytes)
+  0000: return cast43(((obj'Core.Math'.static.FClamp(Value, 0.0, 1.0) * cast3f(255)) + 0.5))
+  002a: return return
+  0030: <eos>
+
+function TnValuePacker.UnpackUnitFloat  (script 22 bytes)
+  0000: return (cast3c(Packed) / 255.0)
+  000f: return return
+  0015: <eos>
+
+function TnValuePacker.PackRangeFloat  (script 63 bytes)
+  0000: return cast43(((obj'Core.Math'.static.FClamp(((Value * 0.5) + 0.5), 0.0, 1.0) * cast3f(254)) + 0.5))
+  0038: return return
+  003e: <eos>
+
+function TnValuePacker.UnpackRangeFloat  (script 35 bytes)
+  0000: return (((cast3c(Packed) / 254.0) - 0.5) * cast3f(2))
+  001c: return return
+  0022: <eos>
+
+function TnValuePacker.UnpackFlag  (script 27 bytes)
+  0000: return ((cast3a(Packed) & cast3a(Flag)) > 0)
+  0014: return return
+  001a: <eos>

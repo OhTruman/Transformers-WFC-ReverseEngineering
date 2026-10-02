@@ -1,0 +1,76 @@
+function TnSkeletalGibSpawner.Spawn  (script 233 bytes)
+  0000: if !(TnSkeletalGibSpawner.IsSpawnDisabled()) goto 0x000b
+  0009: return nothing
+  000b: SkeletalGib = Owner.Spawn(obj'TnSkeletalRigidBody', , , Location, , , , )
+  0034: Index = obj'Core.Random'.static.RandomInt(self.Templates.Length)
+  0053: TnSkeletalGibSpawner.InitializeMesh(Index[self.Templates], Owner, SkeletalGib.SkeletalMeshComponent)
+  0077: SkeletalGib.SetActiveEffect(self.ActiveEffectTemplate)
+  008f: SkeletalGib.SetDestroyedEffect(self.DestroyedEffectTemplate)
+  00a7: SkeletalGib.SetLifeSpan(obj'Core.Random'.static.RandomInRange(self.LifeSpan))
+  00d2: StartAndAddModifiers(SkeletalGib, Owner)
+  00e6: return nothing
+  00e8: <eos>
+
+function TnSkeletalGibSpawner.StartAndAddModifiers  (script 109 bytes)
+  0000: foreach self.Modifiers(Modifier,) (end 0x0069)
+  000f: ModifierClone = TnSkeletalRigidBodyModifier(Modifier.Clone(P, ))
+  0033: ModifierClone.Start(SkeletalGib, P)
+  0050: SkeletalGib.AddModifier(ModifierClone)
+  0068: iternext
+  0069: iterpop
+  006a: return nothing
+  006c: <eos>
+
+function TnSkeletalGibSpawner.IsSpawnDisabled  (script 72 bytes)
+  0000: if !((cast3a(GetGameThrottle()) >= cast3a(3))) goto 0x0017
+  0015: return true
+  0017: if !((self.Templates.Length == 0)) goto 0x0025
+  0023: return true
+  0025: return (obj'Core.Random'.static.RandomFloat() > self.ChanceToSpawn)
+  0041: return return
+  0047: <eos>
+
+function TnSkeletalGibSpawner.InitializeMesh  (script 517 bytes)
+  0000: Mesh.SetSkeletalMesh(Template.MeshTemplate, )
+  0024: Mesh.SetPhysicsAsset(Template.PhysicsTemplate, true)
+  0048: Mesh.SetHasPhysicsAssetInstance(true)
+  005c: Mesh.WakeRigidBody()
+  0070: Direction = obj'Core.Random'.static.RandomVectorInCone(vect(0,0,1), (self.ImpulseConeHalfAngle * 0.0174533))
+  00a2: foreach Template.Impulses(Impulse,) (end 0x0116)
+  00bc: ChosenImpulse = obj'Core.Random'.static.RandomInRange(Impulse.Impulse)
+  00e5: Mesh.AddLinearVelocity((ChosenImpulse * Direction), , Impulse.BoneName)
+  0115: iternext
+  0116: iterpop
+  0117: if !((Template.TransferVelocityMultiplier != cast3f(0))) goto 0x014f
+  012f: TnSkeletalGibSpawner.TransferOwnerVelocityToMesh(Owner, Mesh, Template.TransferVelocityMultiplier)
+  014f: Strength = obj'Core.Random'.static.RandomInRange(self.RadialForceStrength)
+  016d: if !((Strength != cast3f(0))) goto 0x01cd
+  017a: Bounds = Mesh.GetBounds()
+  0193: Mesh.AddRadialForce(Bounds.Origin, Bounds.SphereRadius, Strength, 0)
+  01cd: if !((Owner._CharacterApplier != none)) goto 0x0202
+  01e1: Owner._CharacterApplier.ApplyColorsToMesh(Mesh)
+  0202: return nothing
+  0204: <eos>
+
+function TnSkeletalGibSpawner.TransferOwnerVelocityToMesh  (script 115 bytes)
+  0000: LinVelocity = (Owner.Mesh.GetRBLinearVelocity() * VelocityMultiplier)
+  0029: Mesh.GetBoneNames(Bones)
+  0041: foreach Bones(Bone,) (end 0x006f)
+  0050: Mesh.AddLinearVelocity(LinVelocity, , Bone)
+  006e: iternext
+  006f: iterpop
+  0070: return nothing
+  0072: <eos>
+
+function TnSkeletalGibSpawner.CheckForErrors  (script 210 bytes)
+  0000: foreach self.Templates(Template,) (end 0x00c8)
+  000f: foreach Template.Impulses(Impulse,) (end 0x00c6)
+  0029: if !(!Template.MeshTemplate.IsBoneInSkeleton(Impulse.BoneName)) goto 0x00c5
+  005c: EmitCheckMessage(0, (((("Skeletal Gib" @ cast56(Template.MeshTemplate)) @ "does not have bone") @ cast57(Impulse.BoneName)) @ "for impulse"), , )
+  00c5: iternext
+  00c6: iterpop
+  00c7: iternext
+  00c8: iterpop
+  00c9: CheckForErrors()
+  00cf: return nothing
+  00d1: <eos>

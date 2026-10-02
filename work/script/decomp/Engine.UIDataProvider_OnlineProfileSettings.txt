@@ -1,0 +1,88 @@
+function UIDataProvider_OnlineProfileSettings.OnRegister  (script 631 bytes)
+  0000: if !((InPlayer == none)) goto 0x007e
+  000b: WarnInternal((((cast57(self.Name) $ "::") $ cast57(GetFuncName())) @ "No player available (probably running in editor). Cannot register data provider."))
+  007c: return nothing
+  007e: UIDataProvider_OnlinePlayerDataBase.OnRegister(InPlayer)
+  0089: if !((self.Player != none)) goto 0x0274
+  0094: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  00ad: if !((OnlineSub != none)) goto 0x021a
+  00b8: PlayerInterface = OnlineSub.PlayerInterface
+  00cc: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x01a2
+  00e0: PlayerInterface.AddLoginChangeDelegate(delegate.OnLoginChange)
+  00fd: PlayerInterface.AddReadProfileSettingsCompleteDelegate(cast3d(self.Player.ControllerId), delegate.OnReadProfileComplete)
+  012a: if !((PlayerInterface.ReadProfileSettings(cast3d(self.Player.ControllerId), self.Profile) == false)) goto 0x019f
+  0159: self.bWasErrorLastRead = true
+  0161: WarnInternal((("Can't retrieve profile for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  019f: goto 0x0217
+  01a2: WarnInternal((("OnlineSubsystem does not support the player interface. Can't retrieve profile for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  0217: goto 0x0274
+  021a: WarnInternal((("No OnlineSubsystem present. Can't retrieve profile for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  0274: return nothing
+  0276: <eos>
+
+function UIDataProvider_OnlineProfileSettings.OnUnregister  (script 159 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0096
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0096
+  004c: PlayerInterface.ClearLoginChangeDelegate(delegate.OnLoginChange)
+  0069: PlayerInterface.ClearReadProfileSettingsCompleteDelegate(cast3d(self.Player.ControllerId), delegate.OnReadProfileComplete)
+  0096: UIDataProvider_OnlinePlayerDataBase.OnUnregister()
+  009c: return nothing
+  009e: <eos>
+
+function UIDataProvider_OnlineProfileSettings.OnReadProfileComplete  (script 293 bytes)
+  0000: if !((bWasSuccessful == true)) goto 0x00f1
+  000c: if !(!self.bWasErrorLastRead) goto 0x0025
+  0017: NotifyPropertyChanged()
+  0022: goto 0x00ee
+  0025: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  003e: if !((OnlineSub != none)) goto 0x00ee
+  0049: PlayerInterface = OnlineSub.PlayerInterface
+  005d: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00ee
+  0071: self.bWasErrorLastRead = false
+  0079: if !((PlayerInterface.ReadProfileSettings(cast3d(self.Player.ControllerId), self.Profile) == false)) goto 0x00ee
+  00a8: self.bWasErrorLastRead = true
+  00b0: WarnInternal((("Can't retrieve profile for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  00ee: goto 0x0122
+  00f1: self.bWasErrorLastRead = true
+  00f9: LogInternal("Failed to read online profile data", , , )
+  0122: return nothing
+  0124: <eos>
+
+function UIDataProvider_OnlineProfileSettings.OnLoginChange  (script 311 bytes)
+  0000: if !((self.Player != none)) goto 0x012a
+  000b: PC = self.Player.Actor
+  001f: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0038: if !(((OnlineSub != none) && (PC != none))) goto 0x012a
+  0050: PlayerInterface = OnlineSub.PlayerInterface
+  0064: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x012a
+  0078: LoginStatus = PlayerInterface.GetLoginStatus(cast3d(self.Player.ControllerId))
+  00a2: PlayerInterface.GetUniquePlayerId(cast3d(self.Player.ControllerId), NetId)
+  00cb: if !(((cast3a(LoginStatus) == cast3a(0)) || ((PC.PlayerReplicationInfo != none) && (PC.PlayerReplicationInfo.UniqueId != NetId)))) goto 0x012a
+  0117: self.Profile.SetToDefaults()
+  012a: RefreshProfileData()
+  0134: return nothing
+  0136: <eos>
+
+function UIDataProvider_OnlineProfileSettings.RefreshProfileData  (script 249 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x00f6
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x00f6
+  004c: LogInternal("Login change...requerying profile data", , , )
+  0079: if !((PlayerInterface.ReadProfileSettings(cast3d(self.Player.ControllerId), self.Profile) == false)) goto 0x00f6
+  00a8: WarnInternal((("Can't retrieve profile data for player (" $ cast53(self.Player.ControllerId)) $ ")"))
+  00eb: NotifyPropertyChanged()
+  00f6: return nothing
+  00f8: <eos>
+
+function UIDataProvider_OnlineProfileSettings.SaveProfileData  (script 127 bytes)
+  0000: OnlineSub = obj'GameEngine'.static.GetOnlineSubsystem()
+  0019: if !((OnlineSub != none)) goto 0x0076
+  0024: PlayerInterface = OnlineSub.PlayerInterface
+  0038: if !(NotEqual_InterfaceInterface(PlayerInterface, OnlinePlayerInterface(none))) goto 0x0076
+  004c: return PlayerInterface.WriteProfileSettings(cast3d(self.Player.ControllerId), self.Profile)
+  0076: return false
+  0078: return return
+  007e: <eos>

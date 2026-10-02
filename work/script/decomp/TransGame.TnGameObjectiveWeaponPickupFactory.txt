@@ -1,0 +1,139 @@
+function TnGameObjectiveWeaponPickupFactory.PostBeginPlay  (script 62 bytes)
+  0000: PostBeginPlay()
+  0006: if !(!self.WorldInfo.Game.HasRule(self.RequiredGameRuleClass)) goto 0x003b
+  002c: self.InitialState = 'Disabled'
+  003b: return nothing
+  003d: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.ActivateIfMatchingTeam  (script 65 bytes)
+  0000: if !((cast3a(self.DefenderTeamIndex) == cast3a(TeamIndex))) goto 0x0024
+  0013: GotoState('Pickup', , , )
+  0021: goto 0x003e
+  0024: SetCurrentObjectiveHolder(none, false)
+  0030: GotoState('Sleeping', , , )
+  003e: return nothing
+  0040: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.SetTeam  (script 35 bytes)
+  0000: if !((NewTeamIndex == cast3a(self.DefenderTeamIndex))) goto 0x0013
+  0011: return nothing
+  0013: self.DefenderTeamIndex = cast3d(NewTeamIndex)
+  0020: return nothing
+  0022: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.InstantiateInventory  (script 245 bytes)
+  0000: SpawnedObjective = TnGameObjectiveWeaponInterface(TnPickupFactory.InstantiateInventory(Recipient))
+  0016: if !(EqualEqual_InterfaceInterface(SpawnedObjective, TnGameObjectiveWeaponInterface(none))) goto 0x00d1
+  002a: LogInternal("ERROR:  Could not spawn objective weapon, if the weapon spawn did not fail immedietly above this, then the spawned weapon is not of the proper objective type.", , , )
+  00cf: return none
+  00d1: SpawnedObjective.SetHomeBase(self)
+  00e6: return cast36(SpawnedObjective)
+  00ee: return return
+  00f4: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.SetCurrentObjectiveHolder  (script 335 bytes)
+  0000: default=true
+  0005: if !((self.CurrentObjectiveHolder != none)) goto 0x005c
+  0010: self.CurrentObjectiveHolder.DetachComponent(self.SpawnModifier)
+  0028: if !(self.AddedMarkerForCurrentObjective) goto 0x005c
+  0031: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).RemoveObjectiveMarker(self.CurrentObjectiveHolder, self.MarkerType)
+  005c: self.CurrentObjectiveHolder = Holder
+  0067: self.AddedMarkerForCurrentObjective = AddMarker
+  0074: if !((self.CurrentObjectiveHolder != none)) goto 0x00d1
+  007f: self.CurrentObjectiveHolder.AttachComponent(self.SpawnModifier)
+  0097: if !(AddMarker) goto 0x00d1
+  00a0: TnGameReplicationInfoGameBase(self.WorldInfo.GRI).AddObjectiveMarker(self.MarkerString, self.CurrentObjectiveHolder, self.MarkerType, )
+  00d1: PP = TnPlayerPawn(self.CurrentObjectiveHolder)
+  00e1: if !(((self.CurrentPlayerHolder != none) && (PP == none))) goto 0x0114
+  00f9: AddObjectiveCarryTime(self.CurrentPlayerHolder, self.CurrentPlayerHoldTime)
+  010d: self.CurrentPlayerHolder = none
+  0114: if !(((self.CurrentPlayerHolder == none) && (PP != none))) goto 0x0142
+  012c: self.CurrentPlayerHolder = PP
+  0137: self.CurrentPlayerHoldTime = 0.0
+  0142: ObjectiveHolderChanged()
+  014c: return nothing
+  014e: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.ObjectiveHolderChanged  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.AddObjectiveCarryTime  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.ReturnSpawnedObjective  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Pickup.BeginState  (script 26 bytes)
+  0000: BeginState(PreviousStateName)
+  000b: SetCurrentObjectiveHolder(self, )
+  0017: return nothing
+  0019: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.SleepTimeOver  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Sleeping.EndState  (script 34 bytes)
+  0000: ClearTimer('SleepTimeOver', )
+  0014: EndState(NextStateName)
+  001f: return nothing
+  0021: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Sleeping.ReturnSpawnedObjective  (script 128 bytes)
+  0000: OnObjectiveEvent(Reason, ((Returner == none) ? none : Returner.PlayerReplicationInfo))
+  002b: AdditionalSleepTime = GetReturnSleepTime(Reason)
+  0040: if !((AdditionalSleepTime <= cast3f(0))) goto 0x005e
+  004d: GotoState('Pickup', , , )
+  005b: goto 0x007d
+  005e: SetCurrentObjectiveHolder(none, false)
+  006a: SetTimer(AdditionalSleepTime, false, 'SleepTimeOver', )
+  007d: return nothing
+  007f: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Sleeping.Tick  (script 37 bytes)
+  0000: Tick(DeltaTime)
+  000b: if !((self.CurrentPlayerHolder != none)) goto 0x0022
+  0016: (self.CurrentPlayerHoldTime += DeltaTime)
+  0022: return nothing
+  0024: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Sleeping.SleepTimeOver  (script 17 bytes)
+  0000: GotoState('Pickup', , , )
+  000e: return nothing
+  0010: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.GetReturnSleepTime  (script 13 bytes)
+  0000: return 0.0
+  0006: return return
+  000c: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Disabled.ActivateIfMatchingTeam  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.PickedUpBy  (script 56 bytes)
+  0000: SetCurrentObjectiveHolder(P, )
+  0010: OnObjectiveEvent(1, P.PlayerReplicationInfo)
+  002a: PickedUpBy(P)
+  0035: return nothing
+  0037: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.OnObjectiveEvent  (script 43 bytes)
+  0000: if !((self.MessageClass != none)) goto 0x0028
+  000b: BroadcastLocalizedMessage(self.MessageClass, cast3a(MessageSwitch), RelatedPRI, , )
+  0028: return nothing
+  002a: <eos>
+
+function TnGameObjectiveWeaponPickupFactory.Destroyed  (script 105 bytes)
+  0000: Destroyed()
+  0006: HolderPawn = Pawn(self.CurrentObjectiveHolder)
+  0016: if !((HolderPawn != none)) goto 0x005a
+  0021: HeldWeapon = cast36(TnGameObjectiveWeaponInterface(HolderPawn.Weapon))
+  003c: if !((HeldWeapon != none)) goto 0x005a
+  0047: HeldWeapon.DestroyWeapon()
+  005a: SetCurrentObjectiveHolder(none, )
+  0066: return nothing
+  0068: <eos>

@@ -1,0 +1,88 @@
+function ClientAdjustDebug.ToggleActive  (script 17 bytes)
+  0000: GotoState('Active', , , )
+  000e: return nothing
+  0010: <eos>
+
+function ClientAdjustDebug.SetServerLocation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ClientAdjustDebug.NotifyAdjustment  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ClientAdjustDebug.NotifyClientUpdatePosition  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ClientAdjustDebug.NotifyClientUpdatePositionComplete  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ClientAdjustDebug.SetPawnLocation  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function ClientAdjustDebug.Inactive.ToggleActive  (script 17 bytes)
+  0000: GotoState('Active', , , )
+  000e: return nothing
+  0010: <eos>
+
+function ClientAdjustDebug.Active.ToggleActive  (script 17 bytes)
+  0000: GotoState('Inactive', , , )
+  000e: return nothing
+  0010: <eos>
+
+function ClientAdjustDebug.Active.SetServerLocation  (script 63 bytes)
+  0000: obj'Debug'.static.DrawLine(self.LastServerLocation, Location, obj'Core.Colors'.static.Blue(), true)
+  0031: self.LastServerLocation = Location
+  003c: return nothing
+  003e: <eos>
+
+function ClientAdjustDebug.Active.NotifyAdjustment  (script 633 bytes)
+  0000: LineOffset.Z = -20.0
+  0016: SetServerLocation(AdjustedLocation)
+  0025: self.LastUpdatePositionLocation = AdjustedLocation
+  0030: if !((ReferencedMove != none)) goto 0x00fe
+  003b: AdjustString = cast53(cast44(obj'Core.Math'.static.VSize((ReferencedMove.SavedLocation - AdjustedLocation))))
+  0065: StringLocation = ReferencedMove.SavedLocation
+  0079: obj'Debug'.static.DrawStar(ReferencedMove.SavedLocation, 20.0, obj'Core.Colors'.static.Cyan(), true)
+  00b3: obj'Debug'.static.DrawArrowLine((ReferencedMove.SavedLocation + LineOffset), (AdjustedLocation + LineOffset), obj'Core.Colors'.static.Cyan(), true)
+  00fb: goto 0x012a
+  00fe: AdjustString = cast53(cast44(obj'Core.Math'.static.VSize((self.LastPawnLocation - AdjustedLocation))))
+  011f: StringLocation = self.LastPawnLocation
+  012a: if !((CurrentState != AdjustedState)) goto 0x015c
+  0139: AtEqual_StrStr(AdjustString, ((cast57(CurrentState) $ "->") $ cast57(AdjustedState)))
+  015c: if !(((cast3a(CurrentPhysics) != cast3a(AdjustedPhysics)) && (cast3a(CurrentPhysics) != cast3a(10)))) goto 0x01a4
+  0181: AtEqual_StrStr(AdjustString, ((cast52(CurrentPhysics) $ "->") $ cast52(AdjustedPhysics)))
+  01a4: obj'Debug'.static.DrawText(StringLocation, AdjustString, obj'Core.Colors'.static.White(), true)
+  01d5: obj'Debug'.static.DrawArrowLine((self.LastPawnLocation + LineOffset), (AdjustedLocation + LineOffset), obj'Core.Colors'.static.Red(), true)
+  0214: obj'Debug'.static.DrawStar(self.LastPawnLocation, 20.0, obj'Core.Colors'.static.Green(), true)
+  0245: obj'Debug'.static.DrawStar(AdjustedLocation, 20.0, obj'Core.Colors'.static.Red(), true)
+  0276: return nothing
+  0278: <eos>
+
+function ClientAdjustDebug.Active.ClientUpdatePosition  (script 99 bytes)
+  0000: LineOffset.Z = 20.0
+  0016: obj'Debug'.static.DrawArrowLine((self.LastUpdatePositionLocation + LineOffset), (Location + LineOffset), obj'Core.Colors'.static.Yellow(), true)
+  0055: self.LastUpdatePositionLocation = Location
+  0060: return nothing
+  0062: <eos>
+
+function ClientAdjustDebug.Active.NotifyClientUpdatePosition  (script 14 bytes)
+  0000: ClientUpdatePosition(Location)
+  000b: return nothing
+  000d: <eos>
+
+function ClientAdjustDebug.Active.NotifyClientUpdatePositionComplete  (script 115 bytes)
+  0000: ClientUpdatePosition(Location)
+  000b: obj'Debug'.static.DrawText((self.LastUpdatePositionLocation + vect(0,0,20)), cast53(cast44(obj'Core.Math'.static.VSize((self.LastUpdatePositionLocation - self.LastPawnLocation)))), obj'Core.Colors'.static.White(), true)
+  0061: SetPawnLocation(Location)
+  0070: return nothing
+  0072: <eos>
+
+function ClientAdjustDebug.Active.SetPawnLocation  (script 63 bytes)
+  0000: obj'Debug'.static.DrawLine(self.LastPawnLocation, Location, obj'Core.Colors'.static.Green(), true)
+  0031: self.LastPawnLocation = Location
+  003c: return nothing
+  003e: <eos>

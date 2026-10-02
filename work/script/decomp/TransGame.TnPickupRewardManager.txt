@@ -1,0 +1,53 @@
+function TnPickupRewardManager.set_LootTable  (script 14 bytes)
+  0000: self._LootTable = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnPickupRewardManager.SpawnPickupRewards  (script 627 bytes)
+  0000: nothing
+  0001: if !(((self._LootTable == none) || (SpawningActor == none))) goto 0x001b
+  0019: return false
+  001b: Game = TnGame(SpawningActor.WorldInfo.Game)
+  003d: if !((OverrideLootClassification != 'None')) goto 0x0060
+  0050: LootClassifications.AddItem(OverrideLootClassification)
+  005d: goto 0x007e
+  0060: LootClassifications = Game.GetLootClassificationFor(SpawningActor)
+  007e: LootInterface = TnLootInterface(SpawningActor)
+  008e: I = 0
+  0095: if !((I < LootClassifications.Length)) goto 0x026a
+  00a5: InventoryToSpawn = self._LootTable.GetLoot(I[LootClassifications], Game.GetLootModifiers(), Game.get_GameDifficulty())
+  00ef: if !((InventoryToSpawn.Length == 0)) goto 0x00fe
+  00fb: goto 0x0260
+  00fe: foreach InventoryToSpawn(Drop,) (end 0x025f)
+  010d: SpawnedAsInv = Game.Spawn(Drop, , , , , , , )
+  0132: if !((SpawnedAsInv == none)) goto 0x0180
+  013d: LogInternal(((("ERROR: Could not spawn loot:" @ cast56(Drop)) $ ", for:") @ cast56(SpawningActor)), , , )
+  017c: iternext
+  017d: goto 0x025f
+  0180: SpawnedAsInv.InitializeForDrop()
+  0193: SpawnLocation = (EqualEqual_InterfaceInterface(LootInterface, TnLootInterface(none)) ? SpawningActor.Location : LootInterface.GetLootSpawnLocation())
+  01d1: TossVelocity = (obj'Core.Random'.static.RandomVectorInCone(vect(0,0,1), (self.TossHalfAngleInDegrees * 0.0174533)) * self._LootTable.GetTossSpeed(I[LootClassifications]))
+  0223: DP = SpawnedAsInv.DropFrom(SpawnLocation, TossVelocity, )
+  0247: if !((DP == none)) goto 0x025e
+  0252: SpawnedAsInv.DestroyActor()
+  025e: iternext
+  025f: iterpop
+  0260: AddAdd_PreInt(I)
+  0267: goto 0x0095
+  026a: return true
+  026c: return return
+  0272: <eos>
+
+function TnPickupRewardManager.GetSingleRewardType  (script 172 bytes)
+  0000: if !((self._LootTable == none)) goto 0x000d
+  000b: return none
+  000d: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0026: if !((WI == none)) goto 0x0033
+  0031: return none
+  0033: Game = TnGame(WI.Game)
+  004c: if !((Game == none)) goto 0x0059
+  0057: return none
+  0059: InventoryToSpawn = self._LootTable.GetLoot(LootClassification, Game.GetLootModifiers(), Game.get_GameDifficulty())
+  009d: return 0[InventoryToSpawn]
+  00a5: return return
+  00ab: <eos>

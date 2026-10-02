@@ -1,0 +1,14 @@
+function TnViewAngleBasedThreatLevelEvaluator.set_ViewAngle  (script 14 bytes)
+  0000: self._ViewAngle = Value
+  000b: return nothing
+  000d: <eos>
+
+function TnViewAngleBasedThreatLevelEvaluator.OnCalculateThreatLevel  (script 180 bytes)
+  0000: obj'Core.Math'.static.GetAxes(self._Owner.Rotation, Forward, Right, Up)
+  0028: ToThreat = obj'Core.Math'.static.Normal((Threat.Location - self._Owner.Location))
+  0057: Angle = (57.2957802 * obj'Core.Math'.static.Abs(obj'Core.Math'.static.RadianAngleBetweenUnitVectors(Forward, ToThreat)))
+  008c: if !((Angle <= self._ViewAngle)) goto 0x00a7
+  009b: return TnDistanceBasedThreatLevelEvaluator.OnCalculateThreatLevel(Threat)
+  00a7: return 0.0
+  00ad: return return
+  00b3: <eos>

@@ -1,0 +1,29 @@
+function HmStatisticsTable.GetDateTime  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function HmStatisticsTable.ConvertDateTimeToSQL  (script 128 bytes)
+  0000: obj'Core.Strings'.static.ParseStringIntoArray(DateTime, Pieces, "-", true)
+  0021: 0[Pieces] = obj'Core.Strings'.static.Repl(0[Pieces], ".", "-", )
+  0042: 1[Pieces] = obj'Core.Strings'.static.Repl(1[Pieces], ".", ":", )
+  0063: return ((0[Pieces] $ " ") $ 1[Pieces])
+  0079: return return
+  007f: <eos>
+
+function HmStatisticsTable.GetPlatformName  (script 91 bytes)
+  0000: if !(obj'Engine.WorldInfo'.static.IsConsoleBuild(1)) goto 0x0025
+  0018: return "Xbox360"
+  0022: goto 0x0054
+  0025: if !(obj'Engine.WorldInfo'.static.IsConsoleBuild(2)) goto 0x004f
+  003d: return "Playstation3"
+  004c: goto 0x0054
+  004f: return "PC"
+  0054: return return
+  005a: <eos>
+
+function HmStatisticsTable.GetNameForPawn  (script 75 bytes)
+  0000: if !((P.PlayerReplicationInfo != none)) goto 0x002c
+  0014: return P.PlayerReplicationInfo.PlayerName
+  002c: return cast57(P.get_ObjectArchetype().Name)
+  0044: return return
+  004a: <eos>

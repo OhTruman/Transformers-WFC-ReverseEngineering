@@ -1,0 +1,103 @@
+function TnAiActionHoverFromTactical.OnBind  (script 120 bytes)
+  0000: TnGoapAction.OnBind()
+  0006: self._AcrobaticsService = TnAcrobaticsService(GetService('TnAcrobaticsService', 0))
+  0026: self._AbilityIndex = get_AbilityManager().AddAbility(obj'TnAbilityHoverAI')
+  0049: self._TacticalSensor = self._TransformerController.FindTacticalSensor(self._Blueprint.WeaponClass, obj'TnAiActionHoverFromTactical')
+  0075: return nothing
+  0077: <eos>
+
+function TnAiActionHoverFromTactical.OnInitialize  (script 30 bytes)
+  0000: OnInitialize(Blueprint)
+  000b: self._Blueprint = TnAiActionHoverFromTacticalBlueprint(Blueprint)
+  001b: return nothing
+  001d: <eos>
+
+function TnAiActionHoverFromTactical.OnSetUpConditions  (script 177 bytes)
+  0000: if !((get_AbilityManager().AbilityIsAvailable(self._AbilityIndex) == false)) goto 0x0025
+  0023: return false
+  0025: TacticalLocation = self._TacticalSensor.GetBestTacticalPathNode()
+  003e: if !(EqualEqual_InterfaceInterface(TacticalLocation, TnTacticalInterface(none))) goto 0x0054
+  0052: return false
+  0054: obj'HM_Engine.HmGoap'.static.SetSubject(Conditions, obj'TnAiWorldStateAtActor', cast36(TacticalLocation))
+  0078: if !(!TnAiActionHoverFromTactical.HasEnoughRoom(TacticalLocation.GetLocation())) goto 0x0099
+  0097: return false
+  0099: return OnSetUpConditions(ExpectedEffects, Conditions)
+  00aa: return return
+  00b0: <eos>
+
+function TnAiActionHoverFromTactical.OnPlanStart  (script 39 bytes)
+  0000: OnPlanStart(ExpectedEffects)
+  000b: self._ChosenTacticalLocation = self._TacticalSensor.GetBestTacticalPathNode()
+  0024: return nothing
+  0026: <eos>
+
+function TnAiActionHoverFromTactical.OnIsValidForFutureExecution  (script 60 bytes)
+  0000: if !((self._TacticalSensor.ScoreTacticalPathNode(self._ChosenTacticalLocation) <= 0.0)) goto 0x0024
+  0022: return false
+  0024: return OnIsValidForFutureExecution(ExpectedEffects, Conditions)
+  0035: return return
+  003b: <eos>
+
+function TnAiActionHoverFromTactical.OnStart  (script 189 bytes)
+  0000: if !((cast3a(self._AcrobaticsService.get_AcrobaticsState()) != cast3a(8))) goto 0x002a
+  001f: return Fail()
+  002a: self._TransformerController.StopMovement()
+  003d: self._TransformerPawn.Velocity = vect(0,0,0)
+  0059: self._TransformerController.MoveTarget = none
+  0069: self._TransformerController.Focus = IFocusible(Pawn(get_CurrentWorldState().GetSubject(obj'TnAiWorldStateTargetIsDead')))
+  009f: SetCharacterState(0)
+  00aa: return OnStart(ExpectedEffects)
+  00b6: return return
+  00bc: <eos>
+
+function TnAiActionHoverFromTactical.OnUpdate  (script 102 bytes)
+  0000: AcrobaticsState = self._AcrobaticsService.get_AcrobaticsState()
+  001a: if !((cast3a(AcrobaticsState) == cast3a(8))) goto 0x0033
+  002a: TnAiActionHoverFromTactical.TryToJump()
+  0030: goto 0x004e
+  0033: if !((cast3a(AcrobaticsState) == cast3a(3))) goto 0x004e
+  0043: return Succeed()
+  004e: return OnUpdate(ExpectedEffects, DeltaTime)
+  005f: return return
+  0065: <eos>
+
+function TnAiActionHoverFromTactical.TryToJump  (script 86 bytes)
+  0000: if !(get_CurrentWorldState().GetBoolValue(obj'TnAiWorldStateLOSToEnemy')) goto 0x0040
+  0020: get_AbilityManager().TriggerAbility(self._AbilityIndex)
+  003d: goto 0x0053
+  0040: self._TransformerController.OnEnemyChangeAllowed()
+  0053: return nothing
+  0055: <eos>
+
+function TnAiActionHoverFromTactical.OnFinish  (script 146 bytes)
+  0000: OnFinish(CurrentState)
+  000b: if !(NotEqual_InterfaceInterface(self._ChosenTacticalLocation, TnTacticalInterface(none))) goto 0x0046
+  001f: self._ChosenTacticalLocation.GetTactical().AddStench(10.0)
+  0046: if !((cast3a(CurrentState) != cast3a(3))) goto 0x006c
+  0056: self._AcrobaticsService.Fall()
+  006a: return nothing
+  006c: self._TransformerController.AiWorldState.SetBoolValue(obj'TnAiWorldStateHover', true, )
+  008f: return nothing
+  0091: <eos>
+
+function TnAiActionHoverFromTactical.DoCalculateAdditionalCost  (script 144 bytes)
+  0000: TacticalScore = ((cast3a(Context) == cast3a(1)) ? self._TacticalSensor.ScoreTacticalPathNode(self._ChosenTacticalLocation) : self._TacticalSensor.GetBestTacticalScore())
+  0043: (AddedCost += ((cast3f(1) - TacticalScore) * 3.0))
+  005b: (AddedCost += ((self._TacticalSensor.GetBestTacticalScore() - TacticalScore) * 10.0))
+  0083: return AddedCost
+  0089: return return
+  008f: <eos>
+
+function TnAiActionHoverFromTactical.CanInterruptNow  (script 36 bytes)
+  0000: return (cast3a(self._AcrobaticsService.get_AcrobaticsState()) == cast3a(8))
+  001d: return return
+  0023: <eos>
+
+function TnAiActionHoverFromTactical.HasEnoughRoom  (script 192 bytes)
+  0000: Bounds = self._TransformerPawn.CollisionComponent.GetBounds()
+  0022: TraceEnd = CheckLocation
+  002d: (TraceEnd.Z += self._AcrobaticsService.get_JumpHeight())
+  0053: (CheckLocation.Z += Bounds.BoxExtent.Z)
+  0080: return (self._TransformerPawn.Trace(HitLocation, HitNormal, none, TraceEnd, CheckLocation, , Bounds.BoxExtent, , , ) == none)
+  00b9: return return
+  00bf: <eos>

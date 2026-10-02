@@ -1,0 +1,12 @@
+function RB_CylindricalForceActor.OnToggle  (script 163 bytes)
+  0000: if !(0[inAction.InputLinks].bHasImpulse) goto 0x002a
+  001f: self.bForceActive = true
+  0027: goto 0x0083
+  002a: if !(1[inAction.InputLinks].bHasImpulse) goto 0x0054
+  0049: self.bForceActive = false
+  0051: goto 0x0083
+  0054: if !(2[inAction.InputLinks].bHasImpulse) goto 0x0083
+  0074: self.bForceActive = !self.bForceActive
+  0083: SetForcedInitialReplicatedProperty(obj'RB_CylindricalForceActor.bForceActive', (self.bForceActive == default.bForceActive))
+  00a0: return nothing
+  00a2: <eos>

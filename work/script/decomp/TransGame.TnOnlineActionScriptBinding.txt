@@ -1,0 +1,592 @@
+function TnOnlineActionScriptBinding.Initialize  (script 308 bytes)
+  0000: Initialize(NewOwnerMovie)
+  000b: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0024: if !((DataStoreManager != none)) goto 0x0067
+  002f: SettingsTag = obj'TnDataStore_GameSettings'.static.default.Tag
+  0043: self.SettingsDataStore = UIDataStore_OnlineGameSettings(DataStoreManager.FindDataStore(SettingsTag, ))
+  0067: self.OnlineSub = obj'Engine.GameEngine'.static.GetOnlineSubsystem()
+  0080: if !((self.OnlineSub != none)) goto 0x0131
+  008b: self.GameInterface = self.OnlineSub.GameInterface
+  009f: self.AccountInterface = self.OnlineSub.AccountInterface
+  00b3: self.PlayerInterface = self.OnlineSub.PlayerInterface
+  00c7: self.PlayerInterfaceEx = self.OnlineSub.PlayerInterfaceEx
+  00db: self.SystemInterface = self.OnlineSub.SystemInterface
+  00ef: self.StatsInterface = OnlineStatsInterfaceEx(cast36(self.OnlineSub.StatsInterface))
+  010a: self.PlaylistManager = TnOnlinePlaylistManager(self.OnlineSub.GetNamedInterface('PlaylistManager'))
+  0131: return nothing
+  0133: <eos>
+
+function TnOnlineActionScriptBinding.GetUIController  (script 27 bytes)
+  0000: return GetPlayerController().UIController
+  0014: return return
+  001a: <eos>
+
+function TnOnlineActionScriptBinding.SetGameInterface  (script 14 bytes)
+  0000: self.GameInterface = NewGameInterface
+  000b: return nothing
+  000d: <eos>
+
+function TnOnlineActionScriptBinding.SetSettingsDataStore  (script 14 bytes)
+  0000: self.SettingsDataStore = NewSettingsDataStore
+  000b: return nothing
+  000d: <eos>
+
+function TnOnlineActionScriptBinding.CanPlayOnlineModes  (script 313 bytes)
+  0000: PC = GetPlayerController()
+  0010: return (((((((self.SystemInterface.HasLinkConnection() && self.SystemInterface.NatDiscoverySucceeded()) && (cast3a(self.PlayerInterface.CanPlayOnline(cast3d(GetPlayerNum()))) != cast3a(0))) && (cast3a(self.PlayerInterface.GetLoginStatus(cast3d(GetPlayerNum()))) == cast3a(2))) && (cast3a(self.PlayerInterface.GetSecondaryLoginStatus(cast3d(GetPlayerNum()))) == cast3a(2))) && !self.PlayerInterface.IsGuestLogin(cast3d(GetPlayerNum()))) && (PC.PlayerReplicationInfo != none)) && self.StatsInterface.HasReadKeyArchiveFor(PC.PlayerReplicationInfo.UniqueId))
+  0132: return return
+  0138: <eos>
+
+function TnOnlineActionScriptBinding.IsProfileReady  (script 34 bytes)
+  0000: return !GetPlayerController().get_ProfileReadInProgress()
+  001b: return return
+  0021: <eos>
+
+function TnOnlineActionScriptBinding.CheckCanPlayOnlineModes  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TnOnlineActionScriptBinding.CheckIsProfileReady  (script 172 bytes)
+  0000: if !(TnOnlineActionScriptBinding.IsProfileReady()) goto 0x004b
+  0009: obj'TnScaleformHelpers'.static.AddFloatArgument(args, CheckId)
+  0026: self.OwnerMovie.Invoke(self.ProfileIsReadyCallback, args)
+  0048: goto 0x00a9
+  004b: popup = TnOnlineActionScriptBinding.GetUIController().ShowCustomPopupUI(obj'TnLoadProfileStatusMessageBox', true)
+  006b: popup.InvokeMovie = self.OwnerMovie
+  007f: popup.InvokeFunction = self.ProfileIsReadyCallback
+  0093: popup.InvokeParameter = cast44(CheckId)
+  00a9: return nothing
+  00ab: <eos>
+
+function TnOnlineActionScriptBinding.CheckCheckpointSaves  (script 746 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x02de
+  0013: Status = obj'HM_Engine.CheckpointManager'.static.GetInstance().GetCheckpointFileStatus(I)
+  003f: if !(((cast3a(Status) == cast3a(2)) || (cast3a(Status) == cast3a(3)))) goto 0x0064
+  0061: goto 0x02d4
+  0064: if !(((cast3a(Status) == cast3a(0)) || (cast3a(Status) == cast3a(1)))) goto 0x0198
+  0086: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.CheckingSaveTitle", "$UIText.MessagePrompts.CheckingSaveMessage", false)
+  00f7: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", delegate.RetreatFromSoloPlay, , )
+  0141: MessageBox.SetIconType(1, )
+  0157: MessageBox.Show()
+  016a: self.CheckingSavesMessageBox = MessageBox
+  0175: GetPlayerController().SetTimer(0.5, true, 'RecheckCheckpointSaves', self)
+  0196: return nothing
+  0198: if !((cast3a(Status) == cast3a(4))) goto 0x02d4
+  01a8: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.CorruptSaveOverwriteTitle", "$UIText.MessagePrompts.CorruptSaveOverwriteMessage", false)
+  0229: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ProceedToSoloPlay, , )
+  0275: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", delegate.RetreatFromSoloPlay, , )
+  02bf: MessageBox.Show()
+  02d2: return nothing
+  02d4: AddAdd_PreInt(I)
+  02db: goto 0x0007
+  02de: TnOnlineActionScriptBinding.ProceedToSoloPlay(none, "")
+  02e7: return nothing
+  02e9: <eos>
+
+function TnOnlineActionScriptBinding.RecheckCheckpointSaves  (script 182 bytes)
+  0000: I = 0
+  0007: if !((I < 2)) goto 0x006d
+  0013: Status = obj'HM_Engine.CheckpointManager'.static.GetInstance().GetCheckpointFileStatus(I)
+  003f: if !(((cast3a(Status) == cast3a(0)) || (cast3a(Status) == cast3a(1)))) goto 0x0063
+  0061: return nothing
+  0063: AddAdd_PreInt(I)
+  006a: goto 0x0007
+  006d: self.CheckingSavesMessageBox.Close()
+  0080: self.CheckingSavesMessageBox = none
+  0087: GetPlayerController().ClearTimer('RecheckCheckpointSaves', self)
+  00a9: CheckCheckpointSaves()
+  00b3: return nothing
+  00b5: <eos>
+
+function TnOnlineActionScriptBinding.ProceedToSoloPlay  (script 158 bytes)
+  0000: args = args
+  000b: I = 0
+  0012: if !((I < 2)) goto 0x0079
+  001e: Status = obj'HM_Engine.CheckpointManager'.static.GetInstance().GetCheckpointFileStatus(I)
+  004a: obj'TnScaleformHelpers'.static.AddBoolArgument(args, (cast3a(Status) == cast3a(2)))
+  006f: AddAdd_PreInt(I)
+  0076: goto 0x0012
+  0079: self.OwnerMovie.Invoke(self.ProceedToSoloPlayCallback, args)
+  009b: return nothing
+  009d: <eos>
+
+function TnOnlineActionScriptBinding.RetreatFromSoloPlay  (script 82 bytes)
+  0000: args = args
+  000b: GetPlayerController().ClearTimer('RecheckCheckpointSaves', self)
+  002d: self.OwnerMovie.Invoke(self.RetreatFromSoloPlayCallback, args)
+  004f: return nothing
+  0051: <eos>
+
+function TnOnlineActionScriptBinding.CheckCampaignCompleteMessage  (script 446 bytes)
+  0000: PC = GetPlayerController()
+  0010: PS = TnProfileSettings(PC.ProfileSettings)
+  0029: if !(((PS == none) || (PC == none))) goto 0x0043
+  0041: return nothing
+  0043: if !((!PS.HasShownAutobotCampaignComplete() && PS.HasCompletedAutobotCampaign())) goto 0x00c6
+  0073: CampaignCompleteMessage = "$UIText.MessagePrompts.AutobotCampaignCompleteMessage"
+  00b0: PS.SetHasShownAutobotCampaignComplete()
+  00c3: goto 0x0149
+  00c6: if !((!PS.HasShownDecepticonCampaignComplete() && PS.HasCompletedDecepticonCampaign())) goto 0x0149
+  00f6: CampaignCompleteMessage = "$UIText.MessagePrompts.DecepticonCampaignCompleteMessage"
+  0136: PS.SetHasShownDecepticonCampaignComplete()
+  0149: if !((CampaignCompleteMessage == "")) goto 0x0157
+  0155: return nothing
+  0157: PC.UIController.ShowPopupUI("$UIText.MessagePrompts.CampaignCompleteTitle", CampaignCompleteMessage, )
+  01a7: PC.SaveProfileSettings()
+  01bb: return nothing
+  01bd: <eos>
+
+function TnOnlineActionScriptBinding.OnSuccess  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TnOnlineActionScriptBinding.HasShownCampaignWarning  (script 68 bytes)
+  0000: PC = GetPlayerController()
+  0010: Profile = TnProfileSettings(PC.ProfileSettings)
+  0029: return Profile.HasShownPlayCPFirstWarning()
+  003d: return return
+  0043: <eos>
+
+function TnOnlineActionScriptBinding.SetHasShownCampaignWarning  (script 83 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !(!TnOnlineActionScriptBinding.HasShownCampaignWarning()) goto 0x0050
+  001b: TnProfileSettings(PC.ProfileSettings).SetHasShownPlayCPFirstWarning()
+  003c: PC.SaveProfileSettings()
+  0050: return nothing
+  0052: <eos>
+
+function TnOnlineActionScriptBinding.HasShownTutorialWarning  (script 68 bytes)
+  0000: PC = GetPlayerController()
+  0010: Profile = TnProfileSettings(PC.ProfileSettings)
+  0029: return Profile.HasShownTutorialWarning()
+  003d: return return
+  0043: <eos>
+
+function TnOnlineActionScriptBinding.SetHasShownTutorialWarning  (script 83 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !(!TnOnlineActionScriptBinding.HasShownTutorialWarning()) goto 0x0050
+  001b: TnProfileSettings(PC.ProfileSettings).SetHasShownTutorialWarning()
+  003c: PC.SaveProfileSettings()
+  0050: return nothing
+  0052: <eos>
+
+function TnOnlineActionScriptBinding.CheckOnlineWarningPart0  (script 114 bytes)
+  0000: if !(!TnOnlineActionScriptBinding.CanPlayOnlineModes()) goto 0x0064
+  000b: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowCustomPopupUI(obj'TnOnlineStatusMessageBox', false)
+  002b: MessageBox.SetReadyToGoNotify(delegate.CheckOnlineWarningPart1, GTS)
+  004c: MessageBox.Show()
+  005f: return nothing
+  0061: goto 0x006f
+  0064: TnOnlineActionScriptBinding.CheckOnlineWarningPart1(GTS)
+  006f: return nothing
+  0071: <eos>
+
+function TnOnlineActionScriptBinding.CheckOnlineWarningPart1  (script 377 bytes)
+  0000: if !((obj'Engine.WorldInfo'.static.IsConsoleBuild(2) && (cast3a(self.PlayerInterface.CanCommunicate(cast3d(GetPlayerNum()))) != cast3a(2)))) goto 0x0164
+  0045: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.CantCommunicateMessage", false)
+  00bb: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.CheckOnlineWarningPart2, cast52(GTS), )
+  010d: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  014f: MessageBox.Show()
+  0162: return nothing
+  0164: TnOnlineActionScriptBinding.CheckOnlineWarningPart2(MessageBox, cast52(GTS))
+  0176: return nothing
+  0178: <eos>
+
+function TnOnlineActionScriptBinding.CheckOnlineWarningPart2  (script 365 bytes)
+  0000: GTS = TnOnlineActionScriptBinding.StringToGameTeamStatus(Parameter)
+  0011: if !(((cast3a(GTS) != cast3a(4)) && !TnOnlineActionScriptBinding.HasShownCampaignWarning())) goto 0x0154
+  002e: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.RecommendPlayingCampaignFirst", false)
+  00ab: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmOpenPartyLobby, cast52(GTS), )
+  00fd: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  013f: MessageBox.Show()
+  0152: return nothing
+  0154: ConfirmOpenPartyLobby(MessageBox, cast52(GTS))
+  016a: return nothing
+  016c: <eos>
+
+function TnOnlineActionScriptBinding.HasLinkConnection  (script 28 bytes)
+  0000: return self.SystemInterface.HasLinkConnection()
+  0015: return return
+  001b: <eos>
+
+function TnOnlineActionScriptBinding.OpenCampaignGameLobby  (script 412 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: if !((WI.IsConsoleBuild() && (cast3a(self.PlayerInterface.GetLoginStatus(cast3d(GetPlayerNum()))) == cast3a(0)))) goto 0x0179
+  005d: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.NotLoggedInCampaign", false)
+  00d0: MessageBox.SetAButton("$UIText.MessagePrompts.LogInButton", delegate.ShowLogin, , )
+  0112: MessageBox.SetBButton("$UIText.MessagePrompts.ContinueWithoutSavingButton", delegate.TryToConfirmPlaySoloGame, , )
+  0164: MessageBox.Show()
+  0177: return nothing
+  0179: if !(!TnOnlineActionScriptBinding.HasShownTutorialWarning()) goto 0x018c
+  0184: TnOnlineActionScriptBinding.ShowTutorialWarning()
+  018a: return nothing
+  018c: ConfirmPlaySoloGame(none, "")
+  0199: return nothing
+  019b: <eos>
+
+function TnOnlineActionScriptBinding.TryToConfirmPlaySoloGame  (script 35 bytes)
+  0000: if !(!TnOnlineActionScriptBinding.HasShownTutorialWarning()) goto 0x0013
+  000b: TnOnlineActionScriptBinding.ShowTutorialWarning()
+  0011: return nothing
+  0013: ConfirmPlaySoloGame(none, "")
+  0020: return nothing
+  0022: <eos>
+
+function TnOnlineActionScriptBinding.ShowTutorialWarning  (script 220 bytes)
+  0000: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.RecommendViewingTutorials", false)
+  0079: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.ConfirmPlaySoloGame, "", )
+  00c6: MessageBox.Show()
+  00d9: return nothing
+  00db: <eos>
+
+function TnOnlineActionScriptBinding.ShowLogin  (script 47 bytes)
+  0000: PC = GetPlayerController()
+  0010: PC.UIController.ShowLoginUI()
+  002c: return nothing
+  002e: <eos>
+
+function TnOnlineActionScriptBinding.ConfirmPlaySoloGame  (script 35 bytes)
+  0000: TnOnlineActionScriptBinding.SetHasShownTutorialWarning()
+  0006: TnOnlineActionScriptBinding.SetHasShownCampaignWarning()
+  000c: obj'TnGame'.static.OpenSoloGameLobby()
+  0020: return nothing
+  0022: <eos>
+
+function TnOnlineActionScriptBinding.PlayPlaylist  (script 43 bytes)
+  0000: TnOnlineActionScriptBinding.GetGame().PlayPlaylist(PlaylistId, (ForceHost ? 1 : 0))
+  0028: return nothing
+  002a: <eos>
+
+function TnOnlineActionScriptBinding.EditPlaylist  (script 182 bytes)
+  0000: GameSettings = TnOnlineGameSettingsBase(self.PlaylistManager.GetGameSettings(PlaylistId, 0))
+  0024: if !((GameSettings == none)) goto 0x0077
+  002f: LogInternal((("ERROR: Failed to get game settings for playlist (" $ cast53(PlaylistId)) $ ")"), , , )
+  0075: return nothing
+  0077: GRI = TnGameReplicationInfo(TnOnlineActionScriptBinding.GetGameReplicationInfo())
+  0088: GRI.PublishGameInfo(GameSettings.GetGameModeTag(), GameSettings)
+  00b3: return nothing
+  00b5: <eos>
+
+function TnOnlineActionScriptBinding.EditGameMode  (script 245 bytes)
+  0000: if !(!self.SettingsDataStore.SetCurrentByName(cast60(ConfigurationName))) goto 0x0052
+  001f: LogInternal(("ERROR: Failed to find settings for " $ ConfigurationName), , , )
+  0050: return nothing
+  0052: NatType = self.OnlineSub.SystemInterface.GetNATType()
+  0075: if !(((cast3a(NatType) == cast3a(3)) && !self.HasShownStrictNATMessage)) goto 0x0098
+  0092: TnOnlineActionScriptBinding.ShowStrictNatMessage()
+  0098: GameSettings = TnOnlineGameSettingsBase(self.SettingsDataStore.GetCurrentGameSettings())
+  00b6: GRI = TnGameReplicationInfo(TnOnlineActionScriptBinding.GetGameReplicationInfo())
+  00c7: GRI.PublishGameInfo(GameSettings.GetGameModeTag(), GameSettings)
+  00f2: return nothing
+  00f4: <eos>
+
+function TnOnlineActionScriptBinding.ShowStrictNatMessage  (script 181 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !(((PC != none) && (PC.UIController != none))) goto 0x00b2
+  0031: PC.UIController.ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", "$UIText.MessagePrompts.StrictPrivateNATMessage", )
+  00aa: self.HasShownStrictNATMessage = true
+  00b2: return nothing
+  00b4: <eos>
+
+function TnOnlineActionScriptBinding.PlayPrivateGame  (script 84 bytes)
+  0000: self.SettingsDataStore.SetCurrentByName(cast60(SettingsName))
+  001a: GameSettings = TnOnlineGameSettingsBase(self.SettingsDataStore.GetCurrentGameSettings())
+  0038: TnOnlineActionScriptBinding.GetGame().HostOnlineGame(GameSettings)
+  0051: return nothing
+  0053: <eos>
+
+function TnOnlineActionScriptBinding.StringToGameTeamStatus  (script 134 bytes)
+  0000: if !((StrValue == "GTS_FreeForAllGame")) goto 0x0021
+  001e: return 1
+  0021: if !((StrValue == "GTS_SingleTeamGame")) goto 0x0042
+  003f: return 2
+  0042: if !((StrValue == "GTS_TeamGame")) goto 0x005d
+  005a: return 3
+  005d: if !((StrValue == "GTS_CampaignGame")) goto 0x007c
+  0079: return 4
+  007c: return 3
+  007f: return return
+  0085: <eos>
+
+function TnOnlineActionScriptBinding.OpenPartyLobby  (script 20 bytes)
+  0000: TnOnlineActionScriptBinding.CheckOnlineWarningPart0(TnOnlineActionScriptBinding.StringToGameTeamStatus(GameTeamStatusStr))
+  0011: return nothing
+  0013: <eos>
+
+function TnOnlineActionScriptBinding.ConfirmOpenPartyLobby  (script 132 bytes)
+  0000: TnOnlineActionScriptBinding.SetHasShownCampaignWarning()
+  0006: GRI = TnGameReplicationInfo(TnOnlineActionScriptBinding.GetGameReplicationInfo())
+  0017: GTS = TnOnlineActionScriptBinding.StringToGameTeamStatus(Parameters)
+  0028: GRI.SetGameTeamStatus(GTS)
+  0040: PC = GetPlayerController()
+  0050: LobbyURL = PC.BuildPartyLobbyURL()
+  0069: obj'TnGame'.static.ClientTravelToMap(LobbyURL)
+  0081: return nothing
+  0083: <eos>
+
+function TnOnlineActionScriptBinding.SetPartyLobbyType  (script 61 bytes)
+  0000: GTS = TnOnlineActionScriptBinding.StringToGameTeamStatus(GameTeamStatusStr)
+  0011: GRI = TnGameReplicationInfo(TnOnlineActionScriptBinding.GetGameReplicationInfo())
+  0022: GRI.SetGameTeamStatus(GTS)
+  003a: return nothing
+  003c: <eos>
+
+function TnOnlineActionScriptBinding.GetGame  (script 52 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: return TnGame(WI.Game)
+  002d: return return
+  0033: <eos>
+
+function TnOnlineActionScriptBinding.SetPlayerReadyState  (script 80 bytes)
+  0000: PC = GetPlayerController()
+  0010: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0029: if !((PRI != none)) goto 0x004d
+  0034: PRI.MenuSetReady(IsReady)
+  004d: return nothing
+  004f: <eos>
+
+function TnOnlineActionScriptBinding.SetSelectedMapID  (script 55 bytes)
+  0000: LobbyGame = TnGameLobbyGame(TnOnlineActionScriptBinding.GetGame())
+  0011: if !((LobbyGame != none)) goto 0x0034
+  001c: LobbyGame.HostRequestMapID(MapId)
+  0034: return nothing
+  0036: <eos>
+
+function TnOnlineActionScriptBinding.SetSelectedCheckpoint  (script 55 bytes)
+  0000: LobbyGame = TnGameLobbyGame(TnOnlineActionScriptBinding.GetGame())
+  0011: if !((LobbyGame != none)) goto 0x0034
+  001c: LobbyGame.HostRequestCheckpoint(CheckpointPath)
+  0034: return nothing
+  0036: <eos>
+
+function TnOnlineActionScriptBinding.SwitchTeam  (script 27 bytes)
+  0000: GetPlayerController().SwitchTeam()
+  0018: return nothing
+  001a: <eos>
+
+function TnOnlineActionScriptBinding.IsHost  (script 44 bytes)
+  0000: return (cast3a(obj'Engine.Engine'.static.GetCurrentWorldInfo().NetMode) != cast3a(3))
+  0025: return return
+  002b: <eos>
+
+function TnOnlineActionScriptBinding.ShowDeviceSelectionUI  (script 56 bytes)
+  0000: PC = GetPlayerController()
+  0010: PC.ShowDeviceSelectionUI()
+  0024: PC._CanShowContentCorruptMessage = true
+  0035: return nothing
+  0037: <eos>
+
+function TnOnlineActionScriptBinding.ShowFriendsUI  (script 35 bytes)
+  0000: self.PlayerInterface.ShowFriendsUI(cast3d(GetPlayerNum()))
+  0020: return nothing
+  0022: <eos>
+
+function TnOnlineActionScriptBinding.ShowInviteUI  (script 128 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x003c
+  0014: self.PlayerInterfaceEx.ShowInviteUI(cast3d(GetPlayerNum()), Message)
+  0039: goto 0x007d
+  003c: LogInternal("ERROR: Game invitations are not supported on this platform", , , )
+  007d: return nothing
+  007f: <eos>
+
+function TnOnlineActionScriptBinding.IsInPartyChatSession  (script 62 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0035
+  0014: return self.PlayerInterfaceEx.IsInPartyChatSession(cast3d(GetPlayerNum()))
+  0035: return false
+  0037: return return
+  003d: <eos>
+
+function TnOnlineActionScriptBinding.ShowPartyChatSessionsUI  (script 55 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0034
+  0014: self.PlayerInterfaceEx.ShowPartyChatSessionsUI(cast3d(GetPlayerNum()))
+  0034: return nothing
+  0036: <eos>
+
+function TnOnlineActionScriptBinding.ShowLoginUI  (script 30 bytes)
+  0000: nothing
+  0001: self.PlayerInterface.ShowLoginUI(ShowOnlineOnly)
+  001b: return nothing
+  001d: <eos>
+
+function TnOnlineActionScriptBinding.GetLoginStatus  (script 64 bytes)
+  0000: if !(EqualEqual_InterfaceInterface(self.PlayerInterface, OnlinePlayerInterface(none))) goto 0x0016
+  0014: return 0
+  0016: return cast3a(self.PlayerInterface.GetLoginStatus(cast3d(GetPlayerNum())))
+  0039: return return
+  003f: <eos>
+
+function TnOnlineActionScriptBinding.GetGameReplicationInfo  (script 36 bytes)
+  0000: return GetPlayerController().WorldInfo.GRI
+  001d: return return
+  0023: <eos>
+
+function TnOnlineActionScriptBinding.BeginLobbyExitCountdown  (script 74 bytes)
+  0000: GameLobby = TnGameLobbyGame(GetPlayerController().WorldInfo.Game)
+  0027: if !((GameLobby == none)) goto 0x0034
+  0032: return nothing
+  0034: GameLobby.HostRequestsGameStart()
+  0047: return nothing
+  0049: <eos>
+
+function TnOnlineActionScriptBinding.SubmitMapVeto  (script 65 bytes)
+  0000: LobbyPRI = TnPlayerReplicationInfoGameLobby(GetPlayerController().PlayerReplicationInfo)
+  001e: if !((LobbyPRI == none)) goto 0x002b
+  0029: return nothing
+  002b: LobbyPRI.SubmitMapVeto()
+  003e: return nothing
+  0040: <eos>
+
+function TnOnlineActionScriptBinding.SendGameInvite  (script 681 bytes)
+  0000: self.PlayerInterface.GetFriendsList(cast3d(GetPlayerNum()), Friends, , )
+  0027: FriendIndex = Friends.Find('NickName',PlayerNickName)
+  0043: if !((FriendIndex == -1)) goto 0x0054
+  0052: return nothing
+  0054: Friend = FriendIndex[Friends]
+  0065: CurrentTime = GetPlayerController().WorldInfo.RealTimeSeconds
+  0087: HistoryIndex = self.GameInviteHistory.Find('Invitee',Friend.UniqueId)
+  00ae: if !(((HistoryIndex == -1) || ((CurrentTime - HistoryIndex[self.GameInviteHistory].TimeStamp) > cast3f(10)))) goto 0x015c
+  00e5: TnOnlineActionScriptBinding.SendGameInviteConfirmed(none, PlayerNickName)
+  00f1: if !((HistoryIndex == -1)) goto 0x013d
+  0100: NewEntry.Invitee = Friend.UniqueId
+  0121: self.GameInviteHistory.AddItem(NewEntry)
+  012e: HistoryIndex = (self.GameInviteHistory.Length - 1)
+  013d: HistoryIndex[self.GameInviteHistory].TimeStamp = CurrentTime
+  0159: goto 0x02a6
+  015c: MessageString = obj'Core.Strings'.static.Repl(Localize("MessagePrompts", "GameInvitePreviouslySent", "UIText"), "`p", PlayerNickName, )
+  01b3: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.MessagePrompts.GenericWarningTitle", MessageString, false)
+  01ff: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.SendGameInviteConfirmed, PlayerNickName, )
+  024f: MessageBox.SetBButton("$UIText.MessagePrompts.GenericCancelButton", , , )
+  0291: MessageBox.Show()
+  02a4: return nothing
+  02a6: return nothing
+  02a8: <eos>
+
+function TnOnlineActionScriptBinding.SendGameInviteConfirmed  (script 489 bytes)
+  0000: self.PlayerInterface.GetFriendsList(cast3d(GetPlayerNum()), Friends, , )
+  0027: FriendIndex = Friends.Find('NickName',PlayerNickName)
+  0043: Friend = FriendIndex[Friends]
+  0054: InviteError = self.PlayerInterface.SendGameInviteToFriend(cast3d(GetPlayerNum()), Friend.UniqueId, self.GameInviteTitle, self.GameInviteMessage)
+  0094: switch (InviteError)
+  009b: case 1: (next 0x017c)
+  00a0: MessageBox = TnOnlineActionScriptBinding.GetUIController().ShowPopupUI("$UIText.OnlineFriends.InviteFailedTitle", "$UIText.OnlineFriends.InviteFailedSessionFullMessage", false)
+  011a: MessageBox.SetAButton("$UIText.MessagePrompts.GenericContinueButton", delegate.None, "", true)
+  0167: MessageBox.Show()
+  017a: return nothing
+  017c: case 2: (next 0x01b1)
+  0181: LogInternal("ERROR: Failed to send invite to friend.", , , )
+  01af: return nothing
+  01b1: default:
+  01b4: GetPlayerController().UIController.OnGameInviteSent(cast3d(GetPlayerNum()), PlayerNickName)
+  01e6: return nothing
+  01e8: <eos>
+
+function TnOnlineActionScriptBinding.SendGameInviteToPartyChatMembers  (script 55 bytes)
+  0000: if !(NotEqual_InterfaceInterface(self.PlayerInterfaceEx, OnlinePlayerInterfaceEx(none))) goto 0x0034
+  0014: self.PlayerInterfaceEx.SendGameInviteToPartyChatMembers(cast3d(GetPlayerNum()))
+  0034: return nothing
+  0036: <eos>
+
+function TnOnlineActionScriptBinding.JoinFriendGame  (script 232 bytes)
+  0000: PC = GetPlayerController()
+  0010: if !((PC.IsPartyLeader() && (PC.GetNumPartyMembers() > 1))) goto 0x0082
+  0041: Message = "$UIText.MessagePrompts.JoinFriendGameAndDisbandMessage"
+  007f: goto 0x00b6
+  0082: Message = "$UIText.MessagePrompts.JoinFriendGameMessage"
+  00b6: PC.UIController.OpenJoinFriendGameMessageBox(Message, PlayerNickName, delegate.CommitJoinFriendGame)
+  00e5: return nothing
+  00e7: <eos>
+
+function TnOnlineActionScriptBinding.FindFriendId  (script 118 bytes)
+  0000: self.PlayerInterface.GetFriendsList(cast3d(GetPlayerNum()), Friends, , )
+  0027: I = Friends.Find('NickName',PlayerNickName)
+  0043: if !((I == -1)) goto 0x0058
+  0052: return ZeroId
+  0058: return I[Friends].UniqueId
+  006f: return return
+  0075: <eos>
+
+function TnOnlineActionScriptBinding.CommitJoinFriendGame  (script 287 bytes)
+  0000: self.PlayerInterface.GetFriendsList(cast3d(GetPlayerNum()), Friends, , )
+  0027: I = Friends.Find('NickName',Parameter)
+  0043: if !(((((I != -1) && (I[Friends].UniqueId != ZeroId)) && (I[Friends].bIsJoinable || I[Friends].bHasInvitedYou)) && I[Friends].bIsPlayingThisGame)) goto 0x0103
+  00cb: self.PlayerInterface.JoinFriendGame(cast3d(GetPlayerNum()), I[Friends].UniqueId)
+  0101: return nothing
+  0103: GetPlayerController().OnGameInviteAccepted(none)
+  011c: return nothing
+  011e: <eos>
+
+function TnOnlineActionScriptBinding.ClearGameInvite  (script 77 bytes)
+  0000: FriendId = TnOnlineActionScriptBinding.FindFriendId(PlayerNickName)
+  0011: if !((FriendId == ZeroId)) goto 0x0025
+  0023: return nothing
+  0025: self.GameInterface.ClearGameInvite(cast3d(GetPlayerNum()), FriendId)
+  004a: return nothing
+  004c: <eos>
+
+function TnOnlineActionScriptBinding.SendFriendInvite  (script 42 bytes)
+  0000: self.PlayerInterface.AddFriendByName(cast3d(GetPlayerNum()), PlayerNickName, "")
+  0027: return nothing
+  0029: <eos>
+
+function TnOnlineActionScriptBinding.RespondToFriendInvite  (script 396 bytes)
+  0000: self.PlayerInterface.GetFriendMessages(cast3d(GetPlayerNum()), Messages)
+  0025: I = 0
+  002c: if !((I < Messages.Length)) goto 0x0189
+  003c: if !((I[Messages].SendingPlayerNick != PlayerNickName)) goto 0x005f
+  005c: goto 0x017f
+  005f: if !(!I[Messages].bIsFriendInvite) goto 0x007e
+  007b: goto 0x017f
+  007e: if !(Accepted) goto 0x0124
+  0087: self.PlayerInterface.AcceptFriendInvite(cast3d(GetPlayerNum()), I[Messages].SendingPlayerId)
+  00bd: if !((!obj'Engine.WorldInfo'.static.IsConsoleBuild(2) && !obj'Engine.WorldInfo'.static.IsConsoleBuild(1))) goto 0x0121
+  00f3: PC = GetPlayerController()
+  0103: if !((PC != none)) goto 0x0121
+  010e: PC.ClientSetOnlineStatus()
+  0121: goto 0x015a
+  0124: self.PlayerInterface.DenyFriendInvite(cast3d(GetPlayerNum()), I[Messages].SendingPlayerId)
+  015a: self.PlayerInterface.DeleteMessage(cast3d(GetPlayerNum()), I)
+  017f: AddAdd_PreInt(I)
+  0186: goto 0x002c
+  0189: return nothing
+  018b: <eos>
+
+function TnOnlineActionScriptBinding.RemoveFriend  (script 77 bytes)
+  0000: FriendId = TnOnlineActionScriptBinding.FindFriendId(PlayerNickName)
+  0011: if !((FriendId == ZeroId)) goto 0x0025
+  0023: return nothing
+  0025: self.PlayerInterface.RemoveFriend(cast3d(GetPlayerNum()), FriendId)
+  004a: return nothing
+  004c: <eos>
+
+function TnOnlineActionScriptBinding.ShowGamerCardUI  (script 252 bytes)
+  0000: GRI = TnGameReplicationInfo(TnOnlineActionScriptBinding.GetGameReplicationInfo())
+  0011: DefaultId = DefaultId
+  001c: foreach GRI.PRIArray(PRI,) (end 0x009e)
+  0034: if !((PlayerName == PRI.PlayerName)) goto 0x009d
+  004c: if !((PRI.UniqueId != DefaultId)) goto 0x009a
+  0067: self.PlayerInterfaceEx.ShowGamerCardUI(cast3d(GetPlayerNum()), PRI.UniqueId, PlayerName)
+  009a: iterpop
+  009b: return nothing
+  009d: iternext
+  009e: iterpop
+  009f: LogInternal((("ERROR: Attempting to open gamercard for," @ PlayerName) $ ", but did not exist in PRIArray."), , , )
+  00f9: return nothing
+  00fb: <eos>
+
+function TnOnlineActionScriptBinding.ShouldShowStartScreen  (script 331 bytes)
+  0000: PC = GetPlayerController()
+  0010: LP = HmLocalPlayer(PC.Player)
+  0029: if !((LP == none)) goto 0x0036
+  0034: return true
+  0036: VC = TnGameViewportClient(LP.ViewportClient)
+  004f: VC.AllowControllerSelection()
+  0062: OPI = obj'Engine.GameEngine'.static.GetOnlineSubsystem().PlayerInterface
+  0084: if !(((((cast3a(OPI.GetLoginStatus(cast3d(LP.ControllerId))) == cast3a(0)) || (cast3a(OPI.GetPreviousLoginStatus(cast3d(LP.ControllerId))) == cast3a(0))) || !VC._HasAssignedControllerId) || !LP.HasSelectedStorageDevice())) goto 0x0142
+  0114: if !((self.OnlineSub.GetDeferredGameInviteControllerId() < 0)) goto 0x0140
+  012d: VC.ForceControllerSelection()
+  0140: return true
+  0142: return false
+  0144: return return
+  014a: <eos>

@@ -1,0 +1,144 @@
+function HmConeCollisionCameraBehavior.Activate  (script 77 bytes)
+  0000: self.CurrentDistance = 1000000.0
+  000b: self.PreviousBaseToTipDistance = 1000000.0
+  0016: self.TraceExtent = (self.CameraActor.GetCollisionExtents() * self.TraceExtentsScale)
+  0037: self.Smoother.Reset()
+  004a: return nothing
+  004c: <eos>
+
+function HmConeCollisionCameraBehavior.SetActor  (script 14 bytes)
+  0000: self.OwningActor = A
+  000b: return nothing
+  000d: <eos>
+
+function HmConeCollisionCameraBehavior.SetAnchorPoint  (script 14 bytes)
+  0000: self.AnchorPoint = Anchor
+  000b: return nothing
+  000d: <eos>
+
+function HmConeCollisionCameraBehavior.SetCameraActor  (script 19 bytes)
+  0000: self.CameraActor = HmCamera(A)
+  0010: return nothing
+  0012: <eos>
+
+function HmConeCollisionCameraBehavior.SetMoveInFrontProbeLength  (script 14 bytes)
+  0000: self.MoveInFrontProbeLength = ProbeLength
+  000b: return nothing
+  000d: <eos>
+
+function HmConeCollisionCameraBehavior.GetConeHalfWidth  (script 38 bytes)
+  0000: return (ConeDistance * obj'Core.Math'.static.Tan((self.HalfConeAngleDeg * 0.0174533)))
+  001f: return return
+  0025: <eos>
+
+function HmConeCollisionCameraBehavior.TraceCamera  (script 71 bytes)
+  0000: default=self.TraceExtent
+  0009: return self.OwningActor.TraceCamera(HitLoc, HitNorm, End, Start, !self.bIgnorePawns, Extent, , )
+  0040: return return
+  0046: <eos>
+
+function HmConeCollisionCameraBehavior.GetSafeBaseLocation  (script 188 bytes)
+  0000: BaseLocation = (self.AnchorPoint.Location + (self.SafeBaseLocationOffset >> self.OwningActor.Rotation))
+  002c: if !((self.OwningActor.CollisionComponent == none)) goto 0x0057
+  0040: ActorCenterLocation = self.OwningActor.Location
+  0054: goto 0x0084
+  0057: ActorCenterLocation = self.OwningActor.CollisionComponent.GetBounds().Origin
+  0084: if !((HmConeCollisionCameraBehavior.TraceCamera(HitLoc, ActorCenterLocation, BaseLocation, self.FindSafeLocationTraceExtent) != none)) goto 0x00af
+  00a4: BaseLocation = HitLoc
+  00af: return BaseLocation
+  00b5: return return
+  00bb: <eos>
+
+function HmConeCollisionCameraBehavior.Update  (script 695 bytes)
+  0000: if !((self.OwningActor == none)) goto 0x0011
+  000b: return Result
+  0011: ConeBase = HmConeCollisionCameraBehavior.GetSafeBaseLocation()
+  001d: ConeTip = (Result.Location + Result.LocationAdjustment)
+  0045: if !(self.bAllowImmediateMoveBack) goto 0x0098
+  004e: CurrentBaseToTipDistance = obj'Core.Math'.static.VSize((ConeTip - ConeBase))
+  006b: if !((CurrentBaseToTipDistance > self.PreviousBaseToTipDistance)) goto 0x008d
+  007a: (self.CurrentDistance += (CurrentBaseToTipDistance - self.PreviousBaseToTipDistance))
+  008d: self.PreviousBaseToTipDistance = CurrentBaseToTipDistance
+  0098: ConeBaseTestDistance = HmConeCollisionCameraBehavior.ConeDistanceFromBaseTrace(ConeBase, ConeTip)
+  00ae: ConeMedianTestDistance = HmConeCollisionCameraBehavior.ConeDistanceFromMedianTrace(ConeBase, ConeTip)
+  00c4: Distance = obj'Core.Math'.static.FMin(self.CurrentDistance, obj'Core.Math'.static.FMin(ConeBaseTestDistance, ConeMedianTestDistance))
+  00ef: BaseToTip = (ConeTip - ConeBase)
+  0101: StartLoc = (ConeBase + (obj'Core.Math'.static.Normal(BaseToTip) * Distance))
+  0125: ConeHit = HmConeCollisionCameraBehavior.TraceConeSides(StartLoc, ConeBase)
+  013c: if !(((ConeHit == false) && (Distance == self.CurrentDistance))) goto 0x0204
+  0159: BackupDistance = obj'Core.Math'.static.FMin(ConeBaseTestDistance, ConeMedianTestDistance)
+  0174: if !((BackupDistance > Distance)) goto 0x01ee
+  0183: BackupDistance = self.Smoother.Smooth(Distance, BackupDistance, self.BackupTime, DeltaTime)
+  01b0: StartLoc = (ConeBase + (obj'Core.Math'.static.Normal(BaseToTip) * BackupDistance))
+  01d4: ConeHit = HmConeCollisionCameraBehavior.TraceConeSides(StartLoc, ConeBase)
+  01eb: goto 0x0201
+  01ee: self.Smoother.Reset()
+  0201: goto 0x0217
+  0204: self.Smoother.Reset()
+  0217: Result.LocationAdjustment = ((ConeHit ? HmConeCollisionCameraBehavior.ClosestConeHit(StartLoc, ConeBase) : StartLoc) - Result.Location)
+  025a: Result = HmConeCollisionCameraBehavior.MoveInFrontOfImpenetrableObjects(Result, ConeBase)
+  0270: self.CurrentDistance = obj'Core.Math'.static.VSize(((Result.Location + Result.LocationAdjustment) - ConeBase))
+  02aa: return Result
+  02b0: return return
+  02b6: <eos>
+
+function HmConeCollisionCameraBehavior.MoveInFrontOfImpenetrableObjects  (script 274 bytes)
+  0000: FinalLocation = (Result.Location + Result.LocationAdjustment)
+  0028: ToBase = (obj'Core.Math'.static.Normal((ConeBase - FinalLocation)) * self.MoveInFrontProbeLength)
+  004c: HitActor = obj'HmCameraBehaviorHelper'.static.TraceImpenetrableObjectsOnly(self.OwningActor, (FinalLocation - ToBase), FinalLocation, self.TraceExtent, HitLoc, !self.bIgnorePawns)
+  008d: if !((HitActor != none)) goto 0x0105
+  0098: HitActor = obj'HmCameraBehaviorHelper'.static.TraceImpenetrableObjectsOnly(self.OwningActor, ConeBase, FinalLocation, self.TraceExtent, HitLoc, !self.bIgnorePawns)
+  00d2: if !((HitActor != none)) goto 0x0105
+  00dd: Result.LocationAdjustment = (HitLoc - Result.Location)
+  0105: return Result
+  010b: return return
+  0111: <eos>
+
+function HmConeCollisionCameraBehavior.ConeDistanceFromMedianTrace  (script 95 bytes)
+  0000: HitActor = HmConeCollisionCameraBehavior.TraceCamera(HitLoc, ConeBase, ConeTip, )
+  001c: return ((HitActor == none) ? obj'Core.Math'.static.VSize((ConeTip - ConeBase)) : obj'Core.Math'.static.VSize((HitLoc - ConeBase)))
+  0058: return return
+  005e: <eos>
+
+function HmConeCollisionCameraBehavior.ConeDistanceFromBaseTrace  (script 322 bytes)
+  0000: TipToBase = (ConeBase - ConeTip)
+  0012: TipToBaseSize = obj'Core.Math'.static.VSize(TipToBase)
+  0028: HalfWidth = HmConeCollisionCameraBehavior.GetConeHalfWidth(TipToBaseSize)
+  0039: obj'Core.Math'.static.GetAxes(cast50(TipToBase), Forward, Right, Up)
+  005a: HitActor = HmConeCollisionCameraBehavior.TraceCamera(HitLoc, ConeBase, (ConeBase + (Right * HalfWidth)), )
+  0084: RightHitDist = ((HitActor == none) ? HalfWidth : obj'Core.Math'.static.VSize((HitLoc - ConeBase)))
+  00b3: HitActor = HmConeCollisionCameraBehavior.TraceCamera(HitLoc, ConeBase, (ConeBase - (Right * HalfWidth)), )
+  00dd: LeftHitDist = ((HitActor == none) ? HalfWidth : obj'Core.Math'.static.VSize((HitLoc - ConeBase)))
+  010c: Ratio = (obj'Core.Math'.static.FMin(RightHitDist, LeftHitDist) / HalfWidth)
+  012e: return (TipToBaseSize * Ratio)
+  013b: return return
+  0141: <eos>
+
+function HmConeCollisionCameraBehavior.TraceConeSides  (script 190 bytes)
+  0000: StartToEnd = (End - Start)
+  0012: ConeHalfWidth = HmConeCollisionCameraBehavior.GetConeHalfWidth(obj'Core.Math'.static.VSize(StartToEnd))
+  002e: obj'Core.Math'.static.GetAxes(cast50(StartToEnd), Forward, Right, Up)
+  004f: HitActor = HmConeCollisionCameraBehavior.TraceCamera(HitLoc, Start, (End + (Right * ConeHalfWidth)), )
+  0079: if !((HitActor == none)) goto 0x00ae
+  0084: HitActor = HmConeCollisionCameraBehavior.TraceCamera(HitLoc, Start, (End - (Right * ConeHalfWidth)), )
+  00ae: return (HitActor != none)
+  00b7: return return
+  00bd: <eos>
+
+function HmConeCollisionCameraBehavior.ClosestConeHit  (script 162 bytes)
+  0000: ClosestHit = Start
+  000b: Delta = ((End - Start) / 2.0)
+  0024: (Start += Delta)
+  0030: I = 0
+  0037: if !((I < self.BinarySearchDepth)) goto 0x0095
+  0046: (Delta /= 2.0)
+  0052: if !(HmConeCollisionCameraBehavior.TraceConeSides(Start, End)) goto 0x007f
+  0065: ClosestHit = Start
+  0070: (Start += Delta)
+  007c: goto 0x008b
+  007f: (Start -= Delta)
+  008b: AddAdd_PreInt(I)
+  0092: goto 0x0037
+  0095: return ClosestHit
+  009b: return return
+  00a1: <eos>

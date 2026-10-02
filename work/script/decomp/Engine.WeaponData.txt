@@ -1,0 +1,23 @@
+function WeaponData.CheckForErrors  (script 415 bytes)
+  0000: I = 0
+  0007: if !((I < self.InstantHitDamageTypes.Length)) goto 0x00c7
+  0017: CurrentDamageType = I[self.InstantHitDamageTypes]
+  0028: if !((CurrentDamageType == none)) goto 0x0036
+  0033: goto 0x00bd
+  0036: if !(!CurrentDamageType.static.default.bInstantHit) goto 0x00bd
+  004a: EmitCheckMessage(0, (cast56(CurrentDamageType) @ " is in InstantHitDamageType array but doesn't have Instant Hit flag set. Bug a programmer."), , )
+  00bd: AddAdd_PreInt(I)
+  00c4: goto 0x0007
+  00c7: I = 0
+  00ce: if !((I < self.WeaponProjectiles.Length)) goto 0x019c
+  00de: if !((I[self.WeaponProjectiles] == none)) goto 0x00f2
+  00ef: goto 0x0192
+  00f2: CurrentDamageType = I[self.WeaponProjectiles].static.GetDamageType()
+  0111: if !((CurrentDamageType == none)) goto 0x011f
+  011c: goto 0x0192
+  011f: if !(CurrentDamageType.static.default.bInstantHit) goto 0x0192
+  0131: EmitCheckMessage(0, (cast56(CurrentDamageType) @ " is in Projectiles array but has Instant Hit flag set. Bug a programmer."), , )
+  0192: AddAdd_PreInt(I)
+  0199: goto 0x00ce
+  019c: return nothing
+  019e: <eos>

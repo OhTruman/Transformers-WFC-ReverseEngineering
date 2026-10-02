@@ -1,0 +1,21 @@
+function TnCountdownMessage.ClientReceive  (script 206 bytes)
+  0000: nothing
+  0001: nothing
+  0002: nothing
+  0003: nothing
+  0004: ClientReceive(P, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject)
+  0023: if !((Switch > 0)) goto 0x004c
+  002e: P.ClientPlaySound(3[default.CountdownSounds])
+  0049: goto 0x00cb
+  004c: if !((Switch == 0)) goto 0x00cb
+  0057: if !((P.PlayerReplicationInfo.Team != none)) goto 0x00b0
+  0074: P.ClientPlaySound(P.PlayerReplicationInfo.Team.TeamIndex[default.CountdownSounds])
+  00ad: goto 0x00cb
+  00b0: P.ClientPlaySound(2[default.CountdownSounds])
+  00cb: return nothing
+  00cd: <eos>
+
+function TnCountdownMessage.GetDefaultSound  (script 19 bytes)
+  0000: return Index[default.CountdownSounds]
+  000c: return return
+  0012: <eos>

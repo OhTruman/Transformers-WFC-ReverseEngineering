@@ -1,0 +1,16 @@
+function TnHudDataObserverIncreaseDamage.CheckData  (script 163 bytes)
+  0000: if !((PC == none)) goto 0x000d
+  000b: return nothing
+  000d: BuffService = TnBuffService(PC.GetService('TnBuffService'))
+  0034: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x004a
+  0048: return nothing
+  004a: IncreaseDamageType = 0
+  0052: foreach self.IncreaseDamageBuffs(Buff,) (end 0x0089)
+  0061: if !(BuffService.HasBuff(Buff)) goto 0x0088
+  007d: IncreaseDamageType = 1
+  0085: goto 0x0089
+  0088: iternext
+  0089: iterpop
+  008a: ProcessNewValue(Movie, cast3c(IncreaseDamageType))
+  00a0: return nothing
+  00a2: <eos>

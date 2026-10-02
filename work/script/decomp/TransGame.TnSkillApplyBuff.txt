@@ -1,0 +1,10 @@
+function TnSkillApplyBuff.ApplySkill  (script 147 bytes)
+  0000: ServiceProvider = TnServiceProvider(PC.Pawn)
+  0019: if !(EqualEqual_InterfaceInterface(ServiceProvider, TnServiceProvider(none))) goto 0x002f
+  002d: return nothing
+  002f: BuffService = TnBuffService(ServiceProvider.GetService('TnBuffService'))
+  0057: if !(EqualEqual_InterfaceInterface(BuffService, TnBuffService(none))) goto 0x006d
+  006b: return nothing
+  006d: BuffService.AddBuff(default.BuffToApply, Level, PC)
+  0090: return nothing
+  0092: <eos>

@@ -1,0 +1,15 @@
+function TnAnimNotify_UnequipMeleeWeapon.Notify  (script 71 bytes)
+  0000: MeleeService = TnAnimNotify_UnequipMeleeWeapon.GetMeleeService(AnimSeqInstigator)
+  0011: if !(NotEqual_InterfaceInterface(MeleeService, TnMeleeService(none))) goto 0x0039
+  0025: MeleeService.UnequipMeleeWeapon()
+  0039: Notify(AnimSeqInstigator)
+  0044: return nothing
+  0046: <eos>
+
+function TnAnimNotify_UnequipMeleeWeapon.GetMeleeService  (script 98 bytes)
+  0000: Services = TnServiceProvider(AnimSeq.SkelComponent.Owner)
+  0022: if !(EqualEqual_InterfaceInterface(Services, TnServiceProvider(none))) goto 0x0038
+  0036: return none
+  0038: return TnMeleeService(Services.GetService('TnMeleeService'))
+  005b: return return
+  0061: <eos>

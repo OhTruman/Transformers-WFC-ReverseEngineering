@@ -1,0 +1,26 @@
+function SeqCond_GameType.Activated  (script 171 bytes)
+  0000: WI = GetWorldInfo()
+  0010: if !(((WI == none) || (WI.Game == none))) goto 0x0039
+  0031: SeqCond_GameType.DoesNotMatch()
+  0037: return nothing
+  0039: if !((self.AllowChildTypes && ClassIsChildOf(WI.Game.get_Class(), self.GameType))) goto 0x006d
+  0064: SeqCond_GameType.DoesMatch()
+  006a: goto 0x00a8
+  006d: if !((!self.AllowChildTypes && (WI.Game.get_Class() == self.GameType))) goto 0x00a2
+  0099: SeqCond_GameType.DoesMatch()
+  009f: goto 0x00a8
+  00a2: SeqCond_GameType.DoesNotMatch()
+  00a8: return nothing
+  00aa: <eos>
+
+function SeqCond_GameType.DoesMatch  (script 45 bytes)
+  0000: 0[self.OutputLinks].bHasImpulse = true
+  0015: 1[self.OutputLinks].bHasImpulse = false
+  002a: return nothing
+  002c: <eos>
+
+function SeqCond_GameType.DoesNotMatch  (script 45 bytes)
+  0000: 0[self.OutputLinks].bHasImpulse = false
+  0015: 1[self.OutputLinks].bHasImpulse = true
+  002a: return nothing
+  002c: <eos>

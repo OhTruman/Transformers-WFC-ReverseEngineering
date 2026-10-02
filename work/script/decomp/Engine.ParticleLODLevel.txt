@@ -1,0 +1,77 @@
+function ParticleLODLevel.GetParticleSystem  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleLODLevel.GetEmitter  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleLODLevel.PostModulesChanged  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function ParticleLODLevel.CheckForErrors  (script 3038 bytes)
+  0000: CheckForErrors()
+  0006: self.RequiredModule.CheckForErrors()
+  0019: foreach self.Modules(Module,) (end 0x04e8)
+  0028: Module.CheckForErrors()
+  003b: if !((ParticleModuleSubUVBase(Module) != none)) goto 0x0166
+  004b: bHasSubUVModule = true
+  0053: if !((DuplicateSubUVModules.Find(Module.get_Class()) != -1)) goto 0x0147
+  0071: EmitCheckMessage(0, (((((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has more than one subUV module of type") @ cast56(Module.get_Class())) @ "which is unsupported."), , )
+  0144: goto 0x0163
+  0147: (DuplicateSubUVModules.Length - 1)[DuplicateSubUVModules] = Module.get_Class()
+  0163: goto 0x04e7
+  0166: if !((ParticleModuleTrailBase(Module) != none)) goto 0x0291
+  0176: bHasTrailModules = true
+  017e: if !((DuplicateTrailModules.Find(Module.get_Class()) != -1)) goto 0x0272
+  019c: EmitCheckMessage(0, (((((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has more than one trail module of type") @ cast56(Module.get_Class())) @ "which is unsupported."), , )
+  026f: goto 0x028e
+  0272: (DuplicateTrailModules.Length - 1)[DuplicateTrailModules] = Module.get_Class()
+  028e: goto 0x04e7
+  0291: if !((ParticleModuleBeamBase(Module) != none)) goto 0x03bb
+  02a1: bHasBeamModules = true
+  02a9: if !((DuplicateBeamModules.Find(Module.get_Class()) != -1)) goto 0x039c
+  02c7: EmitCheckMessage(0, (((((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has more than one beam module of type") @ cast56(Module.get_Class())) @ "which is unsupported."), , )
+  0399: goto 0x03b8
+  039c: (DuplicateBeamModules.Length - 1)[DuplicateBeamModules] = Module.get_Class()
+  03b8: goto 0x04e7
+  03bb: if !((ParticleModuleDynamicParameter(Module) != none)) goto 0x04ab
+  03cb: if !(bHasDynamicParameterModule) goto 0x04a0
+  03d4: EmitCheckMessage(0, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has more than one dynamic parameter module of type which is unsupported."), , )
+  04a0: bHasDynamicParameterModule = true
+  04a8: goto 0x04e7
+  04ab: if !((((ParticleModuleMeshRotation(Module) != none) || (ParticleModuleMeshRotationRate(Module) != none)) || (ParticleModuleMeshRotationRateMultiplyLife(Module) != none))) goto 0x04e7
+  04df: bHasMeshRotationModules = true
+  04e7: iternext
+  04e8: iterpop
+  04e9: if !((none != self.TypeDataModule)) goto 0x091a
+  04f4: self.TypeDataModule.CheckForErrors()
+  0507: MeshModule = ParticleModuleTypeDataMesh(self.TypeDataModule)
+  0517: if !((none != MeshModule)) goto 0x0535
+  0522: ParticleLODLevel.CheckMeshModule(MeshModule, self.PeakActiveParticles)
+  0532: goto 0x0764
+  0535: if !(bHasSubUVModule) goto 0x064a
+  053e: EmitCheckMessage(1, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has one or more subUV modules, which is unsupported for emitters other than sprite and mesh emitters. Please remove the subUV module(s)."), , )
+  064a: if !(bHasMeshRotationModules) goto 0x0764
+  0653: EmitCheckMessage(1, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has one or more mesh rotation modules, which is unsupported for emitters other than mesh emitters. Please remove the mesh rotation module(s)."), , )
+  0764: if !((bHasTrailModules && (none == ParticleModuleTypeDataTrail2(self.TypeDataModule)))) goto 0x0840
+  077f: EmitCheckMessage(0, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has one or more trail modules, but no trail type data module."), , )
+  0840: if !((bHasBeamModules && (none == ParticleModuleTypeDataBeam2(self.TypeDataModule)))) goto 0x091a
+  085b: EmitCheckMessage(0, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "has one or more beam modules, but no beam type data module."), , )
+  091a: if !(((cast3a(self.RequiredModule.InterpolationMethod) != cast3a(0)) && !bHasSubUVModule)) goto 0x0a73
+  0940: EmitCheckMessage(1, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "uses an interpolation method other than PSUVIM_None, which indicates a subUV emitter, but there are no subUV modules in the emitter. Resetting to PSUVIM_None."), , )
+  0a62: self.RequiredModule.InterpolationMethod = 0
+  0a73: if !(((cast3a(self.RequiredModule.InterpolationMethod) == cast3a(0)) && bHasSubUVModule)) goto 0x0bdb
+  0a97: EmitCheckMessage(1, (((((("Emitter" @ cast57(GetEmitter().EmitterName)) @ "of particle system") @ PathName(GetEmitter().GetParticleSystem())) $ ", LOD level") @ cast53(self.LevelSetting)) @ "uses interpolation method PSUVIM_None, which indicates it's not a subUV emitter, but there are subUV modules in the emitter. Please remove the subUV modules or change the interpolation method."), , )
+  0bdb: return nothing
+  0bdd: <eos>
+
+function ParticleLODLevel.CheckMeshModule  (script 220 bytes)
+  0000: MaxAllowed = 1000
+  000b: NumVertices = MeshModule.GetNumMeshVertices()
+  0024: Total = (Peak * NumVertices)
+  0036: if !((Total > MaxAllowed)) goto 0x00d9
+  0045: EmitCheckMessage(1, ((((((((((("Mesh " $ cast56(MeshModule.Mesh)) $ ": ") $ cast53(NumVertices)) $ " verts X ") $ cast53(Peak)) $ " particles = ") $ cast53(Total)) $ " excedes ") $ cast53(MaxAllowed)) $ " by ") $ cast53((Total - MaxAllowed))), , )
+  00d9: return nothing
+  00db: <eos>

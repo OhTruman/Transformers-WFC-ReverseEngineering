@@ -1,0 +1,162 @@
+function HmProjectile.get_FlightSoundComponent  (script 13 bytes)
+  0000: return self._FlightSoundComponent
+  0006: return return
+  000c: <eos>
+
+function HmProjectile.get_SpawnsFromNonPawn  (script 28 bytes)
+  0000: return HmProjectileMesh(self.Mesh).SpawnsFromNonPawn
+  0015: return return
+  001b: <eos>
+
+function HmProjectile.ReplicatedEvent  (script 73 bytes)
+  0000: switch (VarName)
+  0007: case 'Instigator': (next 0x0038)
+  0013: if !(((self.Instigator != none) && !get_SpawnsFromNonPawn())) goto 0x0035
+  002f: HmProjectile.ClientSpawnFlightEffect()
+  0035: goto 0x003b
+  0038: default:
+  003b: ReplicatedEvent(VarName)
+  0046: return nothing
+  0048: <eos>
+
+function HmProjectile.GetGravityZ  (script 35 bytes)
+  0000: return (HmProjectileData(self.Data).GravityScale * GetGravityZ())
+  001c: return return
+  0022: <eos>
+
+function HmProjectile.UpdateMesh  (script 103 bytes)
+  0000: UpdateMesh()
+  0006: PM = HmProjectileMesh(self.Mesh)
+  0016: if !((PM.StaticMesh != none)) goto 0x0064
+  002a: foreach ComponentList(obj'Engine.StaticMeshComponent', SMC) (end 0x0063)
+  0041: SMC.SetStaticMesh(PM.StaticMesh)
+  0062: iternext
+  0063: iterpop
+  0064: return nothing
+  0066: <eos>
+
+function HmProjectile.PostBeginPlay  (script 46 bytes)
+  0000: PostBeginPlay()
+  0006: if !(((cast3a(self.Role) < cast3a(3)) && get_SpawnsFromNonPawn())) goto 0x002b
+  0025: HmProjectile.ClientSpawnFlightEffect()
+  002b: return nothing
+  002d: <eos>
+
+function HmProjectile.Init  (script 20 bytes)
+  0000: Init(Direction)
+  000b: HmProjectile.ClientSpawnFlightEffect()
+  0011: return nothing
+  0013: <eos>
+
+function HmProjectile.ClientSpawnFlightEffect  (script 246 bytes)
+  0000: if !((self.Mesh == none)) goto 0x000d
+  000b: return nothing
+  000d: if !((cast3a(self.WorldInfo.NetMode) != cast3a(1))) goto 0x00f3
+  0026: if !((HmProjectileMesh(self.Mesh).FlightEffect != none)) goto 0x0094
+  003f: self.FlightPSC = CreateFlightEffect()
+  0054: AttachComponent(self.FlightPSC)
+  0063: self.FlightPSC.SetTemplate(HmProjectileMesh(self.Mesh).FlightEffect)
+  0089: HmProjectile.OnParticleSystemCreated(self.FlightPSC)
+  0094: if !((HmProjectileMesh(self.Mesh).FlightSound != none)) goto 0x00f3
+  00ad: self._FlightSoundComponent = CreateAudioComponent(HmProjectileMesh(self.Mesh).FlightSound, false, true, , , )
+  00d5: if !((none != self._FlightSoundComponent)) goto 0x00f3
+  00e0: self._FlightSoundComponent.Play()
+  00f3: return nothing
+  00f5: <eos>
+
+function HmProjectile.Landed  (script 39 bytes)
+  0000: Landed(HitNormal, FloorActor)
+  0010: Explode(self.Location, HitNormal)
+  0024: return nothing
+  0026: <eos>
+
+function HmProjectile.Explode  (script 58 bytes)
+  0000: if !(!self.bExploded) goto 0x0037
+  000b: self.bExploded = true
+  0013: PlayExplosion(HitLocation, HitNormal)
+  0027: Explode(HitLocation, HitNormal)
+  0037: return nothing
+  0039: <eos>
+
+function HmProjectile.PlayExplosion  (script 19 bytes)
+  0000: HmProjectile.SpawnExplosionEffect(HitLocation, HitNormal)
+  0010: return nothing
+  0012: <eos>
+
+function HmProjectile.CreateFlightEffect  (script 22 bytes)
+  0000: return new(self, nothing, obj'Engine.ParticleSystemComponent', nothing, AttachTreeCallback)
+  000f: return return
+  0015: <eos>
+
+function HmProjectile.SpawnExplosionEffect  (script 273 bytes)
+  0000: if !((cast3a(self.WorldInfo.NetMode) != cast3a(1))) goto 0x010e
+  0019: if !(((self.ExplosionPSC == none) && (HmProjectileMesh(self.Mesh).ExplosionEffect != none))) goto 0x0093
+  003f: self.ExplosionPSC = self.WorldInfo.GetEmitterPool().SpawnEmitter(HmProjectileMesh(self.Mesh).ExplosionEffect, HitLocation, cast50(HitNormal), , , )
+  0088: HmProjectile.OnParticleSystemCreated(self.ExplosionPSC)
+  0093: if !((none != self._FlightSoundComponent)) goto 0x00d3
+  009e: self._FlightSoundComponent.bAutoDestroy = true
+  00af: self._FlightSoundComponent.FadeOut(0.25, 0.0)
+  00cc: self._FlightSoundComponent = none
+  00d3: if !((HmProjectileMesh(self.Mesh).ExplosionSound != none)) goto 0x010e
+  00ec: PlaySound(HmProjectileMesh(self.Mesh).ExplosionSound, true, , , , )
+  010e: return nothing
+  0110: <eos>
+
+function HmProjectile.IsExploding  (script 14 bytes)
+  0000: return self.bExploded
+  0007: return return
+  000d: <eos>
+
+function HmProjectile.HideProjectile  (script 48 bytes)
+  0000: foreach ComponentList(obj'Engine.MeshComponent', Component) (end 0x002c)
+  0017: Component.SetHidden(true)
+  002b: iternext
+  002c: iterpop
+  002d: return nothing
+  002f: <eos>
+
+function HmProjectile.Destroyed  (script 64 bytes)
+  0000: if !(!self.WorldInfo.IsInEditor()) goto 0x0037
+  0018: self.FlightPSC = none
+  001f: Explode(self.Location, -cast39(self.Rotation))
+  0037: Destroyed()
+  003d: return nothing
+  003f: <eos>
+
+function HmProjectile.DestroyProjectile  (script 143 bytes)
+  0000: if !((cast3a(self.Role) == cast3a(3))) goto 0x0018
+  0010: self.bTearOff = true
+  0018: if !(HmProjectileMesh(self.Mesh).bWaitForFlightEffect) goto 0x0086
+  002f: if !((self.FlightPSC != none)) goto 0x0065
+  003a: self.FlightPSC.__OnSystemFinished__Delegate = delegate.OnFlightSystemFinished
+  0052: self.FlightPSC.DeactivateSystem()
+  0065: SetPhysics(0, , )
+  0073: SetCollision(false, false, )
+  0079: HideProjectile()
+  0083: goto 0x008c
+  0086: DestroyProjectile()
+  008c: return nothing
+  008e: <eos>
+
+function HmProjectile.OnParticleSystemCreated  (script 67 bytes)
+  0000: if !((HmProjectileMesh(self.Mesh).Parameters != none)) goto 0x0040
+  0019: HmProjectileMesh(self.Mesh).Parameters.Apply(PSC, self)
+  0040: return nothing
+  0042: <eos>
+
+function HmProjectile.OnFlightSystemFinished  (script 6 bytes)
+  0000: DestroyActor()
+  0003: return nothing
+  0005: <eos>
+
+function HmProjectile.TornOff  (script 33 bytes)
+  0000: Explode(self.Location, -cast39(self.Rotation))
+  0018: TornOff()
+  001e: return nothing
+  0020: <eos>
+
+function HmProjectile.HitWall  (script 58 bytes)
+  0000: HitWall(HitNormal, Wall, HitInfo)
+  0015: PlaySound(HmProjectileMesh(self.Mesh).BounceSound, true, , , , )
+  0037: return nothing
+  0039: <eos>

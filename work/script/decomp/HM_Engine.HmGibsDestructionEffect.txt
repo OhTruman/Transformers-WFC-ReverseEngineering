@@ -1,0 +1,33 @@
+function HmGibsDestructionEffect.AddMeshTemplate  (script 16 bytes)
+  0000: self.MeshTemplates.AddItem(MeshTemplate_)
+  000d: return nothing
+  000f: <eos>
+
+function HmGibsDestructionEffect.GetMeshTemplate  (script 50 bytes)
+  0000: Index = obj'Core.Random'.static.RandomInt(self.MeshTemplates.Length)
+  001f: return Index[self.MeshTemplates]
+  002b: return return
+  0031: <eos>
+
+function HmGibsDestructionEffect.OnDebrisSpawned  (script 127 bytes)
+  0000: AttachingActor = GetAttachingActor()
+  0010: Mesh = AttachingActor.FindComponent(obj'Engine.MeshComponent')
+  002e: if !(Mesh.GetVectorParam('Cust_Color_A', CharacterColor)) goto 0x007c
+  0052: DebrisChunk.StaticMeshComponent.SetVectorParam('Cust_Color_A', CharacterColor)
+  007c: return nothing
+  007e: <eos>
+
+function HmGibsDestructionEffect.GetNumberOfChunks  (script 75 bytes)
+  0000: switch (GetGameThrottle())
+  000c: case 4: (next 0x0013)
+  0011: return 0
+  0013: case 3: (next 0x0022)
+  0018: return (self.NumChunks / 4)
+  0022: case 2: (next 0x0031)
+  0027: return (self.NumChunks / 2)
+  0031: case 1: (next 0x0036)
+  0036: case 0: (next 0x003b)
+  003b: default:
+  003e: return self.NumChunks
+  0044: return return
+  004a: <eos>

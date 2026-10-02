@@ -1,0 +1,14 @@
+function TnAnimNotify_ApplyDecal.Notify  (script 201 bytes)
+  0000: if !((AnimSeqInstigator.SkelComponent == none)) goto 0x0016
+  0014: return nothing
+  0016: OwnerActor = AnimSeqInstigator.SkelComponent.Owner
+  0033: if !((OwnerActor == none)) goto 0x0040
+  003e: return nothing
+  0040: if !(self.UseBoneLocation) goto 0x0074
+  0049: TraceLocation = AnimSeqInstigator.SkelComponent.GetBoneLocation(self.BoneName, )
+  0071: goto 0x0088
+  0074: TraceLocation = OwnerActor.Location
+  0088: WorldSpaceMomentum = (self.Momentum >> OwnerActor.Rotation)
+  00a4: self.DecalApplicator.Apply(OwnerActor, TraceLocation, WorldSpaceMomentum)
+  00c6: return nothing
+  00c8: <eos>

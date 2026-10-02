@@ -1,0 +1,186 @@
+function AccessControl.IsAdmin  (script 89 bytes)
+  0000: if !((P != none)) goto 0x0050
+  000b: if !((Admin(P) != none)) goto 0x001d
+  001b: return true
+  001d: if !(((P.PlayerReplicationInfo != none) && P.PlayerReplicationInfo.bAdmin)) goto 0x0050
+  004e: return true
+  0050: return false
+  0052: return return
+  0058: <eos>
+
+function AccessControl.SetAdminPassword  (script 20 bytes)
+  0000: self.AdminPassword = P
+  000b: return true
+  000d: return return
+  0013: <eos>
+
+function AccessControl.SetGamePassword  (script 42 bytes)
+  0000: self.GamePassword = P
+  000b: self.WorldInfo.Game.UpdateGameSettings()
+  0027: return nothing
+  0029: <eos>
+
+function AccessControl.RequiresPassword  (script 17 bytes)
+  0000: return (self.GamePassword != "")
+  000a: return return
+  0010: <eos>
+
+function AccessControl.Kick  (script 270 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'Controller', C) (end 0x010a)
+  0020: if !((((C.PlayerReplicationInfo != none) && (C.PlayerReplicationInfo.PlayerName ~= S)) || (C.PlayerReplicationInfo.GetPlayerAlias() ~= S))) goto 0x0109
+  007f: if !((PlayerController(C) != none)) goto 0x00ab
+  008f: KickPlayer(PlayerController(C), self.DefaultKickReason)
+  00a8: goto 0x0106
+  00ab: if !(C.PlayerReplicationInfo.bBot) goto 0x0106
+  00c6: if !((C.Pawn != none)) goto 0x00ef
+  00da: C.Pawn.DestroyActor()
+  00ef: if !((C != none)) goto 0x0106
+  00fa: C.DestroyActor()
+  0106: goto 0x010a
+  0109: iternext
+  010a: iterpop
+  010b: return nothing
+  010d: <eos>
+
+function AccessControl.KickBan  (script 457 bytes)
+  0000: foreach self.WorldInfo.AllControllers(obj'PlayerController', P) (end 0x01c5)
+  0020: if !((((P.PlayerReplicationInfo.PlayerName ~= S) || (P.PlayerReplicationInfo.GetPlayerAlias() ~= S)) && (NetConnection(P.Player) != none))) goto 0x01c4
+  0084: if !(!self.WorldInfo.IsConsoleBuild()) goto 0x012d
+  009d: IP = P.GetPlayerNetworkAddress()
+  00b6: if !(AccessControl.CheckIPPolicy(IP)) goto 0x012d
+  00c4: IP = obj'Core.Strings'.static.Left(IP, obj'Core.Strings'.static.InStr(IP, ":", ))
+  00ee: LogInternal(("Adding IP Ban for: " $ IP), , , )
+  010f: self.IPPolicies.Length[self.IPPolicies] = ("DENY," $ IP)
+  012a: SaveConfig()
+  012d: if !(((P.PlayerReplicationInfo.UniqueId != P.PlayerReplicationInfo.default.UniqueId) && !IsIDBanned(P.PlayerReplicationInfo.UniqueId))) goto 0x01ad
+  018b: self.BannedIDs.AddItem(P.PlayerReplicationInfo.UniqueId)
+  01aa: SaveConfig()
+  01ad: KickPlayer(P, self.DefaultKickReason)
+  01c1: iterpop
+  01c2: return nothing
+  01c4: iternext
+  01c5: iterpop
+  01c6: return nothing
+  01c8: <eos>
+
+function AccessControl.KickPlayer  (script 184 bytes)
+  0000: if !((((C != none) && !IsAdmin(C)) && (NetConnection(C.Player) != none))) goto 0x00af
+  003c: C.ClientWasKicked(1)
+  0051: if !((C.Pawn != none)) goto 0x0096
+  0065: C.Pawn.PrePlayerKicked()
+  0081: C.Pawn.DestroyActor()
+  0096: if !((C != none)) goto 0x00ad
+  00a1: C.DestroyActor()
+  00ad: return true
+  00af: return false
+  00b1: return return
+  00b7: <eos>
+
+function AccessControl.AdminLogin  (script 66 bytes)
+  0000: if !((self.AdminPassword == "")) goto 0x000e
+  000c: return false
+  000e: if !((Password == self.AdminPassword)) goto 0x0039
+  001d: P.PlayerReplicationInfo.bAdmin = true
+  0037: return true
+  0039: return false
+  003b: return return
+  0041: <eos>
+
+function AccessControl.AdminLogout  (script 100 bytes)
+  0000: if !(P.PlayerReplicationInfo.bAdmin) goto 0x005b
+  001b: P.PlayerReplicationInfo.bAdmin = false
+  0035: P.bGodMode = false
+  0046: P.Suicide()
+  0059: return true
+  005b: return false
+  005d: return return
+  0063: <eos>
+
+function AccessControl.AdminEntered  (script 126 bytes)
+  0000: LoginString = (P.PlayerReplicationInfo.GetPlayerAlias() @ "logged in as a server administrator.")
+  004a: LogInternal(LoginString, , , )
+  0054: self.WorldInfo.Game.Broadcast(P, LoginString, )
+  007b: return nothing
+  007d: <eos>
+
+function AccessControl.AdminExited  (script 139 bytes)
+  0000: LogoutString = (P.PlayerReplicationInfo.GetPlayerAlias() $ "is no longer logged in as a server administrator.")
+  0057: LogInternal(LogoutString, , , )
+  0061: self.WorldInfo.Game.Broadcast(P, LogoutString, )
+  0088: return nothing
+  008a: <eos>
+
+function AccessControl.ParseAdminOptions  (script 105 bytes)
+  0000: InPassword = obj'Core.Strings'.static.ParseOption(Options, "Password")
+  0028: InAdminName = obj'Core.Strings'.static.ParseOption(Options, "AdminName")
+  0051: return AccessControl.ValidLogin(InAdminName, InPassword)
+  0062: return return
+  0068: <eos>
+
+function AccessControl.ValidLogin  (script 34 bytes)
+  0000: return ((self.AdminPassword != "") && (Password == self.AdminPassword))
+  001b: return return
+  0021: <eos>
+
+function AccessControl.PreLogin  (script 324 bytes)
+  0000: OutError = ""
+  0008: InPassword = obj'Core.Strings'.static.ParseOption(Options, "Password")
+  0030: if !(((cast3a(self.WorldInfo.NetMode) != cast3a(0)) && self.WorldInfo.Game.AtCapacity(bSpectator))) goto 0x0099
+  0070: OutError = self.WorldInfo.Game.GameMessageClass.static.default.MaxedOutMessage
+  0096: goto 0x0126
+  0099: if !((((self.GamePassword != "") && (obj'Core.Strings'.static.Caps(InPassword) != obj'Core.Strings'.static.Caps(self.GamePassword))) && ((self.AdminPassword == "") || (obj'Core.Strings'.static.Caps(InPassword) != obj'Core.Strings'.static.Caps(self.AdminPassword))))) goto 0x0126
+  0101: if !((InPassword == "")) goto 0x011b
+  010d: OutError = self.NeedPassword
+  0118: goto 0x0126
+  011b: OutError = self.WrongPassword
+  0126: if !(!AccessControl.CheckIPPolicy(Address)) goto 0x0141
+  0136: OutError = self.IPBanned
+  0141: return nothing
+  0143: <eos>
+
+function AccessControl.CheckIPPolicy  (script 536 bytes)
+  0000: J = obj'Core.Strings'.static.InStr(Address, ":", )
+  001a: if !((J != -1)) goto 0x0044
+  0029: Address = obj'Core.Strings'.static.Left(Address, J)
+  0044: bAcceptAddress = true
+  004c: I = 0
+  0053: if !((I < self.IPPolicies.Length)) goto 0x01ba
+  0063: J = obj'Core.Strings'.static.InStr(I[self.IPPolicies], ",", )
+  0083: if !((J == -1)) goto 0x0095
+  0092: goto 0x01b0
+  0095: Policy = obj'Core.Strings'.static.Left(I[self.IPPolicies], J)
+  00b6: Mask = obj'Core.Strings'.static.Mid(I[self.IPPolicies], (J + 1), )
+  00db: if !((Policy ~= "ACCEPT")) goto 0x00f8
+  00ed: bAcceptPolicy = true
+  00f5: goto 0x0116
+  00f8: if !((Policy ~= "DENY")) goto 0x0113
+  0108: bAcceptPolicy = false
+  0110: goto 0x0116
+  0113: goto 0x01b0
+  0116: J = obj'Core.Strings'.static.InStr(Mask, "*", )
+  0130: if !((J != -1)) goto 0x0189
+  013f: if !((obj'Core.Strings'.static.Left(Mask, J) == obj'Core.Strings'.static.Left(Address, J))) goto 0x0186
+  016e: bAcceptAddress = bAcceptPolicy
+  017b: LastMatchingPolicy = I
+  0186: goto 0x01b0
+  0189: if !((Mask == Address)) goto 0x01b0
+  0198: bAcceptAddress = bAcceptPolicy
+  01a5: LastMatchingPolicy = I
+  01b0: AddAdd_Int(I)
+  01b7: goto 0x0053
+  01ba: if !(!bAcceptAddress) goto 0x020a
+  01c5: LogInternal(((("Denied connection for " $ Address) $ " with IP policy ") $ LastMatchingPolicy[self.IPPolicies]), , , )
+  020a: return bAcceptAddress
+  0211: return return
+  0217: <eos>
+
+function AccessControl.IsIDBanned  (script 68 bytes)
+  0000: I = 0
+  0007: if !((I < self.BannedIDs.Length)) goto 0x003b
+  0017: if !((I[self.BannedIDs] == NetId)) goto 0x0031
+  002f: return true
+  0031: AddAdd_Int(I)
+  0038: goto 0x0007
+  003b: return false
+  003d: return return
+  0043: <eos>
