@@ -1,4 +1,17 @@
-=== refs 0x837087ec
-  ref 837087ec WRITE from 835e03c0 in Function_835E02B8@835e02b8
-=== refs 0x837087e8
-=== refs 0x837087f0
+=== dis 0x827a8fb8 16
+  827a8fb8  mfspr r12,LR
+  827a8fbc  stw r12,-0x8(r1)
+  827a8fc0  std r31,-0x10(r1)
+  827a8fc4  stwu r1,-0x60(r1)
+  827a8fc8  or r31,r3,r3
+  827a8fcc  cmplwi cr6,r3,0x0
+  827a8fd0  beq cr6,0x827a8fe4
+  827a8fd4  bl 0x82b84430
+  827a8fd8  lis r11,-0x7df6
+  827a8fdc  addi r10,r11,0x7a00
+  827a8fe0  stw r10,0x0(r31)
+  827a8fe4  addi r1,r1,0x60
+  827a8fe8  lwz r12,-0x8(r1)
+  827a8fec  mtspr LR,r12
+  827a8ff0  ld r31,-0x10(r1)
+  827a8ff4  blr
