@@ -19,3 +19,6 @@ Added in the step-up/ledge pass:
 | `scan_natives_full.py` | full `int<Class>exec<Func>` native table scan → `data/native_functions_full.tsv` (2451 entries); unresolved slots were filled by emulating their CRT initializers with `xcemu.Emu` |
 | `WfcQuery.java` extra commands | `named`, `comments`, `bookmarks`, `labels <substr>` (import labels such as `__imp__NetDll_XNet*` survive in the snapshot) |
 | `rpc_dump.py` | list every UnrealScript RPC (FUNC_Net) with side/reliability → `data/rpcs.tsv` |
+
+Added in Milestone 03:
+| `WfcQuery.java dis <addr> <n>` | disassemble undefined bytes in memory only (snapshot opened `-readOnly`, never saved). Use it for vtable targets Ghidra never disassembled |

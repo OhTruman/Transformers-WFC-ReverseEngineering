@@ -93,6 +93,16 @@ public class WfcQuery extends GhidraScript {
                     }
                     break;
                 }
+                case "dis": {
+                    // disassemble undefined bytes in memory only (project is opened -readOnly; never saved)
+                    Address a = A(p[1]);
+                    int n = p.length > 2 ? Integer.parseInt(p[2]) : 40;
+                    new ghidra.app.cmd.disassemble.DisassembleCommand(a, null, true).applyTo(currentProgram, monitor);
+                    Instruction ins = L.getInstructionAt(a);
+                    for (int i = 0; i < n && ins != null; i++, ins = ins.getNext())
+                        out.printf("  %s  %s%n", ins.getAddress(), ins);
+                    break;
+                }
                 case "named": {
                     // user-named functions (prior manual labels), optional substring filter
                     String needle = p.length > 1 ? p[1].toLowerCase() : "";
