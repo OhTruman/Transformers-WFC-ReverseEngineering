@@ -1,0 +1,148 @@
+// Batch read-only query tool for the WFC snapshot project (used while ReVa is unavailable).
+// Usage (headless, -readOnly): -postScript WfcQuery.java <queries.txt> <out.txt>
+// Query lines:
+//   refs <addr>            references to addr (with containing function)
+//   decomp <addr>          decompile function containing addr
+//   strs <substring>       defined strings containing substring, plus refs to each
+//   func <addr>            function name/body range/callers/callees
+//   asm <addr> <count>     disassembly listing
+//@category WFC
+
+import ghidra.app.script.GhidraScript;
+import ghidra.app.decompiler.*;
+import ghidra.program.model.address.*;
+import ghidra.program.model.listing.*;
+import ghidra.program.model.symbol.*;
+import ghidra.program.model.data.StringDataInstance;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+public class WfcQuery extends GhidraScript {
+    PrintWriter out;
+    DecompInterface di;
+
+    Address A(String s) { return toAddr(Long.parseLong(s.replace("0x", ""), 16)); }
+
+    String fname(Address a) {
+        Function f = getFunctionContaining(a);
+        return f == null ? "<nofunc>" : f.getName() + "@" + f.getEntryPoint();
+    }
+
+    void refs(Address a) {
+        for (Reference r : getReferencesTo(a))
+            out.printf("  ref %s %s from %s in %s%n", a, r.getReferenceType(), r.getFromAddress(), fname(r.getFromAddress()));
+    }
+
+    @Override
+    public void run() throws Exception {
+        String[] args = getScriptArgs();
+        List<String> qs = Files.readAllLines(Paths.get(args[0]));
+        out = new PrintWriter(new FileWriter(args[1]));
+        di = new DecompInterface();
+        di.openProgram(currentProgram);
+        Listing L = currentProgram.getListing();
+        for (String q : qs) {
+            q = q.trim();
+            if (q.isEmpty() || q.startsWith("#")) continue;
+            String[] p = q.split("\\s+", 3);
+            out.println("=== " + q);
+            try {
+                switch (p[0]) {
+                case "refs": refs(A(p[1])); break;
+                case "func": {
+                    Function f = getFunctionContaining(A(p[1]));
+                    if (f == null) { out.println("  no function"); break; }
+                    out.printf("  %s entry=%s body=%s%n", f.getName(), f.getEntryPoint(), f.getBody());
+                    for (Function c : f.getCallingFunctions(monitor)) out.println("  caller " + c.getName() + "@" + c.getEntryPoint());
+                    for (Function c : f.getCalledFunctions(monitor)) out.println("  callee " + c.getName() + "@" + c.getEntryPoint());
+                    refs(f.getEntryPoint());
+                    break;
+                }
+                case "decomp": {
+                    Function f = getFunctionContaining(A(p[1]));
+                    if (f == null) { out.println("  no function"); break; }
+                    DecompileResults r = di.decompileFunction(f, 120, monitor);
+                    out.println(r.decompileCompleted() ? r.getDecompiledFunction().getC() : "  FAILED " + r.getErrorMessage());
+                    break;
+                }
+                case "asm": {
+                    Address a = A(p[1]);
+                    int n = p.length > 2 ? Integer.parseInt(p[2]) : 40;
+                    Instruction ins = L.getInstructionAt(a);
+                    if (ins == null) ins = L.getInstructionAfter(a);
+                    for (int i = 0; i < n && ins != null; i++, ins = ins.getNext()) {
+                        StringBuilder sb = new StringBuilder();
+                        for (Reference r : ins.getReferencesFrom()) sb.append(" ->").append(r.getToAddress());
+                        out.printf("  %s  %s%s%n", ins.getAddress(), ins, sb);
+                    }
+                    break;
+                }
+                case "strs": {
+                    String needle = q.substring(5).trim();
+                    DataIterator it = L.getDefinedData(true);
+                    int n = 0;
+                    while (it.hasNext() && n < 400) {
+                        Data d = it.next();
+                        if (!d.hasStringValue()) continue;
+                        Object v = d.getValue();
+                        if (v == null || !v.toString().contains(needle)) continue;
+                        n++;
+                        out.printf("  str %s \"%s\"%n", d.getAddress(), v);
+                        refs(d.getAddress());
+                    }
+                    break;
+                }
+                case "named": {
+                    // user-named functions (prior manual labels), optional substring filter
+                    String needle = p.length > 1 ? p[1].toLowerCase() : "";
+                    for (Function f : currentProgram.getFunctionManager().getFunctions(true)) {
+                        String n = f.getName();
+                        if (n.startsWith("FUN_") || n.startsWith("Function_") || n.startsWith("thunk_") || n.startsWith("LAB_")) continue;
+                        if (f.getSymbol().getSource() == SourceType.DEFAULT || f.getSymbol().getSource() == SourceType.ANALYSIS) continue;
+                        if (!needle.isEmpty() && !n.toLowerCase().contains(needle)) continue;
+                        out.printf("  %s %s%n", f.getEntryPoint(), n);
+                    }
+                    break;
+                }
+                case "comments": {
+                    String needle = p.length > 1 ? p[1].toLowerCase() : "";
+                    for (int t : new int[]{CodeUnit.PLATE_COMMENT, CodeUnit.PRE_COMMENT, CodeUnit.EOL_COMMENT, CodeUnit.POST_COMMENT}) {
+                        AddressIterator it = L.getCommentAddressIterator(t, currentProgram.getMemory(), true);
+                        while (it.hasNext()) {
+                            Address a = it.next();
+                            String c = L.getComment(t, a);
+                            if (c == null || (!needle.isEmpty() && !c.toLowerCase().contains(needle))) continue;
+                            out.printf("  %s [%d] %s%n", a, t, c.replace("\n", " | "));
+                        }
+                    }
+                    break;
+                }
+                case "bookmarks": {
+                    java.util.Iterator<ghidra.program.model.listing.Bookmark> it = currentProgram.getBookmarkManager().getBookmarksIterator();
+                    while (it.hasNext()) {
+                        ghidra.program.model.listing.Bookmark b = it.next();
+                        if (b.getTypeString().equals("Analysis") || b.getTypeString().equals("Error") || b.getTypeString().equals("Warning")) continue;
+                        out.printf("  %s %s %s %s%n", b.getAddress(), b.getTypeString(), b.getCategory(), b.getComment());
+                    }
+                    break;
+                }
+                case "labels": {
+                    String needle = p.length > 1 ? p[1].toLowerCase() : "";
+                    SymbolIterator it = currentProgram.getSymbolTable().getAllSymbols(true);
+                    while (it.hasNext()) {
+                        Symbol s = it.next();
+                        if (s.getSource() != SourceType.USER_DEFINED && s.getSource() != SourceType.IMPORTED) continue;
+                        if (!needle.isEmpty() && !s.getName().toLowerCase().contains(needle)) continue;
+                        out.printf("  %s %s %s%n", s.getAddress(), s.getSymbolType(), s.getName(true));
+                    }
+                    break;
+                }
+                default: out.println("  unknown");
+                }
+            } catch (Exception e) { out.println("  ERR " + e); }
+            out.flush();
+        }
+        out.close();
+    }
+}
