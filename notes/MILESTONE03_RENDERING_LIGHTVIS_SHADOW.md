@@ -419,3 +419,125 @@ Proxy: SH, up to TotalLightCount direct lights (the last scaled by f), and the c
 - Spot-light IntensityAt.
 - How the render thread applies `shadowFactor` and `DynamicShadowLuminanceScale` in the shader.
 - What `TickTransitions` (0x82CD3840) does between updates.
+
+
+---
+
+## 3. Follow-up: remaining items from b52dca9 (2026-10-02)
+
+### 3.1 Scene light-gather callback and channel/relevance filtering
+**CONFIDENCE:** CONFIRMED. The identities of the three light lists are HIGH.
+
+**ADDRESSES:**
+- `ULightEnvironmentComponent` vtable **0x822DEA48**:
+  - +0x174 = **0x82DF5068** `GatherLights`
+  - +0x178 = 0x82DD1B00 `UpdateLight` (matches the Tick call)
+- Light scene query **0x82E19678**; hash-grid walk **0x82E16D78**.
+- Filter **0x82CC2608** `LightAffectsEnv`.
+- Level test **0x82DD11D8**; volume test **0x82DD1100**.
+- Per-type `AffectsBounds` (light vtable +0x180):
+  - point **0x82DD3EF0**
+  - spot **0x82E2CDF8**
+  - directional = volume test only (0x82DD1100)
+- Shadow-ray gate **0x82CC2700**.
+
+```
+GatherLights(bounds{origin,extent,radius}, envChannels, out):        // 0x82DF5068
+  scene = Owner.World.LightScene (+0x1E4)                              // 0x82E2FA40
+  filter = {bounds, owner component, envChannels}
+  for L in scene.list44: if LightAffectsEnv(filter,L): out.add(L)      // global list, no spatial test
+  for L in scene.list38: if LightAffectsEnv(filter,L): out.add(L)      // global list, no spatial test
+  HashGridQuery(bounds): integer cells floor(min*k)..floor(max*k) per axis, test grid lights   // 0x82E16D78
+  for L in scene.list50 (lights outside the hash grid):
+      if bounds AABB overlaps L.HashGridBBox (+0x168 min, +0x174 max) and LightAffectsEnv: out.add(L)
+
+LightAffectsEnv(f, L):                                                // 0x82CC2608
+  if !L.bEnabled (0x80000000 @ +0xFC): false
+  if L.Function (+0xF8) != null and !L.bCastCompositeShadow (0x04000000): false
+  ch = L.LightingChannels (+0x118)
+  if ch & CompositeDynamic(0x08000000): ch = (ch & ~0x18000000) | Dynamic(0x10000000)
+  if (f.envChannels & ch & 0x7FFFFFFF) == 0: false                    // must share at least one channel
+  if (ch & ~f.envChannels & 0x03FFFFFF) != 0: false                   // every special channel on the light
+                                                                       // (Unnamed1-6, Cinematic1-6, Gameplay1-4,
+                                                                       //  Crowd, PlayerOnly, NPCOnly) must be on the env
+  if L.bOnlyAffectSameAndSpecifiedLevels (0x00200000):
+     if L.level != owner.level and owner.level not in L.OtherLevelsToAffect (+0x10C): false
+  return L.AffectsBounds(f.bounds)                                     // vt+0x180
+
+Point.AffectsBounds:  |center - L.pos| <= L.RadiusOfInfluence(+0x184) + bounds.radius, and VolumeTest
+Spot.AffectsBounds:   point test, then a sphere-vs-cone test with the clamped outer cone (3.2)
+Directional/other:    VolumeTest only
+VolumeTest (only if L.bUseVolumes 0x00080000):
+   false if the bounds hit any ExclusionConvexVolume (+0x148)
+   true  if they hit any InclusionConvexVolume (+0x13C)
+   false if inclusion volumes exist and none are hit
+ShadowRay gate (0x82CC2700): a ray is traced only if L.CastShadows (0x40000000) and L.CastStaticShadows (0x20000000);
+   otherwise the sample counts as visible. The trace runs from the sample point to light.pos minus 15 x direction
+   (trace flags 0x1002386).
+```
+- **Channel bits** (MSB-first): bInitialized 0x80000000, BSP 0x40000000, Static 0x20000000, Dynamic 0x10000000, CompositeDynamic 0x08000000, Skybox 0x04000000, Unnamed_1..6 0x02000000..0x00100000, Cinematic_1..6 0x80000..0x4000, Gameplay_1..4 0x2000..0x400, Crowd 0x200, PlayerOnly 0x100, NPCOnly 0x80.
+- **Where the environment's channels come from:**
+  - on a full update, from the owner's primitive bounds pass (0x82DD1690);
+  - on incremental updates, from the cached env+0x24.
+- **Correction to the +0xFC bit map below bit 26:** the code's usage pins `0x00200000` = bOnlyAffectSameAndSpecifiedLevels and `0x00080000` = bUseVolumes. Bits 31..26, used in §2, are unchanged.
+
+### 3.2 Spot-light intensity and falloff
+**CONFIDENCE:** CONFIRMED. Spot vtable 0x822E8960; `IntensityAt` (+0x194) is **0x82E2CFE0**.
+```
+inner = clamp(InnerConeAngle(+0x1E0), 0, 89) deg -> rad
+outer = clamp(OuterConeAngle(+0x1E4) deg -> rad, inner + 0.001, 1.5543429 rad)
+cosI = cos(inner) ; cosO = cos(outer)
+axis = spot direction (WorldToLight elements +0x58/+0x68/+0x78)
+d = normalize(P - L.pos)
+cone = clamp((dot(axis, d) - cosO) / (cosI - cosO), 0, 1)
+IntensityAt(P) = PointIntensity(P) * cone^2
+   PointIntensity = Brightness * max(0, 1 - (|P-pos|/Radius)^2)^FalloffExponent
+```
+- The sphere-vs-cone relevance test (0x82E2CDF8) uses the same clamped outer cone.
+
+### 3.3 Time-sliced light-environment update queue
+**CONFIDENCE:** CONFIRMED.
+- **Queue:** global TArray at **0x83833084**. Entries are 0x14 bytes: {component, accumulatedDt, mode, deadlineFrame (u64)}.
+- **Enqueue (0x82CD2538):**
+  - If the component is already queued: add dt to its entry, and if the entry's mode was 2, set it to the new mode.
+  - Otherwise append {comp, dt, mode, GFrameCounter + 2}.
+- **Dequeue/cancel (0x82CD2658):** removes the entry and returns its accumulated dt.
+  - Callers use it on immediate updates and on light attach, detach or toggle.
+  - Those callers also set ForceNextUpdateTime = 0.001.
+- **Per-frame service (0x82CDD438, called through 0x82DBF0E0 from 0x82D2C708):**
+  1. `0x82CD26F8`: every entry with deadline ≤ the current frame → `UpdateLight(accumDt, mode)` and removal. **No budget applies to these.**
+  2. `0x82CD2798`: the remaining entries in FIFO order, updated and removed until wall time since the service started reaches the **budget**; it stops at the first entry over budget.
+- **Budget values passed to 0x82D2C708:**
+  - **0.002 s (2 ms)** from the main loop (0x826ED270), only when frame time remains above 0.002 s;
+  - 0.001 s from 0x82DC5A48 (a wait loop);
+  - 0.0 from 0x826F45C8 (deadline flush only).
+- **Net effect:** a full re-gather is delayed by at most 2 frames, and runs sooner when the idle budget allows.
+- **First update after attach (0x82DBEF90):**
+  - ForceNextUpdateTime = 0.001 if the owner rendered within the last 1 s, or if forced;
+  - otherwise rand()·(1/32767)·[1, 1.5, 2, 2.5][detailMode] seconds, a randomized stagger.
+
+### 3.4 Per-tick environment transition
+**CONFIDENCE:** CONFIRMED. `0x82CD3840`, called from Tick every frame.
+- It does work **only** when the single composite-shadow entry is the World DefaultShadowLight:
+  - fade (env+0x84) = min(1, fade + dt·**5.0**), so it reaches full strength in 0.2 s;
+  - shadow factor = lerp((1,1,1,1), DefaultShadowLight.ModShadowColor (0.5,0.5,0.5,1), fade) (lerp helper 0x82B5AE50);
+  - then the proxy is rebuilt.
+- In every other case there is **no between-update interpolation**. Visibility smoothing (§2 SmoothAndRank) advances only inside updates, using the dt accumulated since the last update.
+- Incremental updates (mode 2) run every tick whenever the env has lights, so for WFC characters the smoothing is effectively per-tick.
+- WFC pawns never use DefaultShadowLight (TnPawnNative vt+0x2E4 returns 0), so this function is a no-op for them.
+
+### 3.5 Shader-side shadow factor / DynamicShadowLuminanceScale
+**CONFIDENCE:** PARTIAL.
+- **0x82DDAEF0** (light-attenuation shader parameter binder) uploads:
+  - a float4 `(0.5/width, 0.5/height, 0, 0)` half-texel offset of `LightAttenuationTexture`;
+  - **`DynamicShadowLuminanceScale` = float4(global 0x8382DDF4, 0, 0, 0)**.
+- That global defaults to 0. It is settable only via `DirectLightEnv DynamicShadowLuminanceScale <0..1>`, and no shipped config sets it.
+- The composite shadow's per-light 4-float `shadowFactor` goes to the render-thread proxy (0x82DBF2C8 appends a 0x80-byte shadow record; type tag and cones as in §2).
+- **STILL UNKNOWN:** the in-shader arithmetic. That needs the compiled Xenon shader microcode from the map ShaderCache (`ShaderCache_944` carries `DynamicShadowLuminanceScale`, `DirectLightAmbientContribution` and `LightColorsAndFalloffEx`).
+
+### EXPERIMENTAL CHECKS NOW SAFE TO PROMOTE (follow-up)
+- The channel rule (shared channel, plus the subset rule for special channels, with CompositeDynamic treated as Dynamic).
+- Point relevance by RadiusOfInfluence.
+- The spot cone² falloff with clamped cones.
+- A full re-gather lands within 2 frames.
+- No between-update interpolation for WFC pawns.
