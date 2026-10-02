@@ -541,3 +541,123 @@ IntensityAt(P) = PointIntensity(P) * cone^2
 - The spot cone² falloff with clamped cones.
 - A full re-gather lands within 2 frames.
 - No between-update interpolation for WFC pawns.
+
+
+---
+
+## 4. Shader bytecode: how `DynamicShadowLuminanceScale` is consumed (2026-10-02)
+
+**CONFIDENCE:**
+- CONFIRMED: decoded from shipped Xenos microcode for every shader in the MP_IAC_Streets_BASE_m ShaderCache that declares the constant.
+- The instruction-format decoding follows the public Xenia ucode layout. The scalar const-op temp-register encoding was validated statistically: 98% of decoded reads hit registers written earlier, versus 61% and 32% for the alternative encodings.
+
+### Method and provenance
+- **Package:** `MP_IAC_Streets_BASE_m.xxx` (it holds the Optimus cook). The decompressed copy is kept locally and not committed.
+- **Exports:** `ShaderCache_10920/13847/3907/4433/717/7389/7771/7828/8031`.
+- **Shader record:** `[type FName][GUID 16][skip u32][target u16][code size u32][code]`.
+- **Code blob:**
+  - magic `0x102A1100`;
+  - `+0x24` constant-table size, `+0x28` big-endian D3DX constant table without the `CTAB` fourcc (`ps_3_0`, creator `2.0.9328.0`);
+  - literal-constant vectors (allocated downward from c255);
+  - Xenos microcode: control-flow pairs, then 3-dword ALU/fetch instructions.
+- **New tools (read-only):**
+  - `tools/xenosdis.py`: CF / ALU / fetch disassembler, plus constant-table parser.
+  - `tools/xenostrace.py`: symbolic forward trace of the DSLS constant and the ShadowMask fetch through to `oC0`.
+
+### Shaders using the constant
+- **Declaration count:** 372 shader blobs declare it. **All are `ps_3_0` (pixel stage). No vertex shader reads it.**
+- **Register:** **`c6`** in 351 blobs; `c5`/`c4`/`c10` in 12/6/3 blobs, depending on parameter allocation.
+- **Read only through `.x`.** The CPU uploads `float4(DSLS, 0, 0, 0)` (0x82DDAEF0).
+- **Readers:** every shader that reads it uses **ShadowMaskPolicy**. In two families:
+
+| family | shader types | vertex factories incl. characters |
+|---|---|---|
+| **A: DirectLightEnv "uber-light" pass** | `TLightPixelShader<One/Two/ThreeLightUberLightPolicy, FShadowMaskPolicy>` | FLocal, **FGPUSkin, FGPUSkinMorph**, FGPUSkinMorphDecal, particles, terrain |
+| **B: per-light shadowed pass** | `TLightPixelShader<FDirectionalLightPolicy / FSpotLightPolicy, FShadowMaskPolicy>` | FLocal, **FGPUSkin, FGPUSkinMorph**, decals, particles, terrain |
+
+- **Declared but unread:** a handful of blobs, e.g. FShadowTexturePolicy, base-pass and velocity variants.
+
+### Register-level provenance (family A, `TLightPixelShader<OneLightUberLightPolicy,FShadowMaskPolicy>`, blob `0x1C75F2C`)
+- **Constant table:**
+  - `DynamicShadowLuminanceScale` c6
+  - `DirectLightAmbientContribution` c38
+  - `AmbientCubeIrradiance` c32..c37
+  - `LightColorsAndFalloffExponents` c40
+  - `SceneColorBiasFactor` c7
+  - `ScreenPositionScaleBias` c1, `ShadowMaskTexelOffset` c5
+  - `ShadowMaskTexture` = sampler tf0
+- **Literals:** c251 = (2, 1, −π, 1.25), c254 = (0.11, 0.3, 0.59, −1), c255 = (0.5, 1, 1, 2π).
+
+```
+ 13 ADDv    r5.zw  = c5.xy + c1.wz                 ; shadow-mask texel offset + screen bias
+ 15 MULADDv r2.xy  = (1/r2.w)*c1.xy * r2.xy + r5.zw ; screen UV
+ 16 tfetch  r11.z  = tf0(r2.xy).x                  ; ShadowMaskTexture.x
+ 22 ADDv    r8.w   = -c6.x + c255.y                ; 1 - DSLS
+ 43 ADDv    r16.z  = -r11.z + c255.y               ; 1 - mask
+ 57 MULv    r0.x   = r16.z * r8.w                  ; S = (1-mask)(1-DSLS)
+ 77 MULv    r1.w   = r8.w * c38.x                  ; (1-DSLS)*DLAC.x
+100 MAXs    PS     = r1.w                          ; (scalar, mask 0)
+101 MUL_PREVs r2.x = PS * -r16.z                   ; -DLAC.x*S
+102 MAXs    PS     = r0.x
+103 MUL_PREVs r2.y = PS * -c38.y                   ; -DLAC.y*S
+105 MAXs    PS     = r0.x
+106 MUL_PREVs r2.z = PS * -c38.z                   ; -DLAC.z*S
+107 ADDv    r2.xyz = r2.xzy + c251.yyy             ; 1 - DLAC*S  (colour held in xzy order)
+126-133    r4.xyz = (diffuse*NdotL + spec) * atten * c40.rgb      ; direct light
+ 89-94,120 r5.xyz = AmbientCube(N; c32..c37) * diffuse            ; ambient / SH irradiance
+140 SUB_CONST_0 r3.w = c255.y - r0.x               ; 1 - S
+143 MULADDv r3.xyz = r5 * r2 + r3                  ; + ambient*(1 - DLAC*S)
+144 MULADDv r3.xyz = r4 * r3.w + r3                ; + direct*(1 - S)
+145 MULv    oC0.xyz = r3 * c7.x                    ; * SceneColorBiasFactor
+```
+
+- **Two-light character variant** (`TwoLightUberLightPolicy`, FGPUSkinMorphVertexFactory, blob `0x1C6898C`):
+  - It is identical, except that `1 − DSLS` is formed through `ADD_PREVs` and DLAC is in c40.
+  - The direct term is the **sum of both lights**: `r4 = light0·c43.rgb + light1·c44.rgb` (lines 152–153), multiplied by the same `1 − S`. **One shadow mask attenuates both direct lights.**
+- **Family B** (e.g. `0x1C80B9B` directional, `0x1CA0EE0` spot, skinned `0x1C8D576` / `0x1C72C1C`):
+
+```
+oC0.rgb = ( (DSLS*(1 - mask) + mask) * lightRGB * materialRGB ) * SceneColorBiasFactor     // = lightRGB*(1 - S)
+```
+
+### Mathematical expression (implementation-ready)
+```
+mask = ShadowMaskTexture.Sample(ScreenUV + ShadowMaskTexelOffset).x      // 0 = fully shadowed, 1 = lit
+S    = (1 - mask) * (1 - DynamicShadowLuminanceScale)                     // shadow amount
+Family A (DirectLightEnv uber pass, characters):
+  direct  = Σ_lights (diffuse*N·L + specular) * attenuation * LightColor_i
+  ambient = AmbientCubeIrradiance(N) * diffuse                            // SH / ambient-cube term
+  colour  = direct * (1 - S) + ambient * (1 - DirectLightAmbientContribution.rgb * S) + other material terms
+Family B (per-light shadowed pass):
+  colour  = light * material * (1 - S)        // == lerp(mask, 1, DSLS)
+oC0.rgb = colour * SceneColorBiasFactor.x
+```
+
+### Answers
+- **Stage:** pixel only.
+- **Register:** c6.x, in most blobs.
+- **Operands:** only `1 − c6.x` and `c6.x·(1 − mask)`. It is always combined with the ShadowMask texture's `.x` channel and nothing else.
+- **Direct light:** multiplied by `1 − S = lerp(mask, 1, DSLS)`. In uber-light shaders this is the sum of all dynamic lights.
+- **Composite shadow / shadow factor:** DSLS acts on the screen-space **ShadowMaskTexture**, the projected-shadow attenuation buffer. How the composite shadow's `shadowFactor` reaches that buffer happens in the projection pass, not in these shaders.
+- **Luminance:** despite the name, **no luminance computation involves DSLS**. The 0.11/0.3/0.59 dot products in these shaders belong to the material's saturation math. DSLS is a linear **shadow-strength lift**.
+- **Ambient/SH:** in family A, the ambient term is darkened in shadow by `DirectLightAmbientContribution.rgb · S`, which is the share of the ambient attributed to the dominant direct light. DSLS reduces that darkening equally.
+- **Character material output:** the expression above is applied before `SceneColorBiasFactor`. There is no separate clamp.
+- **Value 0 (shipped):** `S = 1 − mask`. The direct light gets the full shadow (`× mask`), and the ambient is reduced by `DLAC·(1 − mask)`.
+- **Nonzero values:** linear interpolation toward unshadowed. At 1, shadows vanish entirely: direct × 1 and ambient × 1.
+- **Clamps:** none on DSLS in the shader. The CPU clamps it to [0, 1] in `DirectLightEnv`. The only saturates in these shaders are unrelated, such as N·L and the spot cone.
+- **Colour space:** linear lighting space (HDR scene colour before SceneColorBiasFactor); there is no gamma conversion around it.
+- **Scope:** **shadows only.** It does not scale total character luminance. Unshadowed pixels (`mask = 1`) are unaffected for any DSLS value.
+
+### RENDERING HANDOFF
+- With the shipped value (0), apply the screen-space shadow mask fully to the summed dynamic direct light, and darken the ambient/SH by `DirectLightAmbientContribution · (1 − mask)`.
+- Implement DSLS only as `S = (1 − mask)(1 − DSLS)` with the formulas above.
+
+### EXPERIMENTAL CHECKS NOW SAFE TO PROMOTE
+- DSLS is pixel-stage only and has no effect where `mask = 1`.
+- Shipped DSLS = 0 means full-strength shadows.
+- Ambient darkening in shadow equals `DLAC · (1 − mask)`.
+- Both dynamic lights share one shadow mask.
+
+### STILL UNKNOWN
+- How the ShadowMask buffer is produced from the composite shadow's `shadowFactor` (projection shaders, not part of this pass).
+- The CPU derivation of `DirectLightAmbientContribution` (HIGH: it is the SH-ratio computed in proxy build 0x82CCE0A8).

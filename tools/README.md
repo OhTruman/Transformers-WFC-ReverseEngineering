@@ -22,3 +22,4 @@ Added in the step-up/ledge pass:
 
 Added in Milestone 03:
 | `WfcQuery.java dis <addr> <n>` | disassemble undefined bytes in memory only (snapshot opened `-readOnly`, never saved). Use it for vtable targets Ghidra never disassembled |
+| `xenosdis.py` / `xenostrace.py` | Xenos shader microcode disassembler and symbolic constant tracer for WFC ShaderCache blobs (read-only) |
