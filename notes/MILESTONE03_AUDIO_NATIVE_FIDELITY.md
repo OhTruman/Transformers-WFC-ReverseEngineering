@@ -236,3 +236,348 @@ if bit0 of root+0x4C and d > SecondaryCategoryDistance: out.Category = Secondary
 - What `Duration > 0` presets do on expiry (Elapsed +0x1C is reset on Enable; the tick that consumes it was not found).
 - `dBToLin` (`0x82CBED00`) / `0x82CBEE20` exact formulas. They are assumed to be 10^(x/20) and its pair, which is HIGH, not verified.
 - The k2D/k3D FMOD channel-mode switch.
+
+
+---
+
+# Follow-up (2026-10-02): narrow runtime-semantics gaps for Systems checkpoint 7b42621
+
+Sources:
+- Read-only Ghidra snapshot via `tools/wfcq.ps1`, including `dis` (in-memory disassembly).
+- `authored.db`, read-only.
+- Bool bitfields are MSB-first, as established earlier.
+
+Runtime mixer structures recovered here:
+- **Runtime mixer preset entry** (0x20 bytes, built by mixer Init `0x82782A18` from `SoundMixerProperties.MixerPresets`):
+
+| off | field |
+|---|---|
+| +0x00 | Name |
+| +0x04 | Priority |
+| +0x08 | FadeInTime |
+| +0x0C | FadeOutTime |
+| +0x10 | Duration |
+| +0x14 | IsPlayerPOV |
+| +0x18 | **RefCount** |
+| +0x1C | **Elapsed** |
+
+- Init also registers and enables a built-in **"Default"** preset: Priority 0, FadeIn/FadeOut 0.5, Duration −1.
+- **Mixer object** vtable `0x820B3688`:
+
+| slot | address | role |
+|---|---|---|
+| +0x0C | 0x82756180 | Tick(dt) |
+| +0x20 | 0x8276AB60 | Flush |
+| +0x24 | 0x82772778 | Enable |
+| +0x28 | 0x827728E0 | Disable(name, force) |
+| +0x3C | 0x82772A60 | RegisterPreset (sorted by priority) |
+| +0x44 | 0x827665F0 | AdvanceTimers |
+| +0x48 | 0x82756490 | UpdateCategories |
+
+- **Category node** (one per SoundCategory, a tree): vtable `0x820A3F80`.
+  - +0x04 = 0x82765EA8 Update(dt)
+  - +0x1C = 0x8276A868 SetActive(activeList)
+  - Target selection = 0x827661C8
+- **Linear ramp** used for every mixer parameter: vtable `0x820A1C48`, created by FmodAudioDevice vt+0x1B4 `0x82759490`.
+  - SetTarget = 0x827560A8
+  - Update = 0x827560F8
+
+## A1. Zone exit / previous-preset switch-off
+- **CONFIDENCE:** CONFIRMED (native + Streets Kismet data)
+- **ADDRESS:**
+  - `SeqAct_Reverb::Activated` **0x82764858** (vtable 0x820B8C58)
+  - `SeqAct_AmbientAudioZone` input handler **0x827892D8**
+  - per-tick zone update **0x82763F10** (vtable 0x820B6A98)
+  - local-PC lookup 0x8274CDE0
+  - set zone 0x82797EE8 → `PlayerController.SetAmbientAudioZone` (script; replicated as ServerSetAmbientAudioZone)
+- **CLASS / FUNCTION:** HM_Engine SeqAct_Reverb, SeqAct_AmbientAudioZone; Engine PlayerController.AmbientAudioZone (+0x518)
+- **CALLERS / CALLEES:**
+  - SeqEvent_Touch (Touched) → Zone input "Enter".
+  - Zone output "Scene 0 Begun" → SeqAct_Reverb "Activate" plus the zone's ambience sub-Sequence.
+  - "Scene 0 Ended" → the same sub-Sequence.
+  - SeqAct_Reverb → FmodAudioDevice vt+0x130 EnableMixerPreset / vt+0x134 DisableMixerPreset.
+- **CONSTANTS / DATA:**
+  - **Streets Touch events:** `bLocalPlayerOnly`, `bClientSideOnly`, `bForceOverlapping`, ignore TnCamera, MaxTriggerCount 0, ReTriggerDelay 0. **The UnTouched output has no links in all 9 zones.**
+  - **Global "current reverb" slot:** `0x8374FCCC` (one name). It is reset to None by mixer Flush (0x8276AB60, at level change).
+- **PSEUDOCODE:**
+```
+Touch(trigger volume) [local player pawn, client side] -> Zone.Enter:
+Zone.OnInput(Enter):                                         // 0x827892D8
+  pc = first local PlayerController
+  if pc.AmbientAudioZone != this.Name:
+     prev = FindObject(pc.AmbientAudioZone); if prev is SeqAct_AmbientAudioZone: prev.IsEntered = false
+     pc.SetAmbientAudioZone(this.Name)                       // script; also ServerSetAmbientAudioZone
+  this.IsEntered = true
+Zone.OnInput(Scene k): SceneIndexNext = k                    // unused in Streets (only Scene 0)
+Zone.Update() each tick while active:                        // 0x82763F10
+  if IsEntered:
+     if SceneIndexCurrent != SceneIndexNext:
+        if SceneIndexCurrent >= 0: fire "Scene <cur> Ended"
+        fire "Scene <next> Begun"; SceneIndexCurrent = SceneIndexNext
+     keep active
+  else:
+     if SceneIndexCurrent >= 0: fire "Scene <cur> Ended"
+     SceneIndexCurrent = -1 ; finish
+SeqAct_Reverb.Activated():                                   // 0x82764858
+  if InputLinks[0] impulse:
+     new = ReverbMixerPreset.PresetName
+     if new != gCurrentReverb:
+        if EnableMixerPreset(new) == 1:
+           if gCurrentReverb != None: DisableMixerPreset(gCurrentReverb, force=0)
+           gCurrentReverb = new
+     clear impulse
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Previous preset:** WFC **explicitly disables** the previous reverb preset when a zone with a *different* preset fires. It does not rely on priority or ref-count replacement.
+  - **Ref-count:** each reverb preset is enabled once (RefCount 1) and disabled once (RefCount → 0, removed). Re-entering the zone whose preset is already current does nothing: no Enable, no ref-count change, no timer reset.
+  - **Priority:** while both are briefly in the active stack, priority only orders them. The new preset becomes the category target only if it outranks every other active preset that defines MASTER_WET.
+    - Streets zones 182–223 all outrank `Default` (0).
+    - Disabling the previous preset then retargets MASTER_WET to the new zone, using the fade rules in A2.
+  - **Overlapping or nested trigger volumes:** the **last Touch wins**.
+    - Moving from an inner volume back into the still-overlapping outer volume generates no new Touch, so **the inner zone's reverb persists** until another volume is touched.
+  - **Leaving all zones:** nothing happens. UnTouched is unlinked. The last reverb remains active, and its ambience sub-sequence keeps running until another zone is entered.
+  - **Default / no-zone state:** only at map start before the first Touch, or after a mixer Flush (level transition). In that state MASTER_WET's target is the `Default` DSP preset, which has Room −10000, i.e. no reverb.
+- **SYSTEMS HANDOFF:**
+  - Keep one global current-reverb name.
+  - On zone enter: enable the new preset, then explicitly disable the old one.
+  - Never disable on exit.
+  - Make zone enter a local-client event.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:**
+  - Walking out of a Streets zone into open space keeps that zone's reverb.
+  - Re-entering the same zone is a no-op.
+- **STILL UNKNOWN:** nothing for Streets. Other maps may link UnTouched or use multiple scenes; check per map.
+
+## A2. Mixer preset fade curve
+- **CONFIDENCE:** CONFIRMED
+- **ADDRESS:**
+  - target selection 0x827661C8
+  - category SetActive 0x8276A868, category Update 0x82765EA8
+  - Volume effect SetTarget 0x82755F00, Update 0x82755FD0 (vtable 0x820A1C28)
+  - Reverb effect SetTarget 0x82755618 (vtable 0x820A1C0C)
+  - ramp 0x827560A8 / 0x827560F8
+- **PSEUDOCODE:**
+```
+Category.SetActive(activeList):                      // after every Enable/Disable that changes the list
+  (newName, fadeTime) = SelectTarget(activeList)     // A3
+  if newName == currentName: return                  // no retarget, no restart
+  currentName = newName ; categoryTimer = 0
+  for each DSP effect present on this category (Volume, Pitch, HighPass, LowPass, FastLowPass, Flange,
+                                                Distortion, Compressor, FastEQ, EQ, Echo, Reverb):
+      effect.SetTarget(fadeTime, &category.DSPPresets[newName].<field>)
+  recurse into child categories
+SelectTarget fade time:
+  if newPreset.Priority < currentPreset.Priority : fadeTime = currentPreset.FadeOutTime   // stepping DOWN
+  else                                           : fadeTime = newPreset.FadeInTime        // stepping UP / equal
+Effect.SetTarget(T, value): for each parameter p: ramp_p.SetTarget(clampToFMODRange(value_p), T)
+Ramp.SetTarget(t, T): Target=t; if T>0 { Rate=(t-Value)/T; Remaining=T; Active=1 } else { Value=t; Active=0 }
+Ramp.Update(dt):  if Active { Remaining-=dt; Value+=Rate*dt; if Remaining<=0 or passed Target: Value=Target; Active=0 }
+Volume effect apply each tick: FMOD ChannelGroup.setVolume( categoryVolume * clamp(rampValue,0,1) )
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Shape:** linear in time.
+  - **Domain:** each parameter is ramped in its **authored units**.
+    - Volume is authored and ramped as a **linear amplitude** (e.g. 0.7079 = −3 dB). It is linear in amplitude, not in dB.
+    - Reverb Room/RoomHF/Reflections/Reverb levels are in **millibels**, ramped linearly in mB, i.e. linear in dB.
+    - Decay/delay times are in seconds; filter frequencies are in Hz (linear).
+  - **Attack and release** use the same linear ramp. The only difference is which time is used: FadeIn when moving to a higher-or-equal-priority preset, the outgoing FadeOut when moving to a lower one.
+  - **Interruption/restart:** a new target restarts from the **current value**, with the **full** new fade time (the rate is recomputed). There is no snap.
+  - **Crossfade:** there is no simultaneous mix of two presets. Each parameter glides from where it is to the new target.
+  - **Granularity:** per category, per parameter. Categories whose target did not change are untouched.
+  - **0.25 s Streets presets:** entering a higher-priority zone glides MASTER_WET reverb parameters to the new values over the new preset's FadeInTime (0.25 s). Falling back to a lower one uses the outgoing preset's FadeOutTime (0.25 s).
+- **SYSTEMS HANDOFF:** implement exactly one linear ramp per DSP parameter per category, with the rules above.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:**
+  - Fade shape is linear.
+  - Volume is linear in amplitude.
+  - Reverb levels are linear in mB.
+  - Restart from the current value with the full duration.
+- **STILL UNKNOWN:** the per-parameter FMOD clamp constants for non-reverb effects; they are available at the listed SetTarget addresses if needed.
+
+## A3. Overlapping mixer presets
+- **CONFIDENCE:** CONFIRMED
+- **ADDRESS:** Enable 0x82772778, Disable 0x827728E0, SelectTarget 0x827661C8
+- **PSEUDOCODE:**
+```
+Enable(name): p.Elapsed = 0
+  if name not in Active: insert before the first active entry with LOWER priority (else append); notify categories
+  p.RefCount += 1
+Disable(name, force): if name in Active:
+  if force: p.RefCount = 1
+  if p.RefCount == 1: remove from Active; notify categories
+  p.RefCount = max(0, p.RefCount - 1)
+SelectTarget(category, Active):   // Active is ordered by priority, highest first
+  for p in Active:
+     if p.IsPlayerPOV and !deviceFlag(+0xC0 & 0x08000000): continue
+     if category has a DSPPreset named p.Name: return p      // first match wins outright
+  (no match -> keep current)
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Stack model:** a priority-ordered active list, with a ref-count per preset name.
+  - **Highest priority wins, per category.** Lower-priority presets contribute nothing to a category that a higher active preset defines.
+  - **Independent categories:** a category not defined by the top preset falls through to the next active preset that defines it, and ultimately to `Default`.
+  - There is **no additive or multiplicative combination** between presets.
+  - The final category volume = the category's base Volume × the winning preset's volume. Category hierarchy is applied by FMOD channel-group nesting (HIGH).
+  - **Equal priority:** a newly enabled preset is inserted *after* existing equals, so **the earlier-enabled preset wins**.
+  - **Removal:** when a preset is removed, every affected category retargets to the next match, using the A2 fade rule (the outgoing preset's FadeOut, since it stepped down).
+- **SYSTEMS HANDOFF:** use the pseudocode as-is.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:** per-category highest-priority-wins with fall-through; ties go to the older preset.
+- **STILL UNKNOWN:** which runtime flag (device +0xC0 bit 0x08000000) enables IsPlayerPOV presets.
+
+## A4. Preset Duration
+- **CONFIDENCE:** CONFIRMED
+- **ADDRESS:** mixer Tick 0x82756180 → AdvanceTimers 0x827665F0 → expiry test 0x8279AA50
+- **PSEUDOCODE:**
+```
+Tick(dt): for p in Active (iterated last -> first):
+   p.Elapsed += dt
+   if p.Name != "Default" and p.Duration >= 0 and p.Elapsed >= p.Duration: Disable(p, force=0)
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Start:** Elapsed is reset to 0 on **every** Enable, including re-activation of an already-active preset.
+  - **Countdown:** it counts only while the preset is in the Active list.
+  - **Infinite:** **Duration < 0** (the authored −1). There is no special "infinite" meaning for 0.
+  - **Duration 0:** expires on the next mixer tick.
+  - **Expiry is a non-forced Disable:**
+    - RefCount 1 → the preset is removed;
+    - RefCount n > 1 → it decrements once per tick, because Elapsed stays ≥ Duration, so the preset is removed after n ticks.
+  - **Restoration:** removal triggers the normal retarget to the next active preset, using the expiring preset's FadeOutTime.
+  - **Explicit stop:** an explicit Disable also works; it is a plain ref-count decrement.
+  - **Zone exit:** none (see A1).
+- **SYSTEMS HANDOFF:** as pseudocode.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:**
+  - −1 means infinite.
+  - Re-enable resets the timer.
+  - Expiry restores the lower preset with the outgoing FadeOut.
+- **STILL UNKNOWN:** none.
+
+## A5. 2D / 3D channel mode
+- **CONFIDENCE:** CONFIRMED
+- **ADDRESS:**
+  - SoundNodeRoot vtable 0x820A7A00; `IsSpatialized` (vt+0x164) **0x82743928**
+  - wave-instance build 0x82788768 → init 0x8276C1E0
+  - per-source spatialization 0x82759B08 (earlier report)
+  - wave volume/pan assembly 0x82788CB0
+  - FMOD voice: create **0x82768820**, update **0x82742D08** (voice vtable 0x820BBDC8)
+- **PSEUDOCODE:**
+```
+type = (node override flag ? node.SpatializationType(+0x40) : root.SpatializationType(+0x54))
+IsSpatialized = (type != k2D)                       // 0x82743928
+wave.bUseSpatialization = IsSpatialized ; wave.bSmartPan = (type == kSmartPan || type == kSmartPan_PreferPlayer)
+CreateChannel: mode = (bUseSpatialization ? FMOD_3D(0x10) : FMOD_2D(0x8)) | (looping ? LOOP_NORMAL(2) : LOOP_OFF(1))
+               if 3D: Channel.set3DPanLevel(1.0)
+               setSpeakerMix(six authored speaker dB values -> linear)
+Per tick (wave build):
+  if bUseSpatialization: Volume *= DistanceAtten (inverse rolloff, rear attenuation); occlusion; doppler velocity
+  if bSmartPan: wave.PanLevel = Pan3D ; Volume *= SmartPanGain
+FMOD update: set3DAttributes(pos*0.01, vel*0.01); setVolume(clamp(Volume,0,1));
+             if bSmartPan: Channel.set3DPanLevel(PanLevel)
+             set3DDopplerLevel(EnableDoppler ? 1 : 0)
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Pure 2D (k2D):** FMOD_2D. No WFC distance attenuation, no 3D position.
+  - **Pure 3D (k3D):** FMOD_3D with pan level fixed at 1.0. Volume = WFC inverse rolloff × rear attenuation; FMOD positions it.
+  - **SmartPan / PreferPlayer:** FMOD_3D, with `3DPanLevel = Pan3D`.
+    - Pan3D = 0 at SmartPanDistance2D (centred / 2D) and 1 at SmartPanDistance3D (fully positional), linear in between.
+    - Volume additionally × `1 − (1 − dB(SmartPanAttenuation3D))·Pan3D`.
+    - **Distance attenuation (WFC rolloff) still applies during the blend.** It is computed from the listener→emitter distance.
+    - PreferPlayer changes only the distance used for Pan3D (earlier report P11).
+  - **Granularity:** the mode is chosen per wave instance, i.e. per FMOD channel. It comes from the root unless a node overrides it.
+  - All Optimus vehicle cues use `kSmartPan_PreferPlayer` with 2D 200 / 3D 1000 / −3 dB, DistanceMin 5000, DistanceMax 35000.
+- **SYSTEMS HANDOFF:** use the FMOD-style 3D pan level directly as the 2D↔3D mix; do not swap modes mid-sound.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:** k2D → no attenuation; SmartPan keeps attenuation and scales pan level linearly.
+- **STILL UNKNOWN:**
+  - FMOD's internal set3DPanLevel mixing law, which is FMOD Ex library code.
+  - FMOD's own 3D rolloff settings for these channels. WFC applies its own attenuation in volume, so FMOD's rolloff is presumably neutral; that is not verified.
+
+## A6. Looping vehicle cues: loop region
+- **CONFIDENCE:**
+  - CONFIRMED for the runtime path and the cue data.
+  - PARTIAL for the sample loop points, which are in the FSB headers (not decoded in this lane).
+- **ADDRESS:** channel create 0x82768820 (LOOP_NORMAL); playback-time wrap in per-source update 0x827881D8; vehicle script `HmVehicleAudioComponent.PlayLoopingSound` / `StopLoopingSound`
+- **DATA (Optimus, via `SoundEvents_Vehicles_Trans.Veh_Optimus_Prime_SoundSet`):**
+  - Events resolve to `BL_VEH_OPTIMUS_PRIME.VEH_OPTIMUS_*` SoundCues.
+  - **Looping is per-wave** (`SoundNodeWaveEvent.bLooping = true`, waves named `*_LP`, e.g. `WL_TRUCK.AUTO_OPTIMUS_ENGINE_MID_LR_LP`, `SYNTH_ENERGY_MOD_PAN_LP`, `JET_TURBO_WHINE_LP`, `MECH_OPTIMUS_TIRE_NOISE_02_LP`).
+  - Each wave event has a start delay `Time`, Volume dB, Pitch semitones, VolumeCurve/PitchCurve against a SoundParameter (`Optimus_Prime_Speed`), and an `Envelope` (time-based curves).
+  - Root `bLooping` is **false** on DRIVE_ONLOAD/OFFLOAD, BOOST_START/LOOP/END, JUMP and RAM.
+  - Root LoopStart/LoopEnd values exist (e.g. BOOST_LOOP 2.904–3.120 s, BOOST_START 6.621–7.198 s) but are unused, because root bLooping is false.
+  - Start, end, land and ram cues are non-looping one-shots (their wave events have no bLooping).
+- **PSEUDOCODE:**
+```
+FMOD channel mode |= LOOP_NORMAL for wave events with bLooping   // no WFC setLoopPoints call found
+Root tracked playback time (drives Envelope curves): t += dt; if root.bLooping and t >= LoopEnd:
+     t = fmod(t - LoopStart, LoopEnd - LoopStart) + LoopStart       // inactive for these cues (bLooping false)
+PlayLoopingSound(ac, event, fadeIn): if ac playing the same cue: return (no restart)
+     else StopLoopingSound(old, fadeIn); ac = CreateAudioComponent(cue); ac.FadeIn(fadeIn, 1.0)
+StopLoopingSound(ac, fadeOut): ac.bAutoDestroy = true; ac.FadeOut(fadeOut, 0.0)
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Loop region:** the FMOD sample's own loop points from the **FSB** (whole sample unless the FSB sample header carries loop start/end). There is no cue-driven loop region.
+  - **Intro / outro:** there is no intro/outro inside a looping cue. Intro and outro are **separate cues**: BOOST_START → BOOST_LOOP → BOOST_END, and JUMP_START → JUMP_LOOP.
+  - **Stop:** a linear volume fade over FadeOutTime, then destroy. It does **not wait for a loop boundary**.
+  - **Optimus fade times:** EngineFadeOutTime 0.2, BoostFadeOutTime 0.15, BoostFadeInTime 0.1, EngineFadeInTime 0.1.
+  - **State switch (e.g. OnLoad ↔ OffLoad, gear):** the new loop's component fades in while the old one fades out using the same time; it is a crossfade. Asking for a cue that is already playing is a no-op.
+- **SYSTEMS HANDOFF:** read loop points from each FSB sample header. Do not use the root LoopStart/LoopEnd when root bLooping is false.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:**
+  - Loops are per wave event.
+  - Stop is an immediate linear fade, not loop-boundary aware.
+- **STILL UNKNOWN:**
+  - Per-sample FSB loop start/end values. These need FSB header parsing in AssetTools.
+  - The native AudioComponent FadeIn/FadeOut curve, assumed to be stock UE3 linear (HIGH, not re-verified here).
+
+## A7. Line / Volume emitter placement
+- **CONFIDENCE:** CONFIRMED
+- **ADDRESS:**
+  - LineEmitter tick **0x82760110** (vtable 0x820A8A80): endpoints **0x82745CD0**, closest point **0x8275A338**
+  - VolumeEmitter tick **0x82760278** (vtable 0x820A8DB0): closest point **0x82745FA8**
+  - listener = client viewport listener (GEngine client +0x34C → vt+0x144 → +0x9C)
+- **CONSTANTS:** defaults LineLength 500, Radius 500 (field +0x1CC). Streets has 13 line emitters and 17 volume emitters.
+- **PSEUDOCODE:**
+```
+every Tick (each frame):
+  L = listener location
+  P = ClosestPoint(L)
+  for ac in Components: if ac is AudioComponent: ac.bUseOwnerLocation = false ; ac.Location = P
+  if AudioComponent exists and is not playing (and not finished): Play()
+Line:   M = LocalToWorld (includes DrawScale3D); A = M.origin - M.X * (LineLength*0.5); B = M.origin + M.X * (LineLength*0.5)
+        t = clamp( dot(L-A, B-A) / |B-A|^2, 0, 1 ) ; P = A + t*(B-A)
+Volume: l = WorldToLocal(L); l = clamp(l, -Radius, +Radius) per axis ; P = LocalToWorld(l)   // oriented BOX, not sphere
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - **Placement:** closest point to the listener, **not** the actor origin. It is recomputed **every frame** before the sound update.
+  - **Inside a volume emitter:** P = L. Distance is 0 (full volume). Pan follows whatever SmartPan/3D rules the cue's root specifies at distance 0.
+  - **Line ends:** clamped to the endpoints.
+  - **One position source:** pan, attenuation, SmartPan distance and occlusion all use P, since the AudioComponent location is P.
+  - **Class differences:** only the shape. Line = segment along local X; Volume = oriented box with half-extent `Radius` on all three local axes, scaled by DrawScale3D.
+- **SYSTEMS HANDOFF:** use the formulas verbatim. Note that the volume emitter is a box despite the `Radius` name.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:**
+  - Volume-emitter loudness is constant everywhere inside the box.
+  - Line-emitter position slides along the segment.
+- **STILL UNKNOWN:** none.
+
+## A8. Exact dB → linear conversion
+- **CONFIDENCE:** CONFIRMED
+- **ADDRESS:**
+  - `dBToLinear` **0x82CBED00**
+  - `SemitonesToRatio` **0x82CBEE20**
+  - `pow` = 0x830ECDE0
+- **PSEUDOCODE:**
+```
+dBToLinear(x):  x = clamp(x, -96, 0) ; return (x > -96) ? (float)pow(10.0, x * 0.05) : 0.0
+SemitonesToRatio(s): s = clamp(s, -36, 36) ; return (float)pow(2.0, s * (1/12))
+```
+- **ORIGINAL WFC BEHAVIOR:**
+  - The conversion is done in **WFC code**, not FMOD: double-precision `pow`, rounded to float.
+  - **Positive dB is clamped to 0**, so no boost is possible. **≤ −96 dB is a hard 0.**
+  - **Used for:**
+    - SoundNodeRoot RearAttenuation and SmartPanAttenuation3D;
+    - occlusion volume;
+    - SoundNodeWaveEvent Volume and the six speaker-pan dB values (0x8276C1E0);
+    - random volume variation.
+  - **Semitones are used for:** wave Pitch, PitchVariation and occlusion pitch.
+  - **Mixer category / DSP-preset Volume is NOT dB.** It is authored as linear amplitude, clamped to [0, 1], and passed straight to FMOD `setVolume` (A2).
+- **SYSTEMS HANDOFF:**
+  - Use the two formulas exactly, including the clamps.
+  - Do not convert mixer Volume values.
+- **EXPERIMENTAL CHECK NOW SAFE TO PROMOTE:**
+  - A +3 dB authored node gain plays at unity.
+  - −96 dB is silent.
+- **STILL UNKNOWN:** the root-level `Volume` dB (e.g. −12 on vehicle roots) goes through the same wave-volume chain (0x8275FD78 path). Its clamp was not separately re-checked.
