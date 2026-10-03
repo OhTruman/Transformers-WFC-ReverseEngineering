@@ -26,3 +26,4 @@ Added in Milestone 03:
 | `WfcQuery.java rawdis <addr> <n>` | linear per-instruction disassembly (in memory, read-only). Use it where Ghidra stops at callers of 0x830101E0, which it wrongly treats as no-return |
 - `xenosemu.py` — numeric emulator for straight-line Xenos pixel-shader ALU code (pre-load fetched values per fetch address); used to verify the BlurShadowMask kernel.
 - `streets_smca_scale.py` — emits the per-component Scale·Scale3D (and Translation/Rotation) that UE3 applies on top of StaticMeshCollectionActor CachedParentToWorld; writes `notes/data/streets_smca_component_scale.json`.
+- `glbray.py` — read-only GLB loader + numpy ray caster (used for gameplay-viewpoint visibility tests of map faces).
