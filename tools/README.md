@@ -24,3 +24,4 @@ Added in Milestone 03:
 | `WfcQuery.java dis <addr> <n>` | disassemble undefined bytes in memory only (snapshot opened `-readOnly`, never saved). Use it for vtable targets Ghidra never disassembled |
 | `xenosdis.py` / `xenostrace.py` | Xenos shader microcode disassembler and symbolic constant tracer for WFC ShaderCache blobs (read-only) |
 | `WfcQuery.java rawdis <addr> <n>` | linear per-instruction disassembly (in memory, read-only). Use it where Ghidra stops at callers of 0x830101E0, which it wrongly treats as no-return |
+- `xenosemu.py` — numeric emulator for straight-line Xenos pixel-shader ALU code (pre-load fetched values per fetch address); used to verify the BlurShadowMask kernel.
