@@ -334,9 +334,29 @@ All gameplay markers are **Canvas material tiles** drawn by `TnObjectiveMarkerTy
 
 | type | allowed when | on give |
 |---|---|---|
-| **Health** | `Health < HealthMax` | `HealDamage(AddedHealth = 50, TnHealTypeHealthPickup)` |
-| **Overshield** | the pawn is a `TnPlayerPawn` with SegmentedHealth and **NormalizedOverShieldHealth < 1.0** | `HealDamage(1.0, TnHealTypeOverShieldPickup)`; the amount is applied natively by the heal type (still PARTIAL) |
+| **Health** | `Health < HealthMax` | `HealDamage(AddedHealth, TnHealTypeHealthPickup)`. **The heal type is `SHT_AddAllSegments`, so `Health = max(Health, HealthMax)`: a full heal. The amount is ignored, so `AddedHealth = 50` has no effect.** |
+| **Overshield** | the pawn is a `TnPlayerPawn` with SegmentedHealth and **NormalizedOverShieldHealth < 1.0** | `HealDamage(1.0, TnHealTypeOverShieldPickup)`. The heal type is `SHT_AddOverShield`, so **`Health = HealthMax + Blueprint.Overshield`** (`TR_Health_p.SharedHealth`: Overshield **550**) and the active segment is set to the top one |
 | **Ammo crate** | at least one inventory `TnWeapon` with WeaponType in `{WT_Primary, WT_Secondary, WT_Vehicle}` and `!AmmoMaxed(0)` | `FillReserveAmmo()` on every such weapon |
+
+**Segmented health** (`TnSegmentedHealth`, CONFIRMED):
+- `TR_Health_p.SharedHealth`: Segments **[175, 125, 125, 125]**, Overshield **550**.
+- `HealDamage` dispatches on `HealType.SegmentedHealType`:
+
+| type | effect |
+|---|---|
+| AddHealthToAll (0) | up to HealthMax |
+| AddHealthToSegment (1) | up to the current segment top |
+| AddSegment (2) | raise to the next segment top |
+| AddAllSegments (3) | full |
+| AddOverShield (4) | HealthMax + Overshield |
+
+- `AdjustDamage`: while overshield health > 0, damage is subtracted from Health directly and returns 0 to the normal path. Otherwise it is normal segmented damage.
+- `GetActiveSegment(Health)` walks the segment list.
+- The segment no-regeneration / regen rules were not read here.
+
+**Instant respawn** (TDM respawn §5.6 of the bootstrap note): `TnPlayerController.TriggerInstantRespawn()` sets `_ShouldInstantRespawn`, which the kill-streak reward `TnKillStreakInstantRespawn` uses (`OwnerKilled` when killed by someone else). It is cleared on restart. Without it the wave delay is 5 s.
+
+`[TransGame.TnPlayerController] PlayerRestartDelay=6.0` has **no script reader** (only native or unused): PARTIAL.
 
 - `TnPlayerPawn.CanPickupInventory` (used by `TnPickupManager`) also refuses:
   - while downed;
