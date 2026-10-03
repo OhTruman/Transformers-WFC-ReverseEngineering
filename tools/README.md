@@ -29,3 +29,4 @@ Added in Milestone 03:
 - `glbray.py` — read-only GLB loader + numpy ray caster (used for gameplay-viewpoint visibility tests of map faces).
 - `gfxpool.py` — read-only Scaleform .gfx/.swf reader: dumps AS2 constant pools of DoAction/DoInitAction (incl. sprites) and ExportAssets.
 - `gfxcallgraph.py` — builds `notes/data/frontend_gfx_callbacks.json`: per-movie AS→engine ExternalInterface calls (pool-level), data-store bindings, and engine→AS `_global.*` callbacks from decompiled script + authored defaults.
+- `as2dis.py` — read-only AS2 bytecode disassembler for Scaleform .gfx with expression folding (DefineFunction2 registers, constant pools, CallMethod/SetMember). `as2dis.py movie.gfx [filter]`. Used for `notes/data/frontend_menu_graph.json`.

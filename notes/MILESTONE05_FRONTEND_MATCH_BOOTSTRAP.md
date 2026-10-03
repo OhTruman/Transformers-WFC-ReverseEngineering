@@ -169,25 +169,38 @@ Base defaults:
   If `GRI.GetGameStatus() == 3` (in progress), it also sends `OnUIEvent(3)` at once (late join).
 - **Frontend:** Kismet `TnSeqAct_OpenFrontEnd` → `TnPlayerController.OnOpenFrontEnd` → `UIController.OnUIEvent(0)` → state FrontEnd → `OpenUI(FrontEndUI = UI_GFxFrontEnd_p.FrontEnd_GFX_1)`.
 
-### 1.5 Main menu (FrontEnd_GFX AS2 pools, CONFIRMED names; the call graph is pool-level)
+### 1.5 Main menu (CONFIRMED from AS2 disassembly, `tools/as2dis.py`; screen graph in **`notes/data/frontend_menu_graph.json`**)
 
-- **Press Start:** `mc_menuPressStart` (`$UIText.MainMenu.PressStart`).
-  - Start button → `Online.ShowDeviceSelectionUI`, `attachMainMenu`, `Sound.PlaySound`.
-  - `Online.ShouldShowStartScreen` decides whether the screen shows.
-- **Main menu** (`mc_menuMain360 / PS3 / PC`) buttons, in order:
+**Press Start** (`mc_menuPressStart`, `$UIText.MainMenu.PressStart`):
+- shown when `Online.ShouldShowStartScreen()`;
+- START → `Online.ShowDeviceSelectionUI()`, `attachMainMenu()`, `Sound.PlaySound('BUTTON_START')`.
 
-| button | action | hint |
-|---|---|---|
-| `campaignBtn_mc` | `Online.CheckIsProfileReady` → `mc_menuCampaign` | `$UIText.MainMenu.CampaignDesc` |
-| **`multiplayerBtn_mc`** | `Online.CheckCanPlayOnlineModes` → **`Online.OpenPartyLobby("GTS_TeamGame")`** | `$UIText.MainMenu.MultiplayerDesc` |
-| `escalationBtn_mc` | `Online.OpenPartyLobby("GTS_SingleTeamGame")` | `$UIText.MainMenu.EscalationDesc` |
-| `settingsBtn_mc` | `mc_settingsMenuLoader` | |
-| `accountsBtn_mc` (PC) | `mc_accountsMenuLoader` | |
-| `extrasBtn_mc` | `mc_extrasMenuLoader` | |
-| `exitGameBtn_mc` (PC) | `Game.ExitGame` | |
+**`attachMainMenu`** picks `mc_menuMain360`, `mc_menuMainPS3` or `mc_menuMainPC` by `HmUtility.Platform`.
+- Each is registered as class `HmMenu`. Focus starts on `campaignBtn_mc`. The footer shows no Back hint (`noBack`).
+- `onOver` sets `Footer.hint_mc.HintText = $UIText.MainMenu.<X>Desc`.
 
-  - Campaign submenu: Solo (`ProceedToSoloPlay` → `mc_menuSolo`: Resume Autobot / Resume Decepticon / Mission Select → difficulty → `Online.OpenCampaignGameLobby`) and Cooperative (`OpenPartyLobby("GTS_CampaignGame")`).
-  - Another variant (`menuOnline_mc`, `playOnlineBtn_mc`, `playWithFriendsBtn_mc`) maps `onlineMode` Campaign / Multiplayer / Escalation to the same `OpenPartyLobby(GTS_*)`.
+**Shipped 360 menu buttons:**
+
+| button | action |
+|---|---|
+| campaignBtn_mc | `Online.CheckIsProfileReady(1)`; the engine answers with `_global.ProfileIsReady(1)` → attach `mc_menuCampaign` |
+| **multiplayerBtn_mc** | **`if (Online.CheckCanPlayOnlineModes()) Online.OpenPartyLobby('GTS_TeamGame')`** |
+| escalationBtn_mc | same check → `OpenPartyLobby('GTS_SingleTeamGame')` |
+| settingsBtn_mc | `CheckIsProfileReady(2)` → `ProfileIsReady(2)` → `_root.attachMovie('mc_settingsMenuLoader', …, {hideClip: Footer, parentMenu})`; hides the menu and sets Footer alpha 0 |
+| extrasBtn_mc | `CheckIsProfileReady(3)` → `ProfileIsReady(3)` → `mc_extrasMenuLoader` |
+| accountsBtn_mc, exitGameBtn_mc (`Game.ExitGame`) | PC menu only |
+
+**Campaign submenu:**
+- Solo (`Online.ProceedToSoloPlay` → `mc_menuSolo`: Resume Autobot / Resume Decepticon / Mission Select → difficulty → `Online.OpenCampaignGameLobby`);
+- Cooperative (`OpenPartyLobby('GTS_CampaignGame')`).
+
+**Unused variant:** `mc_menuMain` / `mc_menuOnline` (Play Online → `OpenPartyLobby` by `onlineMode`; Play With Friends) is exported but not attached by `attachMainMenu` (HIGH: not used).
+
+**Menu conventions** (every HmMenu, CONFIRMED):
+- **Opening a submenu:** `parent.attachMovie(clip, inst, depth, initObj)`. The new menu stores `ParentMenu = _global.currentMenu`, hides it, and calls `_root.inputHandler.giveInput(this)`.
+- **Back = `closeMenu()`:** `ParentMenu._visible = true`, `giveInput(ParentMenu)`, `removeMovieClip()`. Root lobby menus instead call `Sound.PlaySound('BUTTON_BACK')` + `Game.QuitToMainMenu()`.
+- **Confirmation prompts:** `HmUtility.DisplayMessagePrompt(title, body, "label,callbackPath,label,callbackPath,…")`, closed via `_global.CloseMessagePrompt`. Engine-side prompts use `UIController.ShowPopupUI` (MessagePrompt_GFX) with `SetAButton` / `SetBButton` delegates (e.g. the OpenPartyLobby warnings).
+
 - **`TnOnlineActionScriptBinding.OpenPartyLobby(GTS)`** (CONFIRMED script):
   1. `CheckOnlineWarningPart0` (profile / online check; `TnOnlineStatusMessageBox` if `!CanPlayOnlineModes`);
   2. → Part1 (console `CanCommunicate` warning);
@@ -209,6 +222,32 @@ Base defaults:
   - `Online.EditGameMode(ConfigName)` → `SettingsDataStore.SetCurrentByName` + `GRI.PublishGameInfo(tag, settings)`;
   - **`Online.PlayPrivateGame(SettingsName)`** → `TnPartyLobbyGame.HostOnlineGame(settings)`;
   - `Online.EditPlaylist`, `Online.SetPartyLobbyType`.
+- **Party lobby menu** (AS2, CONFIRMED). Root `mc_menuMultiplayer360 / PS3 / PC`; Back → `Game.QuitToMainMenu()`.
+
+| button | action |
+|---|---|
+| `findGame_mc` | `mc_menuMultiplayerPlaylists` (public matchmaking) |
+| **`hostGame_mc`** | `mc_menuMultiplayerGameModes` |
+| `customCharacters_mc` | character customisation |
+| `teletraan1_mc` | Teletraan-1 |
+| `selectMatchmaking_mc` | region toggle |
+
+  - **`mc_menuMultiplayerGameModes`** lists `<TnMenuItems:GameModes>` (FriendlyName, SettingsConfigName). These are the `TnDataProvider_GameModeInfo` sections in this order:
+    - TDM "Team Deathmatch"
+    - DM
+    - DOM
+    - CTF
+    - EXT
+    - KOTH
+
+    (TransGame.int also names TnSVGame "Escalation" and an unshipped **TnOMFGame "One Must Fall"**, neither of which has a provider.)
+  - **Focus change** → `Online.EditGameMode(SettingsConfigName)` (publishes the mode to `<CurrentGame:*>`) and shows `<CurrentGame:GameModeFriendlyDescription>`.
+  - **Click** → **`mc_menuMultiplayerGameModeSettings`**. It builds one lateral selector per `TnGameSettings` data-store field that has a column header.
+    - TDM rows: **Team Balancing** (Manual / Autobalanced), **Map Selection** (Rotate / Host's Choice), **Time Limit** (10 / 15 / 20 minutes), **Points to Win** (20 / 30 / 40 / 50).
+    - Defaults come from `TnOnlineGameSettingsTDMPrivate`: Autobalanced, **Host's Choice**, 15 minutes, 40.
+  - **`createGame_mc`** → `DataStores.WriteValue(field, choice)` for each row → **`Online.PlayPrivateGame(SettingsConfigName)`**.
+  - `TnDataStore_GameSettings` maps the name to the **Private** class: DM→DMPrivate, TDM→TDMPrivate, CTF→CTFPrivate, KOTH→KOTHPrivate, DOM→DOMPrivate, SV→SVPrivate, EXT→EXTPrivate, CP→CPPrivate, SOLO→CPSolo, CCP→CCPPrivate.
+  - In the Escalation / Campaign host menus, the privacy selector "Public" calls `Online.PlayPlaylist(id, true)` (host a public playlist game) instead.
 - **Private (custom) path** — the one to mirror locally:
   1. `HostOnlineGameInternal(settings)`: `CheckCanPlayGameType` (party size ≤ `GetNumPlayersAllowedInParty`); `StartOnlineGame('Party')`; then `HostingGame`.
   2. `HostingGame`: destroy presence session; `CreateReservationHost(NumTeams = TeamType==GTS_TeamGame ? 2 : 1, MaxPlayers / NumTeams, MaxPlayers)`; `CreateOnlineGame`. **[online — bypass]**
@@ -259,7 +298,13 @@ Base defaults:
   - **`SelectRandomMap(prev)`:**
     - `GetCompatibleMaps()` = every `TnDataProvider_MapInfo` in `TnMenuItems:Maps` whose `CompatibleGameTypes` contains `GRI.GameModeTag`, skipping those where `IsProviderDisabled()`. Disabled = `!HasRequiredAssets()` (native) or `!GRI.MapCanBePlayed(map)` (playlist ContentIds must contain map `DlcId`; always true when `SelectedPlaylistID == -1`).
     - `RandomMap(cur, n)`: `cur == -1` → `RandRange(0, n)`; else `(cur + RandRange(1, n)) % n`. That is a uniformly random **different** compatible map; it is not sequential rotation.
-  - **Host's choice:** GameLobby_GFX `Online.SetSelectedMapID(id)` → `TnGameLobbyGame.HostRequestMapID` → `GRI.HostRequestMapID` (ignored unless `MapSelectionMethod == 1`) → `SetMapId` → `UpdatePrestreaming()`.
+  - **Host's choice (AS2 CONFIRMED, GameLobby_GFX versus menu):**
+    - `selectMap_mc` is a lateral selector. Its items are every `<TnMenuItems:Maps>` row with `IsCollectionValueEnabled` **and** `CompatibleGameTypes` containing `<CurrentGame:MapCompatibilityTag>`, as `{FriendlyName, ImagePath, MapId}` in provider order. The list is rebuilt when MapCompatibilityTag changes.
+    - It is enabled only for the host when `MapSelectionMethod == 1` and not counting down.
+    - **Each selection change immediately calls `Online.SetSelectedMapID(MapId)`** → `TnGameLobbyGame.HostRequestMapID` → `GRI.HostRequestMapID` (ignored unless `MapSelectionMethod == 1`) → `SetMapId` → `UpdatePrestreaming()`.
+    - `startGame_mc` (host && `CanHostRequestGameStart` && `!IsCountingDown`) → `Online.BeginLobbyExitCountdown()` → `HostRequestsGameStart`.
+    - Selected-map panel (`updateSelectedMap` on `<CurrentGame:SelectedMapID>`): label `mc_mapLabelMultiplayer` (colour 0xFF9333, or 0xFF3333 if unavailable) and a thumbnail via `Self.SetExternalTextureWithPath('MapImage'+id, ImagePath)`; `UI_LevelThumbnails_p.LevelUnavailable` if disabled.
+    - Faction logo only for faction maps (Survival).
   - **`UpdatePrestreaming()`** (non-campaign): `GameEngine.UpdateMapPrestreaming(ConvertMapIdToMapFilename(id))`, `WorldInfo.bHighPriorityLoading = true`. **The match map starts streaming while still in the lobby.**
   - Veto (public): `Online.SubmitMapVeto` → `MapVetos++`; `RequiredVetos = max(VetoQuarum, humans / 2 + 1)`.
 - **Start:**
@@ -574,7 +619,8 @@ Notes on the table:
 - **EndGameStats_GFX:**
   - title `<CurrentGame:GameOverMessage>`; `$UIText.EndGameStats.FinalScores`;
   - two views toggled by X: **scoreboard** (the loaded `PlayerList.swf`, ViewMode InGame) and **XP earnings** per specialty (Scout / Scientist / Leader / Soldier, `Customize.GetXpEarnedForSpecialtyLastMatch` …);
-  - B → `closeEndGameStats`.
+  - the first view is the scoreboard if `<CurrentGame:_bIconicMode>`, otherwise earnings;
+  - B → `closeEndGameStats`, which only does something when the movie was opened with a `parentMenu` (the lobby's `_global.showXpScreen`). **In the match the screen stays until the ReturnToGameLobby travel** (AS2 CONFIRMED).
 - **Return:** `MatchOver.OnCountdownComplete` → **`TnGame.ReturnToGameLobby()`**: `settings.BuildLobbyURL(URL)`; `WorldInfo.ServerTravel(URL $ "?MapId=" $ GRI.GetMapID(), true)`.
   - Back in `UI_Lobby_m`, `OnEnterLobbyFromMap(prevMapId)`: **Rotate → a random different compatible map**; **host's choice → the same map preselected**. Then the next countdown.
   - `UIController` OnPlayAgain (10) → WaitingOnGameStart exists for the in-place path. PARTIAL: its sender was not found.
@@ -672,9 +718,8 @@ Notes on the table:
   - **Data bindings per movie:** `notes/data/frontend_gfx_callbacks.json` (`as_to_engine`, `localized_and_datastore_strings`).
   - Loading text: `SetLevelText(FriendlyName, "in <Map>")` + 3 random `AddEngageText`.
 - **HIGH:** playlist and map menu order = ini section order.
-- **PARTIAL:**
-  - the AS2 branch logic inside the movies (only constant pools were read; an AS2 disassembler is needed for exact control flow);
-  - the Bink + GFx composite of the loading screen.
+- **CONFIRMED (AS2):** menu graph and enable rules in `notes/data/frontend_menu_graph.json`. Full disassembly can be regenerated with `tools/as2dis.py <movie.gfx>`.
+- **PARTIAL:** the Bink + GFx composite of the loading screen.
 
 ### Gameplay / TDM
 - **CONFIRMED:**
@@ -722,6 +767,6 @@ Notes on the table:
 - The URL keys `PointsToWin`, `TimeLimit`, `GameModeTag`, `GameTeamStatus` and `MapId` are what the match reads.
 
 ## STILL OPEN
-- Exact AS2 control flow (needs an AS2 bytecode disassembler, not only pools).
+- HUD AS2 internals (Hud_GFX) were not walked button by button; the bindings are listed.
 - Native loading-movie composition and close timing.
 - `PlayerRestartDelay` usage.

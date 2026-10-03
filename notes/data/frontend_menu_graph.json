@@ -1,0 +1,162 @@
+{
+ "_source": "AS2 disassembly (tools/as2dis.py) of ExtractedAssets UI_GFx*.gfx + UnrealScript bindings; see notes/MILESTONE05_FRONTEND_MATCH_BOOTSTRAP.md sections 1.5, 2.1, 2.4, 5.7",
+ "conventions": {
+  "open_submenu": "parent.attachMovie(clip, inst, depth, initObj); new menu hides _global.currentMenu (ParentMenu._visible=false) and takes input via _root.inputHandler.giveInput(this)",
+  "back": "closeMenu(): ParentMenu._visible=true; _root.inputHandler.giveInput(ParentMenu); thisMenu.removeMovieClip()  (B button)",
+  "focus": "currentFocus = '<button>_mc'; buttons have focusUp/focusDown names; onOver sets HintWidget.HintText / hint_mc.HintText",
+  "engine_call": "HmExternalInterface.<Iface>.<Method>(...) -> flash.external.ExternalInterface.call('<Iface>.<Method>', ...) -> TnXxxActionScriptBinding.<Method>",
+  "data_binding": "HmExternalInterface.DataStores.ReadValue('<Store:Field>') + RegisterValueChangedCallback('<Store:Field>', targetPath(this)+'.fn')"
+ },
+ "screens": [
+  {
+   "id": "MovieLoader",
+   "movie": "UI_GFxFrontEnd_p.MovieLoader_GFX_1",
+   "opened_by": "UI_FrontEnd_m Kismet GFxAction_OpenMovie after Black-Out matinee",
+   "logic": "Game.HasWatchedIntroMovie() ? fscommand enterFrontEnd : fscommand enterMovieSequence (Kismet plays logos+FMV_intro)",
+   "confidence": "HIGH (branch body pool-level)"
+  },
+  {
+   "id": "PressStart",
+   "movie": "UI_GFxFrontEnd_p.FrontEnd_GFX_1",
+   "clip": "mc_menuPressStart",
+   "shown_if": "Online.ShouldShowStartScreen()",
+   "buttons": {
+    "START": [
+     "Online.ShowDeviceSelectionUI()",
+     "attachMainMenu()",
+     "Sound.PlaySound('BUTTON_START')"
+    ]
+   }
+  },
+  {
+   "id": "MainMenu",
+   "movie": "FrontEnd_GFX",
+   "clip": "mc_menuMain360 | mc_menuMainPS3 | mc_menuMainPC (attachMainMenu by HmUtility.Platform; registerClass HmMenu)",
+   "focus": "campaignBtn_mc",
+   "buttons": {
+    "campaignBtn_mc": "Online.CheckIsProfileReady(1) -> engine calls back _global.ProfileIsReady(1) -> attach mc_menuCampaign {Footer}",
+    "multiplayerBtn_mc": "if Online.CheckCanPlayOnlineModes(): Online.OpenPartyLobby('GTS_TeamGame')",
+    "escalationBtn_mc": "if Online.CheckCanPlayOnlineModes(): Online.OpenPartyLobby('GTS_SingleTeamGame')",
+    "settingsBtn_mc": "Online.CheckIsProfileReady(2) -> ProfileIsReady(2) -> _root.attach mc_settingsMenuLoader {hideClip: Footer, parentMenu}; hide menu, Footer alpha 0",
+    "extrasBtn_mc": "Online.CheckIsProfileReady(3) -> ProfileIsReady(3) -> _root.attach mc_extrasMenuLoader",
+    "accountsBtn_mc / exitGameBtn_mc": "PC menu only (Game.ExitGame)"
+   },
+   "back": "none (Footer.buttonHintUpdate('noBack'))",
+   "hints": "onOver: Footer.hint_mc.HintText = $UIText.MainMenu.<X>Desc"
+  },
+  {
+   "id": "OnlineMenu",
+   "movie": "FrontEnd_GFX",
+   "clip": "mc_menuOnline",
+   "params": [
+    "onlineMode"
+   ],
+   "focus": "playOnlineBtn_mc",
+   "buttons": {
+    "playOnlineBtn_mc": "onlineMode Campaign->Online.OpenPartyLobby('GTS_CampaignGame'); Multiplayer->OpenPartyLobby('GTS_TeamGame'); Escalation->OpenPartyLobby('GTS_SingleTeamGame')",
+    "playWithFriendsBtn_mc": "attach mc_onlineFriendsMenuLoader {allowInvites:false}"
+   },
+   "back": "closeMenu",
+   "note": "mc_menuOnline is only reached from the unattached variant mc_menuMain (sprite 32) - not used by the shipped attachMainMenu (HIGH)"
+  },
+  {
+   "id": "PartyLobby.MultiplayerRoot",
+   "movie": "UI_GFxLobbies_p.PartyLobby_GFX_1",
+   "clip": "mc_menuMultiplayer360|PS3|PC",
+   "buttons": {
+    "findGame_mc": "attach mc_menuMultiplayerPlaylists (public matchmaking; hint $UIText.Lobby.PublicDescMultiplayer)",
+    "hostGame_mc": "attach mc_menuMultiplayerGameModes (hint $UIText.Lobby.PrivateDesc)",
+    "customCharacters_mc": "attach mc_customTransMenuLoader {backout:true, selectOnly:false}",
+    "teletraan1_mc": "attach mc_menuMultiplayerT1",
+    "selectMatchmaking_mc": "lateral toggle <OnlinePlayerData:ProfileData.UseAllRegionMatchmaking>"
+   },
+   "back": "Sound BUTTON_BACK; Game.QuitToMainMenu()"
+  },
+  {
+   "id": "PartyLobby.GameModes",
+   "clip": "mc_menuMultiplayerGameModes",
+   "list": "<TnMenuItems:GameModes> rows (FriendlyName, SettingsConfigName) in provider order TDM, DM, DOM, CTF, EXT, KOTH",
+   "on_focus": "Online.EditGameMode(SettingsConfigName) -> GRI.PublishGameInfo; show mc_gameModeInfo with <CurrentGame:GameModeFriendlyDescription>",
+   "on_click": "attach mc_menuMultiplayerGameModeSettings {GameModeTag: SettingsConfigName, GameModeInfo}",
+   "back": "closeMenu"
+  },
+  {
+   "id": "PartyLobby.GameModeSettings",
+   "clip": "mc_menuMultiplayerGameModeSettings",
+   "list": "for f in DataStores.GetDataStoreFields('TnGameSettings'): if GetCollectionColumnHeader('<TnGameSettings:f>',0) non-empty -> lateral selector of its rows, default = ReadValue",
+   "TDM_rows": [
+    "Team Balancing: Manual|Autobalanced (default Autobalanced)",
+    "Map Selection: Rotate|Host's Choice (Private default Host's Choice)",
+    "Time Limit: 10|15|20 minutes (default 15)",
+    "Points to Win: 20|30|40|50 (default 40)"
+   ],
+   "buttons": {
+    "createGame_mc": "for each row DataStores.WriteValue(field, selected FriendlyName); Online.PlayPrivateGame(SettingsConfigName)"
+   },
+   "back": "closeMenu",
+   "confidence": "CONFIRMED flow; TDM rows HIGH (from TnOnlineGameSettingsTDM mappings with ColumnHeaderText)"
+  },
+  {
+   "id": "GameLobby.Versus",
+   "movie": "UI_GFxLobbies_p.GameLobby_GFX_1",
+   "clip": "sprite 145 (versus host menu)",
+   "buttons": {
+    "startGame_mc": "Online.BeginLobbyExitCountdown() -> TnGameLobbyGame.HostRequestsGameStart()",
+    "selectMap_mc": "lateral selector; selectionUpdated -> Online.SetSelectedMapID(currentSelectionData.MapId)",
+    "selectCharacter_mc": "_global.DisplayCharacterSelect()",
+    "invite/leaderboards/partySessions": "online"
+   },
+   "map_list": "rows of <TnMenuItems:Maps> with IsCollectionValueEnabled && CompatibleGameTypes contains <CurrentGame:MapCompatibilityTag>; items {FriendlyName, ImagePath, MapId}; rebuilt on MapCompatibilityTag change",
+   "enable_rules": {
+    "startGame_mc": "IsHost && <CurrentGame:CanHostRequestGameStart> && !<CurrentGame:IsCountingDown>",
+    "selectMap_mc": "IsHost && <CurrentGame:MapSelectionMethod>==1 && !IsCountingDown && list non-empty"
+   },
+   "selected_map_panel": "updateSelectedMap on <CurrentGame:SelectedMapID>: mc_mapLabelMultiplayer {MapFriendlyName, colour 0xFF9333 enabled / 0xFF3333 unavailable}; map image via Self.SetExternalTextureWithPath('MapImage'+id, ImagePath) or UI_LevelThumbnails_p.LevelUnavailable",
+   "veto": "_global.submitMapVeto -> Online.SubmitMapVeto() (public rotate)",
+   "back": "Sound BUTTON_BACK; Game.QuitToMainMenu()"
+  },
+  {
+   "id": "PreGameCountdown",
+   "movie": "UI_GFxPreGameCountdown_p.PreGameCountdown_GFX_1",
+   "bindings": [
+    "<CurrentGame:GameModeTag> -> mc_gameModeIcon<TAG>",
+    "<CurrentGame:GameModeFriendlyName>",
+    "<CurrentGame:CurrentCountdown>",
+    "<CurrentGame:IsCountingDown>",
+    "<CurrentGame:Rounds>/<CurrentGame:CurrentRound>",
+    "label $UIText.Lobby.MultiplayerCountdownLabel (campaign/round variants)"
+   ],
+   "loads": "../PlayerList/PlayerList.swf ViewMode InGame"
+  },
+  {
+   "id": "LoadScreen",
+   "movie": "UI_GFxLoading_p.LoadScreen_GFX",
+   "engine_calls_in": [
+    "_global.SetLevelText(Title, Description)",
+    "_global.AddEngageText(Text) x3"
+   ],
+   "text": "$UIText.LoadScreen.Loading"
+  },
+  {
+   "id": "Respawn",
+   "movie": "UI_GFxRespawn_p.MultiplayerRespawn_GFX_1",
+   "bindings": [
+    "<PlayerOwner:TimeToRespawn>",
+    "<CurrentGame:GameTeamStatus>"
+   ]
+  },
+  {
+   "id": "EndGameStats",
+   "movie": "UI_GFxEndGameStats_p.EndGameStats_GFX_1",
+   "views": "IconicMode ? scoreboard : XP earnings first; X toggles (switchToScoreboard/switchToEarnings); B closes only when opened with a parentMenu (lobby XP screen); in-match it stays until ReturnToGameLobby travel",
+   "bindings": [
+    "<CurrentGame:GameOverMessage>",
+    "<CurrentGame:GameModeTag>",
+    "<CurrentGame:GameTeamStatus>",
+    "<CurrentGame:_bIconicMode>",
+    "<TnMenuItems:Specialties>"
+   ],
+   "loads": "../PlayerList/PlayerList.swf"
+  }
+ ]
+}
