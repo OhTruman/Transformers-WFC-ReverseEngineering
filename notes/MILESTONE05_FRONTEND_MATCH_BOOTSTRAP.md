@@ -661,6 +661,29 @@ Notes on the table:
   - `<CurrentGame:GoalScore>`, `<CurrentGame:Teams>` (**team scores**), `<CurrentGame:Players>`;
   - `<PlayerOwner:Score>` (**personal score**), `<PlayerOwner:TeamID>`, `<PlayerOwner:PlayerName>`;
   - `<CurrentGame:GameTeamStatus>`, `<CurrentGame:Rounds>`, `<CurrentGame:CurrentRound>`, `<CurrentGame:CurrentObjectiveCountdown>`, `<CurrentGame:CompetitiveScoreEnabled>`, `<CurrentGame:_CurrentWave>`, `<CurrentGame:_NextWaveTime>`, `<TnMenuItems:Weapons>`.
+- **HUD score and clock widgets** (Hud_GFX AS2, CONFIRMED):
+  - **Scoreboard widget choice** (`UpdateScoreboardDisplay`, re-run on `<CurrentGame:GameTeamStatus>` / `CompetitiveScoreEnabled` change):
+
+| GameTeamStatus | widget |
+|---|---|
+| `GTS_TeamGame` | **`mc_scoreTeam`** |
+| `GTS_FreeForAllGame` | `mc_scoreFreeForAll` |
+| `GTS_SingleTeamGame` | `mc_scoreSurvival` |
+| otherwise, if CompetitiveScoreEnabled | `mc_scoreCoop` |
+
+    With a scoreboard present, the countdown clip sits at y = 50 (otherwise 10).
+  - **`mc_scoreTeam`** (sprite 499) **polls every 500 ms** (`setInterval UpdateTeamScores 500`); it does not use callbacks.
+    - `GoalScore = <CurrentGame:GoalScore>` (if ≤ 0 it uses 10); `TeamID = <PlayerOwner:TeamID>`.
+    - On team change it attaches `mc_scoreLogoAutobot` (team 0) or `mc_scoreLogoDecepticon` (team 1). Ally colour 0xF03C3C and enemy 0xA06FFF for Autobots, swapped for Decepticons.
+    - For each `<CurrentGame:Teams>` row (TeamIndex 0 / 1, Score): the own team goes to `allyNumber_mc` / `allyBar_mc`, the other to the enemy widgets.
+    - On a score change: set the number text, flash the bar white → team colour (0.5 s), and animate the bar width to `25 + Score / GoalScore × 141` px (minimum 25) over 0.2 s.
+  - **Round / match clock** (`UpdateRoundCountdown` on `<CurrentGame:CurrentCountdown>`, `ShowRoundCountdown` on `<CurrentGame:IsCountingDown>`):
+    - visible while `IsCountingDown && time > 0`;
+    - text `secondsToMinutesSeconds(t, true)` = `MM:SS` (zero-padded minutes and seconds);
+    - at ≤ 10 s each update flashes 0xFF3333 → 0x50B5D5 with a shadow pulse.
+    - During the match `GRI.OnRemainingTimeUpdated` re-arms `ResetCountdown(true, RemainingTime)` every second, so this is the TDM match clock. In PendingMatch the same widget shows the 10 s start countdown.
+    - An objective clock (`<CurrentGame:CurrentObjectiveCountdown>`, `M:SS`) is used by objective modes.
+  - Personal score `<PlayerOwner:Score>` and `<CurrentGame:Players>` (Score, TeamID, PlayerName) feed the FFA widget and the player-list blocks.
 - **Scoreboard** (InGameStats_GFX): `GameModeFriendlyName`, `GameModeFriendlyRules`, `SelectedMapID` + `<TnMenuItems:Maps>`. The player rows come from the `PlayerList.swf` component. PARTIAL: its open/close input binding was not traced.
 - **Pause:** `TnPlayerController.ShowMenu` → `OnUIEvent(6)` → Paused: `SetPause(true)` + `PauseUI = UI_GFxPause_p.PauseMenu_GFX_1`. `TnGame.SetPause` also sends 6.
   - `bPauseable = false` for TnGame, so the world doesn't pause in MP (HIGH).
