@@ -205,3 +205,154 @@ if Physics==Falling: Velocity.Z = max(oldZ + GravityZ*dt, -TerminalVelocity)
 - AnimNotifies inside the transform clips (could toggle visibility).
 - `CalcVelocity`'s `MaxSpeed` source per physics mode (native).
 - CTF `GetReturnSleepTime` per reason (not read).
+
+---
+
+## 5. HUD markers: player tags and objective markers (Canvas, not Scaleform)
+
+**Hud_GFX itself draws only debug and lock-on markers** (`getMarkerClip`: `LockOn` → `mc_markerLockOn`, otherwise debug clips).
+
+All gameplay markers are **Canvas material tiles** drawn by `TnObjectiveMarkerTypeSprite.Draw`:
+- They are registered through `GRI.AddObjectiveMarker(Description, MarkerBase, MarkerTypeClass, DoNotReplicate)` → `_ObjectiveManager`.
+- Materials live in `UI_HudMarkers_p`.
+- All authored setups are in **`notes/data/objective_marker_types.json`**.
+
+### Common sprite behaviour (CONFIRMED script + defaults)
+
+**Placement:**
+- Project `MarkerBase.Location + (0, 0, MarkerZOffsetWS)`.
+
+**Off-screen:**
+- Shown only if `DrawWhenOffscreen`.
+- Direction from the canvas centre is flipped when the marker is behind the camera. The marker sits on the safe frame (`SafeFramePaddingPercent 0.08`).
+- `RotationParam 'ArrowAngle'` = `acos(dir.y)·sign(dir.x) + 180`.
+- Size `OffscreenMarkerSize 0.0625`.
+
+**Focus:**
+- Focused when the marker is within `DistanceFromCenterFocusThreshold` (default **0.0625**) of the screen centre, or within the type's auto-focus range.
+- Focus is held for **`FocusHysterisis 0.2 s`**.
+
+| | marker size | label | material params |
+|---|---|---|---|
+| focused | `FocusedMarkerSize` (0.05 typ.) | alpha fades with the hysteresis unless `DrawLabelWhenUnfocused` | `Over = 1`, `OnScreen = 1` |
+| unfocused | `UnfocusedMarkerSize` | — | `Over = 0` |
+
+- Sizes are fractions of the canvas (`SizeInPixels`). The label is drawn at `LabelOffset`, in `UI_TransEngineFonts_p.MarkerFont`.
+
+**Label colours** (`TnObjectiveMarkerTypeSprite`):
+
+| label | colour |
+|---|---|
+| Friendly | (80, 181, 213) |
+| Enemy | (240, 60, 60) |
+| Neutral | white |
+
+### TDM player tags: `TnMultiplayerGame.TransformerMarkerClass = TnObjectiveMarkerTypeTransformerVersus`
+
+**Registration:** every pawn registers it (`TnPawn` adds `GameClass.default.TransformerMarkerClass` with the character name).
+
+**Hidden for:** yourself, and dead pawns.
+
+**Marker type** (`GetEMT`): Ally = same team; Disguised = enemy with `TnBuffDisguise`; otherwise Enemy.
+
+| type | setup | when drawn |
+|---|---|---|
+| **Ally** | `AllyMarkerSetup` (`MarkerAlly_MAT` + `TargetHealthBar_MAT`) | label always drawn; **off-screen only while that ally is downed** |
+| **Enemy** | `EnemyMarkerSetup` (`MarkerEnemy_MAT`, size 0.03125, label colour (240, 20, 20)) | **marker disabled** (size 0) unless the viewer has `TnBuffSeeEnemyObjectiveMarkers` (and the target has no Warcry-derived buff), or the target is `TnBuffHardLocked` by the viewer or a teammate, or the target has `TnBuffRevengeMarker` |
+| **Disguised** | ally setup | hidden without line of sight (`TnLineOfSightDetector.HasLOSToActor` from the player camera) |
+
+- Enemy label: also hidden while the target is cloaked or out of line of sight.
+- Label height for all types: `LabelZOffsetWS = collision height × 0.5`.
+
+### Objective markers (state → material params)
+
+**Domination** (`MPMarkerDominationNode_MAT`):
+
+| point owner | `TeamID` | label colour | label |
+|---|---|---|---|
+| viewer's team | 0 | friendly | "Defend" |
+| neutral (255) | 2 | neutral | "Capture" |
+| enemy | 1 | enemy | "Capture" |
+
+- `NodeID = PointNumber`; `Flashing = BeingCaptured`.
+
+**KOTH** (`MPMarkerBase_MAT`, label "Active Node"):
+- Owned by the viewer's team, or neutral / contested (index > 1): `Neutral = 1`, friendly label colour.
+- Owned by the enemy: `Neutral = 0`, neutral label colour.
+- Label: "Defend" if owned by the viewer's team, else "Capture".
+
+**Flag capture point:**
+- Shown only to a pawn carrying a `TnWeaponFlagBase`.
+- `Neutral = 0`, `Flashing = 1`. Label only when focused.
+
+**Carried objective** (flag `MPMarkerCOP_MAT`, bomb `MPMarkerBomb_MAT`):
+- Not shown to the carrier itself.
+- `IsAttacking = viewer team == GRI.AttackingTeam`.
+
+| state | Neutral | Flashing | other |
+|---|---|---|---|
+| at factory | 0 attacking / 1 defending | 0 | — |
+| dropped | 0 | 1 attacking / 0 defending | — |
+| carried by a teammate | 1 | — | — |
+| carried by an enemy | 0 | — | `PingOpacity` pulse `((2.5 − t mod 2.5) / 2.5)^5` |
+
+- Label colour: friendly if `Neutral == 1`, else enemy, with alpha × pulse.
+- Labels: Flag = Capture / Escort / Defend / Return / Kill; Bomb = Bomb / Escort / Kill.
+
+**Flag/bomb factory marker timing** (`TnGameObjectiveWeaponPickupFactory.SetCurrentObjectiveHolder(Holder, AddMarker = true)`):
+- The marker (and the objective spawn modifier) **follows the current holder**:
+  - the factory itself while in `Pickup` (set in `Pickup.BeginState`);
+  - the carrying pawn after pickup;
+  - the dropped pickup when dropped;
+  - none while `Sleeping` / inactive (`ActivateIfMatchingTeam` → `SetCurrentObjectiveHolder(none)`).
+- On every change the old holder's marker is removed and the new one added in the same call.
+
+**Tombstone** (`DeathIndicator_MAT`, size 0.03125, `FadeOutTime 3 s`): at each death location.
+
+---
+
+## 6. Pickups: "nothing to gain" rejection and factory mesh placement (replaces Gameplay `[PROV]` and Rendering "attach offset UNKNOWN")
+
+### Accept / reject chain (CONFIRMED)
+
+`PickupFactory.Pickup.ValidTouch`:
+1. **Reject** if hidden.
+2. **Reject** if the pawn can't pick up inventory.
+3. **Reject** if the pawn has no Controller (recheck in 0.2 s).
+4. **Reject** if the touch is through a wall: `FastTrace(pawn, factory)` fails (recheck in 0.5 s).
+5. Then `Game.PickupQuery`.
+
+`PickupQuery`:
+- GameRules `OverridePickupQuery`: **none of the MP rules override it**.
+- Then `InvManager.HandlePickupQuery`:
+  - `ItemClass.static.PickupAllowed(pawn, pickup)`;
+  - **no inventory item may `DenyPickupQuery`** (same-class weapon with full reserve ammo, or same-class projectile bag with maxed ammo).
+
+`TnPickupFactory.Pickup.ValidTouch` additionally rejects non-AI pawns for `AiUseOnly` factories.
+
+**`PickupAllowed` per type:**
+
+| type | allowed when | on give |
+|---|---|---|
+| **Health** | `Health < HealthMax` | `HealDamage(AddedHealth = 50, TnHealTypeHealthPickup)` |
+| **Overshield** | the pawn is a `TnPlayerPawn` with SegmentedHealth and **NormalizedOverShieldHealth < 1.0** | `HealDamage(1.0, TnHealTypeOverShieldPickup)`; the amount is applied natively by the heal type (still PARTIAL) |
+| **Ammo crate** | at least one inventory `TnWeapon` with WeaponType in `{WT_Primary, WT_Secondary, WT_Vehicle}` and `!AmmoMaxed(0)` | `FillReserveAmmo()` on every such weapon |
+
+- `TnPlayerPawn.CanPickupInventory` (used by `TnPickupManager`) also refuses:
+  - while downed;
+  - during melee;
+  - weapons while in vehicle form;
+  - while reviving someone (`TnPlayerController.RevivablePawn != none`).
+
+### Factory mesh and spin (CONFIRMED script; HIGH for the native AttachComponent transform)
+
+- `PickupFactory.SetPickupMesh` = `InventoryType.static.CreatePickupFactoryMesh(self)`, i.e. **`new` component from the template `default.PickupFactoryMesh`**, then `AttachComponent` to the **factory actor**.
+  - `TnPickupFactory.SetPickupMesh` then sets the factory LightEnvironment.
+- The ammo-crate template `Default__TnAmmoCratePickup.MeshComponentA` (`PROP_NEU_AmmoPickup_STAT`, CullDistance 8000, no shadows, no collision) **authors no Translation, Rotation or Scale**. **The mesh sits at the factory actor origin with the actor's rotation and DrawScale: zero offset.**
+- **Spin:**
+  - `PickupFactory.Pickup.BeginState` sets `RotationRate = InventoryType.default.PickupRotationRate` (crate: Yaw **10000 UU/s ≈ 54.9°/s**) and `SetPhysics(PHYS_Rotating)`.
+  - `Pickup.EndState` sets `PHYS_None`.
+  - **The whole factory actor rotates while the pickup is available** (mesh, PickupEffect and CustomPickupEffect components with it) and **freezes at its current yaw when taken**. It resumes from that yaw on respawn.
+  - Health and overshield define no `PickupRotationRate` and no `PickupFactoryMesh`: no mesh, and no spin (HIGH; `Inventory` default rotation rate not overridden).
+- Highlight / custom FX: `SetPickupVisible` activates the `CustomPickupEffect` (health / overshield FX) and, if `ShouldDisplayHighlightFx`, the `PickupEffect` (`Pickup_FX`). `SetPickupHidden` hides and deactivates them.
+- Factory collision: cylinder radius 200, height 100, translated +100 Z (`Default__TnPickupFactory`).
