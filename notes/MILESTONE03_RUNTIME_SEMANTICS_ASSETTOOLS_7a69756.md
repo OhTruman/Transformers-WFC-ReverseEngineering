@@ -347,3 +347,5 @@ TransitionToState(h): exit current; ActiveState = States[h]; CreateEffects; Begi
 - The native particle mesh material fallback.
 - The `TnGame.ShouldRespawn` / `PickupQuery` overrides were not traced.
 - The overshield amount (native).
+
+> **CORRECTION (2026-10-02, `MILESTONE04_STREETS_PICKUP_OBJECTIVE_PRESENTATION.md`):** `ShouldDisplayHighlightFx = True` is also authored on `TnWeaponPickupFactory`. The flag and bomb objective factories inherit it and show the Pickup_FX beam while available. The "ammo crates only" / "flag and bomb inherit False" statements above are wrong.
