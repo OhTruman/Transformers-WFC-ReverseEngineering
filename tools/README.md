@@ -27,3 +27,5 @@ Added in Milestone 03:
 - `xenosemu.py` — numeric emulator for straight-line Xenos pixel-shader ALU code (pre-load fetched values per fetch address); used to verify the BlurShadowMask kernel.
 - `streets_smca_scale.py` — emits the per-component Scale·Scale3D (and Translation/Rotation) that UE3 applies on top of StaticMeshCollectionActor CachedParentToWorld; writes `notes/data/streets_smca_component_scale.json`.
 - `glbray.py` — read-only GLB loader + numpy ray caster (used for gameplay-viewpoint visibility tests of map faces).
+- `gfxpool.py` — read-only Scaleform .gfx/.swf reader: dumps AS2 constant pools of DoAction/DoInitAction (incl. sprites) and ExportAssets.
+- `gfxcallgraph.py` — builds `notes/data/frontend_gfx_callbacks.json`: per-movie AS→engine ExternalInterface calls (pool-level), data-store bindings, and engine→AS `_global.*` callbacks from decompiled script + authored defaults.
