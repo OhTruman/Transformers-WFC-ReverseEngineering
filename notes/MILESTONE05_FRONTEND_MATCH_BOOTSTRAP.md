@@ -622,7 +622,7 @@ Notes on the table:
   - the first view is the scoreboard if `<CurrentGame:_bIconicMode>`, otherwise earnings;
   - B → `closeEndGameStats`, which only does something when the movie was opened with a `parentMenu` (the lobby's `_global.showXpScreen`). **In the match the screen stays until the ReturnToGameLobby travel** (AS2 CONFIRMED).
 - **Return:** `MatchOver.OnCountdownComplete` → **`TnGame.ReturnToGameLobby()`**: `settings.BuildLobbyURL(URL)`; `WorldInfo.ServerTravel(URL $ "?MapId=" $ GRI.GetMapID(), true)`.
-  - Back in `UI_Lobby_m`, `OnEnterLobbyFromMap(prevMapId)`: **Rotate → a random different compatible map**; **host's choice → the same map preselected**. Then the next countdown.
+  - Back in `UI_Lobby_m`, `OnEnterLobbyFromMap(prevMapId)`: **Rotate → a random different compatible map**. In host's choice the server keeps the previous MapId, but the rebuilt lobby movie immediately pushes selector index 0, so **the selection resets to the first compatible map** (correction; see `MILESTONE05_FRONTEND_GAMEPLAY_BLOCKERS.md` C4/C7). Then the next countdown.
   - `UIController` OnPlayAgain (10) → WaitingOnGameStart exists for the in-place path. PARTIAL: its sender was not found.
 - **Quit:** `OnQuitGame` → `RecordSessionComplete("Quit")` → `MatchQuit`.
   - `Game.QuitToMainMenu` (Pause / GameLobby AS) → TnGameActionScriptBinding → … → `TnGame` line 661: **`ClientTravelToMap("UI_FrontEnd_m")`**.
