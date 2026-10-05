@@ -353,3 +353,23 @@ Otherwise it calls **`AbortMelee`** and returns true.
 - Particle size = base size × the Size parameter.
 - The Size parameter is min(1, thruster contribution) × socket RelativeScale.
 - So a thruster at rest emits zero-size particles.
+
+#### Which emitters use the shared Size module (H, raw package bytes)
+
+**Method:** raw int32 scan of every ParticleLODLevel blob in `MP_IAC_Streets_BASE_m` for the module's big-endian export index. Module `CarHover_A_01_FX.ParticleModuleSizeMultiplyLife_9193` is export 16983.
+
+**Result:**
+- The index appears exactly once in the **LOD 0** blob of every one of the 7 emitters:
+
+  | Emitter | LOD 0 level |
+  |---|---|
+  | 10606 | LODLevel_902 |
+  | 1062 | LODLevel_9828 |
+  | 12613 | LODLevel_6243 |
+  | 13443 | LODLevel_16144 |
+  | 1517 | LODLevel_13205 |
+  | 8261 | LODLevel_8474 |
+  | 854 | LODLevel_13897 |
+
+- It appears in **no** LOD 1 blob.
+- So one module object is shared by all 7 emitters, at LOD 0 only.
