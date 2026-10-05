@@ -480,3 +480,29 @@ Other keys:
 **UNKNOWN:** native `PCSettingManager` defaults (default resolution, default texture level, default VSync) and how the texture level maps to streaming settings (`SetTextureStreamingSettings` is native).
 
 **PC extensions beyond the original:** FOV slider, key rebinding, separate mouse sensitivity.
+
+## F. Title / menu scene timing (RN / FE) (C, authored Kismet)
+
+**Boot chain** (`UI_FrontEnd_m` Main_Sequence): `SeqAct_MoviePlayer` Logo_Activision → Logo_Hasbro → Logo_HighMoon → **FMV_intro**. When FMV_intro reports **Stopped**, a single output fires all of the following **in the same frame**:
+- `Fade In` (`InterpData_54`, 2.0 s);
+- **`Primary Camera`** (`InterpData_799`, 1.0 s, looping; director cut at t = 0 to group `Camera` = `CameraActor_6585`, which sets the view target);
+- **`Camera Orbiter`** (`InterpData_6478`, **393.551 s, looping**). Groups:
+  - `NewCameraGroup` = `CameraActor_6585`: InterpTrackMove with **34 position and 34 rotation keys**, `IMF_RelativeToInitial`, `CIM_CurveUser`; an FOVAngle track with **no keys**, so FOV stays **45**;
+  - `CameraDummy` = `CameraActor_2151`: two zero keys (static).
+  - Its event outputs drive ambience: AUDIO_START → AMB_IACON on / AMB_KAON off, AUDIO_KAON_AMB → swap, plus seven `AUDIO_*DEBRIS_BY_*` whooshes.
+- `ActivateRemoteEvent` **"StartFireworks"**;
+- reverb, `PlayMusic`, `SetLoadingMovieFilename`;
+- `ToggleHUD` → `ToggleHidden` → **`TnSeqAct_OpenFrontEnd`** (the title GFx opens).
+
+**Vignette** (`UI_FrontEnd_capture_VIG_m`, streamed by `LevelStreamingKismet`): `SeqEvent_RemoteEvent` "StartFireworks" starts **1st QTR, 2nd QTR, 3rd QTR and Plane Fly By together**. All four are **393.551 s and looping**, the same length as the camera orbiter. **The whole scene is one synchronised 393.55 s loop**, started at the same instant as the camera.
+- Plane Fly By event keys toggle visibility (show01 / hide01, togAjetFlyBy01/02, togDjetFlyBy02, togTrans, togDS, killaj09, seeFight) and Kill → `HideDogFight` (delay, then hide).
+- DrawScale tracks animate emitter / actor scale (e.g. group 10941: 0.2 until 19.2 s → 0.05 at 25.09 s; group 15666: 0.08 → 0.4 at 253.4 s → 0.75 at 272.4 s). With the particle-scale rule (§ particle note), these scale the particles.
+- The vignette also contains its own `CameraActor_1205` (FOV 45, same transform as `CameraActor_6585`) and the camera groups `CameraDummy` / `NewCameraGroup`, which are left **unbound** in the VIG matinees. **The view target is the persistent level's `CameraActor_6585`.**
+
+**Other title sequences:**
+- `SeqEvent_GameplayStarted` → `Black-Out` (0.001 s) → `GFxAction_OpenMovie` (movie loader).
+- RemoteEvent `closeMovieLoader` → CloseMovie.
+- `InterpData_14018` (1.1 s) animates the circuit / ring materials and meshes after `SeqAct_InstallGame` finishes.
+- `(OLD) Orbiting Camera` (`InterpData_6054`, 74.8 s, PlayRate 0.2) is not linked from the boot chain, so it is unused.
+
+**Lobby / customization camera:** §B2.
