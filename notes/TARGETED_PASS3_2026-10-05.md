@@ -236,6 +236,11 @@ Base path `P = <base>Movies\<Name>.bik`. Seven candidates are tried in this orde
 **So tracks 0–4 are always mixed in** (H: music, SFX or surround beds), plus exactly one language track at 5 + L.
 
 - Volume: if `<Name>` matches an entry in `[Engine.MovieSettings] MoviesToAlwaysPlaySound`, the movie uses fixed volume 0xCCCC; otherwise the volume parameter × constant.
+- **Movie volume** (C):
+  - `req.Volume` (float +0x14) is filled by `0x82CDE250` with `GetMovieVolume(name)` (`0x82CDDC08`): `v = [MoviePlayer] VolumeScalar` (default 1.0; not present in the shipped ini).
+  - Unless the name is listed in `[MoviePlayer] FullVolumeMovies` (empty in the shipped ini), `v *= AudioDevice.vfunc+0x180('SFX')` (H: the SFX sound-class volume, i.e. the FX Volume option).
+  - Then `clamp(v, 0, 1)`. The Bink volume is `v × 65536`, except the `MoviesToAlwaysPlaySound` logos, which are fixed at 0xCCCC.
+  - Speaker mix bins per track: 0→FL, 1→FR, 2→SL, 3→SR, 4→LFE, language→C (`0x82CCA028`, `0x8369A780`).
 - Texture-only Bink users (`0x82C078D0` / `0x82BE81C0`, `UCodecMovieBink`) call `BinkSetSoundTrack(0, 0)`: no audio.
 - **Systems action:** open the chosen .bik and enable tracks {0, 1, 2, 3, 4, 5 + L} with the table above. If the file has fewer tracks, Bink simply ignores the missing indices (H, Bink SDK behaviour).
 
