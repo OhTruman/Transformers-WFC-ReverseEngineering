@@ -240,6 +240,10 @@ Base path `P = <base>Movies\<Name>.bik`. Seven candidates are tried in this orde
   - `req.Volume` (float +0x14) is filled by `0x82CDE250` with `GetMovieVolume(name)` (`0x82CDDC08`): `v = [MoviePlayer] VolumeScalar` (default 1.0; not present in the shipped ini).
   - Unless the name is listed in `[MoviePlayer] FullVolumeMovies` (empty in the shipped ini), `v *= AudioDevice.vfunc+0x180('SFX')` (H: the SFX sound-class volume, i.e. the FX Volume option).
   - Then `clamp(v, 0, 1)`. The Bink volume is `v × 65536`, except the `MoviesToAlwaysPlaySound` logos, which are fixed at 0xCCCC.
+  - Slider to group volume (C, script): `HmPlayerController.UpdateLocalCacheOfProfileSettings` calls `SetAudioGroupVolume('Dialog' / 'SFX' / 'MUSIC', GetNormalizedPropertyValue(id))`.
+    - `GetNormalizedPropertyValue` = `clamp(int / 100, 0, 1)`, linear.
+    - Property ids: FX 32, Music 31.
+    - H: the native group-volume store returns this value unmodified.
   - Speaker mix bins per track: 0→FL, 1→FR, 2→SL, 3→SR, 4→LFE, language→C (`0x82CCA028`, `0x8369A780`).
 - Texture-only Bink users (`0x82C078D0` / `0x82BE81C0`, `UCodecMovieBink`) call `BinkSetSoundTrack(0, 0)`: no audio.
 - **Systems action:** open the chosen .bik and enable tracks {0, 1, 2, 3, 4, 5 + L} with the table above. If the file has fewer tracks, Bink simply ignores the missing indices (H, Bink SDK behaviour).
