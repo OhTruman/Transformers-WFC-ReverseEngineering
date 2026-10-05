@@ -171,3 +171,70 @@ CameraId → class: **0 = Scout, 1 = Scientist, 2 = Leader, 3 = Soldier** (all C
   - Brawl → `NAV_Idle` / `Nav_Idle_02`;
   - Arcee → `Cust_idle_active`.
 - The Car8–10 soldiers and Minion1 / Minion2 have no group: missing sequence → NULL → reference pose (H).
+
+## E. Movie language: file choice and Bink audio track (SY) (C, native)
+
+### E1. Current language (`GLanguage`, buffer at `0x8370B4A8`)
+
+At startup (`0x82BC04E0`):
+- If the command line has `LANGUAGEFORCOOKING=xxx`, it calls `UObject::SetLanguage(xxx)` (`0x82B92930`).
+- Otherwise it calls `SetLanguage(appGetLanguageExt())` (`0x829CD960`).
+
+`appGetLanguageExt`:
+1. `XGetLanguage()` (`0x83304BF8`): `ExGetXConfigSetting(3, 9)`. If that gives 0 or more than 12, it falls back to region: `XGetGameRegion` Japan (0x101) → 2, other Asia (0x1xx) → 7, otherwise 1.
+2. Maps the index through table `0x83708E68`:
+
+| Index | Language code |
+|---|---|
+| 0, 1 | INT |
+| 2 | JPN |
+| 3 | DEU |
+| 4 | FRA |
+| 5 | ESN |
+| 6 | ITA |
+| 7 | KOR |
+| 8 | CHI |
+| 9 | ini `[Engine.Engine] PortugueseLanguageExt` (default `POR`) |
+| 10, 11 | INT |
+| 12 | RUS |
+
+3. Checks that the language is shipped (`0x829CD898`: `..\%sGame\CookedXenon\Startup_%s.xxx` exists). If not, it tries INT, then DEU, then ESN, and finally uses INT.
+
+### E2. Which movie file (`0x82CD3348`, also used by the loading movie)
+
+Base path `P = <base>Movies\<Name>.bik`. Seven candidates are tried in this order; **the first file that exists wins** (FileManager size ≠ −1):
+
+1. `<Name>_360_<LANG>.bik`
+2. `<Name>_360_INT.bik`
+3. `<Name>_<REGION>_<LANG>.bik`
+4. `<Name>_<LANG>.bik`
+5. `<Name>_INT.bik`
+6. `<Name>_360.bik`
+7. `<Name>.bik`
+
+- `_360` = platform string (`0x8370A1C8` → "360"; `"_%s"`).
+- `<REGION>` (`0x82BD4420`, from the console country via `0x829B3FC8`): `_NA`, `_SA`, `_EU`, `_AS`, `_AU`, `_AF`, or nothing.
+- The shipped `TF_InitialStartup_{NA,EU}_{INT,FRA}.bik` and `TF_LoadingScreen_{INT,FRA}.bik` are matched by candidates 3 and 4.
+
+### E3. Which audio tracks play (`0x82CE0F00`, full-screen / loading movie player)
+
+1. Before `BinkOpen` it calls **`BinkSetSoundTrack(count, tracks)`** (`0x836977C0`) with the list built by `0x82CDD4B0`: **`[0, 1, 2, 3, 4, 5 + L]`**.
+2. L comes from `0x82CBEEE0`, a case-insensitive compare on `GLanguage`:
+
+| GLanguage | L | Bink track |
+|---|---|---|
+| any other (INT, JPN, KOR, CHI, POR, …) | 0 | 5 |
+| FRA | 1 | 6 |
+| ITA | 2 | 7 |
+| DEU | 3 | 8 |
+| ESN | 4 | 9 |
+| RUS | 5 | 10 |
+| POL | 6 | 11 |
+
+3. `BinkOpen` (`0x83697C30`) is called with flags `0x01104400` (from file, `0x82CCC668`) or `0x04104400` (from memory, `0x82CBF110` / `0x82CD2878`). Both include `BINKSNDTRACK` (`0x4000`). Without that flag Bink would default to track 0 only.
+
+**So tracks 0–4 are always mixed in** (H: music, SFX or surround beds), plus exactly one language track at 5 + L.
+
+- Volume: if `<Name>` matches an entry in `[Engine.MovieSettings] MoviesToAlwaysPlaySound`, the movie uses fixed volume 0xCCCC; otherwise the volume parameter × constant.
+- Texture-only Bink users (`0x82C078D0` / `0x82BE81C0`, `UCodecMovieBink`) call `BinkSetSoundTrack(0, 0)`: no audio.
+- **Systems action:** open the chosen .bik and enable tracks {0, 1, 2, 3, 4, 5 + L} with the table above. If the file has fewer tracks, Bink simply ignores the missing indices (H, Bink SDK behaviour).
