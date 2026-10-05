@@ -238,3 +238,154 @@ Base path `P = <base>Movies\<Name>.bik`. Seven candidates are tried in this orde
 - Volume: if `<Name>` matches an entry in `[Engine.MovieSettings] MoviesToAlwaysPlaySound`, the movie uses fixed volume 0xCCCC; otherwise the volume parameter × constant.
 - Texture-only Bink users (`0x82C078D0` / `0x82BE81C0`, `UCodecMovieBink`) call `BinkSetSoundTrack(0, 0)`: no audio.
 - **Systems action:** open the chosen .bik and enable tracks {0, 1, 2, 3, 4, 5 + L} with the table above. If the file has fewer tracks, Bink simply ignores the missing indices (H, Bink SDK behaviour).
+
+## C. Vehicle simulations for car, tank and jet chassis (GP) (C, UnrealScript bytecode)
+
+**These "native" sims are UnrealScript.** Full bytecode is in this repo: `work/script/decomp/TransGame.{TnHoverTankSimulation,TnHoverPlaneSimulation,TnPlaneSimulation,TnCarSimulation,TnHoverCarSimulation,TnTankForm,TnPlaneForm,TnCarForm,TnTruckForm}.txt`. Only the rigid-body primitives (`IRigidBody.Apply*`, PhysX) and `HoverPhysics.MoveTo/RotateTo` (AI path only) are native.
+
+Common conventions:
+- `Strafe` = "velocity servo": `a = ClampLength((dir·MaxSpeed − v)/dt, MaxAccel)`, applied as an acceleration.
+- `Turn` = angular-velocity servo: `ω += (axisAngle(q⁻¹·q_target)/dt − ω_local) · TurnRate`.
+- `SpeedModifier` hooks buffs.
+
+### C1. Which chassis use which blueprints (authored VEHDEF)
+
+| Class | Vehicle form | Hover sim blueprint | Second mode |
+|---|---|---|---|
+| Car (Car–Car7: Bumblebee, Sideswipe, Breakdown, Barricade, Arcee, Jazz, Deadend) | `TnCarFormBlueprint` | **`HoverCar_Physics`** (TnHoverCarSimulation) | boost `Car_Physics` (TnCarSimulation) |
+| Truck (Truck–Truck7) | `TnTruckFormBlueprint` | `HoverTruck_Physics` | `Truck_Physics` |
+| Tank (Tank–Tank5) | `TnTankFormBlueprint` | **`HoverTank_Physics`** (TnHoverTankSimulation) | none: boost is a speed cap |
+| Jet (Jet–Jet8) | `TnPlaneFormBlueprint` | **`HoverPlane_Physics`** (TnHoverPlaneSimulation) | flight `Plane_Physics` (TnPlaneSimulation) |
+| Car8–10 soldiers, Minion1/2 | `TnCarFormBlueprint` | `HoverTruck_Physics` | `Truck_Physics` |
+
+**The car and the truck run the same `TnHoverCarSimulation` code.** Only the blueprints differ (C):
+- **Car** `HoverCar_Physics`: MaxLinearAcceleration **4000**, MaxLinearSpeed 1500 (CDO), SuspensionRadius **100**, Dash 0.5 s @ 3000, AiMaxAngular 12. Suspension `HoverCar_Supension`: Stiffness **8000**, Damping 4000, RestingLength **200**.
+- **Truck:** accel 3000 (CDO), radius 185; suspension Stiffness 10000 (CDO), Damping 4000, rest 250.
+- **Form-level differences:**
+  - `TnTruckForm.Hovering.DoDash` dashes **forward** `(1,0,0)`.
+  - `TnCarForm.Hovering.DoDash` dashes along the **dominant stick axis**: `(sign(fwd),0,0)` or `(0,sign(right),0)`, in local space, so a sideways dash is possible. Cooldown 2.0 s (`TimeBetweenDashes`).
+  - Truck boost Shift = Nitro; car boost Shift = barrel roll (C4).
+
+### C2. Tank: `TnHoverTankSimulation` + `TnTankForm`
+
+Blueprint `HoverTank_Physics`, with CDO values for unset fields:
+
+| Field | Value |
+|---|---|
+| MaxLinearAcceleration | 2500 |
+| MaxLinearSpeed | 1500 (CDO) |
+| **MaxBoostSpeed** | **2500** |
+| DriftDuration | 0.5 (CDO) |
+| JumpLinearSpeed | 1200, JumpAngularSpeed 1.0 (CDO) |
+| **RecoilVelocity** | **750** |
+| SuspensionRadius | 250 |
+
+Suspension `HoverTank_Suspension`: Stiffness 20000, Damping 6000, Rest 250. TerminalVelocity 3500. Turn rate `(0.05, 0.05, 1)`.
+
+```
+Update(dt, fwd, right, cameraYaw):
+  if SimulationMode==0: cancel gravity; return
+  F = (0, cameraYaw, 0)
+  UpdateSuspension: 4 rays at COM + normal(1,1,0)*SuspensionRadius rotated 0/90/180/270° yaw (diagonals), cast along body -Z;
+      on contact: ApplyForce(-dir * max(0, spring.Force), probe point); OnTheGround = any contact
+  UpdateTerminalVelocity: clamp vz >= -3500
+  UpdateStrafe: Drift -= dt (floor 0); if !IsStable (|pitch|>=30° or |roll|>=30°) return
+      maxA = MaxLinearAcceleration * (1 - Drift/DriftDuration)^2
+      maxV = Boosting ? MaxBoostSpeed : MaxLinearSpeed
+      input = Boosting ? (1,0,0) : (fwd, right, 0)      // boosting = full forward, the stick does not strafe
+      Strafe(input, mask (1,1,0) in yaw frame F)
+  UpdateRoll(right): local angular accel X = 1.0*right + 1*(-ωz)
+  UpdateTurn(F): heading slaved to camera yaw (TurnRate Z = 1 → full correction each tick);
+      if IsStable && OnTheGround: only the yaw component is applied; else pitch/roll are also corrected at 0.05
+```
+
+TnTankForm:
+- **Boost** (LT/RMB): `StartBoost` when input is held and the tank isn't drifting. Releasing calls StopBoost + **Drift()** (0.5 s with reduced acceleration).
+- **Firing (`OnWeaponFired`)** = StopBoost + `Recoil()` (local velocity −750 on X) + Drift.
+- **Jump** (A/Space): only on the ground, every **0.5 s**. Adds +1200 vertical velocity and local angular velocity Y −1.0 (nose up).
+- **Special move** (RB/Shift) = **"180"**: camera recentre (`TnCamera.RecenterCamera = true`), cooldown **1.2 s**. Because heading is slaved to camera yaw, the hull follows.
+
+### C3. Jet: `TnPlaneForm` (states Hovering / Flying)
+
+- **Activation:** Flying if boost is held, else Hovering. `bIsFlying = true` in both.
+- **Hovering → Flying:** boost held and not drifting, or `_ForceJetBoostInput`.
+- **Flying → Hovering:** boost released; or a rigid-body hit with ContactSpeed > **ReturnToHoverCrashSpeed 3000** (players only).
+- **Hovering.BeginState:** `Activate` + `Drift()`.
+
+**Hover:** `TnHoverPlaneSimulation`, `HoverPlane_Physics`:
+
+| Field | Value |
+|---|---|
+| MaxLinearAcceleration | 2500 |
+| MaxLinearSpeed | 1500 (CDO) |
+| Dash | **0.1 s @ 1000** |
+| Roll | 0.6 s @ 3000 (CDO) |
+| DriftDuration | 0.25 |
+| MotionPhysicsScale | 1 |
+| MaxAngularVelocity | 50 |
+| AngularDamping | 6 |
+| TurnRate | (0.1, 0.5, 0.5) |
+
+```
+Update: cancel gravity (always hovers);
+  if Rolling: UpdateRoll(view rot) else { if Dashing: UpdateDash; UpdateStrafe; UpdateTurn }
+UpdateStrafe: maxA = 2500 * max(driftScale, max(|fwd|,|right|)); Strafe((fwd,right,0), mask (1,1,1), frame = full VIEW rotation incl. pitch)
+   → pushing forward flies along the camera's pitched forward
+UpdateTurn: target = view rotation + motion lean (roll += smoothedLocalAccel.Y*1*s + smoothedLocalAngVelZ*1000*s; pitch -= smoothedLocalAccel.X*0.5*s)
+Ascend / Descend held → Dash(±Z) every frame → vertical servo at DashSpeed 1000, accel 10000, mask (0,0,1)
+Roll (RB/Shift with |stick X|>=0.5): RollTime = 0.6 s; strafe sideways at RollLinearSpeed 3000 (accel 10000);
+   barrel-roll angular speed 2π/RollDuration about local X (accel 80); cooldown 1.2 s
+```
+
+**Flight:** `TnPlaneSimulation`, `Plane_Physics`: **MaxSpeed 4000, MaxAcceleration 3000, DragCoefficient 600**. CDO: PitchDueToPitchValue 27, YawDueToYawValue 16, RollDueToYawValue 77, ExtraRotationLerpValue 0.1, MaxPitchValue 60°, FullPitchThreshold 45°, RollDuration 0.8, RollLinearSpeed 3000, RollAngularSpeed 8. AngularDamping 8.
+
+```
+Update(dt, viewRot, yawIn, pitchIn): cancel gravity;
+  UpdateFly: Strafe((1,0,0), mask (1,0,0), frame viewRot, 3000, 4000)  // always thrusting forward along view
+             ApplyDrag: lateral+vertical local velocity v⊥ → solve A·s²+s−|v⊥|=0, A = dt*600/Mass; accelerate v⊥ to s
+  target = viewRot ⊕ RLerp(prev, (-pitch²·27, yaw²·16, yaw²·77) deg, 0.1)   (signed squares of the stick)
+     pitch term fades linearly from 45° to 0 at 60° body pitch
+  Rolling ? UpdateRoll (sideways strafe 3000 + barrel roll 8 rad/s) : Turn(target, TurnRate (0.1,0.5,0.5))
+```
+
+Player inputs (`PlayerInPlaneForm.SetLocalInputs`):
+- left stick → strafe;
+- `GetNormalizedTurn` / `GetNormalizedLookUp` → yaw / pitch inputs;
+- RB/Shift → roll;
+- Ascend / Descend → hover vertical dash.
+
+### C4. Car boost mode: `TnCarSimulation` (`Car_Physics`)
+
+| Field | Value |
+|---|---|
+| Mass | 1500 |
+| COM | (12, 0, −16) |
+| MaxAcceleration | 3000 |
+| MaxSpeed | 3000 |
+| Jump | (600, 0, 1400) |
+| AirControl | turn 12, strafe 2600 |
+| **RollDuration** | **0.7** (CDO; the truck overrides it to 0, so CanRoll is false) |
+
+**Barrel roll:** `TnCarForm.Driving.UpdateRolling`. Requires `CanRoll` (RollDuration > 0), the special move off cooldown, and **Shift/RB (Dashing input) while boosting** → `TnCarSimulation.Roll()`; cooldown **2.0 s**.
+
+```
+Roll(): dir = sign(RollControl = stick X)
+  v += yawFrame(0, dir*1200, 1000 - vz)     (vertical part dropped if a Jump happened this same frame)
+  JumpTimeRemaining = RollDuration (0.7)
+  local angular velocity X += -dir*100 (clamped by the rigid body's max angular velocity)
+UpdateRolling (while JumpTime>0 and |dir|==1): local angular accel X = -dir*100; lateral accel yawFrame(0, dir*1000, 0)
+   → replaces air control and leveling for that period
+```
+
+With the stick centred (dir = 0) Shift gives a straight **1000 UU/s hop** with no spin.
+
+Other boost-mode functions:
+- `UpdateLeveling`: when |RollControl| > 0.1 and (stick opposes the roll, or |roll| < 45°), local roll acceleration = sign(roll) · 50 · (−0.5 · (up.z − 1)).
+- `UpdateBoost` (ground only): `a = lerp(MaxAccel, drag(MaxSpeed), fwdSpeed/MaxSpeed) + lowSpeedBoost`, × BoostScale (slope fade) × Accelerator.
+- `UpdateTerminalVelocity`: lerp(LandingVelocity, TerminalVelocity, groundDist / LandingTraceDistance).
+
+### C5. Notes (FIDELITY)
+
+- **The tank has no separate "boost car" physics.** Boost only raises the strafe cap to 2500 and forces forward input. Recoil and drift happen on every shot.
+- **The jet's flight mode has gravity cancelled** and always thrusts toward the view direction. Releasing boost returns to VTOL hover.
+- **Car hover:** a lighter, shorter (rest 200, radius 100) and softer (8000) spring than the truck's, at the same code path.
