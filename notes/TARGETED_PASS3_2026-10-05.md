@@ -673,3 +673,66 @@ Weapon range 30000.
 The MP projectile data come from each projectile CDO's `MultiplayerData` (C), e.g. `Default__TnProjectileGrenade.MultiplayerData = GrenadeSkill_PROJDATA`.
 
 PROJDATA speed-scale fields: SpeedScaleAtMinPitch 0.1–0.2, AtMaxPitch 1.0 (CDO), Min/MaxPitch ±25.
+
+## I. Knockback, objective carriers, Barrier, ability cost (GP) (C, script + authored data)
+
+### I1. Momentum / knockback
+
+- Engine `Pawn.TakeDamage`:
+  - if Walking or RigidBody and the damage type has `bExtraMomentumZ`: `Momentum.Z = max(Z, 0.4·|Momentum|)`;
+  - `Momentum /= Mass`; … then, if Health > 0, `AddVelocity(Momentum)`.
+  - `TnPawn.TakeDamage` zeroes Momentum while interacting.
+- **`TnPawn` CDO `bIgnoreForces = True`.** `TnPawn.ShouldIgnoreForces` returns true when grabbed. Otherwise it returns **false only if the damage type has `RequestRespectForcesApplied`**, else `bIgnoreForces` (true). **Most damage gives no knockback.**
+- Damage types with `RequestRespectForcesApplied` (subclasses inherit):
+
+  | Damage type | Also has `bExtraMomentumZ` |
+  |---|---|
+  | `TnDamageTypeMelee` (→ WeakMelee, Whirlwind) | no |
+  | `TnDamageTypeShockwave` | no |
+  | `TnDamageTypeAOE` | yes |
+  | `TnDamageTypeHeavyTankShell` | yes |
+  | `TnDamageTypeShieldPush` | yes |
+  | `TnDamageTypeOmegaAOE` | yes |
+  | `TnDamageTypeExplodeWithForces` | — |
+  | `TnDamageTypeBruteBackpack` | — |
+  | `TnDamageTypeOmegaTractorBeamGrab` | — |
+
+  `TnDamageType` CDO has `bExtraMomentumZ = false`.
+- **Not knocked back:** IonBlaster, HomingRocket, PlaneRocket, TankShell, FlakGrenade, GrenadeLauncher, KamikazeMine, Impact (all direct `TnDamageType` subclasses without the flag).
+- **Mass** = `_Blueprint.Mass`. The `TnTransformer` CDO has 100 and player ROBODEFs don't override it, so **100**.
+- **Robot form** (`Pawn.AddVelocity`): if walking, set falling. If `Velocity.Z > JumpZ` and the new Z > 0, the new Z is halved. Then `Velocity += Momentum / 100`. Example: a melee impulse of 30000 → +300 UU/s horizontal.
+  - Melee momentum direction = normal(victim − attacker); the sweep's ZOverride 0.4 affects only the hit-reaction impact direction, not the momentum.
+- **Vehicle form** (`TnPawn.InVehicleForm.AddVelocity`): `Mesh.AddLinearVelocity(Momentum / 100 × 0.5)` on the rigid body. The same flag gating applies.
+
+### I2. Flag / bomb carrier
+
+- The carried objective is a weapon: `TnWeaponFlag1Hand` (`MeleeWeaponType MWT_Flag`), `TnWeaponFlag` (2H), or `TnWeaponBomb` (`MWT_Bomb`, pose `ADD_Nav_Bomb_Pose`). Base `WeaponType = WT_Heavy`, `bDropOnDeath`.
+- **Equip:** `ShouldForceClientWeaponSet` is true for flag/bomb, so it becomes the current weapon at once.
+- **Losing it:**
+  - switching weapon: `TnInventoryManager.ChangedWeapon` tosses every heavy weapon that isn't current, so **switching weapons drops it**;
+  - **transforming to vehicle**: `TnPawn.Transform` calls `DropHeavyWeapons`;
+  - death.
+  - Dropping goes through `TnWeaponFlagBase.DropFrom`: it notifies the base and finds a spot (box 450 × 450 × 100). If it can't drop, the flag returns home.
+- **Grenades** are blocked while holding a heavy weapon (`TossGrenade`: dry-fire sound).
+- **Melee** while carrying uses the MWT_Flag / MWT_Bomb attack: **9999** damage, impulse 80000.
+- Firing: flag data `CodeOfPower_WEPDATA` has no fire projectiles (range 1600). H: Fire does nothing useful. The bomb data has fire parameters, which is UNKNOWN; the rule is not traced.
+
+### I3. Barrier ability (`TnAbilityBarrier` → `TnBarrierSpawnable`)
+
+- Trigger: animation `Skill_Barrier`, sound `BARRIER_DEPLOY`, spawn after **SpawnDelay 0.5 s**.
+  - Location = pawn + `(1000, 0, −200)` rotated by the pawn; rotation = pawn rotation.
+  - The barrier is destroyed when the owner dies.
+- **Shape:** skeletal mesh `WEP_Barrier_SKEL`, physics asset `WEP_Barrier_PHYSSYS`: one **box** on bone `C_Robo01_XT`, size X **167**, Y **1736**, Z **823.5**, centre offset about (−59, 0, 91). It is a wide, thin wall facing the owner's aim.
+  - `bWorldGeometry`, `BlockNonZeroExtent`, RB-collides with pawns. H: it also blocks zero-extent projectiles and traces.
+- **Health 1000** (+500 with `TnBuffIncreaseBarrierHealth`).
+  - **Ignores melee damage.**
+  - Any other damage reduces health.
+  - **Flashbang damage destroys it instantly.**
+  - It decays **15 HP/s**, so it lasts about 67 s untouched.
+  - At 0 health: retract sound, then a **3 s fade-out** (`PowerDown` material parameter), then it is destroyed.
+- **Cooldown 20 s**, which **starts only once the barrier is gone** (`ServerCanStartCooldown` requires the barrier destroyed and no spawn pending).
+
+### I4. Ability resource cost
+
+- `TnAbility.GetResourceRequired` returns **0 unless `GetCurrentSkillDataIndex() == 1`**. `TnMultiplayerGame.GetSkillDataIndex` returns 0, so **versus abilities have no resource cost**. They use `Cooldown[0]`, × `CooldownReductionModifier` with `TnBuffAbilityCooldown`.
+- Killstreak ability variants: not traced in this pass.
