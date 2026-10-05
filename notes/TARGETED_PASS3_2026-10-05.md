@@ -389,3 +389,94 @@ Other boost-mode functions:
 - **The tank has no separate "boost car" physics.** Boost only raises the strafe cap to 2500 and forces forward input. Recoil and drift happen on every shot.
 - **The jet's flight mode has gravity cancelled** and always thrusts toward the view direction. Releasing boost returns to VTOL hover.
 - **Car hover:** a lighter, shorter (rest 200, radius 100) and softer (8000) spring than the truck's, at the same code path.
+
+## D. Multiplayer modes: setup and layer attribution (GP)
+
+The per-mode behaviour table (scoring, limits, timers, objectives, spawns, markers, end, announcers, DOM capture, EXT bomb) is in `MILESTONE05_PLAYTEST_RE.md` §3. CTF flag return and bomb return rules are in `OVERNIGHT_2026-10-04` §G. This section adds **creation/setup** and **which layer owns what**.
+
+### D1. Creation (authored data: `TnOnlineGameSettings<MODE>` CDOs; C)
+
+| Mode tag | GameClass | Lobby | TeamType | Rules (exact `Rules[]`) |
+|---|---|---|---|---|
+| TDM | `TransContent.TnVersusGame` | `UI_Lobby_m` + `TnGameLobbyGameTeam` | GTS_TeamGame | ScoreKillsTDM, TrackKillsMP, ReportGameProgressTime, ReportGameProgressKills |
+| DM | `TransContent.TnFreeForAllGame` | `TnGameLobbyGameFreeForAll` | GTS_FreeForAllGame | ScoreKillsDM, TrackKillsMP, ReportGameProgressTime, ReportGameProgressKills |
+| DOM (Conquest) | TnVersusGame | Team | GTS_TeamGame | ScoreKillsMP, **ScoreDomination**, TrackKillsMP, ReportGameProgressTime, ReportGameProgressPoints |
+| KOTH (Power Struggle) | TnVersusGame | Team | GTS_TeamGame | ScoreKillsMP, **ScoreKingOfTheHill**, TrackKillsMP, ReportGameProgressTime, ReportGameProgressPoints |
+| CTF (Code of Power) | TnVersusGame | Team | GTS_TeamGame | ScoreKillsMP, **SingleFlagCTF**, **ScoreFlags**, TrackKillsMP, ReportGameProgressTimeCTF |
+| EXT (Countdown to Extinction) | TnVersusGame | Team | GTS_TeamGame | ScoreKillsMP, **ScoreBombingRun**, TrackKillsMP, ReportGameProgressTime |
+| SV (Escalation) | `TnSurvivalGame` | `UI_CampaignLobby_m` + `TnGameLobbyGameSurvival` | GTS_SingleTeamGame | CompetitiveScoring, TrackKills |
+
+Rules-format strings use tokens `` `p `` points, `` `t `` time, `` `r `` rounds (`RulePairs`).
+
+**Playlists** (`TransPlaylists.ini`): 1 TDM (CivilWar), 2 DM, 3 CTF, 4 KOTH, 5 EXT, 6 SV, 7 DOM, 100 CP, 101 CCP.
+
+**Travel URL:** `…?Game=<GameClass>?GameModeTag=<tag>?…`. The bootstrap note has the full URL; the rules come from the settings object (`AddGameRulesFromSettings`).
+
+### D2. Layer attribution
+
+| Behaviour | Layer | Where |
+|---|---|---|
+| Match state machine (PendingMatch countdown → InProgress → MatchOver 15 s → lobby), goal score / time / rounds from URL, `SetPlayerDefaults` (character apply), weapon data type 3 | **UnrealScript** (TransContent, cooked in map) | `work/q/streets_base_gameclasses.txt`: TnMultiplayerGame / TnTeamGame / TnFreeForAllGame |
+| Scoring per mode, objective activation, round logic, progress announcements | **UnrealScript** (TransGame rules) | `TransGame.TnGameRules_*` |
+| Objective actors (domination point, KOTH zone, flag factory, dropped flag/bomb, plant point) | **UnrealScript** | `TnDominationPointBase`, `TnKingOfTheHillZone`, `TnGameObjectivePickupFactory*`, `TnDropped*`, `TnBombPlantPointBase` |
+| Spawn choice / respawn waves | **UnrealScript** | `TnPlayerSpawnHelperMultiplayer`, `TnRespawnHelperWave`, `RatePlayerStart` overrides |
+| Defaults (points, time, rounds, choices) | **Authored data / config** | settings CDO `PropertyMappings`, `Xe-TransGame.ini` |
+| Objective placement, counts, PointNumber, spawn clusters per mode | **Authored map data** | `MP_*_m` actors (Streets: 5 KOTH zones, 60 player starts) |
+| HUD presentation (scoreboard widget, markers, announcements) | **Scaleform AS2 + script observers** | `Hud_GFX`, `TnHudDataObserver*`, `TnObjectiveMarkerType*` |
+| Physics, collision, travel, networking | **Native** | engine |
+
+**No mode-specific native code was found.** Every mode rule is script or data.
+
+## G. Shipped PC settings and input (FE / SY)
+
+**Source:** the Xbox dump ships the **multi-platform** `SettingsMenu_GFX` (AS2 branches on `HmUtility.Platform == 'WIN' / 'XBOX360' / 'PS3'`). It also ships the shared PC script `HmPCSettingsActionScriptBinding` → `Engine.PCSettingManager`. The PC executable itself is not in the dump, so native PC defaults are UNKNOWN.
+
+### G1. Settings screens
+
+| Item | PC (WIN branch) | Source | Conf |
+|---|---|---|---|
+| **Graphics** | Brightness (calibration screen), **Resolution** (list from `PCSettings.GetResolutions()`, "WxH"), **Fullscreen** On/Off, **Texture Quality** Low / Medium / High (0 / 1 / 2), **VSync** On/Off, **Commit** button. Commit calls `SetResolution(w, h, fullscreen)`, `SetTextureQualityLevel(q)`, `SetVSyncState(b)` (the values are applied only on Commit) | `SettingsMenu_GFX` `graphicsMenuArray`, `writeGraphicsSettings` | C |
+| Graphics (console) | Brightness only | same | C |
+| **Audio** | identical on all platforms: FX / Dialogue / Music volume 0–100 in steps of 10, subtitles | `audioMenuArray` | C |
+| **Controls** | identical list on all platforms: **Vibration** On/Off; **Layout** (button map); Invert Y **Car / Jet / Tank / Robot**; **Camera Sensitivity** 0–100 in steps of 10 | `controlsMenuArray` | C |
+| **Layout screen, PC** | a static **`mc_WIN_Map`** keyboard and mouse diagram, scrolled per form (Robot / Car / Truck / Plane / Tank). Labels come from `TnPlayerInput.GetKeyDescription(key, form)`. **No Scheme A/B selector and no key rebinding** (the scheme list is console only) | `SettingsMenu_GFX` layout function; `TnPlayerInput.KeyDescriptions` | C |
+| Keyboard rebinding UI | **none.** `showKeyboard = false` on WIN, and no movie calls `Input.SetBind`. Bindings are fixed by `[*.PlayerInput] Bindings=` in `TransInput.ini` | AS2, script | C (no UI) |
+| Mouse sensitivity option | **no separate option.** The single Camera Sensitivity value (profile id 40, normalised 0–1) drives the mouse | see G2 | C |
+| Vehicle-specific sensitivity | **none.** Only invert is per form | — | C |
+
+### G2. Mouse / controller math (C, script)
+
+- **Mouse look** (`HmPlayerInput.CalculateCameraRotation`): `CameraYaw = 0.00114286·mouseX`, `CameraPitch = 0.00114286·mouseY` (`MouseCameraSensitivityX/Y`). Pitch is negated if `bInvertMouse`.
+- **Under mouse/keyboard control** (`IsUnderMouseAndKeyboardControl`: mouse moving, or a key down with no stick input):
+  - orbit camera speed = `Lerp(0.03, 0.20, CameraSensitivity01) · CameraSensitivityModifier · 182.044` per input unit (`TnOrbitRotationCameraBehavior.GetCurrentSpeedMultiplier`);
+  - no ramp;
+  - target stickiness is disabled (`DisableTargetStickinessUnderMouseControl = true`).
+- **Controller:** `Lerp(LowSensitivityMultiplier, HighSensitivityMultiplier, CameraSensitivity01) · ramp · 182.044 · dt`. Deadzone 0.25 (radial).
+- **Invert:** `UpdateInvertMouseByRobotForm` / `…ByVehicleForm` set the one `bInvertMouse` flag from the profile per form: Car and Truck → InvertY_Car, Plane → InvertY_Plane, Tank → InvertY_Tank. Mouse and stick share it.
+- `PlayerInput.MouseSensitivity = 15`, mouse smoothing off (`TransInput.ini`). Guided missile under mouse uses `GuidedMissileMouseSensitivity 1.0` × camera deltas.
+
+### G3. PC keyboard presentation (C, `TransGame.int [TnPlayerInput] KeyDescriptions`)
+
+**The PC Shift key label per form** (key index 24): Robot "Ability 1", Car **"Flip"**, Truck **"Ram"**, Tank **"Quick Turn"**, Plane "Roll Start". RMB: Robot "Fine Aim / Detonate Grenade", vehicles "Speed Boost".
+
+Other keys:
+
+| Key | Label |
+|---|---|
+| Ctrl | Ability 2 |
+| Space | Jump |
+| C | Hover Up (plane) |
+| V | Hover Down (plane) |
+| E | Interact / Pick Up / Revive / Add to Generator |
+| F | Change Form |
+| G | Throw Grenade / Detach Turret |
+| Q | Melee |
+| R | Reload |
+| B | Look At / Kill Streak |
+| Tab | Scoreboard |
+| Esc | Pause |
+| Wheel / PgUp / PgDn | Swap Weapons |
+
+**UNKNOWN:** native `PCSettingManager` defaults (default resolution, default texture level, default VSync) and how the texture level maps to streaming settings (`SetTextureStreamingSettings` is native).
+
+**PC extensions beyond the original:** FOV slider, key rebinding, separate mouse sensitivity.
