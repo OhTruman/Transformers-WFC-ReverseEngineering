@@ -125,7 +125,7 @@ Items already confirmed there are only referenced, not re-derived.
 | Data | Owner (engine side) | Delivery to Scaleform | Conf |
 |---|---|---|---|
 | Health / segments | `TnSegmentedHealth` via `TnHudDataObserverSegmentedHealth` | push `_global.NotifySegmentedHealthChanged` | C |
-| Overshield | same (`Health − HealthMax`, max 550) | push `_global.NotifyOverShieldChanged` (normalized) | C |
+| Overshield | same (`Health − HealthMax`, max Blueprint.Overshield = 200 in versus) | push `_global.NotifyOverShieldChanged` (normalized) | C |
 | Ammo | weapon via observers | push `NotifyWeaponClipAmmoChanged` / `NotifyWeaponReserveAmmoChanged` / `NotifyGrenadeAmmoChanged` | C |
 | Crosshair | weapon spread / reticule / lock-on / target observers | push `NotifyWeaponSpreadChanged`, `NotifyWeaponReticuleTypeChanged`, `NotifyLockOnStateChanged`, `NotifyTargetTypeChanged` | C |
 | Match clock | `GRI.RemainingTime` → `OnRemainingTimeUpdated` → `ResetCountdown` | **pull / subscribe** `<CurrentGame:CurrentCountdown>` + `<CurrentGame:IsCountingDown>`, rendered `MM:SS` (≤ 10 s flashes red) | C |
@@ -169,7 +169,7 @@ Source: `TnObjectiveMarkerTypeTransformerVersus` + Sprite base + authored defaul
 | # | Behaviour | Source | Constants | Conf |
 |---|---|---|---|---|
 | I1 | Health pickup: allowed if `Health < HealthMax`; **full heal** (`SHT_AddAllSegments`, `AddedHealth = 50` unused) | G §6 | — | C |
-| I2 | Overshield: allowed if overshield < 550; sets `Health = HealthMax + 550`. **No time limit or decay** (no tick drains it); it is consumed only by damage first. Regen never refills it | `TnSegmentedHealth`, `TnHealthRegener` (stops at `Health ≥ HealthMax`) | Overshield 550 | C (no script decay) / H (no native decay) |
+| I2 | Overshield: allowed if overshield < 550; sets `Health = HealthMax + 550`. **No time limit or decay** (no tick drains it); it is consumed only by damage first. Regen never refills it | `TnSegmentedHealth`, `TnHealthRegener` (stops at `Health ≥ HealthMax`) | Overshield = Blueprint.Overshield (200 in versus; corrected 2026-10-05, TARGETED_PASS3 §A4) | C (no script decay) / H (no native decay) |
 | I3 | Health regen: after **2.0 s** without damage, **20 HP/s**, segment-limited (`TnHealTypeRegen` = `SHT_HealSegment`: refills only the current segment). Any damage resets the delay. Not while downed | `TnHealthRegener`; Optimus `HealthRegenParameters`; segments `[175, 125, 125, 125]` | — | C |
 | I4 | Ammo crate: allowed if any primary / secondary / vehicle weapon is not maxed; refills all of them | G §6 | — | C |
 | I5 | **Respawn:** after pickup → `SetRespawn` → `Sleeping` for the instance `RespawnTime` → `Pickup` | `PickupFactory.SetRespawn`; Streets instances | **Streets: ammo ×14 = 30 s, health ×9 = 60 s, overshield ×1 = 120 s** | C (values) / H (Sleeping latent timer is stock) |

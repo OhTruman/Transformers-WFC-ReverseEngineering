@@ -259,7 +259,7 @@ FOV, resolution and keyboard rebind are **PC implementation extensions** (the sh
 **Default MP loadouts** (`TR_MPPlayerCharacterData_p`): table in the playtest note §7. Leader → Truck3 / Truck4, Scientist → Jet4 / Jet, Scout → Car2 / Car4, Soldier → Tank3 / Tank2.
 
 **Base stats** (C):
-- Player chassis share `TR_Health_p.SharedHealth` (segments 175 / 125 / 125 / 125, overshield 550) and BaseGroundSpeed **1400**.
+- Player chassis share `TR_Health_p.SharedHealth` (segments 175 / 125 / 125 / 125, overshield 550) and BaseGroundSpeed **1400**. **[Corrected 2026-10-05, TARGETED_PASS3 §A4: in versus the specialty health blueprint replaces SharedHealth. Overshield is 200 and max health depends on class: Leader 300, Scientist 180, Scout 200, Soldier 330.]**
 - Per-class differences live in the momentum blueprint (Car / Truck / Plane / Tank), damage multipliers and abilities.
 - The Optimus robot (AccelRate 12000, AirSpeed 1200, collision radius 200 / height 200) is the reference.
 - AT should export all ROBODEFs for exact per-chassis values.

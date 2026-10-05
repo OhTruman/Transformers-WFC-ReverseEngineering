@@ -335,11 +335,11 @@ All gameplay markers are **Canvas material tiles** drawn by `TnObjectiveMarkerTy
 | type | allowed when | on give |
 |---|---|---|
 | **Health** | `Health < HealthMax` | `HealDamage(AddedHealth, TnHealTypeHealthPickup)`. **The heal type is `SHT_AddAllSegments`, so `Health = max(Health, HealthMax)`: a full heal. The amount is ignored, so `AddedHealth = 50` has no effect.** |
-| **Overshield** | the pawn is a `TnPlayerPawn` with SegmentedHealth and **NormalizedOverShieldHealth < 1.0** | `HealDamage(1.0, TnHealTypeOverShieldPickup)`. The heal type is `SHT_AddOverShield`, so **`Health = HealthMax + Blueprint.Overshield`** (`TR_Health_p.SharedHealth`: Overshield **550**) and the active segment is set to the top one |
+| **Overshield** | the pawn is a `TnPlayerPawn` with SegmentedHealth and **NormalizedOverShieldHealth < 1.0** | `HealDamage(1.0, TnHealTypeOverShieldPickup)`. The heal type is `SHT_AddOverShield`, so **`Health = HealthMax + Blueprint.Overshield`** (`TR_Health_p.SharedHealth`: Overshield **550**) and the active segment is set to the top one. **[Corrected 2026-10-05, TARGETED_PASS3 §A4: in versus the specialty health blueprint replaces SharedHealth. Overshield is 200 and max health depends on class: Leader 300, Scientist 180, Scout 200, Soldier 330.]** |
 | **Ammo crate** | at least one inventory `TnWeapon` with WeaponType in `{WT_Primary, WT_Secondary, WT_Vehicle}` and `!AmmoMaxed(0)` | `FillReserveAmmo()` on every such weapon |
 
 **Segmented health** (`TnSegmentedHealth`, CONFIRMED):
-- `TR_Health_p.SharedHealth`: Segments **[175, 125, 125, 125]**, Overshield **550**.
+- `TR_Health_p.SharedHealth`: Segments **[175, 125, 125, 125]**, Overshield **550**. **[Corrected 2026-10-05, TARGETED_PASS3 §A4: in versus the specialty health blueprint replaces SharedHealth. Overshield is 200 and max health depends on class: Leader 300, Scientist 180, Scout 200, Soldier 330.]**
 - `HealDamage` dispatches on `HealType.SegmentedHealType`:
 
 | type | effect |
