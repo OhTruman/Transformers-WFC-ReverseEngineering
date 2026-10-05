@@ -124,3 +124,15 @@ The same as the robot, except for these differences:
 - The exact native trace-flag word of `TraceCamera` (only the BlockCameras gate 0x2000000 is proven to exist in the filter).
 - The engine's result for sweeps that start inside geometry.
 - HmCamera's strategy-transition blend curve.
+
+## Addendum 2026-10-05: TraceCamera flag word (native, resolves the PARTIAL above)
+- `execTraceCamera` = `0x82F21BA0`, registered at runtime by `0x83652420` (natives table slot `0x837116CC`).
+- Parameters: HitLocation, HitNormal, TraceEnd, TraceStart (default: actor location), bTraceActors (default: an actor flag), Extent (default 0), one optional bool (default false), HitInfo.
+- Body `0x82F1B5D8`:
+  - flags = `World` (bTraceActors false) or `ProjTargets`-style set (true);
+  - `| 0x800` if the optional bool is set (H: TRACE_Material, used to fill HitInfo.PhysMaterial);
+  - `| 0x0A000000` always: **0x02000000 = the BlockCameras gate** (CONFIRMED in the filter) plus 0x08000000 (meaning unknown);
+  - then `UWorld::SingleLineCheck` (`0x82C16E10`).
+- **No complex/per-poly collision bit is ever set.** H: TRACE_ComplexCollision is 0x20000 in this UE3 generation.
+- So the camera ray uses each static mesh's simple collision (`UseSimpleLineCollision` / `UseSimpleBoxCollision` defaults true), and box sweeps use simple box collision.
+- **The camera clips into render geometry that has no simple collision. That is authentic.**
