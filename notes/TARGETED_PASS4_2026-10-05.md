@@ -341,3 +341,15 @@ Otherwise it calls **`AbortMelee`** and returns true.
 - clear per-match stats when InProgress begins;
 - kill = +1 player, +1 team;
 - suicide = 0.
+
+### E addendum — the consumer of the HoverFX `Size` parameter (C data, H semantics)
+
+**Data (C):**
+- `ParticleModuleSizeMultiplyLife.LifeMultiplier` = `DistributionVectorParticleParameter` "Size". It appears in `FX_Navigation_p.CarHover_A_01_FX`, `CarHover_D_01_FX` and `hover_plane_FX` (×2).
+- The mapping is identity: Max input = output = 1000, min 0.
+- Constant (1, 1, 1) is the fallback when the parameter is not set.
+
+**Semantics (H, stock UE3):**
+- Particle size = base size × the Size parameter.
+- The Size parameter is min(1, thruster contribution) × socket RelativeScale.
+- So a thruster at rest emits zero-size particles.
