@@ -506,3 +506,37 @@ Other keys:
 - `(OLD) Orbiting Camera` (`InterpData_6054`, 74.8 s, PlayRate 0.2) is not linked from the boot chain, so it is unused.
 
 **Lobby / customization camera:** §B2.
+
+### C6. Transform fit test: relocation versus refusal (C, native + script)
+
+**Script:**
+
+`TnPawn.MoveToSafeTransformationLocation(TargetForm)`:
+1. `Extent` = target form's `CollisionExtent` (robot or vehicle form).
+2. `FindSpotAwayFromPawns(self, Extent, SafeLocation)`. If it fails: log "Find start spot failed" and return false. The caller then shows `NotifyCantTransform` and plays the fail sound; **no transform** happens.
+3. If the location is unchanged: transform in place.
+4. If moved:
+   - to robot: mesh offset (`_TransformationPositionShift`, blended back over **0.5 s**);
+   - `SetLocation(SafeLocation)` + vehicle-form `Teleport`.
+
+After the transform, `InRobotForm.MoveToSafeLocation` runs the same test with the **cylinder bounds**. On failure it logs "Find end spot failed", and the caller forces the vehicle form. `OnTeleport` (vehicle) also runs it with the vehicle mesh bounds.
+
+**Native:**
+- `execFindSpotAwayFromPawns` = `0x82C49950` → `0x82E30D98`.
+  - If the actor argument IsA the pawn class (lazily resolved class object), it is passed as the source actor. That adds **TRACE_Pawns** and ignores the pawn itself.
+  - It then calls **`UWorld::FindSpot` `0x82C23498`**. This is the same routine `SpawnActor` uses for its "collision at spawn location" test.
+- Trace flags `0x08006086 | (pawn ? 1 : 0)`: Movers (0x2), Level (0x4), LevelGeometry (0x80), Terrain (0x2000), Tessellation (0x4000), 0x08000000, plus Pawns. **World geometry is tested**, not just pawns.
+- Complex collision follows the pawn's flag (`Actor+0x7C` bit 7).
+
+**`FindSpot` algorithm** (stock UE3 shape, constants confirmed):
+1. Gather primitives overlapping `Location ± 2·Extent`. If nothing overlaps the box at `Location`: success, no move.
+2. Otherwise run **2 passes**, with the probe scale **1.0** then **0.5**. Each pass pushes out along **Z**, then **X**, then **Y**: two opposing sweeps per axis from `Location ∓ axis·Extent·scale`, then move by the hit-time difference.
+3. Re-test after each pass; success as soon as nothing overlaps.
+4. Then try **diagonal** pushes (±X±Y±Z combinations at 0.5 scale) with the same re-test.
+5. If it is still overlapping, **fail**.
+
+**Human-visible result:**
+- Under a low overhang or in a tight gap, the original **nudges** the body up to about one extent per axis (first pass), plus half an extent (second pass), to a fitting spot. **Only if no fitting spot exists within that reach does it refuse with the "can't transform" prompt.** It never transforms into geometry.
+- If the robot still ends up embedded, it is immediately pushed back into vehicle form.
+
+**Rebuild guidance:** run a box overlap with the target-form extent at the current location. If blocked, try depenetration along Z, X, Y (full extent, then half), then diagonals. Accept the first clear spot, else refuse.
