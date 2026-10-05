@@ -557,3 +557,119 @@ After the transform, `InRobotForm.MoveToSafeLocation` runs the same test with th
 - `bRequiresActorBlueprintOnSpawn` enforcement point.
 - WFC `UAnimNodeSequence::GetBoneAtoms` with a NULL `AnimSeq` (reference pose is HIGH, stock UE3).
 - `AmpAnimSwitch` child selection by property value (HIGH: by index).
+
+## H. Melee, homing lock, tank cannon, grenades (GP) (C unless marked; all UnrealScript plus authored data)
+
+### H1. Melee
+
+**Input** (`PlayerWalking.Melee`):
+- Ignored while downed, while `SpamMeleeTimer` is active, or with the vehicle visible.
+- Victim = `PlayerTargeting.GetMeleeAssistTarget()`.
+- `StartMeleeAttack(ShouldStomp(victim) ? 8 Stomp : 1 WeaponAttack, victim)`. `ShouldStomp` is false for any player pawn, so **versus melee is always `MELEE_WeaponAttack`**.
+
+**Target** (`TnPlayerTargeting.Update`): the picked target becomes the melee assist target if:
+- its distance ≤ `DefaultMeleeAssistMaxDistance` **2000** (or the equipped melee weapon's trace range);
+- it is inside picker **index 3** of the target's `TnTargetableComponent`;
+- it is not a teammate.
+
+Picker angle = `clamp(Angle, atan(MinRadius/d), atan(MaxRadius/d))`, i.e. 4° but at least the cone that covers `MinRadius` at the target and at most `MaxRadius`. Player robot targeting (`TR_Targeting_p.LightSmallROBO_Targeting`, index 3 labelled "Dodge Assist"): 4°, 350–450.
+
+**Attack choice** (`FindAttack`):
+- Weapon type = current weapon's `MeleeWeaponType`. If that is 0 (none), use the type-3 (melee) inventory weapon; if there isn't one, 9 = Any.
+- The first attack with matching `MeleeType` and a listed `MeleeWeaponType` wins; an attack listing `MWT_Any` is the fallback.
+
+**Attack play:**
+- `EnqueueReplicatedAnimation(AnimName…)`. AnimName goes through the AnimSet chooser, so e.g. `Melee_EnergonSword` picks `_01`/`_03`.
+- If there is a target and `AllowFlight`: a lunge (`Flier.StartFlight`, `AttackDash` Speed 2500, Time 0.25, EndVelocityScaler 0.3, yaw-only direction).
+- Speed × `GroundSpeedMultiplier` (0.75). In flight, backward acceleration is removed.
+
+`LightSmallMeleeSet` attacks (the heavy and medium sets are similar):
+
+| MeleeType | Weapon types | Anim (group) | Damage | Impulse | Notes |
+|---|---|---|---|---|---|
+| WeaponAttack | Any | Melee_EnergonSword | 150 (`TnDamageTypeMelee`) | 30000 | lunge |
+| WeaponAttack | Mace, Club | Melee_Mace | 150 | 40000 | lunge |
+| WeaponAttack | Turret | Melee_Turret | 150 | 30000 | lunge |
+| WeaponAttack | Flag / Bomb | Melee_Mace | **9999** | 80000 | flag/bomb carrier swing |
+| Stomp | Any | Melee_Ground | 150 | 70000 | AI targets only |
+| Combo | Any | Melee_GunButt_H2H | 15 (weak) | 20000 | — |
+| Whirlwind | Any | Transform_Whirlwind_ROBO | **85** (`TnDamageTypeWhirlwind`) | 2000 | ×1.2 speed, RMM_Translate, upper body |
+
+**Hit detection** (`TnAnimNotify_DamageSweep` → `MeleeService.BeginDamageSweep(Duration, Socket, Extent, ZOverride)`, authority only):
+- `TnTraceSweeper`: every tick for `Duration`, `MultiPointCheck` of an **axis-aligned box `Extent`** at the socket's world location (or pawn location if no socket).
+- Ignore self and already-hit actors and components.
+- **Pawns also need a clear direct box trace** (extent (r, r, h/2) of the victim) from attacker to victim.
+- Each actor is hit at most once per sweep.
+- **Hit:**
+  - `ServerProcessMeleeHit`: damage = attack Damage × `_MeleeDamageModifier`, momentum = normal(victim − attacker) × Impulse, `TakeDamage`.
+  - `ZOverride` (0.4) re-aims the impact direction: horizontal × (1 − |Z|), Z = 0.4.
+  - The victim plays a hit reaction unless it is downed, using melee type 3, or shielded.
+  - `AbortAfterHit` attacks stop on the first hit.
+- **Impact sweeps** (`TnAnimNotify_ImpactDamageSweep`) use `DamageOverride` / `MomentumScalar` (horizontal), `TnDamageTypeImpact`.
+
+Sweep notifies (authored AnimSequence notifies, time in seconds):
+
+| Anim | Notify time | Socket | Extent | Duration |
+|---|---|---|---|---|
+| Melee_EnergonSword_01 / _03 | 0.19 | MeleeSocket_SmallRobot | (250, 250, 350) | 0.35 |
+| Melee_Mace_01 / 02 / 03 | 0.29–0.41 | MeleeSocket_SmallRobot | (250, 250, 350) | 0.30 |
+| Melee_Axe_*, Melee_Club_* (heavy) | 0.30–0.35 | MeleeSocket_LargeRobot | (250, 250, 350) | 0.30 |
+| Melee_GunButt_H2H | 0.0 | MeleeSocket_SmallRobot / WeaponSocket_Heavy | (300, 300, 300) | 0.30 |
+| Transform_Whirlwind_ROBO (5.9 s) | 0.96, 1.61, 2.2, 2.8, 3.4, 4.0, 4.54, 5.19 | PositionSocket | (450–500, 450–500, 200) | 0.4 each |
+
+All ZOverride 0.4 except Whirlwind (none). Full list: `notes/data/melee_sweep_notifies.txt`.
+
+**U:** socket offsets (skeleton data, AT export).
+
+### H2. Homing lock (`TnWeaponHoming` + `TnProjectileHoming`)
+
+**Lock target** = `PlayerTargeting.GetHomingLockTarget()`: the picked target within weapon trace range, inside picker **index 4** ("Homing Lock": robot 4° / 600–700; car 4° / 500–700), not a teammate. It is cleared if the target has `TnBuffDisguise`, or is in robot form while `CanLockOnToRobots = false`.
+
+- **Lock state** (`Active.Tick`):
+  - a target (with ammo) accumulates `LockOnTimer` and locks after **LockOnTime**; a target change resets the timer;
+  - without a target, `HoldLockOnTimer` drops the lock after **HoldLockOnTime** (or at once if the target is dead or invalid);
+  - LockOn marker plus sound event 14.
+- **Fire:** the client sends (locked, target) to the server. The spawned projectile gets `SetTarget(locked ? target : none)`; with no lock it flies straight.
+- **Projectile** (states Homing → Closing):
+  - **Homing:** `Acceleration = HomingForce · normal(targetLoc + lead − loc)`. Lead = target velocity direction × MaxLeadDistance × speed-normalised (all MP data leave LeadTargetSpeed / MaxLeadDistance at 0, so **no lead**).
+  - Within **ClosingDistance** → Closing: `ClosingForce` toward the target, and it **explodes after ClosingTime** regardless.
+  - Stops homing if the target dies, or switches to robot form while `CanLockOnToRobots` is false.
+
+| Weapon | WEPDATA (MP) | LockOn / Hold | Robots? | PROJDATA | Speed | Homing / Closing force | ClosingDist / Time | Damage / radius |
+|---|---|---|---|---|---|---|---|---|
+| Soldier HomingRocket | `RocketLauncher_WEPDATA` | 0.5 / 0.5 s | no | `RocketLauncher_PROJDATA` | 9000 | 40000 / 60000 | 3000 / 0.3 s | 135 / 1000 |
+| Jet vehicle rockets | `HomingRocket_Vehicle_WEPDATA` | 0.5 / 1.0 s | no | `HomingRocketVh_PROJDATA` | 10000 | 40000 / 60000 | 3000 / 0.4 s | 125 / 850 |
+
+Weapon range 30000.
+
+### H3. Tank cannon (`TnTankForm.UpdateCannonRotation`)
+
+- Player: `CannonSkelControl.DesiredBoneRotation = (view pitch, vehicle RB yaw, 0)`. **The cannon only pitches**; yaw stays with the hull, which is slaved to camera yaw (§C2). AI: the full view rotation.
+- Control `WeaponPrimary` in `VEH_Proxy_p.VEH_Tank_ANIMTREE` (all player tanks): **no constraints set** (`bConstrainPitch/Yaw` false), `LagDegreesPerSecond` **360** (CDO), `BCS_ActorSpace`.
+- H: native `HmSkelControl_TurretConstrained` turns toward the desired rotation at ≤ LagDegreesPerSecond.
+
+### H4. Grenades (`TnGrenadeThrower` + `TnProjectileGrenadeBase`)
+
+**Toss:**
+1. Target = trace from the view point along the view, 1000 → 10000 (hit or end point).
+2. Toss animation `GrenadeThrow` (upper body); spawn after **TossDelay 0.4 s** at socket `MeleeSocket_RightHand`.
+3. `SuggestTossVelocity(target, src, TossStrength)`.
+4. `AdjustTossVelocity`: if the aim pitch is ≤ `LowPitchDegrees.Max`, speed lerps toward `LowPitchSpeed` as pitch goes down to `.Min`.
+5. `Grenade.Init` scales again by `lerp(SpeedScaleAtMinPitch, SpeedScaleAtMaxPitch, pct(pitch, MinPitch, MaxPitch))`.
+
+**Projectile:**
+- No explosion on contact unless `ExplodeWhenHittingPawn` and the hit is a pawn.
+- The **fuse starts on the first impact**: `LifeSpan = RandomInRange(FuseTime)`. In flight `LifeSpan` is 0 (no timeout).
+- Bounce: `v = BounceDampening · reflect(v)`. It stops when v² < LowSpeedThreshold.
+- `GravityScale` per data; grenade marker shown if `ShowMarker`.
+
+| Grenade (MP) | WEPDATA ammo | TossStrength | LowPitch range / speed | PROJDATA | Fuse | Bounce | Gravity | Explode on pawn | Damage / radius |
+|---|---|---|---|---|---|---|---|---|---|
+| Flak (Soldier) | `FlakGrenades_WEPDATA` 1 | 11000 | −25..0 / 7000 | `GrenadeSkill_PROJDATA` | 2.0 s (Min CDO 2.0, Max 2.0) | 0.4 | 0.3 | no | **325 / 2000** (`TnDamageTypeFlakGrenade`) |
+| FlashBang (Scout) | 2 | 11000 | −10..0 / 7000 | `FlashBang_PROJDATA` | 2.0 | 0.4 | 0.3 | yes | 1 / 2000 (flashbang) |
+| Heal (Scientist) | 1 | 11000 | −10..0 / 7000 | `HealGrenade_PROJDATA` | 1.0 | 0.3 | 0.3 | yes | (heal) |
+| Kamikaze mines (Leader) | 1 | 100 | — | `KamikazeMine_PROJDATA` | — | — | 1.5 | — | 140 / 500, search 2250 |
+
+The MP projectile data come from each projectile CDO's `MultiplayerData` (C), e.g. `Default__TnProjectileGrenade.MultiplayerData = GrenadeSkill_PROJDATA`.
+
+PROJDATA speed-scale fields: SpeedScaleAtMinPitch 0.1–0.2, AtMaxPitch 1.0 (CDO), Min/MaxPitch ±25.
