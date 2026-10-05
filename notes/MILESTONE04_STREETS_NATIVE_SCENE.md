@@ -166,3 +166,15 @@ See `MILESTONE04_STREETS_RUNTIME_SEMANTICS.md` §4. None of these are in ART geo
 - The VMX tail of 0x82DC3508 (multiply order is assumed stock relative × parent; the data are consistent with it).
 - Whether any of the 65 DefaultMaterial BSP faces is visible in the original.
 - Exact UE3 names of PolyFlags 0x200 / 0x400 / 0x800.
+
+## Particle size × component/actor scale (native, 2026-10-04, rendering request)
+CONFIRMED in the xex (Ghidra headless, read-only).
+- **Vtables:** sprite instance vtable 0x8233A9E8 (GetType 0x83071C10); mesh instance vtable 0x82337CA0 (GetType 0x83067830).
+- **Sprite FillReplayData** (slot 8, 0x8300C678): ReplayData.Scale (+0x24..0x2C) = 1 × Comp.Scale(+0x178) × Comp.Scale3D(+0x17C..0x184); then, if Owner (+0x34) is set and AbsoluteScale (+0xF4 & 0x100000) is clear, × Owner.DrawScale(+0x140) × DrawScale3D(+0x144..0x14C). There are no other gates.
+- **Mesh FillReplayData** (slot 8, 0x83052BD8): the same product, with two gates (bit names HIGH confidence):
+  - the whole block is skipped when RequiredModule +0x38 bit31 is set (bUseLocalSpace);
+  - the component part is skipped when instance+0x154 & 0x40000000 is set (ignore component scale).
+- **Tick:** slot 17 (0x83012DB0 sprite/base, 0x8300D268 mesh) computes the same product for bounds.
+- **DrawScale offsets:** execSetDrawScale 0x82C48050 → 0x82E4DC98 writes +0x140; execSetDrawScale3D 0x82C480F0 → 0x82E4DCD8 writes +0x144..0x14C.
+- **Not traced:** the render-side vertex fill (Size × Scale); HIGH confidence it matches stock UE3.
+- **Owner:** Rendering.
