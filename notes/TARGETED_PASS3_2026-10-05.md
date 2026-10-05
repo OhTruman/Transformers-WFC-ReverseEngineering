@@ -545,3 +545,11 @@ After the transform, `InRobotForm.MoveToSafeLocation` runs the same test with th
 - If the robot still ends up embedded, it is immediately pushed back into vehicle form.
 
 **Rebuild guidance:** run a box overlap with the target-form extent at the current location. If blocked, try depenetration along Z, X, Y (full extent, then half), then diagonals. Accept the first clear spot, else refuse.
+
+## STILL OPEN after pass 3
+
+- `FMeshElement+0xBC` writer, i.e. the source and range of the material `RandomSeed` value (Rendering asked; the binding is CONFIRMED, see the Rendering message).
+- Native `PCSettingManager` defaults (resolution, texture level, VSync) and how the texture level maps to streaming settings. The PC executable is not in the dump.
+- `bRequiresActorBlueprintOnSpawn` enforcement point.
+- WFC `UAnimNodeSequence::GetBoneAtoms` with a NULL `AnimSeq` (reference pose is HIGH, stock UE3).
+- `AmpAnimSwitch` child selection by property value (HIGH: by index).

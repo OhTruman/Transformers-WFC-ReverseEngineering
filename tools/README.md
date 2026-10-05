@@ -31,3 +31,5 @@ Added in Milestone 03:
 - `gfxcallgraph.py` — builds `notes/data/frontend_gfx_callbacks.json`: per-movie AS→engine ExternalInterface calls (pool-level), data-store bindings, and engine→AS `_global.*` callbacks from decompiled script + authored defaults.
 - `as2dis.py` — read-only AS2 bytecode disassembler for Scaleform .gfx with expression folding (DefineFunction2 registers, constant pools, CallMethod/SetMember). `as2dis.py movie.gfx [filter]`. Used for `notes/data/frontend_menu_graph.json`.
 - `gfxplace.py` — read-only: named PlaceObject placements (sprite, depth, char, matrix translate/scale) for a Scaleform .gfx; used for the HUD anchor/layout map.
+- `ghidra_scripts/WfcDispScan.java` — read-only headless scan: functions using ALL given displacements/immediates (find field users, e.g. Scale/Scale3D offsets).
+- `ghidra_scripts/WfcStoreScan.java` — read-only headless scan: instructions with a mnemonic prefix and displacement inside functions that also use other displacements (find field writers).
