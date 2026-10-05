@@ -856,3 +856,81 @@ With the `RollerSphereIncreaseFriendlySpeed` skill, allies get a speed buff inst
 - targets get `TnBuffDrainTarget` (beam FX `DrainRay_Beam_FX` from `MeleeSocket_LeftHand`).
 
 Cooldown 60 s. Blueprint `[1]` (range 3500, 50 DPS / 75 HPS) is the non-versus data index.
+
+## K. Killstreaks (Poke, MinePooper, RocketTurret), class-pool abilities, HardLocked (GP) (C unless marked)
+
+### K1. Killstreaks (`TransCustomization.ini TnDataProvider_Killstreak` + CDOs)
+
+**PokeStreak "P.O.K.E. 2.0"** (Leader, 5 kills; `TnKillStreakPoke` → `TnAbilityPoke`, `RequiresRobotForm`):
+- `CreateInventory(TransContent.TnWeaponPoke)`. The weapon is `MeleeWeaponType MWT_Poke`, `DisallowWeaponSwitching`, **`SecondsUntilDeactivated 20`**, data `Poke_WEPDATA` (**GroundSpeedMultiplier 1.5**, range 1600).
+- Melee-set attack for MWT_Poke (Light / Heavy-Medium sets): `Melee_Axe`, **Damage 9999**, `TnDamageTypePoke` (subclass of Melee, so it knocks back), **Impulse 200000**, lunge 2500 / 0.25 s.
+- H: removal after 20 s and the auto-equip live in TransContent `TnWeaponPoke` script (not dumped).
+
+**MinePooperStreak "Thermo Mine Re-Spawner"** (Leader, 7; `TnKillstreakMinePooper` → `TnAbilityAddBuff`):
+- Self buff `TnBuffMinePooper`, **15 s**. **Every 2.0 s** it spawns `TnProjectileKamikazeMineKillstreak` at owner + **(400, 100, 0)** rotated, with `Init(0)`.
+- Mine data `KamikazeMineKillstreak_PROJDATA`:
+
+| Field | Value |
+|---|---|
+| Health | 50 |
+| HomingVelocity | 2300 |
+| Gravity | 1.5 |
+| Speed | 2500 |
+| Damage / radius | **125 / 500** |
+| SearchRadius | 2000 (CDO) |
+| LifeSpan | 60 (CDO) |
+| Hover | time 2, distance 50–150 |
+
+**SpawnRocketTurretStreak "Nucleon Shock Cannon"** (Scientist, 7; `TnKillstreakSpawnRocketTurret` → `TnAbilityCreateInventory`, `RequiresRobotForm`):
+- `CreateInventory(TransContent.TnWeaponRocketTurretKillStreak)`. H: a subclass of `TnWeaponHeavyRocketTurret`.
+- **WT_Heavy**: dropped on weapon swap or transform (§I2), no double jump, MWT_Turret melee.
+- MP data `HeavyTurret_Rocket_WEPDATA`:
+  - **10 rockets** (clip 10, reserve 0);
+  - **one every 1.75 s**;
+  - ground speed ×0.75;
+  - range modifiers ×1.0 to 15000, ×0.5 at 30000;
+  - spread 0.02.
+- Projectile `TnProjectileMangaRocketTurret` MP data: **12000 UU/s, 500 damage, radius 2500**, `TnDamageTypeHeavyRocketTurret`. That damage type does not request forces, so there is no knockback on Transformers.
+
+### K2. Class-pool abilities (MP: `Cooldown[0]`, no resource cost)
+
+**HardLock** (UI "Mark Target", Scout lvl 5; anim `Skill_MarkTarget`; cooldown 60):
+- Target = `PlayerTargeting.GetHomingLockTarget()` (picker 4). It fails with no target.
+- The server adds `TnBuffHardLocked` to the target at level 0, or 1 + level with the `ImprovedHardLock` skill.
+- The buff lasts **10 s** (+instigator modifier) and ends early if the instigator dies.
+- Effect: see K3. The target's marker is shown (`TnObjectiveMarkerTypeTransformerVersus` reads the buff). Warcry removes it.
+
+**Disguise** (Scientist 5; cooldown 15; `CanBeForceEnded`, so pressing again ends it):
+- Self buff `TnBuffDisguise`, **no time limit**.
+- Seen by an enemy viewer (and by the owner themselves): coloured as the viewer's faction (`GetDisguisedColors`) and named as a **random member of the viewer's team**.
+- Enemy homing locks, sentries and kamikaze mines ignore a disguised pawn.
+- **Broken by `ExposeSelf`**: firing a weapon, tossing a grenade, starting melee, taking damage (unless the `KeepDisguiseWhenDamaged` skill), and being decoy-trapped. Broken → `TnBuffDisguiseLost`.
+- The `IncreaseDamageAfterDisguise` skill adds a buff when it ends.
+
+**DecoyTrap** (Scout 2; cooldown 60):
+- After 0.5 s, the owner drops `TnDecoyTrap` with toss velocity (2000, 1200, 0). The pickup **looks like the owner's current weapon** (pickup mesh and rotation).
+- It fades in over **ArmDelay 3 s**, then "glitches" (fade-out/in over 1 s) **every 5 s**.
+- It **can be destroyed**, and is removed when the owner dies.
+- `PickupAllowed` only for **enemies** (not the owner or teammates).
+- An enemy who picks it up gets `TnBuffDecoyTrap` for **2 s**:
+  - input locked (`SetCinematicMode`), velocity zeroed, `DecoyTrap_In` / `Out` animations;
+  - exposed (`ExposeSelf`);
+  - "Victim Trapped" marker for the owner;
+  - DoT with the `DecoyDot` skill.
+
+**AbilityJammer** (Soldier 5; cooldown 60):
+- Fires `TnProjectileAbilityJammer` from offset (0, 175, 25): speed 10000, **radius 500**, no damage.
+- Damage type `VictimBuffs` → **`TnBuffAbilityJammed` 15 s** on enemies only. It removes Cloak, Disguise, Warcry buffs and DrainSource, and blocks ability use (`TnPlayerController` checks `HasDerivedBuff(TnBuffAbilityJammed)`). HUD notified, debuff material.
+
+**TransformDisruptor** (Leader 5; cooldown 60):
+- Projectile speed 6000, **radius 250**, enemies only.
+- `TnBuffTransformDisruptor` **3 s**: **forces the opposite form immediately** (`ForceIntoForm`) and **disables transforming** until the buff ends. DoT with the skill.
+
+**MarkTarget:** there is no separate ability class; "Mark Target" is HardLock (kill-award XP event `KillMarkTarget` is keyed on `TnBuffHardLocked`).
+
+### K3. `TnBuffHardLocked` FloatModifier [1.4, 1.55, 1.6] (C)
+
+- Consumed by **`TnPawn._AllDamageModifierSelf`** (`TnValueTimesProductBuffModifier`, list includes `TnBuffHardLocked`) in `TnPawn.AdjustDamage`: `Damage = Damage × Π FloatModifier[level]` of active listed buffs. So it is a **damage-taken multiplier**.
+- The same list also holds: `TnBuffSurvivalDecreaseDamageTaken`, `ReduceExplosionDamage`, `DecreaseDamageTakenDuringWhirlwind`, `DecreaseDamageWhenRepairRayHealing`, `WarcryDecreaseDamageTaken`, `DecreaseDamageTakenAfterCloak`.
+- **Orbital Beacon 2.0** (`TnKillStreakImprovedOrbitalRecon`) applies `TnBuffHardLocked` to the **other team** (`BuffTarget ABT_OtherTeam`), so every enemy takes **×1.4 damage for 10 s** and is marked.
+  - H: level 0. `TnAbilityAddBuff` level semantics not traced; HardLock uses 0 unless improved.
