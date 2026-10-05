@@ -736,3 +736,123 @@ PROJDATA speed-scale fields: SpeedScaleAtMinPitch 0.1–0.2, AtMaxPitch 1.0 (CDO
 
 - `TnAbility.GetResourceRequired` returns **0 unless `GetCurrentSkillDataIndex() == 1`**. `TnMultiplayerGame.GetSkillDataIndex` returns 0, so **versus abilities have no resource cost**. They use `Cooldown[0]`, × `CooldownReductionModifier` with `TnBuffAbilityCooldown`.
 - Killstreak ability variants: not traced in this pass.
+
+## J. Objective pickup gate, Sentry, Guided Missile, Roller Sphere, Drain (GP) (C unless marked)
+
+Versus uses skill-data index 0, which means `Cooldown[0]`, blueprint `[0]`, and no resource cost (§I4).
+
+### J1. Picking up the flag or bomb
+
+- `TnPlayerPawn.CanPickupInventory` returns false when:
+  - the pawn is downed;
+  - the pawn is meleeing;
+  - **the pawn is in vehicle form and the item is a `TnWeapon`** (flag and bomb included);
+  - the controller has a `RevivablePawn`.
+- **Auto-pickup on touch** (`PickupFactory` / `DroppedPickup` `Pickup.Touch`) requires `InventoryClass.PickupWhenTouched(P)`. `TnWeapon.PickupWhenTouched` is true **only if the pawn already holds that weapon class**. So **flag and bomb are not auto-picked on touch** (H: no TransContent override found).
+- **They are taken with the contextual pickup button** (`TryPickup` → `ServerPickup` → `TnPickupManager.Pickup`):
+  - `GetClosestPickup` scans the pawn's **current `TouchingActors`** (factories, then dropped pickups) that pass `ValidTouch`, choosing by highest `PickupRating` and then nearest;
+  - heavy weapons skip the pickup animation;
+  - `UpdateCommand` refreshes the prompt every 0.1 s.
+- **Standing on a dropped flag and pressing the button works**; no fresh Touch is needed.
+- The dropped flag rejects defenders (`ValidTouch`). Stock `DroppedPickup` rejects the dropper only while the item is still rising in Falling physics, and blocks it if there's no clear line of sight (rechecked after 0.5 s).
+
+### J2. SpawnSentry (`TnAbilitySpawnSentry` → `TnSentryPawnAbility` + `TnAiSentryController` + `TnSentryTargetTracker`)
+
+**Trigger:**
+- Animation `ADD_Grenade_Throw`. **The existing sentry is killed first** (one active per owner).
+- Spawn after **0.2 s**:
+  - desired = owner + `(0, 0, 375)` rotated by the owner;
+  - box trace (`PlacementTraceExtents` 250 × 250 × 125) from the owner to there, clamped to the hit;
+  - `SpawnWithoutFail`.
+- Blueprint: `Default_TURRETDEF`. The `RocketSentry` skill switches to `Rocket_TURRETDEF`, the `RepairSentry` skill to `Repair_TURRETDEF`.
+- Killed if the owner dies or dies-out (Tick checks the master pawn).
+- **Cooldown 60 s, starting only once the sentry is gone.**
+
+**Body:**
+- Health **135** (`Sentry_DSYS`).
+- It **drains `135 / Lifetime(30)` = 4.5 HP/s**, so it dies at 30 s if untouched.
+- **Any melee instantly kills it** (`ModifyDamage` returns float max).
+- The owner can't damage it.
+- Heals at 0.3×.
+- **Flashbang: dormant for 10 s** (`DisableSentryTime`, overshield-style material).
+- `LifeSpanAfterDeath` 5 s (corpse).
+- Collision: no RB blocking, actor collision on, traces blocked.
+
+**Targeting:**
+- Native `SeePlayer` / `SeeMonster` with **SightRadius 30000** and **PeripheralVision −1** (360°) feed `RegisterEnemy`; `EnemyNotVisible` unregisters.
+- `FindBestEnemy` = the **closest** registered enemy that:
+  - is valid (not dying, downed, grabbed or disguised);
+  - is claimed by fewer than **2** sentries (`_MaxNumClaimedEnemies`);
+  - is inside the **pitch constraint ±45°** (`CanOwnerSee` also requires `dot(forward, dir) ≥ PeripheralVision`, always true at −1).
+- Fires while target distance < **MaxAttackRange 6000** (Repair 5000) and `CanFire`.
+- Turret aim: one `YawPitchControl` skeletal control, **LagDegreesPerSecond 270**. `AimedAtTargetThreshold 3.0` (H: degrees for "can fire").
+- Idle: pitch returns to 0.
+
+**Weapon (AI data):**
+
+| Variant | Damage | Rate | Other |
+|---|---|---|---|
+| Default `Default_WEPDATA` | instant hit **8**/shot (`TnDamageTypeSentryGun`) | every **0.12 s** | range 30000, damage ×1.0 to 8000 then ×0.5 at 30000; spread 0.1; heat +2/shot, overheat delay 2 s |
+| Rocket `Rocket_WEPDATA` | projectile 12000 UU/s, **45** dmg, radius 1000 | every 2.0 s | — |
+| Repair | heals teammates 15/s, damages enemies 10/s | — | range 5000 |
+
+- Mesh: `WEP_SentryAbility_p.WEP_SentryDeploy_SKEL` (Default / Rocket / Repair `_WEPMESH`), activate / deactivate anims `WEP_DeployedTurret_Activate` / `_Deactivate`.
+- The sentry is a non-player pawn, so its weapon uses **AiData** (`TnWeapon.GivenTo`: non-player → type 2).
+
+### J3. Guided Missile (`TnAbilityGuidedMissile` → `TnGuidedMissile`)
+
+**Spawn:**
+- Looping animation `Skill_GuidedMissile`. Spawn after **1.0 s** at socket `ReactionSocket_Chest` + (200, 0, 0), with the controller rotation.
+- **Pitch clamped to [700, 16384]** (about 3.8° to 90°, i.e. never downward).
+- `PC.GuideMissile`: the camera switches to strategy `TnGuidedMissileCameraStrategyType` following the missile (**yes, the camera follows the missile**), inputs are cleared, the pawn stops, state `GuidingMissile`.
+
+**Steering** (client `PlayerTick` → `ServerSetGuidedMissileInput`):
+- Mouse: `LeftRight = clamp(1.0 · CameraYaw delta, −1, 1)`, `UpDown = clamp(CameraPitch delta)`. Stick: `RawJoyLookRight`, `−RawJoyLookUp`. Inverted by `bInvertMouse`.
+- Missile: `Acceleration = (LeftRight·rightAxis + UpDown·upAxis) × ControlStrength 2500`. This is lateral only; speed is held by MaxSpeed.
+- H: rotation follows velocity (stock projectile).
+- **Ability button again = detonate.** Leaving the state detonates; the controller returns to walking when the missile is gone or not controllable (checked every 0.1 s).
+
+**MP data** (`GuidedMissile_PROJDATA`):
+
+| Field | Value |
+|---|---|
+| Speed | 2000 |
+| Fuse | 30 s (+buff) |
+| Health | 9999 |
+| Collision radius | 10 |
+| **Damage** | **10000** |
+| **Radius** | **4500** |
+| Damage type | `TnDamageTypeGuidedMissile` |
+| Cooldown | 45 s (`TnAbilityCooldownConditionGuidedMissile`) |
+
+### J4. Roller Sphere (`TnAbilityRollerSphere` → `TnRollerMineAbility`)
+
+**Spawn:**
+- After **0.5 s** at owner + (500, 0, 100) rotated, if the spot is safe (radius = mesh sphere radius × 1.1). Otherwise retry every 1 s.
+- Initial local velocity **(2750, 0, 0)**; a rigid-body rolling sphere. Destroyed when the owner dies.
+- **Cooldown 60 s after it's gone.**
+
+**Mine:**
+- **Arms after 3.0 s.** Fuse **10 s** (explodes at timeout; buildup sound in the last 1.5 s).
+- Health **200**.
+- Explodes on rigid-body contact with an enemy pawn once armed.
+- Explosion: **135 damage, radius 1500, no momentum**, `TnDamageTypeRollerMine`.
+- Teammate or owner melee **kicks** it: velocity += normal(horizontal) × 5000.
+
+**Aura:** every tick, enemies within **1500** (visible) get `TnBuffRollerSphere`, refreshed while inside:
+- robot speed ×0.75 for 1 s;
+- vehicle modifier ×0.75 for 2 s;
+- debuff material.
+
+With the `RollerSphereIncreaseFriendlySpeed` skill, allies get a speed buff instead.
+
+### J5. Drain (`TnAbilityDrain` → buff `TnBuffDrainSource`, 7 s)
+
+**On cast:** looping left-arm animation `Skill_Drain`, and the owner's speed ×0.7.
+
+**Every tick, for every enemy `TnPawn` within 2000 with line of sight:**
+- `TakeDamage(25·dt, TnDamageTypeDrain)`;
+- the owner heals `35·dt` (**50·dt** with the `IncreaseDrainRate` skill), **per target**;
+- targets get `TnBuffDrainTarget` (beam FX `DrainRay_Beam_FX` from `MeleeSocket_LeftHand`).
+
+Cooldown 60 s. Blueprint `[1]` (range 3500, 50 DPS / 75 HPS) is the non-versus data index.
