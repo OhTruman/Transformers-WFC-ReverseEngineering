@@ -1965,3 +1965,52 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
 **Notes:**
 - Car Moving and Stationary differ only in TotalTime. A moving car gibs a bit later on average.
 - After TotalTime the gib (addendum 10) happens: the default gibs blueprint unless the entry sets UseCustomGibs (none do), then corpse removal 1 s later.
+
+**§12 addendum 22: vehicle gibs (the destructible gibs blueprint + the skeletal hull gib)** (C unless marked)
+
+**Trigger:** at the gib, `TnDeathPlayer.Deactivate`:
+- `FindOrCreateComponent(HmDestructibleComponent)` → `Initialize(GibsBlueprint)` (the blueprint's DefaultGibsBlueprint; no vehicle entry sets UseCustomGibs). The component's relative location = the mesh's `PositionSocket`.
+- `NotifyTrigger(FLT_MAX, HmNotificationDestructionTrigger)`: the piece goes from its initial state (handle 1, whose only link is the notification trigger) to the effect state.
+- Then `SkeletalGibs.Spawn(Owner, PositionSocket location)` and the DecalApplicator (`TnDecalApplicatorDeath`, authored empty, so CDO defaults; not traced).
+
+**Effect state** (both `*_DSYS` share the structure):
+
+| | SoldierCarGibs_DSYS (SharedCar / SharedTank) | DefaultVehicleGibs_DSYS (SharedJet / SharedVehicle) |
+|---|---|---|
+| Particle | FX_Explosives_p.FX.**TF_Death_MED_FX** | FX_Explosives_p.FX.**Exp_Death_Lrg_FX** |
+| Chunk mesh pool | RB_Gib_11 + RB_Gib_01..10 + 3× SoldierCar_Wheel (14) | RB_Gib_11 + RB_Gib_01..10 + 4× RB_GibTire_01 (15) |
+| LinearSpeed | U(800, 2000) | U(2000, 4000) |
+| *Shared settings* | | |
+| NumChunks | 4 | 4 |
+| AngularSpeed | U(12000, 20000) | U(12000, 20000) |
+| VelocityConeAngle | 120° (60° half) | 120° |
+| Effect transform | Position (0,0,100), Pitch 16384 → cone axis +Z | same |
+| SpawnVolumeScale | (100,100,100) | same |
+| ChunkLifespan / CollisionLifeSpan | 5 / 5 | 5 / 5 |
+| Trail particle per chunk | TF_Death_GibsTrail_FX | same |
+
+**`HmGibsDestructionEffect` / `HmDebrisDestructionEffect.BeginEffect`:**
+- Pool = MeshTemplate + MeshTemplates; each chunk picks uniformly (RandomInt).
+- Chunk count = NumChunks, scaled by game throttle: level 2 → /2, 3 → /4, 4 → 0.
+- Per chunk:
+  - position = effect transform · (RandomUnitVector × SpawnVolumeScale) (H: on a 100 UU sphere around the point 100 UU up);
+  - orientation = the effect orientation;
+  - linear velocity = U(LinearSpeed) × RandomVectorInCone(effect +Z, 60°);
+  - angular velocity = U(AngularSpeed) × a random unit axis (H: rotator-ish units, as authored);
+  - LifeSpan 5;
+  - the gib-trail emitter attached;
+  - **the character's `Cust_Color_A` vector parameter is copied from the owner mesh** (team/character tint).
+- Chunks are `HmDestructibleSpawnedChunk`: RemoteRole None, i.e. **spawned locally on each machine** (the gib runs everywhere).
+  - The base `DisableCollision` is a no-op, so CollisionLifeSpan has no effect here.
+  - H: lifespan destruction waits until the chunk has not rendered for 0.5 s (`IsLifeSpanDestructionAllowed`).
+
+**Skeletal hull gib (`TnSkeletalGibSpawner`):**
+- Templates come from the vehicle form's `DefaultSkeletalGibTemplate`: 39 of 71 form blueprints author one, e.g. Bumblebee VH_Bumblebee_HULL_SKEL + HULL_PHYSSYS, Impulses none, **TransferVelocityMultiplier 0.75**.
+- Spawn is skipped if throttle ≥ 3, there are no templates, or RandomFloat > ChanceToSpawn (1.0).
+- It spawns a `TnSkeletalRigidBody` at PositionSocket:
+  - picks a random template, sets mesh + physics asset and wakes it;
+  - adds 0.75 × the owner's RB velocity to every bone;
+  - applies a radial force U(**300, 700**) (SharedCar spawner) at the bounds centre;
+  - applies the character's colours.
+- LifeSpan U(**3, 5**) (SharedCar; CDO 10).
+- Modifier `TnSkeletalRigidBodyModifierSetEnergyDeathMaterial`: Delay U(0.5, 1.0), TransitionTime 4.5 s.
