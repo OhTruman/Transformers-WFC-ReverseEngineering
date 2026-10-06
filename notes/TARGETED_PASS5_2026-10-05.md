@@ -1731,3 +1731,37 @@ Both set:
 - It looks up the event in `WeaponEventSounds`. For a one-shot: `GetSoundOwner().CreateAudioComponent(cue, bPlay=true, bStopWhenOwnerDestroyed=true)`, i.e. a **local** audio component positioned at the sound-owner actor (H: the pawn). It is not replicated.
 - **So the toss WP_Fire and the dry fire are heard only by the tossing player.**
 - U: remote players may hear sounds from AnimNotifies in the replicated toss animation or from the grenade projectile's own spawn and flight sounds (not traced).
+
+**§12 addendum 14: grenade projectile sounds** (C unless marked)
+
+All four cues live on the projectile's `HmProjectileMesh` (`TnProjectileMesh`) and are played with **bNotReplicated = true / a local audio component**. Each machine that simulates the projectile plays them itself, positional at the grenade. A dedicated server is silent.
+
+**Flight loop: `HmProjectile.ClientSpawnFlightEffect`:**
+- Skipped on a dedicated server. It creates the FlightEffect PSC and `CreateAudioComponent(FlightSound, bPlay=false, bStopWhenOwnerDestroyed=true).Play()`.
+- Started by `Init` on the spawning machine (the server or listen host).
+- On clients: `ReplicatedEvent('Instigator')` (pawn-thrown); or `PostBeginPlay` when `SpawnsFromNonPawn`.
+- So everyone hears the flight loop from spawn.
+
+**Bounce / fuse: `TnProjectileGrenadeBase.HitThing`** (from HitWall / Bump / ProcessTouch; overrides the HmProjectile HitWall bounce sound):
+- If `ExplodeWhenHittingPawn` and a pawn is hit → Explode.
+- Otherwise, on the **first** contact (LifeSpan == 0): LifeSpan = random(FuseTime), the AI grenade stimulus fires, and **`PlaySound(FuseSound, true)`**.
+- Then `OnHitThing` reflects velocity × BounceDampening (stopping below LowSpeedThreshold 500, i.e. speed² < 500) and **`PlaySound(BounceSound, true)` on every contact**, including the first and the one that stops it.
+
+**Explosion:**
+- Fuse expiry → LifeSpan destroy → `HmProjectile.Destroyed` → Explode → `SpawnExplosionEffect`. A server TearOff → client `TornOff` → Explode; `bExploded` guards against a double.
+- Not on a dedicated server: the ExplosionEffect comes from the emitter pool, the flight loop **fades out over 0.25 s** (auto-destroy), and `PlaySound(ExplosionSound, true)`.
+
+**Authored (`*_PROJMESH`):**
+
+| Projectile mesh | Flight | Fuse | Bounce | Explosion |
+|---|---|---|---|---|
+| FlashBang (EMP) | EMP_FLIGHT_LP | EMP_FUSE_BUILD | SHELL_BOUNCE_LIGHT | EMP_EXPL_IMPT_WORLD |
+| GrenadeSkill (Magma/Flak) | MAGMA_FLIGHT_LP | MAGMA_FUSE | SHELL_BOUNCE_HEAVY | MAGMA_EXPL_IMPT_WORLD |
+| HealGrenade | HEAL_FLIGHT_LP | none (silent) | SHELL_BOUNCE_LIGHT | HEAL_EXPL_IMPT_WORLD_PROTRACT |
+| Grenade_Martyrdom | GL TRAIL_LP | none | SHELL_BOUNCE_HEAVY | GL EXPL_IMPT_WORLD |
+| GrenadeLauncher | TRAIL_LP | PROJ_IMPT | SHELL_BOUNCE_HEAVY | EXPL_IMPT_WORLD |
+| LargeExplosive | — | — | SHELL_BOUNCE_HEAVY only | — |
+
+- Bank names: grenade cues are BL_WPN_GRENADE.*; GL cues are BL_WPN_GUN_GRENADE_LAUNCHER.*.
+- FlashBang_Vig_PROJMESH is the same as FlashBang plus SpawnsFromNonPawn.
+- H: which projectile class uses which PROJMESH (the per-class Mesh pointer was not traced for every class).
