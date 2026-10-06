@@ -501,3 +501,14 @@ Otherwise it calls **`AbortMelee`** and returns true.
 - **Skin width = 0.025 PhysX = 2.5 UU**: contacts are generated or held about 2.5 UU before surfaces touch.
 - **Bounce threshold = PhysX 2.8 default −2.0** (H, SDK documentation default; not overridden). Restitution applies only when the relative normal approach speed exceeds 2 PhysX units/s = **200 UU/s**. Slower contacts are fully inelastic.
 - **With the A5 combine** (car-wall e = 0.005): even fast hits bounce back at ≤ 0.5 % of the approach speed.
+
+**Addendum: the remaining SDK parameters, identified**
+- Source: PhysX's own remote-debugger name table, `FUN_824F2288`, called from `NpPhysicsSDK::setParameter`.
+
+| Id | Name | Value | Effect | Label |
+|---|---|---|---|---|
+| 68 | **NX_ADAPTIVE_FORCE** | 0 | **disabled.** PhysX's adaptive-force solver heuristic (which scales contact forces to stabilise stacks) is off, so contacts use the plain solver. Minor effect on resting/stacked contacts; none on single-body wall hits. | C (name from the binary) |
+| 99 | NX_FAST_MASSIVE_BP_VOLUME_DELETION | 1 | broadphase performance option; no gameplay effect. | C (name from the binary) |
+| 96 | NX_ASYNCHRONOUS_MESH_CREATION (H) | 1 | asynchronous collision-mesh creation; no gameplay effect. | H (not in the binary's name table, which falls through to the default string; named from the PhysX 2.8 `Nxp.h` enum order between FLUID params and FORCE_FIELD_CUSTOM_KERNEL_EPSILON = 97) |
+
+- The same table confirms id 1 = NX_SKIN_WIDTH and id 4 = NX_BOUNCE_THRESHOLD.
