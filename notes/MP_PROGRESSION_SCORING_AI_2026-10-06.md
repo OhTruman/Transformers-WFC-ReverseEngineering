@@ -562,3 +562,37 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
   - Place1st/2nd/3rd clips exist but nothing in PlayerList adds them (U: possibly unused).
 - Prime unlock UI: `Customize.IsPrimeModeAvailable` / `Customize.UnlockPrimeMode` from GameLobby / PartyLobby (`primeMode_mc`, locked unless available), and also CharacterSelect / CustomTransformers / EndGameStats / Hud / InGameStats.
 - Assets: badge and specialty-icon art is inside `PlayerList_GFX.gfx` (extracted images `PlayerList_GFX_I*.png`).
+
+## Addendum 7: AI range bands, burst selection, DesiredFiringRange (C)
+
+**`TnAiRangeDetector.ETnRange`** with `TnAiController.RangeSet` (CDO; must have exactly 8 entries; values in UU = cm):
+
+| idx | name | Min–Max |
+|---|---|---|
+| 0 | RANGE_Invalid | −1 |
+| 1 | RANGE_Touch | 0–175 |
+| 2 | RANGE_Striking | 176–600 |
+| 3 | RANGE_Close | 601–1500 |
+| 4 | RANGE_Medium | 1501–3000 |
+| 5 | RANGE_Far | 3001–5000 |
+| 6 | RANGE_Retreated | 5001–7000 |
+| 7 | RANGE_OutOfRange | 7001+ (also returned when nothing matches) |
+
+**Range computation:**
+- `GetRange`: CenterPointRange = band(|Δloc|). NearestRange = band(|Δloc| − (radius_src + radius_target)), clamped ≥ 0.
+- A reached NavigationPoint returns Touch for both.
+- `TnAiRangeSensor` stores both in the TacticalDatabase per enemy.
+
+**Burst band** (`TnWeapon.GetBurstDataForRangeInternal`, using the enemy **CenterPointRange** from `TnAiWeaponShooter.GetCurrentRange`):
+- Striking, Close → `BurstRanges.ShortRange`;
+- Medium → `MediumRange`;
+- Far and everything else (Touch, Retreated, OutOfRange, Invalid) → `LongRange`.
+- So Short ≈ 1.76–15 m, Medium 15–30 m, Long > 30 m. Touch (< 1.75 m) uses Long, as written.
+
+**DesiredFiringRange** (`TnWeaponData`, an ETnRange):
+- "At desired range" ⇔ enemy CenterPointRange **==** the weapon's DesiredFiringRange (exact band, `TnAiController` ~line 1754).
+- The weapon picker takes the lowest band as the close weapon and the highest as the far weapon.
+
+**TargetSnapRange** (Min/Max UU): player-only aim-snap distance window (`TnPlayerTargeting` → `TnWeapon.IsWithinTargetSnapRangeSq`: Min² < d² < Max²). Not used by AI.
+
+**Reaction / acquisition delay:** no data-driven reaction, notice or acquisition delay was found in the AI script. Enemies register through sight/noise, and the sensors update the facts every AI update. A bot reaction delay is therefore a **PC ADAPTATION**; inaccuracy remains weapon spread + burst data (addendum 1).
