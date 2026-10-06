@@ -1521,3 +1521,24 @@ Both set:
   - FX: Trail_FusionCannon_FX / Exp_GenericLvl_LRG_FX.
 - `TnGuidedMissile` script has **no** sound fields and **no** guide-camera loop. U: any camera-side audio (post-process / mixer) was not found.
 - Its ability animation adds `SHOOT_BUILDUP` (§12 addendum).
+
+**§12 addendum 4: sentry destruction audio** (C from data/script; H where marked)
+
+**Destructibles** (`WEP_SentryAbility_p` Sentry_DSYS / SentryRocket_DSYS / SentryRepair_DSYS, all the same shape): one piece, "Turret".
+- **Healthy** state: InitialHealth **135**.
+  - Effects: the animated sentry mesh; the type FX (SentryAbility_NoUpgrade_FX / UpgradeRocekts_FX / UpgradeHeal_FX, at +240 Z, **terminated on state exit**); and the targetable component.
+  - It transitions to **Destroyed** on `HmGenericDamageDestructionTrigger`.
+- **Destroyed** state:
+  - **HmSoundDestructionEffectFactory, Cue = `BL_TRANS_POWER.SENTRY_EXPL`**, TerminateSoundOnExitState = false;
+  - particles **FX_OmegaSupremeAE_p.FX.OS_Death_LRG_FX**.
+
+**Playback** (`HmSoundDestructionEffect.BeginEffect`):
+- `AttachingActor.CreateAudioComponent(Cue, bPlay = false, bStopWhenOwnerDestroyed = TerminateSoundOnExitState)`, then `bAutoDestroy = true`, `Play()`.
+- It is a one-shot **attached to the sentry**, positional, and **not stopped** on state exit or actor destruction (both flags false).
+- H: played locally on every machine that runs the destructible's state change (server, and clients via destructible state replication).
+
+**Triggers:**
+- Damage to 0, and the **Lifetime drain** (`TnSentryPawnAbility.Tick` → `DestructibleComponent.NotifyTrigger(drain, HmGenericDamageDestructionTrigger)`), both go through Healthy → Destroyed, so both play **SENTRY_EXPL + OS_Death_LRG_FX**.
+- H: the master-death `Kill()` path was not traced to the destructible transition.
+- The idle loop fades separately (`PlayDying`, 0.25 s).
+- The actor persists for `LifeSpanAfterDeath` 5 s (Default/Repair blueprints).
