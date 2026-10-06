@@ -2154,3 +2154,18 @@ The material is **MLM_Unlit**. All shading is a hand-built "fake light" in Emiss
 - **Expiry:** native, since there is no script Tick. LifetimeRemaining counts down, then `DecalFinished` → ResetToDefaults → back to the pool.
 - H: stock behaviour has **no fade-out**; the decal pops off at 30 s.
 - The 50-decal cap is shared with every other dynamic decal (weapon impacts etc.), so heavy firefights can recycle death scorches early.
+
+**§12 addendum 28: decal expiry — is there a fade?** (conclusion HIGH; the pieces C)
+
+- **No fade mechanism exists anywhere we can see:**
+  1. `DecalManager` script has only DecalFinished / AreDynamicDecalsEnabled / CanSpawnDecals / SpawnDecal. There is no Tick and no per-decal parameter writes.
+  2. No TransGame/HM_Engine script touches a spawned DecalComponent after `SpawnDecal`. The only callers are `TnDecalApplicator.Apply` and `HmWeaponMesh` impact decals, which share the 50-slot pool.
+  3. **`FX_Decals_p.DeathDecal_MAT` has no time or fade input.** Its graph (`tools/matgraph.py`): Emissive = lerp(white, (tex.R + Blacks) · Color, tex.G · Color.A), BLEND_Modulate, unlit, where tex = blastmark_glow_CLR. Defaults Color (20, 20, 20, 1), Blacks −0.0001; `use_reconstructedClr` (default true) picks R/G, else RGB/A. All are constant parameters, and nothing creates a MID for decals.
+  4. UE3 DecalComponent has no built-in opacity fade.
+- **So the scorch shows at full strength for 30 s and then disappears in one frame**, unless it is recycled earlier by the 50-decal cap.
+  - With Modulate, white = no change and lerp alpha = tex.G. The tex.R · 20 term can brighten the ground at the glow core.
+- **Native expiry routine: not located.**
+  - The engine-name init stubs for `DecalFinished` (FName globals 0x83759E94, 0x8375A834, 0x8382D6BC, 0x8382EB28, 0x83864E00, 0x83753654) have no code readers found by a lis/lo scan.
+  - "ActiveDecals" / "LifetimeRemaining" have no native strings.
+  - H: stock ADecalManager::TickSpecial decrements LifetimeRemaining, then DetachComponent + eventDecalFinished.
+  - This doesn't change the conclusion: whatever expires the decal has nothing to fade with.
