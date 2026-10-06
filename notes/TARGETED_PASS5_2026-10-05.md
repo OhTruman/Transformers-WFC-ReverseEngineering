@@ -1693,3 +1693,21 @@ Both set:
   - `TnKillstreakActivatedTeamAbilityJammer` = [MP_**Decepticon**AbilitiesJammed, MP_**Autobot**AbilitiesJammed]: an Autobot activator announces "Decepticon abilities jammed" (the victims), which is deliberate.
   - GuidedMissile / ImprovedOrbitalRecon lists name the activator's own faction.
   - The faction cue is used only where the role cue is none. So for GuidedMissile, Self hears MP_OmegaMissleOnline while every other receiver (friend or enemy) hears the activator-faction "fired" line. For Jammer and Beacon 2.0 everyone, including the activator, hears the faction line.
+
+**§12 addendum 12: death sounds and granted-weapon sounds** (C from script/data unless marked)
+
+**Vehicle death sound:**
+- `TnVehicleForm.OnPlayDeath` (from `TnPawn.Dying.BeginState` → `_CurrentForm.PlayDeath`) starts the `_DeathPlayer`. If `_Blueprint.DeathSound` is set it plays `_OwnerPawn.PlaySound(DeathSound, bNotReplicated=true)`.
+- **Vehicle form only** (`TnPawn.PlayDying` → `VehicleDying` vs `RobotDying` state by current form).
+- The Dying path runs on the server (Died → PlayDying) **and on every client** via bTearOff → `Pawn.TornOff` → PlayDying.
+- So each machine plays it **locally, positional at the wreck**: everyone with the pawn relevant hears it once, including the killer. A dedicated server is silent.
+
+**Robot form:**
+- `TnRobotForm.OnPlayDeath` has no sound.
+- The only robot death sound is the death-entry modifier `TnDeathModifierPlaySound` → `_Owner.PlaySound(Sound)` (default args, positional). It is authored only on the **melee** death entries (`TnDeathTypeMelee`, TotalTime 1.5–2.75) of `SharedRobotDeaths` and `HoloBruteRobotDeaths`, with Sound = `BL_LVL_HUD_INTERFACE.hud_melee_death_disintegrate`.
+- No Delay is authored, so it plays at death start. H: it can play twice on remote clients (local run plus the server's replicated PlaySound), the same as OvershieldOffSound.
+- `TnPlayerController.DeathSound` is played only in `OnCampaignGameOver` (with GameOverMusic and GameOverMixerPreset): campaign only. There is no other MP "power down" sound in script.
+
+**Granted weapons:**
+- `TnAbilityCreateInventory.ServerTriggerAbility` (TnAbilityPoke → `TransContent.TnWeaponPoke`; TnKillstreakSpawnRocketTurret → `TransContent.TnWeaponRocketTurretKillStreak`) → `Pawn.CreateInventory` → `InventoryManager.CreateInventory` / `AddInventory` → `GivenTo` / `ClientGivenTo`.
+- **No sound**: `TnWeapon.GivenTo` only sets the weapon-data type. `PickupSound` (`TnWeaponMesh.PickupSound`) and `PickupObtainedDialog` play only in `TnWeapon.AnnouncePickup`, which is called only by pickup factories and dropped pickups.
