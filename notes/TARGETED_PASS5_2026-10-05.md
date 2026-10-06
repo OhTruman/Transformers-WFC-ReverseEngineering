@@ -779,3 +779,66 @@ This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
   - target Emitter with no name → uniform box ±200 in component space;
   - TargetTangent UserSet → empty → uniform (−1…1) at RelativeTime, rotated;
   - strengths uniform 150–300, source strength at spawn only.
+
+## 12. Ability and buff sound semantics (SY) (C from script/CDO unless marked)
+
+`Actor.PlaySound(Cue, bNotReplicated, bNoRepToOwner, bStopWhenOwnerDestroyed, …)` and `CreateAudioComponent(Cue, bPlay, bStopWhenOwnerDestroyed, …)` are the stock UE3 signatures.
+
+### TnAbility.OnTriggerSound
+
+- Played in **`TnAbility.ServerTriggerAbility`** (offset 0x0008) as `OwnerPawn.PlaySound(OnTriggerSound, false, false, false)`. This is **replicated to all relevant clients including the owner**, and positional at the pawn.
+- `LocalTriggerAbility` plays nothing.
+- **Gating:**
+  - The client's `TnAbilityManager.TriggerAbility` must pass spam cooldown, availability (resource/cooldown) and `Ability.LocalTriggerAbility()` before it RPCs `ServerTriggerAbility`.
+  - The server manager returns if the pawn is dead or dying.
+  - Subclass `ServerTriggerAbility`s do their work and call the base **last**. Their early returns therefore skip the sound: SpawnProjectile (no Controller), SpawnInventory (no pawn).
+  - Barrier and LargeExplosive call the base first.
+  - **A refused trigger plays no sound.**
+- The base also fires `AbilityStimulusType` and `AnnouncementMessageType`.
+
+### TnBuff ApplySound / UnapplySound
+
+- **`TnBuff.Apply`:**
+  - If ApplySound is set, there is no existing component, and `CanPlaySounds()`: `ApplyAudioComponent = OwnerPawn.CreateAudioComponent(ApplySound, bPlay = true, bStopWhenOwnerDestroyed = true)`.
+  - It is **attached to the buffed pawn** (positional), local to the machine running Apply, and **loops for the buff's life**.
+- **`ReApply`** (same class re-added, level ≥ current) calls Apply, but the component already exists, so there is no restart.
+- **`Unapply`:** StopEffectsAndSounds (stops the component) → if CanPlaySounds: `OwnerPawn.PlaySound(UnapplySound, bNotReplicated = true)` (local, positional).
+- **`OwnerDied`:** stops the sound, and **no Unapply sound** plays.
+- **`CanPlaySounds`** = `!OnlyPlaySoundOnLocalPlayer || (OwnerController != none && OwnerController.IsLocalPlayerController())`. So with the flag set, the sound plays only on the buffed player's own machine; remote pawns have no Controller on clients.
+- **Default flags:**
+  - `TnBuff` default `OnlyPlaySoundOnLocalPlayer = True`. Only `TnBuffCloak` overrides it, to **False**.
+  - `BuffReplicationType`: the base default is 0 = ToOwner. ToAll: HardLocked, TransformDisruptor, WarcryBase, LockOnThreat*, Cloak, DrainTarget. HealthOnBlock: ToNone.
+  - Apply runs on the server and on each client that receives the replicated buff (`ClientRecieveReplicateTo*Buff` → `DoAddBuff` → `Apply`).
+- **Net effect:**
+  - All listed buffs except Cloak: heard only by the **buffed local player**, at their own pawn. This covers FlashBang EMP static, HardLocked warning loop, ScrambleHud, TransformDisruptor hit, Warcry start/stop, AoeHeal patient loop and LockOnThreat loops.
+  - **Cloak:** heard by **everyone** who has the buff replicated (all clients), positional on the cloaked pawn.
+- **Cloak variant:** chosen in `TnBuffCloak.Apply` by the **buffed pawn's team**: TnFactionTeamAutobots → Autobot cues; Decepticons → Decepticon cues; no team → `_CurrentCharacter.Faction == 0` → Autobot, else Decepticon. The cloaked pawn's faction decides, not the listener's.
+
+### Drain
+
+- **`TnBuffDrainSource.HealSound`:** `ClientTickBuff` → `UpdateEffects()` every **TnBuffManager.Tick** (H: per frame). It plays only if the owner is locally controlled and has ≥ 1 target, using `PlaySound(HealSound, bNotReplicated = true)` → **per tick** on the drainer's machine. It also cycles PlayHit through the targets.
+- **`TnBuffDrainTarget.DamageSound`:** `ClientTickBuff` calls `PlaySound(DamageSound, true)` **every tick, unconditionally**, on every machine that has the buff (ToAll), positional at the victim.
+- H: the cues must be non-restarting or short one-shots for per-tick calls to sound right. Not checked.
+
+### TnBuffHealthOnBlock.ActivationSound
+
+- `TnPawn.OnBlockDamage(PreDamage, PostDamage)` → `OnActivate`: it heals `(Pre − Post) × modifier`, then `Blocker.PlaySound(ActivationSound, bNotReplicated = true, bNoRepToOwner = true)`.
+- It plays on **every blocked hit**, local to the machine running the damage code.
+- H: the server, since the buff is ToNone. On a dedicated server nobody hears it; on a listen server, only the host.
+
+### Abilities without OnTriggerSound
+
+Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the ability anims) plus buff and spawned-actor sounds:
+
+| Animation | Sound(s) |
+|---|---|
+| Skill_Shockwave / Skill_TransformDisruptor / Transform_ShieldPush_VEH | SHIELD_PUSH |
+| Skill_Warcry | WAR_CRY_CHEST_HIT (+ servos) and WAR_CRY_STATE_START. The buff ApplySound is the same cue. |
+| Skill_SpawnSentry / SentryBall_Out | SENTRY_ACTIVATE |
+| Skill_GuidedMissile | GUIDED_MISSILE.SHOOT_BUILDUP |
+| Skill_AbilityJammer | gun-butt whoosh |
+| Transform_Whirlwind_ROBO | WHIRLWIND_WHOOSH_SINGLE / WHIRLWIND_COMPLETE / jumpjets |
+| Nav_CloakActivate / Nav_CloakDeactivate | CQC_TRANSFORM_CLOAK_ACTIVATE / DEACTIVATE |
+
+- Cloak and Warcry also have their buff sounds.
+- Hover, Dodge, Shield and RollerSphere: no Skill_* sound notify found by sequence name (U). Their audio is presumably movement / spawned-actor sounds.
