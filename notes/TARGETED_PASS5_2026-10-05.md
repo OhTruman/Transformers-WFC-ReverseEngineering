@@ -1266,3 +1266,39 @@ Both set:
 **MP velocity sprites:** e.g. Tracer_AssaultRifle / SniperRifle "Bolt" (Bolt_ADD_MAT) and Tracer_Blaster "BeamsSm" (Spark_MAT).
 
 **H (not traced):** OldPosition in sprite vertices = particle OldLocation (stock fill), so D = the last tick's motion direction. PostSpawn sets OldLocation = Location − Velocity·f1 (§14 addendum 2).
+
+**§15 addendum: sprite lock-axis modes** (CPU C; shader numerics H, emulated)
+
+**Data source:**
+- `ParticleEmitter.LockAxisFlags` is a **WFC emitter-level byte** (emitter +0x2D; there are no OrientationAxisLock module objects in the cooked data).
+- Path: emitter-instance init `0x83046248` → instance +0x124 → replay +0x35 (`0x8300C890` / `0x8302C484`) → VF +0xA9.
+- `EParticleAxisLock`: NONE, X, Y, Z, NEGATIVE_X/Y/Z, ROTATE_X/Y/Z, and **WFC-only ROTATE_X_U / Y_U / Z_U (10–12)**.
+- Authored (emitters): Z 156, X 148, NEGATIVE_X 28, ROTATE_Z 8, Y 7, ROTATE_X 6, NEGATIVE_Z 4, ROTATE_Z_U 3, ROTATE_Y 1.
+  - **X:** MP muzzle flashes and impacts (AssaultRifle / HeavyMG / BurstRifle / EMPShotgun …).
+  - **Z:** explosions (EXP_MED_01, Exp_Energon_Crate …).
+  - **ROTATE_Z:** WarCry_AOE_FX.
+
+**Axes** (`0x8300FC80`): rows of M = component LocalToWorld when replay+0x30 bit 0x20000000 (H: bUseLocalSpace), else identity.
+
+| Mode | Up (A) | Right (B) |
+|---|---|---|
+| X | Z | Y |
+| Y | Z | −X |
+| Z | X | −Y |
+| −X | Z | −Y |
+| −Y | Z | X |
+| −Z | X | Y |
+
+- ROTATE_X/Y/Z: A = X / Y / Z. ROTATE_*_U: A = −X / −Y / −Z.
+- This matches stock UE3 for 1–9.
+
+**SetMesh** (`0x830198C8`):
+- **Modes 1–6:** CameraUp ← A, CameraRight ← B (not negated); scalars (1, 0, 0, 0).
+- **Modes 7–12:** AxisRotationVectors[0] = [1] = (A, 1); AxisRotationVectorSourceIndex ← 0 (modes 7–9) or 1 (`_U`, 10–12) via `0x82CED560`; scalars (0, 0, 1, 0).
+
+**World result** (emulated; Size = (x, y); C = normalize(camera − particle); P = normalize(cross(C, A))):
+- **Lock 1–6:** Pos + (U − ½)·Size.x·(−A) + (V − ½)·Size.y·B. The quad lies in the A–B plane, fixed in the world (or component) frame, and **Rotation still spins it in-plane**. Example, X: a quad in the YZ plane facing ±X.
+- **ROTATE_X/Y/Z:** Pos + (U − ½)·Size.x·**A** + (V − ½)·Size.y·**P**. The quad's U edge runs along the axis; it turns about the axis to face the camera.
+- **ROTATE_*_U:** Pos + (U − ½)·Size.x·**P** + (V − ½)·Size.y·**A** (U and V roles swapped).
+- **Degenerate:** viewing straight along A (e.g. ROTATE_Z from directly above) gives P → 0 and a zero-width quad (inherent).
+- H: whether Rotation is ignored in the rotate modes was not tested.
