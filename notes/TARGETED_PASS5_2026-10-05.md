@@ -1891,3 +1891,29 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
 
 **The mines are released regardless:** `TriggerExplodeOnDeathBuffs` runs at Gib whichever entry was picked, at that entry's TotalTime.
 - So an airborne or head-shot martyr still spawns the mines, but without MARTYR_EXPLO_BUILD_UP / GL SHOOT notifies and at a different time.
+
+**§12 addendum 19: momentum death-type angles** (C unless marked)
+
+**`TnRobotDeathPicker.GetDirectionDeathType`:** yaw = `Rotator(TearOffMomentum << Owner.Rotation).Yaw`. This is the momentum direction in the pawn's local frame, in UE3 rotator units (65536 = 360°, range ±32768); + yaw = toward the pawn's right. Checks in order (inclusive bounds):
+
+| Order | Condition (CDO `TnRobotDeathPicker`; no blueprint instance overrides) | Result |
+|---|---|---|
+| 1 | ForwardLeftAngle −8192 ≤ yaw ≤ ForwardRightAngle 8192 (**±45°**) | **ForwardMomentum** |
+| 2 | BackwardLeftAngle −24576 ≤ yaw ≤ −8192 (**−135° … −45°**) | **LeftMomentum** |
+| 3 | 8192 ≤ yaw ≤ BackwardRightAngle 24576 (**45° … 135°**) | **RightMomentum** |
+| 4 | otherwise (\|yaw\| > 135°) | **BackwardMomentum** |
+
+- The boundaries ±8192 resolve to Forward (checked first).
+- A zero TearOffMomentum gives yaw 0 → Forward.
+- Exactly one momentum type is always active.
+- HeadShotBoneName = `C_Spine04_Head_XB`.
+
+**Entries in SharedRobotDeaths / HoloBrute:**
+- [12] ForwardMomentum → **Death_BackShot** (pushed forward = shot from behind). TotalTime: see addendum 10.
+- [13] BackwardMomentum → **Death_FrontShot**.
+- **There are no Left/Right entries.** A sideways-momentum death with nothing else active falls to the **default death** (no animation, TotalTime 1.0, default modifiers and gibs).
+- The momentum entries are reached only when no earlier entry matches. Indices 6–11 match on the killing damage type's `DamageDeathType`, so momentum deaths happen for damage types whose DamageDeathType has no entry or is none.
+  - Among CDOs that author it: Explosive 17, RapidShot 9, SingleShot 5, FlashBang 1 (no entry), Melee 1, Poke 1, RobotBooster 1.
+  - H: 54 CDOs author none, but subclasses may inherit a parent's value (class hierarchy not resolved here).
+  - No damage-type CDO authors Energy or TractorBeam, so entries [6] and [7] look unreachable by damage (H, the same caveat).
+- `SupportedDeathTypes` is used only by `TnDeathBlueprint`'s editor/validation check (`IsSupported`), not by `Pick`.
