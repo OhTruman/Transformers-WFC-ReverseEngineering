@@ -2133,3 +2133,24 @@ The material is **MLM_Unlit**. All shading is a hand-built "fake light" in Emiss
 **Example MIC VEH_BumbleBee_Defrag_MATINST:** Emissive_Intensity 3, Energon_Intensity 1, PowerDown 1, ColorBrightness 0.2, Specular_Intensity 0.5, SpecularPower_Intensity 35, SpecularColor_Desaturation 0.2, Cust_Color_A (0.891, 0.567, 0.014).
 - Further spec params (SpecSpowerAdd, contrasts, ReflectionMipLevelScale, Fill_Reflection_Intensity) are authored but **not referenced** by TR_Defrag_MAT's emissive graph (no such parameter nodes).
 - `Normal` = reconstructed from the XY normal map (UseReconstructedNormal default true): xy, sqrt(1 − dot(xy, xy)).
+
+**§12 addendum 27: decal applicator defaults and the decal manager (completes addendum 23)** (C unless marked)
+
+**`TnDecalApplicator` CDO** (TnDecalApplicatorDeath authors nothing of its own):
+- TraceDistance **300**, GlancingThreshold **0.5**, TraceExtent unauthored (zero, i.e. a line trace).
+- Template defaults: Material **none**, MinWidth / MinHeight **100**, Width / HeightRange **100**, Thickness **10**, **Lifetime 30**, NoClip false, UniformScale true, ApplyRandomRotation true.
+- The robot death applicators override only Material (DeathDecal_MAT), Min 800, Range 150 and Thickness 300. So **lifetime 30 s, clipped, square, random rotation** come from these defaults.
+- Applicators with Material none (all vehicle deaths) return before spawning anything.
+
+**Engine `DecalManager.SpawnDecal`** (stock UE3 script; `Xe-TransGame.ini DecalManagerClassPath=Engine.DecalManager`):
+- Signature from the default list and the applicator's 16-argument call:
+  - required: (Material, Location, Orientation, Width, Height, Thickness, bNoClip, **Lifetime**);
+  - optional: (DecalRotation = FRand·360, HitComponent, bProjectOnTerrain = true, bProjectOnSkeletalMeshes, HitBone, HitNodeIndex = −1, HitLevelIndex = −1, DepthBias = −0.0001).
+- The applicator passes Orientation = Rotator(down), DecalRotation = **RandomInt(65535) interpreted as degrees** (a quirk; the result is still a uniform random roll), bProjectOnTerrain = true, **bProjectOnSkeletalMeshes = true**, HitBone = the hit bone, HitLevelIndex, DepthBias = RandomFloat(−0.0001).
+- **Projection depth:** FarPlane = Thickness/2, NearPlane = −Thickness/2, so ±150 UU for the death decal.
+- **Pool:** it reuses a pooled component (PoolDecals) if available. Otherwise, if ActiveDecals ≥ **MaxActiveDecals 50** (Engine.Default__DecalManager; no ini override), it **recycles the oldest active decal** (index 0). Otherwise it creates a new DecalComponent from the template (BaseDecal).
+- `CanSpawnDecals` → native `AreDynamicDecalsEnabled`: the engine ini has `bDynamicDecalsEnabled=True` and SystemSettings `DynamicDecals=True`.
+- The manager is only spawned when **NetMode != NM_DedicatedServer** (`WorldInfo.PreBeginPlay`), so there are no decals on a dedicated server.
+- **Expiry:** native, since there is no script Tick. LifetimeRemaining counts down, then `DecalFinished` → ResetToDefaults → back to the pool.
+- H: stock behaviour has **no fade-out**; the decal pops off at 30 s.
+- The 50-decal cap is shared with every other dynamic decal (weapon impacts etc.), so heavy firefights can recycle death scorches early.
