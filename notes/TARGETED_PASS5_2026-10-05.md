@@ -1445,3 +1445,20 @@ Both set:
 - All triangles keep the polygon's vertex winding: (5, 3, 4) ≡ (3, 4, 5).
 - The 5–7 patterns are "ear" splits that are only valid for **convex** polygons. H: the BestFit hulls are convex, so the drawn area equals the polygon and any convex triangulation is visually identical.
 - The Quad/Octagon index lists are emitted by separate code; not decoded (both convex).
+
+**§17 addendum 2: Quad and Octagon index lists (C)**
+- Same fill, `0x8305F7D8`; u16 indices relative to the particle's first vertex.
+
+**Quad** (4 vertices per particle; base = particle × 4):
+- Triangles **(0, 2, 3), (0, 1, 2)**, written only when dynamic data `piVar33[0xB]` ≠ 0.
+- Otherwise no per-particle indices are written. H: the quads are then drawn without them (Xenos quad-list primitive or a shared static quad index buffer).
+- Corners v0 (0,0), v1 (0,1), v2 (1,1), v3 (1,0).
+
+**Octagon** (8 vertices per particle; base = particle × 8):
+- Triangles **(0, 7, 6), (0, 6, 5), (0, 5, 3), (0, 3, 2), (0, 2, 1), (3, 5, 4)**: a fan from v0 that skips v4, plus the ear (3, 5, 4).
+- Corners v0 (0.293, 0) → v7 (0, 0.293), going around the cut square.
+
+**Winding:**
+- In corner space (x right, y down) every quad and octagon triangle has the same orientation sign (e.g. quad (0, 2, 3) and octagon (0, 7, 6) both have a negative z cross product).
+- BestFit follows the authored polygon order instead (§17 addendum).
+- H: sprite culling is off (two-sided), so winding doesn't affect visibility.
