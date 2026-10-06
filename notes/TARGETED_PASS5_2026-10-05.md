@@ -1118,3 +1118,24 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 - H interpretation:
   - `− src.Velocity·dt` rewinds the source particle to where it was at this particle's spawn moment (never before the source was born).
   - `+ V_e·dt` cancels the emitter-motion compensation that the post-spawn step applies, so trail points land on the source's path rather than lagging the moving component.
+
+**§14 addendum 2: post-spawn step (C)**
+
+**Call chain:**
+- Trail2 instance vtable `0x823380D8` (+0x08 Spawn `0x83048E40`, +0x0C Tick `0x83048218`).
+- **+0x40 PostSpawn = `0x830192D8`** first calls the **base PostSpawn `0x8300C4B8`** (args: particle, f1 = InterpolationFraction, f2 = SpawnTime). It then sets the trail payload's up vector (+0x24…+0x2C): zero when TypeData+0x50 is unset, otherwise lerp(prev, current, f2 / x) normalized.
+- Trail2 Spawn passes **f1 = 1 − (i + 1)/n** and **f2 = this particle's SpawnTime**. With its ≤ 1-per-tick clamp, n = 1 → **f1 = 0**.
+
+**Base PostSpawn**, with V_e = instance +0x88 emitter world velocity (0 if bUseLocalSpace):
+- **Location += (Velocity − V_e) · SpawnTime**
+- **OldLocation = Location − Velocity · f1** (= Location for Trail2)
+- WFC differs from stock UE3: there is no OldLocation interpolation, and the V_e term is new.
+
+**Combined with the LocationEmitter placement** (same space, dt = SpawnTime, i.e. the source is older than SpawnTime):
+
+  final Loc = src.Location − src.Velocity·S + Velocity·S
+
+- The **V_e terms cancel exactly**, so the earlier interpretation is now C.
+- With **bInheritSourceVelocity, scale 1** (Velocity = src.Velocity, nothing else adding velocity): final Loc = **src.Location** exactly.
+- With **no velocity** (no inherit, no velocity modules): final Loc = **src.Location − src.Velocity·S**, the source's position at this particle's spawn moment.
+- H: the spawn runner's time argument and PostSpawn's SpawnTime come from the same rate accumulator in `0x83048E40` (dVar28 vs dVar30). Their exact equality is not checked.
