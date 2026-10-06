@@ -2371,3 +2371,27 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - A cooked struct omits fields equal to its archetype, i.e. TnWeaponMesh CDO (unchanged), which is HmWeaponMesh CDO.
 - **AssaultRifle DefaultDecal** = MetalDecal_02, Min 25/25, Range 25/25, Thickness 25, UniformScale false, **Lifetime 30, NoClip false**.
 - On the instant-hit path the roll uses the PhysMaterial property's `ApplyRandomRotationToDecal`, not the template's ApplyRandomRotation.
+
+## Addendum (2026-10-06, milestone 09): vehicle FX energon colour, jet boost FX lifetime, Trails_Jet_D_FX
+
+**EnergonColor (C, script).**
+- `TnVehicleFxPlayer.Play` sets the PSC colour once: `SetColorParameter('Color', Pawn.get_EnergonColor())`. `get_EnergonColor` = `CharacterApplier._EnergonColor` = sRGB of `_EnergonLinearColor`, set by `SaveColors` → `ExtractColors(CD, RobotMesh)`:
+  - CD.EnergonColor if it is not (0,0,0,1) or (0,0,0,0);
+  - else the robot material's vector param `EnergonColor`.
+- In `ResolveReplicatedCharacterData`, faction picks the chassis and the primary/secondary colours; **EnergonColor is copied unchanged (no faction or team variant)**.
+- No script writes team colour into CD or into the robot material's EnergonColor. `TnTeamInfo` / `TnFactionTeam*.EnergonColor` (Autobots (1.25, 0.05, 0.05), Decepticons (0.2, 0.1, 1.5), base (0.843, 0.302, 0.029)) are used only by kamikaze / roller mines (`TnParticleSystemParameterEnergonColor`, `ClientSetEnergonColor`).
+- So **pawn bodies and vehicle FX use the character's own energon, not the team's**. Team-tinted bodies are not original.
+
+**TnPlaneForm FX (C):**
+- BoostFx for the whole `Flying` state, HoverFX for the whole `Hovering` state. `UpdateFx` runs each `OnUpdate` and is gated by `_FxAllowed && !_IsCloaking`. Each stops in its state's `EndState`; `OnDeactivate` → `Inactive` stops them too.
+- H: after `PlayDeath` the state persists, so FX continue until the form shuts down or the pawn is gibbed or destroyed.
+
+**`FX_Navigation_p.FX.Trails_Jet_D_FX` (C data; H where marked):**
+- One emitter "Trail", **TypeDataTrail2** (TessellationFactor 3, MaxParticleInTrailCount 100), PeakActive 1.
+- SpawnRate 5/s (LOD0), 1/s (LOD1; LODDistances 0 / 10000). **bKillOnDeactivate / bKillOnCompleted** true, so Stop removes it immediately.
+- Compiled LOD payload: `Color` FName (name index 1653) with a preceding default FColor 0x325941FF.
+  - H: this is `ColorByParameter`, so the particle colour = the PSC 'Color' instance param (energon). Default if unset: H, A 50 / R 89 / G 65 / B 255.
+- First constant distribution 0.6 s (LOD0) / 0.12 s (LOD1), P: probably Lifetime. A 25-entry curve decays 2 → 0 over life (P: size or alpha).
+- Material `FX_Materials_p.Materials.Tracer_MOD_MAT`: **BLEND_Modulate, MLM_Unlit**.
+  - Emissive = lerp(white, VertexColor-based term). Opacity from VertexColor.a × a cloud texture mask (DiffClouds_CLR panned).
+  - So the trail **multiplies the scene**: a white particle colour is invisible, and tinting darkens or tints the scene. Rendering it additive or alpha-blended shows a bright white trail. That is not original.
