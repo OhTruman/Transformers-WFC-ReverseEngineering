@@ -1,0 +1,371 @@
+# WFC multiplayer: scoring, XP, levels, challenges, medals, scoreboard, bots/AI, navigation (2026-10-06)
+
+**Labels:** C = CONFIRMED from script/config/data; H = HIGH; P = PARTIAL; U = UNKNOWN.
+
+**Provenance:**
+- TransGame/Engine script: `work/script/decomp/`.
+- **TransContent script (game classes) decompiled from the map packages:** `work/script/decomp_tc/MP_ORB_Debris_BASE_m.TransContent.txt` and `MP_IAC_Streets_BASE_m.TransContent.txt`. TransContent has no package of its own; its classes are cooked into every map.
+- Config: `ExtractedAssets/config/Coalesced_ini.json` (Xe-TransGame.ini, TransChallenges.ini, TransCustomization.ini, TransPlaylists.ini) and `Coalesced_int.json` (INT text). Authored data: `AssetTools/manifests/authored.db`, `inventory.db`.
+
+**Machine-readable tables** (regenerate with `tools/mp_progression_extract.py`):
+- `notes/data/mp_xp_events.json`
+- `mp_level_table.json`
+- `mp_challenges.json`
+- `mp_class_unlocks.json`
+- `mp_game_modes.json`
+- `mp_kill_awards.json`
+- `mp_navigation_audit.json`
+
+---
+
+## 1. Match scoring (C unless marked)
+
+### Mode composition
+
+Settings CDOs are `TransGame.Default__TnOnlineGameSettings<TAG>`. The time-limit defaults are the `LocalizedSettings` index into the ini `TimeLimits`.
+
+| Tag | Name | Game class | Rules (in order) | Points to win (default / options) | Time limit default (options) | Rounds |
+|---|---|---|---|---|---|---|
+| TDM | Team Deathmatch | TnVersusGame | ScoreKillsTDM, TrackKillsMP, ReportGameProgressTime, ReportGameProgressKills | **40** / 20, 30, 40, 50 | **900 s** (600/900/1200) | – |
+| DM | Deathmatch | TnFreeForAllGame | ScoreKillsDM, TrackKillsMP, ReportGameProgressTime, ReportGameProgressKills | **20** / 10, 20, 30 | 900 (600/900/1200) | – |
+| DOM | Conquest | TnVersusGame | ScoreKillsMP, ScoreDomination, TrackKillsMP, ReportGameProgressTime, ReportGameProgressPoints | **400** / 150–500 | 900 (explicit property) | – |
+| CTF | Code of Power | TnVersusGame | ScoreKillsMP, SingleFlagCTF, ScoreFlags, TrackKillsMP, ReportGameProgressTimeCTF | – | **300 s per round** (240/300/360) | **2** / 2, 4, 6 |
+| EXT | Countdown to Extinction | TnVersusGame | ScoreKillsMP, ScoreBombingRun, TrackKillsMP, ReportGameProgressTime | **3** / 1, 3, 5 | 900 | – |
+| KOTH | Power Struggle | TnVersusGame | ScoreKillsMP, ScoreKingOfTheHill, TrackKillsMP, ReportGameProgressTime, ReportGameProgressPoints | **400** / 150–500 | 900 | – |
+| SV | Escalation | TnSurvivalGame | CompetitiveScoring, TrackKills | – | – | waves |
+
+- `TnMultiplayerGame.InitGame` reads URL options `PointsToWin` (→ GoalScore) and `Rounds`.
+- Public variants carry StatsWriters `<Mode>, Kills, Accuracy`.
+- Private variants set **`bUsesStats=false`**.
+- MaxPlayersAllowed 10, NumRequiredPlayers 4 (versus).
+- `MatchAutoStartCountdown` 10 s, `MatchOverCountdown` 15 s, then return to the lobby.
+
+### Score sources
+
+`PRI.AddScore(personal, team)` adds the personal amount to `PRI.Score`, and the team amount to `Team.Score` only when it is > 0.
+
+- **Kill** (`TnGameRules_ScoreKills.ScoreKill`):
+  - Requires DamageType ≠ `DmgType_Suicided`, Killer ≠ none, and `ShouldScoreKill`. MP variants require the victim to be a `TnPlayerController`, so AI/sentry kills score nothing.
+  - Then **personal +1**, **team +TeamScoreAmount**: TDM and DM = 1; DOM/CTF/EXT/KOTH (`ScoreKillsMP`) = 0, i.e. kills never add team score in objective modes.
+  - **Self-kill:** +0/+0.
+  - **Suicided damage type / environment (Killer none):** no score.
+  - **No negative score** anywhere.
+- **Deaths:** `AddDeaths(1)` for every player death, including suicide and environment.
+- **Objectives** (`TnGameRules_ScoreObjectives.ScoreObjective(Scorer, Score)`): `Scorer.AddScore(IndividualScore, Score)`.
+
+| Mode | Event | Team | Personal | Source |
+|---|---|---|---|---|
+| CTF | Code captured (`TnFlagCapturePointBase` → ScoreObjective(PRI, 1)) | **+1** | **+10** | ini IndividualScore |
+| EXT | Bomb detonated (`TnBombPlantPointBase` → ScoreObjective(Planter, 1)); fuse 15 s, defuse 5 s | +1 | +10 | |
+| KOTH | Each second, each living pawn in the active zone (ScoreInterval 1, PointsPerInterval 1) | +1 | +1 | zone active 60 s (see MP_SWEEP S4) |
+| DOM | Each held node, every **3 s** → ScoreTeamObjective(owner, 1) | +1 | 0 | CaptureTime 20 s (scaled by attacker count) |
+| DOM | Capture | 0 | **+2** each capturing player (PersonalScoreAmount) | |
+
+**Assists:**
+- The *first* other damager in the victim's damage history gets `AddAssist(damage / HealthMax)`.
+- More than 0.5 → Assist XP; more than 0.25 → WeakAssist XP; plus an assist stat.
+- **Assists never add score.**
+
+**End conditions:**
+- `CheckScore` after every kill or objective: team games compare the **team** score, FFA compares the **personal** score, against `GoalScore` (when > 0). Then `EndGame(Scorer, "Score")`.
+- **Time limit:** `GRI.RemainingTime ≤ 0` → `EndGame(none, "")` (not for CTF, whose rounds drive their own timer).
+- **Forfeit:** a team with 0 players (`TnVersusGame.CheckForfeit`, 1.5 s after a logout) → that team's score is cleared → `EndGame(none, "Forfeit")`.
+- **CTF:** rounds alternate attacker (the first is random). A round ends on time-up (round time = TimeLimit) and the game ends after `Rounds` rounds.
+  - **Mercy:** in the last round, if the last attacking team already leads, the game ends early.
+  - Between rounds: 5 s.
+  - **An odd round count logs an error.**
+
+**Winner, ties and overtime:**
+- `TnGame.EndGame` substitutes `GetWinningPRI()` (highest individual `PRI.Score`; the first found wins a tie) when Winner is none.
+- `TnVersusGame.PickWinningTeam`: the higher team score, or the team whose opponent is empty. **Equal → none → "Tie game"** (TnVersusGameOverMessage switch 1).
+- **No overtime:** `bOverTime` is only set when CheckEndGame refuses, and no WFC rule refuses.
+- DM: `TnFreeForAllGame.CheckEndGame` sets Winner = top PRI.
+- Completion type per player (stats): 0 win, 1 loss, 2 draw (FFA: draw when another player has an equal score).
+
+**Win/lose XP quirk (C):** `TnVersusGame.CheckEndGame` gives **GameWin XP to every player on `Winner.Team`**, where `Winner` is the PRI passed in. On a time-limit end that is the team of the **highest individual scorer**, even when the team scores are tied or that team lost on team score. Everyone else gets GameLose.
+- **FFA (DM) awards no win/lose XP at all.** Its DeathmatchXpAmount values (150/75) are configured but unused.
+
+**Announcements:**
+- `TnGameRules_ReportGameProgressTime` at 120 / 60 / 30 s left; the 60 s one notifies "nearly complete", which switches to the final-stretch music.
+- `ReportGameProgressKills` at 5 / 3 / 1 kills left.
+- `ReportGameProgressPoints` at 50 / 25 left.
+- Cues in `TnGameProgressAnnouncementMessage.Sounds` (MP_2MinutesLeft … MP_1KillRemaining).
+- Mode intro dialogs, music and win/tie music: `TnGameTypeMessage<Mode>`.
+
+**MVP (achievement 37):** at match over, every PRI tied for the top personal score, provided there is more than one player and the match can gain XP (versus also needs both teams non-empty).
+
+---
+
+## 2. XP (C)
+
+**Award rule** (`TnXpEventType.GetAwardAmount`):
+- 0 if `!GRI.CanGainXp()`.
+- Otherwise `GlobalXpMultiplier (1) × (DeathmatchXpAmount if ≥0 and !bTeamGame else XpAmount)`.
+- Full table, with localized Announcement/Description: `mp_xp_events.json`. 71 types.
+
+| Source | XP (team / DM) | Notes |
+|---|---|---|
+| Kill | 50 / 25 | every kill on a player (TnKillAwardManager.AwardKill first) |
+| Assist (>50 % HealthMax) / weak (>25 %) | 25/15 · 15/10 | |
+| Headshot ("Domed") | 75 | not for ExemptFromAccuracyKills damage types |
+| Long range (>8000 UU) | 50 | |
+| First kill / first death | 100 / 75 | once per match |
+| Kill streak 3 / 5 / 7 (exactly at 3, 5, 7 kills) | 100/50 · 150/100 · 200/150 | |
+| Multikill 2 / 3 / 4 (kills ≤ **3.0 s** apart; PRI MultiKillDetector) | 100/50 · 150/100 · 200/150 | exact level |
+| End an enemy's streak (victim streak > 2) | 75 | |
+| Payback / payback after domination | 50 / 50 | |
+| Domination 2 / 3 / 4 (same victim repeatedly) | 20 / 40 / 60 | |
+| Melee kill, per class (Scout/Scientist/Soldier/Leader) | 25 | + per-class stat |
+| Killer low health (<50 HP) / killer downed / kill after death | 75 / 150 / 25 | |
+| Backstab (melee with TnBuffIncreaseMeleeDamageFromBehind effective) | 100 | |
+| Hover-melee kill (victim hovering, melee) | 50 | |
+| Buff kills | 25–100 | killer buffs: disguise 100, hover 100, surprise attack 50, warcry 25, flashbang 50; victim defensive: warcry 50, hover 50, disguise 100; offensive (victim debuffed by killer): transform disruptor 50, mark target 100, drain 50, flashbang 50, decoy trap 100; **assist XP to the debuffer** if someone else kills |
+| Damage-type kills | 50 / 50 / 150 | whirlwind / shockwave / ram |
+| Objective-carrier kills | 100 / 100 | flag carrier (CTF only), bomb carrier (EXT only) |
+| Zone / node kill | 20 / 20 | KOTH active zone, DOM enemy-held node |
+| Sentry / mine / roller-mine kill | 25 (sentry DM 15) / 25 / 25 | |
+| Flag capture / return | 200 / 75 | |
+| Bomb plant / detonate / defuse | 50 / 200 / 75 | |
+| Node capture | 150 | |
+| Zone hold (at zone exit/deactivate, by points/10: 0–9, 10–19 … ≥50) | 5 / 10 / 15 / 20 / 25 / 30 | |
+| Heal grenade on teammates / repair-ray low-health heal | 50 / 15 | |
+| Game win / lose (versus only, see the quirk above) | 300 / 150 | |
+| Challenge tier | per challenge (§6) | Prime challenges give that XP to **all four** specialties |
+
+**Configured but never awarded (no callers in script or data):** FlagDefend (100; `PRI.AddFlagDefend` has no caller), KillGuidedMissile (100). Everything else in the table is reachable.
+
+**Where and when XP is committed:**
+1. On the server, `PC.NotifyXpEvent` → `Game.NotifyXpGained` (stats table) → reliable client RPC `ClientNotifyXpEvent`.
+2. On the client, the event is added to the XP transaction (popup group; one transaction per kill).
+3. If `CanGainXp`: `XpManager.NotifyXpEvent(currentSpecialty)` → `AddXpForSpecialty`, capped at 355000, **written immediately** to the profile stats key archive (`SetKeyArchiveValue`, property = specialty XpPropertyId 0x50 Scout, 0x51 Soldier, 0x52 Scientist, 0x53 Leader).
+4. Then `CheckForLevelUp`.
+5. At match end: `ClientWriteLeaderboardStats` → `SaveProfileSettings`, refresh character slots, add newly unlocked skills, write the customization file, then the TnStatsWrite classes.
+6. XP earned this match per specialty (`CurrentGameXpEntries`) feeds the results screen.
+
+**Only the currently played specialty earns XP** (except Prime challenges).
+
+---
+
+## 3. Public / private / offline XP (C for ORIGINAL)
+
+- **ORIGINAL:**
+  - `TnGameReplicationInfoMultiplayer.CanGainXp() = !IsPrivateGame()`.
+  - **Public online matches earn XP, challenges and stats.**
+  - **Private matches: no XP, no challenge progress** (stat ids 0x1500–0x1FFF are dropped by `PRI.ShouldUpdateState`), and private settings `bUsesStats=false`. XP popups still show (`ShowXpEvents=true`) but award 0.
+  - Base `TnGameReplicationInfo.CanGainXp() = false`, so campaign, co-op, lobbies and anything not multiplayer earn **no MP XP**.
+  - No offline/local versus mode exists (versus requires an online session; `NumRequiredPlayers` 4).
+  - The leave-match prompt warns about losing XP only when CanGainXp.
+- **Suggested PC ADAPTATION** (not original): treat local/LAN or bot matches as "public" (CanGainXp true) if offline progression is wanted; or keep the original rule (private = no XP) and add an explicit option.
+
+---
+
+## 4. Levels ("rank") (C)
+
+- **There is no single rank ladder.** Each of the four specialties has its own XP and level 0–25 (`TnXpManager.LevelTable`, 25 thresholds; level = number of thresholds ≤ XP).
+- The **displayed player level** (`PRI.PlayerLevel`) = **sum of the four specialty levels (0–100)**. The four values are packed into one int (Scout<<24 | Scientist<<16 | Soldier<<8 | Leader) and sent to the server, which replicates them.
+- Level-up is broadcast as `TnPlayerLevelUpMessage` "`p is now a level `l `s" (specialty level), plus the HUD `NotifyLevelUp`.
+
+Level thresholds (XP to reach level n):
+
+| Level | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| XP | 500 | 1500 | 3000 | 5000 | 7500 | 11000 | 15500 | 21000 | 27500 | 35000 | 44000 | 54500 | 66500 |
+
+| Level | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| XP | 80000 | 95000 | 112000 | 131000 | 152000 | 175000 | 200000 | 227000 | 256000 | 287000 | 320000 | 355000 (cap) |
+
+- **No rank names** exist in config or loc.
+- **No rank-icon textures** were found: levels are numbers. U: GFx may draw level badges internally (not traced).
+- Achievements:
+  - 38: any specialty level ≥ 5;
+  - 39: any specialty level 25;
+  - 40 / 41 / 42: level sum ≥ 50 / 75 / 100.
+- Character slots per specialty: 1 + (level ≥ 5) + (level ≥ 10), i.e. up to 3 (`UnlockCharacterSlotLevels` 5, 10). There are 5 colour palettes.
+
+**Prime mode (the one-time prestige):**
+- Offered when **all four specialties are at the XP cap** (`IsLevelMaxed`) and Prime is not yet unlocked (`IsPrimeModeAvailable`).
+- `UnlockPrimeMode` (achievement 43):
+  - clears the listed challenge stats (`PrimeModeStatsToClear`, + 4096 variants);
+  - **resets XP of all specialties to 0**;
+  - resets newly-unlocked skills and characters;
+  - sets profile property 84 = 1;
+  - replicates `PRI.PrimeModeActive`.
+- Prime enables the **25 Prime challenges**.
+- It is a boolean, so there is no second prestige.
+- `FX_Multiplayer_p.FX.Prime_Target_FX` exists. U: its use was not traced.
+
+---
+
+## 5. Class progression (C)
+
+- **Per-specialty XP and levels are the only progression state.** There is no separate global rank.
+- **Unlocks:** `TnCustomCharacterOptions.GetSkillsForLevel(specialty, L)` = every `TnDataProvider_Ability` and `TnDataProvider_Skill` whose `SpecialtyRestriction` contains the specialty **and `LevelRestriction == L` exactly**.
+  - Unlocks on level-up are collected into `SkillsUnlockedThisGame` and committed at match end.
+  - Table: `mp_class_unlocks.json` (56 skills, 18 abilities, with FriendlyName/Description, level and specialty).
+- **Kill-streak rewards are not level-gated:** `FindKillstreakProvider(specialty, KillsRequired)` picks the provider matching the specialty and the exact streak count (3 / 5 / 7). There are 12 providers (e.g. Scout 3 OrbitalRecon, 5 HealthRegen, 7 ImprovedOrbitalRecon; Leader 3 FastAbilityCooldown, 7 MinePooper; Soldier 5 TeamAbilityJammer; Scientist 7 SpawnRocketTurret …).
+- Default secondary weapons: Scout EMPShotgun, Scientist RepairRay, Soldier HomingRocket, Leader HeavyPistol.
+- **Weapon unlocks:** none in these providers. U: weapon availability is per-chassis data, not level.
+- Challenges do not gate unlocks (no dependency fields).
+
+---
+
+## 6. Challenges (C)
+
+**Definition:** 121 `TnDataProvider_Challenge` entries (TransChallenges.ini), each with:
+- `ChallengeId` (0x27xx; the profile property holding the completed tier);
+- `StatPropertyId` (0x15xx–0x17xx; the counter);
+- `CategoryId`: Basic 11, Scout 22, Scientist 21, Soldier 21, Leader 21, **Prime 25**;
+- **three tiers** `GoalValues[3]` / `XpRewardValues[3]`;
+- `PrimeChallenge`.
+- The name and description come from the INT section (`Description` uses `g for the goal). All 121 have text.
+
+**Counters:**
+- `PRI.ReportGameStat(amount, statId, when, UpdateType)`, where UpdateType 0 = add, lifetime (progress = saved archive value + this match); 1 = max within the match (single-match bests, e.g. kill streak); 2 = add within the match, compared without the saved value (single-match counters).
+- The owning client's `ChallengeManager.SetValue` → `CheckChallenges`:
+  - for each challenge on that stat (skipping Prime ones unless Prime is active), from the stored tier upward, **every tier whose goal ≤ value unlocks**;
+  - `UnlockChallenge` writes tier+1 to `ChallengeId`, plays `UI_GFxChallengeNotifies_p.ChallengeNotify_GFX` `_global.ChallengeUnlocked(name, desc, tier, goal, xp)` and calls `PC.OnChallengeUnlocked` → XP.
+- **Counters only update when CanGainXp** (public matches).
+- Stat sources: the kill-award rules (headshots, backstab, buff kills, per-class weapon kills via `TnKillAwardRuleSpecialtySpecific`), PRI objective functions, ability use, etc. Rule data with stat ids: `mp_kill_awards.json`.
+- Do not infer requirements from names: use `Description` + the `StatPropertyId` producer.
+
+---
+
+## 7. Medals / awards (C)
+
+- **WFC has no separate medal system.** The "medals" are the **XP events**: a named popup `Announcement` (e.g. Domed, First Blood, Linebacker, Funkiller, Beat Down) + `Description` + XP amount.
+- They are shown by `TnHudDataObserverXpTransactions` → GFx callback args `(transactionId, xp, announcement, description, extraData)`. Events of one kill are grouped in one transaction.
+- Kill-streak events add extraData `"Killstreak,<providerId>"` and a description with the reward name (`k).
+- Triggers, windows and thresholds: §2 table, `mp_kill_awards.json`, `mp_xp_events.json`.
+- **No icons** are referenced by XP events (text only).
+- **No per-medal sound.**
+- **Repeats:** every qualifying kill, except first kill/death (once per match). Multikill and streak tiers trigger at exact counts.
+- Streak text: `TnKillStreakMessage` at streaks 3/5/7/10 (text only, see pass 5 §12 add. 11).
+
+---
+
+## 8. Scoreboard
+
+Already recovered in `MILESTONE05_FRONTEND_GAMEPLAY_BLOCKERS.md` F5 and `MILESTONE05_FRONTEND_MATCH_BOOTSTRAP.md` (C):
+- columns Level · Name · Score · Kills · Deaths;
+- teams sorted Score↓ then TeamIndex;
+- players sorted Score↓, Kills↓, Deaths↑, Name;
+- `InGameStats_GFX` scoreboard movie and the results screen with XP earnings per specialty;
+- assists not shown.
+- **Level** column = `PRI.PlayerLevel` (sum of the four specialty levels).
+- **Bots:** `TnGameReplicationInfo.UsesPlayerDataProvider(PRI) = !PRI.bBot`, i.e. **bBot PRIs are excluded from the player data provider (player lists/scoreboard)** in the original (C). See §13.
+
+---
+
+## 9. Bot / AI architecture (C unless marked)
+
+- **No multiplayer bots in shipped WFC.** The multiplayer automated-testing policies do not drive AI:
+  - `TnMultiplayerGameTestingPolicy`: random character + `ClientStartRandomInput`;
+  - `TnKillBasedMultiplayerTestingPolicy`: kills random players with random damage types on a timer;
+  - `TnObjectiveBasedMultiplayerTestingPolicy`: `ScoreObjective(random, 1)` on a timer.
+  - No AddBot path and no bot spawner in TnMultiplayerGame/TnVersusGame.
+- **Reusable original AI = the campaign/Escalation GOAP AI:**
+  - `TnAiController` / `TnAiPawn`, the HmGoap planner (`HmGoapPlanner`, `HmGoapPlanRunner`, `HmGoapSearchSpace`);
+  - data-driven per character by **`TnAiCharacterDefinition`** (94 in TR_AiCharacterDefinition_p / TR_AiEscalation_p):
+    - `ActionSet` (HmGoapActionSet of TnAiAction*Blueprints), `GoalSet` (TnGoapGoal*Blueprints), `SensorSet`;
+    - `Buffs`, `ActionOverrides` (weapon class per form), `AiCharacterDataResolved` (chassis, CharacterType Buddy/Enemy/Boss).
+  - Every versus game class still instantiates `_AiPlanningScheduler`, `_AiTacticalEvaluationScheduler` and `_TacticalOctree` (inherited from TnGame).
+- **Best template for MP bots:** the **Buddy** definitions (`<Iconic>_Buddy_AICD` for Optimus, Bumblebee, Ironhide, Megatron, Starscream …). They are iconic MP chassis with player-like loadouts.
+  - Example `Optimus_Buddy_AICD`: actions = shoot from tactical / at target (×2), stop-and-cooldown weapon, scanning idle, transform to robo/vehicle, navigate, step away, jump, enter/leave/shoot turret, use interact, stimulus reaction, turn to face focus;
+  - goals = UseInteract ×2, React, ReactToStimulus ×2, ScriptedMoveTo, DefendSelf, **Kill**, **BuddyLead**, MoveTo ×2, Idle;
+  - sensors = LineOfSight, Range, Threat, PreferredWeaponPicker (+ dynamic set);
+  - buff TnBuffHealthOnBlock.
+- Goal classes available (complete): BuddyLead, Cloak, DefendSelf, Heal, HunkerDown, Kill, MoveTo(+Blueprint), NavigatePath, React, ReactToDeathImminent, ReactToStimulus, Revive, ScriptedMoveTo, StayInTacticalVolume, Transform, TurretKill, UseInteract, Idle.
+- Action blueprints include: dodge, barrel roll, melee/navigating melee, smash attack, shoot-from-air-tactical, transform-to-vehicle-from-jump, vehicle navigation, revive, EMP reaction.
+
+**Difficulty:**
+- `TnGame.MaxDifficultyLevel` 2.
+- Projectile/weapon data has SP/MP/**AI** variants (`AiData`); AI weapon data adds `BurstRanges` (short/medium range bursts and pause durations) and `FireIntervalModifier`.
+- `GetCurrentSkillDataIndex` selects the difficulty index (MP returns 0).
+- ini `TnAiPawn`: AiVersusAiDamageScale 0.6, head ×3, DownedEnemySpreadModifier 2.5, DownedEnemyFireIntervalModifier 2, CloakedEnemySpreadModifier 5.
+- Sensors: LineOfFire 2–4 s before registering, GrenadeDistance 400; confidence: 1.5 s unsafe → low, 1.5 s safe → medium; aggressive attack after 4 s.
+
+---
+
+## 10. Navigation (C)
+
+Census in `mp_navigation_audit.json`.
+
+**Versus maps** (Berth, Rust, Seed, Streets, Molten, Debris, Complex, Gorge):
+- **No PathNodes, no NavigationCells, no tactical/cover nodes.**
+- Only NavigationPoints: TnTeamPlayerStart (41–98), TnFreeForAllPlayerStart (11–28), pickup factories, flag/bomb objective factories, plus **TnReachSpec 175–865** built only between those points (radius 440, height 400, reachFlags 1).
+- That sparse spawn/pickup graph is **not sufficient for bot navigation**: it is direct-reachability edges between spawns, pickups and objectives.
+- **The original MP-capable navigation was never authored for versus maps (not stripped):** there were no MP bots.
+
+**Escalation maps** (MP_ESC_BrokenHope, MP_ESC_Remnant):
+- **full AI navigation**: PathNode 44/104, AirPathNode 40, MoverPathNode 26, **NavigationCell 469/625**, TnTacticalPathNode 540/514 with tactical evaluators/pickers, TnSurvivalSpawnPoint 58/62, ~3000 reach specs.
+- These are the original reference for how WFC AI navigates (cells + tactical nodes + air nodes).
+
+**To reconstruct (Gameplay/AssetTools):**
+- a walk graph or navmesh per versus map from collision geometry;
+- jump/fall links;
+- vehicle-drivable areas;
+- air volumes for jets;
+- tactical/cover points;
+- objective approach points.
+- Spawn sets, pickup locations and objective locations already exist and can seed it.
+
+---
+
+## 11. Bot combat behaviour (P)
+
+Reusable original pieces:
+- action blueprints (above);
+- sensors (`TnAiLineOfSightSensor`, `TnAiRangeSensor`, `TnAiThreatSensor`, `TnAiLineOfFireSensor`, confidence sensors);
+- `TnPreferredWeaponPickerSensor` (weapon selection);
+- AI weapon burst/pause data;
+- `TnAiActionShootAtTarget` / `ShootFromTactical`;
+- transform actions;
+- cloak/heal/hunker goals;
+- vehicle navigation.
+
+Grenade use: `TnAiActionThrowGrenade` + LineOfFire GrenadeDistance 400.
+
+Not traced in this pass (U): the per-blueprint numeric parameters (ranges, costs, preconditions).
+
+---
+
+## 12. Bot objective behaviour
+
+- **No original AI for capture / hold / carry / escort / retrieve / return / contest of versus objectives (U, none found).**
+- The goal list has no flag, bomb, node or zone goals.
+- The closest reusable pieces: `TnGoapGoalStayInTacticalVolume` + `TnTacticalEvaluatorDefendActor` / `BattleLine` (defend an area/actor; used in Escalation), `MoveTo`, `UseInteract`, `BuddyLead`.
+
+---
+
+## 13. Participant state for non-local players (C)
+
+`TnPlayerReplicationInfo` replicates:
+- PlayerName, Team, Score, Deaths;
+- `PlayerLevel` + four specialty levels;
+- `PrimeModeActive`;
+- ReplicatedCharacterData;
+- TimeToRespawn, IsConnecting;
+- **`bBot`**.
+
+GameStats replicate to the owner only (`ClientUpdateGameStat`).
+
+**bBot handling already in the original:**
+- the kill feed localizes bot names through `[AICharacterNames]` (TnDeathMessage);
+- no join sound and no claimed-character refresh (GRI.AddPRI);
+- lobby "all players have a character" skips bots;
+- players-met skips bots;
+- toggling bBot re-adds the PRI;
+- **the player data provider skips bots, so the original scoreboard/player list would not show them.**
+
+A rebuild that wants bots on the scoreboard must deliberately diverge (**PC ADAPTATION**).
+
+---
+
+## Open (U)
+
+- GFx-side presentation of level badges and medal popups (the ActionScript was not traced).
+- Prime_Target_FX usage.
+- Weapon unlock gating (none found).
+- Per-action AI tuning numbers.
+- `TnStatsWrite*` leaderboard columns.

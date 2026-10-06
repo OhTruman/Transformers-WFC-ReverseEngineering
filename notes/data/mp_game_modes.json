@@ -1,0 +1,411 @@
+{
+ "TDM": {
+  "FriendlyName": "Team Deathmatch",
+  "Description": "Eliminate the enemy team.",
+  "RulesFormat": "Kill `p enemies from the other team to win.",
+  "GameClass": "TransContent.TnVersusGame",
+  "TeamType": "GTS_TeamGame",
+  "NumRequiredPlayers": 4,
+  "Rules": [
+   "TransGame.TnGameRules_ScoreKillsTDM",
+   "TransGame.TnGameRules_TrackKillsMP",
+   "TransGame.TnGameRules_ReportGameProgressTime",
+   "TransGame.TnGameRules_ReportGameProgressKills"
+  ],
+  "PointsToWin_options": [
+   20,
+   30,
+   40,
+   50
+  ],
+  "PointsToWin_default": 40,
+  "Rounds_options": null,
+  "Rounds_default": null,
+  "TimeLimit_options_s": [
+   600,
+   900,
+   1200
+  ],
+  "TimeLimit_default_s": 900,
+  "public": {
+   "StatsWriters": [
+    "TransGame.TnStatsWriteTDM",
+    "TransGame.TnStatsWriteKills",
+    "TransGame.TnStatsWriteAccuracy"
+   ],
+   "NumPublicConnections": 10
+  },
+  "private": {
+   "NumPrivateConnections": 10,
+   "bUsesStats": false,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 3,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741842,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741831,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  }
+ },
+ "DM": {
+  "FriendlyName": "Deathmatch",
+  "Description": "Free-for-all deathmatch.",
+  "RulesFormat": "Kill `p enemies to win.",
+  "GameClass": "TransContent.TnFreeForAllGame",
+  "TeamType": "GTS_FreeForAllGame",
+  "NumRequiredPlayers": 4,
+  "Rules": [
+   "TransGame.TnGameRules_ScoreKillsDM",
+   "TransGame.TnGameRules_TrackKillsMP",
+   "TransGame.TnGameRules_ReportGameProgressTime",
+   "TransGame.TnGameRules_ReportGameProgressKills"
+  ],
+  "PointsToWin_options": [
+   10,
+   20,
+   30
+  ],
+  "PointsToWin_default": 20,
+  "Rounds_options": null,
+  "Rounds_default": null,
+  "TimeLimit_options_s": [
+   600,
+   900,
+   1200
+  ],
+  "TimeLimit_default_s": 900,
+  "public": {
+   "StatsWriters": [
+    "TransGame.TnStatsWriteDM",
+    "TransGame.TnStatsWriteKills",
+    "TransGame.TnStatsWriteAccuracy"
+   ],
+   "NumPublicConnections": 10
+  },
+  "private": {
+   "NumPrivateConnections": 10,
+   "bUsesStats": false,
+   "bAllowJoinViaPresence": false,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 2,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741831,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  }
+ },
+ "DOM": {
+  "FriendlyName": "Conquest",
+  "Description": "Maintain control over multiple power nodes.",
+  "RulesFormat": "Control multiple nodes and accumulate `p points to win.",
+  "GameClass": "TransContent.TnVersusGame",
+  "TeamType": "GTS_TeamGame",
+  "NumRequiredPlayers": 4,
+  "Rules": [
+   "TransGame.TnGameRules_ScoreKillsMP",
+   "TransGame.TnGameRules_ScoreDomination",
+   "TransGame.TnGameRules_TrackKillsMP",
+   "TransGame.TnGameRules_ReportGameProgressTime",
+   "TransGame.TnGameRules_ReportGameProgressPoints"
+  ],
+  "PointsToWin_options": [
+   150,
+   200,
+   250,
+   300,
+   400,
+   500
+  ],
+  "PointsToWin_default": 400,
+  "Rounds_options": null,
+  "Rounds_default": null,
+  "TimeLimit_options_s": [
+   600,
+   900,
+   1200
+  ],
+  "TimeLimit_default_s": 900,
+  "public": {
+   "StatsWriters": [
+    "TransGame.TnStatsWriteDOM",
+    "TransGame.TnStatsWriteKills",
+    "TransGame.TnStatsWriteAccuracy"
+   ],
+   "NumPublicConnections": 10
+  },
+  "private": {
+   "NumPrivateConnections": 10,
+   "bUsesStats": false,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 9,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741842,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  }
+ },
+ "CTF": {
+  "FriendlyName": "Code of Power",
+  "Description": "Capture the Code of Power. Teams switch between offense and defense.",
+  "RulesFormat": "Capture and plant the Code of Power. Team with the highest score after `r rounds wins.",
+  "GameClass": "TransContent.TnVersusGame",
+  "TeamType": "GTS_TeamGame",
+  "NumRequiredPlayers": 4,
+  "Rules": [
+   "TransGame.TnGameRules_ScoreKillsMP",
+   "TransGame.TnGameRules_SingleFlagCTF",
+   "TransGame.TnGameRules_ScoreFlags",
+   "TransGame.TnGameRules_TrackKillsMP",
+   "TransGame.TnGameRules_ReportGameProgressTimeCTF"
+  ],
+  "PointsToWin_options": null,
+  "PointsToWin_default": null,
+  "Rounds_options": [
+   2,
+   4,
+   6
+  ],
+  "Rounds_default": 2,
+  "TimeLimit_options_s": [
+   240,
+   300,
+   360
+  ],
+  "TimeLimit_default_s": 300,
+  "public": {
+   "StatsWriters": [
+    "TransGame.TnStatsWriteCTF",
+    "TransGame.TnStatsWriteKills",
+    "TransGame.TnStatsWriteAccuracy"
+   ],
+   "NumPublicConnections": 10
+  },
+  "private": {
+   "NumPrivateConnections": 10,
+   "bUsesStats": false,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 4,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741842,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741831,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  }
+ },
+ "EXT": {
+  "FriendlyName": "Countdown to Extinction",
+  "Description": "Use the neutral bomb to destroy the enemy team's base.",
+  "RulesFormat": "Plant the bomb in the enemy's base `p times to win.",
+  "GameClass": "TransContent.TnVersusGame",
+  "TeamType": "GTS_TeamGame",
+  "NumRequiredPlayers": 4,
+  "Rules": [
+   "TransGame.TnGameRules_ScoreKillsMP",
+   "TransGame.TnGameRules_ScoreBombingRun",
+   "TransGame.TnGameRules_TrackKillsMP",
+   "TransGame.TnGameRules_ReportGameProgressTime"
+  ],
+  "PointsToWin_options": [
+   1,
+   3,
+   5
+  ],
+  "PointsToWin_default": 3,
+  "Rounds_options": null,
+  "Rounds_default": null,
+  "TimeLimit_options_s": [
+   600,
+   900,
+   1200
+  ],
+  "TimeLimit_default_s": 900,
+  "public": {
+   "StatsWriters": [
+    "TransGame.TnStatsWriteEXT",
+    "TransGame.TnStatsWriteKills",
+    "TransGame.TnStatsWriteAccuracy"
+   ],
+   "NumPublicConnections": 10
+  },
+  "private": {
+   "NumPrivateConnections": 10,
+   "bUsesStats": false,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 7,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741842,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741831,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  }
+ },
+ "KOTH": {
+  "FriendlyName": "Power Struggle",
+  "Description": "Gain control of the active power node.",
+  "RulesFormat": "Control the active power node and accumulate `p points to win.",
+  "GameClass": "TransContent.TnVersusGame",
+  "TeamType": "GTS_TeamGame",
+  "NumRequiredPlayers": 4,
+  "Rules": [
+   "TransGame.TnGameRules_ScoreKillsMP",
+   "TransGame.TnGameRules_ScoreKingOfTheHill",
+   "TransGame.TnGameRules_TrackKillsMP",
+   "TransGame.TnGameRules_ReportGameProgressTime",
+   "TransGame.TnGameRules_ReportGameProgressPoints"
+  ],
+  "PointsToWin_options": [
+   150,
+   200,
+   250,
+   300,
+   400,
+   500
+  ],
+  "PointsToWin_default": 400,
+  "Rounds_options": null,
+  "Rounds_default": null,
+  "TimeLimit_options_s": [
+   600,
+   900,
+   1200
+  ],
+  "TimeLimit_default_s": 900,
+  "public": {
+   "StatsWriters": [
+    "TransGame.TnStatsWriteKOTH",
+    "TransGame.TnStatsWriteKills",
+    "TransGame.TnStatsWriteAccuracy"
+   ],
+   "NumPublicConnections": 10
+  },
+  "private": {
+   "NumPrivateConnections": 10,
+   "bUsesStats": false,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 5,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741842,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    },
+    {
+     "Id": 1073741831,
+     "ValueIndex": 1,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  }
+ },
+ "SV": {
+  "FriendlyName": "Escalation",
+  "Description": "Survive waves of attacks",
+  "RulesFormat": "Survive waves of attacks",
+  "GameClass": "TransContent.TnSurvivalGame",
+  "TeamType": "GTS_SingleTeamGame",
+  "NumRequiredPlayers": 2,
+  "Rules": [
+   "TransGame.TnGameRules_CompetitiveScoring",
+   "TransGame.TnGameRules_TrackKills"
+  ],
+  "PointsToWin_options": null,
+  "PointsToWin_default": null,
+  "Rounds_options": null,
+  "Rounds_default": null,
+  "TimeLimit_options_s": [],
+  "TimeLimit_default_s": null,
+  "public": {
+   "NumPublicConnections": 4,
+   "LocalizedSettings": [
+    {
+     "Id": 32779,
+     "ValueIndex": 6,
+     "AdvertisementType": "ODAT_OnlineService"
+    },
+    {
+     "Id": 1073741844,
+     "ValueIndex": 0,
+     "AdvertisementType": "ODAT_DontAdvertise"
+    }
+   ]
+  },
+  "private": {
+   "NumPrivateConnections": 4
+  }
+ }
+}

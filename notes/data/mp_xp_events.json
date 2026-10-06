@@ -1,0 +1,504 @@
+{
+ "GlobalXpMultiplier": 1,
+ "DeathmatchXpAmount_default": -1,
+ "rule": "award = GlobalXpMultiplier * (DeathmatchXpAmount if DeathmatchXpAmount>=0 and !GRI.GameClass.bTeamGame else XpAmount); 0 if !GRI.CanGainXp()",
+ "events": [
+  {
+   "class": "TnXpEventTypeKill",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": 25,
+   "Announcement": "",
+   "Description": ""
+  },
+  {
+   "class": "TnXpEventTypeBombCarrierKill",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Linebacker",
+   "Description": "You killed the enemy bomb carrier."
+  },
+  {
+   "class": "TnXpEventTypeEndKillStreak",
+   "XpAmount": 75,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Funkiller",
+   "Description": "You ended an enemies kill streak."
+  },
+  {
+   "class": "TnXpEventTypeFirstKill",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "First Blood",
+   "Description": "You got the first kill of the game."
+  },
+  {
+   "class": "TnXpEventTypeFlagCarrierKill",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Drop It!",
+   "Description": "You killed the enemy Code carrier."
+  },
+  {
+   "class": "TnXpEventTypeKillDomination2",
+   "XpAmount": 20,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Beat Down",
+   "Description": "You killed an enemy 2 times in a row."
+  },
+  {
+   "class": "TnXpEventTypeKillDomination3",
+   "XpAmount": 40,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Humiliation",
+   "Description": "You killed an enemy 3 times in a row."
+  },
+  {
+   "class": "TnXpEventTypeKillDomination4",
+   "XpAmount": 60,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Domination",
+   "Description": "You killed an enemy 4 times in a row."
+  },
+  {
+   "class": "TnXpEventTypeKillerLowHealth",
+   "XpAmount": 75,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Just a Flesh Wound!",
+   "Description": "You killed an enemy while low on health."
+  },
+  {
+   "class": "TnXpEventTypeKillPayback",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Payback",
+   "Description": "You killed the enemy who last killed you."
+  },
+  {
+   "class": "TnXpEventTypeKillPaybackDomination",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Break Free",
+   "Description": "You killed an enemy that dominated you."
+  },
+  {
+   "class": "TnXpEventTypeKillStreak3",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": 50,
+   "Announcement": "3 Kill Streak",
+   "Description": "Press ^USE_KILL_STREAK to activate `k"
+  },
+  {
+   "class": "TnXpEventTypeKillStreak5",
+   "XpAmount": 150,
+   "DeathmatchXpAmount": 100,
+   "Announcement": "5 Kill Streak",
+   "Description": "Press ^USE_KILL_STREAK to activate `k"
+  },
+  {
+   "class": "TnXpEventTypeKillStreak7",
+   "XpAmount": 200,
+   "DeathmatchXpAmount": 150,
+   "Announcement": "7 Kill Streak",
+   "Description": "Press ^USE_KILL_STREAK to activate `k"
+  },
+  {
+   "class": "TnXpEventTypeMultiKill2",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": 50,
+   "Announcement": "Double Kill",
+   "Description": "You killed 2 enemies in a row!"
+  },
+  {
+   "class": "TnXpEventTypeMultiKill3",
+   "XpAmount": 150,
+   "DeathmatchXpAmount": 100,
+   "Announcement": "Triple Kill",
+   "Description": "You killed 3 enemies in a row!"
+  },
+  {
+   "class": "TnXpEventTypeMultiKill4",
+   "XpAmount": 200,
+   "DeathmatchXpAmount": 150,
+   "Announcement": "Quad Kill",
+   "Description": "You killed 4 enemies in a row!"
+  },
+  {
+   "class": "TnXpEventTypeZoneKill",
+   "XpAmount": 20,
+   "DeathmatchXpAmount": null,
+   "Announcement": "It's My Island",
+   "Description": "You killed an enemy while they were contesting a node."
+  },
+  {
+   "class": "TnXpEventTypeDominationPointKill",
+   "XpAmount": 20,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Get Out of Here",
+   "Description": "You killed an enemy while they were trying to take a conquest point."
+  },
+  {
+   "class": "TnXpEventTypeKillScoutMelee",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Knighted",
+   "Description": "You killed an enemy in melee with a sword."
+  },
+  {
+   "class": "TnXpEventTypeKillScientistMelee",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Warrior of the Ancients",
+   "Description": "You killed an enemy in melee with a mace."
+  },
+  {
+   "class": "TnXpEventTypeKillSoldierMelee",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Test Your Strength",
+   "Description": "You killed an enemy in melee with a war hammer."
+  },
+  {
+   "class": "TnXpEventTypeKillLeaderMelee",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Tiiiiimber",
+   "Description": "You killed an enemy in melee with an axe."
+  },
+  {
+   "class": "TnXpEventTypeLongRange",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Far and Away",
+   "Description": "You killed an enemy at long range."
+  },
+  {
+   "class": "TnXpEventTypeHeadshot",
+   "XpAmount": 75,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Domed",
+   "Description": "You killed an enemy with a headshot."
+  },
+  {
+   "class": "TnXpEventTypeKillAbilityJammer",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Jammed",
+   "Description": "You killed an enemy after jamming their abilities."
+  },
+  {
+   "class": "TnXpEventTypeKillBackstab",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Rogue",
+   "Description": "You killed an enemy with the backstab ability."
+  },
+  {
+   "class": "TnXpEventTypeKillDecoyTrap",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Enjoy The Gift",
+   "Description": "You killed an enemy after they were stunned by your trap."
+  },
+  {
+   "class": "TnXpEventTypeKilledDisguise",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Nobody's Fool",
+   "Description": "You killed an enemy while they were disguised."
+  },
+  {
+   "class": "TnXpEventTypeKillerDisguise",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Double Agent!",
+   "Description": "You killed an enemy while disguised."
+  },
+  {
+   "class": "TnXpEventTypeKilledDrain",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Vampire",
+   "Description": "You killed an enemy while draining them."
+  },
+  {
+   "class": "TnXpEventTypeKillFlashBang",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Lights Out",
+   "Description": "You killed an enemy after blinding them!"
+  },
+  {
+   "class": "TnXpEventTypeKillerFlashbang",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Trickster",
+   "Description": "You killed an enemy while blinded!"
+  },
+  {
+   "class": "TnXpEventTypeKilledHover",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Sitting Duck",
+   "Description": "You killed an enemy while they were hovering."
+  },
+  {
+   "class": "TnXpEventTypeKillerHover",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "High and Mighty",
+   "Description": "You killed an enemy while hovering."
+  },
+  {
+   "class": "TnXpEventTypeKillGuidedMissile",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Ace of Spades",
+   "Description": "You killed an enemy with a guided missile."
+  },
+  {
+   "class": "TnXpEventTypeKillWhirlWind",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Dizzy Kill",
+   "Description": "You killed an enemy with the whirlwind ability."
+  },
+  {
+   "class": "TnXpEventTypeKillShockwave",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Sonic Pain Wave",
+   "Description": "You killed an enemy with the shockwave ability."
+  },
+  {
+   "class": "TnXpEventTypeKillMarkTarget",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Tag! You're It",
+   "Description": "You killed an enemy after marking them."
+  },
+  {
+   "class": "TnXpEventTypeKillTransformDisruptor",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Whiplash",
+   "Description": "You killed an enemy after disrupting their transformations."
+  },
+  {
+   "class": "TnXpEventTypeKilledWarcry",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "",
+   "Description": ""
+  },
+  {
+   "class": "TnXpEventTypeKillerSurpriseAttack",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Boo!",
+   "Description": "You killed an enemy with a surprise attack after coming out of cloak."
+  },
+  {
+   "class": "TnXpEventTypeKillerWarcry",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Banshee",
+   "Description": "You killed an enemy while under the effect of Warcry."
+  },
+  {
+   "class": "TnXpEventTypeKillRam",
+   "XpAmount": 150,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Roadkill",
+   "Description": "You killed an enemy by ramming them."
+  },
+  {
+   "class": "TnXpEventTypeKillerDowned",
+   "XpAmount": 150,
+   "DeathmatchXpAmount": null,
+   "Announcement": "No Mercy!",
+   "Description": "You killed an enemy while downed."
+  },
+  {
+   "class": "TnXpEventTypeKillRollerSphere",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Bowled Over",
+   "Description": "You killed and enemy after slowing them with the Moleculon Bomb."
+  },
+  {
+   "class": "TnXpEventTypeHealGrenadeTeammates",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Bubble Boy",
+   "Description": "You healed three teammates with a single healing grenade."
+  },
+  {
+   "class": "TnXpEventTypeHealRepairRayLowHealth",
+   "XpAmount": 15,
+   "DeathmatchXpAmount": null,
+   "Announcement": "From the Brink",
+   "Description": "You healed a teammate while they were low on health."
+  },
+  {
+   "class": "TnXpEventTypeBombDefuse",
+   "XpAmount": 75,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Nick of Time",
+   "Description": "You defused the bomb at your base."
+  },
+  {
+   "class": "TnXpEventTypeBombDetonate",
+   "XpAmount": 200,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Dynamite Goes Boom!",
+   "Description": "The bomb you planted was detonated."
+  },
+  {
+   "class": "TnXpEventTypeBombPlant",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Better Start Runnin'",
+   "Description": "You planted the bomb at your enemy's base."
+  },
+  {
+   "class": "TnXpEventTypeFlagCapture",
+   "XpAmount": 200,
+   "DeathmatchXpAmount": null,
+   "Announcement": "In the Bag",
+   "Description": "You captured the enemies Code of Power."
+  },
+  {
+   "class": "TnXpEventTypeFlagReturn",
+   "XpAmount": 75,
+   "DeathmatchXpAmount": null,
+   "Announcement": "That's Mine!",
+   "Description": "You returned your team's Code of Power to the base."
+  },
+  {
+   "class": "TnXpEventTypeFlagDefend",
+   "XpAmount": 100,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Agincourted",
+   "Description": "You successfully defended your team's Code of Power for a round."
+  },
+  {
+   "class": "TnXpEventTypeDominationCapture",
+   "XpAmount": 150,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Conquistador",
+   "Description": "You captured a Conquest point."
+  },
+  {
+   "class": "TnXpEventTypeZoneHold0",
+   "XpAmount": 5,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Tourist",
+   "Description": "You scored points in an active power struggle node."
+  },
+  {
+   "class": "TnXpEventTypeZoneHold1",
+   "XpAmount": 10,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Places to Go",
+   "Description": "You scored more then 10 points in an active power struggle node."
+  },
+  {
+   "class": "TnXpEventTypeZoneHold2",
+   "XpAmount": 15,
+   "DeathmatchXpAmount": null,
+   "Announcement": "And I Helped",
+   "Description": "You scored more then 20 points in an active power struggle node."
+  },
+  {
+   "class": "TnXpEventTypeZoneHold3",
+   "XpAmount": 20,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Squatter",
+   "Description": "You scored more then 30 points in an active power struggle node."
+  },
+  {
+   "class": "TnXpEventTypeZoneHold4",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Queen of the Hill",
+   "Description": "You scored more then 40 points in an active power struggle node."
+  },
+  {
+   "class": "TnXpEventTypeZoneHold5",
+   "XpAmount": 30,
+   "DeathmatchXpAmount": null,
+   "Announcement": "King of the Hill",
+   "Description": "You scored more then 50 points in an active power struggle node."
+  },
+  {
+   "class": "TnXpEventTypeAssist",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": 15,
+   "Announcement": "",
+   "Description": "Assist"
+  },
+  {
+   "class": "TnXpEventTypeWeakAssist",
+   "XpAmount": 15,
+   "DeathmatchXpAmount": 10,
+   "Announcement": "",
+   "Description": "Assist"
+  },
+  {
+   "class": "TnXpEventTypeFirstDeath",
+   "XpAmount": 75,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Rough Start",
+   "Description": "You were the first to die this game."
+  },
+  {
+   "class": "TnXpEventTypeGameLose",
+   "XpAmount": 150,
+   "DeathmatchXpAmount": 75,
+   "Announcement": "Feel Better",
+   "Description": "Your team lost the match."
+  },
+  {
+   "class": "TnXpEventTypeGameWin",
+   "XpAmount": 300,
+   "DeathmatchXpAmount": 150,
+   "Announcement": "Glorious",
+   "Description": "Your team won the match."
+  },
+  {
+   "class": "TnXpEventTypeMineKill",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "",
+   "Description": ""
+  },
+  {
+   "class": "TnXpEventTypeRollerMineKill",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "",
+   "Description": ""
+  },
+  {
+   "class": "TnXpEventTypeSentryKill",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": 15,
+   "Announcement": "",
+   "Description": ""
+  },
+  {
+   "class": "TnXpEventTypeKillAfterDeath",
+   "XpAmount": 25,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Grim Reaper",
+   "Description": "You killed an enemy after dying."
+  },
+  {
+   "class": "TnXpEventTypeKillHoverMelee",
+   "XpAmount": 50,
+   "DeathmatchXpAmount": null,
+   "Announcement": "Rustbug Swatter",
+   "Description": "You killed an enemy with a melee attack while they were hovering."
+  }
+ ]
+}

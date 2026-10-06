@@ -1,0 +1,855 @@
+{
+ "manager": "TransGame.Default__TnGameRules_TrackKillsMP.KillAwardManager0 (rules = archetypes of TnKillAwardManager CDO)",
+ "base_kill_xp": "TnXpEventTypeKill always first, inside one XP transaction (popup group)",
+ "rules": [
+  {
+   "name": "Killstreak",
+   "class": "TnKillAwardRuleKillStreak",
+   "config": {}
+  },
+  {
+   "name": "KillerBuffCheck",
+   "class": "TnKillAwardRuleKillerBuffCheck",
+   "config": {
+    "BuffChecks": [
+     {
+      "BuffClass": "TransGame.TnBuffDisguiseLost",
+      "XpEvent": "TransGame.TnXpEventTypeKillerDisguise",
+      "StatId": 5471
+     },
+     {
+      "BuffClass": "TransGame.TnBuffIncreaseDamageDuringHover",
+      "XpEvent": "TransGame.TnXpEventTypeKillerHover",
+      "StatId": 5647
+     },
+     {
+      "BuffClass": "TransGame.TnBuffIncreaseDamageAfterCloak",
+      "XpEvent": "TransGame.TnXpEventTypeKillerSurpriseAttack",
+      "StatId": 5392
+     },
+     {
+      "BuffClass": "TransGame.TnBuffWarcryIncreaseDamage",
+      "XpEvent": "TransGame.TnXpEventTypeKillerWarcry",
+      "StatId": 5727
+     },
+     {
+      "BuffClass": "TransGame.TnBuffFlashBang",
+      "XpEvent": "TransGame.TnXpEventTypeKillerFlashbang",
+      "StatId": -1
+     }
+    ]
+   }
+  },
+  {
+   "name": "KilledDefensiveBuffCheck",
+   "class": "TnKillAwardRuleKilledDefensiveBuffCheck",
+   "config": {
+    "BuffChecks": [
+     {
+      "BuffClass": "TransGame.TnBuffWarcryIncreaseDamage",
+      "XpEvent": "TransGame.TnXpEventTypeKilledWarCry",
+      "StatId": -1
+     },
+     {
+      "BuffClass": "TransGame.TnBuffIncreaseDamageDuringHover",
+      "XpEvent": "TransGame.TnXpEventTypeKilledHover",
+      "StatId": -1
+     },
+     {
+      "BuffClass": "TransGame.TnBuffDisguise",
+      "XpEvent": "TransGame.TnXpEventTypeKilledDisguise",
+      "StatId": -1
+     },
+     {
+      "BuffClass": "TransGame.TnBuffDisguiseLost",
+      "XpEvent": "TransGame.TnXpEventTypeKilledDisguise",
+      "StatId": -1
+     }
+    ]
+   }
+  },
+  {
+   "name": "KilledOffensiveBuffCheck",
+   "class": "TnKillAwardRuleKilledOffensiveBuffCheck",
+   "config": {
+    "BuffChecks": [
+     {
+      "BuffClass": "TransGame.TnBuffTransformDisruptor",
+      "XpEvent": "TransGame.TnXpEventTypeKillTransformDisruptor",
+      "AssistXpEvent": "TransGame.TnXpEventTypeAssist",
+      "StatId": 5729
+     },
+     {
+      "BuffClass": "TransGame.TnBuffHardLocked",
+      "XpEvent": "TransGame.TnXpEventTypeKillMarkTarget",
+      "AssistXpEvent": "TransGame.TnXpEventTypeAssist",
+      "StatId": 5394
+     },
+     {
+      "BuffClass": "TransGame.TnBuffDrainTarget",
+      "XpEvent": "TransGame.TnXpEventTypeKilledDrain",
+      "AssistXpEvent": null,
+      "StatId": 5470
+     },
+     {
+      "BuffClass": "TransGame.TnBuffFlashBang",
+      "XpEvent": "TransGame.TnXpEventTypeKillFlashBang",
+      "AssistXpEvent": "TransGame.TnXpEventTypeAssist",
+      "StatId": 5396
+     },
+     {
+      "BuffClass": "TransGame.TnBuffDecoyTrap",
+      "XpEvent": "TransGame.TnXpEventTypeKillDecoyTrap",
+      "AssistXpEvent": "TransGame.TnXpEventTypeAssist",
+      "StatId": 5395
+     },
+     {
+      "BuffClass": "TransGame.TnBuffAbilityJammed",
+      "XpEvent": "TransGame.TnXpEventTypeKillAbilityJammer",
+      "AssistXpEvent": "TransGame.TnXpEventTypeAssist",
+      "StatId": 5649
+     },
+     {
+      "BuffClass": "TransGame.TnBuffRollerSphereDecreaseSpeed",
+      "XpEvent": "TransGame.TnXpEventTypeKillRollerSphere",
+      "AssistXpEvent": "TransGame.TnXpEventTypeAssist",
+      "StatId": 5730
+     }
+    ]
+   }
+  },
+  {
+   "name": "DamageTypeCheck",
+   "class": "TnKillAwardRuleDamageType",
+   "config": {
+    "DamageChecks": [
+     {
+      "DamageType": "TransGame.TnDamageTypeWhirlwind",
+      "XpEvent": "TransGame.TnXpEventTypeKillWhirlWind",
+      "StatId": 5648
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeShockwave",
+      "XpEvent": "TransGame.TnXpEventTypeKillShockwave",
+      "StatId": 5469
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeRammed",
+      "XpEvent": "TransGame.TnXpEventTypeKillRam",
+      "StatId": 5726
+     }
+    ]
+   }
+  },
+  {
+   "name": "KillerDowned",
+   "class": "TnKillAwardRuleKillerDowned",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeKillerDowned",
+    "StatId": 5728
+   }
+  },
+  {
+   "name": "FirstKillAndDeath",
+   "class": "TnKillAwardRuleFirstKillAndFirstDeath",
+   "config": {}
+  },
+  {
+   "name": "KillerLowHealth",
+   "class": "TnKillAwardRuleKillerLowHealth",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeKillerLowHealth"
+   }
+  },
+  {
+   "name": "Backstab",
+   "class": "TnKillAwardRuleBackStab",
+   "config": {}
+  },
+  {
+   "name": "Headshot",
+   "class": "TnKillAwardRuleHeadshot",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeHeadshot"
+   }
+  },
+  {
+   "name": "LongRange",
+   "class": "TnKillAwardRuleLongRange",
+   "config": {
+    "LongDistance": 8000.0,
+    "XpEvent": "TransGame.TnXpEventTypeLongRange"
+   }
+  },
+  {
+   "name": "BombCarrier",
+   "class": "TnKillAwardRuleBombCarrier",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeBombCarrierKill",
+    "AllowedGameRule": "TransGame.TnGameRules_ScoreBombingRun"
+   }
+  },
+  {
+   "name": "FlagCarrier",
+   "class": "TnKillAwardRuleFlagCarrier",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeFlagCarrierKill",
+    "StatId": 268435461,
+    "AllowedGameRule": "TransGame.TnGameRules_ScoreFlags"
+   }
+  },
+  {
+   "name": "ZoneKill",
+   "class": "TnKillAwardRuleZoneKill",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeZoneKill",
+    "AllowedGameRule": "TransGame.TnGameRules_ScoreKingOfTheHill"
+   }
+  },
+  {
+   "name": "DominationPointKill",
+   "class": "TnKillAwardRuleDominationPointKill",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeDominationPointKill",
+    "AllowedGameRule": "TransGame.TnGameRules_ScoreDomination"
+   }
+  },
+  {
+   "name": "MultiKill",
+   "class": "TnKillAwardRuleMultikill",
+   "config": {}
+  },
+  {
+   "name": "PaybackAndDomination",
+   "class": "TnKillAwardRulePaybackAndDomination",
+   "config": {}
+  },
+  {
+   "name": "EndKillStreak",
+   "class": "TnKillAwardRuleEndKillStreak",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeEndKillStreak"
+   }
+  },
+  {
+   "name": "AllMelee",
+   "class": "TnKillAwardRuleMelee",
+   "config": {}
+  },
+  {
+   "name": "HigherLevel",
+   "class": "TnKillAwardRuleHigherLevel",
+   "config": {}
+  },
+  {
+   "name": "Lifetime",
+   "class": "TnKillAwardRuleLifetime",
+   "config": {}
+  },
+  {
+   "name": "FineAim",
+   "class": "TnKillAwardRuleFineAim",
+   "config": {}
+  },
+  {
+   "name": "KillAfterDeath",
+   "class": "TnKillAwardRuleKillAfterDeath",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeKillAfterDeath"
+   }
+  },
+  {
+   "name": "KillHoverMelee",
+   "class": "TnKillAwardRuleKillHoverMelee",
+   "config": {
+    "XpEvent": "TransGame.TnXpEventTypeKillHoverMelee"
+   }
+  },
+  {
+   "name": "ScoutSpecific",
+   "class": "TnKillAwardRuleSpecialtySpecific",
+   "config": {
+    "SpecialtyName": "Scout",
+    "KillChecks": [
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyPistol",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5376
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyPistol",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffHardLocked",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5377
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyPistol",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffDecoyTrap",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5378
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypePlasmaCannon",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5379
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypePlasmaCannon",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Tank",
+      "KilledSpecialty": "",
+      "StatId": 5380
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypePlasmaCannon",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffHardLocked",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Plane",
+      "KilledSpecialty": "",
+      "StatId": 5381
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5382
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeShotgun",
+      "Headshot": false,
+      "KillerBuff": "TransGame.TnBuffDecloak",
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5383
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffCloak",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5384
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffDecloak",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5384
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeSniperRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5385
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeSniperRifle",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5386
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeSniperRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Plane",
+      "KilledSpecialty": "",
+      "StatId": 5387
+     },
+     {
+      "DamageType": null,
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": true,
+      "KilledForm": "VFT_Tank",
+      "KilledSpecialty": "",
+      "StatId": 5390
+     }
+    ]
+   }
+  },
+  {
+   "name": "ScientistSpecific",
+   "class": "TnKillAwardRuleSpecialtySpecific",
+   "config": {
+    "SpecialtyName": "Scientist",
+    "KillChecks": [
+     {
+      "DamageType": "TransGame.TnDamageTypeAssaultRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5456
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeAssaultRifle",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5457
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeAssaultRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffShockwave",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5458
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5459
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffDrainTarget",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5460
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffDisguise",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5461
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffDisguiseLost",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5461
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeBurstRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5462
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeBurstRifle",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5463
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeBurstRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffHardLocked",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5464
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeRepairEnemy",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5465
+     },
+     {
+      "DamageType": null,
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": true,
+      "KilledForm": "VFT_Tank",
+      "KilledSpecialty": "",
+      "StatId": 5466
+     },
+     {
+      "DamageType": null,
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": true,
+      "KilledForm": "VFT_Plane",
+      "KilledSpecialty": "",
+      "StatId": 5467
+     }
+    ]
+   }
+  },
+  {
+   "name": "SoldierSpecific",
+   "class": "TnKillAwardRuleSpecialtySpecific",
+   "config": {
+    "SpecialtyName": "Soldier",
+    "KillChecks": [
+     {
+      "DamageType": "TransGame.TnDamageTypeAssaultRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5632
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeAssaultRifle",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5633
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeAssaultRifle",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffWhirlwind",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5634
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyMG",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5635
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyMG",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5636
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyMG",
+      "Headshot": false,
+      "KillerBuff": "TransGame.TnBuffIncreaseDamageDuringHover",
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "Leader",
+      "StatId": 5637
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5638
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5639
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeEmpShotgun",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "Leader",
+      "StatId": 5640
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHomingRocket",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5641
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHomingRocket",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "Scientist",
+      "StatId": 5642
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHomingRocket",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffCloak",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5643
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHomingRocket",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffDecloak",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5643
+     },
+     {
+      "DamageType": null,
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": true,
+      "KilledForm": "VFT_Plane",
+      "KilledSpecialty": "",
+      "StatId": 5645
+     },
+     {
+      "DamageType": null,
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": true,
+      "KilledForm": "VFT_Tank",
+      "KilledSpecialty": "",
+      "StatId": 5646
+     }
+    ]
+   }
+  },
+  {
+   "name": "LeaderSpecific",
+   "class": "TnKillAwardRuleSpecialtySpecific",
+   "config": {
+    "SpecialtyName": "Leader",
+    "KillChecks": [
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyPistol",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5712
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyPistol",
+      "Headshot": true,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5713
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeHeavyPistol",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffTransformDisruptor",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Tank",
+      "KilledSpecialty": "",
+      "StatId": 5714
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeIonBlaster",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5715
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeIonBlaster",
+      "Headshot": false,
+      "KillerBuff": "TransGame.TnBuffWarcryIncreaseDamage",
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5716
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeIonBlaster",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffRollerSphereDecreaseSpeed",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "Scout",
+      "StatId": 5717
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeBazooka",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5721
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeBazooka",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "Leader",
+      "StatId": 5722
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeBazooka",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Plane",
+      "KilledSpecialty": "",
+      "StatId": 5723
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeGrenadeLauncher",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "",
+      "StatId": 5718
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeGrenadeLauncher",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Tank",
+      "KilledSpecialty": "",
+      "StatId": 5719
+     },
+     {
+      "DamageType": "TransGame.TnDamageTypeGrenadeLauncher",
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": "TransGame.TnBuffTransformDisruptor",
+      "KillerInVehicle": false,
+      "KilledForm": "VFT_Invalid",
+      "KilledSpecialty": "Scientist",
+      "StatId": 5720
+     },
+     {
+      "DamageType": null,
+      "Headshot": false,
+      "KillerBuff": null,
+      "KilledBuff": null,
+      "KillerInVehicle": true,
+      "KilledForm": "VFT_Plane",
+      "KilledSpecialty": "",
+      "StatId": 5725
+     }
+    ]
+   }
+  }
+ ]
+}

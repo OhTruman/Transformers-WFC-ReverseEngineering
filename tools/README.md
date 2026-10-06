@@ -38,3 +38,5 @@ Added in Milestone 03:
 - `ghidra_scripts/WfcDecompAt.java` — read-only: create a function in memory (explicit `addr:size` body; clears false no-return flags in memory) and decompile code Ghidra never defined. Never saves.
 | `matgraph.py` | print a material input (e.g. EmissiveColor) as an expression tree from authored.db; used for TR_Defrag_MAT (pass 5 §12 add. 24/26) |
 | `physprop.py` | parse TnPhysicalMaterialProperty / HmPhysicalMaterialProperty exports (missing from authored.db) → `notes/data/physical_material_properties.json` (pass 5 §12 add. 29) |
+| `mp_progression_extract.py` | XP events, level table, challenges, class unlocks, game modes, kill awards, MP nav audit → `notes/data/mp_*.json` (MP_PROGRESSION_SCORING_AI_2026-10-06.md) |
+- `work/script/decomp_tc/` — TransContent script (game classes) decompiled from MP map packages: `python ue3dis.py --all ../work/script/decomp_tc MP_ORB_Debris_BASE_m MP_IAC_Streets_BASE_m`.
