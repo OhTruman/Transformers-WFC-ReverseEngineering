@@ -687,3 +687,95 @@ This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
 - **T ≥ 2:** α starts at **0.0**. The noise point N_i itself is emitted beforehand at α = 0. The loop then runs **T times** (counter r30, `subic.`/`bne` at `0x8302AA58`); **α += 1/T before each sample**, so the samples fall at **α = 1/T, 2/T, …, T/T = 1**. The last sample coincides with N_{i+1}.
 - **Each sample:** CubicInterp(N_i, T_i, N_{i+1}, T_{i+1}, α). It emits 2 vertices (one per sheet side). Width = lerp(taper_i, taper_{i+1}, α).
 - **V coordinate:** a running texture coordinate (stack +0x80 increment) advances per sample.
+
+## 11. Beam2 source / target resolution (RE) (C unless marked)
+
+**Code:**
+- ResolveSourceData **`0x8302F320`**, ResolveTargetData **`0x8302F738`**.
+- Callers:
+  - source module Spawn `0x83040578` (spawning = 1; beam index = ActiveParticles at spawn) and Update `0x83040620`;
+  - target module Spawn `0x83040888` and Update `0x830408F8`;
+  - also `0x83045800`.
+- Update runs every tick for every active beam. The beam index is its active slot, and spawning = 0. The source Update is skipped entirely when bLockSource, bLockSourceTangent and bLockSourceStength are all set.
+- Lazy name resolvers: `0x8301D6B0` (source) and `0x8301D7A0` (target). Each resolves once and caches the result:
+  - Emitter / Particle methods: the emitter instance in the same component whose `EmitterName == Name`;
+  - Actor method: the Actor from the component InstanceParameters entry with `Name == Name` (36-byte FParticleSysParam).
+
+**Enums (Engine package):**
+- Beam2SourceTargetMethod: Default 0, UserSet 1, Emitter 2, Particle 3, Actor 4.
+- TangentMethod: Direct 0, UserSet 1, Distribution 2, Emitter 3.
+- EBeam2Method: Distance 0, Target 1, Branch 2. The CDO default is **PEB2M_Target**.
+- Module layout:
+  - +0x30 method, +0x31 tangent method, +0x34 name;
+  - Source: bits at +0x38 (0x80000000 bAbsolute, 0x40000000 bLock, 0x20000000 bLockTangent, 0x10000000 bLockStrength); Source distribution +0x3C, Tangent +0x50, Strength +0x64;
+  - Target: Target distribution +0x38, bits at +0x4C (same order), Tangent +0x50, Strength +0x64.
+- CDO defaults: Source/Target (50, 50, 50); tangents (1, 0, 0); strengths 25.
+
+### Point: Source
+
+| Method | Result |
+|---|---|
+| **Default** | `Source` distribution at the instance time `+0xD4` (H: EmitterTime, not particle RelativeTime). If !bSourceAbsolute it gets the **full component LocalToWorld** (offset in component space); otherwise it is used as-is. |
+| **UserSet** | `UserSetSourceArray[beamIndex]`; if beamIndex ≥ count, `[0]`; an **empty array → the Default path**. The name is ignored. |
+| **Emitter** | This emitter instance's `+0x70` (H: FParticleEmitterInstance::Location = the component's world origin). SourceName is ignored. |
+| **Particle** | **No particle is ever read.** Only when TypeData BeamMethod == **Branch**: the named emitter instance's Component LocalToWorld origin. Otherwise (or if the name is unresolved) → the Default path. |
+| **Actor** | The InstanceParameter actor → `Actor->vfunc+0x1D0()` matrix row 3 (H: LocalToWorld origin ≈ Location). Unresolved → the Default path. |
+
+**Particle sources in practice:** every authored Particle source ('Orbit2' ×18, 'Orbit3' ×6) is in a system with the default BeamMethod Target. Those systems are Squib_RepairEnemy / Squib_TurretRepairEnemy, MuzzleFlash_DeathBeam, Starscream_Reveal and Hologram_startup. All of them therefore **use their Source distribution** (Default path).
+
+### Point: Target
+
+- **Distance mode first.** If `inst+0x174 ≥ 0` (H: SetBeamDistance override; default < 0) **or BeamMethod == Distance**:
+  - Target = Source + normalize(component X axis) × d;
+  - d = override, else `TypeData.Distance` at particle RelativeTime; |d| < ε → constant;
+  - the method is ignored.
+- **Otherwise:**
+
+| Method | Result |
+|---|---|
+| **Default** | **WFC extension:** if TargetName ≠ None, the component InstanceParameter with that name is used. **Vector** → that point, absolute world (no transform). **Scalar** → component origin + X axis × value. No match → `Target` distribution at `+0xD4`, full LocalToWorld unless bTargetAbsolute. |
+| **UserSet** | `UserSetTargetArray[beamIndex]` or `[0]`; **empty → the Default distribution path** (the instance-parameter lookup is not reached). **TargetName is not consulted.** |
+| **Emitter** | Requires TargetName; that emitter instance's `+0x70`. **No name → the Target distribution.** |
+| **Particle** | **Unsupported** → always the Target distribution (e.g. TF_Death_Buildup 'ZapGlow' uses its Target curve). |
+| **Actor** | As for the source. |
+
+### Tangents and strength (both ends)
+
+| Tangent method | Result |
+|---|---|
+| **Direct** and **Emitter** | The **component LocalToWorld X axis** (row 0, unnormalised). Direct is *not* (target − source) in this resolver. |
+| **UserSet** | Per-index array; empty → the Tangent distribution at particle **RelativeTime**, then **rotated** by LocalToWorld (no translation) unless bAbsolute. |
+| **Distribution** | Tangent distribution at RelativeTime, **never transformed**, whatever bAbsolute is. |
+
+- **Strength:** if the tangent method is UserSet and the strength array is non-empty → the array; else the Strength distribution at RelativeTime.
+
+### Locks (re-evaluation when not spawning)
+
+| Field | Re-evaluated each tick when |
+|---|---|
+| Position | !bLock |
+| Tangent | !bLockTangent |
+| Target strength | !bLockTargetStength |
+| **Source strength** | **bLockSourceStength is TRUE** (inverted; raw `0x8302F6C4`: `rlwinm …,3,3; beq skip`) |
+
+- With the default (false), the source strength is evaluated **only at spawn**.
+- LockRadius is not read here.
+
+### Who fills the UserSet arrays
+
+| Native | Native implementation | Writes |
+|---|---|---|
+| `SetBeamSourcePoint` | `0x83041E58` | source array |
+| `SetBeamTargetPoint` | `0x83042110` → `0x83039748` | target array |
+| `SetBeamEndPoint` | `0x83041DE0` → `0x83039548` | `UserSetTargetArray[0]` |
+
+- Native callers other than the execs:
+  - SetBeamSourcePoint / SetBeamTargetPoint: none;
+  - SetBeamEndPoint: `0x8295B1F8` (a weapon beam PSC at +0x918, called from `0x829627E0`).
+- Script: only `TnAiPawn._LaserSightPSC.SetBeamEndPoint`.
+- **SetVectorParameter('TargetLocation') does not feed UserSet targets.** Only a Default target with that TargetName reads it.
+- **Shockwave_Melee_FX** (source UserSet, no caller found → U for the TransContent scripts that weren't dumped):
+  - empty array → Source (0, 0, 0) → component origin;
+  - target Emitter with no name → uniform box ±200 in component space;
+  - TargetTangent UserSet → empty → uniform (−1…1) at RelativeTime, rotated;
+  - strengths uniform 150–300, source strength at spawn only.
