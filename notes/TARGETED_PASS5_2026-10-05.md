@@ -1689,3 +1689,7 @@ Both set:
 **`TnPawn.HitWallSound`** (`BL_MELEE_IMPT.MTL_DASH_WALL_IMPT`):
 - `TnPawn.InRobotForm.HitWall`: **only in robot form while `IsDodging`** → `PlaySound(HitWallSound)` (default args, positional), plus `StartCameraShake(_Blueprint.HitWallCameraShake)` for a player controller, then `RobotForm.HitWall()`.
 - Any HitWall during a dodge triggers it (no speed or angle condition in script).
+- **Faction list indexing (C):** the index is the **activator's** team (`RelatedPRI_1.GetTeamNum()`; Autobots TeamIndex 0, Decepticons 1), never the receiver's.
+  - `TnKillstreakActivatedTeamAbilityJammer` = [MP_**Decepticon**AbilitiesJammed, MP_**Autobot**AbilitiesJammed]: an Autobot activator announces "Decepticon abilities jammed" (the victims), which is deliberate.
+  - GuidedMissile / ImprovedOrbitalRecon lists name the activator's own faction.
+  - The faction cue is used only where the role cue is none. So for GuidedMissile, Self hears MP_OmegaMissleOnline while every other receiver (friend or enemy) hears the activator-faction "fired" line. For Jammer and Beacon 2.0 everyone, including the activator, hears the faction line.
