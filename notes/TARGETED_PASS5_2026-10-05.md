@@ -2034,3 +2034,35 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
   - Thickness **300**, Lifetime **[30 s]**, NoClip [false], UniformScale [true], ApplyRandomRotation [true].
 - **No decal** (Material none) for SharedCar, SharedJet, SharedTank, SharedVehicle, SoldierTankRobot, OmegaSupreme: **vehicle deaths leave no scorch decal**.
 - Decals are client-side: the gib runs on every machine.
+
+**§12 addendum 24: energy-death ("Defrag") material** (C from script/data; shader maths H from the material graph, not the compiled shader)
+
+**Where it applies:**
+1. **Vehicle skeletal hull gib:** `TnSkeletalRigidBodyModifierSetEnergyDeathMaterial`.
+   - `OnInitialize` caches `Owner.get_EnergyDeathMaterial()`. That is the robot blueprint's material in robot form, otherwise `VehicleForm._Blueprint.EnergyDeathMaterial`; at the gib it is the vehicle one, e.g. VEH_BumbleBee_Defrag_MATINST.
+   - After `Delay`: `OnStart` → `SetMaterialForAllElements(mat)` + `CharacterApplier.ApplyColorsToMesh`.
+   - Then each tick: **`Defrag` = clamp(Defrag − dt / TransitionTime)**, starting at 1 (CurrentScalarValue).
+   - The tick is gated: `TnSkeletalRigidBodyModifier.Tick` only calls OnTick when the delay timer is inactive.
+   - Authored:
+     - SharedCar / SharedTank spawners: TransitionTime **4.5**, Delay **U(0.5, 1.0)**, hull LifeSpan U(3, 5).
+     - SharedJet: TransitionTime **6.0**, no delay, LifeSpan **7**, RadialForceStrength authored {Min 700, Max 400} (inverted; H: RandomInRange still yields 400–700).
+     - SharedVehicle / OmegaSupreme spawners: empty, so no templates and no modifier.
+2. **Robot body during the death:** `TnDeathModifierSetMaterial` (TransitionTime **3.0**, no delay) on the pawn mesh **and** the RobotForm arm mesh. Same Defrag ramp, using the robot blueprint's RB_*_Defrag material.
+   - It is authored only on the **Melee** [10] and **Energy** [7] entries of Shared/HoloBrute robots, and Energy is unreachable (addendum 20). So it is **melee deaths only**.
+   - Spider and SecurityDrone also have it.
+   - Robot skeletal gibs (GIB_Body_SKEL / GIB_LowBody2_SKEL, LifeSpan 5–15) have **no** material modifier.
+3. EnergyDeathMaterial is authored for about 70 robot and vehicle blueprints. All the MICs are children of **`TR_AllShader_p.Release.TR_Defrag_MAT`**.
+
+**`TR_Defrag_MAT`:** BLEND_Masked, MLM_Unlit, OpacityMaskClipValue **0.1**, skeletal.
+- **OpacityMask = UV.mask(Defrag_UV_Direction; default R = U) + (Defrag·2 − 1) − 0.5.**
+  - Visible where U > 1.6 − 2·Defrag. Nothing is clipped while Defrag ≥ 0.8; everything is clipped by Defrag ≤ 0.3.
+  - **It is a straight sweep along U from U = 0 toward U = 1** as Defrag falls 0.8 → 0.3.
+  - With the linear ramp the dissolve runs from **0.2·T to 0.7·T** after the modifier starts:
+    - car/tank hull: delay + 0.9 s … delay + 3.15 s, i.e. finished at 3.65–4.15 s, while the hull LifeSpan is 3–5 s, so it can be destroyed before fully dissolved;
+    - jet hull: 1.2 → 4.2 s (LifeSpan 7);
+    - robot melee body: 0.6 → 2.1 s (the melee entry gibs at 1.5–2.75 s).
+- **Edge glow (emissive add):** clamp(EdgeEnergyColor · ((cos(3.1·Defrag) + 1) / 2) · saturate(sin(mask + Defrag_MASK + 0.5)) · 5 − 0.2, 0, 5).
+  - mask = the OpacityMask value above; Defrag_MASK = texture `WEP_Shared_p.Textures.WEP_Defrag_Alphas`; EdgeEnergyColor default (0, 0.5, 2).
+  - The glow fades in as Defrag → 0 and concentrates near the clip edge.
+  - The rest of the emissive is the usual energon/diffuse/spec terms (PowerDown, Energon_Intensity …), not traced.
+- H: per-MIC `Defrag_UV_Direction` static overrides were not visible in authored.db, so the default U is assumed.
