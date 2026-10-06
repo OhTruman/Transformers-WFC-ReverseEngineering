@@ -679,3 +679,11 @@ This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
 **Conclusion:**
 - Preset volume is a **separate DSP stage** that multiplies with the user fader (H for audible semantics).
 - A preset cannot overwrite the slider value, and the slider does not cancel a preset.
+
+**§9j addendum — sub-step α (C, raw `0x830298E8`):**
+- **T** = replay NoiseTessellation (+0x108); **0 → 1** (`0x83029964…0x83029974`).
+- **Increment** = **1.0 / T**, computed once per beam fill and stored at 0x1D4(r1) (`0x830299A0`).
+- **T ≤ 1:** the Hermite sub-step loop is **skipped** (`0x8302A760` → `0x8302AA70`). Consecutive noise points are joined directly by one segment.
+- **T ≥ 2:** α starts at **0.0**. The noise point N_i itself is emitted beforehand at α = 0. The loop then runs **T times** (counter r30, `subic.`/`bne` at `0x8302AA58`); **α += 1/T before each sample**, so the samples fall at **α = 1/T, 2/T, …, T/T = 1**. The last sample coincides with N_{i+1}.
+- **Each sample:** CubicInterp(N_i, T_i, N_{i+1}, T_{i+1}, α). It emits 2 vertices (one per sheet side). Width = lerp(taper_i, taper_{i+1}, α).
+- **V coordinate:** a running texture coordinate (stack +0x80 increment) advances per sample.
