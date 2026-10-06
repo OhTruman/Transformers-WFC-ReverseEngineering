@@ -507,3 +507,45 @@ This matches stock UE3. The noise point generation itself (NoiseRange, NoiseSpee
 - `Weapon.ProjectileFire` takes RealStartLoc = `GetMuzzleLoc()` (the current socket) **before** the effects advance it, then aims toward the camera-trace hit point.
 - So a projectile and its flash share a socket, and consecutive shots alternate L/R.
 - The instant-hit MG traces from the pawn's start-trace location; only its flash and tracer alternate.
+
+### 9h. BeamNoise point generation (C, native) + correction to 9f
+
+**Layout:** `ParticleModuleBeamNoise` is 0xB4 bytes. The offsets were checked against native use.
+
+| Offset | Field |
+|---|---|
+| +0x30 | flag bits, MSB first: bLowFreq_Enabled 0x80000000, bNRScaleEmitterTime 0x40000000, **bSmooth 0x20000000**, bNoiseLock 0x10000000, bOscillate 0x08000000, bUseNoiseTangents 0x04000000, bSourceNoise 0x02000000, bTargetNoise 0x01000000, **bApplyNoiseScale 0x00800000** |
+| +0x34 | **Frequency** |
+| +0x38 | **Frequency_LowRange** |
+| +0x3C | **NoiseRange** (vector distribution) |
+| +0x50 | NoiseRangeScale |
+| +0x64 | NoiseSpeed (vector) |
+| +0x78 | NoiseLockRadius |
+| +0x7C | **NoiseLockTime** |
+| +0x80 | NoiseTension |
+| +0x84 | NoiseTangentStrength |
+| +0x98 | NoiseTessellation |
+| +0x9C | **FrequencyDistance** |
+| +0xA0 | **NoiseScale** |
+
+**Vtable:** `0x82338F98`. Spawn = **`0x8301F6F8`**, Update = **`0x8301F928`**.
+
+**Spawn (per particle; skipped if Frequency == 0):**
+- N = Frequency. If Frequency_LowRange > 0: N = int(r × (Frequency − LowRange) + LowRange), where r is the next **`appSRand`** value. The LCG is GSRandSeed = seed × 0x0BB38435 + 0x3619636B, so stock UE3 appSRand.
+- N is stored in the payload flag bits 12–23.
+- **N + 1 noise points.** Point[i] = **NoiseRange.GetValue(i / (N + 1))**, a vector-distribution evaluation, i = 0…N. For a uniform or uniform-curve distribution this draws randomly within the range at that ratio along the beam.
+- If **bSmooth**: the same values are also written to a second (target) point array.
+
+**Update (per particle, every tick):**
+- **NoiseLockTime < 0:** points never change (locked).
+- **NoiseLockTime ≤ KINDA_SMALL:** all N + 1 points are re-drawn from NoiseRange(i / (N + 1)) every tick.
+- **NoiseLockTime > 0:** the payload timer += dt. When it exceeds NoiseLockTime, the points are re-drawn and the timer resets to 0. With bSmooth, the new draw goes into the **target** array; the render side moves the current points toward it.
+- **NoiseSpeed is not used on the game thread** (H: render-side smoothing toward the target points).
+- **U:** the render-side use (frame of the NoiseRange offsets, NoiseSpeed smoothing, tension / tangent spline, NoiseTessellation sub-steps).
+
+**Correction to 9f — noise scale.** Read again from `0x8302EAD0`, it is computed **once per beam per tick**, not per point:
+- if bApplyNoiseScale is **clear**: no scale is stored;
+- if **FrequencyDistance ≤ 0**: payload noise scale = **1.0**, and the NoiseScale curve is **ignored**;
+- if FrequencyDistance > 0: steps = min(N, int(length / FrequencyDistance)), and scale = **NoiseScale(steps / N)**.
+
+So every authored noisy beam (none sets FrequencyDistance) renders with **noise scale 1.0**.
