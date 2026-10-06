@@ -689,3 +689,43 @@ Question from Rendering: "entering shadow makes the character nearly black". Is 
   - With BeastLightEnvironmentVolume: Berth (1), ORB_Art (2 volumes + 2 `_LM` boxes, 1024×1024×512 spacing), UND_Complex (1), UND_Gorge (1).
   - With none: **Streets, Seed, Rust, Molten**. There, shadowed characters get only the sky light: Brightness 0.05 (Seed), 0.1 (Streets, Molten, Complex), BrokenHope 0.1, Remnant 0.2. Rust has no SkyLight component in MP packages (H: unlit ambient).
 - Beast probe point data is natively serialised: it is not in authored props (U: format and location undecoded).
+
+## Addendum 2 (2026-10-06): Beast light-probe format and lookup (C unless marked)
+
+Tool: `tools/beast_probes.py <ArtPackage> [--dump out.json]`. The `_LM` boxes are exports inside the art package, e.g. `MP_ORB_Art_m`.
+
+**Data:**
+- `BeastLightEnvironmentVolume.RenderSource` → `BeastLightEnvironmentBox` (lives in `<map>_LM`).
+- Box tagged props: PointsX/Y/Z, Distance, m_worldToLocal, BoxSampleGenerator.
+- Native tail after the tagged props:
+  - `int32 BE count` (= PointsX·PointsY·PointsZ);
+  - then `count × FSHVectorRGB`, each 27 BE float32: **R[9], G[9], B[9] planar** (proven by the dot product at `0x82CECEB8`).
+- Point index = `(z·PointsY + y)·PointsX + x`. In the box object, +0x70 = Points, +0x7C = PointsX, +0x80 = PointsY, +0x94 = generator.
+- SH basis (`0x82B20168`; tables are BSS-initialised, H: stock UE3 `SHBasisFunction`):
+  - order L·(L+1)+M; Condon–Shortley phase; M<0 → sin, M>0 → cos;
+  - basis = 0.282095, −0.488603·y, 0.488603·z, −0.488603·x, 1.092548·xy, −1.092548·yz, 0.315392·(3z²−1), −1.092548·xz, 0.546274·(x²−y²).
+
+**Lookup** (`0x82FC6DB8`, box vtable slot at `0x8232A9DC`):
+- `local = generator.m_worldToLocal · P`. Outside if `max(|local|) > 1`; then the lookup returns false and the volume is skipped.
+- `m_ep` (EdgePolicy) 0, which is what all MP generators use: grid coordinate `g = (N−1)·(local+1)·0.5` per axis.
+  - `m_ep` 1: `g = ((local+1) − fmod(2, 2/N)·1.75)/(2/N)`.
+- **Trilinear**: i0 = floor(g) clamped ≥ 0, i1 = min(i0+1, N−1), weights (1−f, f), over the 8 corners. There is no nearest-probe or volume average.
+
+**Volume pick** (`0x82CCB228`):
+- For each world volume with RenderSource (+0x1C8) ≠ null, bEnabled (+0x1D0 bit 31) set, and Priority (+0x1E4) ≥ the current best, look it up.
+- A higher Priority resets the sum; equal priorities are summed. The result is ×1/n; zero if none.
+- MP volumes all have Priority 0 (default).
+
+**SH → ambient cube** (`0x82CBE520`):
+- The environment stores a 6-face ambient cube (+X, −X, +Y, −Y, +Z, −Z; float4 each, rgb used): `face = dot(SH_rgb, B(dir)) / |B(dir)|²`, where |B|² = 9/(4π) ≈ 0.716.
+- There is no irradiance (cosine) convolution; it is a radiance reconstruction scaled by ≈1.396.
+- Sky (`0x82CBE200`): ±X / ±Y faces += 0.5·(upper+lower), +Z += upper, −Z += lower.
+- This cube is the shader's AmbientCube c32..c37 (earlier addendum, H).
+
+**Coverage correction:**
+- Only **ORB** volumes have a RenderSource (2 boxes):
+  - `_12298`: 21×23×9;
+  - `_5994`: 21×23×7;
+  - spacing 1024×1024×512.
+- **Berth, Gorge and Complex volumes have no RenderSource** (no baked box in their `_LM`), so they are skipped and contribute zero in the original. H: their darkness is authentic, like the probe-less maps.
+- ORB data magnitude: DC radiance (R) mean 0.008 / max 0.367 (box 12298), mean 0.004 (box 5994). Many points are exactly 0 (inside geometry).

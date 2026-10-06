@@ -41,3 +41,4 @@ Added in Milestone 03:
 | `mp_progression_extract.py` | XP events, level table, challenges, class unlocks, game modes, kill awards, MP nav audit → `notes/data/mp_*.json` (MP_PROGRESSION_SCORING_AI_2026-10-06.md) |
 - `work/script/decomp_tc/` — TransContent script (game classes) decompiled from MP map packages: `python ue3dis.py --all ../work/script/decomp_tc MP_ORB_Debris_BASE_m MP_IAC_Streets_BASE_m`.
 | `ai_definitions_extract.py` | AI character definitions (GOAP action/goal/sensor sets resolved) + AI weapon data → `notes/data/ai_*.json` |
+- `beast_probes.py` — read-only Beast light-probe decoder (BeastLightEnvironmentBox SH grids; format, basis, ambient-cube conversion). `beast_probes.py MP_ORB_Art_m [--dump out.json]`.
