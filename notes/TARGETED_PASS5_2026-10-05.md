@@ -2097,3 +2097,39 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
 - So the robot light ramps up over 2 s and **switches off abruptly at 2 s** (it never holds at full).
 - The vehicle light (addendum 21): Brightness 25 / Radius 512 / Falloff 10 defaults, colour (202, 123, 213), ramp 0.2 s, LightTime 8.
   - H: in practice it is cut when the corpse actor is destroyed (TotalTime + 1 ≈ 1.2–1.75 s for cars/tanks).
+
+**§12 addendum 26: TR_Defrag_MAT emissive terms** (H: from the authored material graph, not the compiled shader. The graph is complete; output-index → channel uses the UE3 TextureSample outputs [RGB, R, G, B, A])
+
+The material is **MLM_Unlit**. All shading is a hand-built "fake light" in EmissiveColor:
+**Emissive = Edge + Energon + Diffuse + Specular.**
+
+**Textures (per MIC):**
+- **G** = `Grunge_Map` RGB (the character colour/grunge map).
+- `CustClrAlphasMap`: R = **CA** (Cust_Color_A mask), G = **CB** (Cust_COLOR_B mask), B = **Aux** (aux glow).
+- `Lum_Map`: R = **Ls** (spec power), G = **Ld** (diffuse lum), B = **Le** (energon glow).
+- `WEP_Defrag_Alphas`: **G** channel = Defrag_MASK.
+- Engine defaults: Pixel_4_WHT / Pixel_64_Black / VH_Bumblebee_Clr.
+
+**Shared terms:**
+- **Paint** = lerp(lerp(G, Cust_Color_A, CA), Cust_COLOR_B, CB). **Bare** = 1 − (CA + CB).
+- **R** = world reflection vector; **ndl** = saturate(|dot(normalize(1, 1, −1), R)|), a fixed fake light direction against the reflection vector, so it is view-dependent.
+- **Lc** = LightColor · LightIntensity (defaults (0.173, 0.316, 0.384) · 2, bluish).
+
+**1. Diffuse:** Desat(ColorBrightness · Ld · (Paint + G · Bare), Color_Saturation) · ndl · Lc · 0.5.
+- Desaturation with a negative percent oversaturates (default −0.15).
+
+**2. Specular:** clamp(S, 0, 1.25) · ndl^P · Lc.
+- S = Desat(Ls · (Paint + G · Bare), SpecularColor_Desaturation) · Specular_Intensity · (2 + P) · 0.5, where P = Ls · SpecularPower_Intensity.
+- This comes from `NormalizedSpecular_MATFUNC`: SpecPow = in2·in3; Spec = in0·in1·(2 + SpecPow)·0.5.
+
+**3. Energon:** Desat(G · Emissive_Intensity · Aux + **PowerDown** · EnergonColor · Le · Energon_Intensity, Emissive_Saturation (default −0.15)).
+- EnergonColor comes from static switches: **UseNeutralEnergonColor** → (0.843, 0.302, 0.029) orange; else **UseAutobotEnergonColor** (default true) → (1.25, 0.05, 0.05) red; else (0.2, 0.1, 1.5) blue-purple.
+- These match the TnFactionTeam EnergonColor values (Autobots red, Decepticons blue).
+
+**4. Edge:** addendum 24 (clamp(EdgeEnergyColor · ((cos(3.1·Defrag) + 1)/2) · saturate(sin(mask + DefragMaskG + 0.5)) · 5 − 0.2, 0, 5)).
+
+**Defrag affects only the clip mask and the edge glow.** The rest of the body keeps its full fake-lit colour until it is clipped.
+
+**Example MIC VEH_BumbleBee_Defrag_MATINST:** Emissive_Intensity 3, Energon_Intensity 1, PowerDown 1, ColorBrightness 0.2, Specular_Intensity 0.5, SpecularPower_Intensity 35, SpecularColor_Desaturation 0.2, Cust_Color_A (0.891, 0.567, 0.014).
+- Further spec params (SpecSpowerAdd, contrasts, ReflectionMipLevelScale, Fill_Reflection_Intensity) are authored but **not referenced** by TR_Defrag_MAT's emissive graph (no such parameter nodes).
+- `Normal` = reconstructed from the XY normal map (UseReconstructedNormal default true): xy, sqrt(1 − dot(xy, xy)).
