@@ -1816,3 +1816,29 @@ All cues are local (bNotReplicated / audio components), played by each non-dedic
 
 - There is no Bounce or Fuse cue on this mesh.
 - H: touch-explode applies in every state (ProcessTouch is not overridden per state); actual touch filtering depends on collision flags (not traced).
+
+**§12 addendum 17: martyrdom — the spawner is a buff, and it spawns kamikaze mines** (C unless marked)
+
+**Source:**
+- MP skill `[ExplodeOnDeath TnDataProvider_Skill]` (TransCustomization.ini): SpecialtyRestriction = Leader, LevelRestriction = 8, MaxSkillLevel 1 → `TnSkillExplodeOnDeath` (BuffToApply = **`TnBuffExplodeOnDeath`**, BuffTime −1, kBuffReplicateToNone).
+- AI: the Brawl_Buddy / Brawl_VIP / Demolishor_Buddy AI character definitions carry the same buff.
+
+**Timeline:**
+1. **Death (server):** `TnPawn.HandleDied` → `TnBuffExplodeOnDeath.SaveNumberOfGrenades()` = the grenade bag's (`GetWeaponByType(4)`) **ReserveAmmoCount at death**, then `Died`.
+2. **Death animation:** `TnRobotDeathPicker.FindActiveTypes` adds `TnDeathTypeMartyrdom` when the pawn has TnBuffExplodeOnDeath or TnBuffExplodeOnDeathKamikaze.
+   - Death entries of that type: SharedRobotDeaths (TotalTime 1.25), HoloBrute (1.0), Spider / SecurityDrone (0). All play anim **`Death_Martyrdom`**.
+   - H: the picker prefers a matching type.
+   - Notify sounds (positional, via anim notifies), LightMedium `Death_Martyrdom` (0.97 s): t = 0 **BL_INTRFC_TECH_TREE.MARTYR_EXPLO_BUILD_UP**, then **BL_WPN_GUN_GRENADE_LAUNCHER.SHOOT at socket "Martyrdom"** at t = 0.15 / 0.32 / 0.47 / 0.63 / 0.78.
+   - The HeavyMedium variant (1.0 s) has instead **BL_TRANS_POWER.SHIELD_PUSH** at 0.006 plus booster/trail FX and Shield_BlastWave_A_FX at 0.156.
+   - These play wherever the death anim runs, i.e. every client (tear-off).
+3. **Release:** at the gib (`TnDeathPlayer` timer = TotalTime, so 1.25 s for robots) → `TnPawn.Dying.Gib` → `TriggerExplodeOnDeathBuffs` → `TnBuffExplodeOnDeathBase.Explode` for each derived buff.
+   - `TnBuffExplodeOnDeath.Explode` (authority, requires OwnerController) spawns **NumberOfGrenades × `TnProjectileKamikazeMineMartyrdom`** at pawn + (0, 0, 10).
+   - Each is fired along MakeRotatorDeg(pitch = 90 + U(45, 60), yaw), i.e. 30–45° above horizontal. Yaw starts random and steps 360/N.
+   - Each mine: SetTeam(owner team) → `Init(dir)` → SetInstigatorController(owner).
+   - 0 reserve grenades → no mines.
+4. **The mines:** `TnProjectileKamikazeMineMartyrdom` overrides only **`ShouldFadeOutOnInstigatorDeath = false`** (otherwise they would fizzle immediately) plus components.
+   - Mesh and data are inherited: **KamikazeMine_PROJMESH**, so the sounds are exactly §12 addendum 16 (idle loop → FUSE_START + tracking loop → KAMIKAZE_EXPL); the KamikazeMine data.
+
+**`TnProjectileMartyrdomGrenade` / Grenade_Martyrdom_PROJMESH / Grenade_Martyrdom_PROJDATA** (GL cues; FuseTime 0.5–1, Damage 100, radius 1500, TnDamageTypeMartyrGrenade):
+- **No spawner anywhere**: no script class literal, no data or ini reference.
+- An earlier design superseded by the kamikaze-mine martyrdom. It is **unused** (absence of evidence; don't implement).
