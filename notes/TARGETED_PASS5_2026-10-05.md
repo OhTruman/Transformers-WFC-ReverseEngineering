@@ -1401,3 +1401,26 @@ Both set:
 **Authored RequiredModule.InterpolationMethod:** Linear_Blend 515, Random 459 (14 with RandomImageChanges set, which is unused), Linear 130, None 47, Random_Blend 28.
 
 **Also noted:** `ParticleEmitter.SpriteEmitterRenderMode` (SERM_Quad / Octagon / BestFit, with `BestFitPolygons`) is a WFC polygon-sprite feature; the fill's 12 vertex-write sites cover it. **Not traced** (U).
+
+## 17. Sprite polygon render modes (SERM_Quad / Octagon / BestFit) (RE) (C unless marked)
+
+**Setting:** `ParticleEmitter.SpriteEmitterRenderMode` (WFC; emitter +0x2C), plus `BestFitPolygons`.
+- Authored: Quad (default) 1640 emitters, **BestFit 1269**, Octagon 160.
+- Every BestFit emitter has exactly **1** polygon. 38 Quad/Octagon emitters also carry a stale polygon, which is unused.
+
+**Fill** (`0x8305F7D8`, mode = dynamic data `piVar33[4]`). It writes per-vertex corners into vertex +0x50 / +0x54, the same slot the shader expands with (`(corner − ½)·Size` along the sprite axes, §15). UVs are computed on the CPU as (cell + corner) × cellSize (SubUV, §16), so geometry and texture stay aligned.
+
+| Mode | Vertices | Corners |
+|---|---|---|
+| **0 Quad** | 4 | (0,0), (0,1), (1,1), (1,0) |
+| **1 Octagon** | 8 | (0.2929, 0), (0.7071, 0), (1, 0.2929), (1, 0.7071), (0.7071, 1), (0.2929, 1), (0, 0.7071), (0, 0.2929) |
+| **2 BestFit** | VertexCount (3–8, H: max 8 from the index switch) | the polygon's vertices (x, y) in cell-local 0–1 texture space |
+
+- Octagon constants are `0x82335B1C` = 1 − 1/√2 and `0x82335B20` = 1/√2, i.e. the unit square with corner triangles of leg 1 − 1/√2 cut off.
+- BestFit polygon records: 0x68 bytes = {Time f32, VertexCount i32, Vertices[12] (x, y)}. Slots past VertexCount are stale data.
+- **BestFit selection:** the last polygon whose `Time ≤ particle age in seconds` (RelativeTime / OneOverMaxLifetime). With one authored polygon it is always polygon 0.
+- **Indices:** per-polygon lists built by vertex count. H: authored polygons are convex, so any triangulation covers the same area.
+
+**Visual consequences (H):**
+- **BestFit** clips the quad to a hull around the texture's visible texels. Where the excluded area is transparent it looks identical to a quad (it is a fill-rate optimisation). A renderer drawing plain quads is visually equivalent **provided** the texture is transparent outside the polygon.
+- **Octagon** always removes the four corner triangles (leg 0.293 of the quad). Any texel there is never drawn. A quad renderer will show corner content the original hides (usually none, for round puff textures).
