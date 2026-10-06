@@ -947,3 +947,42 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
   - **`!MoveToSafeTransformationLocation(TargetForm)`**: no room. This **also** calls `TnHUD.NotifyCantTransform()`.
 
 **Roller mine arm sound:** `TnRollerMineAbility.ArmSound` = `BL_WPN_GRENADE.KAMIKAZE_FUSE_START` (CDO `TransGame.Default__TnRollerMineAbility`; it is a subclass field, not on TnRollerMine). Played by `TnRollerMineAbility.ArmTimer` (ArmTime 3.0) via `PlaySound(ArmSound, bNotReplicated = true, , bStopWhenOwnerDestroyed = true)`.
+
+## 13. Beam2 / Trail2 vertex UV layout (RE) (C for CPU writes unless marked)
+
+**Shared vertex format** (0x54-byte vertex, two vertices per path point, **both written with the same Position**):
+
+| Offset | Field |
+|---|---|
+| +0x00 | Position |
+| +0x0C | OldPosition |
+| +0x18 | path direction |
+| +0x24 | up vector, or (1, 0, 0) by flag |
+| **+0x30** | **U** |
+| **+0x34** | **V** |
+| +0x38 | Color |
+| +0x48 | Size × 3 |
+| +0x54… | DynamicParameter (when flag 0x08000000) |
+
+- The **side expansion happens in the vertex shader.** It is in compiled Xenon shaders, and no source is in the dump, so **which world side V = 0 lands on is UNKNOWN**. H: one side per vertex of the pair.
+- Per-side width scales come from `0x8300F568(replay+0x90)`: default **(1, 1)**; other modes zero one side or both.
+
+**V (across):** in every emitted pair, **first vertex V = 0.0** (stack 0x54/0x60 = DAT_82000D40) and **second vertex V = 1.0**. This holds for both fills.
+
+**Beam (`0x830298E8`, the only beam fill; three emit sites — source pair, Hermite sub-step pair, noise-point pair):**
+- **U runs along the beam, from 0 at the source.**
+- step = **1 / (T × N)**, where T = NoiseTessellation (0 → 1) and N = the point count at payload +0x58 (`0x83029B80` `mullw`, `0x83029C64` `fdivs`, stored at 0x80(r1)).
+- The running U (0x60(r1)) starts at step after the source pair and advances once per emitted pair, so **U = k / (T·N), ending at exactly 1.0 at the target**.
+- **TextureTile is not applied** anywhere in the fill (C; irrelevant at the MP default of 1).
+- There is no time term (no scrolling).
+
+**Trail2 fill: `0x8301A700`** (not a Ghidra function; replay setup `0x83035770`; vertex count `0x83019600`; emit sites `0x8301B2F0`, `0x8301B59C`, `0x8301BC9C`):
+- **U runs along the trail**, from 0.0 at the first emitted point (the trail-head record walk; **H: the head is the newest / source end, as in stock UE3**).
+- **bTilePerParticle = false** (replay +0xC0 == 0):
+  - max = TextureTile (replay +0xBC);
+  - k = Tile / TotalTrailLength (head record +0x34; 0 if ≤ ε);
+  - per-segment step = SegmentLength (particle payload +0x20) × k / SubSteps (replay +0xB0).
+  - So **U = Tile × cumulative distance / total length, spanning the whole trail once (0 → 1 with Tile 1)**. Distance-based, not index-based.
+- **bTilePerParticle = true:** max = count × Tile; step = Tile / SubSteps (each segment 0 → Tile).
+- U is accumulated `U += step`, then **clamped to [0, max]** with `fsel` (`0x8301B460–0x8301B480`).
+- No time term (no scrolling).
