@@ -58,3 +58,28 @@ for o, c, p in db.execute("select opath,class,props from objects where substr(op
     wd[o] = {"class": c, **json.loads(p or "{}")}
 json.dump(wd, open(os.path.join(OUT, "ai_weapon_data.json"), "w"), indent=1)
 print("definitions", len(defs), "ai weapon data", len(wd))
+
+# ---- behaviour summary: action blueprint class -> definitions using it + distinct parameter sets
+import collections
+use = collections.defaultdict(set); params = collections.defaultdict(collections.Counter)
+
+
+def walk(bp, defname):
+    c = bp.get("_class"); use[c].add(defname.split(".")[-1])
+    p = {k: v for k, v in bp.items() if not k.startswith("_") and k not in ("ActionSet", "GoalSet", "EditVersion")}
+    params[c][json.dumps(p, sort_keys=True, default=str)] += 1
+    for sub in ("ActionSet",):
+        if isinstance(bp.get(sub), dict):
+            for x in bp[sub].get("ActionBlueprints", []):
+                if isinstance(x, dict):
+                    walk(x, defname)
+
+
+for n, e in defs.items():
+    for b in e.get("ActionSet", {}).get("blueprints", []):
+        if isinstance(b, dict):
+            walk(b, n)
+summary = {c: {"definitions": sorted(use[c]), "param_sets": [{"count": k, "params": json.loads(p)} for p, k in params[c].most_common()]}
+           for c in sorted(use, key=lambda c: -len(use[c]))}
+json.dump(summary, open(os.path.join(OUT, "ai_behavior_summary.json"), "w"), indent=1)
+print("behaviour classes", len(summary))

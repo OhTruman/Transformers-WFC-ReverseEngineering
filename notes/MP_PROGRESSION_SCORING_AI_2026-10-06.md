@@ -487,3 +487,31 @@ A rebuild that wants bots on the scoreboard must deliberately diverge (**PC ADAP
 - A replan only looks at higher-priority goals (index < current), or the current goal too when `EvaluateCurrentGoalOnReplan`. For the current goal it compares against the running plan's cost.
 - A plan whose action disallows interruption blocks replans.
 - Buddy order: UseInteract(high) > React > ReactToStimulus(high) > ScriptedMoveTo > DefendSelf > **Kill** > UseInteract(low) > BuddyLead > MoveTo Objective > MoveTo Buddy > ReactToStimulus(low) > Idle.
+
+## Addendum 3: original AI behaviour coverage vs MP needs, and team/slot rules (C from data/script)
+
+Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → definitions + parameter sets).
+
+| MP need | ORIGINAL reusable behaviour (definitions) | Gap → PC ADAPTATION |
+|---|---|---|
+| Shoot (robot) | `ShootAtTarget` / `ShootFromTactical` per weapon class (all soldiers + buddies) | needs tactical nodes on versus maps |
+| Shoot (vehicle/jet) | `ShootAtTarget` RequiredForm TF_Vehicle (RocketVehicle …); jets `ShootFromAirTactical` (RocketVehicle / PlaneMachineGun), `ShootingStrafeFromHover` (Duration 4, every 2–3 s), `BombingRun` (every 7–10 s) | |
+| Melee | `NavigatingMelee` (33 defs, UsageInterval 1 s); `Melee` (Brutes / CQC; cloak preconditions); Brute `SmashAttack` (2000–5000 UU, every 15–20 s) | |
+| Grenades | `ThrowGrenade` only on Shotgun soldiers (FlakGrenades, AttackRange RANGE_Far) and the Starscream boss | other classes: none |
+| Dodge / evasive | `BarrelRoll` (jets, MinDamageThreat Low, every 3–5 / 4.5–6.5 s); `DodgeNavigate` (CQC, DodgeTraceMinimumThreshold 0.7); `Dodge` (Laserbeak, drones, boss) | robot dodge for buddies: none |
+| Transform | `TransformToRobo` (67 defs) / `TransformToVehicle` (53) / `TransformToVehicleFromJump` (jets) / `TransformToRoboWoundedReaction` (tanks); vehicle navigation (60 defs) | |
+| Abilities | Cloak (CQC), AbilityJammer (Frenzy, every 5–7 s), Hover (Frenzy), Heal / repair ray (Ratchet, Jetfire, Soundwave buddies), Revive (9) | **Warcry, Shield, Decoy, Sentry, Mines, Hover (MP Scout/Leader/Scientist/Soldier abilities), Hard Lock, Barrier: no AI actions** |
+| Turrets | Enter / Leave / ShootFromTurret / ScanForEnemies (41 defs) | |
+| Team | `BuddyLead`, `MoveTo Buddy` (CloseToFriend), `LOSToTeam` tactical evaluator, Revive/Heal | |
+| Objectives | `MoveTo Objective` (WorldState MoveToObjective), `StayInTacticalVolume` + DefendActor / BattleLine evaluators (Escalation) | **no capture / carry / plant / defuse / zone-hold behaviour** |
+| Navigation | NavigationCell + PathNode / AirPathNode / MoverPathNode + TnTacticalPathNode (campaign / Escalation maps only) | **versus maps need reconstructed nav + tactical nodes** |
+| Difficulty | campaign EASY/MEDIUM/HARD player-damage buffs (addendum 1); AI weapon spread / burst data | bot difficulty presets |
+
+**Slots / teams:**
+- MaxPlayersAllowed **10**; NumPublicConnections / NumPrivateConnections 10; NumRequiredPlayers 4.
+- `TnTeamHandlerTwoTeams.PickTeam`: the smaller team, random on a tie (Autobots index 0, Decepticons 1); party reservations keep parties together.
+- **No explicit per-team cap** (balance only), i.e. ≤ 5v5 at 10 players (H: the lobby enforces this).
+- **AssignTeams / ForceToTeam / DisbandTeams skip `bBot` PRIs**, so bots need explicit team assignment (PC ADAPTATION).
+- FFA: `TnFreeForAllGame.GetResolvedCharacterFaction = 1`, i.e. every DM player resolves to the Decepticon faction character set (C).
+
+**Original bot UI:** none. There is no bot menu or option in the original; a Private Match Bot Settings screen is a PC ADAPTATION.
