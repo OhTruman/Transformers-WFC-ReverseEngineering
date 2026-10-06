@@ -2350,3 +2350,24 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - Dest alpha is unchanged (altAlpha 0), or multiplied by (1 − src.a) = (1 − G·Color.A) when altAlpha = 1 (H: which flag decals carry was not traced; scene alpha is not shown).
 
 **Also identified:** the 15-case selector `0x82A0BD18` is the **Scaleform GFx blend-mode table** (Normal, Layer, Multiply = DestColor/Zero, Screen, Lighten/Darken = Max/Min, Add, Subtract = RevSub, …). It is UI only.
+
+**§12 addendum 34: impact-decal inputs — PhysMaterial fallback and DecalTemplate struct defaults** (labels inline)
+
+**1. Which PhysMaterial a hit gets:**
+- Script only consumes `HitInfo.PhysMaterial` (`HmWeaponMesh.CreateImpactEffects`, `TnDecalApplicator`). It is filled natively by Trace (`Actor.CheckHitInfo` only re-traces skeletal hits). Footsteps add their own `HitInfo.Material.PhysMaterial` fallback in script.
+- `MaterialInterface.GetPhysicalMaterial` is native: execGetPhysicalMaterial `0x82FBCE88` → virtual slot **+0x160**. The per-class implementations were not located (time-boxed).
+- **H (stock UE3 chain):** the PhysMaterial is resolved in this order:
+  1. the component's PhysMaterialOverride;
+  2. else the hit Material's GetPhysicalMaterial(): MIC PhysMaterial → Parent chain → UMaterial.PhysMaterial;
+  3. else **GEngine.DefaultPhysMaterial = `ENV_PHYSMAT_p.Metal_PHYSMAT`** (Xe-TransEngine.ini DefaultPhysMaterialName).
+  Metal has a TnPhysicalMaterialProperty with Bullet/Energy/Explosive groups. BSP hits return the surface Material, so they take the same chain.
+- **Correction of emphasis to addendum 29:** "Metal 802 refs" counts **explicit** PhysMaterial references in authored data, not fallback hits. Untagged materials reach Metal only through the (H) engine default.
+
+**2. DecalTemplate struct defaults (C):** two independent CDOs agree:
+- `HM_Engine.Default__HmWeaponMesh.DefaultDecal`;
+- `TransGame.Default__TnDecalApplicator.Template`;
+- also the fully-serialised Concrete / MiniBosses physmat entries.
+- Values: **Material None, MinWidth 100, MinHeight 100, WidthRange 100, HeightRange 100, Thickness 10, Lifetime 30, NoClip false, UniformScale true, ApplyRandomRotation true.**
+- A cooked struct omits fields equal to its archetype, i.e. TnWeaponMesh CDO (unchanged), which is HmWeaponMesh CDO.
+- **AssaultRifle DefaultDecal** = MetalDecal_02, Min 25/25, Range 25/25, Thickness 25, UniformScale false, **Lifetime 30, NoClip false**.
+- On the instant-hit path the roll uses the PhysMaterial property's `ApplyRandomRotationToDecal`, not the template's ApplyRandomRotation.
