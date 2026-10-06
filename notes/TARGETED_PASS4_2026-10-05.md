@@ -446,3 +446,35 @@ Otherwise it calls **`AbortMelee`** and returns true.
 - Sanity check: at low speed the peak approaches the static geometric tilt atan(riser / (2 × 70.7)) = 5.05°.
 - Insensitive to tick rate (1/30 or 1/60 s; 1–8 substeps) and to the spring-gravity term.
 - **Conclusion: the original should pitch several degrees over such a riser**; 0.47° is the effect of the rebuild's grounded pitch/roll ω replacement.
+
+### Addendum (2026-10-06): A5, PhysX material combine (C for the UE3 calls; H for PhysX-internal semantics)
+
+**UE3 NxMaterial builder:** `0x82EC5D08` (8 callers in the physics-init paths).
+- It creates a scene material (or reuses a freed index), then fetches it via `NxScene::getMaterialFromIndex` (vtable +0x140) and configures it through the `NxMaterial` vtable (base `0x823F10C0` = `NpMaterial`).
+
+| NxMaterial setter (vtable offset) | Value |
+|---|---|
+| +0x24 setRestitution | `PhysicalMaterial.Restitution` (+0x30) |
+| +0x1C setStaticFriction | `Friction` (+0x2C) |
+| +0x14 setDynamicFriction | `Friction` (+0x2C) |
+| **+0x4C setFrictionCombineMode** | **2** |
+| **+0x54 setRestitutionCombineMode** | **2** |
+| +0x44 setFlags | bit NX_MF_ANISOTROPIC set iff `bEnableAnisotropicFriction` (bit 0x40000000 of +0x34), else cleared |
+| +0x34 / +0x2C setDynamic/StaticFrictionV | `FrictionV` (+0x44) |
+| +0x3C setDirOfAnisotropy | `AnisoFrictionDir` (+0x38) |
+
+- `NxCombineMode` 2 = **NX_CM_MULTIPLY** (PhysX 2.x: AVERAGE 0, MIN 1, MULTIPLY 2, MAX 3; H that the enum is stock).
+- **Every UE3 material uses MULTIPLY for both friction and restitution.** (This corrects the earlier "default PhysX combine is average" guess.)
+- PhysicalMaterial field offsets in this build: MaterialIndex +0x28, Friction +0x2C, Restitution +0x30, bool bitfield +0x34 (bForceConeFriction, bEnableAnisotropicFriction, …), AnisoFrictionDir +0x38, FrictionV +0x44.
+
+**Vehicle vs world contact** (both MULTIPLY, so the pair uses the product):
+
+| World material | Friction (car × world) | Restitution (car × world) |
+|---|---|---|
+| `ENV_PHYSMAT_p` Default / Concrete / Metal etc. (16 materials: 0.5 / 0.1) | **0.2 × 0.5 = 0.10** | **0.05 × 0.1 = 0.005** |
+| Engine default PhysicalMaterial (CDO 0.7 / 0.3; used where nothing is assigned, H) | 0.14 | 0.015 |
+
+- The truck uses the same physmat values as the car.
+- `VEH_Car_PHYSMAT` authors AnisoFrictionDir (1, 0, 0) but **not** `bEnableAnisotropicFriction`, so friction is isotropic.
+- **So wall contacts are effectively inelastic (restitution ≈ 0.005) with low sliding friction (μ ≈ 0.1).** A glancing hit slides along the wall with almost no bounce.
+- Remaining H (PhysX internals, not traced): the bounce-threshold velocity below which restitution is ignored, and contact skin width.
