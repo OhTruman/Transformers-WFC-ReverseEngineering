@@ -1203,3 +1203,22 @@ Both set:
   - Offset = (2V − 1)·Size·scale_side·normalize(Up). The fill writes Up (+0x24) = the Direction axis from `0x8300F428`: Local X/Y/Z = normalized component LocalToWorld rows; World X/Y/Z = unit axes. CameraFacing → the fill writes (1, 0, 0) and it is unused.
   - Side scales (`0x8300F568`, replay+0x90 byte 1): Centered (1, 1); **Positive (0, 2)** (the V = 0 side collapses, the V = 1 side is 2·Size); **Negative (2, 0)**. They are applied CPU-side to Size per vertex.
   - Authored Direction: Beam2 LocalY 25, LocalX 21, LocalZ 4; Trail2 LocalY 3, LocalZ 3; all others CameraFacing.
+
+**§13 addendum 4 (2026-10-06): CORRECTION, the PSA_Velocity beam/trail census was wrong** (C)
+
+**What went wrong:** addendum 3 paired each Beam2/Trail2 TypeData with a RequiredModule by `outer_path`. Both modules are outered to the ParticleSystem, not the LOD, so the query took the system's *first* RequiredModule. The counts and the tracer list in addendum 3 are therefore **invalid**.
+
+**Recount through `ParticleLODLevel.RequiredModule` / `.TypeDataModule`:**
+- **Beam2:** PSA_Square 343, **PSA_Rectangle 26** (OmegaSpawn_AI_FX, Trypticon_EntranceArm_Electricity_FX), **PSA_TypeSpecific 8** (OmegaGate_Unlock_FX).
+- **Trail2:** **PSA_Square 286**.
+- **No Beam2/Trail2 LOD uses PSA_Velocity**, so the zero-width velocity path is never reached by authored data. **Retracted.**
+
+**What the tracers actually are:**
+- Tracer_AssaultRifle_FX / Tracer_SniperRifle_FX: a **sprite** emitter "Bolt" (PSA_Velocity, Bolt_ADD_MAT) plus a Trail2 "Trail_Smoke" (PSA_Square).
+- Tracer_Blaster_FX: a **sprite** "BeamsSm" (PSA_Velocity, Spark_MAT) plus a Beam2 (PSA_Square, Tracer_MAT).
+- The velocity alignment belongs to the sprite vertex factory, which is not affected by this finding.
+
+**Effect on the shader rules:**
+- The beam/trail shader only branches on c6.x == 2, so Rectangle and TypeSpecific behave like Square (camera-facing default) (H, emulated).
+- The BillboardSettings.Direction census was per TypeData object and **stands**.
+- The other addendum-3 findings stand: the vertex declaration, the c6 inputs and the Direction/Alignment behaviour.
