@@ -1343,3 +1343,61 @@ Both set:
 - **PSA_Velocity** (scalars.y = 1) and **ROTATE_X/Y/Z / ROTATE_*_U** (scalars.z = 1): **Rotation is ignored.**
 
 **Emulation check:** ROTATE_Z, ROTATE_Z_U and velocity give identical corners at Rotation 0, π/4, π/2 and π. RotationRate modules therefore have no visual effect on these sprites.
+
+## 16. Sprite SubUV (RE) (C unless marked)
+
+**Modules:** SubUV / SubUVSelect / SubUVDirect are **compiled records** (only CDOs exist as objects).
+- Update runner `0x83039A18`: **case 0x1F = SubUV**, **0x20 = SubUVSelect**, **0x21 = SubUVDirect**.
+- Each runs only if RequiredModule.InterpolationMethod (Required+0x36) ≠ 0.
+- Each has a sprite and a mesh variant, chosen by `0x8305A068` (IsA FParticleMeshEmitterInstance):
+
+| Module | Sprite | Mesh |
+|---|---|---|
+| SubUV | `0x83017E10` | `0x830181A8` |
+| SubUVSelect | `0x830184C8` | `0x830188C8` |
+| SubUVDirect | `0x83018C90` | `0x83018F28` |
+
+- They update **every tick** for every live particle (flag bit 1 clear, RelativeTime ≤ 1).
+
+**SubUV payload** (particle + instance payload offset):
+
+| Offset | Field |
+|---|---|
+| +0x00 | last random-change RelativeTime |
+| +0x04 | H (column) |
+| +0x08 | V (row) |
+| +0x0C | Interp |
+| +0x10 | H2 |
+| +0x14 | V2 |
+
+**Index selection (`0x83017990`)**, total = SubImages_H × SubImages_V (Required +0x74 / +0x78):
+- **PSUVIM_Linear / Linear_Blend:** `f = SubImageIndex(RelativeTime)`; idx = clamp(⌊f⌋, 0, total − 1); Interp = |f − idx|. **Linear forces Interp = 0.**
+- **PSUVIM_Random / Random_Blend:**
+  - A new pick happens if RandomImageTime (Required+0x7C) == 0, **or** RelativeTime − lastChange > RandomImageTime (**lifetime-fraction units, not seconds**), **or** this is the first time.
+  - The pick is idx = ⌊total · r⌋ with Interp = r (the same RNG fraction; Random forces 0); then lastChange = RelativeTime.
+  - Otherwise the old index is held (the function returns 0).
+  - `RandomImageChanges` is not read.
+- **PSUVIM_None:** idx 0, Interp 0 (but the module is skipped anyway when InterpolationMethod == 0).
+
+**Cell mapping (`0x83017E10`):**
+- H = idx mod SubImages_H, V = idx div SubImages_H (row-major, left to right, then top to bottom).
+- If a new value was produced, (H2, V2) = the next cell: H + 1, wrapping to (0, V + 1), and after the last cell to (0, 0).
+- On a Random hold, H2/V2 = H/V and Interp is reset to 0.
+
+**SubUVSelect (`0x830184C8`):**
+- Linear modes: (H, V) = ⌊SubImageSelect(RelativeTime).xy⌋.
+- Random modes: H = ⌊r₁ · total⌋, V = ⌊r₂ · total⌋, **re-rolled every tick** (no RandomImageTime gate). Each axis ranges over **total**, not its own axis count, so it can exceed the grid. That is a WFC quirk; visible wrapping depends on the sampler (H).
+- Interp = 0; (H2, V2) = the next cell.
+
+**SubUVDirect (`0x83018C90`):** (H, V) ← SubUVPosition(RelativeTime), (H2, V2) ← SubUVSize(RelativeTime), Interp = 0.
+
+**Render fill (`0x8305F7D8`, SubUV vertex stride 0x58, decl `0x8305BEF0`):**
+- Vertex layout: Pos +0x00, OldPos +0x0C, Size +0x18, Rotation +0x24 (BLENDWEIGHT), Color +0x28 (TEXCOORD1), **(U, V, U2, V2) +0x38 (TEXCOORD0)**, **(Interp, pad, cornerU, cornerV) +0x48 (TEXCOORD2)**, then the dynamic parameter.
+- Size = (Size.x, Size.y), with **Size.y = Size.x when ScreenAlignment == PSA_Square**.
+- Normal mode: **U = ⌊H⌋ · (1/SubImages_H), V = ⌊V⌋ · (1/SubImages_V)**, and U2/V2 likewise. These are the cell's top-left corners.
+- Direct mode (dynamic data +0x9C ≠ 0): UV = (Position + Size · corner) · scale. H: scale = 1/texture size, i.e. texel units.
+- H: the shader adds corner·cellSize and lerps texture(UV1) → texture(UV2) by Interp (not traced).
+
+**Authored RequiredModule.InterpolationMethod:** Linear_Blend 515, Random 459 (14 with RandomImageChanges set, which is unused), Linear 130, None 47, Random_Blend 28.
+
+**Also noted:** `ParticleEmitter.SpriteEmitterRenderMode` (SERM_Quad / Octagon / BestFit, with `BestFitPolygons`) is a WFC polygon-sprite feature; the fill's 12 vertex-write sites cover it. **Not traced** (U).
