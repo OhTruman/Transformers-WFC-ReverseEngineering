@@ -33,3 +33,4 @@ Added in Milestone 03:
 - `gfxplace.py` — read-only: named PlaceObject placements (sprite, depth, char, matrix translate/scale) for a Scaleform .gfx; used for the HUD anchor/layout map.
 - `ghidra_scripts/WfcDispScan.java` — read-only headless scan: functions using ALL given displacements/immediates (find field users, e.g. Scale/Scale3D offsets).
 - `ghidra_scripts/WfcStoreScan.java` — read-only headless scan: instructions with a mnemonic prefix and displacement inside functions that also use other displacements (find field writers).
+- `ghidra_scripts/WfcDecompAt.java` — read-only: create a function in memory (explicit `addr:size` body; clears false no-return flags in memory) and decompile code Ghidra never defined. Never saves.

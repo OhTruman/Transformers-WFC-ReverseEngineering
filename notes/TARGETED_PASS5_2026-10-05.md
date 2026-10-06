@@ -549,3 +549,61 @@ This matches stock UE3. The noise point generation itself (NoiseRange, NoiseSpee
 - if FrequencyDistance > 0: steps = min(N, int(length / FrequencyDistance)), and scale = **NoiseScale(steps / N)**.
 
 So every authored noisy beam (none sets FrequencyDistance) renders with **noise scale 1.0**.
+
+### 9i. Render-side beam fill: noise + BeamSineWave (C unless marked)
+
+**Locating it:**
+- The render fill is **`0x830298E8`** (5,584 bytes). Ghidra had never defined it as a function, which is why the earlier scans missed it.
+- It is called only from `0x83055E88`, a slot in the beam dynamic-data vtable at ~`0x823365CC`, with (`this` = replay data, `r4` = the second argument). The second argument is probably the scene proxy (H).
+- It was decompiled in memory with the new read-only `tools/ghidra_scripts/WfcDecompAt.java` (explicit body, no-return cleared, never saved). Raw listings: `work/q/beam_fill_830298e8.dis`, `work/q/beam_fill_830299ac.c`.
+
+**Replay fields used:**
+
+| Offset | Field |
+|---|---|
+| +0xD8 | noise-module payload offset |
+| +0xDA | current noise points |
+| +0xDC | target noise points |
+| +0xDE | taper values |
+| +0xE0 | payload noise scale |
+| +0xE4 | bLowFreq_Enabled |
+| +0xEC | bSmooth |
+| +0xF8 | bSourceNoise |
+| +0xFC | bTargetNoise |
+| +0x100 | Sheets |
+| +0x104 | Frequency |
+| +0x108 | NoiseTessellation |
+| +0x10C | NoiseRangeScale |
+| +0x110 | NoiseTangentStrength |
+| +0x114 | NoiseSpeed |
+| +0x120 | NoiseLockTime |
+| +0x124 | NoiseLockRadius |
+| +0x128 | NoiseTension |
+| +0x134 | TaperMethod |
+| +0x13C | **SineWaves** |
+
+**Per beam, per frame:**
+
+1. Base path points at ratio r_i = i / steps come from `Function_82B5B040`. This is the source → target curve using the payload's source and target tangents × strengths; H: stock CubicInterp.
+2. **BeamSineWave** (`0x83029618`, called at every point with r, d = r × |target − source|, and t = particle age = RelativeTime / OneOverMaxLifetime):
+   - **Frame:** dir = normalise(lerp(sourceTangent × sourceStrength, targetTangent × targetStrength, r)). A quaternion rotates local **+Z onto dir**: axis = normalise(cross((0,0,1), dir)), angle = acos(clamp(dir.z, −1, 1)).
+   - **Sum:** for each wave, `offset += Direction × Amplitude × sin(2π × ((Speed × t + d) / Period + PhaseOffset))`.
+     - **Period** is in UU along the beam.
+     - **Speed** is in UU/s, so the wave travels along the beam.
+     - **PhaseOffset** is in cycles.
+     - **d** is the distance from the source in UU.
+     - **t** is the particle's age in seconds.
+   - **Rotation:** offset' = offset × M(quat), using the UE3 row-vector TransformNormal. So wave **Direction X/Y are perpendicular to the beam, and Z runs along it**.
+   - **Endpoint fade:** offset' × min(6r, 1) × min(6(1 − r), 1). It is zero at both ends and full strength over the middle two-thirds.
+   - The sine offset is added to every interpolated point; it is skipped when no waves are bound.
+3. **Noise** (only when **bLowFreq_Enabled**, the stock noise master switch):
+   - **Smoothing** (bSmooth and NoiseLockTime ≥ 0), per noise point each frame:
+     - step = normalise(target − current) × **NoiseSpeed (per axis)** × noiseTimer, where noiseTimer is the payload time since the last refresh, in seconds;
+     - candidate = current + step;
+     - if |step| ≥ NoiseLockRadius, current = candidate; otherwise **current snaps to target**.
+   - **Offset** = current point i × payload noise scale (§9h: 1.0 unless FrequencyDistance is set) × **NoiseRangeScale**. It is transformed by the 3×3 rotation of the matrix built from **second argument + 0x20**. H: the proxy's LocalToWorld, i.e. **component/emitter space, not beam-aligned**; reasoned from the call chain, not proven.
+   - The **source** point gets noise only if **bSourceNoise**; the **target** point only if **bTargetNoise**. Neither is authored on the MP noisy beams, so both endpoints stay put.
+   - **Between noise points:** NoiseTessellation (min 1) sub-steps via the same curve helper. Width is linearly interpolated between point taper values. NoiseTension / NoiseTangentStrength feed the sub-step tangents (H: stock; exact use not decoded).
+4. **Width** = particle size × TaperValues[i] (when TaperMethod != 0) × sheet factor. The vertex tangent = normalise(P_i − P_{i−1}).
+
+This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
