@@ -515,3 +515,18 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 - FFA: `TnFreeForAllGame.GetResolvedCharacterFaction = 1`, i.e. every DM player resolves to the Decepticon faction character set (C).
 
 **Original bot UI:** none. There is no bot menu or option in the original; a Private Match Bot Settings screen is a PC ADAPTATION.
+
+## Addendum 4: challenge counter producers; Prime presentation (C)
+
+**`notes/data/mp_challenge_stat_producers.json`:** every one of the 121 challenge `StatPropertyId`s mapped to what increments it:
+- script `IncrementGameStat` / `ReportGameStat` sites (incl. `IncrementKillstreakStats` for the Prime kill-streak counters);
+- kill-award rule data (StatId fields);
+- damage-type `KillStatId` (weapon kills);
+- heal-type `HealStatId`;
+- **`PRI.ChallengeStatReplacementMap`**, which mirrors general stats into challenge stats: 289→5388, 292→5389, 260→5391 (Scout dash), 321→5468, 273→5644, 308→5724, 268435459 (assists)→5893, 336 (vehicle time)→5896, 268435457 (kills)→5897, 337 (vehicle kills)→5898.
+
+**Rank / Prime text:**
+- UIText has **no rank names**. "Rank" appears only as the leaderboard column header.
+- Prime strings: `PrimeMode` "Prime Mode"; `PrimeModeDesc` "Achieve max level in all classes to access Prime Mode."; `PrimeModeUnlockedDesc`; `PrimeModeMessage` "Activating Prime Mode will unlock new Prime Mode only challenges and will reset all of your current XP and challenge completions. **A medal will also appear next to your name** so that all can see your new status as a Prime."
+- So Prime players show a **Prime medal next to their name** (presentation in GFx; the icon is U, inside the player-list/HUD SWF).
+- Teletraan1 menu: "View game Challenges, Leaderboards, and Prime Mode options."
