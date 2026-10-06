@@ -1036,3 +1036,56 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 - What the CPU writes into ScreenAlignment for beams/trails is not traced (U); the default authored data suggests 0.
 
 **One inferred op semantic** (`SUB_CONST_0` with the src3 negate bit at instruction 75: the negate applies to both operands → V − 0.5). It is the only reading that gives a symmetric ±Size strip; the alternative puts both vertices on the same side. That keeps this addendum at H rather than C.
+
+## 14. LocationEmitter / LocationEmitterDirect and Trail2 chaining (RE) (C unless marked)
+
+**Compiled-module records.** The UObject classes are stubs:
+- `UParticleModuleLocationEmitter` (size 0x48, vtable `0x82333FF0`) and `…Direct` (size 0x34, vtable `0x82334130`) have empty Spawn/Update slots (`blr`).
+- The real code runs in the compiled-module runners, keyed by record byte +0x0A:
+  - **Spawn runner `0x8303E288`:** case **0x13 = LocationEmitter**, case **0x14 = LocationEmitterDirect**.
+  - **Update runner `0x83039A18`:** case **0x14 = LocationEmitterDirect** only.
+- Record (0x14 bytes, LOD+0x38 → +0x14 array): **+0x00 u16 payload offset** into the LOD payload blob (pointer at LOD+0x5C); **+0x06 u16 per-instance data offset** (base = emitter instance +0x12C); +0x0A u8 module id; +0x10 UObject pointer (used by the runner's default case).
+
+**Payload layout (LocationEmitter, 0x18 bytes, big-endian):**
+
+| Offset | Type | Field |
+|---|---|---|
+| +0x00 | int | **EmitterName** = index into the LOD's name list (LOD+0x38 → +0x68 = array of FName indices). The source is found by comparing with each component EmitterInstance's `SpriteTemplate.EmitterName` (+0x10 → +0x28). |
+| +0x04 | float | InheritSourceVelocityScale |
+| +0x08 | float | InheritSourceRotationScale |
+| +0x0C | int | **SelectionMethod**: 0 = Random, 1 = Sequential, other values → particle 0 |
+| +0x10 | int | bInheritSourceVelocity |
+| +0x14 | int | bInheritSourceRotation |
+
+- Direct reads only **+0x00** (the name index).
+
+**LocationEmitter spawn (case 0x13; selection `0x830352D8`):**
+- **Random:** uses the global appFrand state (`0x83775C7C` LCG); index = ⌊frac · count⌋, clamped to count − 1.
+- **Sequential:** per-instance counter at instance+0x12C + rec+0x06. `counter += 1`; if counter ≥ the source's ActiveParticles → 0. So the sequence is **1, 2, …, n − 1, 0, 1, …**.
+- **No source emitter, or no live source particle:** the module **does nothing**. The particle keeps the position the earlier modules gave it (the emitter origin); the spawn is **not** skipped.
+- **Position:**
+  - Normally: `Loc = M_src→this · (src.Location + (V − src.Velocity) · dt)`.
+    - dt = min(spawn sub-frame time, src.RelativeTime / src[+0x1C]).
+    - V = this instance's +0x88 vector, or 0 when instance flag 0x40000000.
+    - Matrices from `0x8300CC48`.
+  - A source particle with RelativeTime == 0 (spawned this frame) is instead extrapolated from the source **emitter's** location (+0x70).
+  - H: the exact meanings of the dt and V fields are inferred. In effect it is sub-frame back-extrapolation to where the source particle was at this particle's spawn time.
+- **bInheritSourceVelocity:** `BaseVelocity += M·src.Velocity · Scale` and `Velocity += …`. Note that M includes translation (a quirk of the build).
+- **bInheritSourceRotation:** `Rotation += src.Rotation · Scale`.
+- **There is no Update case**, so the position is set **only at spawn**.
+
+**LocationEmitterDirect:**
+- **Spawn (0x14):** the new particle (active index n − 1) copies the source particle with the **same active index**: Location, OldLocation and Velocity (each through `M = 0x8300CA48(src instance)`) and the field at +0x0C.
+- **Update (0x14 in the update runner):** **every tick**, each live particle i (from last to 0, skipping flag 1) is re-snapped to source active particle i the same way.
+- **Counts differ:** particles with i ≥ the source count are left untouched.
+
+**Trail2 spawn with LocationEmitter (`0x83048E40`):**
+- The spawn count per tick is computed from SpawnRate (or a spawn-per-unit helper `0x830178A8` when the instance has one at +0x148), capped by TypeData MaxTrailCount × MaxParticleInTrailCount, then **clamped to ≤ 1 particle per tick**.
+- Flag TypeData+0x40 bit 0x20000000: no spawn when the component hasn't moved more than ε (H: spawn-only-if-moving).
+- **Per new particle:**
+  1. Required init → **compiled spawn modules (`0x8303E288`)**, where LocationEmitter places it → TypeData spawn → `vtable+0x40` post-spawn.
+  2. Flags ← 0x0FFFFFFF (no PREV/NEXT).
+  3. It becomes the **head of the first particle found with PREV == null** (old head.PREV = new, new.NEXT = old head).
+  4. Tangent = normalize(oldHead.Location − new.Location), or the component X axis on the first spawn / with TypeData flag 0x40000000.
+- **No per-source or per-trail filter exists**, so with several live source particles (several shells) it is **one chain**. Each new head sits at whichever source particle the selection picked, so the strip **zig-zags** between sources. With Sequential or Random selection it alternates.
+- **The head does not track its source between spawns.** Positions are written only at spawn; LocationEmitter has no update case.
