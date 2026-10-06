@@ -1711,3 +1711,23 @@ Both set:
 **Granted weapons:**
 - `TnAbilityCreateInventory.ServerTriggerAbility` (TnAbilityPoke → `TransContent.TnWeaponPoke`; TnKillstreakSpawnRocketTurret → `TransContent.TnWeaponRocketTurretKillStreak`) → `Pawn.CreateInventory` → `InventoryManager.CreateInventory` / `AddInventory` → `GivenTo` / `ClientGivenTo`.
 - **No sound**: `TnWeapon.GivenTo` only sets the weapon-data type. `PickupSound` (`TnWeaponMesh.PickupSound`) and `PickupObtainedDialog` play only in `TnWeapon.AnnouncePickup`, which is called only by pickup factories and dropped pickups.
+
+**§12 addendum 13: grenade toss sounds** (C unless marked)
+- `HmWeaponMesh.EWeaponEvent` (from the HM_Engine enum export): 1 = **WP_Fire**, 22 = **WP_NoAmmoFire** (0 Default, 4 Reload, 6 Equip, 13 Overheat, 19 LowAmmoFire, …).
+
+**Input path:**
+- `TnPlayerController.PlayerWalking.TossGrenade` runs on the owning client.
+- If the current weapon is the heavy turret type (WeaponType 5) **or** the pawn is downed or reviving → `GrenadeBag.PlayDryFireSound()`.
+- Otherwise `TnGrenadeBag.TossGrenade`: `CanToss = HasAmmo(0) && !IsTimerActive()`. If false → `PlayDryFireSound()`, i.e. **out of ammo and the toss cooldown both give the dry-fire sound**.
+
+**Successful toss: `PerformToss`** (owning client; a listen-server host for its own pawn):
+- `LocalToss` (local toss animation on an autonomous proxy) → ConsumeAmmo (client prediction) → **`GrenadeBagMesh.PlaySoundEvent(WP_Fire)`** → `SetTimer(GetFireInterval(0))` (the cooldown) → reliable server RPC `ServerTossGrenade`.
+- The server consumes ammo, `GrenadeThrower.ServerToss` (replicated toss animation; SpawnGrenade after TossDelay at the TossSocket), ThrowDialogNotify, the shots-fired stat and ExposeSelf.
+- No sound is played on the server path.
+
+**`PlayDryFireSound`:** `GrenadeBagMesh.PlaySoundEvent(WP_NoAmmoFire)`.
+
+**`HmWeaponMesh.PlaySoundEvent`:**
+- It looks up the event in `WeaponEventSounds`. For a one-shot: `GetSoundOwner().CreateAudioComponent(cue, bPlay=true, bStopWhenOwnerDestroyed=true)`, i.e. a **local** audio component positioned at the sound-owner actor (H: the pawn). It is not replicated.
+- **So the toss WP_Fire and the dry fire are heard only by the tossing player.**
+- U: remote players may hear sounds from AnimNotifies in the replicated toss animation or from the grenade projectile's own spawn and flight sounds (not traced).
