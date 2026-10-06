@@ -661,3 +661,21 @@ This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
 **Mixer presets — U:**
 - Not traced: whether mixer presets act on this same fader (in which case a preset ramp would overwrite the user volume) or on a separate component.
 - H suggestion: presets drive their own ramps; verify before relying on it.
+
+**§10 addendum — mixer presets vs the group fader** (C for the code path; H for audible semantics)
+
+**EnableMixerPreset path:**
+- device vtable +0x130 (`0x82742400`) → +0x1DC getter returns the same inner object (+0x160) → vtable +0x24 = **`0x82772778`**;
+- it finds the preset and resets its timer (+0x1C = 0);
+- it inserts the preset into the active list **sorted by Priority** (+0x04);
+- it calls `categoryTree->vfunc+0x1C(activeList)` = **`0x8276A868`**, then fires an optional callback.
+
+**`0x8276A868`, per category node, recursive:**
+- `0x827661C8` blends the active presets. When it applies, each node's **DSP effect slots** (+0x54 … +0x80) are reset and re-set through their vtable +0x18. The DSP preset properties include Reverb, Echo, EQ, FastEQ, Compressor, Distortion, Flange, FastLowPass, LowPass, HighPass, Pitch and **Volume**.
+- It then recurses into the children.
+
+**It never touches the category's +0x40 fader** that SetAudioGroupVolume writes.
+
+**Conclusion:**
+- Preset volume is a **separate DSP stage** that multiplies with the user fader (H for audible semantics).
+- A preset cannot overwrite the slider value, and the slider does not cancel a preset.
