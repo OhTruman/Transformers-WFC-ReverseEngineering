@@ -1139,3 +1139,21 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 - With **bInheritSourceVelocity, scale 1** (Velocity = src.Velocity, nothing else adding velocity): final Loc = **src.Location** exactly.
 - With **no velocity** (no inherit, no velocity modules): final Loc = **src.Location − src.Velocity·S**, the source's position at this particle's spawn moment.
 - H: the spawn runner's time argument and PostSpawn's SpawnTime come from the same rate accumulator in `0x83048E40` (dVar28 vs dVar30). Their exact equality is not checked.
+
+**§14 addendum 3: SpawnTime equality (C)**
+
+**Inputs** (raw `0x83048E40`):
+- Old = leftover spawn fraction (instance +0xC8, f30 at `0x83049040`);
+- DT = DeltaTime (f24);
+- Inc = 1 / max(rate, ε) (f31, `0x8304908C`).
+
+**Two computations:**
+- **Spawn modules / TypeData spawn** receive f1 = **S_mod = DT − (1 − Old)·Inc**: `fsubs f0 = 1 − Old`; `fnmsubs f13 = −(f0·Inc − DT)`; `fsel` clamps it at 0 (`0x83049238–0x83049258`). It is passed at `0x830492E8` / `0x83049304`, then decremented by Inc after each actual spawn.
+- **PostSpawn** receives f2 = **S_post − i·Inc**, where **S_post = (Inc·Old + DT) − Inc** (`fmadds` / `fsubs` at `0x83049090–0x83049094`), clamped at 0 (`0x830490A0`), via `fnmsubs f2,f6,f31,f25` at `0x8304937C`.
+
+**Result:**
+- They are **algebraically identical**, with identical clamps.
+- They differ only by float rounding (different fused-op order, about 1 ulp).
+- f30 is callee-saved across the intervening calls.
+- For Trail2 (≤ 1 spawn per tick, i = 0) the spawn-module and PostSpawn SpawnTimes are the same value.
+- They can only diverge for n > 1 with a skipped (random-rejected) spawn: the module time decrements per actual spawn, while PostSpawn uses the loop index.
