@@ -530,3 +530,23 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 - Prime strings: `PrimeMode` "Prime Mode"; `PrimeModeDesc` "Achieve max level in all classes to access Prime Mode."; `PrimeModeUnlockedDesc`; `PrimeModeMessage` "Activating Prime Mode will unlock new Prime Mode only challenges and will reset all of your current XP and challenge completions. **A medal will also appear next to your name** so that all can see your new status as a Prime."
 - So Prime players show a **Prime medal next to their name** (presentation in GFx; the icon is U, inside the player-list/HUD SWF).
 - Teletraan1 menu: "View game Challenges, Leaderboards, and Prime Mode options."
+
+## Addendum 5: HUD progression sounds, AI-kill exclusion, movement constants for nav (C)
+
+**Hud_GFX ActionScript** (`tools/as2dis.py ExtractedAssets/content/UI_GFxHud_p/Hud_GFX.gfx`). Sounds go through `HmExternalInterface.Sound.PlaySound(name)` → `BL_HUD_INTERFACE.<name>`:
+- **`MP_LEVEL_UP_MX_STNG`**: in `_global.NotifyLevelUp(NewLevel, Specialty)` (sprite 643, attaches `mc_levelUpNotify`). Called from `TnHUD.NotifyLevelUp` ← `PC.CheckForLevelUp`, local player only, current specialty only.
+- **`MP_REWARD_DIALOG_BOX`**: in the XP transaction label (under `_global.PointEvent`).
+  - It plays once per XP-event line shown. Lines are queued; kill-streak events are put at the queue front and use `mc_pointTransactionKillstreakLabel`.
+  - The running "+N" total scales up by 150 + amount, capped at 400 %, and eases back over 0.5 s.
+  - H: empty-string descriptions also pass the `undefined` check.
+- **`BL_HUD_INTERFACE.EXP_LEVEL_UP`** is unused (only preloaded by BaseMapReferencers).
+
+**AI-controlled participants (C):** `TnGameRules_TrackKills.CheckKills` (kill awards / XP / medals + kill-streak announcer) runs only when killer **and** victim are `TnPlayerController`, and `ScoreKillsMP.ShouldScoreKill` needs a `TnPlayerController` victim.
+- So original AI killers/victims produce no score, XP, medals or streak/progress announcements.
+- Bots that count as players are a **PC ADAPTATION**.
+- AI barks: `TnAiController._DialogManager` plays spawned, enemy-encountered, health, downed and revived dialog.
+
+**Movement constants for nav generation** (from `STEPUP_LEDGE_2026-10-01.md`):
+- The struct `Pawn._WorkingMovementCapabilities` is swapped per form.
+- Robot: MaxStepHeight 35 (+2 fudge → **37 UU** step-up and snap-down), WalkableFloorZ **0.7**, MaxFallHeight 3400, MaxJumpHeight = acrobatics JumpHeight (**500 UU** apex; JumpZ 1714.6), TerminalVelocity 6000.
+- Vehicles: RB/hover physics (the walker rules do not apply).
