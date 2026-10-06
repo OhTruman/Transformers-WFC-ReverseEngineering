@@ -1560,3 +1560,20 @@ Both set:
 **Result:** all three ends (damage, lifetime, owner death) play the same destruction audio and FX.
 
 **Linger time:** `LifeSpanAfterDeath` is 5 s for Default and Repair. **Rocket_TURRETDEF does not author it**, so it inherits the TnSentry CDO **30 s**.
+
+**§12 addendum 6: sentry linger time after death (C)**
+
+**Mechanism:**
+- `TnSentryPawn.ApplySentry` copies `LifeSpanAfterDeath` from the blueprint into the pawn.
+- `TnSentryPawn.Dying.BeginState` sets **`LifeSpan = LifeSpanAfterDeath`**, so the actor auto-destroys after that many seconds.
+- In Dying, `TakeDamage`, `Kill` and `StartFire` are no-ops.
+
+**Values:**
+- The TURRETDEF blueprints have no archetype, so their template is the `TnSentry` class default, and cooked UE3 objects serialise only properties that differ from it.
+- **Rocket_TURRETDEF therefore has LifeSpanAfterDeath = 30 s** (the CDO value; it is absent because it equals the default).
+- Default_TURRETDEF and Repair_TURRETDEF author **5 s**.
+
+**During the linger:**
+- The Destroyed destructible state carries only the explosion FX and sound.
+- The Healthy-state type FX is terminated, and the targetable component lives only in the Healthy state.
+- So the dead sentry is not targetable. H: what remains visible depends on the Healthy-state animated-mesh effect's exit behaviour; not traced.
