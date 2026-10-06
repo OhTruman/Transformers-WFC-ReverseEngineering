@@ -1222,3 +1222,47 @@ Both set:
 - The beam/trail shader only branches on c6.x == 2, so Rectangle and TypeSpecific behave like Square (camera-facing default) (H, emulated).
 - The BillboardSettings.Direction census was per TypeData object and **stands**.
 - The other addendum-3 findings stand: the vertex declaration, the c6 inputs and the Direction/Alignment behaviour.
+
+## 15. Sprite PSA_Velocity alignment (RE) (CPU parts C; shader numerics H, emulated)
+
+**Sprite vertex factory:**
+- VFType `0x838622CC` ("ParticleSpriteVertexFactory"; GetType `0x8305D5E8`).
+- Declaration (elements `0x8305C2D0`), stride 0x40:
+
+| Offset | Format | Usage | Field |
+|---|---|---|---|
+| +0x00 | Float3 | POSITION | Position |
+| +0x0C | Float3 | NORMAL | OldPosition |
+| +0x18 | Float3 | TANGENT | Size |
+| +0x24 | Float1 | BLENDWEIGHT | Rotation |
+| +0x28 | Float4 | TEXCOORD1 | Color |
+| +0x38 | Float2 | TEXCOORD0 | UV / corner |
+
+**Parameters:**
+- Bind `0x83059928`: CameraRight, CameraUp, ScreenAlignment, LocalToWorld, AxisRotationVectorSourceIndex, AxisRotationVectors, **ParticleUpRightResultScalars**, WorldToLocal.
+- SetMesh `0x830198C8`, with no lock axis (VF+0xA9 == 0):
+  - CameraRight / CameraUp = **negated normalized screen axes** from the view (stock UE3 convention: the names are swapped).
+  - **Scalars = (0, 1, 0, 0) when VF+0xA8 (Required.ScreenAlignment) == PSA_Velocity, else (1, 0, 0, 0).**
+  - Lock-axis modes 7–12 use the AxisRotationVectors path (scalars.z).
+
+**Shader** (MP_ORB_Debris ShaderCache_12837 @ 0x10743, microcode at +0x2C4; `tools/xenosvsemu.py` with a new `mstart` argument and TRUNC/FRAC/SIN/COS):
+- D = normalize(L2W·Pos − L2W·OldPos), C = normalize(WorldCameraPosition − L2W·Pos).
+- Right′ = R_rot·s.x − D·s.y; Up′ = U_rot·s.x + cross(C, D)·s.y, where R_rot / U_rot are the camera axes rotated by the particle Rotation.
+- **WorldPos = L2W·Pos + (V − ½)·Size.y·Right′ + (U − ½)·Size.x·(axis built from c6 / cross)**.
+
+**Results (emulated):**
+- **Camera-facing** (Square/Rectangle): U·Size.x along screen-right, V·Size.y along screen-down. Rotation rotates them.
+- **PSA_Velocity:**
+  - **Length = Size.y along the motion**: V = 0 at the **leading** edge, V = 1 at the tail.
+  - **Width = Size.x** across, along cross(camera→particle, D).
+  - **Particle Rotation is ignored.**
+  - **No speed stretch** (D is normalized; the length is always Size.y).
+  - Check: Size (10, 20) moving +X → ±10 along X, ±5 across; moving +Z → ±10 along Z.
+- **Degenerate cases:**
+  - Pos == OldPos (zero velocity): D → 0, so the sprite **collapses to a point (invisible)**.
+  - Motion straight toward or away from the camera: cross(C, D) → 0, so it becomes a zero-width line.
+  - Both are inherent to the original (H).
+
+**MP velocity sprites:** e.g. Tracer_AssaultRifle / SniperRifle "Bolt" (Bolt_ADD_MAT) and Tracer_Blaster "BeamsSm" (Spark_MAT).
+
+**H (not traced):** OldPosition in sprite vertices = particle OldLocation (stock fill), so D = the last tick's motion direction. PostSpawn sets OldLocation = Location − Velocity·f1 (§14 addendum 2).

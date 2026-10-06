@@ -9,8 +9,8 @@ B = X.bits
 NEGBOTH = True
 
 
-def run(d, consts, fetches, trace=False):
-    M, cfs = X.find_microcode(d, 0x28, len(d))
+def run(d, consts, fetches, trace=False, mstart=0x28):
+    M, cfs = X.find_microcode(d, mstart, len(d))
     # literal constants just before microcode (same rule as xenosemu)
     C = {254: struct.unpack_from('>4f', d, M - 32), 255: struct.unpack_from('>4f', d, M - 16)}
     C.update(consts)
@@ -93,7 +93,9 @@ def run(d, consts, fetches, trace=False):
                       18: lambda: 1.0 / A if A else 0.0, 19: lambda: 1.0 / A if A else float('inf'),
                       20: lambda: 1.0 / math.sqrt(A) if A > 0 else 0.0, 21: lambda: 1.0 / math.sqrt(A) if A > 0 else 0.0,
                       22: lambda: 1.0 / math.sqrt(A) if A > 0 else float('inf'),
-                      25: lambda: A - Bv, 26: lambda: A - ps, 40: lambda: math.sqrt(A)}.get(sop, lambda: float('nan'))()
+                      11: lambda: A - math.floor(A), 12: lambda: float(math.trunc(A)), 13: lambda: math.floor(A),
+                      48: lambda: math.sin(A), 49: lambda: math.cos(A),
+                      25: lambda: A - Bv, 26: lambda: A - ps, 40: lambda: math.sqrt(A)}.get(sop, lambda: float("nan"))()
         else:
             se = PS[0]
         if scl and se is not None: se = sat(se)
