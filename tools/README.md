@@ -40,3 +40,4 @@ Added in Milestone 03:
 | `physprop.py` | parse TnPhysicalMaterialProperty / HmPhysicalMaterialProperty exports (missing from authored.db) → `notes/data/physical_material_properties.json` (pass 5 §12 add. 29) |
 | `mp_progression_extract.py` | XP events, level table, challenges, class unlocks, game modes, kill awards, MP nav audit → `notes/data/mp_*.json` (MP_PROGRESSION_SCORING_AI_2026-10-06.md) |
 - `work/script/decomp_tc/` — TransContent script (game classes) decompiled from MP map packages: `python ue3dis.py --all ../work/script/decomp_tc MP_ORB_Debris_BASE_m MP_IAC_Streets_BASE_m`.
+| `ai_definitions_extract.py` | AI character definitions (GOAP action/goal/sensor sets resolved) + AI weapon data → `notes/data/ai_*.json` |

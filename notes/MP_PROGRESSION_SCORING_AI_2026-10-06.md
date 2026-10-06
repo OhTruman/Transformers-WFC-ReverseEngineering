@@ -475,3 +475,15 @@ A rebuild that wants bots on the scoreboard must deliberately diverge (**PC ADAP
 - PhysX fixed 1/60 substeps (≤ 5), with the script dt = n/60 (pass 4 A4 addenda).
 - **UE3 runs one game tick per rendered frame.** There is no fixed-tick/variable-render split and **no interpolation of camera or animation between ticks** (H, stock UE3: the render thread draws the state from the latest game tick). Camera and animation advance by DeltaTime each tick.
 - PC original cap: UNKNOWN (no PC build in the dump; pass 4 A4 addendum 2).
+
+## Addendum 2: AI tuning data dump and goal priority (C)
+
+**Data** (regenerate with `tools/ai_definitions_extract.py`):
+- `notes/data/ai_definitions.json`: all 94 `TnAiCharacterDefinition`s, each with its fully resolved ActionSet blueprints (WeaponClass, RequiredForm, ActionOverrideClass, CostModulators, DynamicPreconditions, nested navigation ActionSets), GoalSet blueprints (Description, WorldStateClass, RangeSensorClass, StimulusConditionSet …), sensors (threat evaluators, tactical node pickers + evaluators) and ActionOverrides (weapon class per form).
+- `notes/data/ai_weapon_data.json`: the 38 `*_AI_WEPDATA` (FireIntervalModifier, PerShotSpreadModifier {Start, Min/Max, ChangePerShot, Cooldown}, BurstRanges, RangeDamageModifiers, TargetSnapRange, heat …).
+
+**GOAP goal priority = position in the GoalSet** (`HmGoapPlanRunner.TryBetterPlan` → `FindPlanInRange(0 … current[-1])`):
+- Goals are planned in index order. The first goal that yields a plan wins.
+- A replan only looks at higher-priority goals (index < current), or the current goal too when `EvaluateCurrentGoalOnReplan`. For the current goal it compares against the running plan's cost.
+- A plan whose action disallows interruption blocks replans.
+- Buddy order: UseInteract(high) > React > ReactToStimulus(high) > ScriptedMoveTo > DefendSelf > **Kill** > UseInteract(low) > BuddyLead > MoveTo Objective > MoveTo Buddy > ReactToStimulus(low) > Idle.
