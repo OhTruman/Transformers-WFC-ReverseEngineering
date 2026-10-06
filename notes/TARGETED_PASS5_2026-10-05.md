@@ -2315,3 +2315,38 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - The bias only sets where the 7e3 ceiling falls in unbiased units: 31.875 / bias.x. That only affects highlight clipping of very bright scenes.
 
 **To finish it later:** break on a PS constant upload during a material draw (runtime), or locate `FMaterialPixelShaderParameters::Set` via the vtable of the material shader classes that own the `0x82EAA318` binder.
+
+**§12 addendum 33: material blend states (decal = BLEND_Modulate)** (C unless marked)
+
+**`EBlendMode`** (Engine `Material.EBlendMode`):
+- 0 Opaque, 1 Masked, 2 Translucent, 3 Additive, **4 Modulate**;
+- 5–9 the `_WriteAlpha` variants of 0–4;
+- 10 Translucent_MaxAlpha, 11 Translucent_AddAlpha.
+
+**Material blend selector `0x82F1A608(blendMode, altAlpha)`:**
+- Called from 8 mesh drawing-policy draw functions (0x8305D6F0, 0x830657E8, 0x82E15E58, 0x82E16738, 0x830655C0, 0x82E162C8, 0x8305D8A8, 0x82EE2BF0).
+- `altAlpha` = a per-material flag bit (`+0x24 >> 31` or `flags >> 18 & 1`; H: a translucency-alpha option).
+- Each case returns a `TStaticBlendState` accessor → vtable → InitRHI. The initializer is {ColorOp, ColorSrc, ColorDst, AlphaOp, AlphaSrc, AlphaDst, AlphaTest, AlphaRef}, decoded from all 29 `RHICreateBlendState (0x829BE930)` callers.
+- EBlendFactor order: Zero, One, SrcColor, InvSrcColor, SrcAlpha, InvSrcAlpha, DestAlpha, InvDestAlpha, DestColor, InvDestColor. The shadow-projection state (known (DestColor, Zero)) validates the decode.
+
+| Mode | altAlpha = 0 | altAlpha = 1 |
+|---|---|---|
+| 0/1 Opaque/Masked | One, Zero; a One, Zero | same |
+| 2 Translucent | SrcA, InvSrcA; a Zero, One | SrcA, InvSrcA; a **Zero, InvSrcA** |
+| 3 Additive | One, One; a Zero, One | if `GFlag 0x83711CB4 == 1`: One, One; a **Zero, InvSrcA**; else the alt=0 state |
+| **4 Modulate** | **DestColor, Zero; a Zero, One** (InitRHI 0x82CF8048, the same object as shadow projection) | if flag == 1: **DestColor, Zero; a Zero, InvSrcA** (InitRHI 0x82F52E28); else the alt=0 state |
+| 5/6 Opaque/Masked_WA | One, Zero; a One, Zero | (modes > 4 leave the state unchanged when altAlpha = 1) |
+| 7 Translucent_WA | SrcA, InvSrcA; a One, Zero | |
+| 8 Additive_WA | One, One; a One, Zero | |
+| 9 Modulate_WA | DestColor, Zero; a One, Zero | |
+| 10 Translucent_MaxAlpha | SrcA, InvSrcA; a **Max** | |
+| 11 Translucent_AddAlpha | SrcA, InvSrcA; a Add(One, One) | |
+
+- All use colour op Add, alpha test Always, ref 255.
+- `GFlag 0x83711CB4`: image default **1**; set to 0/1 by an exec command at 0x82CE43E8 (argument 1 → 0, 2 → 1).
+
+**Decals (DecalDefault/DeathDecal/MetalDecal = BLEND_Modulate):** **dest.rgb = src.rgb · dest.rgb** in every case.
+- This confirms addenda 30–31: the modulate factor multiplies scene colour, with no saturate and clamped only by 7e3.
+- Dest alpha is unchanged (altAlpha 0), or multiplied by (1 − src.a) = (1 − G·Color.A) when altAlpha = 1 (H: which flag decals carry was not traced; scene alpha is not shown).
+
+**Also identified:** the 15-case selector `0x82A0BD18` is the **Scaleform GFx blend-mode table** (Normal, Layer, Multiply = DestColor/Zero, Screen, Lighten/Darken = Max/Min, Add, Subtract = RevSub, …). It is UI only.
