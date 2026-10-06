@@ -1607,3 +1607,20 @@ Both set:
 - **The skeletal component's virtual Detach `0x82D762F0`** (in four skeletal-component vtables) calls the parent class's Detach, then **`ConditionalDetach(child, bWillReattach)` for every socket attachment**.
 
 **Therefore:** when the Destroyed transition's `HmMeshDestructionEffect.EndEffect` detaches the sentry mesh from the actor, the socket-attached **weapon mesh is detached in the same call** and stops rendering. Upgrades §12 addendum 7's weapon point from H to **C**.
+
+**§12 addendum 9: sentry timing on owner death** (C unless marked)
+
+**Two mechanisms:**
+1. **`TnSentryPawnAbility.Tick`** (server, every frame): `GetMaster()` = `TnAiSentryController._KillOwner.Pawn` (the owner's Controller, set at spawn). If none, IsDying or IsDead, it calls **`Kill()`**: the destructible goes to Destroyed (explosion FX + SENTRY_EXPL), then Died / Dying with LifeSpan = LifeSpanAfterDeath.
+   - The owner's `HmPawn.Dying.BeginState` calls `Controller.PawnDied` immediately. H (stock UE3): the controller unpossesses, so `GetMaster()` returns none. Either way the IsDying/IsDead test fires.
+   - **So the sentry explodes on its first server tick after the owner dies: same frame or the next.**
+2. **`TnAbilitySpawnSentry.SpawnSentry`** also registers the sentry in the owner's **`DestroyOnDeathActors`**. That list is processed only in **`TnPawn.Destroyed`** (the owner's pawn *actor* being destroyed), which calls `DestroyActor()` on each entry.
+   - This happens after the explosion, and it **cuts the sentry's (invisible) linger short** to the owner corpse's lifetime.
+   - Owner corpse lifetime: `HmPawn.Dying.BeginState` clamps LifeSpan to ≤ 1 s **on a dedicated server** (bTearOff) or below KillZ.
+   - U: on a listen server or offline no script sets a corpse lifespan (TnPawn defaults author none). The engine's `Pawn.Dying.BeginState` (LifeSpan 2 / 5 s visibility timer) is overridden and not called.
+
+**Other ends:**
+- Re-casting Spawn Sentry calls `ActiveSentry.Kill()` on the old sentry first, so it explodes too.
+- `ForceEndAbility` also calls `Kill()`.
+
+**H (visual):** if the sentry actor is destroyed early (mechanism 2) while OS_Death_LRG_FX is still playing, whether the particle is cut depends on whether the destructible effect's PSC is owned by the sentry actor. Not traced.
