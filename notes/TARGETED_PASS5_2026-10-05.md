@@ -1765,3 +1765,22 @@ All four cues live on the projectile's `HmProjectileMesh` (`TnProjectileMesh`) a
 - Bank names: grenade cues are BL_WPN_GRENADE.*; GL cues are BL_WPN_GUN_GRENADE_LAUNCHER.*.
 - FlashBang_Vig_PROJMESH is the same as FlashBang plus SpawnsFromNonPawn.
 - H: which projectile class uses which PROJMESH (the per-class Mesh pointer was not traced for every class).
+
+**§16 addendum 1: SubUV UV scale (corrects the direct-mode "texel units" H)** (C unless marked)
+
+**Fill context:** the fill's context is set up by `0x83055D98` (the only caller of `0x8305F7D8`), at dynamic data +0xA0:
+- ctx[0] = the dynamic data;
+- **ctx[1] = 1.0 / (float)data+0x94**, **ctx[2] = 1.0 / (float)data+0x98**;
+- vertex stride 0x58 (+0x10 with the dynamic parameter, flag 0x8000000).
+- Dynamic-data layout +0x90 SubUVDataOffset, **+0x94 SubImages_Horizontal**, **+0x98 SubImages_Vertical**, +0x9C bDirectUV. This matches stock UE3 `FDynamicSpriteEmitterReplayDataBase` order (H: field names by that match).
+- (Ghidra shows the context as the return of `0x830EAD74`, which is really an FPR-save stub; the context is r3.)
+
+**Both modes use the same scale (1/SubImages_H, 1/SubImages_V)**, and **the CPU writes full per-corner UVs**: corner c ∈ {0, 1}², written as constants 0.0 / 1.0.
+- Normal: U = (⌊H⌋ + cU) / SubImages_H, V = (⌊V⌋ + cV) / SubImages_V, and likewise for U2/V2 from the next cell.
+  - This replaces the old H "the shader adds corner·cellSize": the CPU already does it.
+- **Direct (bDirectUV): U = (Pos.x + Size.x · cU) / SubImages_H, V = (Pos.y + Size.y · cV) / SubImages_V.** U2/V2 = U/V and Interp = 0.
+  - **Position and Size are in cell units.** There is no texture-size term.
+
+**H2H_Punch01_FX "ChamberLeft_Dup"** (2×2, Pos uniform (0,0)..(1,1), Size 0.5): UV window = [Pos/2, (Pos + 0.5)/2], i.e. a **quarter-texture (half-cell) crop at a random offset within the top-left cell area (UV 0..0.75)**. It never passes 1.
+
+**Address mode:** Sparks_Curved_CLR authors no AddressX/Y, so the Texture2D default **TA_Wrap** applies. H: the material sampler uses the texture's address mode, as in stock UE3. It is irrelevant here since UV ≤ 0.75.
