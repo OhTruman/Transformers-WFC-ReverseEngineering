@@ -1784,3 +1784,21 @@ All four cues live on the projectile's `HmProjectileMesh` (`TnProjectileMesh`) a
 **H2H_Punch01_FX "ChamberLeft_Dup"** (2×2, Pos uniform (0,0)..(1,1), Size 0.5): UV window = [Pos/2, (Pos + 0.5)/2], i.e. a **quarter-texture (half-cell) crop at a random offset within the top-left cell area (UV 0..0.75)**. It never passes 1.
 
 **Address mode:** Sparks_Curved_CLR authors no AddressX/Y, so the Texture2D default **TA_Wrap** applies. H: the material sampler uses the texture's address mode, as in stock UE3. It is irrelevant here since UV ≤ 0.75.
+
+**§12 addendum 15: grenade projectile class → mesh (resolves the addendum 14 H)** (C unless marked)
+
+**The mesh is fixed per class:**
+- `Projectile.PostBeginPlay` → `SetupProjectileData()` → `SetMesh(self.Mesh)` (class check against MeshClassRequired) → `TnProjectile.UpdateMesh` (DrawScale) / `HmProjectile.UpdateMesh` (StaticMesh).
+- No other script calls SetMesh. Only **Data** varies (SP `Data` / `MultiplayerData` / `AiData`); **Mesh (and so every sound cue) is the class default in every mode.**
+
+| Grenade bag WeaponData (MP / SP / AI) | Projectile class | Mesh |
+|---|---|---|
+| FlakGrenades_* | TransGame.TnProjectileGrenade | **GrenadeSkill_PROJMESH** (MAGMA_* cues) |
+| FlashBangs_* | TransContent.TnProjectileFlashBang | **FlashBang_PROJMESH** (EMP_*) |
+| HealGrenades_* | TransContent.TnProjectileHealGrenade | **HealGrenade_PROJMESH** (HEAL_*, no fuse) |
+| KamikazeMines_* | TransGame.TnProjectileKamikazeMine | KamikazeMine_PROJMESH (its own class, not GrenadeBase: FlightSound KAMIKAZE_FLIGHT_LP_IDLE, SecondaryFlightSound …_TRACKING, TargetFoundSound KAMIKAZE_FUSE_START, ExplosionSound KAMIKAZE_EXPL_IMPT_WORLD; playback not traced) |
+| LargeExplosiveAbility_WEPDATA | TransGame.TnProjectileLargeExplosive | LargeExplosive_PROJMESH (BounceSound only) |
+
+**Others:**
+- `TnProjectileMartyrdomGrenade` → Grenade_Martyrdom_PROJMESH (GL trail/explosion, heavy bounce, no fuse). It has no script or data spawner by class name (U: the spawner).
+- `TnProjectileFlashBangVignette` → FlashBang_Vig_PROJMESH is spawned only by `TnAnimNotify_SpawnProjectile` in `PROP_COR_Design_p.Flashbang_ANIM` (a campaign prop/vignette, not MP).
