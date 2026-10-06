@@ -1577,3 +1577,20 @@ Both set:
 - The Destroyed destructible state carries only the explosion FX and sound.
 - The Healthy-state type FX is terminated, and the targetable component lives only in the Healthy state.
 - So the dead sentry is not targetable. H: what remains visible depends on the Healthy-state animated-mesh effect's exit behaviour; not traced.
+
+**§12 addendum 7: what is visible while a sentry lingers** (C for script; H where marked)
+
+**Body:**
+- `TnSentryPawn.ApplySentry` binds `self.Mesh = DestructiblePiece.GetActiveMeshComponent()`, the Healthy state's **HmAnimatedMeshDestructionEffect** mesh (WEP_SentryDeploy_SKEL).
+- The yaw/pitch skel controls and the weapon socket all live on it.
+
+**On death** (`HmDestructiblePiece.TransitionToState` → `ExitCurrentState` → `HmDestructionState.EndEffects`), every Healthy-state effect's `EndEffect` runs:
+- **`HmMeshDestructionEffect.EndEffect` detaches the sentry mesh from the actor unconditionally**, so the **turret body vanishes at the moment of death**;
+- the type FX (NoUpgrade / Rockets / Heal) is deactivated (`TerminateEffectOnExitState`);
+- the targetable component goes with the state.
+
+**Destroyed state:** begins **OS_Death_LRG_FX** and **SENTRY_EXPL**. Neither is ended during the linger (the Destroyed state is never exited).
+
+**Weapon (H):** it is socket-attached to `self.Mesh` and goes away with it (UE3 detaches socket attachments with their parent skeletal mesh). Its fire effects stop because Dying ignores StartFire.
+
+**So during `LifeSpanAfterDeath`** (5 s Default/Repair, 30 s Rocket), **only the explosion particle (and the tail of the one-shot sound) is visible**. The actor is otherwise an invisible, untargetable, damage-ignoring shell until LifeSpan destroys it (H for the particle: it is not deactivated by the state, so it ends naturally or with the actor).
