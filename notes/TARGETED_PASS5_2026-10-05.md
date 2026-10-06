@@ -1802,3 +1802,17 @@ All four cues live on the projectile's `HmProjectileMesh` (`TnProjectileMesh`) a
 **Others:**
 - `TnProjectileMartyrdomGrenade` → Grenade_Martyrdom_PROJMESH (GL trail/explosion, heavy bounce, no fuse). It has no script or data spawner by class name (U: the spawner).
 - `TnProjectileFlashBangVignette` → FlashBang_Vig_PROJMESH is spawned only by `TnAnimNotify_SpawnProjectile` in `PROP_COR_Design_p.Flashbang_ANIM` (a campaign prop/vignette, not MP).
+
+**§12 addendum 16: kamikaze mine sounds** (`TnProjectileKamikazeMine`, KamikazeMine_PROJMESH) (C unless marked)
+
+All cues are local (bNotReplicated / audio components), played by each non-dedicated machine at the mine.
+
+| Event | Trigger | Sound |
+|---|---|---|
+| **Idle loop** | `HmProjectile.ClientSpawnFlightEffect`: `Init` on the server/host; on clients `ReplicatedEvent('Instigator')` (the mine's override also sets the energon colour, then falls through to super) | `FlightSound` = **KAMIKAZE_FLIGHT_LP_IDLE**. It plays through the throw, the Inactive state (landed, dormant anim), and Hovering (rises along HitNormal at HoverSpeed for HoverTime; then the active idle anim, spins and searches for targets) |
+| **Target found** | `Hovering.CheckForEnemy`: the first visible enemy within SearchRadius (not the instigator, a teammate, the same team class, or someone with TnBuffDisguise) → `FoundTarget = true` → `OnFoundTarget` → state Homing. Clients run `OnFoundTarget` from `ReplicatedEvent('FoundTarget')` | One-shot **`TargetFoundSound` = KAMIKAZE_FUSE_START**. Then the idle loop **fades out over 0.25 s** and a new component with **`SecondaryFlightSound` = KAMIKAZE_FLIGHT_LP_TRACKING fades in over 0.25 s** |
+| **Explosion** | Homing (authority): target dead/dying → Explode. Any HitWall (Projectile.HitWall → Explode) or a touch by a non-instigator (Projectile.ProcessTouch). Damage via TnProjectile.TakeDamage → ShouldExplodeOnDamage (the mine override also refuses some cases) → `DestroyedBy` (AddMineKill) + Explode. Clients get it via TearOff → TornOff → Explode | `SpawnExplosionEffect`: the current loop (idle or tracking) fades out 0.25 s + **`ExplosionSound` = KAMIKAZE_EXPL_IMPT_WORLD** |
+| **Fizzle (no explosion)** | `FadeOut` after `KamikazeData.LifeSpan`, or when the instigator dies (if `ShouldFadeOutOnInstigatorDeath`). Clients get it via replicated `bFadeOut` | **No sound.** Physics stops, the mesh scales 1 → 0.01 over FadeOutTime, then DestroyActor. FadingOut overrides `Explode` with a no-op, so `HmProjectile.Destroyed → Explode` makes no explosion sound. H: the loop component (bStopWhenOwnerDestroyed) **cuts off abruptly** at destroy |
+
+- There is no Bounce or Fuse cue on this mesh.
+- H: touch-explode applies in every state (ProcessTouch is not overridden per state); actual touch filtering depends on collision flags (not traced).
