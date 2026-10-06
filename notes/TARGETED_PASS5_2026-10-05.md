@@ -2066,3 +2066,34 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
   - The glow fades in as Defrag → 0 and concentrates near the clip edge.
   - The rest of the emissive is the usual energon/diffuse/spec terms (PowerDown, Energon_Intensity …), not traced.
 - H: per-MIC `Defrag_UV_Direction` static overrides were not visible in authored.db, so the default U is assumed.
+
+**§12 addendum 25: robot gibs and robot death modifiers; death light** (C unless marked)
+
+**Robot gibs** (`TR_Deaths_p.DefaultGibs_DSYS`, the DefaultGibsBlueprint of SharedRobotDeaths):
+- Particle **Exp_Death_FX** at +50 Z.
+- Gibs: as SoldierCarGibs but the pool is RB_Gib_11 + RB_Gib_01..10 only (no wheels).
+  - 4 chunks, LinearSpeed U(800, 2000), AngularSpeed U(12000, 20000), 60° half-cone about +Z from +100 Z, sphere 100, life 5 s, TF_Death_GibsTrail_FX.
+- Robot skeletal gibs (SharedRobot spawner): templates GIB_Body_SKEL / GIB_LowBody2_SKEL (+PHYSSYS), TransferVelocity 0, LifeSpan U(5, 15), no modifiers.
+  - Radial force: the CDO value; RadialForceStrength is not authored. H: 0, so it is skipped.
+  - The robot form adds no templates: `TnPawn.AddDefaultSkeletalGibTemplates` only adds the vehicle form's.
+
+**SharedRobotDeaths per-entry modifiers** (also HoloBrute; started at death by `TnDeathPlayer.Activate`):
+
+| Entry | Modifiers |
+|---|---|
+| [0] RobotBooster | ApplyConstantLocalForceOnBone: bone L_Leg03_Ankle_XB, local (0, 300, 200) × Mass per tick. ApplyConstantWorldForce: initial (0, 4000, 6000) × Mass once, then (0, 200, 300) × Mass every tick (world axes) |
+| [1] Poke, [3] Airborne, [9] RapidShot, [11] Explosive | PlayEffect **PET_All** after Delay U(0, 0.5): Exp_Death_Sm_FX at Head_FX **and** BoosterSocket_C. TriggerLight: Brightness 10, Radius 2048, colour (230, 230, 255), RampIn 2, LightTime 2 |
+| [2] Hovering | The same pair + **ApplyForce**: a one-shot impulse (U(−350, 350), U(−350, 350), U(250, 500)) in pawn space × Mass |
+| [8] SingleShot | The same pair + an extra Exp_Death_Sm_FX at Chest_FX (no delay) |
+| [4] HeadShot | **ControlBone**: SkelControlSingleBone "HeadSkelControl" BoneScale **0.1**, strength 1 instantly (the head shrinks away) |
+| [7] Energy (unreachable) | SetMaterial T 3 + TF_Death_Energy_Med_FX at Chest_FX |
+| [10] Melee | SetMaterial T 3 (addendum 24) + PlaySound hud_melee_death_disintegrate |
+| [5] Martyrdom, [6] TractorBeam, [12–13] Momentum | none |
+
+**Death light:**
+- `TnDeathModifierTriggerLight` → `TnDeathLightService.TriggerLight` → `TnRampLightManager`, which sets the radius, falloff and translation and enables the component.
+- `UpdateLight` runs from `Dying.Tick`: brightness = min(t / RampIn, 1) · Brightness until LightTime − RampOutTime, then a linear ramp-out. At t > LightTime it is disabled.
+- CDO defaults: Brightness 25, Radius 512, FalloffExponent 10, white, RampIn 0.5, **RampOut 0**, LightTime 10.
+- So the robot light ramps up over 2 s and **switches off abruptly at 2 s** (it never holds at full).
+- The vehicle light (addendum 21): Brightness 25 / Radius 512 / Falloff 10 defaults, colour (202, 123, 213), ramp 0.2 s, LightTime 8.
+  - H: in practice it is cut when the corpse actor is destroyed (TotalTime + 1 ≈ 1.2–1.75 s for cars/tanks).
