@@ -478,3 +478,26 @@ Otherwise it calls **`AbortMelee`** and returns true.
 - `VEH_Car_PHYSMAT` authors AnisoFrictionDir (1, 0, 0) but **not** `bEnableAnisotropicFriction`, so friction is isotropic.
 - **So wall contacts are effectively inelastic (restitution ≈ 0.005) with low sliding friction (μ ≈ 0.1).** A glancing hit slides along the wall with almost no bounce.
 - Remaining H (PhysX internals, not traced): the bounce-threshold velocity below which restitution is ignored, and contact skin width.
+
+### Addendum (2026-10-06): A5, PhysX SDK skin width and bounce threshold
+
+**UE3 PhysX init `0x82E9D988` (C):**
+- `NxCreatePhysicsSDK(0x02080300 = PhysX 2.8.3, …)`; SDK pointer stored at `0x83831390`.
+- `setParameter` calls (vtable +0x08) on the SDK:
+
+| Parameter id | Value | Identity |
+|---|---|---|
+| **1 (NX_SKIN_WIDTH)** | **0.025** | C |
+| 96 | 1.0 | not identified (U) |
+| 99 | 1.0 | not identified (U) |
+| 68 | 0.0 | not identified (U) |
+
+- The cooking params (`0x83831398` interface) get skinWidth 0.025 as well.
+- **No NX_BOUNCE_THRESHOLD (id 4) call** exists on the SDK, here or elsewhere: no other `setParameter` on this global was found. The 0.025 constant has no other users, so no per-shape skin-width override was found either (H: shapes keep the SDK default).
+
+**Units (C):** UE3 → PhysX length scale is **0.01** (constant `0x822D2CF4`, also used by `AddForce`).
+
+**Effective values:**
+- **Skin width = 0.025 PhysX = 2.5 UU**: contacts are generated or held about 2.5 UU before surfaces touch.
+- **Bounce threshold = PhysX 2.8 default −2.0** (H, SDK documentation default; not overridden). Restitution applies only when the relative normal approach speed exceeds 2 PhysX units/s = **200 UU/s**. Slower contacts are fully inelastic.
+- **With the A5 combine** (car-wall e = 0.005): even fast hits bounce back at ≤ 0.5 % of the approach speed.
