@@ -607,3 +607,25 @@ So every authored noisy beam (none sets FrequencyDistance) renders with **noise 
 4. **Width** = particle size × TaperValues[i] (when TaperMethod != 0) × sheet factor. The vertex tangent = normalise(P_i − P_{i−1}).
 
 This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
+
+### 9j. Noise curve between noise points: NoiseTension and NoiseTangentStrength (C, raw disassembly of `0x830298E8`)
+
+**Noisy point.** N_i = basePath(r_i) + sine(r_i) + R · (current noise point i × payload noise scale) × NoiseRangeScale. R is the 3×3 rotation described in §9i.
+
+**Tangent at N_i** (raw code at `0x8302A0A8…0x8302A190` for the first point and `0x8302A5F0…0x8302A6F8` per point):
+- v = (N_{i+1} − N_{i−1}) × (1 − **NoiseTension**) × **0.5** (the constant 0.5 is at `0x8209DD8C`);
+- **v is then normalised**;
+- T_i = v̂ × lerp(**SourceStrength**, **TargetStrength**, r_i). These are payload +0x18 and +0x34, the beam source/target tangent strengths.
+
+**Hence:**
+- **NoiseTension only scales v before normalisation**, so it has no effect on the curve. The exceptions:
+  - Tension = 1 makes v zero; the normalise is skipped (length below epsilon), so T = 0 and the segments are straight.
+  - Tension > 1 reverses the tangents.
+  - Authored values are 0.5 (CDO) or unset, so tension is effectively irrelevant.
+- **NoiseTangentStrength is never read by the render fill.** Replay +0x110 is written by FillReplayData but has no load in `0x830298E8`, the only beam fill. It is effectively unused. The tangent magnitude comes from the beam's source/target strengths instead.
+
+**Sub-steps between N_i and N_{i+1}:**
+- NoiseTessellation (min 1) samples, using **`0x82B5B040` = Hermite CubicInterp(P0 = N_i, T0 = T_i, P1 = N_{i+1}, T1 = T_{i+1}, α)**.
+- The basis is h00 = 2α³ − 3α² + 1, h10 = α³ − 2α² + α, h01 = −2α³ + 3α², h11 = α³ − α² (standard UE3 CubicInterp).
+- α advances by a per-step increment held on the stack (H: 1/NoiseTessellation).
+- Width is interpolated linearly between the endpoint taper values. The vertex direction = normalise(current − previous).
