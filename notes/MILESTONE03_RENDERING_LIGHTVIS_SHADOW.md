@@ -661,3 +661,31 @@ oC0.rgb = colour * SceneColorBiasFactor.x
 ### STILL UNKNOWN
 - How the ShadowMask buffer is produced from the composite shadow's `shadowFactor` (projection shaders, not part of this pass).
 - The CPU derivation of `DirectLightAmbientContribution` (HIGH: it is the SH-ratio computed in proxy build 0x82CCE0A8).
+
+## Addendum (2026-10-06, milestone 09): character ambient floor in shadow
+
+Question from Rendering: "entering shadow makes the character nearly black". Is that authentic?
+
+- **No ambient-floor properties exist (C, schema).** WFC `Engine.LightEnvironmentComponent` has only:
+  - TotalLightCount, NormalizedSampleOffsets, SamplingPreset;
+  - UpdateDistanceThreshold, EnvironmentTransitionTime;
+  - bUpdateIfBoundsChange, bNoRayCasts, bDisallowForcedUpdates, bEnabled.
+  - There is no AmbientGlow, AmbientShadowColor, bSynthesizeSHLight or Light/ShadowDistance, and no DynamicLightEnvironmentComponent class.
+- **Pawn templates:**
+  - `TnRobotForm.LightEnvironment0`: TotalLightCount 2, threshold 30, 6 sample offsets.
+  - `TnVehicleForm.MyLightEnv`: TotalLightCount 2, threshold 30, 5 offsets.
+  - Both inherit EnvironmentTransitionTime 0.5 from the CDO.
+- **Ambient (SH) assembly** (`0x82CCB488`, `0x82CCB228`, C):
+  - Start from zero.
+  - Add the sky light upper/lower terms. This is skipped when the global `DAT_8382ddf8` ≠ 0 (U: probably a console tunable).
+  - Add the Beast probe SH: RGB L2 SH, 3×9 floats (0x6C bytes).
+    - Taken from every enabled `BeastLightEnvironmentVolume` whose lookup (vt+300) contains the bounds origin.
+    - Only the highest `Priority` counts; volumes tied at that priority are averaged (×1/n).
+    - The probe SH is zero if no volume contains the origin.
+  - Overflow lights and the crossfaded 2nd light are added as directional SH (earlier).
+  - **There is no minimum or floor constant.**
+- **A light occluded by geometry** (smoothed visibility → 0) leaves DirectLights. Its colour is **not** moved into SH; only rank overflow goes to SH. So a fully occluded character keeps **0 % of that light**: the floor is sky + Beast probe + other lights.
+- **Probe coverage on MP maps** (inventory.db):
+  - With BeastLightEnvironmentVolume: Berth (1), ORB_Art (2 volumes + 2 `_LM` boxes, 1024×1024×512 spacing), UND_Complex (1), UND_Gorge (1).
+  - With none: **Streets, Seed, Rust, Molten**. There, shadowed characters get only the sky light: Brightness 0.05 (Seed), 0.1 (Streets, Molten, Complex), BrokenHope 0.1, Remnant 0.2. Rust has no SkyLight component in MP packages (H: unlit ambient).
+- Beast probe point data is natively serialised: it is not in authored props (U: format and location undecoded).
