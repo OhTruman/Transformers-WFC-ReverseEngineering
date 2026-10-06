@@ -986,3 +986,26 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 - **bTilePerParticle = true:** max = count × Tile; step = Tile / SubSteps (each segment 0 → Tile).
 - U is accumulated `U += step`, then **clamped to [0, max]** with `fsel` (`0x8301B460–0x8301B480`).
 - No time term (no scrolling).
+
+**§13 addendum: trail head direction (C)**
+
+**Trail flags** are the stock layout (payload +0x00):
+- bits 0xF0000000 = flags;
+- PREV = bits 0x0FFFC000 (>> 14);
+- NEXT = bits 0x00003FFF;
+- null = 0x3FFF.
+
+**Fill (`0x8301A700`):**
+- `r17 = 0x0FFFC000` (`0x8301AC50`).
+- It starts a strip only at a particle whose **PREV == null** (`0x8301AD40–0x8301AD48`).
+- It skips dead trails (flag 0x10000000) and single-particle trails (NEXT == null, `0x8301AD5C`).
+- It then walks NEXT.
+
+**Spawn (`0x83048E40`, Trail2 instance vtable entry at `0x823380E0`):**
+- `r28` = `ParticleIndices[ActiveParticles]` (the new particle); `r27 = 0x0FFFC000`.
+- It finds the existing particle with PREV == null (the current head) (`0x83049470–0x830494A0`).
+- **Old head:** PREV ← new index (`rlwimi …,14,4,17`), and if it was alone, NEXT ← null.
+- **New particle:** NEXT ← old head, **PREV ← null** (`0x830494CC–0x830494F0`).
+- The new particle's tangent ← normalize(oldHead.Location − new.Location) (`0x83049508–0x83049558`).
+
+**Result: the head (U = 0) is always the most recently spawned particle**, i.e. the source end. U increases toward the oldest particle at the tail.
