@@ -1157,3 +1157,49 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 - f30 is callee-saved across the intervening calls.
 - For Trail2 (≤ 1 spawn per tick, i = 0) the spawn-module and PostSpawn SpawnTimes are the same value.
 - They can only diverge for n > 1 with a skipped (random-rejected) spawn: the module time decrements per actual spawn, while PostSpawn uses the loop index.
+
+**§13 addendum 3: ScreenAlignment / billboard inputs for beams and trails** (C unless marked)
+
+**Vertex declaration (C):** the global decl resource `0x83718D28` (InitRHI `0x8305DD68`, elements `0x8305C738`). Stride 0x54; the dynamic-parameter variant adds TEXCOORD4.
+
+| Offset | Format | Usage | Field |
+|---|---|---|---|
+| +0x00 | Float3 | POSITION | Position |
+| +0x0C | Float3 | NORMAL | OldPosition |
+| +0x18 | Float3 | TANGENT | Dir |
+| +0x24 | Float3 | TEXCOORD0 | Up |
+| +0x30 | Float2 | TEXCOORD1 | UV |
+| +0x38 | Float4 | TEXCOORD2 | Color |
+| +0x48 | Float3 | TEXCOORD3 | Size |
+
+This confirms the addendum-2 fetch mapping.
+
+**ScreenAlignment constant (c6)** = `(float VF[+0xA8], float VF[+0xC4], 0, 0)` (SetMesh `0x830129B0`).
+
+Renderers:
+- beam `0x8304AF58` (its dynamic data's fill wrapper `0x83055E88` calls the beam fill);
+- trail `0x8304B208` (wrapper `0x83055F38` calls the trail fill).
+
+Both set:
+- **VF+0xA8 ← replay+0x34 = RequiredModule.ScreenAlignment** (RequiredModule = LOD+0x30; property order Material +0x30, ScreenAlignment +0x34);
+- **VF+0xC4 ← replay+0x90 byte 0 = TypeData.BillboardSettings.Direction**;
+- **VF+0xA9 (lock-axis flag) ← 0**.
+
+`BillboardingSettings` (WFC struct on TypeDataBeam2/Trail2) = {Direction u8, Alignment u8, pad, pad}:
+- EBillboardDirection: CameraFacing, LocalX, LocalY, LocalZ, WorldX, WorldY, WorldZ;
+- EBillboardAlignment: Centered, Positive, Negative.
+
+(Correction to the working note: `0x830526E0` / `0x8302C370` is a sprite dynamic-data path, not trail.)
+
+**Shader behaviour by input** (emulated, `xenosvsemu`):
+- **c6.x = PSA_Square (0) or PSA_Rectangle (1):** the default camera-facing path, offset = (2V − 1)·Size·normalize(cross(view, Dir)). The shader has no separate Rectangle branch.
+- **c6.x = PSA_Velocity (2):**
+  - The strip axis becomes Position − OldPosition (instructions 160–175).
+  - **Both fills write OldPosition == Position at every emit site** (C: beam `0x8302A1D8…0x8302AB98`, trail `0x8301B28C…0x8301B638`).
+  - So the axis normalizes to 0 (max(len², 0.01) then rsqrt → 0) and the **strip has zero width (invisible)**.
+  - **H** (emulated shader; no fallback branch exists).
+  - Authored: 33 Beam2 LODs and 22 Trail2 LODs. These include MP-visible effects: **Tracer_Blaster_FX, Tracer_AssaultRifle_FX, Tracer_SniperRifle_FX, Flashbang/HealGrenade trails, Trail_Missiles_FX, EXP_Mortar_FX**, and others.
+- **c6.y = Direction ≠ 0:**
+  - Offset = (2V − 1)·Size·scale_side·normalize(Up). The fill writes Up (+0x24) = the Direction axis from `0x8300F428`: Local X/Y/Z = normalized component LocalToWorld rows; World X/Y/Z = unit axes. CameraFacing → the fill writes (1, 0, 0) and it is unused.
+  - Side scales (`0x8300F568`, replay+0x90 byte 1): Centered (1, 1); **Positive (0, 2)** (the V = 0 side collapses, the V = 1 side is 2·Size); **Negative (2, 0)**. They are applied CPU-side to Size per vertex.
+  - Authored Direction: Beam2 LocalY 25, LocalX 21, LocalZ 4; Trail2 LocalY 3, LocalZ 3; all others CameraFacing.
