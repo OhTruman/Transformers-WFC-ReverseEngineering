@@ -1462,3 +1462,24 @@ Both set:
 - In corner space (x right, y down) every quad and octagon triangle has the same orientation sign (e.g. quad (0, 2, 3) and octagon (0, 7, 6) both have a negative z cross product).
 - BestFit follows the authored polygon order instead (§17 addendum).
 - H: sprite culling is off (two-sided), so winding doesn't affect visibility.
+
+**§17 addendum 3: sprite draw path per render mode (C)**
+
+**Mode source:**
+- Dynamic data +0x7C = **SpriteEmitterRenderMode**, copied into the fill parameters by `0x83055D08` (sprite) / `0x83055D98` (SubUV) as `piVar33[4]`.
+- The SubUV wrapper also sets 1/SubImages_H and 1/SubImages_V and the stride 0x58 (+0x10 with a dynamic parameter); the sprite wrapper uses stride 0x40 (+0x10).
+
+**Buffer allocation (`0x830746D0`, N = particles to draw):**
+
+| Mode | Vertices | Primitives | Index buffer |
+|---|---|---|---|
+| **Quad** | 4N | **N** | **none allocated** (fill `piVar33[0xB]` = 0) |
+| **Octagon** | 8N | 6N triangles | 6N × 3 u16 |
+| **BestFit** | maxVC × N (maxVC = largest VertexCount over the emitter's polygons) | (maxVC − 2) × N | sized to match |
+
+**Primitive type (mesh batch, sprite renderer `0x8304A1D0`):** bits 26–27 = **3 (PT_QuadList, Xenon) when render mode == Quad**, else 0 (PT_TriangleList).
+
+**Consequences:**
+- **Quads always draw as an index-free quad list** (4 vertices per particle, the corner order of §17).
+- The quad index code in the fill (§17 addendum 2) is never reached in practice.
+- Octagon and BestFit draw as indexed triangle lists with the triangulations of addenda 1–2.
