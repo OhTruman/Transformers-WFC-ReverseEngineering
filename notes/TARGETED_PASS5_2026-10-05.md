@@ -1424,3 +1424,24 @@ Both set:
 **Visual consequences (H):**
 - **BestFit** clips the quad to a hull around the texture's visible texels. Where the excluded area is transparent it looks identical to a quad (it is a fill-rate optimisation). A renderer drawing plain quads is visually equivalent **provided** the texture is transparent outside the polygon.
 - **Octagon** always removes the four corner triangles (leg 0.293 of the quad). Any texel there is never drawn. A quad renderer will show corner content the original hides (usually none, for round puff textures).
+
+**§17 addendum: BestFit index triangulation (C)**
+
+**Dispatch:** `0x8305FD88`: `VertexCount − 3` indexes a 10-entry jump table at `0x8305FDAC`.
+- VertexCount **3–12** are supported (this corrects "max 8" above).
+- Any other count goes to `default`: **no indices, so the polygon is not drawn**.
+- Indices are u16, relative to the particle's first vertex, written in pairs.
+
+| VertexCount | Triangles (vertex indices, in emission order) |
+|---|---|
+| 3 | (0, 1, 2) |
+| 4 | (0, 2, 3), (0, 1, 2) |
+| 5 | (0, 3, 4), (0, 1, 3), (1, 2, 3) |
+| 6 | (0, 1, 5), (1, 3, 5), (1, 2, 3), (5, 3, 4) |
+| 7 | (0, 5, 6), (0, 1, 5), (1, 3, 5), (1, 2, 3), (3, 4, 5) |
+| 8–12 | shared block `0x83060434`: a **fan** (0, k, k + 1) for k = 1 … N − 2, with count checks after vertex 7 |
+
+**Properties:**
+- All triangles keep the polygon's vertex winding: (5, 3, 4) ≡ (3, 4, 5).
+- The 5–7 patterns are "ear" splits that are only valid for **convex** polygons. H: the BestFit hulls are convex, so the drawn area equals the polygon and any convex triangulation is visually identical.
+- The Quad/Octagon index lists are emitted by separate code; not decoded (both convex).
