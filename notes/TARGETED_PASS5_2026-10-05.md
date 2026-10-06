@@ -1624,3 +1624,33 @@ Both set:
 - `ForceEndAbility` also calls `Kill()`.
 
 **H (visual):** if the sentry actor is destroyed early (mechanism 2) while OS_Death_LRG_FX is still playing, whether the particle is cut depends on whether the destructible effect's PSC is owned by the sentry actor. Not traced.
+
+**§12 addendum 10: player corpse lifespan (and the sentry DestroyOnDeath cut)** (C unless marked)
+
+**Mechanism (`TnDeathPlayer`, created by the form's death; `Activate` at death):**
+- It picks a death entry (`TnDeathBlueprint`) and starts the motion and modifiers.
+- It starts **`_GibTimer` = random in `TotalTime` [Min, Max]**; for non-player pawns it uses `TotalTimeForAI` if that is non-zero.
+- When the timer fires: **`Owner.Gib`** → `TnPawn.Dying.Gib`. If LifeSpan is still 0, it sets **LifeSpan = 1.0**, hides the robot and vehicle meshes, runs the form's `PlayGib` (gibs, debris and decal via `Deactivate`) and a camera shake for nearby local players.
+- **Corpse removed ≈ TotalTime + 1 s after death.**
+
+**Authored TotalTime (`TR_Deaths_p`):**
+
+| Death set | TotalTime (s) |
+|---|---|
+| SharedRobotDeaths | 1.25–3.5 (entries 1.25, 1.25–1.5, 1.25–2, 1.25–2.5, 1.25–3, 1.5, 1.5–2.5, 1.5–2.75, 1.5–3.5) |
+| BruteRobotDeaths | 2–4 |
+| HoloBrute | 1–2.5 |
+| SharedCarDeaths | 0.2–0.75 |
+| SharedVehicleDeaths | 0.3–0.4 |
+| SharedJetDeaths | 4–5 (AI the same) |
+| SpiderDeaths | 0 (gib on the first tick) |
+
+- Entries without a value use the struct default **1.0**.
+
+**Correction to addendum 9:**
+- `HmPawn.Dying.BeginState`'s dedicated-server rule is `LifeSpan = FClamp(LifeSpan, 0, 1)`. With the default LifeSpan 0 (none) it **stays 0**, so it does **not** cap the corpse at 1 s; it only shortens an already-set lifespan.
+- The corpse lifespan is set by the gib timer on every net mode. H: TnDeathPlayer also runs on a dedicated server.
+
+**Therefore** the owner's `TnPawn.Destroyed` (which `DestroyActor`s the sentry from DestroyOnDeathActors) runs **≈ TotalTime + 1 s after the owner's death**: about 2.25–4.5 s for a robot owner, 1.2–1.75 s for a car owner, 5–6 s for a jet.
+- That cuts the Default/Repair sentry's 5 s linger only for long robot deaths, and the Rocket sentry's 30 s linger always.
+- Both are invisible (§12 addendum 7); the explosion FX may be cut (H, §12 addendum 9).
