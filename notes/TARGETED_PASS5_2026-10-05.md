@@ -453,3 +453,57 @@ The emitters differ:
 | Fusion Cannon, Tank Cannon | CDO 1 | — |
 
 For all of these, TessellationStrength = CDO **1.0**, TessellationFactorDistance = **0**, MaxParticleInTrailCount 100.
+
+### 9e. BeamSineWave render formula — trace status (2026-10-05)
+
+**What is C:**
+- The SineWaves data is bound at init (`Function_830504B0` → instance +0x1C0, 0x1C-byte records).
+- It is copied every frame into the beam replay data at +0x13C/+0x140 (`Function_83045800`).
+
+**What is not found (U):**
+- **No native reader of that array has been located.** Searched:
+  - every non-stack `lwz` of the replay offsets, at base offsets 0…0x200;
+  - every 0x1C-stride float-record loop (`addi 0x1C` / `mulli 28`);
+  - every reference to the trig constants (2π, 1/2π, sine-polynomial coefficients) in engine code.
+- None reaches the array.
+- The consumer is not on the game thread: `UParticleModuleTypeDataBeam2::Update` (`0x8302EAD0`, below) has no sine term.
+
+**Remaining hypotheses (H/U):**
+- the render-thread beam fill reads it through VMX / indexed loads that the displacement scans cannot see;
+- or the data is copied but never used in this build.
+
+**Until it is traced:** d, t, Speed, Period and the beam-space axes stay **U**. Rendering should keep its implementation labelled **H** (Σ A·sin(2π·d/Period + Speed·t + Phase)·Direction).
+
+### 9f. `UParticleModuleTypeDataBeam2::Update` (C, `0x8302EAD0`; vtable `0x82338BD8` +0x134, Spawn at +0x130)
+
+Runs per particle every tick:
+
+1. **Source:** with no source module, source = component location and direction (or the origin plus +X in local space).
+2. **Target:** with no target module and no user target, target = source + normalise(dir) × `Distance` (evaluated at RelativeTime).
+3. **Beam travel:** if `Speed` (TypeData +0x44) == 0, or the beam has already reached its target, the beam end = target. Otherwise the end moves toward the target at **Speed × dt** per tick and snaps once within range.
+4. **Direction:** direction = normalise(target − source); length = |target − source|.
+5. **Noise step count** (`BeamNoise` bound):
+   - steps = `Frequency` (from the payload flags);
+   - if `FrequencyDistance` (noise +0x9C) > 0: steps = min(Frequency, int(length / FrequencyDistance));
+   - if the `bApplyNoiseScale` bit (noise +0x30 & 0x800000) is set, the payload noise scale = `NoiseScale`(steps / Frequency) (noise +0xA0).
+   - With no noise, steps = `InterpolationPoints` (instance +0x48).
+6. **Step size:** step size = length / steps.
+7. **While travelling:** the rendered step count = ceil(travelled / length × steps), at least 1, plus the fractional last step.
+8. **Triangles:** = steps × 2 × (NoiseTessellation if > 0).
+
+This matches stock UE3. The noise point generation itself (NoiseRange, NoiseSpeed, NoiseLockTime, tension) was not traced in this pass; H: stock.
+
+### 9g. Vehicle weapon muzzle socket alternation (C, script; answered to Rendering and Gameplay)
+
+**Sockets:**
+- The vehicle form `WeaponSockets` is the CDO default ["WeaponSocket_Primary"], so each weapon has one mesh.
+- The WEPMESH `MuzzleFlashSockets` = [Primary, Primary2] for the vehicle MG, rockets, homing rockets and the plane MG / rockets.
+
+**Advance:**
+- `HmWeapon.OnPlayFireEffects` plays the flash and tracer at `CurrentSocket`, then `HmWeaponMesh.ChangeSocket` advances it ((i + 1) % N).
+- This runs **once per shot**, via IncrementFlashCount → Pawn.WeaponFired.
+
+**Projectile start:**
+- `Weapon.ProjectileFire` takes RealStartLoc = `GetMuzzleLoc()` (the current socket) **before** the effects advance it, then aims toward the camera-trace hit point.
+- So a projectile and its flash share a socket, and consecutive shots alternate L/R.
+- The instant-hit MG traces from the pawn's start-trace location; only its flash and tracer alternate.
