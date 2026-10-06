@@ -2235,3 +2235,33 @@ The material is **MLM_Unlit**. All shading is a hand-built "fake light" in Emiss
 - The projectile template's own Lifetime 8 / NoClip are never used: its Material is none.
 
 **Decal materials:** `MetalDecal_02/03_MAT_INST` are MICs of **DeathDecal_MAT** with Texture decal_metal_01_CLR / decal_metal_03_CLR, so they use the same modulate maths as addendum 28. `DecalDefault_MAT` is its own modulate material (not traced).
+
+**§12 addendum 30: decal materials — DecalDefault_MAT and the DeathDecal family** (graph C; numeric stats H)
+
+All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, with only an EmissiveColor input.
+- **Modulate factor (per pixel) m = lerp(1, (tex.R + Blacks) · Color.rgb, tex.G · Color.A).**
+- The frame buffer is multiplied by m: 1 leaves the surface unchanged, < 1 darkens, > 1 brightens.
+- H: values > 1 are limited by the render-target range.
+
+| Material | Texture | Color | Blacks | Notes |
+|---|---|---|---|---|
+| **DecalDefault_MAT** (own graph) | decal_metal_01_CLR | (1, 1, 1, 1) | 0.01 | uses tex.R / tex.G directly (no static switch) |
+| **DeathDecal_MAT** | blastmark_glow_CLR 1024² | (20, 20, 20, 1) | −0.0001 | `use_reconstructedClr` (default true) selects R/G (else RGB/A) |
+| **MetalDecal_02_MAT_INST** (MIC of DeathDecal) | decal_metal_01_CLR | **(5, 5, 5, 1)** | parent −0.0001 | correction: addendum 29 implied Color 20 |
+| **MetalDecal_03_MAT_INST** (MIC of DeathDecal) | decal_metal_03_CLR | (5, 5, 5, 1) | −0.0001 | |
+
+- **Textures:** 256² DXT1 for the metal decals.
+- **The SRGB flag is not authored, so the Texture CDO `SRGB = true` applies**: samples are gamma-decoded (2.2) before the maths.
+
+**Evaluated m over the texture (extracted PNG, sRGB-decoded; H):**
+
+| Material | median | p5 | p95 | max | brightened (m > 1.05) | darkened (m < 0.95) |
+|---|---|---|---|---|---|---|
+| DecalDefault | 0.99 | 0.01 | 1.0 | 1.0 | 0% | 49% (**darken-only**: Color 1 can never exceed 1) |
+| MetalDecal_02 | 1.00 | 0.0 | 1.51 | 3.7 | 14% | 30% |
+| MetalDecal_03 | 1.00 | 0.01 | 2.35 | 5.0 | 40% | 22% |
+| DeathDecal | 0.99 | 0.12 | 1.0 | 2.2 | 3% (a hot core) | 41% |
+
+- **Reading:** DecalDefault is a pure dark scorch/bullet-hole.
+- MetalDecal_02/03 (the Metal-surface bullet / energy / explosive marks and all projectile scorches) **darken a ring/hole and brighten bright-metal highlights by up to 3.7–5×** (scratched-metal look).
+- The death scorch is mostly darkening with a small bright core.
