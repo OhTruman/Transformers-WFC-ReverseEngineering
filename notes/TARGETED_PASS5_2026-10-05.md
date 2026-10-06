@@ -1483,3 +1483,41 @@ Both set:
 - **Quads always draw as an index-free quad list** (4 vertices per particle, the corner order of §17).
 - The quad index code in the fill (§17 addendum 2) is never reached in practice.
 - Octagon and BestFit draw as indexed triangle lists with the triangulations of addenda 1–2.
+
+### §12 addendum 3: spawned-actor sounds (SY) (C from script/CDO unless marked)
+
+**TnBarrierSpawnable** (BARRIER_LP / BARRIER_RETRACT):
+- **Loop:** `Initialize` (from SetBlueprint on the server, and from ReplicatedEvent('BarrierBP') on clients) plays SpawnAnim, then `PlaySound(ActiveLoopSound, bNotReplicated = false, bNoRepToOwner = false, bStopWhenOwnerDestroyed = true)`.
+  - It starts **at spawn**, together with the raise animation, not once the barrier is fully raised.
+  - It is positional at the barrier and **stops when the actor is destroyed**.
+  - H: a client may hear both its own call and the server-replicated one.
+- **Retract:** `TakeDamage` → when Health ≤ 0 (or a flashbang hits) → `PlaySound(DestroySound, false, false, false)`, replicated to everyone, then fade-out and destroy.
+  - **Lifetime expiry goes through the same path:** server Tick applies `TakeDamage(DegenRate·dt)` every tick, so it plays on both damage and timeout.
+  - **No retract sound** on `ForceFadeout`: TnAbilityBarrier re-use, or the owner placing a new barrier.
+  - Melee damage is ignored.
+  - Quirk: further non-melee hits while fading re-trigger the retract.
+
+**TnSentryPawnAbility** (SENTRY_ACTIVATE_LP / SENTRY_ACTIVATE_POSTDEPLOY):
+- **Idle loop:** `ApplySentry` (deploy) → `IdleAudioComponent = CreateAudioComponent(IdleSound, play, stopWhenOwnerDestroyed)`. It is attached to the sentry and loops until **`PlayDying` → FadeOut 0.25 s** (clients via the `bStopIdleSound` replicated toggle).
+- **Death triggers:** health ≤ 0, Lifetime drain (30 s CDO), or master dead/dying → `Kill`.
+- **Activate:** `EnemyAcquired` → `PlaySound(ActivateSound)` with default args (replicated, positional), **every time** an enemy is acquired.
+- **No dedicated death sound field.** H: destruction audio comes from the Destructible (`Sentry_DSYS` …).
+- **Weapon:** blueprint `WeaponClass`:
+  - Default_TURRETDEF → `TnWeaponDefaultSentryAbility`;
+  - Rocket → `TnWeaponRocketSentryAbility`;
+  - Repair → `TnWeaponRepairSentryAbility`.
+  - Fire audio is that weapon's normal path (TnWeapon → HmWeaponMesh PlayEvent / WeaponEventSounds).
+
+**TnAmmoCratePickup / TnDecoyTrap PickupSound:**
+- Engine `Inventory.AnnouncePickup` → `Other.PlaySound(PickupSound)` with default args: **positional at the picker, replicated to everyone relevant**, once per pickup.
+- Paths: DroppedPickup.GiveTo / PickupFactory.
+- The ammo crate also plays `PickupObtainedDialog` via the dialog manager.
+- The decoy trap's PickupSound = **DECOY_TRAP_EXPLODE**, played at the victim who picks it up.
+
+**TnGuidedMissile:**
+- The sounds come from its **projectile mesh** `WEP_GuidedMissile_p.GuidedMissile_PROJMESH`:
+  - **FlightSound** = `BL_WPN_GUN_GUIDED_MISSILE.SHOOT_TRAIL`: `HmProjectile.ClientSpawnFlightEffect` → CreateAudioComponent + Play, attached to the missile. It is faded out over 0.25 s in `SpawnExplosionEffect`.
+  - **ExplosionSound** = `EXPL_IMPT_WORLD`: `SpawnExplosionEffect` → `PlaySound(…, bNotReplicated = true)` (local on each machine).
+  - FX: Trail_FusionCannon_FX / Exp_GenericLvl_LRG_FX.
+- `TnGuidedMissile` script has **no** sound fields and **no** guide-camera loop. U: any camera-side audio (post-process / mixer) was not found.
+- Its ability animation adds `SHOOT_BUILDUP` (§12 addendum).
