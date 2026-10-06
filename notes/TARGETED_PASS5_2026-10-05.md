@@ -330,3 +330,126 @@ Non-beam LODs reference only their `Required` module.
 - `ParticleModuleBeamSineWave` is not a stock UE3 class (H: a WFC addition). Its SineWaves data is authored: Amplitude ±25/50 and 10, Period 500, Speed −3000, Direction (1, 0, 0).
 
 **Fine-aim FOV source** (asked again by AssetTools): `TnFovCameraBehavior.FOVsByPCS` in the camera strategy (§3). It is not in the `TnPCS_*` class defaults.
+
+## 9. Beam2 taper / Trail2 tessellation (RD) — native + data
+
+### 9a. Class layouts (C)
+
+Read from the Engine package property chain, with offsets confirmed by native field use.
+
+**`ParticleModuleTypeDataBeam2`:**
+
+| Offset | Field |
+|---|---|
+| +0x30 | BeamMethod (byte) |
+| +0x31 | **TaperMethod** (byte) |
+| +0x34 | TextureTile |
+| +0x38 | TextureTileDistance |
+| +0x3C | Sheets |
+| +0x40 | MaxBeamCount |
+| +0x44 | Speed |
+| +0x48 | **InterpolationPoints** |
+| +0x4C | bAlwaysOn |
+| — | BillboardSettings (**WFC addition**) |
+| — | BranchParentName |
+| +0x58 | Distance |
+| +0x6C | **TaperFactor** |
+| +0x80 | **TaperScale** |
+
+Distributions are 0x14 bytes each.
+
+**`ParticleModuleTypeDataTrail2`:**
+
+| Offset | Field |
+|---|---|
+| +0x30 | **TessellationFactor** |
+| +0x34 | **TessellationFactorDistance** |
+| +0x38 | **TessellationStrength** |
+| +0x3C | TextureTile |
+| +0x40 | bits: bTilePerParticle, bEmitterXAxisOrientation, bEmitOnlyWhenMoving, bConnectToSource |
+| +0x44 | Sheets |
+| +0x48 | MaxTrailCount |
+| +0x4C | MaxParticleInTrailCount |
+| — | BillboardSettings (WFC) |
+
+### 9b. Beam taper (C, native)
+
+**`Function_8302E898`** = Beam2 TypeData Spawn, run **once per particle at spawn**:
+- No source module: source = component location, plus a direction vector at component +0x50.
+- No target module and no user target: target = source + normalise(dir) × `Distance`. The distribution is evaluated at the particle's RelativeTime.
+- **If TaperMethod != 0:**
+  - `TaperCount` = max(InterpolationPoints, Noise.Frequency) + 1 (`FUN_83014348`). The taper array lives in the particle payload at TypeDataOffset + 0x68 + 12 × InterpolationPoints.
+  - For i = 0 … TaperCount − 1: r = i / (TaperCount − 1), and **`TaperValues[i] = TaperFactor(r) × TaperScale(r)`**. Both distributions are evaluated at the ratio along the beam, not over time.
+  - Index 0 is the source end; the last index is the target end.
+
+So taper is a per-point width multiplier along the beam, fixed at spawn. PEBTM_Full and PEBTM_Partial are treated identically here. **H:** the renderer multiplies the particle size at interpolated point i by `TaperValues[i]` (stock UE3).
+
+**Beam module binding:** `Function_830504B0`.
+- The type checks run in this order: source → +0x144; target → +0x148; noise → +0x14C; modifier (byte +0x30: 0 = source modifier +0x150, 1 = target modifier +0x154).
+- **`BeamSineWave`**: each SineWaves entry (0x1C bytes: Amplitude, Period, Speed, PhaseOffset, Direction xyz) is appended to the instance array at +0x1C0.
+- **FillReplayData** (`Function_83045800`) copies to replay data:
+  - that array → replay +0x13C;
+  - Sheets (min 1) → +0x100;
+  - TextureTile → +0x12C;
+  - TextureTileDistance → +0x130;
+  - TaperMethod → +0x134;
+  - noise settings → +0xE4…+0x128.
+  - Replay vertex count per beam = 2 + Sheets × Steps (+4 per extra beam).
+- **U:** the render-thread sine formula. H: displacement = Σ Amplitude × sin(2π·d / Period + Speed·t + PhaseOffset) × Direction, in beam space.
+
+### 9c. Trail2 tessellation (C, native)
+
+**FillReplayData** (`Function_83035770`) copies:
+
+| Replay offset | Value |
+|---|---|
+| +0xB0 | TessellationFactor (**0 → 1**) |
+| +0xB4 | TessellationStrength |
+| +0xB8 | TessellationFactorDistance |
+| +0xAC | Sheets (0 → 1) |
+| +0xA2 | source-particle offset, only when the TrailSource module's SourceMethod byte == 1 |
+
+**Vertex / triangle count** (`Function_83019600`), for each trail (head particle) walked through the linked list:
+- the trail start adds 2 vertices;
+- **each segment between consecutive trail particles adds Sheets × TessellationFactor × 2 vertices**;
+- the segment from the head back to the source is included unless the bConnectToSource bit differs;
+- triangles per trail = (vertices − 2) plus 4 per sheet for joins, and 4 × trails − 6 overall;
+- the trail particle count is clamped so the total stays under the vertex buffer limit `DAT_837188E0`.
+
+So **tessellation is a fixed count per segment, `TessellationFactor`**. `TessellationFactorDistance` is copied but does **not** affect the vertex count in this build (H: unused for geometry). No MP effect authors it anyway.
+
+**H (stock UE3), not decoded natively:**
+- interpolated points use Hermite / CubicInterp between trail particles, with tangents scaled by `TessellationStrength` (default 1.0);
+- size and colour are lerped per step.
+
+### 9d. Authored values for MP effects (C, `authored.db`; full dump in `notes/data/beam_trail_params.txt`)
+
+**Beams** (`Tracer_RepairBeam_FX`, `DrainRay_Beam_FX`; 3 beam emitters × 2 LODs). All have:
+- BeamMethod Target (CDO);
+- **TaperMethod PEBTM_Full**;
+- **InterpolationPoints 50**;
+- Sheets 1, TextureTile 1, MaxBeamCount 1, Speed 0.
+
+The emitters differ:
+- **Core**: TaperScale curve 0 → 1 over the first half, then 1 → 0.5 or held at 1; TaperFactor CDO 1.
+- **Electric**: TaperFactor **10** × TaperScale ramp 0.025 → ~1.05 (or decaying 0.025 → 0).
+- SineWaves on two of the three emitters: three waves with Period 500, Speed −3000 / 0 / −2500, Amplitude ±25/50, ±10, ±100, Direction X, −0.5X, 0.5Y.
+
+`Squib_RepairEnemy_FX`: PEBTM_Full, 50 points, Speed 1000, Distance 100, TaperFactor curve, plus BeamNoise (low-frequency, Frequency 10).
+
+**Trails:**
+
+| Effect | TessellationFactor | Other |
+|---|---|---|
+| Sniper (Null Ray) tracer | **10** | bConnectToSource **false** |
+| AssaultRifle / IonBlaster tracer | **5** | bConnectToSource false, bEmitOnlyWhenMoving false |
+| EMP Shotgun | 10 | — |
+| Homing rocket | 5 | — |
+| Grenade Launcher | 5 | — |
+| Kamikaze mine | 5 | — |
+| A_Plasma_Trail (flak) | 5 | — |
+| Plasma Lrg | 3 | — |
+| Jet wingtip trails | 3 | — |
+| Fusion Cannon, Tank Cannon | CDO 1 | — |
+
+For all of these, TessellationStrength = CDO **1.0**, TessellationFactorDistance = **0**, MaxParticleInTrailCount 100.
