@@ -1333,3 +1333,13 @@ Both set:
 
 - **All 22 muzzle-flash emitters are X + local space** (they face along the barrel/socket X axis).
 - Most Z explosion rings are world-space (they lie flat on the world XY plane whatever the component orientation).
+
+**§15 addendum 3: particle Rotation in the rotate / velocity modes** (H: emulated plus dataflow)
+
+**Dataflow:** the sprite VS uses Rotation only as `angle = 2π·frac(rot/2π + ½) − π` → SIN/COS (instructions 19–32). These build the rotated camera axes R_rot = cos·c5 + sin·c6 (r13) and U_rot (r10). Those enter the position **only** through the `ParticleUpRightResultScalars.x` terms (instructions 41 and 46).
+
+**Consequences:**
+- **Camera-facing (Square/Rectangle) and lock modes 1–6** (scalars.x = 1): Rotation spins the quad in its plane.
+- **PSA_Velocity** (scalars.y = 1) and **ROTATE_X/Y/Z / ROTATE_*_U** (scalars.z = 1): **Rotation is ignored.**
+
+**Emulation check:** ROTATE_Z, ROTATE_Z_U and velocity give identical corners at Rotation 0, π/4, π/2 and π. RotationRate modules therefore have no visual effect on these sprites.
