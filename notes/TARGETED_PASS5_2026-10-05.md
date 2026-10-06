@@ -1089,3 +1089,32 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
   4. Tangent = normalize(oldHead.Location − new.Location), or the component X axis on the first spawn / with TypeData flag 0x40000000.
 - **No per-source or per-trail filter exists**, so with several live source particles (several shells) it is **one chain**. Each new head sits at whichever source particle the selection picked, so the strip **zig-zags** between sources. With Sequential or Random selection it alternates.
 - **The head does not track its source between spawns.** Positions are written only at spawn; LocationEmitter has no update case.
+
+**§14 addendum: LocationEmitter sub-frame dt term (C; interpretation H)**
+
+**Particle fields (this build):**
+- From the compiled Lifetime module (spawn runner case 1): particle **+0x1C = OneOverMaxLifetime**, **+0x0C = RelativeTime = OneOverMaxLifetime × SpawnTime**.
+- So the runner's float argument (dVar43) is **SpawnTime**, the sub-frame time already elapsed since this particle's spawn moment.
+- Layout otherwise: OldLocation +0x00, Location +0x10, BaseVelocity +0x20, Rotation +0x2C, Velocity +0x30, Flags +0x5C.
+
+**Emitter-instance motion** (`0x8300BF18`, called every tick from both emitter Ticks):
+- +0x7C = OldLocation ← previous +0x70;
+- **+0x70 = Location = component LocalToWorld origin**;
+- **+0x88 = Velocity = (Location − OldLocation) / max(DeltaTime, ε)**, set to 0 on reset.
+- Instance flag +0xA8 bit 0x40000000 = **bUseLocalSpace**.
+
+**Space matrices:**
+- `0x8300CA48(this, src)` = source-space → this-space:
+  - both world, or both local → identity;
+  - src world / this local → inverse(this.LocalToWorld (+0x30));
+  - src local / this world → this.LocalToWorld.
+- `0x8300CC48` also returns W = world → this-space: identity if this is world space; = the matrix above if src is world; else inverse(this.LocalToWorld).
+
+**Spawn position (case 0x13),** with S = SpawnTime and V_e = this emitter's world velocity (+0x88), or 0 if this emitter is local-space:
+- **Normal:** `age = src.RelativeTime / src.OneOverMaxLifetime`; `dt = min(S, age)`.
+
+  **Loc = M_src→this · ( src.Location − src.Velocity·dt + V_e·dt )**
+- **Uninitialised source** (src.RelativeTime == 0 **and** src.Location == (0, 0, 0)): **Loc = W · ( srcEmitter.Location − srcEmitter.Velocity·S + V_e·S )**.
+- H interpretation:
+  - `− src.Velocity·dt` rewinds the source particle to where it was at this particle's spawn moment (never before the source was born).
+  - `+ V_e·dt` cancels the emitter-motion compensation that the post-spawn step applies, so trail points land on the source's path rather than lagging the moving component.
