@@ -369,3 +369,109 @@ A rebuild that wants bots on the scoreboard must deliberately diverge (**PC ADAP
 - Weapon unlock gating (none found).
 - Per-action AI tuning numbers.
 - `TnStatsWrite*` leaderboard columns.
+
+---
+
+## Addendum 1 (milestone 09 requests): AI internals, difficulty, nav formats, the XP switch, frame timing
+
+### AI perception and decisions (C from script + Buddy data)
+
+**Controller** (`TnAiController` CDO) subobjects:
+- TacticalAnalyzer (`TnTacticalAnalyzer`);
+- WeaponShooter (`TnAiWeaponShooter`);
+- WeaponAimer (`TnAiWeaponAimer`);
+- `AiWorldState` (GOAP facts: AtActor, LOSToEnemy, HealthStatus, TransformerForm, VehicleMode, WeaponOverheated, HasAmmo, InLineOfFire, LockedOnTarget, Cloak, Defending, MoveToObjective, MoveToTacticalVolume, Shield, HealTarget, Turret …);
+- the PlanRunner.
+
+**Target selection** (`TnAiThreatSensor.OnUpdate`):
+- Skipped while `_ShootAtActor` is forced.
+- For each enemy in the TacticalDatabase (excluding dormant/untargetable sentries and non-targetable pawns), threat = Σ evaluator scores. An evaluator can discard the target.
+- The highest threat becomes `DesiredEnemy`.
+- Buddy evaluators: DamageBased, DistanceBased (`_MaxThreatRange` **7000**), TurretTarget, CloakedTarget.
+
+**LOS:** `TnAiLineOfSightSensor` sets the LOSToEnemy / AtActorLOS facts every update.
+
+**Range:** `TnAiRangeSensor` puts the range bucket (RangeSet) for the AtActor and enemy into the world state.
+
+**Weapon choice** (`TnPreferredWeaponPickerSensor`):
+- Close weapon = the lowest `GetDesiredFiringRange`; far weapon = the highest.
+- Switch to the far weapon after **5 s** at range ≥ OutOfRange; to the close weapon after **0.5 s** at range ≤ Medium.
+
+**Aim model** (`TnAiWeaponAimer`):
+- **No aim error.** It aims exactly at the target's TargetableLocation: the form-specific service (robot/vehicle) when the target is "dangerous", else its focal point.
+- "Aiming" = muzzle dot target > 0.866 (30°).
+- **Inaccuracy comes from weapon spread and burst pacing:**
+  - AI weapon data (`*_AI_WEPDATA`): `BurstRanges` short/medium/long with burst counts and pause durations, `FireIntervalModifier`;
+  - `TnAiPawn` ini: CloakedEnemySpreadModifier ×5, DownedEnemySpreadModifier ×2.5, DownedEnemyFireIntervalModifier ×2;
+  - AiVersusAiDamageScale 0.6.
+
+**Cover / movement:**
+- Dynamic sensors `TnTacticalPathNodePickerSensor` per weapon class group (infantry weapons vs vehicle weapons) pick TnTacticalPathNodes via evaluators (LOS, LOSToTeam, DistanceFromRange, KeepInRange, AwayFromTarget, HotSpot, OutsideAim, DistanceFromDowned, MoveForward) for the `ShootFromTactical` action.
+- **They need tactical nodes, which versus maps lack.**
+
+**Abilities / transform:** GOAP goals Cloak, Heal, HunkerDown, Transform, Revive and action blueprints (TransformToRobo/Vehicle, TransformToVehicleFromJump, Dodge, BarrelRoll, Melee, SmashAttack …). Per-blueprint numeric preconditions and costs were not extracted (U).
+
+### Difficulty (C)
+
+- **Player-facing names** (UIText.int `[Difficulty]`):
+  - **EASY** "For the new recruit…";
+  - **MEDIUM** "For the experienced soldier…";
+  - **HARD** "For the hardened veteran…".
+- These are campaign only; multiplayer has no difficulty.
+- **Mechanism:** not AI skill. `TnCampaignGame.GetDifficultyBuffLevel = difficulty × 3 + (numPlayers − 1)`, i.e. levels 0–8. These index buff values applied to pawns:
+
+| Buff | Easy (+0/+1/+2 players) | Normal | Hard |
+|---|---|---|---|
+| PlayerDamageCaused | 1.5 / 1.25 / 1.0 | 1.0 / 0.9 / 0.8 | 0.7 / 0.6 / 0.5 |
+| PlayerDamageTaken | 0.5 / 0.75 / 1.0 | 1.0 / 1.25 / 1.5 | 1.75 / 2.0 / 2.25 |
+| PlayerDamageTakenDowned | 0.5 / 0.4 / 0.3 | 0.5 / 0.4 / 0.3 | 0.25 / 0.2 / 0.15 |
+| DamageCausedAiVsAi | 0.45 / 0.35 / 0.25 | 0.3 / 0.2 / 0.1 | 0.25 / 0.15 / 0.05 |
+| Revive: damage-taken buff / jam abilities | 0.15 · 5 s | 0.25 · 7 s | 0.35 · 10 s |
+
+- Also AbilityResourceModifier (TransCustomization.ini).
+- `GetSkillDataIndex` is **not difficulty**: it selects the data variant (MP 0, campaign 1; Survival has its own SV data).
+- **For MP bots, any difficulty scale is a PC ADAPTATION.** The closest original knobs are the AI weapon data (burst/pause/spread) and these damage multipliers.
+
+### MP AI remnants (C)
+
+- The only AI in versus matches is `TnAiSentryController` (sentries, `_KillOwner`).
+- `bBot` handling: §13.
+- `TnGameReplicationInfo.UsesPlayerDataProvider = !bBot`.
+
+### Navigation formats (C)
+
+**Versus reach graph:** `TnReachSpec` (Engine ReachSpec subclass):
+- `Start` = NavigationPoint;
+- `End.Nav` = NavigationPoint;
+- `Distance`;
+- `CollisionRadius` 440 / `CollisionHeight` 400 / `MaxCollisionRadius`;
+- `reachFlags` 1 (walk).
+- Owned by the start point's `PathList`.
+- Points = team/FFA player starts, pickup factories, flag/bomb factories only.
+
+**Escalation reference format:**
+- **`NavigationCell`**: a convex polygon cell with `_Edges[]` {Start, End, Normal, `Neighbor` (cell + Guid), Border, StartIsInner, EndIsInner}, `_Normal`, `_IsTacticalCell`, `PathList` (TnReachSpecs), `MaxPathSize`. A portal-linked cell mesh (navmesh-like).
+- `PathNode` / `AirPathNode` / `MoverPathNode` with `StaticAnchor` → owning cell.
+- `TnTacticalPathNode` (`Tactical` subobject, `_AutoGenerated`, anchored to a cell).
+- Reconstruction can target this same schema (cells + portals + tactical nodes) from versus-map collision.
+
+### Private-match XP switch (C): the code path to wrap
+
+1. **`TnGameReplicationInfoMultiplayer.CanGainXp() = !get_IsPrivateGame()`** (`get_IsPrivateGame` → `GameSettings.IsPrivateGame()`). This is the single gate used by:
+   - `TnXpEventType.GetAwardAmount` (amount 0);
+   - `PC.ClientNotifyXpEvent` (no profile write);
+   - `PC.ToggleXpTransaction`;
+   - `PRI.ShouldUpdateState` (stats 0x1500–0x1FFF, i.e. challenge counters);
+   - `MatchOver.CanAwardMVP`;
+   - `GetQuitGameMessage`.
+2. `ShowXpEvents()` (true in MP) is separate: popups still show, with 0 XP.
+3. Private settings classes set `bUsesStats=false` (leaderboard writes).
+
+**PC-OFFLINE ADAPTATION:** override `CanGainXp` (and, if wanted, the stats flag) in one place.
+
+### Frame timing (C for Xenon config; H for engine behaviour)
+
+- Xenon `[Engine.GameEngine]` bSmoothFrameRate=TRUE, MinSmoothedFrameRate 15, **MaxSmoothedFrameRate 30**.
+- PhysX fixed 1/60 substeps (≤ 5), with the script dt = n/60 (pass 4 A4 addenda).
+- **UE3 runs one game tick per rendered frame.** There is no fixed-tick/variable-render split and **no interpolation of camera or animation between ticks** (H, stock UE3: the render thread draws the state from the latest game tick). Camera and animation advance by DeltaTime each tick.
+- PC original cap: UNKNOWN (no PC build in the dump; pass 4 A4 addendum 2).
