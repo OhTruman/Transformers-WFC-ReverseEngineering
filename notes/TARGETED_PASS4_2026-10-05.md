@@ -373,3 +373,28 @@ Otherwise it calls **`AbortMelee`** and returns true.
 
 - It appears in **no** LOD 1 blob.
 - So one module object is shared by all 7 emitters, at LOD 0 only.
+
+## Addendum (2026-10-06): A4 hover car, UpdateTurn ordering vs suspension springs (GP)
+
+**Order inside `TnHoverCarSimulation.Update`** (called from `TnCarForm.Hovering.DoUpdate`, player-controlled only) (C):
+1. `UpdateSuspension`: per probe, `ApplyForce(−Dir · max(0, (−Dir·N)·Force), probeLocation)`.
+2. `UpdateTerminalVelocity`.
+3. `UpdateDash` **or** `UpdateStrafe`.
+4. `UpdateRoll`: input roll acceleration minus yaw rate.
+5. **`UpdateTurn` last.**
+
+**UpdateTurn mask (C):** `Velocity = axisAngle(q⁻¹·target) × (0.05, 0.05, 1) / dt − LocalAngularVelocity` is applied × **`(ShouldUpright ? (1,1,1) : (0,0,1))`**.
+- `ShouldUpright = (NumContacts == 0) || IsUpsideDown` (IsUpsideDown: up.Z < 0.01).
+- **So while at least one suspension probe has contact and the car is upright, only yaw ω is replaced.** Pitch/roll ω are **not touched**: they carry over between ticks and are driven by the spring forces, UpdateRoll and the RB angular damping (DefaultAngularDamping).
+- The (0.05, 0.05, ·) pitch/roll correction applies **only airborne (no contacts) or upside-down**.
+
+**How it reaches PhysX (C for the native calls; H for the step semantics):**
+- `TnRigidBodyMesh.ApplyLocalAngularVelocity` → `PrimitiveComponent.AddLocalAngularVelocity` (native `0x82D31128`) → **`NxActor::addLocalTorque(v, NX_VELOCITY_CHANGE (2), wakeup)`**.
+- `ApplyForce` → `AddForce` (native `0x82D2B838`) → **`addForceAtPos(F × unitScale, pos × unitScale, NX_FORCE (0), wakeup)`**, or `addForce` without a position.
+- `LocalAngularVelocity` is the value cached by `TnRigidBodyMesh.Update` from `GetRBAngularVelocity`, i.e. the **previous physics step's result**.
+- So the spring forces and the yaw velocity-change are both **queued in the same script update** and applied together by the next PhysX simulate. Neither is applied "after" the other within script.
+- H (PhysX 2.x semantics): the velocity change lands at step start; the spring forces integrate over the step (including substeps).
+
+**Riser pitch:** a < 1° pitch over a 0.25 m riser is **not** consistent with the original logic.
+- The grounded body is free in pitch/roll apart from the springs and damping, so the body should tilt visibly as the front probes compress.
+- H for the magnitude: it depends on spring Force, probe geometry, inertia and DefaultAngularDamping; not computed here.
