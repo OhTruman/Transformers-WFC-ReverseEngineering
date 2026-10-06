@@ -36,3 +36,4 @@ Added in Milestone 03:
 - `ghidra_scripts/WfcDispScan.java` — read-only headless scan: functions using ALL given displacements/immediates (find field users, e.g. Scale/Scale3D offsets).
 - `ghidra_scripts/WfcStoreScan.java` — read-only headless scan: instructions with a mnemonic prefix and displacement inside functions that also use other displacements (find field writers).
 - `ghidra_scripts/WfcDecompAt.java` — read-only: create a function in memory (explicit `addr:size` body; clears false no-return flags in memory) and decompile code Ghidra never defined. Never saves.
+| `matgraph.py` | print a material input (e.g. EmissiveColor) as an expression tree from authored.db; used for TR_Defrag_MAT (pass 5 §12 add. 24/26) |
