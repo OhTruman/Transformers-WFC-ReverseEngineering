@@ -532,3 +532,23 @@ Otherwise it calls **`AbortMelee`** and returns true.
 
 **Rebuild equivalent at a 60 Hz step:** per-step pull k = 1 − 0.95^(dt·30) = 0.02532 (= 1 − √0.95), or call the correction at 30 Hz.
 - The same applies to any other per-call (non-dt-scaled) factor in the hover/car simulation.
+
+**A4 addendum 2: PC build frame-rate cap: UNKNOWN (no PC build in evidence)**
+- The dump is the Xbox 360 build only (default.xex, CookedXenon, Config/Xenon). There is no PC executable or PC-platform ini anywhere under F:\Transformers Rebuild.
+- The frame-smoothing key names are not in the XEX string table (they are script-package properties), so there is no native constant to read either.
+
+**What the coalesced Xenon ini does show:**
+- It contains the shared (platform-independent) game layer: PC-only sections are present in it.
+  - `[WinDrv.WindowsClient]`, with no refresh-rate limits;
+  - `[Engine.PCSettingManager]`, a registry-backed options set for ScreenResolution, **VSync**, TextureQuality and AntialiasingQuality (no frame-cap option);
+  - `[SystemSettings] UseVsync=False`;
+  - the PC Demonware hosts `tf2010-pc-*`;
+  - `[TransEd.TransEdEngine] MaximumPIEFrameRate=30` (editor, PC-side).
+- The Xenon-only layer (`[XeDrv.XenonClient]`, `[XeAudio…]`, `[XeD3D]`) appears at the end and does not mention GameEngine.
+- But a coalesced ini cannot show which layer set `[Engine.GameEngine] bSmoothFrameRate=TRUE, Min/MaxSmoothedFrameRate=15/30`: later layers override keys in place.
+- H (not verified here): stock UE3 base values are 22/62. So 15/30 is a game or Xenon override.
+
+**Conclusion:**
+- If the 15/30 override sits in the shared TransEngine.ini, the PC build is also smoothed to ≤ 30 Hz. If it is in the Xenon layer, PC uses the base cap (with VSync user-optional).
+- Neither can be shown from this dump: **UNKNOWN**. The editor's own MaximumPIEFrameRate=30 shows the team tuned for 30 Hz.
+- **Rebuild guidance:** match console (30 Hz per-call semantics, A4 addendum), since console is the only build in evidence.
