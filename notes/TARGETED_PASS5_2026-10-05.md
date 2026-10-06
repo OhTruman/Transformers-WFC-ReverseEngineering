@@ -2169,3 +2169,69 @@ The material is **MLM_Unlit**. All shading is a hand-built "fake light" in Emiss
   - "ActiveDecals" / "LifetimeRemaining" have no native strings.
   - H: stock ADecalManager::TickSpecial decrements LifetimeRemaining, then DetachComponent + eventDecalFinished.
   - This doesn't change the conclusion: whatever expires the decal has nothing to fade with.
+
+**§12 addendum 29: weapon / projectile impact decal templates** (C unless marked)
+
+**Data gap:** AssetTools `authored.db` skips every class whose name ends in "Property", so all **`TnPhysicalMaterialProperty` / `HmPhysicalMaterialProperty`** objects are missing.
+- I parsed them read-only from `Startup_int` with `tools/physprop.py` (reusing AssetTools' typed_props in place) → `notes/data/physical_material_properties.json` (17 objects).
+- **Engine default PhysMaterial = `ENV_PHYSMAT_p.Metal_PHYSMAT`** (Xe-TransEngine.ini `DefaultPhysMaterialName`).
+- PhysMaterial refs in authored data: Metal 802, ForceField_Blue 30, Ice 22, Metal_dest 13, Water 8, ForceField 6, Water_Coolant 5, Water_Yellow 4, Rubber 4, Concrete 4, Water_Blue / Default / A4_MiniBosses 1 each.
+- **So almost every surface resolves to the Metal tables.**
+
+**Path A — instant-hit weapons** (`HmWeaponMesh.CreateImpactEffects`):
+- Gate: EnableImpactEffects (true), the frame-rate skip, and `EffectIsRelevant(HitLocation, MaxImpactEffectDistance = 2500` for TnWeaponMesh`)`.
+- Then the squib + impact sound. **Decal only if the hit PhysMaterial has a property object and `!NoDecal`.**
+- `TnWeaponMesh.GetImpactDecalTemplate`:
+  - `PhysMatProp.GetWeaponSpecificDecal(mesh.WeaponEffectsType)`: the first group whose `WeaponTypes` contains the type → a random `ImpactDecal`.
+  - If it has no Material → the weapon's `DefaultDecal`.
+- Size = Min + FRand·Range; height reuses the same r only when UniformScale.
+- Roll = RandomInt(65536) only if `MatProp.ApplyRandomRotationToDecal` (HmPhysicalMaterialProperty CDO true; Water_* set false). It is passed as "degrees" (addendum 27 quirk).
+- Depth bias −0.00015 − FRand·0.0001. Orientation = −HitNormal. Projects on terrain and skeletal meshes, with HitComponent/bone/item.
+- Only 6 weapon meshes author a `WeaponEffectsType`:
+  - Explosive: Shotgun, EMPShotgun, Starscream_EMPShotgun_AI, RocketLauncher, Rocket;
+  - Energy: Repair;
+  - Bullet: Default_WEPMESH.
+- **All others are None.**
+- `DefaultDecal` authored (CDO template: Material none, 100 + 100, Thickness 10, Lifetime 30, clip, uniform, random-rot):
+
+| Weapon mesh | DefaultDecal |
+|---|---|
+| AssaultRifle | MetalDecal_02_MAT_INST, W/H 25 + U(0, 25) independent, thick 25 |
+| HeavyMG, IonBlaster | MetalDecal_02, 50 + 25 independent, thick 25 |
+| BurstRifle | DecalDefault_MAT, 30 + 25 uniform, thick 25 |
+| PlaneMachineGun | DecalDefault, 50 + 25 independent, thick 25, **Lifetime 5** |
+| PlasmaCannon | MetalDecal_02, CDO size 100 + 100, thick 10 |
+| AI tank cannons / gatlings, OmegaMG/RocketSentry | DecalDefault, 50 + 25 independent, thick 25 |
+| Everything else (sniper, pistols, melee, grenades …) | **none** (no decal, unless a surface group matches) |
+
+**`Metal_PHYSMAT` groups** (all Lifetime 30, clip, random rotation):
+- **Bullet:** MetalDecal_02 or _03, 30 + U(0, 30) uniform, thick 30.
+- **Energy:** 02/03, 150 + 40 independent, thick 40.
+- **Explosive:** 02/03, **300 + 30** independent, thick 300.
+
+**`Default_PHYSMAT`:** Bullet MetalDecal_02 30 + 25 uniform, thick 10; Energy / Explosive MetalDecal_02 100 + 100, thick 10.
+
+**Groups with null `WeaponTypes`:**
+- `A4_MiniBosses`, `Metal_dest`: DecalDefault_MAT ×4 sizes (100 + 100 / 100 + 100 / 300 + 100 thick 300 / 500 + 100 thick 100).
+- `Concrete`: 4 entries, Material none.
+- **In script, `None == None` matches, so weapons with WeaponEffectsType None match these groups:**
+  - on Metal_dest / MiniBosses a rifle hit picks a random one of those four DecalDefault decals, up to 600 UU;
+  - on Concrete the Material is none, so it falls back to the weapon DefaultDecal.
+- This is script-CONFIRMED behaviour; the authoring intent looks broken.
+
+**No decal at all on these surfaces:**
+- No property object: ForceField*, RollerMine, Vehicle (HmPhysicalMaterialProperty with no table → DefaultDecal fallback; H: it is used by vehicles).
+- `NoDecal`: Water_Blue / Coolant / Purple / Red / Yellow.
+- Asphalt / Dirt / Ice / Rubber / Water / Wood have **no tables**, so the weapon DefaultDecal is used.
+
+**Path B — projectiles:**
+- `TnProjectile.PlayExplosion` → `TnProjectileMesh.DecalApplicator.Apply(self, HitLocation + HitNormal·BlastOffset, HitNormal)`. It is skipped at game throttle 3 or 4.
+- **Every TnProjectileMesh** has the CDO `DefaultDecalApplicator` (59 projectile meshes, none overridden) = `TnDecalApplicatorProjectile`:
+  - WeaponEffectsType **Explosive**, TraceDistance **200**;
+  - Template Min 300, Range 100 (CDO), Thickness 300, Lifetime **8**, NoClip **true**, Material none.
+- Trace direction = −HitNormal (`TnDecalApplicatorMomentum`), so it is never glancing.
+- `TnDecalApplicatorProjectile.GetDecalTemplate`: the PhysMat property's **Explosive** group, else the base template (Material none → nothing). **`NoDecal` is not checked on this path.**
+- **So rockets, grenades and mines on Metal get a MetalDecal_02/03 300–330 UU (W and H independent), thick 300, 30 s.** On Default_PHYSMAT: 100–200, thick 10. Elsewhere: none.
+- The projectile template's own Lifetime 8 / NoClip are never used: its Material is none.
+
+**Decal materials:** `MetalDecal_02/03_MAT_INST` are MICs of **DeathDecal_MAT** with Texture decal_metal_01_CLR / decal_metal_03_CLR, so they use the same modulate maths as addendum 28. `DecalDefault_MAT` is its own modulate material (not traced).
