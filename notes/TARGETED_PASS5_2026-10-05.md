@@ -2297,3 +2297,21 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - The result is **only clamped at the 7e3 ceiling of 31.875 in biased scene units.** Then normal tonemapping/gamma happens in post-process, so brightened scratches show as true HDR highlights.
 - The darkening side clamps at 0. The m < 0 extremes (min −0.0001 from Blacks) round to 0.
 - Not traced: the SceneColorBiasFactor value (the C++ setter of binding +0x1A at 0x82CED5C0) and the decal blend-state object.
+
+**§12 addendum 32: SceneColorBiasFactor value — UNKNOWN (time-boxed); not needed for decals**
+
+**What is established (C):**
+- `SceneColorBiasFactor` is a **runtime float4 uniform**, not a compile-time literal: every material/post shader CTAB declares it.
+- Usage seen in microcode: lit/emissive material output `oC0.rgb *= c.x`; alpha `oC0.a = c.y` (`MAXs oC0.w = c3.y`, MILESTONE03 LIGHTVIS §… and the Streets material PS); distortion/translucent scene-colour readers multiply the whole result by `c.xxxy`.
+- The value is passed in by C++ through shader-parameter binders. They are bound in:
+  - `0x82EAA318`: the FMaterialPixelShaderParameters-style binder, with LocalToWorldMatrix, DecalWorldTangent/Bitangent …, SceneColorBiasFactor at struct +0x72; serialiser `0x82EAA588`;
+  - `0x82CED5C0`: a screen-copy shader (ScreenTexture, TextureComponentReplicate, SceneColorBiasFactor);
+  - `0x82FA7C00`: motion blur (VelocityBuffer, ScreenToWorld …);
+  - `0x82FA62D0`: accumulation blur (AccumulationBuffer, BlurAmount …).
+- **The setter that writes the value was not found.** Searched: lhz/addi struct-offset scans for +0x72/+0x7E/+0x84 and +0x68, and reads of the binder object. The candidates were serialisers or unrelated code.
+
+**Why it doesn't matter for decals:**
+- The decal PS omits the bias (addendum 31) and modulates: stored = (biased dest) · m, i.e. unbiased dest · m with the same bias, so the decal result is bias-independent.
+- The bias only sets where the 7e3 ceiling falls in unbiased units: 31.875 / bias.x. That only affects highlight clipping of very bright scenes.
+
+**To finish it later:** break on a PS constant upload during a material draw (runtime), or locate `FMaterialPixelShaderParameters::Set` via the vtable of the material shader classes that own the `0x82EAA318` binder.
