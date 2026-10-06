@@ -2014,3 +2014,23 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
   - applies the character's colours.
 - LifeSpan U(**3, 5**) (SharedCar; CDO 10).
 - Modifier `TnSkeletalRigidBodyModifierSetEnergyDeathMaterial`: Delay U(0.5, 1.0), TransitionTime 4.5 s.
+
+**§12 addendum 23: death decal applicator** (C unless marked)
+
+**Call:** at the gib, `TnDeathPlayer.Deactivate` → `DecalApplicator.Apply(Owner, Owner.Location, vect(0,0,0))`. `TnDecalApplicatorDeath` is a defaults-only subclass of `TnDecalApplicator`.
+
+**`TnDecalApplicator.Apply`:**
+- dir = `GetTraceDirection()` = (0, 0, −1) × **TraceDistance 300**, starting at the pawn origin.
+- `Trace(..., bTraceActors = true, TraceExtent (CDO none, so a zero-extent line), HitInfo)`.
+- **Skip if glancing:** |HitNormal · dir| < **GlancingThreshold 0.5**, i.e. the surface is steeper than 60°. Also skip if nothing is hit (e.g. the pawn origin is more than 300 UU above ground) or the template Material is none.
+- r = RandomFloat → **Width = MinWidth + r·WidthRange**. Height uses the same r when UniformScale (default true), so the decal is square.
+- Rotation = RandomInt(65535) when ApplyRandomRotation (default true). Depth bias = RandomFloat(−0.0001) (H: a tiny random negative bias).
+- `MyDecalManager.SpawnDecal(Material, HitLocation, Rotator(dir), W, H, Thickness, NoClip, Lifetime, Rotation, …, BoneName, LevelIndex, depthBias)`.
+
+**Authored (TnDecalApplicator CDO defaults in brackets):**
+- **Robots only:** SharedRobotDeaths, HoloBruteRobotDeaths, BruteRobotDeaths, SpiderDeaths, SecurityDroneDeaths.
+  - Material **FX_Decals_p.DeathDecal_MAT**: BLEND_Modulate, unlit; texture `blastmark_glow_CLR`, vector params Color (20, 20, 20), Blacks (−0.0001).
+  - Size: MinWidth/MinHeight **800**, Width/HeightRange **150**, so a **square 800–950 UU**.
+  - Thickness **300**, Lifetime **[30 s]**, NoClip [false], UniformScale [true], ApplyRandomRotation [true].
+- **No decal** (Material none) for SharedCar, SharedJet, SharedTank, SharedVehicle, SoldierTankRobot, OmegaSupreme: **vehicle deaths leave no scorch decal**.
+- Decals are client-side: the gib runs on every machine.
