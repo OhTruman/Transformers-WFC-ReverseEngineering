@@ -550,3 +550,15 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 - The struct `Pawn._WorkingMovementCapabilities` is swapped per form.
 - Robot: MaxStepHeight 35 (+2 fudge → **37 UU** step-up and snap-down), WalkableFloorZ **0.7**, MaxFallHeight 3400, MaxJumpHeight = acrobatics JumpHeight (**500 UU** apex; JumpZ 1714.6), TerminalVelocity 6000.
 - Vehicles: RB/hover physics (the walker rules do not apply).
+
+## Addendum 6: player-list level and award badges (PlayerList_GFX ActionScript) — corrects §4/§8 (C from AS; H noted)
+
+- **Level shown per player:** the player-list entry for a non-iconic MP game has columns `PlayerLevel` (width 100) + `PlayerName` + `Score` (+ `Kills`, `Deaths` in game).
+  - The level cell (sprites 82/88) attaches the **specialty icon** of the player's current character (`mc_specialtyIconScout / Leader / Scientist / Soldier`) and the text **`PlayerLevel<Specialty>`**, i.e. the level of the specialty being played (0–25), watched for changes.
+  - So players see **specialty icon + that class's level**, not the 0–100 sum. H: the summed `PRI.PlayerLevel` still feeds the data-store column; the visible number is the specialty level.
+  - Iconic mode (campaign/co-op) shows the character name instead.
+- **Award badges next to the name** (sprite 85): `addAward(name, priority)` with clips `mc_awardPlace1st`, `mc_awardPlace2nd`, `mc_awardPlace3rd`, **`mc_awardPrimeMode`**; spacing −25 px from x −20, scale 80 %.
+  - Only `PrimeMode` is added in this movie, from `PrimeModeActive`, so it is **the Prime medal**.
+  - Place1st/2nd/3rd clips exist but nothing in PlayerList adds them (U: possibly unused).
+- Prime unlock UI: `Customize.IsPrimeModeAvailable` / `Customize.UnlockPrimeMode` from GameLobby / PartyLobby (`primeMode_mc`, locked unless available), and also CharacterSelect / CustomTransformers / EndGameStats / Hud / InGameStats.
+- Assets: badge and specialty-icon art is inside `PlayerList_GFX.gfx` (extracted images `PlayerList_GFX_I*.png`).
