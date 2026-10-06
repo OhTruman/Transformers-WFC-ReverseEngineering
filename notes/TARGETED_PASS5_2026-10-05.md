@@ -1939,3 +1939,29 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
 - **The TractorBeam [6] and Energy [7] entries in SharedRobotDeaths / HoloBrute are unreachable**: no damage type resolves to them (OmegaTractorBeamGrab and EnergyBlast author none).
 - Kills by a "none" damage type, or by FlashBang, use the momentum entries. Forward or backward push gets Death_BackShot / Death_FrontShot; a sideways push gets the default death.
   - Note: StandardPistol, BurstPistol, Bazooka, GuidedMissile and TruckRocket are in this group.
+
+**§12 addendum 21: vehicle death picker and entries** (C unless marked)
+
+**`TnVehicleDeathPicker.FindActiveTypes`**, by `TnPawn.get_VehicleType` (`EVehicleFormType`: 0 VFT_Car, 1 VFT_Truck, 2 VFT_Plane, 3 VFT_Tank, 4 VFT_Invalid when there is no vehicle form):
+- **Car / Truck:** add `Car`, then **MovingCar if `TnCarForm.LinearSpeed > 50`, else StationaryCar** (the rigid-body `_LinearSpeed`; H: UU/s, i.e. 0.5 m/s). If the form is not a TnCarForm, only `Car` is added, which matches no entry → the default death.
+- **Tank:** add `Tank`, plus MovingTank or StationaryTank by the same > 50 rule on `TnTankForm`.
+- **Plane:** add `Plane`.
+- Same pick rule as addendum 18 (first entry with all types active).
+
+| Blueprint (used by) | Entry | Anim | TotalTime (AI) | Modifiers |
+|---|---|---|---|---|
+| **SharedCarDeaths** (21 VEHDEFs: Bumblebee, Optimus, Ratchet, Sideswipe, Soundwave, Ironhide, Brutes, CQC, soldier cars …; DefaultGibs SoldierCarGibs_DSYS) | MovingCar | Death_Hover_VEH | 0.3–0.75 (AI 0 → also TotalTime) | A + B |
+| | StationaryCar | Death_Hover_VEH | 0.2–0.5 | A + B |
+| **SharedTankDeaths** (Warpath, Brawl, Megatron, Scattershot, Demolishor; SoldierCarGibs) | MovingTank / StationaryTank | Death_Hover_VEH | 0.3–0.75 / 0.2–0.5 | A + B |
+| **SharedJetDeaths** (12 jets incl. Starscream, Jetfire, Silverbolt, Skywarp, Thundercracker, Shockwave, Slipstream, soldier jets; DefaultVehicleGibs_DSYS) | Plane | Death_VEH | 4–5 (AI 4–5) | C |
+| **SharedVehicleDeaths** (only Laserbeak ROBODEF; DefaultVehicleGibs) | Moving/Stationary Car, Moving/Stationary Tank, Plane | Death_Hover_VEH ×4 / none | 0.3–0.4, 0.3–0.4, 0.3–0.75, 0.2–0.5, Plane 1.5–1.6 (AI 1.5–3) | A + B ×4 / C |
+
+**Modifiers:**
+- **A** = `TnDeathModifierPlayEffect` PET_Random: **one of** TF_Death_Buildup_FX or TF_Death_MED_FX (RandomInt), attached to TargetingSocket.
+- **B** = `TnDeathModifierTriggerLight`: colour (R202, G123, B213), RampIn 0.2 s, LightTime 8 s.
+- **C** = PlayEffect PET_All (default PlayType 0): **both** Smoke_Trail_Jet_Fast_FX at VaporTrailSocket_R and TF_Death_MED_FX at TargetingSocket.
+- No vehicle entry has a sound modifier. The only vehicle death sound is `_Blueprint.DeathSound` (addendum 12).
+
+**Notes:**
+- Car Moving and Stationary differ only in TotalTime. A moving car gibs a bit later on average.
+- After TotalTime the gib (addendum 10) happens: the default gibs blueprint unless the entry sets UseCustomGibs (none do), then corpse removal 1 s later.
