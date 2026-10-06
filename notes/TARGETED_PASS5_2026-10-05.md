@@ -917,3 +917,33 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
   - there is **no Decepticon "off" one-shot**.
 - `ROBO_SHIELD_DECEPTICON_OFF` is only on `FX_Shield_p.FX.shield_D_SML_END_FX`, used by `TR_HitEffectPlayer_p.SharedHitEffectPlayer` (hit effects; H: shield hit/break FX), and in the campaign BaseMapReferencers.
 - `ROBO_SHIELD_DECEPTICON_ON_LP` is referenced **only** by ShieldD_01_FX.
+
+### §12 addendum 2: TnPlayerController feedback sounds (SY) (C from script/CDO)
+
+**Kill confirm:**
+- Server `TnPlayerController.NotifyCausedDamage`: `IsFatalDamage` → `TellClientToPlayKilledPawnSound(victim)`.
+- That uses `ClientPlaySound(cue)`, a client RPC to the **killer only**, which does `ClientHearSound(cue, PC, PC.Location, false)`. H: effectively non-positional.
+- **Precedence:**
+  1. `KilledPawn.WasLastHitHeadshot()` → KilledWithHeadshotSound;
+  2. victim `IsInRobotForm` → KilledRobotSound;
+  3. victim `_CurrentCharacter.CharacterType == CType_SoldierJet (6)` → KilledJetSound;
+  4. `== CType_SoldierCar (5)` → KilledCarSound;
+  5. otherwise → KilledVehicleSound.
+- So the vehicle choice is by the victim's **character class**, not the vehicle class. Tank and all other classes in vehicle form → Vehicle.
+- ECharacterType: Invalid, Buddy, Boss, Brute, CQCSpecialist, SoldierCar, SoldierJet, SoldierTank, Sniper, Rocketeer, Spider.
+
+**DeathSound (`HUD_DEATH_POWER_DOWN`):**
+- Only in `TnPlayerController.OnCampaignGameOver` (called from TnUIController): ClientStopMusic(0.25), `PlaySound(DeathSound, bNotReplicated = true)` on the PC, then GameOverMusic and GameOverMixerPreset, and dialog playback is disabled.
+- **Campaign game over only; no MP use.** `TnVehicleForm` has a separate `_Blueprint.DeathSound`, played at the pawn locally.
+
+**TransformFailedSound (`TRANSFORM_DISABLED`):** `PressTransform` decides as follows.
+- **Silent early returns:** no TransformerPawn or `!_ReceivedWeapon`; PlayerInteractState ≠ 0; currently reviving someone (`RevivablePawn`).
+- **Then `Pawn.PlaySound(TransformFailedSound, bNotReplicated = true)`** (local, positional) if the pawn **has TnBuffTransformDisruptor**, or if `Transform()` returns false:
+  - **PlayerWalking:** pawn downed/reviving, or `StartTransform` fails;
+  - **PlayerInVehicleForm:** `StartTransform` fails;
+  - **PlaneDowned / Dead:** always false.
+- **`StartTransform` fails when:**
+  - already transforming, or `!IsTransformingEnabled` (H: covers melee and other disable flags);
+  - **`!MoveToSafeTransformationLocation(TargetForm)`**: no room. This **also** calls `TnHUD.NotifyCantTransform()`.
+
+**Roller mine arm sound:** `TnRollerMineAbility.ArmSound` = `BL_WPN_GRENADE.KAMIKAZE_FUSE_START` (CDO `TransGame.Default__TnRollerMineAbility`; it is a subclass field, not on TnRollerMine). Played by `TnRollerMineAbility.ArmTimer` (ArmTime 3.0) via `PlaySound(ArmSound, bNotReplicated = true, , bStopWhenOwnerDestroyed = true)`.
