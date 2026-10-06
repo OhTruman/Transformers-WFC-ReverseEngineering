@@ -32,6 +32,10 @@ CF_OP = ['NOP','EXEC','EXEC_END','COND_EXEC','COND_EXEC_END','COND_PRED_EXEC','C
          'MARK_VS_FETCH_DONE']
 C = 'xyzw'
 
+VFMT = {6: '8_8_8_8', 7: '2_10_10_10', 25: '16_16', 26: '16_16_16_16', 31: '16_16_FLOAT', 32: '16_16_16_16_FLOAT',
+        33: '32', 34: '32_32', 35: '32_32_32_32', 36: '32_FLOAT', 37: '32_32_FLOAT', 38: '32_32_32_32_FLOAT',
+        57: '32_32_32_FLOAT'}
+
 def bits(v, lo, n): return (v >> lo) & ((1 << n) - 1)
 
 def vswz(s):
@@ -128,7 +132,16 @@ def alu(w0, w1, w2):
 def fetch(w0, w1, w2):
     op = bits(w0, 0, 5)
     if op == 0:
-        return 'vfetch r%d, r%d, vf%d' % (bits(w0, 12, 6), bits(w0, 5, 6), bits(w0, 20, 5))
+        # Xenia VertexFetchInstruction: w1 dst_swiz:12 fmt_comp_all:1 num_fmt_all:1 signed_rf:1 rsv:1 format:6
+        # rsv:2 exp_adjust:6 is_mini:1 is_pred:1; w2 stride:8 offset:23 (dwords)
+        dsel = ''.join('xyzw01?_'[bits(w1, 3*i, 3)] for i in range(4))
+        fmt = VFMT.get(bits(w1, 16, 6), 'fmt%d' % bits(w1, 16, 6))
+        signed = '' if bits(w1, 12, 1) else 's'  # format_comp_all 0 = signed
+        norm = '' if bits(w1, 13, 1) else 'n'    # num_format_all 0 = normalized
+        mini = ' mini' if bits(w1, 30, 1) else ''
+        return 'vfetch r%d.%s, r%d, vf%d  %s%s%s off=%d stride=%d%s' % (
+            bits(w0, 12, 6), dsel, bits(w0, 5, 6), bits(w0, 20, 5), fmt, signed and '_'+signed, norm and '_'+norm,
+            bits(w2, 8, 23), bits(w2, 0, 8), mini)
     sr = bits(w0, 5, 6); dr = bits(w0, 12, 6); ci = bits(w0, 20, 5); ssw = bits(w0, 26, 6)
     dsw = bits(w1, 0, 12)
     sw = ''.join(C[bits(ssw, 2*i, 2)] for i in range(3))

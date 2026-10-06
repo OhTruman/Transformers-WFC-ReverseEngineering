@@ -1009,3 +1009,30 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 - The new particle's tangent ← normalize(oldHead.Location − new.Location) (`0x83049508–0x83049558`).
 
 **Result: the head (U = 0) is always the most recently spawned particle**, i.e. the source end. U increases toward the oldest particle at the tail.
+
+**§13 addendum 2: GPU side expansion of beam/trail vertices** (H overall: CPU-side facts C, shader numerics emulated)
+
+**Vertex factory:**
+- `FParticleBeamTrailVertexFactory` (type `0x83862280`; shader params class vtable `0x823351CC`).
+- Bind `0x8305BB58`: CameraWorldPosition, **CameraViewVector**, ScreenAlignment, LocalToWorld, WorldToLocal.
+- SetMesh `0x830129B0`: CameraViewVector = normalized view direction (view +0x270). If VF flag +0xA9 is set, it is instead normalize(cross) of two vectors stored at VF +0xAC…+0xC0.
+
+**Shader:**
+- vs_3_0 blobs with `CameraViewVector` in the D3DX CTAB are in the map ShaderCaches; analysed `MP_ORB_Debris_BASE_m` ShaderCache_12837 @ 0x1930.
+- c5 = CameraViewVector, c6 = ScreenAlignment, c7–c10 = LocalToWorld.
+- The fetch-semantic table at blob+0x210 gives POSITION, NORMAL, TANGENT, TEXCOORD0…4 in vfetch order. That maps in order onto the CPU vertex: Pos +0x00, OldPos +0x0C, direction +0x18, up +0x24, (U, V) +0x30, Color +0x38, Size +0x48, DynParam +0x54.
+- Confirmed by use: TEXCOORD1 → oC2.xy (UV pass-through), TEXCOORD2 → oC1 (colour).
+
+**Emulation** (new `tools/xenosvsemu.py`, CF/predicate aware; `xenosdis.py` vfetch decode extended):
+- Default mode (ScreenAlignment c6 = 0) gives:
+
+  **WorldPos = LocalToWorld·Pos + (2V − 1) · Size · normalize(cross(CameraViewVector, LocalToWorld·Dir))**
+
+  where Dir is the +0x18 direction field. Position − OldPosition is **not** the axis.
+- So **V = 1** is on the cross(view, dir) side and **V = 0** on the opposite side. The half-width = Size (the fill writes Size.xyz equal), so the full width = 2·Size.
+- Checks: dir +X with view +Y → V = 1 at −Z; view −Z → V = 1 at −Y; view +Z → V = 1 at +Y; dir +Z with view +Y → V = 1 at +X.
+- **c6.y ≠ 0** (up-vector mode): offset = (2V − 1)·Size·normalize(LocalToWorld·Up), using the +0x24 field.
+- c6.x == 2.0 selects a Pos − OldPos path, degenerate for beams.
+- What the CPU writes into ScreenAlignment for beams/trails is not traced (U); the default authored data suggests 0.
+
+**One inferred op semantic** (`SUB_CONST_0` with the src3 negate bit at instruction 75: the negate applies to both operands → V − 0.5). It is the only reading that gives a symmetric ±Size strip; the alternative puts both vertices on the same side. That keeps this addendum at H rather than C.
