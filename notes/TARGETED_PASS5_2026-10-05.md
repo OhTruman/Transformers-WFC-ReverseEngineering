@@ -629,3 +629,35 @@ This supersedes §9e: the BeamSineWave formula is no longer UNKNOWN.
 - The basis is h00 = 2α³ − 3α² + 1, h10 = α³ − 2α² + α, h01 = −2α³ + 3α², h11 = α³ − α² (standard UE3 CubicInterp).
 - α advances by a per-step increment held on the stack (H: 1/NoiseTessellation).
 - Width is interpolated linearly between the endpoint taper values. The vertex direction = normalise(current − previous).
+
+## 10. SetAudioGroupVolume — native FMOD path (SY) (C unless marked)
+
+**Call chain:**
+1. **Exec:** `execSetAudioGroupVolume` = **`0x82C7E5E8`**. It is registered in `Function_83656C58` (slot `0x83710144`) and calls `0x82BE9D08(volume, GroupName)`.
+2. → `GEngine.Client.GetAudioDevice()` → `UFmodAudioDevice` vtable **+0x17C** (`0x82741B90`). The device vtable is `0x820BB4A8`; its constructor is `0x827B4488`, and the class is registered at `0x8278B6A0`.
+3. If the device is initialised (+0x128): inner audio object (+0x160; vtable `0x820B3688`, created by device vtable +0x234) → vtable +0x4C = **`0x827666B0`**.
+
+**`0x827666B0` (SetGroupVolume):**
+- If the audio system is not initialised: no-op.
+- Iterates the group mappings: 16-byte entries {GroupName, CategoryNames data, count}, built from `[HM_Engine.SoundMixerProperties] SoundGroupCategoryMappings`.
+- **Match:** `entry.GroupName.index == arg.index`. This is an **FName index compare** (H: case-insensitive, since UE3 FNames share one case-insensitive table, so 'Dialog' == 'DIALOG').
+- **GroupName None matches every group.** An unknown group matches nothing, so it is a **no-op**.
+- For each CategoryName in the entry: node = categoryTree.Find(name). The tree is a recursive search by FName index (`0x82766148`). Then `node->vfunc+0x20(volume, 0.0)` → `node.fader(+0x40)->SetTarget(volume, time = 0.0)`.
+
+**The fader** (`0x82759490` creates it; vtable `0x820A1C48`):
+- {current +0x08, target +0x0C, rate +0x10, remaining +0x14, active +0x04};
+- `SetTarget(t, time)` (`0x827560A8`): time ≤ 0 → current = target **immediately**; time > 0 → linear ramp over `time`;
+- `Tick` (`0x827560F8`) advances active ramps.
+- **So SetAudioGroupVolume is immediate (no ramp).**
+
+**Per category:**
+- Each category node (`0x82771920`) gets its own fader, **initialised to the config category `Volume` clamped to [0, 1]**. SetAudioGroupVolume **replaces** that fader's value. It is not a separate multiplier.
+- `GetAudioGroupVolume` (`0x827667C8`) returns the first mapped category's fader value, or 1.0 if the group is unknown.
+
+**Hierarchy:**
+- Each node's DSP/channel group (+0x50) is attached to its parent node's group at construction. H: FMOD ChannelGroup volumes multiply down the tree, so children of DX_DRY etc. inherit.
+- Only the listed categories' faders are written, not their descendants' faders.
+
+**Mixer presets — U:**
+- Not traced: whether mixer presets act on this same fader (in which case a preset ramp would overwrite the user volume) or on a separate component.
+- H suggestion: presets drive their own ramps; verify before relying on it.
