@@ -1594,3 +1594,16 @@ Both set:
 **Weapon (H):** it is socket-attached to `self.Mesh` and goes away with it (UE3 detaches socket attachments with their parent skeletal mesh). Its fire effects stop because Dying ignores StartFire.
 
 **So during `LifeSpanAfterDeath`** (5 s Default/Repair, 30 s Rocket), **only the explosion particle (and the tail of the one-shot sound) is visible**. The actor is otherwise an invisible, untargetable, damage-ignoring shell until LifeSpan destroys it (H for the particle: it is not deactivated by the state, so it ends naturally or with the actor).
+
+**§12 addendum 8: sentry weapon detaches with the body (C)**
+
+**Attach (script):**
+- `HmWeaponMesh.Attach(owner, BaseMesh, SocketName)` → `BaseMesh.AttachComponentToSocket(weaponMesh, SocketName)`, with BaseMesh = the pawn Mesh.
+- For the sentry that is the destructible Healthy-state skeletal mesh (§12 addendum 7), socket = blueprint `WeaponSocketName` ("WeaponSocket" CDO).
+
+**Native:**
+- `USkeletalMeshComponent` keeps socket attachments at **+0x264** (count +0x268, 0x30-byte entries).
+- `execDetachComponent` (`0x82DA0208`) removes one entry and calls `ConditionalDetach(child)` (`0x82E29290`).
+- **The skeletal component's virtual Detach `0x82D762F0`** (in four skeletal-component vtables) calls the parent class's Detach, then **`ConditionalDetach(child, bWillReattach)` for every socket attachment**.
+
+**Therefore:** when the Destroyed transition's `HmMeshDestructionEffect.EndEffect` detaches the sentry mesh from the actor, the socket-attached **weapon mesh is detached in the same call** and stops rendering. Upgrades §12 addendum 7's weapon point from H to **C**.
