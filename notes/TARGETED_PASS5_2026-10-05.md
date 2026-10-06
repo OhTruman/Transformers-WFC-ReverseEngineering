@@ -1917,3 +1917,25 @@ Otherwise those entries win, with their own animation and their own TotalTime: 1
   - H: 54 CDOs author none, but subclasses may inherit a parent's value (class hierarchy not resolved here).
   - No damage-type CDO authors Energy or TractorBeam, so entries [6] and [7] look unreachable by damage (H, the same caveat).
 - `SupportedDeathTypes` is used only by `TnDeathBlueprint`'s editor/validation check (`IsSupported`), not by `Pick`.
+
+**§12 addendum 20: effective DamageDeathType per damage type (resolves the addendum 19 H)** (C)
+- Class supers come from the TransGame export table (`super_index`, 88 TnDamageType* classes). Values are each CDO's authored `DamageDeathType`, else the nearest ancestor's.
+- The base `TnDamageType` / `HmDamageType` author none. **Only seven classes inherit a non-none value:**
+  - Environment and EnvironmentNoDowned ← TnDamageTypeRepairEnemy (RapidShot);
+  - MeleeBerzerk, Rammed, ShoulderSlam, WeakMelee, Whirlwind ← TnDamageTypeMelee (Melee).
+- No script writes DamageDeathType; the picker reads `dt.static.default.DamageDeathType`.
+
+| Effective death type | Damage types |
+|---|---|
+| **RapidShot** (11) | AssaultRifle, BurstRifle, CarMachineGun, Environment, EnvironmentNoDowned, GatlingGun, HeavyIonBlaster, IonBlaster, MountedIonBlaster, RepairEnemy, SentryGun |
+| **SingleShot** (5) | EmpShotgun, HeavyMG, HeavyPistol, Shotgun, SniperRifle |
+| **Explosive** (17) | DeathBlossomRocket, EnvironmentExplosion, FlakGrenade, GrenadeLauncher, HeavyRocketTurret, HomingRocket, KamikazeMine, MartyrGrenade, MountedRocketTurret, OmegaBeam, OmegaRocket, OmegaShootingFrenzyRocket, PlasmaCannon, RocketTurret, RollerMine, SentryRocket, TankShell |
+| **Melee** (6) | Melee, MeleeBerzerk, Rammed, ShoulderSlam, WeakMelee, Whirlwind |
+| **FlashBang** (1) | FlashBang (**no FlashBang entry** in the robot blueprints → falls through to momentum) |
+| **Poke** / **RobotBooster** | their own classes |
+| **none** (45 classes) | AOE, AbilityJammer, AudioBlast, Aux1–3, Bazooka, BruteBackpack, BurstPistol, Corruption, DeathAnim, DecoyDot, DownedDrain, Drain, Energon, EnergyBlast, ExplodeOnDeath, ExplodeWithForces, GuidedMissile, HeavyTankShell, Impact, InstantKill(Ai), MangaRocketSoldier, NullRay, OmegaAOE, OmegaTractorBeamGrab, PistolTemp, PlaneRocket, RocketTemp, RollerSphereDot, Rust, ShieldPush, Shockwave, StandardPistol, TransformDisruptor(Dot), TruckRocket, Trypticon* (7) |
+
+**Consequences:**
+- **The TractorBeam [6] and Energy [7] entries in SharedRobotDeaths / HoloBrute are unreachable**: no damage type resolves to them (OmegaTractorBeamGrab and EnergyBlast author none).
+- Kills by a "none" damage type, or by FlashBang, use the momentum entries. Forward or backward push gets Death_BackShot / Death_FrontShot; a sideways push gets the default death.
+  - Note: StandardPistol, BurstPistol, Bazooka, GuidedMissile and TruckRocket are in this group.
