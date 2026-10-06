@@ -1842,3 +1842,52 @@ All cues are local (bNotReplicated / audio components), played by each non-dedic
 **`TnProjectileMartyrdomGrenade` / Grenade_Martyrdom_PROJMESH / Grenade_Martyrdom_PROJDATA** (GL cues; FuseTime 0.5–1, Damage 100, radius 1500, TnDamageTypeMartyrGrenade):
 - **No spawner anywhere**: no script class literal, no data or ini reference.
 - An earlier design superseded by the kamikaze-mine martyrdom. It is **unused** (absence of evidence; don't implement).
+
+**§12 addendum 18: death-entry picker (resolves the addendum 17 H "picker prefers martyrdom")** (C)
+
+**`TnDeathFactory.Create`:**
+- Starts from the default death (DefaultModifiers, gibs, decals, struct TotalTime 1.0).
+- Picks an index with `Blueprint.ForceDeathTypes` (debug picker, if non-empty) or `Blueprint.Picker.Pick`.
+- Copies that entry's Animation, Modifiers, custom gibs/decals, TotalTime and TotalTimeForAI.
+
+**`TnDeathPicker.Pick`:**
+- `FindActiveTypes(Owner)`, then the **first entry, in authored order, all of whose `Types` are active**. There is no scoring or randomness. No match → the default death (no animation, TotalTime 1.0).
+
+**`TnRobotDeathPicker.FindActiveTypes`** adds:
+- Martyrdom (TnBuffExplodeOnDeath or …Kamikaze buff);
+- HeadShot (LastTakeHitInfo.BoneName == HeadShotBoneName);
+- Hovering (RobotForm.IsHovering);
+- Airborne (IsAirborne);
+- one momentum type (TearOffMomentum yaw in pawn space vs Forward/Backward Left/Right angles);
+- the killing damage type's `DamageDeathType`.
+
+**SharedRobotDeaths and HoloBruteRobotDeaths order** (both use TnRobotDeathPicker):
+
+| # | Type | Animation | Note |
+|---|---|---|---|
+| 0 | RobotBooster | none | only TnDamageTypeRobotBooster |
+| 1 | Poke | none | only TnDamageTypePoke |
+| 2 | Hovering | | |
+| 3 | Airborne | InAir | |
+| 4 | HeadShot | Death_HeadShot | |
+| **5** | **Martyrdom** | **Death_Martyrdom** | TotalTime 1.25 |
+| 6 | TractorBeam | | |
+| 7 | Energy | | |
+| 8 | SingleShot | | |
+| 9 | RapidShot | | |
+| 10 | Melee | | |
+| 11 | Explosive | | |
+| 12 | ForwardMomentum | | |
+| 13 | BackwardMomentum | | |
+
+BruteRobotDeaths uses TnCustomDeathPicker (always Custom → Titan_Death).
+
+**So the martyrdom animation and its notify sounds play only if the victim was:**
+- not killed by robot-booster or Poke damage;
+- not hovering;
+- not airborne;
+- not head-shot.
+Otherwise those entries win, with their own animation and their own TotalTime: 1.25–1.5 / 1.5 / 1.5–2.5 / 1.25–2.5 / 1.25–2.0 s.
+
+**The mines are released regardless:** `TriggerExplodeOnDeathBuffs` runs at Gib whichever entry was picked, at that entry's TotalTime.
+- So an airborne or head-shot martyr still spawns the mines, but without MARTYR_EXPLO_BUILD_UP / GL SHOOT notifies and at a different time.
