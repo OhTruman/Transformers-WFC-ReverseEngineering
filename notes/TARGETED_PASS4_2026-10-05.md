@@ -512,3 +512,23 @@ Otherwise it calls **`AbortMelee`** and returns true.
 | 96 | NX_ASYNCHRONOUS_MESH_CREATION (H) | 1 | asynchronous collision-mesh creation; no gameplay effect. | H (not in the binary's name table, which falls through to the default string; named from the PhysX 2.8 `Nxp.h` enum order between FLUID params and FORCE_FIELD_CUSTOM_KERNEL_EPSILON = 97) |
 
 - The same table confirms id 1 = NX_SKIN_WIDTH and id 4 = NX_BOUNCE_THRESHOLD.
+
+**A4 addendum: how often UpdateTurn runs (hover correction rate)** (C unless marked)
+
+**Call chain (once per game tick, no substep loop in script):**
+- `TnPawn.Tick` → `_CurrentForm.Update(DeltaTime)` → `TnTransformerForm` → `OnUpdate(DeltaTime)`.
+- `TnVehicleForm.OnUpdate` first sets `_PhysicsDeltaTime = WorldInfo.PredictNextPhysicsUpdateTime(DeltaTime)`.
+- `TnCarForm.OnUpdate` → `DoUpdate(_PhysicsDeltaTime)` → hover simulation Update (incl. UpdateTurn).
+
+**`WorldInfo.PredictNextPhysicsUpdateTime`:**
+- `n = min(MaxSubSteps, int((RemainingTime + DeltaTime) / TimeStep + 1e-6))`; returns `TimeStep × n`.
+- `PhysicsSceneTiming` (Engine.Default__WorldInfo; **no map overrides** across 460 WorldInfos): bFixedTimeStep = true, **TimeStep = 1/60**, MaxSubSteps = 5. MaxPhysicsDeltaTime = 1/3.
+- So the script dt is a whole number of 1/60 s PhysX substeps, but the script runs once per frame.
+
+**Frame rate (Xenon):** `[Engine.GameEngine] bSmoothFrameRate=TRUE, MinSmoothedFrameRate=15, MaxSmoothedFrameRate=30` (Xe-TransEngine.ini).
+- The game ticks at ≤ 30 Hz, normally exactly 30 Hz. A tick sees n = 2 substeps, dt = 1/30.
+- **The 5 %-per-call pull is therefore 5 % per 1/30 s (×0.95 per frame)** on console; it drops to fewer calls per second if the frame rate drops below 30 (still 5 % per call, frame-rate dependent).
+- U: PC build cap (only Xenon configs present).
+
+**Rebuild equivalent at a 60 Hz step:** per-step pull k = 1 − 0.95^(dt·30) = 0.02532 (= 1 − √0.95), or call the correction at 30 Hz.
+- The same applies to any other per-call (non-dt-scaled) factor in the hover/car simulation.
