@@ -1542,3 +1542,21 @@ Both set:
 - H: the master-death `Kill()` path was not traced to the destructible transition.
 - The idle loop fades separately (`PlayDying`, 0.25 s).
 - The actor persists for `LifeSpanAfterDeath` 5 s (Default/Repair blueprints).
+
+**§12 addendum 5: sentry master-death `Kill` path (C)**
+
+**`TnSentryPawnAbility.Tick`** (server): master none, dying or dead → **`TnSentryPawn.Kill`**.
+
+**`Kill`:**
+- `DestructibleComponent.NotifyTrigger(GetHealthMax(), HmGenericDamageDestructionTrigger)`: a **full-health generic-damage trigger**, so the destructible goes **Healthy → Destroyed** and plays **SENTRY_EXPL + OS_Death_LRG_FX**, the same as damage and lifetime drain;
+- then `HandleDeath(none, none, 0)`.
+- `Kill` is a no-op in the Dying and WaitingForRevival states, so there is no double trigger.
+
+**`HandleDeath`:**
+- `NotifySentryKilledObservers`, then: revivable → WaitingForRevival, else `Died`.
+- **Ability sentries are not revivable** (`IsRevivable` is unset in Default / Rocket / Repair_TURRETDEF).
+- With Killer == none, no sentry-kill stat is credited.
+
+**Result:** all three ends (damage, lifetime, owner death) play the same destruction audio and FX.
+
+**Linger time:** `LifeSpanAfterDeath` is 5 s for Default and Repair. **Rocket_TURRETDEF does not author it**, so it inherits the TnSentry CDO **30 s**.
