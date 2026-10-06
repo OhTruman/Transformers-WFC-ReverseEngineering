@@ -892,3 +892,28 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 
 - The **FadingOut** state (instigator dead, dying or gone) overrides PlayExplosion with nothing, so the mine fades out **silently**.
 - Buffs applied by proximity: TnBuffRollerSphere (enemies) and IncreaseSpeed (friendlies, with the skill). See the buff-sound table above.
+
+**Decepticon shield sound gap: resolved. Not a gap; a different path.** (C unless marked)
+
+**Decepticon animations:** `ShieldBruteD_Equip` / `_Drop` and `ShieldHeavy_D_Equip` / `_Drop` (in WEP_ShieldBruteD_ANIM and WEP_ShieldHeavy_D_ANIMSET) carry only `TnAnimNotify_ToggleHidden`. The Autobot `SheildBruteA_*` add HmAnimNotify_Sound BRUTE_ON / BRUTE_OFF at t = 0.
+
+**Decepticon templates route sound through the muzzle flash.**
+- Both D templates have `MuzzleFlashes = [{WP_Looping, PSTemplate FX_Shield_p.FX.ShieldD_01_FX}]`. The A/N templates have a WP_Looping entry with PSTemplate None.
+- **ShieldBrute_D:** PSLoops = **false**. **ShieldHeavy_D:** PSLoops = **true**.
+- `ShieldD_01_FX` is a ParticleSystem with **`SoundCue = BL_SHIELD.ROBO_SHIELD_DECEPTICON_ON_LP`** and `FadeOutTime 0.25` (FadeInTime default).
+
+**Native ParticleSystem sound (WFC extension):**
+- On activate (`execActivateSystem` → `0x83054520` → **`0x83028200`**): if no playing component, cue = `Template+0x7C` (SoundCue; or a PSC override at +0x1E8 when flag 0x800000).
+- An audio component is created via `0x82E77A58(cue, scene, OwnerActor, …, bStopWhenOwnerDestroyed = Template+0x34 bit 26, Location = component origin)`, stored at PSC+0x1EC, then **FadeIn(Template+0x80, 1.0)**.
+- On deactivate (`execDeactivateSystem` → `0x83035C18`): if playing → **FadeOut(Template+0x84 = FadeOutTime, 0.0)**, and the component is released.
+
+**Block sequence (TnBlockController):**
+- `StartShield` → `PlayEvent(WP_Equip)` → Equip animation (no sound) + `StartMuzzleFlash(WP_Looping = 9)` → ShieldD_01_FX activates → **DECEPTICON_ON_LP starts**.
+- **Heavy_D (PSLoops):** loops until release.
+- **Brute_D (PSLoops false):** `SetTimer(MuzzleFlashDuration = 0.1 s, StopMuzzleFlashInternal)` deactivates it after **0.1 s**, so the loop fades out over 0.25 s almost immediately. H: an audible short blip, likely an authoring slip.
+- `StopShield` → `PlayEvent(WP_PutDown)` (Drop animation, no sound) + `StartMuzzleFlash(WP_LoopingTail = 12)`:
+  - there is no entry for 12, and `OnlyStopMuzzleFlashWhenAnotherMuzzleFlashStarts` is false, so it calls `StopMuzzleFlash`;
+  - that deactivates the PS → **0.25 s fade-out**;
+  - there is **no Decepticon "off" one-shot**.
+- `ROBO_SHIELD_DECEPTICON_OFF` is only on `FX_Shield_p.FX.shield_D_SML_END_FX`, used by `TR_HitEffectPlayer_p.SharedHitEffectPlayer` (hit effects; H: shield hit/break FX), and in the campaign BaseMapReferencers.
+- `ROBO_SHIELD_DECEPTICON_ON_LP` is referenced **only** by ShieldD_01_FX.
