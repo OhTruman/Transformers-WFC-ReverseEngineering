@@ -842,3 +842,53 @@ Their audio comes from **animation sound notifies** (HmAnimNotify_Sound on the a
 
 - Cloak and Warcry also have their buff sounds.
 - Hover, Dodge, Shield and RollerSphere: no Skill_* sound notify found by sequence name (U). Their audio is presumably movement / spawned-actor sounds.
+
+### §12 addendum: Hover / Dodge / Shield / RollerSphere audio (C unless marked)
+
+**Jammed abilities:**
+- `TnPlayerController.PlayerWalking.TriggerAbility`: if `!CanUseAbilities()` (jammed, disabled), it plays `Pawn.PlaySound(AbilitiesJammedSound, bNotReplicated = true)`. That is **`BL_TRANS_POWER.ENERGON_SLING_ABILITYFAILURE`**, local and positional at the pawn.
+- So a refused trigger is not always silent. The refusals inside TnAbilityManager (cooldown/resource) are silent.
+
+**Hover** (`TnAbilityHover.LocalTriggerAbility` → `PC.Hover()` → `TnRobotForm.Hover` → `TnAcrobaticsManager`):
+
+| State change | Sound |
+|---|---|
+| `JumpingToHover.BeginState` | `_AudioService.PlayLoopingSound(_HoverLoopSound)` = **`BL_TRANS_POWER.HOVER_JUMP_LIFT`**: `CreateAudioComponent(cue, play, stopWhenOwnerDestroyed)` on the pawn (TnPawnAudioService), plus MakeNoise(HoverNoiseRadius) |
+| `JumpingToHover.EndState` to anything except `Hovering` | Loop **fades out over 0.5 s** |
+| Into `Hovering` | Loop keeps playing |
+| `Hovering.EndState` | Loop fades out over 0.5 s, then `PlaySound(_HoverCooldownSound)` = **`HOVER_JUMP_LAND`** (default PlaySound args, so replicated from the server) |
+
+- `_AcrobaticsState` replicates (`ReplicatedEvent` → `ClientUpdateState` → GotoState), so these state functions run on every machine. **Everyone hears the loop**, attached to the hovering pawn.
+- H: on remote clients the LAND one-shot may sound twice: once locally, once replicated from the server.
+- The Nav_Hover anims carry no sound notifies (FX only).
+
+**Dodge** (`PC.Dodge` → `TnRobotForm.Dodge` → `TnAcrobaticsManager.Dodge` → `Dodging` state): no script sound. Audio comes from the dodge animations:
+- `TnAcrobaticsSlotLogic.DodgeAnimations` → **Nav_Boost_F / B / L / R**, with EnergonHammer and Turret variants by stance.
+- The shared robot animsets (TR_HeavyMedium / LightMedium Shared_ROBO_ANIM, Female) carry one **`HmAnimNotify_SoundEvent` `SoundEvents_Footsteps.FS_DEFAULT_JUMP_CHARGED`**, plus PlayEffect notifies. Turret variants are the same.
+- The event resolves through `TnPawn.FindSoundCue`: character SoundEventSet → robot-form set → vehicle-form set. Examples: CHR_BUMBLEBEE → `BL_FS_SML_BOT.FS_JUMP_CHARGED`; CHR_OPTIMUS → `BL_FS_LRG_BOT.FS_JUMP_CHARGED`; 26 sets define it.
+- Campaign-only animsets add their own sounds (Brute FS_JUMP, CQC_MOVEMENT, Frenzy boost/land).
+
+**Shield** (`TnAbilityShield` has no script; referenced only by campaign maps, so it is **not an MP class-pool ability**):
+- `PlayerWalking.TriggerAbility` → `PressBlock` → `StartBlock` → `TnShieldService.StartShield` → `BlockController.SetBlocking(true)` → `OnStartBlock` → `StartShield` → `ShieldMesh.PlayEvent(WP_Equip = 6)` + muzzle flash 9.
+- Release (`UnTriggerAbility`) → `EndBlock` → `StopShield` → `PlayEvent(WP_PutDown = 7)` + muzzle flash 12.
+- The shield templates define **only `WeaponEventAnims`** (Equip / Drop) and no `WeaponEventSounds`, so the sound comes from the shield-mesh anim notifies:
+  - `SheildBruteA_Equip` → **`BL_SHIELD.ROBO_SHIELD_BRUTE_ON`**;
+  - `SheildBruteA_Drop` → **`ROBO_SHIELD_BRUTE_OFF`**;
+  - used by ShieldBrute_A and ShieldBrute_N.
+- The ShieldBruteD_* and ShieldHeavy_D_* anims have **no sound notifies** (U whether that's intentional).
+- Shield knocked out (health ≤ 0): KnockoutOfBlockAnimArray (`HitReactions_React_EnergonShield_Stand_R_05` / `L_05`) → their notifies, including `BL_SHIELD.ROBO_SHIELD_AUTOBOT_BREAK`, servo knockback and `ELEC_DMG_HV`.
+- Blocked damage → HealthOnBlock (§12). Robot BlockingAnim default `Melee_Block_H2H`; Brute variants: None.
+
+**RollerSphere** (`TnAbilityRollerSphere`; no OnTriggerSound; OnTriggerAnimParams = **Skill_AbilityJammer** → gun-butt whoosh notify):
+- Sequence: base ServerTriggerAbility → after SpawnDelay **0.5 s**, spawn `TnRollerMineAbility` at +(500, 0, 100) with velocity (2750, 0, 0). If the location is unsafe it **retries every 1 s**.
+- Mine sounds (all `bNotReplicated = true`, so they run on each machine where the actor exists):
+
+| When | Sound | Stop rule |
+|---|---|---|
+| `PostBeginPlay` | `_IdleLoopingSound` **`BL_WPN_MINE.ROLLER_MINE_LP`** | stops when the mine is destroyed |
+| ArmTimer, **3 s** | `ArmSound` **`BL_WPN_GRENADE.KAMIKAZE_FUSE_START`** | stops when the mine is destroyed |
+| Fuse ≤ **1.5 s** (fuse 10 s → at 8.5 s; CDO, H not ini-overridden) | `_BuildupSound` **`ROLLER_MINE_FUSE_BUILD`**, once | stops when the mine is destroyed |
+| `Destroyed` → `PlayExplosion` | **`ROLLER_MINE_EXPL`** + EXP_Mortar_FX | does not stop with the mine |
+
+- The **FadingOut** state (instigator dead, dying or gone) overrides PlayExplosion with nothing, so the mine fades out **silently**.
+- Buffs applied by proximity: TnBuffRollerSphere (enemies) and IncreaseSpeed (friendlies, with the skill). See the buff-sound table above.
