@@ -83,15 +83,15 @@ A probe with no hit gives no force; there is no ray clamping.
 - `TnHoverCarSimulation.Activate` sets **angular damping 0 and linear damping 0** on the rigid body.
 - `DefaultAngularDamping` 0.1 applies only on the AI path.
 
-**`UpdateTurn`:**
-- Angular velocity correction = (axisAngle(current → target) × mask) / dt − ω.
-- **mask = (0.05, 0.05, 1)** normally: yaw only, plus a very weak pitch/roll pull.
-- **mask = (1, 1, 1)** only when `ShouldUpright`, i.e. `NumContacts == 0` (airborne) **or** upside down (up.Z < 0.01).
+**`UpdateTurn`** (corrected 2026-10-06; the earlier text here misread the two masks):
+- Δω = axisAngle(current → target) × **(0.05, 0.05, 1)** / dt − ω, then multiplied by **`ShouldUpright ? (1,1,1) : (0,0,1)`** and applied as a velocity change.
+- `ShouldUpright` = `NumContacts == 0` (airborne) **or** upside down (up.Z < 0.01).
 
 So the original:
-- has **no strong grounded pitch/roll correction**: grounded attitude comes from the four diagonal springs;
-- **self-rights fully only in the air or when inverted**, by driving ω straight to the upright target in one step (critically damped, so no oscillation);
-- the airborne target orientation is upright with the current yaw. The jump's nose-up spin (A1) is therefore cancelled by the upright drive as soon as the probes lose contact.
+- **Grounded and upright:** only **yaw** ω is set to the target. Pitch/roll ω get **no correction at all**: no weak pull, and momentum carries over. Grounded attitude comes from the four diagonal springs alone, since RB angular damping is 0.
+- **Airborne or inverted:** yaw is set fully. Pitch/roll ω is **set to 0.05 × angleError / dt**, a gentle pull of 5 % of the error per tick, **not** a one-step snap.
+- The airborne target is upright with the current yaw, so the jump's nose-up spin (A1) is pulled back gradually once the probes lose contact.
+- Riser pitch estimate: see the 2026-10-06 addendum at the end of this note.
 
 **`UpdateRoll`:** local-X angular acceleration = 1.0 × strafe stick + (−local ωz). This is the barrel-roll/lean input, damped by yaw rate.
 
@@ -398,3 +398,51 @@ Otherwise it calls **`AbortMelee`** and returns true.
 **Riser pitch:** a < 1° pitch over a 0.25 m riser is **not** consistent with the original logic.
 - The grounded body is free in pitch/roll apart from the springs and damping, so the body should tilt visibly as the front probes compress.
 - H for the magnitude: it depends on spring Force, probe geometry, inertia and DefaultAngularDamping; not computed here.
+
+### Addendum (2026-10-06): hover spring/damping values and riser pitch estimate
+
+**Mass, inertia and COM (C):**
+- `TnCarForm` initializes `CarSimulation` **before** `HoverSimulation`.
+- `TnCarSimulation.InitializeFromBlueprint` sets the shared rigid body's COM, **Mass** and **LocalInertiaTensor** from the CarBlueprint.
+- `TnHoverCarSimulation.InitializeSuspension` then uses MassShare = Mass / 4.
+- The hover sim never sets mass or inertia itself.
+
+| Blueprint | Mass | InertiaTensor (X, Y, Z) | COM |
+|---|---|---|---|
+| `VEH_SHARED_p.Car_Physics` | 1500 | (5.6e6, **9.8e6**, 1.27e7) | (12, 0, −16) |
+| `VEH_SHARED_p.Truck_Physics` | 2500 | (2.27e7, **4.64e7**, 5.89e7) | (−47, 0, 20) |
+
+**Hover blueprints (C)** (`HoverBlueprint` refs: all MP cars → HoverCar_Physics; trucks → HoverTruck_Physics):
+
+| Hover blueprint | SuspensionRadius | Suspension | Stiffness | Damping | RestingLength |
+|---|---|---|---|---|---|
+| `HoverCar_Physics` | 100 (lever ±70.7 per axis) | `HoverCar_Supension` | **8000** | **4000** | **200** |
+| `HoverTruck_Physics` | 185 | `HoverTruck_Suspension` | **10000** (inherits CDO) | 4000 | 250 |
+
+- `TnSuspensionBlueprint` CDO: Stiffness 10000, RestingLength 30, Damping 0.
+- Wheel radius passed to TnSuspension = 0.
+- Other suspension blueprints for reference: HoverTank 20000/6000/250; SoldierTank hover 400000/50000/400.
+
+**Damping (C):**
+- RB angular and linear damping = **0** while hovering (`Activate`).
+- Spring damping is the only pitch damping (TnSpring B = Damping / (Mass / 4)).
+- `DefaultAngularDamping` is AI path only.
+
+**Riser estimate (H; `tools/hover_pitch_est.py`):**
+- Model: pitch-plane rigid body with the four diagonal probes, the TnSpring law per tick, forces held over PhysX substeps, gravity −1940.4, no grounded pitch correction, step riser.
+- Units assumed consistent in UU (the blueprint inertia is mass·UU²).
+- Peak nose-up pitch for the **car** over a 12.5 UU riser (0.25 m at 50 UU/m):
+
+| Speed (UU/s) | Peak pitch |
+|---|---|
+| 500 | **5.4°** |
+| 1000 | **4.0°** |
+| 1500 | **2.6–2.8°** |
+| 3000 | **1.0–1.7°** |
+
+- A 25 UU riser roughly doubles these (5.5° at 1500).
+- **Truck:** 2.0° (12.5 UU) and 4.0° (25 UU) at 1500.
+- The small rear dip afterwards is −0.1° to −0.3°, settling in about 1 s.
+- Sanity check: at low speed the peak approaches the static geometric tilt atan(riser / (2 × 70.7)) = 5.05°.
+- Insensitive to tick rate (1/30 or 1/60 s; 1–8 substeps) and to the spring-gravity term.
+- **Conclusion: the original should pitch several degrees over such a riser**; 0.47° is the effect of the rebuild's grounded pitch/roll ω replacement.

@@ -24,6 +24,7 @@ Added in Milestone 03:
 | `WfcQuery.java dis <addr> <n>` | disassemble undefined bytes in memory only (snapshot opened `-readOnly`, never saved). Use it for vtable targets Ghidra never disassembled |
 | `xenosdis.py` / `xenostrace.py` | Xenos shader microcode disassembler and symbolic constant tracer for WFC ShaderCache blobs (read-only) |
 | `xenosvsemu.py` | CF-aware numeric emulator for Xenos vertex shaders (COND_JMP + predicates); used to resolve the Beam/Trail side expansion (pass 5 §13) |
+| `hover_pitch_est.py` | Pitch-plane estimate of the original hover car/truck crossing a step riser (TnSpring law, diagonal probes, no grounded pitch correction) (pass 4 A4 addendum) |
 | `WfcQuery.java rawdis <addr> <n>` | linear per-instruction disassembly (in memory, read-only). Use it where Ghidra stops at callers of 0x830101E0, which it wrongly treats as no-return |
 - `xenosemu.py` — numeric emulator for straight-line Xenos pixel-shader ALU code (pre-load fetched values per fetch address); used to verify the BlurShadowMask kernel.
 - `streets_smca_scale.py` — emits the per-component Scale·Scale3D (and Translation/Rotation) that UE3 applies on top of StaticMeshCollectionActor CachedParentToWorld; writes `notes/data/streets_smca_component_scale.json`.
