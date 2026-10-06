@@ -1302,3 +1302,34 @@ Both set:
 - **ROTATE_*_U:** Pos + (U − ½)·Size.x·**P** + (V − ½)·Size.y·**A** (U and V roles swapped).
 - **Degenerate:** viewing straight along A (e.g. ROTATE_Z from directly above) gives P → 0 and a zero-width quad (inherent).
 - H: whether Rotation is ignored in the rotate modes was not tested.
+
+**§15 addendum 2: lock-axis frame flag (C)**
+
+**Where the flag comes from:**
+- `FUN_8300FC80` uses the scene-proxy LocalToWorld (proxy + 0x20) as the axis frame when sprite replay +0x30 bit **0x20000000** is set, else identity (world axes).
+- That bit is written in the sprite dynamic-data constructor `0x8302C370`: `(param[+0x3C] & 1) << 29`.
+- `param[+0x3C]` is filled by the sprite GetDynamicData `0x830526E0` as `RequiredModule+0x38 >> 31`. That is the first bool of RequiredModule's bitfield, **`bUseLocalSpace`** (Material +0x30, ScreenAlignment +0x34, ParticleBurstMethod / InterpolationMethod / EmitterRenderMode bytes, then the bools starting with bUseLocalSpace at +0x38, MSB-first as in the Beam modules).
+
+**So:** lock axes follow the **component rotation (and scale) only when the emitter LOD's RequiredModule.bUseLocalSpace is true**. Otherwise they are the **world** X/Y/Z, regardless of how the component is oriented.
+
+**Other flags in the same word:**
+- bit 0x10000000 = "has lock axis" (instance +0x124 ≠ 0);
+- replay +0x34 = ScreenAlignment;
+- replay +0x35 = LockAxisFlags.
+
+**Census** (emitter LockAxisFlags × LOD0 RequiredModule.bUseLocalSpace, paired through the LOD pointer):
+
+| Mode | Local space | World space |
+|---|---|---|
+| X | 146 | 2 |
+| Z | 59 | 97 |
+| NEGATIVE_X | 23 | 5 |
+| ROTATE_Z | 1 | 7 |
+| ROTATE_X | 6 | 0 |
+| Y | 6 | 1 |
+| NEGATIVE_Z | 0 | 4 |
+| ROTATE_Z_U | 0 | 3 |
+| ROTATE_Y | 1 | 0 |
+
+- **All 22 muzzle-flash emitters are X + local space** (they face along the barrel/socket X axis).
+- Most Z explosion rings are world-space (they lie flat on the world XY plane whatever the component orientation).
