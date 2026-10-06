@@ -1654,3 +1654,38 @@ Both set:
 **Therefore** the owner's `TnPawn.Destroyed` (which `DestroyActor`s the sentry from DestroyOnDeathActors) runs **≈ TotalTime + 1 s after the owner's death**: about 2.25–4.5 s for a robot owner, 1.2–1.75 s for a car owner, 5–6 s for a jet.
 - That cuts the Default/Repair sentry's 5 s linger only for long robot deaths, and the Rocket sentry's 30 s linger always.
 - Both are invisible (§12 addendum 7); the explosion FX may be cut (H, §12 addendum 9).
+
+**§12 addendum 11: announcer, kill-streak, overshield and wall-hit sounds** (C from script/CDO unless marked)
+
+**`TnKillstreakActivatedMessage.GetColoredString`** (runs on each receiving client):
+- Role:
+  - **Self** if `LocalPlayerPRI == RelatedPRI_1` (the activator);
+  - else **Friendly** if `TnMessageHelpers.OnSameTeam(local, activator)`;
+  - else **Enemy**.
+- That role's cue is chosen. If it is none and `FactionAnnouncementSound` is non-empty (and the activator has a team), the cue is `FactionAnnouncementSound[activatorTeam]`.
+- Then `TnWorldInfo._Announcer.PlayEvent(EventSound)`. **A role with no cue and no faction list is silent.**
+
+**`TnAnnouncer`:**
+- `PlayEvent(e)` → `SoundEventSet.FindSoundCue(e)` → `Play(cue)`; `Play(none)` returns.
+- Playback is on an `HmDialogComponent` attached to the announcer owner, voiced by `Team0DialogCharacter` / `Team1DialogCharacter` (via `SetTeam`). H: non-positional dialog.
+- `PlayInternal`:
+  - if the dialog component is idle → play immediately;
+  - if it is playing the **same** cue → dropped (and the queue cleared);
+  - otherwise the cue goes into **one queue slot** if its SoundNodeRoot Priority ≥ the queued cue's (an empty slot always accepts); a lower-priority cue is dropped.
+  - `Tick` plays the queued cue when the component is free.
+- **The current line is never interrupted.**
+
+**Kill-streak earn / acquire:**
+- `TnPlayerController.AcquireKillstreak` only adds the class and updates the current id: **no sound**.
+- `TnKillStreakAnnouncer` broadcasts `TnKillStreakMessage` at streak lengths **3, 5, 7, 10**, and `TnKillStreakEndedMessage`. **Both are text-only** (no sound fields).
+- U: any GFx/HUD-side "available" sting was not traced (none in script).
+
+**`TnPlayerPawn.OvershieldOffSound`** (`BL_HUD_INTERFACE.OVERSHIELD_POWER_DOWN`):
+- `TnPlayerPawn.Tick`: when `OverShieldHealth == 0` while the overshield material (type 2) is active → `PlaySound(OvershieldOffSound)` (default args), then the material stops.
+- It fires on **any** end: depletion by damage or expiry. It is positional at the pawn.
+- H: Tick runs on server and clients, and the server PlaySound also replicates, so remote players may hear it twice.
+- `TnAiPawn` has an equivalent.
+
+**`TnPawn.HitWallSound`** (`BL_MELEE_IMPT.MTL_DASH_WALL_IMPT`):
+- `TnPawn.InRobotForm.HitWall`: **only in robot form while `IsDodging`** → `PlaySound(HitWallSound)` (default args, positional), plus `StartCameraShake(_Blueprint.HitWallCameraShake)` for a player controller, then `RobotForm.HitWall()`.
+- Any HitWall during a dodge triggers it (no speed or angle condition in script).
