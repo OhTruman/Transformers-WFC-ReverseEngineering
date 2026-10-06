@@ -315,3 +315,18 @@ Default MP chassis: Scout = Car2 Sideswipe / Car4 Barricade; Scientist = Jet4 Ai
 - The haze comes from the map CLUT `MP_OrbitalDebris_CLUT` plus fog (Rendering already has it).
 
 **H:** the star points in both skies need **UV1** for the nebula colour and a ×400 emissive gain. Without UV1 the nebula tint is wrong; without the gain the stars vanish.
+
+## Addendum: beam emitter module references (H, raw scan of `MP_IAC_Streets_BASE_m`)
+
+**`FX_RepairBeam_p.FX.Tracer_RepairBeam_FX`.** In each beam emitter's LOD blob, the two `TypeDataBeam2` references are followed by module references at a 17-byte stride:
+- `ParticleModuleBeamSource`;
+- `ParticleModuleBeamTarget` (`PEB2STM_UserSet`, TargetName "TargetLocation");
+- `ParticleModuleBeamSineWave`, present on emitters 13998 and 4113 only.
+
+Non-beam LODs reference only their `Required` module.
+
+**Interpretation:**
+- These are AssetTools' module_id-0 "PMI_Unknown" entries.
+- `ParticleModuleBeamSineWave` is not a stock UE3 class (H: a WFC addition). Its SineWaves data is authored: Amplitude ±25/50 and 10, Period 500, Speed −3000, Direction (1, 0, 0).
+
+**Fine-aim FOV source** (asked again by AssetTools): `TnFovCameraBehavior.FOVsByPCS` in the camera strategy (§3). It is not in the `TnPCS_*` class defaults.
