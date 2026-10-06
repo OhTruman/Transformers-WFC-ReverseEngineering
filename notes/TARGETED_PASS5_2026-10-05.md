@@ -2265,3 +2265,35 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - **Reading:** DecalDefault is a pure dark scorch/bullet-hole.
 - MetalDecal_02/03 (the Metal-surface bullet / energy / explosive marks and all projectile scorches) **darken a ring/hole and brighten bright-metal highlights by up to 3.7–5×** (scratched-metal look).
 - The death scorch is mostly darkening with a small bright core.
+
+**§12 addendum 31: decal output clamp — what limits the modulate factor** (C unless marked)
+
+**Compiled decal pixel shader:**
+- `MP_IAC_Streets_BASE_m` ShaderCache_7389 @ 562465, ShaderCache_7828 @ 613647 and ShaderCache_8031 @ 575716 are three identical ps_3_0 blobs.
+  - CTAB: Texture2D_0 (s0), UniformVector_0 (c3), UniformVector_1 (c4), UniformVector_2 (c5). **No SceneColorBiasFactor.**
+  - Literal c255 = (−1, 1, 0, 0).
+- Microcode:
+  ```
+  tfetch r0.yx, tf0                      ; r0.y = tex.R, r0.x = tex.G
+  r1.xyz = c3 + 1                        ; lerp A = 1 (+UniformVector_0; H: 0, a folded constant slot)
+  r2.xyz = tex.R + c4                    ; + Blacks
+  r0.w   = c5.w * tex.G                  ; alpha = Color.A * G
+  r0.xyz = r2 * c5 - 1                   ; (R + Blacks) * Color - 1
+  oC0.rgb = r0.w * r0.xyz + r1           ; = 1 + G*A*((R+Blacks)*Color - 1)
+  oC0.a   = r0.w
+  ```
+- This is exactly the `DecalDefault_MAT` / `DeathDecal_MAT` graph (addendum 30). Identification is by CTAB shape plus a formula match; H on which decal material each blob belongs to.
+- **There is no saturate and no SceneColorBiasFactor.** The modulate factor leaves the shader unclamped (up to 5 for MetalDecal, about 2.2 for DeathDecal).
+
+**Scene colour target:** `FSceneRenderTargets::InitDynamicRHI` (0x83037390) allocates target 1 **"DefaultColor"** at full scene size with format field `+100`. It is set to 9, and only changed to 10 when the platform flag `0x83832B74` == 0. The Xenon init `0x829BDFA8` sets that flag to 1, so it **stays 9**.
+- `GPixelFormats` table at 0x83717F20 (36-byte entries, names verified): 1 A32B32G32R32F, **2 A8R8G8B8** (ShadowMask), 9 **FloatRGB**, 10 FloatRGBA, 11 DepthStencil, 14 R32F (SceneDepthRT), **18 A2B10G10R10** (target 2 "DefaultColorRaw", the same size), 19 A16B16G16R16.
+- **So scene colour = PF_FloatRGB.** The raw alias is a 32-bit 2:10:10:10 view of the same EDRAM data.
+- H (stock UE3 Xenon mapping): PF_FloatRGB EDRAM = **D3DFMT_A2B10G10R10F_EDRAM (7e3 float)**, range **[0, 31.875]**, with no alpha precision. The raw-10-bit alias is consistent with that.
+- Lit materials write `colour · SceneColorBiasFactor` into it (MILESTONE03 LIGHTVIS notes) to fit the HDR range. The decal shader does **not** apply the bias, which is correct for a pure multiply.
+
+**Therefore:**
+- The decal factor (≤ 5) is **not clamped at export**: the 7e3 limit is 31.875.
+- H: the modulate blend (stock BLEND_Modulate = Src·DestColor + Dest·0) gives dest · m.
+- The result is **only clamped at the 7e3 ceiling of 31.875 in biased scene units.** Then normal tonemapping/gamma happens in post-process, so brightened scratches show as true HDR highlights.
+- The darkening side clamps at 0. The m < 0 extremes (min −0.0001 from Blacks) round to 0.
+- Not traced: the SceneColorBiasFactor value (the C++ setter of binding +0x1A at 0x82CED5C0) and the decal blend-state object.
