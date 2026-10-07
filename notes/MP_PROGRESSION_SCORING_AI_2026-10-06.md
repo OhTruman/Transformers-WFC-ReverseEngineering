@@ -596,3 +596,38 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 **TargetSnapRange** (Min/Max UU): player-only aim-snap distance window (`TnPlayerTargeting` → `TnWeapon.IsWithinTargetSnapRangeSq`: Min² < d² < Max²). Not used by AI.
 
 **Reaction / acquisition delay:** no data-driven reaction, notice or acquisition delay was found in the AI script. Enemies register through sight/noise, and the sensors update the facts every AI update. A bot reaction delay is therefore a **PC ADAPTATION**; inaccuracy remains weapon spread + burst data (addendum 1).
+
+## Addendum 8 (Milestone E): respawn timing, chassis unlocks, capacity limits, bot-event rules (C unless marked)
+
+**Respawn** (all versus/FFA/team games: `RespawnHelper0` = **`TnRespawnHelperWave`**, `WaveRespawnTime` **5 s**; Escalation: `TnRespawnHelperRoundEnd`):
+- **On death:** the player is queued with a 5 s timer (`PRI.SetTimeToRespawn` drives the HUD countdown). Not queued if `TnTeamInfo._AllowRespawn` is false.
+- **Each tick:** the timer counts down; at ≤ 0, `Respawn`. Per-player timers despite the class name; there is no shared wave clock.
+- **Instant respawn:** `PC.ShouldInstantRespawn()` (`TnKillStreakInstantRespawn` reward; cleared on use) → 0 s.
+- **Initial spawn:** `TimeToAllowInstantInitialSpawns` −1, so the initial spawn is always immediate.
+  - Spawn-point manager: InitialSpawnTime 15, ActiveClusterTime 10, MaxSpawnPointsToConsider 4, UpdateInterval 0.1 (ini).
+- **Rounds** (CTF): `OnRoundEnded` re-enables respawn for all teams and resets the initial window. `TnGame.DisallowRespawnForTeam` has no script caller (U: Kismet only).
+- **Pre-match / results:** MatchAutoStartCountdown 10 s (Escalation 15), MatchOverCountdown 15 s; CTF between-round 5 s; no overtime (§1). Coop MissionCompleteCountdown 10; campaign game-over screen delay 1 s.
+
+**Unlocks:**
+- Skills/abilities by exact specialty level (§5; `mp_class_unlocks.json` has `LevelRestriction` / `SpecialtyRestriction` per entry). Kill streaks by specialty + count, not level.
+- **Chassis:** 18 providers are `LockedChassis` (some also `LockedCharacter`). `IsChassisUnlocked` = not locked, or present in the profile's unlocked list. Script unlock sources:
+  - **Car5** on completing the Autobot campaign (any difficulty, `TnProfileSettings.CheckForLevelCompletionAchievements`);
+  - **Jet8** on completing the Decepticon campaign;
+  - a developer-only cheat in `TnPlayerReliableReplicationInfoSurvival` (name whitelist + specific generator; unlocks Car5–7, Jet7–8, Tank4–5, Truck5 and 10000 XP per class); not shipping behaviour;
+  - all others (Car6–10, Jet2/3/7, Tank4/5, Truck5–7, Minion1–3): no script unlock. U: DLC/entitlement content packages or never unlockable.
+- **Prime:** see §4 (resets XP and challenge completions, unlocks 25 Prime challenges, Prime badge).
+
+**Bot-involved events for the local player (original rules):** none count.
+- Score, kill XP, medals, streaks and announcer require a `TnPlayerController` killer and victim (addendum 5).
+- An assist is attributed in the same kill path, so an assist on an AI victim gives nothing.
+- Damage to AI is still tracked in damage history, but produces no award.
+- Counting bot kills is a **PC ADAPTATION** decision. Private matches give no XP anyway (`CanGainXp`).
+
+**Capacity / limits to generalise for > 10 players (C):**
+- `TnMultiplayerGame.MaxPlayersAllowed` 10 (CDO). Settings `NumPublicConnections` / `NumPrivateConnections` = 10 → `GetMaxPlayers()` = public + private → URL `?MaxPlayers=`.
+- `GRI.MaxPlayers` = max(GRI.MaxPlayers, NumPlayers).
+- Two teams fixed: `TnTeamHandlerTwoTeams`, team index 0/1, `TeamCounts[2]` in drafters. Party beacon `NumPlayersPerTeam` per team (online drafting only).
+- No per-team cap in `PickTeam` (balance only).
+- Player list and scoreboard rows are data-store driven (`GetCollectionRowCount('<CurrentGame:Players>')`), with no fixed row count in AS. H: on-screen layout space is the practical limit.
+- Vote quorum: `GRI.VetoQuarum` = NumRequiredPlayers / 2 + 1.
+- No fixed-size PRI arrays found in script. Native caps were not audited (U).
