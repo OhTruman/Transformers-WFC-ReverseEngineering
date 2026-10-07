@@ -648,3 +648,26 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 - **Conclusion:** in the shipped disc data, Car6/7/9/10, Jet2/3/7, Tank4/5, Truck5/6/7 and Minion1–3 were **never unlockable for MP customisation**: no writer, hidden in the UI, no hint text.
   - H: they are iconic / campaign characters; those with `LockedCharacter` false (Truck7 Optimus, Jet2, Jet3) are still usable as iconic characters where `IsCharacterUnlocked` applies.
   - U: a later title update or DLC could have changed the provider flags; none are in the dump.
+
+## Addendum 10: double jump (C, `TransGame.TnAcrobaticsManager`)
+
+- **Exists for all robot-form pawns, MP included.** Data (`TnAcrobaticsManagerBlueprint`; MP shared `TR_Acrobatics_p.SharedAcrobatics`): JumpHeight **500**, **DoubleJumpHeight 450**, **DoubleJumpMinHeight 10**, HoverJumpHeight 500, HoverDuration 7, HoverAirSpeed 500, DodgeSpeed 3000.
+- **Input path:** `TnPlayerController.CheckJumpOrDuck` → `RobotForm.Jump(, bUpdating)`.
+  - The call is skipped while reviving.
+  - `TnRobotForm.Jump` returns early while melee-attacking and needs MovementCapabilities `bCanJump && bJumpCapable`.
+  - Robot form only: the vehicle forms do not use the acrobatics manager.
+- **State machine:**
+  - Ground `OnJump` → `Jumping`: Z velocity = √(2·|g|·JumpHeight) (+ base velocity), XY kept; records `_JumpBaseHeight` = height at take-off.
+  - `Jumping` → `FallingFromJump` once Z velocity < 0.
+  - **Second press in `Jumping` or `FallingFromJump`** → `DoubleJumping` iff `CanDoubleJump`:
+    - the active weapon does **not** have `DisallowDoubleJump` (true on GatlingGun, HeavyRepairRay, HeavyRocketTurret);
+    - **and** current height − `_JumpBaseHeight` > **DoubleJumpMinHeight (10 UU)**.
+  - `DoDoubleJump`: Physics Falling; **velocity Z set (not added) to √(2·|g|·DoubleJumpHeight)**, XY kept. With |g| = 2940 → **1627 UU/s**, i.e. +450 UU above the second-jump point.
+  - **Once per airtime:** `DoubleJumping` has no `OnJump`; it → `Falling` when descending, and `Falling` has no `OnJump`.
+  - **Walking off a ledge** (`Falling` without a jump) gives **no double jump**.
+  - Landing → OnTheGround / Skidding (skid if horizontal speed > MaxGroundSpeed).
+- Max reachable rise ≈ 500 + 450 = 950 UU (second press at the apex).
+- **AI:**
+  - Jumps use `Jump(override, ForceJump=true)`: on ground → jump; in air → `DoubleJumping` with the override velocity (`TnAiActionNavigatePathSection` passes a computed JumpVel for jump links).
+  - `TnAnchor.IsNavigationPointSupported` **rejects double-jump nav points** (`NavigationPoint.IsDoubleJump` = bNotBased with a jump link) as anchors.
+  - So bots may double jump along jump-link path sections, but never anchor on unbased double-jump points.
