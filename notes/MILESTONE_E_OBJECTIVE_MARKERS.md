@@ -88,3 +88,11 @@ This builds on `MILESTONE05_GAMEPLAY_UNKNOWNS.md` §5 (per-type state tables, st
 - **KOTH:** owner == viewer team, or owner > 1 (neutral / contested) → Neutral 1, friendly colour; enemy-owned → Neutral 0.
 - **FlagCapturePoint:** Neutral 0, Flashing 1.
 - The colours themselves are inside the `UI_HudMarkers_p` materials (params above).
+
+## 6. Crosshair target type / name / health (C)
+- `TnHudDataObserverTargetType` → `_global.NotifyTargetTypeChanged(type)`, enum `ETargetTypeForHud` {0 TTFH_Friend, 1 TTFH_Enemy, 2 TTFH_None}.
+  - Target = aim-assist target if valid → else the crosshair target if valid → else the repair target. Only `Pawn`s count (players, AI, sentries, vehicles-as-pawns); destructibles give None.
+  - Type = Friend if `TnTeamInfo.AreOnSameTeam(viewer, target)`, else Enemy. A valid assist / crosshair target defaults to Enemy; nothing → None.
+  - AS: the crosshair colour tweens over 0.2 s: Friend 0x50B5D5, Enemy 0xFF3333, None white.
+- Target name: `PC.GetCurrentTargetName()` = the target pawn's `PRI.PlayerName`, only for a crosshair target that is a **direct hit** (`IsTargetDirectHit`) and has a PRI; else "".
+- Target health: `PC.GetTargetHealthDisplay` → the target's `TnHealthDisplayService` (if `ShouldDisplayHealth`): `DisplayType` (`ETnHealthDisplayType` {HDT_Friendly, HDT_Enemy, HDT_None}) and `NormalizedHealth`; default None / −1.

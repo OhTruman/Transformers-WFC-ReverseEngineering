@@ -566,3 +566,16 @@ Otherwise it calls **`AbortMelee`** and returns true.
 | `AiLinearDamping` / `AiLinearStiffness` (TnPlaneSimulationBlueprint) | **no script reader** (AI planes use `HoverPhysics.MoveToTargetLocation` / `RotateToTargetOrientation` with MaxAiSpeed / Acceleration) | n/a: H unused | ignore |
 | `*SmoothTime`, `AimSmoothTime` | `HmC2Smoother.Smooth`: critically damped, ω = 2/(SmoothTime/2) = 4/SmoothTime, x = ω·dt, exp ≈ 1/(1 + x + 0.48x² + 0.235x³) | no (dt) | none (seconds) |
 | Hover airborne upright pull 5 % | `TnHoverCarSimulation` (A4) | **yes, per tick** | as above |
+
+### A4 addendum 4 (2026-10-07): hover tank roll near walls; ramp launches (C script; H native contact)
+- `TnHoverTankSimulation` resists roll only through:
+  - the 4 diagonal suspension springs;
+  - `UpdateTurn`: TurnRate (0.05, 0.05, 1). Pitch/roll are corrected **only when not (stable && on ground)**; IsStable = |pitch| and |roll| < 30°.
+  - `UpdateRoll`: roll acceleration = RightLeftInput − local yaw rate (a lean into turns).
+- RB angular damping is 0 (`Activate`). There is no wall-specific code. A probe that loses the floor gives that corner no spring force, so the tank tilts until the hull touches or the 30° gate engages the 5 % correction.
+- H: the PhysX hull contact against the wall is the only other resistance, so a visible tilt is expected in the original too, limited by the hull geometry. U: magnitude.
+- **Ramp launches:** no launch-specific logic in the tank, hover car or car sims.
+  - `UpdateTerminalVelocity` only clamps falling speed (adds velocity so that vZ ≥ −TerminalVelocity).
+  - Strafe acceleration is horizontal (axis mask (1, 1, 0)) and disabled while unstable.
+  - The suspension simply stops pushing when probes lose contact.
+  - Take-off behaviour = generic sim (PARTIAL by nature; no authored launch target). The car's `JumpLinearVelocity` applies only to the explicit jump input.
