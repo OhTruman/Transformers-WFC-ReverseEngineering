@@ -671,3 +671,22 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
   - Jumps use `Jump(override, ForceJump=true)`: on ground → jump; in air → `DoubleJumping` with the override velocity (`TnAiActionNavigatePathSection` passes a computed JumpVel for jump links).
   - `TnAnchor.IsNavigationPointSupported` **rejects double-jump nav points** (`NavigationPoint.IsDoubleJump` = bNotBased with a jump link) as anchors.
   - So bots may double jump along jump-link path sections, but never anchor on unbased double-jump points.
+
+## Addendum 11: knock-off kill credit and pawn collision (C unless marked)
+
+**Fall / KillZ credit:**
+- `TnPawn.FellOutOfWorld(DamageType)` defers until the pawn's tick (`_DeferredFellOutOfWorldRequested`), then calls stock `Pawn.FellOutOfWorld`: authority only, Health −1, `Died(none, KillZDamageType)`.
+- `TnPawn.Died` → `HandleDied` → stock `Pawn.Died`: **if `DamageType.bCausedByWorld` and (Killer none or self) and `LastHitBy` ≠ none, then Killer = `LastHitBy`**.
+  - `KillZDamageType` and `DmgType_Fell` both have `bCausedByWorld` true.
+- `LastHitBy` is set by every `TakeDamage` from another controller (`InstigatedBy ≠ self.Controller`). Only `KilledBy` clears it. There is **no time window**: the last other player to damage this pawn during its life gets the kill, however long ago.
+- The result is a normal kill: ScoreKill +1 (DamageType is not `DmgType_Suicided`, Killer set), Deaths +1, kill XP / medals via TrackKills (both PCs).
+- KillZ is never downed (`CanBeDowned` excludes KillZDamageType) and is always insta-gib (`ShouldInstaGib`).
+- Never damaged by another player → no killer → environment death, no score.
+
+**Pawn-vs-pawn collision** (`TnPawnCollisionController`):
+- Robot form: mode 1, `AnimatedCylinderRobotMeshHybrid`. The collision cylinder is the actor collision (`SetCollision(true, true)` = collide + **block actors**). It blocks traces only for zero-extent (`SetTraceBlocking(false, true)`). The robot mesh collides with actors but not as a rigid body.
+  - The blueprint's `UseMeshCollision` → mode 2 (animated mesh); only Trypticon / Omega Supreme use it.
+- **No team exception for pawn blocking:** teammates block each other like enemies.
+- Team-specific rigid-body channels (RB 16–20 off, own `TeamCollisionChannel` on: `RBCC_Team0/1BlockingVolume`) only gate team blocking volumes for the RB meshes. Channel 15 is enabled for player pawns only.
+- Vehicle form: mode 4, `PhysicalVehicleMesh`. The vehicle **mesh** is the collision (rigid body; the cylinder is disabled). Vehicle-vs-pawn contact is RB, plus the `Rammed` logic.
+- Cylinders (`Blueprint.Collision`; robot form): Bumblebee-class 140×155, standard 175×225 / 175×240 / 175×200, Optimus-class 200×200, Brutes 200–225×265, Frenzy 100×120, CQC 140×170 (radius × half-height, UU).
