@@ -1,0 +1,11 @@
+function GFxGameViewportClient.Init  (script 165 bytes)
+  0000: oldlen = self.GlobalInteractions.Length
+  000c: if !(!Init(OutError)) goto 0x001e
+  001c: return false
+  001e: self.GFxUIController = new(self, nothing, self.GFxUIControllerClass, nothing, ObjectField)
+  0032: if !((InsertInteraction(self.GFxUIController, (oldlen + 1)) == -1)) goto 0x009c
+  0053: OutError = ("Failed to add interaction to GlobalInteractions array:" @ cast56(self.GFxUIController))
+  009a: return false
+  009c: return true
+  009e: return return
+  00a4: <eos>

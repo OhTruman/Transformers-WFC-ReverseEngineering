@@ -1,0 +1,347 @@
+function GFxMovie.Start  (script 7 bytes)
+  0000: StartPaused
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.StartClone  (script 73 bytes)
+  0000: default=false
+  0005: NewMovie = GFxMovie(Clone(, ))
+  001c: if !(!NewMovie.Start(StartPaused)) goto 0x003c
+  003a: return none
+  003c: return NewMovie
+  0042: return return
+  0048: <eos>
+
+function GFxMovie.OpenMovieWithPath  (script 212 bytes)
+  0000: M = GFxMovie(DynamicLoadObject(Path, obj'GFxMovie', ))
+  0020: if !((M == none)) goto 0x006a
+  002b: LogInternal((("ERROR: Failed to find GFxMovie with path (" $ Path) $ ")"), , , )
+  0068: return nothing
+  006a: Child.Path = Path
+  0080: Child.Movie = M.StartClone()
+  00a5: M.SetFocus(CaptureInput, CaptureFocus)
+  00c4: self.OpenedChildren.AddItem(Child)
+  00d1: return nothing
+  00d3: <eos>
+
+function GFxMovie.CloseMovieWithPath  (script 154 bytes)
+  0000: I = self.OpenedChildren.Find('Path',Path)
+  001c: if !((I == -1)) goto 0x0066
+  002b: LogInternal((("ERROR: Failed to find movie (" $ Path) $ ") to close"), , , )
+  0064: return nothing
+  0066: I[self.OpenedChildren].Movie.Close()
+  008b: self.OpenedChildren.Remove(I,1)
+  0097: return nothing
+  0099: <eos>
+
+function GFxMovie.Close  (script 7 bytes)
+  0000: KeepLoaded
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.OnClose  (script 182 bytes)
+  0000: WI = obj'Engine.Engine'.static.GetCurrentWorldInfo()
+  0019: foreach WI.AllControllers(obj'Engine.PlayerController', PC) (end 0x0077)
+  0039: Notify = GFxMovieNotifyInterface(PC)
+  0049: if !(EqualEqual_InterfaceInterface(Notify, GFxMovieNotifyInterface(none))) goto 0x0061
+  005d: iternext
+  005e: goto 0x0077
+  0061: Notify.OnMovieClosed(self)
+  0076: iternext
+  0077: iterpop
+  0078: Child = Child
+  0083: foreach self.OpenedChildren(Child,) (end 0x00b2)
+  0092: Child.Movie.Close()
+  00b1: iternext
+  00b2: iterpop
+  00b3: return nothing
+  00b5: <eos>
+
+function GFxMovie.SetMovieInfo  (script 14 bytes)
+  0000: self.MovieInfo = Data
+  000b: return nothing
+  000d: <eos>
+
+function GFxMovie.GetGameViewportClient  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.SetViewport  (script 22 bytes)
+  0000: X
+  0005: Y
+  000a: Width
+  000f: Height
+  0014: nothing
+  0015: <eos>
+
+function GFxMovie.CopyCommandHandlerToClones  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.SetFocus  (script 12 bytes)
+  0000: GlobalCaptureInput
+  0005: Focus
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.AddCaptureKey  (script 7 bytes)
+  0000: Key
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.ClearCaptureKeys  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.AddFocusIgnoreKey  (script 7 bytes)
+  0000: Key
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.ClearFocusIgnoreKeys  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.FlushPlayerInput  (script 7 bytes)
+  0000: capturekeysonly
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.SetExternalTexture  (script 12 bytes)
+  0000: Resource
+  0005: Texture
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.SetExternalTextureWithPath  (script 161 bytes)
+  0000: Tex = Texture2D(DynamicLoadObject(TexturePath, obj'Engine.Texture2D', true))
+  0020: if !((Tex == none)) goto 0x008a
+  002b: LogInternal((((("ERROR: Failed to load external texture '" $ TexturePath) $ "' to replace resource '") $ Resource) $ "'"), , , )
+  0088: return nothing
+  008a: SetExternalTexture(Resource, Tex)
+  009e: return nothing
+  00a0: <eos>
+
+function GFxMovie.Advance  (script 7 bytes)
+  0000: Time
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.Pause  (script 7 bytes)
+  0000: pauseplay
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.SetTimingMode  (script 7 bytes)
+  0000: Mode
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.Invoke  (script 12 bytes)
+  0000: method
+  0005: args
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.RefreshDataStoreBindings  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.PublishDataStoreValues  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.GetVariable  (script 7 bytes)
+  0000: Path
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.GetVariableBool  (script 7 bytes)
+  0000: Path
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.GetVariableNumber  (script 7 bytes)
+  0000: Path
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.GetVariableString  (script 7 bytes)
+  0000: Path
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.SetVariable  (script 12 bytes)
+  0000: Path
+  0005: arg
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.SetVariableBool  (script 12 bytes)
+  0000: Path
+  0005: B
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.SetVariableNumber  (script 12 bytes)
+  0000: Path
+  0005: F
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.SetVariableString  (script 12 bytes)
+  0000: Path
+  0005: S
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.GetVariableArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.GetVariableIntArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.GetVariableFloatArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.GetVariableStringArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.SetVariableArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.SetVariableIntArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.SetVariableFloatArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.SetVariableStringArray  (script 17 bytes)
+  0000: Path
+  0005: Index
+  000a: arg
+  000f: nothing
+  0010: <eos>
+
+function GFxMovie.GetVariableColor  (script 27 bytes)
+  0000: Path
+  0005: Red
+  000a: Green
+  000f: Blue
+  0014: Alpha
+  0019: nothing
+  001a: <eos>
+
+function GFxMovie.SetVariableColor  (script 27 bytes)
+  0000: Path
+  0005: Red
+  000a: Green
+  000f: Blue
+  0014: Alpha
+  0019: nothing
+  001a: <eos>
+
+function GFxMovie.GetObjectFields  (script 12 bytes)
+  0000: O
+  0005: Fields
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.SetObjectFields  (script 12 bytes)
+  0000: O
+  0005: Fields
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.CallASFunction  (script 12 bytes)
+  0000: Path
+  0005: F
+  000a: nothing
+  000b: <eos>
+
+function GFxMovie.IncrementRefCount  (script 7 bytes)
+  0000: F
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.DecrementRefCount  (script 7 bytes)
+  0000: F
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.SetFsCmdHandler  (script 14 bytes)
+  0000: self.FSCmdHandler = H
+  000b: return nothing
+  000d: <eos>
+
+function GFxMovie.AddExternalInterface  (script 204 bytes)
+  0000: !! unknown token 0x4f at 0x4 ; raw 0700bf814f010000001d0013120000000176000504020000
+
+function GFxMovie.SetInterfaces  (script 75 bytes)
+  0000: I = 0
+  0007: if !((I < ExternalInterfaceTypes.Length)) goto 0x0036
+  0017: AddExternalInterface(I[ExternalInterfaceTypes])
+  002c: AddAdd_PreInt(I)
+  0033: goto 0x0007
+  0036: !! unknown token 0x4d at 0x36 ; raw 4d010000001d000a21000001a70000000017040b53535353
+
+function GFxMovie.FindInterface  (script 31 bytes)
+  0000: !! unknown token 0x4f at 0x0 ; raw 4f010000001d000a000000017e000000017c04000000017c
+
+function GFxMovie.SetVisibility  (script 7 bytes)
+  0000: NewVisibility
+  0005: nothing
+  0006: <eos>
+
+function GFxMovie.GetVisibility  (script 2 bytes)
+  0000: nothing
+  0001: <eos>
+
+function GFxMovie.ActivatePostProcessChain  (script 35 bytes)
+  0000: self.CurrentPostProcessChainIndex = obj'Core.Math'.static.Clamp(Index, 0, (self.PostProcessChains.Length - 1))
+  0020: return nothing
+  0022: <eos>
+
+function GFxMovie.DeactivePostProcessChain  (script 14 bytes)
+  0000: self.CurrentPostProcessChainIndex = -1
+  000b: return nothing
+  000d: <eos>
+
+function GFxMovie.GetCurrentPostProcessChain  (script 36 bytes)
+  0000: if !((self.CurrentPostProcessChainIndex == -1)) goto 0x0011
+  000f: return none
+  0011: return self.CurrentPostProcessChainIndex[self.PostProcessChains]
+  001d: return return
+  0023: <eos>
+
+function GFxMovie.Tick  (script 69 bytes)
+  0000: Key = Key
+  000b: !! unknown token 0x50 at 0xb ; raw 50010000001d000000018a00000001890041070040770000

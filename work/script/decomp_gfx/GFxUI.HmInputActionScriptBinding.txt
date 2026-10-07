@@ -1,0 +1,33 @@
+function HmInputActionScriptBinding.RegisterLeftStickCallback  (script 43 bytes)
+  0000: if !((self.LeftStickCallbackName != 'None')) goto 0x001d
+  0013: UnregisterLeftStickCallback()
+  001d: self.LeftStickCallbackName = CallbackFunctionName
+  0028: return nothing
+  002a: <eos>
+
+function HmInputActionScriptBinding.RegisterRightStickCallback  (script 43 bytes)
+  0000: if !((self.RightStickCallbackName != 'None')) goto 0x001d
+  0013: UnregisterLeftStickCallback()
+  001d: self.RightStickCallbackName = CallbackFunctionName
+  0028: return nothing
+  002a: <eos>
+
+function HmInputActionScriptBinding.UnregisterLeftStickCallback  (script 18 bytes)
+  0000: self.LeftStickCallbackName = 'None'
+  000f: return nothing
+  0011: <eos>
+
+function HmInputActionScriptBinding.UnregisterRightStickCallback  (script 18 bytes)
+  0000: self.RightStickCallbackName = 'None'
+  000f: return nothing
+  0011: <eos>
+
+function HmInputActionScriptBinding.Tick  (script 18 bytes)
+  0000: NativeTick(DeltaTime)
+  000f: return nothing
+  0011: <eos>
+
+function HmInputActionScriptBinding.NativeTick  (script 7 bytes)
+  0000: DeltaTime
+  0005: nothing
+  0006: <eos>
