@@ -552,3 +552,17 @@ Otherwise it calls **`AbortMelee`** and returns true.
 - If the 15/30 override sits in the shared TransEngine.ini, the PC build is also smoothed to ≤ 30 Hz. If it is in the Xenon layer, PC uses the base cap (with VSync user-optional).
 - Neither can be shown from this dump: **UNKNOWN**. The editor's own MaximumPIEFrameRate=30 shows the team tuned for 30 Hz.
 - **Rebuild guidance:** match console (30 Hz per-call semantics, A4 addendum), since console is the only build in evidence.
+
+### A4 addendum 3 (2026-10-07, Milestone E): which authored factors are per tick vs dt-scaled (C from script unless marked)
+
+| Property | Where used | Per tick? | Conversion |
+|---|---|---|---|
+| Suspension `Stiffness` / `Damping` (TnSuspensionBlueprint, e.g. HoverCar_Supension) | `TnSpring.CalculateSpringVelocity`: K = Stiffness/m, B = Damping/m; v' = (v + dt·(K·(L0−L) + g)) / (1 + B·dt + K·dt²); `Update`: Force = m·((v' − v)/dt − g) | no: semi-implicit with dt | none (force law). H: the force is held over the PhysX 1/60 substeps |
+| `AngularDamping` (TnCarPhysicsBlueprint; ×5·(1−\|steer\|)² etc.) | `TnCarSimulation.UpdateAngularDamping` → `RigidBody.set_AngularDamping` | no: PhysX body damping (continuous, per substep) | none; use a dt-correct damping |
+| Hover `DefaultAngularDamping` 0.1, `DefaultLinearDamping` 0.1, `StopLinearDamping` 10 (constants × modifiers) | RB `set_AngularDamping` / `set_LinearDamping` | no (PhysX) | none |
+| `TireFrictionCoefficient` | `TnTire.UpdateLateralForce`: F = clamp(−v_lat · μ · LateralForceScale · Load, ±MaxForce); Load = MaxForce = massShare·\|g\|·2 | no (a force) | none |
+| `DriftFrictionScale` | `TnWheelAssembly`: `_LateralForceScale` = Drifting ? DriftFrictionScale : 1 | no (force scale) | none |
+| **`ExtraRotationLerpValue`** (TnPlaneSimulationBlueprint) | `TnPlaneSimulation.CalculateFinalRotationToMatch`: `RotationDelta = RLerp(_PreviousRotationDelta, RotationDelta, ExtraRotationLerpValue)` | **yes: once per player update tick (30 Hz)** | **f_dt = 1 − (1 − f)^(30·dt)** |
+| `AiLinearDamping` / `AiLinearStiffness` (TnPlaneSimulationBlueprint) | **no script reader** (AI planes use `HoverPhysics.MoveToTargetLocation` / `RotateToTargetOrientation` with MaxAiSpeed / Acceleration) | n/a: H unused | ignore |
+| `*SmoothTime`, `AimSmoothTime` | `HmC2Smoother.Smooth`: critically damped, ω = 2/(SmoothTime/2) = 4/SmoothTime, x = ω·dt, exp ≈ 1/(1 + x + 0.48x² + 0.235x³) | no (dt) | none (seconds) |
+| Hover airborne upright pull 5 % | `TnHoverCarSimulation` (A4) | **yes, per tick** | as above |
