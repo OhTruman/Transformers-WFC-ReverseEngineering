@@ -2411,3 +2411,7 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - **No detail-mode / platform disables:** the emitters author no `DetailMode` or per-platform flags (defaults: always on).
 - **Tracer distance:** `SetTracerDistance(muzzle→hit)` is WFC-native (U: effect on the trail, H: limits the travel / lifetime to the hit distance). Smoke-trail particle velocity / lifetime / size are in the compiled LOD payload (not UObjects).
 - **Material dynamic parameters:** `Tracer_Smoke_MAT` DynamicParameter slots: x Desat1, y DepthBiasScale, z UVoffset, w Param4. H: (1, 1, 1, 1) when the emitter has no ParameterDynamic module (native confirmation pending).
+- **Native DynamicParameter default (C, Trail2 fill `0x8301A700`, emit sites `0x8301B318` / `0x8301B3F4`):**
+  - `if (emitterInfo+0x30 & 0x08000000)` (dynamic-parameter module present): `if (payloadOffset (+0x36) != 0)` copy the particle's 4 floats to vertex +0x54..+0x60, **else write f30 (= 1.0, the same register used for V = 1) to all four**.
+  - Without the flag the field is not written. H: the vertex declaration then omits DynamicParameter, and the material's node sees the stock (1, 1, 1, 1).
+  - So **the no-module / no-payload default is (1, 1, 1, 1)**.
