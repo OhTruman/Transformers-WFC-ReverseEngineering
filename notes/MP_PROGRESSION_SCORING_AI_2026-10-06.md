@@ -690,3 +690,27 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 - Team-specific rigid-body channels (RB 16–20 off, own `TeamCollisionChannel` on: `RBCC_Team0/1BlockingVolume`) only gate team blocking volumes for the RB meshes. Channel 15 is enabled for player pawns only.
 - Vehicle form: mode 4, `PhysicalVehicleMesh`. The vehicle **mesh** is the collision (rigid body; the cylinder is disabled). Vehicle-vs-pawn contact is RB, plus the `Rammed` logic.
 - Cylinders (`Blueprint.Collision`; robot form): Bumblebee-class 140×155, standard 175×225 / 175×240 / 175×200, Optimus-class 200×200, Brutes 200–225×265, Frenzy 100×120, CQC 140×170 (radius × half-height, UU).
+
+## Addendum 12: sentry targeting (C script / data; H where native)
+
+**Flow** (`TnAiSentryController` + `TnSentryTargetTracker`):
+- **Candidate list, event-driven:**
+  - `SeeEnemy(Seen)` / `SeeTeammate(Seen)` (native sight events) → `RegisterEnemy` / `RegisterTeammate`, if `CanTrackPawn` (other sentries only if `_CanFireAtSentries`, true for ability sentries) and `IsValidTarget`.
+  - `EnemyNotVisible()` → unregister the controller's current `Enemy` unless `CanFireAtHiddenEnemies`.
+  - There are **no script traces**: LOS comes from the native sight system. H: stock UE3 periodic sight check (`Controller.SightCounter` seeded 0.2·FRand; ~0.2 s staggered interval) with a LineOfSightTo trace per seen pawn.
+- **Every Tick** (not dormant): `CurrentTarget = FindBestTarget()`.
+  - Forced target first; repair sentries pick the lowest-health damaged visible teammate.
+  - Otherwise `FindBestEnemy`: walk the registered list, pruning invalid entries (dead / dying / downed / being grabbed / disguised, or already claimed by ≥ `_MaxNumClaimedEnemies` = **2** sentries).
+  - Skip those failing `CanOwnerSee` (**no trace**: pitch within the constraint, and dot(facing, dir) ≥ `PeripheralVision`).
+  - Take the **closest**. **Not sticky:** re-evaluated every tick, so a closer valid enemy takes over immediately.
+- **Fire:** `StartFire` while `CanFire` and distance < `MaxAttackRange`; else `StopFire`.
+
+**Values (MP ability sentries `WEP_SentryAbility_p.*_TURRETDEF`):**
+- SightRadius **30000 UU** (300 m).
+- MaxAttackRange **6000** (Default, Rocket) / **5000** (Repair).
+- Pitch constraint **±45°** (`TnSentryPawnAbility.PitchConstraintsInDegrees`).
+- `TnSentryPawn.PeripheralVision` −1 (all directions).
+- `_MaxNumClaimedEnemies` 2.
+- AimedAtTargetThreshold 3.0.
+
+**Perf-faithful rebuild:** keep a per-sentry visible-candidate set refreshed by a staggered ~0.2 s sight pass (one LOS trace per candidate within 300 m), and per tick choose the closest valid candidate **without tracing**.
