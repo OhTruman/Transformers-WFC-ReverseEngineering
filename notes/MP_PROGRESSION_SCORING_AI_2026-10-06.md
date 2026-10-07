@@ -631,3 +631,20 @@ Table: `notes/data/ai_behavior_summary.json` (90 action-blueprint classes → de
 - Player list and scoreboard rows are data-store driven (`GetCollectionRowCount('<CurrentGame:Players>')`), with no fixed row count in AS. H: on-screen layout space is the practical limit.
 - Vote quorum: `GRI.VetoQuarum` = NumRequiredPlayers / 2 + 1.
 - No fixed-size PRI arrays found in script. Native caps were not audited (U).
+
+## Addendum 9: how locked MP chassis were unlocked in the shipped game (C unless marked)
+
+- **Storage:** `TnCharacterCustomizationData.UnlockedChassis` (array of chassis UniqueIds, profile-saved). `IsChassisUnlocked` = `UnlockedChassis.Find(id) != -1`; script-binding `IsChassisUnlocked` returns true when the provider is not `LockedChassis`.
+- **Only writer:** `TnCharacterCustomizationData.UnlockChassis` (AddItem + MarkAsDirty). Its callers (all script):
+  1. `TnProfileSettings.CheckForLevelCompletionAchievements`: all Autobot campaign maps completed (any difficulty) → **Car5 (Arcee)**; all Decepticon maps → **Jet8 (Slipstream)**;
+  2. `TnDebugManager` (debug console);
+  3. `TnPlayerReliableReplicationInfoSurvival` dev cheat (developer-name whitelist, a specific generator, Barricade, console-build check; also 10000 XP per class). Not a retail path.
+- `ResetAll` clears the list. Native code has no reference to `UnlockChassis`; the `UnlockedChassis` string appears only as property registration. No promo, pre-order, entitlement, stats or Demonware code touches chassis. DLC code in script concerns maps only (`DlcId` / content-removed prompts).
+- **UI behaviour (CustomTransformers_GFX AS):**
+  - The chassis picker lists only chassis with matching specialty and faction **and `IsChassisUnlocked`**. Locked chassis are **hidden**, not shown greyed.
+  - The only "locked" presentation is an extra slot for Arcee / Slipstream with `UIText.Customization.Sprinter` / `Stalker` ("Complete the Autobot/Decepticon campaign to unlock a new chassis").
+  - Escalation's CharacterSelect shows only `ArceeLocked` / `SlipstreamLocked` with `UnlockAutobot` / `UnlockDecepticon`.
+  - Localisation has no other unlock hint.
+- **Conclusion:** in the shipped disc data, Car6/7/9/10, Jet2/3/7, Tank4/5, Truck5/6/7 and Minion1–3 were **never unlockable for MP customisation**: no writer, hidden in the UI, no hint text.
+  - H: they are iconic / campaign characters; those with `LockedCharacter` false (Truck7 Optimus, Jet2, Jet3) are still usable as iconic characters where `IsCharacterUnlocked` applies.
+  - U: a later title update or DLC could have changed the provider flags; none are in the dump.
