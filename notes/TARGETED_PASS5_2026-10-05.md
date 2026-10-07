@@ -2395,3 +2395,19 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - Material `FX_Materials_p.Materials.Tracer_MOD_MAT`: **BLEND_Modulate, MLM_Unlit**.
   - Emissive = lerp(white, VertexColor-based term). Opacity from VertexColor.a × a cloud texture mask (DiffClouds_CLR panned).
   - So the trail **multiplies the scene**: a white particle colour is invisible, and tinting darkens or tints the scene. Rendering it additive or alpha-blended shows a bright white trail. That is not original.
+
+## Addendum (2026-10-07, Milestone E): Scatter Blaster (EMP shotgun) smoke density, evidence (C unless marked)
+
+- **One tracer system per trigger pull, not per pellet:**
+  - `EMPShotgun_WEPDATA`: instant hit, `NumShotsToFire` 13, FireInterval 0.5 s, 13-entry SpreadPattern.
+  - Stock `Weapon.InstantFire` loops the 13 shots, but **calls `PlayFireEffects` only when `idx == 0`** (shots 1..12 get `PlayImpactEffects` only).
+  - `HmWeapon.OnPlayFireEffects` → `WeaponMesh.StartMuzzleFlash` + `PlayTracerEffect(WP_Fire)` → `PlaySingleTracerEffect`: `EmitterPool.SpawnEmitter(Trail_EMPShotgun_FX, Muzzle, rot(muzzle → first impact))` and `PSC.SetTracerDistance(dist)`.
+  - So **one** `Trail_EMPShotgun_FX` per shot, aimed at the first pellet (spread offset (0, 0)). Remote players: `Pawn` FlashImpact → `PlayFireEffects` once.
+  - Spawning it per pellet would be 13× the original density.
+- **System content** (all one PSC): emitters Bolt, Bolts_Dup, Bolt_02, Bolt_03 (sprites, `Bolt_ADD_MAT`, PSA_Velocity, burst 5–10, duration 0.1 s, `Bolts_Dup` MaxPeak 10) and **three Trail2 smoke ribbons** (`Trail_Smoke_Dup`, `_Dup_Dup`, `Trail_Smoke_03`).
+  - Smoke ribbons: `Trail_Smoke_10_MAT_INST` (TailFalloff 10), EmitterDuration 0.5 s × 1 loop, PeakActive 1, TessellationFactor 10, MaxParticleInTrailCount 100.
+  - **SpawnRate 20/s at LOD 0, 4/s at LOD 1.** `LODDistances` [0, 10000]: beyond 100 m the ribbon gets 1/5 of the points.
+  - `MaxDrawCount` 35 is authored, but `bUseMaxDrawCount` false, so no cap.
+- **No detail-mode / platform disables:** the emitters author no `DetailMode` or per-platform flags (defaults: always on).
+- **Tracer distance:** `SetTracerDistance(muzzle→hit)` is WFC-native (U: effect on the trail, H: limits the travel / lifetime to the hit distance). Smoke-trail particle velocity / lifetime / size are in the compiled LOD payload (not UObjects).
+- **Material dynamic parameters:** `Tracer_Smoke_MAT` DynamicParameter slots: x Desat1, y DepthBiasScale, z UVoffset, w Param4. H: (1, 1, 1, 1) when the emitter has no ParameterDynamic module (native confirmation pending).
