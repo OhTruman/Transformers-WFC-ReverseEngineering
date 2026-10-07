@@ -2415,3 +2415,8 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
   - `if (emitterInfo+0x30 & 0x08000000)` (dynamic-parameter module present): `if (payloadOffset (+0x36) != 0)` copy the particle's 4 floats to vertex +0x54..+0x60, **else write f30 (= 1.0, the same register used for V = 1) to all four**.
   - Without the flag the field is not written. H: the vertex declaration then omits DynamicParameter, and the material's node sees the stock (1, 1, 1, 1).
   - So **the no-module / no-payload default is (1, 1, 1, 1)**.
+- **Smoke material and payload vs export (2026-10-07):**
+  - `Trail_Smoke_10_MAT_INST` (MP_ESC_BrokenHope_Base_m): tagged props are only TailFalloff 10 + Parent. The native tail is 4 zero bytes, i.e. **no static permutation / no static-switch overrides (C)**, so the parent defaults apply: DepthFadeSwitch = true → DepthBiasSwitch = true → **plain alpha**.
+  - **DepthBiasedAlpha (fed by DynamicParameter.y) and DepthFade_Func (DistanceFadeMultiplier 0.01) are on the unused B branches.** The original smoke has no soft depth fade, and .y has no visual effect.
+  - Active opacity = clamp(VertexColor.a × (cloud noise (two panned DiffClouds samples, UV + .z·0.5) + 0.2) × ramps …, 0, 1): head ramp clamp(U·20), tail clamp((1 − U)·TailFalloff), edge fade (1 − 4(V − 0.5)²)². Emissive = Desaturation(…, Percent = .x).
+  - Compiled smoke LOD0 payload (`Trail_Smoke_03`): the raw-distribution tables contain Desat1 curve (min 0, max 1, 2 samples 0 → 1), DepthBiasScale constant **100**, UVoffset curve 0 → 0.5, Param4 constant **0**. This **matches AssetTools' export**. H on the curve sample alignment; the constants are C.
