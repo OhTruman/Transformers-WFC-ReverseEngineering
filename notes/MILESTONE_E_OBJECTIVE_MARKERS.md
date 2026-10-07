@@ -7,7 +7,7 @@ This builds on `MILESTONE05_GAMEPLAY_UNKNOWNS.md` §5 (per-type state tables, st
 ## 1. Pipeline (C)
 - **Registration:** `GRI.AddObjectiveMarker(Description, MarkerBase, MarkerTypeClass, bDoNotReplicate)` → `TnObjectiveManager.AddObjectiveMarker`.
   - It assigns a MarkerId and stores the entry in the replicated `ObjectiveMarkers[16]`. Overflow logs "Maximum number of objective markers exceeded".
-  - U: whether `bDoNotReplicate` entries share the 16 slots. A 16 v 16 extension must raise this cap, because every pawn registers a player tag.
+  - **Correction (2026-10-07, C):** `bDoNotReplicate` entries go to the unbounded client-local list `LocalObjectiveMarkers` (`AddLocalObjectiveMarker`), not the replicated 16. Player tags (`TnPawn`, DoNotReplicate true) and tombstones are local, so the 16 cap applies only to replicated objective markers (flag / bomb / nodes / plant points / KOTH / capture points). **16 v 16 does not need a larger cap for tags.**
   - Clients spawn the MarkerType object in `ClientInitializeObjectiveMarker`.
 - **Who registers what:**
 
@@ -96,3 +96,12 @@ This builds on `MILESTONE05_GAMEPLAY_UNKNOWNS.md` §5 (per-type state tables, st
   - AS: the crosshair colour tweens over 0.2 s: Friend 0x50B5D5, Enemy 0xFF3333, None white.
 - Target name: `PC.GetCurrentTargetName()` = the target pawn's `PRI.PlayerName`, only for a crosshair target that is a **direct hit** (`IsTargetDirectHit`) and has a PRI; else "".
 - Target health: `PC.GetTargetHealthDisplay` → the target's `TnHealthDisplayService` (if `ShouldDisplayHealth`): `DisplayType` (`ETnHealthDisplayType` {HDT_Friendly, HDT_Enemy, HDT_None}) and `NormalizedHealth`; default None / −1.
+
+## 7. Tombstones (C)
+- `TnMultiplayerGame.Killed`: for every killed pawn whose controller is a **TnPlayerController** (all versus modes; AI deaths make none), spawn `TransContent.TnTombstone` at `KilledPawn.Location`, then `set_TeamNum(victim team)`.
+- `TnTombstone` defaults: **LifeSpan 8 s**, bNetTemporary, SimulatedProxy. Its SpawnModifier rule: Factor −5 within 5000 UU.
+- The marker is added locally on server and clients (`AddObjectiveMarker("", self, TnObjectiveMarkerTypeTombstone, DoNotReplicate = true)` from PostBeginPlay / `set_TeamNum` / `ReplicatedEvent(_TeamNum)`).
+- **`ShouldDisplayMarker` = true: every viewer sees every tombstone**, with no team filter.
+- Fade: material `Alpha` = LifeSpan / 3 over the last 3 s (fully visible for the first 5 s). It disappears when the actor expires.
+- H: AddMarker can run more than once per tombstone (PostBeginPlay + TeamNum set / replication). The original has no de-dupe in `AddLocalObjectiveMarker`, so duplicates draw identically on the same spot.
+- **No generic removal fade** exists for any other marker type.
