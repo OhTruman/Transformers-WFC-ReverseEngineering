@@ -35,3 +35,8 @@ Labels: C = authored.db / script / prior native notes (M03 light-vis note §3); 
 - C: it is written only for primitives set in the view's visibility bitmap, the same bitmap the draw passes iterate (readers in `0x82EAE088`, `0x82ECC9E0`, `0x82EFA510`, `0x82EFBAD8`, `0x83038EC8`), at end of frame. **Frustum alone does not set it.**
 - H: occlusion-culled primitives are cleared from that bitmap during InitViews (stock UE3; the bit-clear site was not isolated), so a pawn hidden behind a wall stops updating LastRenderTime.
 - **U → H (stock): query results not ready** are treated as visible (UE3 reads the previous frame's query; unavailable → visible). WFC's buffering depth was not traced.
+
+## 5. Weapon meshes share the pawn's light environment (C, `HM_Engine.HmWeaponMesh.Attach` / `Detach`)
+- `Attach(owner, BaseMesh, Socket)`: attach the animated weapon mesh to `BaseMesh` (the pawn mesh) at the socket; **`Mesh.SetShadowParent(BaseMesh)`**; **`Mesh.SetLightEnvironment(BaseMesh.LightEnvironment)`** (the owning form's light env: robot `LightEnvironment0`, vehicle `MyLightEnv`); **`self.LightEnvironment.SetEnabled(false)`** (the weapon's own one is disabled).
+- `Detach`: detaches, clears the shadow parent and sets `Mesh.LightEnvironment` back to its own, but does **not** re-enable it (H: re-enabled elsewhere when dropped as a pickup, otherwise stays disabled).
+- Same path for players and bots (one TnWeaponMesh class). So a held weapon costs no separate light-env update and casts its shadow through the pawn's composite shadow.
