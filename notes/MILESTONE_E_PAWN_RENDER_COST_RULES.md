@@ -74,7 +74,13 @@ Labels: C = authored.db / script / prior native notes (M03 light-vis note §3); 
   - behind the camera → within 1600 UU;
   - else false if CullDistance < dist × `LODDistanceFactor`;
   - else not beyond fog.
-- Weapon-mesh defaults: **MaxImpactEffectDistance 400**, **MaxFireEffectDistance 1000** (one weapon 2500).
+- Values (C, authored): HmWeaponMesh CDO MaxImpactEffectDistance 400 / MaxFireEffectDistance 1000 / ImpactSquibPercentage 1.0 / ImpactSquibMaxCount 10. **TnWeaponMesh CDO overrides MaxImpactEffectDistance = 2500**, so every WFC weapon uses **2500 impacts / 1000 shell casings** (no per-weapon distance overrides).
+- Per-weapon-mesh squib overrides (ImpactSquibPercentage / ImpactSquibMaxCount):
+  - AssaultRifle, HeavyMG, IonBlaster, TurretIonBase, TurretIonGun, AssaultRifle_Vehicle, LightSentry: 0.6 / 5;
+  - PlaneMachineGun 0.6 / 6;
+  - EMPShotgun 13; Starscream EMPShotgun AI 14; RepairSentry 5;
+  - all others inherit 1.0 / 10.
+- `LODDistanceFactor`: PlayerController CDO 1.0; no script writer. U: native FOV-based update (TnPlayerController DefaultFOV 75).
 - **So bot (and remote-player, listen) impacts / shell casings only appear near the camera.**
 
 | Effect | Path | Gating |
