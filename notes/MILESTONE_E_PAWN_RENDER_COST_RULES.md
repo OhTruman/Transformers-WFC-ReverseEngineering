@@ -40,3 +40,17 @@ Labels: C = authored.db / script / prior native notes (M03 light-vis note §3); 
 - `Attach(owner, BaseMesh, Socket)`: attach the animated weapon mesh to `BaseMesh` (the pawn mesh) at the socket; **`Mesh.SetShadowParent(BaseMesh)`**; **`Mesh.SetLightEnvironment(BaseMesh.LightEnvironment)`** (the owning form's light env: robot `LightEnvironment0`, vehicle `MyLightEnv`); **`self.LightEnvironment.SetEnabled(false)`** (the weapon's own one is disabled).
 - `Detach`: detaches, clears the shadow parent and sets `Mesh.LightEnvironment` back to its own, but does **not** re-enable it (H: re-enabled elsewhere when dropped as a pickup, otherwise stays disabled).
 - Same path for players and bots (one TnWeaponMesh class). So a held weapon costs no separate light-env update and casts its shadow through the pawn's composite shadow.
+
+## 6. Particle systems: inactivity, LOD, pool, off-screen spawning (2026-10-08)
+- **SecondsBeforeInactive (C data):** authored on **none** of the 544 ParticleSystems. The Engine CDOs of ParticleSystem and ParticleSystemComponent don't carry it either, i.e. **0**. H (stock UE3): 0 disables the "stop ticking after N s unrendered" rule, so WFC's FX keep simulating while off-screen until they complete.
+- PSC CDO: bAutoActivate true; `bSkipUpdateDynamicDataDuringTick` / `bWarmingUp` not set (false). No authored WarmupTime on MP FX found (U: not exhaustively checked).
+- **Distance LOD is original (C data):**
+  - `LODMethod` Automatic (default) on 455 systems, DirectSet on 89.
+  - LODDistances per system, e.g. [0, 10000] ×122, [0, 50000] ×87, [0, 2500] ×54. EMP trail / muzzle [0, 10000]; AssaultRifle tracer [0, 2000, 50000].
+  - LOD 1+ levels carry reduced spawn rates (EMP smoke 20 → 4/s).
+  - SystemSettings `ParticleLODBias` 0, `DetailMode` 2.
+  - U: WFC has no `LODDistanceCheckTime` property (the check interval is native).
+- `UpdateTime_Delta` per system (e.g. tracers 100, muzzle 1/60): H (stock): the minimum interval between bounding-box updates.
+- `bUseFixedRelativeBoundingBox` on 8 systems; CDO CullDistance 300000.
+- **Emitter pool:** `Engine.EmitterPool` **MaxActiveEffects 50** (Xe-TransGame.ini). H (stock UE3 native `GetPooledComponent`): beyond 50 active pooled effects, the oldest active one is reclaimed. A faithful cap for one-shot FX.
+- **Off-screen spawning (C script):** muzzle flashes and tracers (`HmWeaponMesh.StartMuzzleFlash` / `PlaySingleTracerEffect` → `EmitterPool.SpawnEmitter`) and impacts spawn with **no visibility or distance test**.
