@@ -53,4 +53,43 @@ Labels: C = authored.db / script / prior native notes (M03 light-vis note §3); 
 - `UpdateTime_Delta` per system (e.g. tracers 100, muzzle 1/60): H (stock): the minimum interval between bounding-box updates.
 - `bUseFixedRelativeBoundingBox` on 8 systems; CDO CullDistance 300000.
 - **Emitter pool:** `Engine.EmitterPool` **MaxActiveEffects 50** (Xe-TransGame.ini). H (stock UE3 native `GetPooledComponent`): beyond 50 active pooled effects, the oldest active one is reclaimed. A faithful cap for one-shot FX.
-- **Off-screen spawning (C script):** muzzle flashes and tracers (`HmWeaponMesh.StartMuzzleFlash` / `PlaySingleTracerEffect` → `EmitterPool.SpawnEmitter`) and impacts spawn with **no visibility or distance test**.
+- ~~Off-screen spawning: no visibility or distance test~~ **CORRECTED in §7** (impacts and shell casings are relevance-gated; tracers and impacts are frame-rate throttled for non-local shooters).
+
+## 7. Effect gating, pooled vs owned (C script unless marked; 2026-10-08)
+**Game throttle (C native):** `Object.GetGameThrottle()` returns the global level `0x83772438`, set every frame by `0x826EFD08` from the frame time.
+- Smoothing: rises instantly, falls with lerp 0.1 per frame.
+- Levels: < 25 ms → **0**; < 28.6 ms → 1; < 33.3 ms → 2; < 40 ms → 3; ≥ 40 ms → 4. Enabled by data flag `0x83711C80` = 1.
+- The same level indexes the light-environment DetailScale [1, 2, 3, 5, 8].
+- At high PC frame rates it stays **0**, i.e. no throttling.
+
+**`HmWeaponMesh.SkipEffectBecauseOfFrameRate`:**
+- Never skips for the local human shooter.
+- Otherwise by throttle level: 0 → never; 1 → skip 25 %; 2 → 50 %; 3 → 80 %; 4+ → always.
+- The muzzle-flash light is lit only when throttle < 2.
+
+**`EffectIsRelevant(SpawnLoc, false, CullDistance)`** (Actor / Pawn):
+- Listen server with > 1 player: true for the local human instigator.
+- Standalone: true for any human-controlled instigator.
+- Otherwise the instigator must have rendered in the last 1 s (or the spawn point differs from its location), and for a local PlayerController `CheckMaxEffectDistance`:
+  - behind the camera → within 1600 UU;
+  - else false if CullDistance < dist × `LODDistanceFactor`;
+  - else not beyond fog.
+- Weapon-mesh defaults: **MaxImpactEffectDistance 400**, **MaxFireEffectDistance 1000** (one weapon 2500).
+- **So bot (and remote-player, listen) impacts / shell casings only appear near the camera.**
+
+| Effect | Path | Gating |
+|---|---|---|
+| Muzzle flash | **owned** PSC per weapon mesh (`MuzzleFlashes[].PSComponent.ActivateSystem`, 0.1 s) | none (light: throttle < 2) |
+| Tracer (single) | **pooled** `EmitterPool.SpawnEmitter` (default bucket) | SkipEffectBecauseOfFrameRate |
+| Tracer (looping, beam event 12) | **owned** (`CreateLoopTracerPSC`) | — |
+| Impact squib | **pooled with a per-weapon bucket** (`SquibBucketGuid`, cap `ImpactSquibMaxCount` default 10; authored 5–14) | frame-rate skip + EffectIsRelevant(hit, 400) + `SkipSquibEffect` (ImpactSquibPercentage 1.0, some 0.6, per 1 s) |
+| Impact decal | `DecalManager.SpawnDecal` | same gate as squibs |
+| Shell casing | **owned** PSC | frame-rate skip + EffectIsRelevant(owner, 1000) |
+| Projectile flight FX | **owned** (`HmProjectile.CreateFlightEffect`) | — |
+| Projectile / grenade explosion | **pooled** (`HmProjectile` ExplosionPSC, `ProjectileMesh.ExplosionEffect`) | — |
+| Vehicle one-shots | **pooled** (`TnVehicleFxPlayer.PlaySingleEffect`); looping vehicle FX are owned via EffectManager | — |
+| Pawn hit effects | **pooled**, attached to the skeletal mesh (`TnHitEffectPlayer`) | — |
+| Roller-mine explosion | **pooled** | — |
+| Ability / buff / kill-streak FX | owned components (`TnAttachableEffect`, `HmParticleEffectsManager`) (H) | — |
+
+- `MaxActiveEffects` 50 applies to the default pooled bucket (H stock).
