@@ -116,3 +116,25 @@ c252 = (−255, 10, 0, −2), c253 = (1/255, 4, 255, 1e-4), c254 = (2, 1.5, 0.00
 - **Our translation (scalar × 20 on both axes, × 4 accumulate, 0.1, ±255 / 255) matches it.**
 - The ScreenSplatter / Trail_Distort_MOD PSs read earlier use the **same template literals** (× 4, 0.1, ±255, 1/255). Note: with
   the old parser their owner attribution is unreliable, but the template part is the same in every DistortMesh PS.
+
+## The apply pass: FDistortionApplyScreenPixelShader (C, Engine.xxx ShaderCache record, blob 0x454D04 and an identical copy at 0x4FF41C)
+
+- **CTAB:** `SceneColorTexture` s0, `AccumulatedDistortionTexture` s1. Literals c255 = (0.25, −0.25, …).
+- **Code (complete):**
+  ```
+  acc = tex(AccumulatedDistortionTexture, uv)
+  uv' = uv + (acc.xy − acc.zw) × (0.25, −0.25)
+  oC0 = tex(SceneColorTexture, uv')
+  ```
+- **(a)** The scale is the constant **0.25 / −0.25** in texture space: no texel-size or resolution term. A saturated channel shoves by
+  a quarter of the screen.
+- **(d)** **No clamp, no depth comparison, no attenuation** in the apply. Foreground in front of a distorting surface is smeared too.
+- **(b) / (c)** The accumulate target format / size and its blend state are set natively, not in the shaders. **H (stock UE3):**
+  - full-resolution 8-bit RGBA (the light-attenuation / scratch surface);
+  - **ONE / ONE additive**, so each channel saturates at 1.0;
+  - this is consistent with the accumulate PS writing non-negative values ≤ 1 per channel (its × 1/255 after the ±255 clamp).
+
+**Verdict:** the original pipeline is accumulate s × 4 → clamp ±255 → / 255 → additive 8-bit → apply (acc.xy − acc.zw) × (0.25, −0.25).
+Rendering's model matches it end to end. BlastSphere_Death_MAT's input chain (scalar × 20, both axes) matches too. A swirl that looks
+too big therefore comes from an **input** difference: the depth-biased alpha (scene depth vs particle depth, DepthBiasScale), the
+particle vertex alpha / size, the SmokeTile texture or the view-angle term. It does not come from a missing or extra constant.

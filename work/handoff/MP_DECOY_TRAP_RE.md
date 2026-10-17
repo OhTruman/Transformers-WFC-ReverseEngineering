@@ -95,3 +95,26 @@ Classes:
 | DECOY_TRAP_EXPLODE | the pickup sound, when an enemy picks the trap up |
 | DecoyTrap_FX | looping on the victim at TargetingSocket for the stun |
 | React_DecoyTrap_In (loop) / _Out | robot-form stun start / end |
+
+## 8. Follow-ups (2026-10-18)
+
+**DecoyTrap_FX "Color" (ColorByParameter, default 134 / 168 / 196): nobody sets it (C).**
+- TnBuffDecoyTrap (and the EMP-grenade AI buffs that reuse DecoyTrap_FX) author **no `FxParameters`**, so `TnBuff.PlayEffect` applies
+  no parameter set. TnDecoyTrap / TnAbilityDecoyTrap / TnDroppedPickupDecoyTrap never touch the FX.
+- The only script callers of `SetColorParameter('Color', …)` are `TnAnimNotify_PlayFactionEffect` (EnergonColor) and `TnCarForm`
+  (boost colour), and neither plays DecoyTrap_FX.
+- **So the effect always shows its authored default colour** (134, 168, 196), for every team and character.
+
+**DECOY_TRAP_EXPLODE's root LoopStart 0.32 / LoopEnd 1.05: inert (C, prior audio RE).**
+- WFC's SoundNodeRoot applies LoopStart / LoopEnd to its tracked playback time **only when root bLooping is set**
+  (MILESTONE03_AUDIO_NATIVE_FIDELITY.md: `if root.bLooping and t >= LoopEnd: t = fmod(t − LoopStart, LoopEnd − LoopStart) + LoopStart`).
+  This root does not set bLooping, and none of its wave events loops.
+- **So the cue is a one-shot**, played once as the trap's `PickupSound` when an enemy picks it up. There is no armed-state loop.
+  The layers run on the root's timeline:
+  - TRANS_POWER_TRAP_ELEC_LP_EXPLO at 0;
+  - KAMIKAZE_EXPL_01 / 02 / 03 (random, pitch variation 2) at 0;
+  - **TRANS_POWER_TRAP_ELEC_LP shaped by its envelope**: pitch −36 → 0 over 0.28 s; volume up to 0.97 by 0.15 s, held to 4.10 s,
+    out by 4.57 s (PlayWhenSilent);
+  - DEATH_LIGHT_01 / 02 / 03 (random, −3 dB) at 3.50 s.
+  - So the "loop" layer is a ~4.6 s enveloped tail covering the 2 s stun (3 s with the skill), not a loop.
+- Root: −9 dB, smart pan, distance 1000–12000.
