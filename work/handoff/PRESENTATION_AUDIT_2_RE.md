@@ -11,6 +11,8 @@ WFC RE lane, 2026-10-18. This continues WEAPON_PRESENTATION_AUDIT_RE.md (same me
 
 **C means named, not faithful.** A value column is marked *absent* only when no src reader exists.
 
+**E is not "unused" (Systems, 2026-10-18):** our audio code (AbilityAudio / CharacterAudio) plays cues looked up by class and field in the embedded JSON tables (`classSound` / buff sounds), so an E-only cue can still be played (e.g. the cloak loops via TnBuffCloak). Treat **-** (no hit) as the real gap list; E items need a runtime check (Systems' CUELOG).
+
 **Data note:** MP uses `TnWeapon.MultiplayerData` (`GetWeaponDataByType(3)`), not `PlayerData` (campaign). Everything here uses the
 MP data. The gun table was corrected the same way; see its §3 note.
 
@@ -132,7 +134,7 @@ Cooldown is `[robot, vehicle]` seconds where two values are authored. Resource =
   jammer, revive jam, Transform Disruptor) and the form-dependent slot swap are **absent**, unless driven another way (unknown).
 
 **Findings (part 1):**
-1. **Ability sounds are mostly E (embedded JSON only).** Cloak start / off loops per faction, HardLock, Decoy deploy, Drain
+1. **Ability sounds are mostly E (embedded JSON; may be played data-driven, so runtime check, not gaps).** Cloak start / off loops per faction, HardLock, Decoy deploy, Drain
    initiate / heal, Disguise, Barrier deploy / loop / retract, Warcry chest hits, TransformDisruptor and others have no src
    reference. Exceptions: AMMO_DEPLOY, SHIELD_PUSH (Shockwave / TransformDisruptor) and WAR_CRY_STATE_START [C].
 2. **Ability FX with no hit at all (-):**
