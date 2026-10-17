@@ -73,7 +73,7 @@ For each ability, the extractor follows every asset reachable from the ability C
 - classes the ability script spawns by literal (e.g. TnBarrierSpawnable, TnRollerMineAbility);
 - plus the trigger anim's AnimNotifies.
 
-Cooldown is `[robot, vehicle]` seconds where two values are authored. Resource = `ResourceRequired`, the energon cost.
+**Cooldown is indexed by the game's skill-data set, not the form** (CONFIRMED, corrected 2026-10-18): `TnAbility.GetCooldownTime` uses `Cooldown[TnGame.GetCurrentSkillDataIndex()]` (index 0 if the array is short). **TnMultiplayerGame returns 0; TnGame (campaign and others) returns 1.** So the arrays are **[MP, campaign]**. `GetResourceRequired` returns 0 unless the index is 1, so **`ResourceRequired` (the energon cost) applies only in campaign; MP abilities are cooldown-only.** The result is × CooldownReductionModifier while the owner has TnBuffAbilityCooldown.
 
 **Limits:**
 - Mesh / material-only visuals of spawned actors (barrier shield mesh, decoy hologram) are not separated out.
