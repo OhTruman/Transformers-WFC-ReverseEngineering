@@ -15,7 +15,7 @@ element, plus all 32 placed LensFlareComponents with their LensFlareSource trans
 | Remnant (ART, group Sky) | LensFlareSource_13725 | ORB_LensFlare_FINAL01 | (−147152, −206608, 69968) | 1 |
 | Rust (Art) | LensFlareSource_11899 | ORB_LensFlare_FINAL01 | (33722, −13862, 74641) | 1 |
 | Seed (BASE) | LensFlareSource_11899 | ORB_LensFlare_FINAL01 | (54538, −6066, 98465) | 1 |
-| ORB (Art) | LensFlareSource_4136 | ORB_LensFlare_FINAL02_SmallBound | (−311096, −308768, 20576) | 1 |
+| Debris (MP_ORB_Art_m) | LensFlareSource_4136 | ORB_LensFlare_FINAL02_SmallBound | (−311096, −308768, 20576) | 1 |
 | Gorge (BASE) | LensFlareSource_10149 | ORB_LensFlare_FINAL01 | (−18426, 16340, 57900) | 1 |
 
 - Elsewhere: UI_FrontEnd (3: IAC_Zeta_LF ×2, "Test" in SDPG_PostProcess) and campaign (23).
