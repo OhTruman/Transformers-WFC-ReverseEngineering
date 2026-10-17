@@ -2298,7 +2298,12 @@ All decal materials here are **BLEND_Modulate, MLM_Unlit, bUsedWithDecals**, wit
 - The darkening side clamps at 0. The m < 0 extremes (min −0.0001 from Blacks) round to 0.
 - Not traced: the SceneColorBiasFactor value (the C++ setter of binding +0x1A at 0x82CED5C0) and the decal blend-state object.
 
-**§12 addendum 32: SceneColorBiasFactor value — UNKNOWN (time-boxed); not needed for decals**
+**§12 addendum 32: SceneColorBiasFactor value — RESOLVED 2026-10-17, see `work/handoff/HDR_SCENE_PATH_RE.md`.**
+- RHISetRenderTarget 0x829E2E00 sets GSceneColorBias 0x83712318 = 2^surface.ExpBias: **8 for 7e3 scene colour** (surface exp
+  bias 3, D3D format 0x1A2201BF), 1 otherwise, and writes it to PS c0.
+- Resolves use EXPONENTBIAS(−3), so the resolved scene texture holds unbiased values; the 7e3 ceiling is 3.984 real units.
+
+The original (time-boxed) text follows.
 
 **What is established (C):**
 - `SceneColorBiasFactor` is a **runtime float4 uniform**, not a compile-time literal: every material/post shader CTAB declares it.
