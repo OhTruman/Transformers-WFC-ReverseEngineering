@@ -174,3 +174,25 @@ Per frame:
      pixel area);
    - +0xE4 = the per-frame intensity / coverage.
    - The query writer wasn't traced.
+
+## 4b. Intensity, curve tables, distance input (C, 2026-10-18)
+
+- **proxy+0xE4 (TEXCOORD3.y "Intensity"):** set by `0x82FB6C40`.
+  - **1.0** when proxy +0xD4 and +0xE0 are both 0 (H by name: OuterCone / Radius);
+  - 0 if +0xE0 ≠ 0 and the camera is farther than +0xE0;
+  - nonzero +0xD4 runs a cone test.
+  - No MP template or component authors these, so **Intensity is always 1** in MP.
+  - Coverage goes only through +0xE8 → ScreenPercentageMap.
+- **No coverage gate in the element draw** (0x82FC6620, vtable slot 0x8232A704). Elements whose OcclusionScaling is constant
+  (Reflection_01) stay visible while the flare primitive itself is drawn. H: the whole proxy is culled only by primitive
+  occlusion / frustum on its bounds (the FixedRelativeBoundingBox).
+- **Curve tables** (float `0x82B270B0`, vector `0x82B27210`):
+  - header `[MinOut, MaxOut, InBias, InScale]`; points interleaved per point at stride ChunkSize;
+  - `index = int(InScale·(x − InBias))`, clamped to the **table length − stride** (not LookupTableNumElements), lerp to the
+    next point;
+  - Type 1/7 = constant (first value).
+- **DistMap_* input** = |ViewOrigin − flare origin| in **raw UU**, so every MP DistMap curve (authored over 0..1) takes its
+  **last point**:
+  - Base_SUN DistMap_Color = (0, 0, 2.45), so its colour is (0, 0, 1.225) × α 0.1, **blue**;
+  - 02 DistMap_Scale = (5, 4, 4);
+  - Reflection_01 DistMap_Alpha (InScale 0) = 1.
