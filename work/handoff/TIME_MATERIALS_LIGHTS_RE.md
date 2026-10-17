@@ -158,3 +158,33 @@ one turn in 1.7–2.9 h), so for those, compare the **pan direction** over a ~60
 | Muzzle light colour (owner energon colour vs authored) | any | a firing pawn | any; best a character with a non-default energon colour, at night-lit Debris |
 
 **The time-materials / dynamic-lights audit is complete.**
+
+## Remnant PointLightToggleable_1918: cooked state and world interaction (2026-10-18)
+
+**(3) Cooked flags (C):**
+- **Authored on the component:** Radius 4096, RadiusOfInfluence 4055, LightColor (64, 187, 234), **bCastCompositeShadow True,
+  bForceDynamicLight True**, LightAffectsClassification LAC_USER_SELECTED, LightGuid 29405897 / 1214979729 / 77194133 / 2399548689.
+- **From the class default** (Default__PointLightToggleable.PointLightComponent0): **UseDirectLightMap false, bToggleable true**.
+- **From Default__LightComponent:** Brightness 1.0, **bEnabled True, CastShadows True, CastDynamicShadows True**, LightingChannels
+  **BSP + Static + Dynamic + CompositeDynamic** (bInitialized).
+- **From Default__PointLightComponent:** FalloffExponent 2.0.
+- **Not built:** bHasLightEverBeenBuiltIntoLightMap is unset (false).
+
+**(2) Initial state and toggles (C):**
+- **On at load** (bEnabled CDO true).
+- **Nothing toggles it:** in every Remnant package the only object that names `PointLightToggleable_1918` is the actor itself. None of
+  the MP maps' 199 SeqAct_Toggle / 162 SeqAct_ToggleHidden actions targets it, and no MP matinee track drives a light property.
+
+**(1) World interaction:**
+- **No precomputed data except its LVV entry (C).** A byte search of MP_ESC_Remnant_ART_m / _BASE_m for its LightGuid finds only the
+  component and the **LightsVisibilitiesVolume**. No lightmap LightGuid list, no ShadowMap1D / 2D and no IrrelevantLights entry
+  references it.
+- **It lights the lightmapped world per pixel (H, stock semantics):** bForceDynamicLight + the BSP / Static channels + not built into
+  any lightmap mean the BSP and static meshes within 41 m get it as a dynamic per-pixel light.
+- **Occlusion (H / UNKNOWN):**
+  - there is no static shadowing (nothing precomputed);
+  - stock dynamic shadows for a point light are per-object projected (or shadow-volume) shadows cast by **dynamic** primitives
+    (characters), not by the BSP / static walls;
+  - bCastCompositeShadow adds it to the characters' composite (DLE) shadow direction.
+  - **Whether WFC's LVV culls it per world primitive** (and so stops it leaking through Remnant's walls), or only feeds the DLE
+    sample points, was **not traced**. It is the remaining UNKNOWN; the next step is the native callers of the LVV query.
