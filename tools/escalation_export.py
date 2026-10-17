@@ -26,7 +26,14 @@ def export(m, pre):
     out["spawn_list"] = [{"object": o, "defaults_from_cdo": {k: v for k, v in cdo.items() if k not in d}, **d} for o, d in sl]
     out["generators"] = [{"object": short(o), **{k: d.get(k) for k in ("LocalizedGeneratorNameKey", "PowerLevels", "DrainRate", "Location",
                                                                        "ActivationVolume", "Tag")}}
-                         for o, (c, d) in sorted(objs.items()) if c == "TnSurvivalGenerator"]
+                         for o, (c, d) in sorted(objs.items()) if c == "TnSurvivalGenerator" and "Default__" not in o]
+    zcdo = props("TransGame.Default__TnSurvivalZoneVolume")
+    out["zones"] = [{"object": short(o), "Active": d.get("Active", zcdo.get("Active")),
+                     "SelfModifier": {m["SpawnType"]: m["Score"] for m in d.get("SelfModifier", zcdo.get("SelfModifier", []))},
+                     "ZoneChanges": [{"zone": short(z["ZoneToChange"]), **{c["SpawnType"]: c["ScoreChange"] for c in z.get("ScoreChanges", [])}}
+                                     for z in d.get("ZoneChanges", [])],
+                     "SpawnPoints": len(d.get("PossibleSpawnPoints", [])), "Location": d.get("Location")}
+                    for o, (c, d) in sorted(objs.items()) if c == "TnSurvivalZoneVolume" and "Default__" not in o]
     # Kismet graph
     succ = collections.defaultdict(list)
     remote = collections.defaultdict(list)
@@ -88,4 +95,4 @@ if __name__ == "__main__":
     for m, pre in MAPS.items():
         r = export(m, pre)
         json.dump(r, open(os.path.join(od, m + ".json"), "w"), indent=1)
-        print(m, "generators", len(r["generators"]), "events", len(r["events"]), "spawnlists", len(r["spawn_list"]))
+        print(m, "zones", len(r["zones"]), "generators", len(r["generators"]), "events", len(r["events"]), "spawnlists", len(r["spawn_list"]))
