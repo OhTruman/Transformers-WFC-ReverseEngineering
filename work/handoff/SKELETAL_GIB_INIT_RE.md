@@ -95,6 +95,31 @@ Sources:
 
 ## 7. Native confirmation
 
-PENDING: filled after the 04:00 headless run (natives SetSkeletalMesh 0x82C5B380, SetPhysicsAsset 0x82C5B470,
-SetHasPhysicsAssetInstance 0x82C5BEE0, WakeRigidBody 0x82C7BC20, AddLinearVelocity 0x82C7B6F8, Actor.Spawn 0x82F15830,
-GetRBLinearVelocity 0x82C4EE08).
+Headless run, 2026-10-17 04:15. Queries are in `work/q/gib1.txt` and `gib2.txt`; that folder is not committed.
+
+- **Actor.Spawn (exec 0x82F15830 → impl 0x82F10EB0): CONFIRMED.**
+  - If SpawnLocation is omitted, the exec fills it from `this+0xD8..0xE0` (Location). If SpawnRotation is omitted, it fills it from
+    `this+0xE4..0xEC` (Rotation).
+  - The gib passes Location and omits Rotation, so the **gib's Rotation = the dying pawn's Rotation** at the moment of the gib.
+- **SetHasPhysicsAssetInstance (exec 0x82C5BEE0 → impl 0x82D2BC18): CONFIRMED.**
+  - If the flag `+0x2BC` bit 0x800000 is not yet set, it calls vtable +0x220 (InitArticulated, passing bit 20 = bSkelCompFixed),
+    then sets the flag.
+- **SetPhysicsAsset (exec 0x82C5B470 → impl 0x82D81DB8): CONFIRMED.**
+  - While that flag is clear, as it is here because the script calls SetPhysicsAsset first, it only stores PhysicsAsset (`+0x1DC`).
+  - When the flag is set, it does TermArticulated (vt +0x224), stores the asset, rebuilds the required-bones list (0..N−1), then
+    calls vt +0x21C (pose update, dt 0) and vt +0x220 (InitArticulated).
+  - So for the gib, **the bodies are created exactly once, by SetHasPhysicsAssetInstance(true), after the mesh is set.**
+- **SetSkeletalMesh (exec 0x82C5B380 → impl 0x82D9F208): HIGH.** The Ghidra output is partly truncated ("does not return").
+  - When the mesh changes, it stores SkeletalMesh (`+0x1C0`), empties the SpaceBases array (`+0x1F0`), and calls
+    `0x82D6E7E8(this, 1)` (reattach / pose rebuild).
+  - Old SpaceBases are copied only when `bKeepSpaceBases` is true. The script omits it, so it is false.
+  - With no AnimTree, the rebuilt pose is the ref pose. That InitArticulated places the bodies from these SpaceBases follows the UE3
+    design; the vt +0x220 body was not decompiled.
+- **WakeRigidBody (0x82C7BC20):** vt +400 call. AddLinearVelocity (0x82C7B6F8 → 0x82D2B6D8, vector, bone name). GetRBLinearVelocity
+  (0x82C4EE08 → 0x82D2FF50). Nothing here sets an initial velocity; robots never call AddLinearVelocity.
+
+**Net result:**
+- reference pose of the gib mesh;
+- at PositionSocket, oriented by the pawn's Rotation;
+- zero initial velocity for robots;
+- bodies created once, when SetHasPhysicsAssetInstance(true) runs, then woken.
