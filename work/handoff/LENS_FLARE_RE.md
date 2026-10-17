@@ -196,3 +196,20 @@ Per frame:
   - Base_SUN DistMap_Color = (0, 0, 2.45), so its colour is (0, 0, 1.225) × α 0.1, **blue**;
   - 02 DistMap_Scale = (5, 4, 4);
   - Reflection_01 DistMap_Alpha (InScale 0) = 1.
+
+## 4c. Scale, bounds, culling (C unless marked, 2026-10-18)
+
+- **CameraRight / CameraUp** (VF SetParameters `0x82FBFA90`, the PS branch uploads LensFlareWorldPosition):
+  - built from rows 0 / 1 of the View+0x2D0 matrix, negated, **normalised to unit length** (double 1.0 at 0x82033B40);
+  - the flare VS (dabef980…) has no screen / view-size constant.
+  - So the NDC full width of an element = Size · Scaling · OcclusionScaling · AxisScaling · DistMap_Scale · P00 (P11 for height).
+    Base_SUN (8) is ~4.8 screen widths at P00 1.19. **These are authored sizes** (faint additive sprites).
+- **Bounds** (component UpdateBounds `0x82FBF598`): with bUseFixedRelativeBoundingBox, bounds = LocalToWorld translation +
+  [Min, Max]. For FINAL01 that's **source + [0..60000]³** (a cube extending +X +Y +Z from the source, not centred).
+- **Source position** = proxy LocalToWorld translation (proxy+0x50; = the actor location).
+- **H:**
+  - the primitive's own occlusion / frustum culling tests the same box. So **coverage 0 ⇒ the proxy isn't drawn** (which also
+    hides Reflection_01, whose OcclusionScaling is constant).
+  - Implement: coverage 0 → no flare. Otherwise per-element OcclusionScaling(ScreenPercentageMap(coverage)).
+- **ScreenPercentageMap:** 0 at coverage 0, full at 2.5 % (FINAL03 max 0.6).
+- **Debris' FINAL02_SmallBound** keeps 01 / 02 / Ring at 0.3 when occluded (InBias 0.3).
