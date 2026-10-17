@@ -49,3 +49,12 @@ team colour parameter can recolour them, but they are thin and short.
 Log the PSC's template and owner for the ribbon in the x14 frame:
 - `Trail_FusionCannon_FX` owned by a pawn or weapon → a rebuild attachment bug;
 - owned by a `TnProjectile` → fine, but then it should move with the projectile.
+
+## 4. Correction (2026-10-18, C: authored.db ParticleModuleRequired)
+
+The "0.25 s" for `TF_Death_MED_FX` above is the **particle lifetime**, not the duration of the effect.
+- Its Trail2 streak emitters (SpawnRate 876.25, local space) run **EmitterDuration 0.5–2.0 s** (bEmitterDurationUseRange; one is
+  0.5–1.5 s) with **EmitterLoops 2**.
+- So the light-blue streaks keep spawning for **about 1–4 s** after a car / jet death, following the wreck (local space). It is not
+  a single 0.25 s burst.
+- The verdict in §2 is unchanged: it isn't a lingering ribbon on a living robot.
