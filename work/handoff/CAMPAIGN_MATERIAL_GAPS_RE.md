@@ -64,3 +64,43 @@ Labels: C = microcode / CTAB read; H = inference. Raw dumps: work/q/decal_ps.txt
   set.
 - So they are ordinary lit Materials with bUsedWithDecals, and they need no special root. If AssetTools reports them as "no
   master", that's a parent-chain lookup issue, not a decal root. Check their chain in authored.db.
+
+## Batch B: new nodes If / Ddx / CameraWorldPosition and ShaderCode ddy / acos (10 materials)
+
+Raw dumps: work/q/batchB_ps.txt, work/q/omega_skin.txt.
+
+### B.1 MaterialExpressionIf: FX_Materials_p Splash_Big_Clip_MAT / _02_MAT (+ 2 instances; particle VFs, PS 26b4ae39 / e4686c56)
+- Graph (authored.db): If(A = Texture.alpha (output 4), B = DynamicParameter, A>B → Constant 1, A==B → 0, A<B → 0).
+- **Compiled form (C):** `ge = A >= B; gt = A > B; result = ge ? (gt ? AGreaterThanB : AEqualsB) : ALessThanB`. It's the plain
+  comparisons (SETGT / SETGTE + CNDGTE), with **no equality epsilon**.
+- Here that reduces to `step: A > B`. It feeds an alpha clip (KILL), giving a DynamicParameter-driven dissolve of the splash.
+- **Translator:** implement If exactly as above. Equality is exact float equality.
+
+### B.2 MaterialExpressionDdx: TR_OmegaSupreme_Mat (+ 3 instances)
+- Graph: Ddx(ComponentMask(…)) → DotProduct(ddx, ddx), inside a StaticSwitchParameter branch.
+- **Neither shipped PS contains a gradient instruction** (FLocalVF 0391bbfe, GPU-skin 934fd3e8; C). The cooked static-switch value
+  takes the other branch, so the Ddx path is dead in the shipped game.
+- **Translator:** support Ddx as dFdx / ddx for completeness. Honouring the static switch removes it, with no visual effect.
+
+### B.3 ShaderCode `ddy(%A)`: ENV_AllShader_p.PostProcess Hologram_Post_MAT (+ its MATINST; PS 0ed7b3f5)
+- Code nodes (authored.db): `ddy(%A)` on a texture sample's R → Sine; and `saturate(pow(sin(%A),1500)) + saturate(pow(sin(%A*sin(%A)),1000))`
+  on Time (the flicker spikes).
+- **Compiled (C):** the ddy becomes Xenos `getTextureGradients` (the hardware screen-space derivative) on that coordinate.
+- **Translator:** map `ddy` → the screen-space y-derivative (GLSL dFdy). **Negate it if the target framebuffer's y axis is flipped
+  relative to D3D** (D3D / Xenos y grows downward).
+- The pow(…, 1500) spikes need full float precision (keep highp).
+
+### B.4 ShaderCode with acos: ENV_AllShader_p.Special DarkEnergonCrystal_FloorCrack_Emiss_MAT (PS c62476d9; also cooked for the decal VF)
+- Its literal pool holds **−0.0187293, 0.074261, −0.212114, 1.57073**. That's the standard fast acos:
+  `acos(x) ≈ sqrt(1 − |x|)·(1.5707288 + |x|(−0.2121144 + |x|(0.0742610 − 0.0187293|x|)))`, mirrored for x < 0 (π − …). C: the
+  constants and the 3.14159 present.
+- Other Code nodes in this material: `1 − floor(saturate(%A.y + .01))` and `saturate(1 − pow(1 − saturate((A.xy + B.xy·0.3).y), 12))`.
+- **Translator:** native acos is fine (error ≤ 7e-5 vs the approximation).
+
+### B.5 MaterialExpressionCameraWorldPosition: ENV_ORB_CybertronPlanet_p.MATTE CybertronPenumber_MAT (PS e1d20335; orbit matte)
+- 3 CameraWorldPosition nodes. The PS has **no camera-position constant in its CTAB**: only PreViewTranslation, and it's used once
+  (WorldPos − PreViewTranslation).
+- So the compiler expressed the camera in translated world space. There the camera is at the origin; in absolute world space
+  **CameraWorldPosition = −PreViewTranslation**. The camera-relative terms fold into the interpolated translated position (H for
+  the exact folding; C for the CTAB).
+- **Translator:** CameraWorldPosition = the camera's world position (UU), as a uniform.
