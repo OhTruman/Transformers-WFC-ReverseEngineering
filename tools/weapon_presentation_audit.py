@@ -50,7 +50,7 @@ rows = []
 for uid, cpath in weapons:
     cls = cpath.split(".")[-1]
     W = cdo(cls)
-    mesh_path = W.get("WeaponMeshTemplate"); data_path = W.get("PlayerData")
+    mesh_path = W.get("WeaponMeshTemplate"); data_path = W.get("MultiplayerData") or W.get("PlayerData"); sp_path = W.get("PlayerData")
     _, M = get(mesh_path) if mesh_path else (None, {})
     _, D = get(data_path) if data_path else (None, {})
     pkg = (mesh_path or "").split(".")[0]
@@ -62,7 +62,8 @@ for uid, cpath in weapons:
         proj.append({"class": leaf(pr), **{k: leaf(v) for k, v in pc.items() if any(t in k for t in ("Trail", "Explosion", "Flight", "Impact", "ProjFlight", "Effect")) and isinstance(v, str)}})
     n = {k: v for k, v in notifies.get(pkg, {}).items()}
     rows.append({
-        "id": uid, "class": cls, "mesh": mesh_path, "data": data_path,
+        "id": uid, "class": cls, "mesh": mesh_path, "data": data_path, "sp_data": sp_path,
+        "sp_differs": {k: (get(sp_path)[1].get(k), D.get(k)) for k in ("RecoilCameraParams", "CameraShakeParams", "WeaponReloadAnimTime", "FireIntervalModifier") if sp_path and sp_path != data_path and get(sp_path)[1].get(k) != D.get(k)},
         "effects_type": leaf(M.get("WeaponEffectsType")),
         "muzzle_flashes": [(m.get("WeaponEventType"), leaf(m.get("PSTemplate")), m.get("PSLoops")) for m in M.get("MuzzleFlashes") or []],
         "muzzle_sockets": M.get("MuzzleFlashSockets"),
