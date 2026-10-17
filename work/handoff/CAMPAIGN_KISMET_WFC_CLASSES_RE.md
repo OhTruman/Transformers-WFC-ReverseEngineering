@@ -696,8 +696,22 @@ listed inherit the SequenceAction defaults (In → Out).
   - **Toggle Pause:** flip paused (only while running).
   - **Each tick while running and not paused** (0x8276F900): advance elapsed, write ScalarOutputValue, fire **Value Changed**.
     **Finished** when the value reaches FinalValue.
-- H: value = Start + (Final − Start)·shape(t / TransitionTime), where the shape uses CurveExponent (a power ease). The exact
-  shape function at 0x8276F900 wasn't read.
+- **Value (C, 0x8274EEE0; tick 0x8276F900, output 0x82764940; 2026-10-18):**
+  - Fields: +0x90 StartValue, +0x94 FinalValue, +0x98 TransitionTime, **+0x9C curve-mode byte**, +0xA0 CurveExponent, +0xA4 flags,
+    +0xA8 last output, +0xAC elapsed.
+  - Δ = Final − Start, t = elapsed / TransitionTime.
+  - **Mode 0 (linear):** Start + t·Δ.
+  - **Mode 1 (ease in):** Start + t^E·Δ.
+  - **Mode 2 (ease out):** Start + t^(1/E)·Δ.
+  - **Mode 3 (in-out):** u = elapsed / (0.5·T). u < 1 → Start + 0.5Δ·u^E; else Start + 0.5Δ·(1 + (u − 1)^(1/E)).
+  - The result is **clamped at FinalValue** (direction-aware). TransitionTime ≤ 1e-8 → FinalValue at once.
+- **Tick:**
+  - elapsed += dt. Past T, elapsed = T, or wraps (elapsed − T) when flag bit 31 is set (looping).
+  - A negative TransitionTime → T = 0 + abort.
+  - The output is written only when it changes. Each change fires **Value Changed**. Reaching FinalValue also fires **Finished**.
+- **Abort** (Stop): output = StartValue, elapsed = 0, fire **Aborted**.
+- **Campaign data:** no instance sets the mode byte, and the class default is 0. So **all 43 instances are linear**, and the authored
+  CurveExponent 4 has no effect.
 
 ## 76. SeqAct_CauseDamageRadial (43)
 - **VAR** Target, Amount → DamageAmount, Instigator. Props: DamageRadius (200), DamageType, Momentum, bDamageFalloff.
@@ -892,6 +906,6 @@ for.** Each class here has ≤ 5 campaign instances.
 - IsInObjectList (§97), SetMatInstVectorParam (§92), SeqVar_ObjectVolume (§94), SeqEvent_Destroyed firing (§98).
 
 **WFC / HM native details still unread (asm needed if exact parity matters):**
-- **SeqAct_ScalarValueRamp's ease shape** (0x8276F900, CurveExponent): the only HM native left. Everything else HM / WFC is C.
+- None. SeqAct_ScalarValueRamp's ease (§75) is now C: all 43 campaign instances are linear.
 
 Everything else in (c) is C: script bytecode, or native asm / decomp at the listed addresses.
