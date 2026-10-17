@@ -43,4 +43,4 @@ The older pass notes (`notes/TARGETED_PASS5_2026-10-05.md` §12 death pipeline, 
 | FaceFX | Master-bone quaternion M = ref⁻¹ | HIGH |
 | FaceFX | Face-graph node value clamping upstream of the bone pass | PARTIAL |
 
-**Next (in progress):** CAMPAIGN_SETPIECES_RE.md: Omega Supreme (D5), Trypticon (A5), tank / flight / rail sections, detpacks.
+| CAMPAIGN_SETPIECES_RE.md | Omega Supreme loop (sentries → battery heal / corruption → critical → heart), Trypticon stages 1A/1B/2 and events, soldier-tank fuel cell, detpacks; all script, no native boss code |
