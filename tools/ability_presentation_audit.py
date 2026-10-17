@@ -89,6 +89,7 @@ for f, secs in ini.items():
         # classes the ability script spawns by literal (e.g. TnBarrierSpawnable, TnRollerMineAbility)
         sf = os.path.join(ROOT, r"RE-Workspace\work\script\decomp", "TransGame.%s.txt" % cpath.split(".")[-1])
         script_refs = sorted(set(re.findall(r"obj'([A-Za-z0-9_]+)'", open(sf).read()))) if os.path.exists(sf) else []
+        script_refs = [r_ for r_ in script_refs if not re.match(r"^(TnGame|TnPawn|TnPlayerController|.*Controller|TnDamageType.*|TnSkill.*|TnValue.*Modifier|TnTeamHandler.*)$", r_)]
         for ref in script_refs:
             for pk in ("TransGame", "TransContent"):
                 p2, d2 = cdo_of("%s.%s" % (pk, ref))
