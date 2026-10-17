@@ -17,7 +17,7 @@ sys.path.insert(0, r"F:\Transformers Rebuild\AssetTools\scripts\wfc")
 import ue3pkg
 
 DUMP = r"F:\Transformers Rebuild\Game Dump\TransGame\CookedXenon"
-REC = re.compile(rb"(MaterialInstanceConstant|Material) ([A-Za-z0-9_.]+)\x00")
+REC = re.compile(rb"(DecalMaterial|MaterialInstanceConstant|Material) ([A-Za-z0-9_.]+)\x00")
 DIST_PS = "TDistortionMeshPixelShaderFDistortMeshAccumulatePolicy"
 
 
