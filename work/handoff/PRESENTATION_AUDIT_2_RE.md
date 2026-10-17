@@ -130,8 +130,9 @@ For each ability, the extractor follows every asset reachable from the ability C
 
 **Ours:**
 - `src/frontend/Hud.cpp` sends `NotifyAbilityType{n}Changed` / `UpdateCooldown` [C].
-- **No hit for `ApplyBuff` / `AbilityType*Jammed` / `TransformDisrupted` / `ShowAbilityType*`.** The jam display (killstreak
-  jammer, revive jam, Transform Disruptor) and the form-dependent slot swap are **absent**, unless driven another way (unknown).
+- **No hit for `ApplyBuff` / `UnapplyBuff`** (which drive `AbilityType*Jammed` / `TransformDisrupted` inside the movie), so the jam display
+  (killstreak jammer, revive jam, Transform Disruptor) is **absent**. `NotifyCurrentFormChanged` **is** sent (Hud.cpp), and the movie's own AS
+  does the ShowAbilityType / ShowGrenades slot swap, so the slot swap is covered (corrected per Gameplay).
 
 **Findings (part 1):**
 1. **Ability sounds are mostly E (embedded JSON; may be played data-driven, so runtime check, not gaps).** Cloak start / off loops per faction, HardLock, Decoy deploy, Drain
@@ -142,4 +143,4 @@ For each ability, the extractor follows every asset reachable from the ability C
    - sounds DECOY_TRAP_EXPLODE, ENERGON_SLING_HIT / TAIL.
 3. **Shockwave and TransformDisruptor share the same notify set:** Shield_BlastWave_A_FX at PositionSocket, DashPulse_1_FX at
    both boosters, and Trails_Bumblebee_FX at elbows / knees / wings. Ours has these R only.
-4. **HUD:** cooldown fill and icons are C; the jam / disrupt states and the slot swap by form are absent (above).
+4. **HUD:** cooldown fill, icons and the form slot swap are C; the jam / disrupt states (ApplyBuff) are absent (above).
