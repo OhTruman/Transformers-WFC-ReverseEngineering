@@ -871,13 +871,19 @@ for.** Each class here has ≤ 5 campaign instances.
 ## 112. SeqCond_GameType (1, HM, script)
 - Outputs Match / No Match: Game class == GameType, or a child of it when AllowChildTypes (C). No game → No Match.
 
+## 113. SeqEvent_Death (3, event)
+- Fired by script (C):
+  - `Pawn.Died`, after PreventDeath fails: TriggerEventClass(SeqEvent_Death, self);
+  - `Controller.PawnDied`: TriggerEventClass(SeqEvent_Death, self).
+- So an event attached to the pawn or to its controller fires on death.
+
 ## End state of the campaign Kismet decode
 
 | Group | Classes | Where | Remaining work |
 |---|---|---|---|
 | (a) referenced by the Rebuild runtime | 26 | CAMPAIGN_KISMET_CLASSES_RE §2 | implementation scope per file |
 | (b) decoded in other RE docs | 36 | CAMPAIGN_KISMET_CLASSES_RE §3 / HANDLERS_RE | none |
-| (c) batch 1–4 (this doc) | 113 | §1–112 + 1a / 25a | see below |
+| (c) batch 1–4 (this doc) | 113 | §1–113 + 1a / 25a | see below |
 | editor-only frames | 2 | – | none |
 
 **Still H inside (c), all stock-engine semantics with the native address given.** Implement from UE3 behaviour; no RE needed:
