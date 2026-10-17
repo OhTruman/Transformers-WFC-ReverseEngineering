@@ -389,3 +389,18 @@ The Escalation buffs (§2) are layered on top at spawn: damage taken × 0.9 → 
 
 - **TnAbilityResourcePickup:** AddedResource **3.0** to the player's ability resource. Player pawns only. It scores a "shard" event.
 - These are not energon (power): power comes only from PowerReward (§3).
+
+### 7.4 Weapon data in Escalation (C, TnWeapon)
+- `GetWeaponDataByType(t)`: 1 → PlayerData, 2 → AiData, 3 → MultiplayerData, **4 → SurvivalData**, else none. There's no fallback
+  inside it.
+- **The fallback is in `TnWeapon.GivenTo`:**
+  - for a player pawn: WDT = Game.DesiredWeaponDataType() (Escalation 4); **if that weapon's data for WDT is none → WDT = 1
+    (PlayerData, the campaign tuning)**;
+  - AI pawns always use 2 (AiData);
+  - then SetWeaponDataType(WDT) → SetData.
+- So in Escalation the 6 weapons with *_SV_WEPDATA use it, and **every other weapon, including the starting AssaultRifle, uses its
+  PlayerData (campaign values), not MultiplayerData.**
+- The same rule applies in versus (WDT 3): a weapon without MultiplayerData would fall back to PlayerData (MP_VS_SP note: MP
+  weapons have MultiplayerData).
+- Note: an "unset" SurvivalData on a cooked class default means it's inherited from the parent class. It's none unless a parent
+  sets it.

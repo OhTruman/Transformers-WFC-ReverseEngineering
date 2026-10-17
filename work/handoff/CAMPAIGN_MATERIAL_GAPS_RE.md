@@ -78,9 +78,15 @@ Raw dumps: work/q/batchB_ps.txt, work/q/omega_skin.txt.
 
 ### B.2 MaterialExpressionDdx: TR_OmegaSupreme_Mat (+ 3 instances)
 - Graph: Ddx(ComponentMask(…)) → DotProduct(ddx, ddx), inside a StaticSwitchParameter branch.
-- **Neither shipped PS contains a gradient instruction** (FLocalVF 0391bbfe, GPU-skin 934fd3e8; C). The cooked static-switch value
-  takes the other branch, so the Ddx path is dead in the shipped game.
-- **Translator:** support Ddx as dFdx / ddx for completeness. Honouring the static switch removes it, with no visual effect.
+- **CORRECTED 2026-10-18: the Ddx path is live.**
+  - The Ddx (and a Ddy) feed **SpecularColor** through StaticSwitchParameter **UseDDYDDXSpec** (default True; the True input holds
+    the Ddx / Ddy chain).
+  - My earlier "no gradient" check read the **base-pass** PS (0391bbfe / 934fd3e8). The no-lightmap base pass doesn't evaluate
+    specular, so the gradients aren't there.
+  - The **per-light pixel shaders** do have them: e.g. RB_ArmsLegs_Mat_INST GPU-skin TLightPixelShaderFSpotLightPolicy 7bec7397 has
+    3 × `getTextureGradients` (C).
+- **Translator:** implement Ddx / Ddy as screen-space derivatives (dFdx / dFdy; mind the y-flip note in B.3). Rendering's
+  UseDDYDDXSpec = True read is correct.
 
 ### B.3 ShaderCode `ddy(%A)`: ENV_AllShader_p.PostProcess Hologram_Post_MAT (+ its MATINST; PS 0ed7b3f5)
 - Code nodes (authored.db): `ddy(%A)` on a texture sample's R → Sine; and `saturate(pow(sin(%A),1500)) + saturate(pow(sin(%A*sin(%A)),1000))`
