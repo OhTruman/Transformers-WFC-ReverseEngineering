@@ -96,6 +96,4 @@ The full DSP values per preset are in the json; DecayTime ranges from 0.3 s (cor
   wet sounds: the reverb is per listener, not per source.
 - Data: the per-map json has the presets and wiring; AssetTools' audio.json has the volume polygons.
 
-**Caveat for AssetTools:** authored.db stores 860 `SoundMixerPresetName` objects with empty props (no
-PresetName). The cooked tagged property holds the name, and `tools/mp_reverb_export.py` reads it from the package. This is why
-audio.json lists no presets for Remnant / Molten / Debris.
+**Correction (2026-10-18):** an earlier version blamed authored.db for empty `SoundMixerPresetName` rows. That was wrong. The 860 empty MP rows are 12-byte exports with no PresetName tag (the value is inherited from the archetype); every row that carries a name decodes in authored.db. The missing presets in AssetTools' audio.json for Remnant / Molten / Debris came from their exporter (zone-reachability and preset-prefix matching), now reported to Integration. The data in this doc is unaffected.
