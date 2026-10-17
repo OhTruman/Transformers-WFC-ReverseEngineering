@@ -1,7 +1,7 @@
 """Read-only: for every cooked map / Startup package, parse the material shader maps inside ShaderCache exports and list, per
 vertex factory, the (shader type, shader GUID) entries. Packages are read directly (no pickle cache).
 
-Record layout (verified against bUsesDistortion on MP_IAC_Streets_BASE_m): a material's per-VF lists come BEFORE its label.
+Record layout (verified against bUsesDistortion): a material's shader map comes BEFORE its label.
   [VF block]* [FString "Material <path>" / "MaterialInstanceConstant <path>"] [material GUID] ...
   VF block = FName(VF) (u32 index, u32 0), u32 count, count x 32-byte entries (FName type, GUID, FName type); the last VF
   key right before the label has no count.
@@ -21,24 +21,25 @@ REC = re.compile(rb"(DecalMaterial|MaterialInstanceConstant|Material) ([A-Za-z0-
 DIST_PS = "TDistortionMeshPixelShaderFDistortMeshAccumulatePolicy"
 
 
-def chain(d, nm, k, stop):
-    """Parse contiguous VF blocks from k; return (end, {VF: entries}) or None if the bytes at k are not a VF block."""
+def chain(d, nm, k, n, stop):
+    """Parse n VF blocks from k, each = u32 count, count x 32-byte entries, then the VF FName the entries belong to.
+    Return (end, {VF: entries}) or None if the bytes do not form such a chain."""
     vf = {}
-    while k + 8 <= stop:
-        if k + 8 == stop:                               # the map's last VF key carries no count (terminal block before the label)
-            x, z = struct.unpack_from(">II", d, k)
-            if z == 0 and 0 <= x < len(nm) and "VertexFactory" in str(nm[x]): vf.setdefault(str(nm[x]), []); k = stop
-            break
-        x, z, c = struct.unpack_from(">III", d, k)
-        if not (z == 0 and 0 <= x < len(nm) and "VertexFactory" in str(nm[x]) and 0 <= c < 64):
-            break
-        ents = []; j = k + 12
+    for _ in range(n):
+        if k + 4 > stop: return None
+        c = struct.unpack_from(">I", d, k)[0]
+        if c >= 64: return None
+        k += 4; ents = []
         for _ in range(c):
-            if j + 32 > stop: return None
-            t, z2 = struct.unpack_from(">II", d, j)
-            ents.append([str(nm[t]) if z2 == 0 and t < len(nm) else "?", d[j + 8:j + 24].hex()]); j += 32
-        vf[str(nm[x])] = ents; k = j
-    return (k, vf) if vf else None
+            if k + 32 > stop: return None
+            t, z = struct.unpack_from(">II", d, k)
+            if not (z == 0 and t < len(nm) and "Shader" in str(nm[t])): return None
+            ents.append([str(nm[t]), d[k + 8:k + 24].hex()]); k += 32
+        if k + 8 > stop: return None
+        x, z = struct.unpack_from(">II", d, k)
+        if not (z == 0 and 0 <= x < len(nm) and "VertexFactory" in str(nm[x])): return None
+        vf[str(nm[x])] = ents; k += 8
+    return k, vf
 
 
 def maps(p, want):
@@ -51,10 +52,10 @@ def maps(p, want):
             label = m.start() - 4                       # FString length prefix
             lo = ms[i - 1].end() + 16 if i else a
             got = None
-            for k in range(lo, label - 11, 4):
-                x, z = struct.unpack_from(">II", d, k)
-                if z != 0 or not (0 <= x < len(nm)) or "VertexFactory" not in str(nm[x]): continue
-                r = chain(d, nm, k, label)
+            for k in range(lo, label - 3):              # u32 N (VF block count), then N blocks ending exactly at the label
+                n = struct.unpack_from(">I", d, k)[0]
+                if not 0 < n < 64: continue
+                r = chain(d, nm, k + 4, n, label)
                 if r and r[0] == label: got = r[1]; break
             if got is not None:
                 out.append({"kind": m.group(1).decode(), "name": name, "vf": {v: e for v, e in got.items() if e}})
