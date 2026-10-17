@@ -104,3 +104,38 @@ Raw dumps: work/q/batchB_ps.txt, work/q/omega_skin.txt.
   **CameraWorldPosition = −PreViewTranslation**. The camera-relative terms fold into the interpolated translated position (H for
   the exact folding; C for the CTAB).
 - **Translator:** CameraWorldPosition = the camera's world position (UU), as a uniform.
+
+## Batch C: lens-flare node materials (14 + 1)
+
+Nodes used (authored.db):
+
+| Material | Nodes |
+|---|---|
+| ENV_ORB_Effects_p ORB_LensFlare_BASE | Intensity, Occlusion, RadialDistance |
+| ORB_LensFlare_REF01 / REF02 / RING (MP; Rendering compiles these) | + RayDistance |
+| ENV_NEU_LensflareTest_p flare_sun / flare_line / flare_blurring / flare_smalldot / _02 / flare_starburst2 | Intensity, Occlusion, RadialDistance |
+| A1_LensFlare_RING_MAT | Intensity, Occlusion, RadialDistance, RayDistance |
+| flare_radialBlur / _A1 / _Zeta | Occlusion only |
+| ENV_NEU_CybertronLow_P LensFlare_MAT | Intensity, Occlusion, RadialDistance |
+
+Shipped PS (FLensFlareVertexFactory; dumps work/q/lf_ps.txt), with interpolators as the PS reads them (C):
+
+| Material | PS |
+|---|---|
+| flare_sun_Mat | `tex.rgb · UniformScalar_0 · Intensity · Occlusion · (1 − sat(RadialDistance)) · (0.4, 0.7, 1)`, then × vertex rgb, × vertex a + UniformVector_0, × SceneColorBias |
+| A1_LensFlare_RING_MAT | luminance(tex) (0.3, 0.59, 0.11) · UniformScalar_0 · Intensity · Occlusion · (1 − sat(RadialDistance)), × vertex rgb, × vertex a + UniformVector_0. RayDistance is folded out (unused in the shipped code). |
+| flare_radialBlur_Mat (Occlusion only, no texture) | radial falloff `pow(max(0, 1 − |uv − 0.5|² · k), 35)` · UniformScalar_0 · lerp(UniformVector_1, UniformVector_2, Occlusion), × vertex rgb, × Occlusion + UniformVector_0 |
+
+**Node → per-vertex value** (native fill, LENS_FLARE_RE §4a–c):
+- **Intensity** = proxy+0xE4: 1.0 for every flare without an authored cone / radius, which is all the campaign and MP templates.
+- **Occlusion** = ScreenPercentageMap(coverage).
+- **RadialDistance** = the element's normalised radial distance r (max(|x|, |y|) in NDC).
+- **RayDistance** = the element's RayDistance.
+- **SourceDistance** = 0.5·|S − E|.
+
+In the PS these arrive as TEXCOORD3.x / .y (Occlusion / Intensity) and the TEXCOORD2 lanes. **The shader reads RadialDistance from
+lane .y of the TEXCOORD2 interpolator.** So check your vertex packing against the node names, not my §4a byte table, which may be
+one lane off for TEXCOORD1 / 2 (H).
+
+**Translator:** add the 5 nodes as varyings fed from the flare vertex (the MP path already does this). Then all 15 compile, and
+look correct given the §4c occlusion and culling rules.
