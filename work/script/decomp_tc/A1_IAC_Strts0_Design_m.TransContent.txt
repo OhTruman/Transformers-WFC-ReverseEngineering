@@ -1,0 +1,69 @@
+function TransContent.SeqAct_TnAiUseTurret.__Constructor__SeqAct_TnAiUseTurret_0  (script 25 bytes)
+  0000: self._TurretActionSet = ActionSet
+  000b: self._TurretGoalSet = GoalSet
+  0016: return nothing
+  0018: <eos>
+
+function TransContent.SeqAct_TnAiUseTurret.Activated  (script 126 bytes)
+  0000: foreach self.Targets(Target,) (end 0x007a)
+  000f: C = GetTargetController(Target)
+  0020: if !((C == none)) goto 0x002f
+  002b: iternext
+  002c: goto 0x007a
+  002f: if !(0[self.InputLinks].bHasImpulse) goto 0x0054
+  0045: EnableUseTurretBehavior(C)
+  0050: iternext
+  0051: goto 0x007a
+  0054: if !(1[self.InputLinks].bHasImpulse) goto 0x0079
+  006a: DisableUseTurretBehavior(C)
+  0075: iternext
+  0076: goto 0x007a
+  0079: iternext
+  007a: iterpop
+  007b: return nothing
+  007d: <eos>
+
+function TransContent.SeqAct_TnAiUseTurret.GetTargetController  (script 89 bytes)
+  0000: C = TnAiController(Target)
+  0010: if !((C != none)) goto 0x0021
+  001b: return C
+  0021: P = Pawn(Target)
+  0031: if !((P != none)) goto 0x0050
+  003c: return TnAiController(P.Controller)
+  0050: return none
+  0052: return return
+  0058: <eos>
+
+function TransContent.SeqAct_TnAiUseTurret.EnableUseTurretBehavior  (script 185 bytes)
+  0000: C.SetScriptedTurrets(self.Turrets)
+  0018: NewGoalSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapGoalSet', self)
+  0037: NewGoalSet.InitializeFromTemplate(self._TurretGoalSet)
+  004f: C.SetGoalSet(NewGoalSet)
+  0067: NewActionSet = obj'Engine.Allocation'.static.CreateObject(obj'HM_Engine.HmGoapActionSet', self)
+  0086: NewActionSet.InitializeFromTemplate(self._TurretActionSet)
+  009e: C.SetActionSet(NewActionSet)
+  00b6: return nothing
+  00b8: <eos>
+
+function TransContent.SeqAct_TnAiUseTurret.DisableUseTurretBehavior  (script 79 bytes)
+  0000: C.ClearScriptedTurrets()
+  0013: C.ResetGoalSet()
+  0026: C.ResetActionSet()
+  0039: C.CancelCurrentPlan()
+  004c: return nothing
+  004e: <eos>
+
+function TransContent.TnWeaponBombingRunVehicle.ShouldPutDownImmediately  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TransContent.TnWeaponHeavyMGAIHover.ShouldPutDownImmediately  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TransContent.TnWeaponLaserVehicle.ShouldPutDownImmediately  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>

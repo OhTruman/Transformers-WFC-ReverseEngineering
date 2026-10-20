@@ -1,0 +1,748 @@
+function TransContent.TnGameLobbyGameTeamBase.HandleSeamlessTravelPlayer  (script 203 bytes)
+  0000: if !(((C.PlayerReplicationInfo != none) && (C.PlayerReplicationInfo.Team != none))) goto 0x00bd
+  0033: if !(get_AutobalanceTeams()) goto 0x006d
+  0040: C.PlayerReplicationInfo.Team.RemoveFromTeam(C)
+  006a: goto 0x00bd
+  006d: self.TeamHandler.SetTeam(C.PlayerReplicationInfo.Team.TeamIndex, PlayerController(C), TnPlayerReplicationInfo(C.PlayerReplicationInfo))
+  00bd: HandleSeamlessTravelPlayer(C)
+  00c8: return nothing
+  00ca: <eos>
+
+function TransContent.TnGameLobbyGameTeamBase.GetSearchClassForGameType  (script 13 bytes)
+  0000: return obj'TransGame.TnOnlineGameSearchVersus'
+  0006: return return
+  000c: <eos>
+
+function TransContent.TnGameLobbyGameTeamBase.FinalCountdown.ChangeTeam  (script 79 bytes)
+  0000: if !((cast3a(Other.GetTeamNum()) == 255)) goto 0x0031
+  001c: self.TeamHandler.ForceToTeam()
+  002f: return true
+  0031: return ChangeTeam(Other, N, bNewTeam)
+  0048: return return
+  004e: <eos>
+
+function TransContent.TnGameLobbyGameCoop.HostRequestMapID  (script 33 bytes)
+  0000: HostRequestMapID(NewMapId)
+  000b: self.TeamHandler.AssignTeams()
+  001e: return nothing
+  0020: <eos>
+
+function TransContent.TnGameLobbyGameCoop.GetSearchClassForGameType  (script 13 bytes)
+  0000: return obj'TransGame.TnOnlineGameSearchCoop'
+  0006: return return
+  000c: <eos>
+
+function TransContent.TnGameLobbyGameCoop.GetHostPlayerController  (script 43 bytes)
+  0000: WI = TnWorldInfo(self.WorldInfo)
+  0010: return WI.GetLocalPlayerController()
+  0024: return return
+  002a: <eos>
+
+function TransContent.TnGameLobbyGameCoop.HostHasSelectedCharacter  (script 90 bytes)
+  0000: PC = GetHostPlayerController()
+  000c: if !((PC == none)) goto 0x0019
+  0017: return false
+  0019: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  0032: if !((PRI == none)) goto 0x003f
+  003d: return false
+  003f: return PRI.HasSelectedCharacter()
+  0053: return return
+  0059: <eos>
+
+function TransContent.TnGameLobbyGameCoop.SelectAvailableCharacterForHost  (script 340 bytes)
+  0000: GRI = TnGameReplicationInfo(self.GameReplicationInfo)
+  0010: PossibleCharacters = GRI.GetPlayableIconicCharacterNames()
+  0029: PC = GetHostPlayerController()
+  0035: PRI = TnPlayerReplicationInfo(PC.PlayerReplicationInfo)
+  004e: if !((PRI == none)) goto 0x00b9
+  0059: LogInternal("Error: Coop host attempted to auto-select character but he has no player replication info", , , )
+  00b9: foreach PossibleCharacters(PossibleCharacter,) (end 0x010f)
+  00c8: if !(!GRI.ValidateCharacterSelection(PRI, PossibleCharacter)) goto 0x00ee
+  00ea: iternext
+  00eb: goto 0x010f
+  00ee: if !(PC.SelectCharacter(PossibleCharacter, 1)) goto 0x010e
+  010b: iterpop
+  010c: return nothing
+  010e: iternext
+  010f: iterpop
+  0110: LogInternal("Error: Coop host could not find a character to auto-select", , , )
+  0151: return nothing
+  0153: <eos>
+
+function TransContent.TnGameLobbyGameCoop.OnBeginFinalCountdown  (script 20 bytes)
+  0000: if !(!HostHasSelectedCharacter()) goto 0x0011
+  000b: SelectAvailableCharacterForHost()
+  0011: return nothing
+  0013: <eos>
+
+function TransContent.TnTeamHandlerNoTeams.PickTeam  (script 12 bytes)
+  0000: return cast3d(255)
+  0005: return return
+  000b: <eos>
+
+function TransContent.TnTeamHandlerNoTeams.ChangeTeam  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TransContent.TnGameLobbyGameFreeForAll.GetSearchClassForGameType  (script 13 bytes)
+  0000: return obj'TransGame.TnOnlineGameSearchVersus'
+  0006: return return
+  000c: <eos>
+
+function TransContent.TnGameLobbyGameSolo.GetOnlineGameSettings  (script 108 bytes)
+  0000: DataStoreManager = obj'Engine.UIInteraction'.static.GetDataStoreClient()
+  0019: SettingsTag = obj'TransGame.TnDataStore_GameSettings'.static.default.Tag
+  002d: SettingsDataStore = UIDataStore_OnlineGameSettings(DataStoreManager.FindDataStore(SettingsTag, ))
+  0051: return SettingsDataStore.GetCurrentGameSettings()
+  0065: return return
+  006b: <eos>
+
+function TransContent.TnGameLobbyGameSolo.AreGameAutoStartConditionsMet  (script 50 bytes)
+  0000: nothing
+  0001: nothing
+  0002: LobbyGRI = TnGameReplicationInfoGameLobby(GetGRI())
+  0017: return LobbyGRI.AllPlayersHaveCharacter()
+  002b: return return
+  0031: <eos>
+
+function TransContent.TnGameLobbyGameSolo.PendingMatch.Tick  (script 20 bytes)
+  0000: Tick(DeltaTime)
+  000b: TryToStartLevel()
+  0011: return nothing
+  0013: <eos>
+
+function TransContent.TnGameLobbyGameSolo.PendingMatch.TryToStartLevel  (script 28 bytes)
+  0000: if !(AreGameAutoStartConditionsMet(, )) goto 0x0019
+  000f: StartLevel()
+  0019: return nothing
+  001b: <eos>
+
+function TransContent.TnGameLobbyGameSolo.PendingMatch.NotifyCharacterSelected  (script 15 bytes)
+  0000: NotifyCharacterSelected()
+  0006: TryToStartLevel()
+  000c: return nothing
+  000e: <eos>
+
+function TransContent.TnGameLobbyGameSolo.NotifyLoginChange  (script 33 bytes)
+  0000: LoginChangeSolo(PC, LoginType, PrimaryStatus, SecondaryStatus)
+  001e: return nothing
+  0020: <eos>
+
+function TransContent.TnGameLobbyGameSurvival.ReassignTeams  (script 22 bytes)
+  0000: self.TeamHandler.AssignTeams()
+  0013: return nothing
+  0015: <eos>
+
+function TransContent.TnGameLobbyGameSurvival.OverrideCharacterWeaponTypes  (script 35 bytes)
+  0000: 0[WeaponStrings] = "AssaultRifle"
+  0016: 1[WeaponStrings] = ""
+  0020: return nothing
+  0022: <eos>
+
+function TransContent.TnGameLobbyGameSurvival.PostSeamlessTravel  (script 19 bytes)
+  0000: PostSeamlessTravel()
+  0006: ReassignTeams()
+  0010: return nothing
+  0012: <eos>
+
+function TransContent.TnGameLobbyGameSurvival.HandleSeamlessTravelPlayer  (script 24 bytes)
+  0000: HandleSeamlessTravelPlayer(C)
+  000b: ReassignTeams()
+  0015: return nothing
+  0017: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.SpawnTeams  (script 81 bytes)
+  0000: 0[self.Teams] = self.Game.Spawn(obj'TransGame.TnFactionTeamAutobots', , , , , , , )
+  0027: 1[self.Teams] = self.Game.Spawn(obj'TransGame.TnFactionTeamDecepticons', , , , , , , )
+  004e: return nothing
+  0050: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.PickTeam  (script 408 bytes)
+  0000: Team0Size = 0[self.Teams].GetSize()
+  001b: Team1Size = 1[self.Teams].GetSize()
+  0036: PRI = ((C != none) ? C.PlayerReplicationInfo : none)
+  0058: if !((cast3a(CurrentTeam) < 2)) goto 0x0096
+  0066: LogTeams(("Picked current team" @ cast52(CurrentTeam)), PRI)
+  0093: goto 0x018b
+  0096: if !((Team0Size < Team1Size)) goto 0x00ec
+  00a5: CurrentTeam = 0
+  00ad: LogTeams((((("Picked team 0 (" $ cast53(Team0Size)) @ "<") @ cast53(Team1Size)) $ ")"), PRI)
+  00e9: goto 0x018b
+  00ec: if !((Team0Size > Team1Size)) goto 0x0142
+  00fb: CurrentTeam = 1
+  0103: LogTeams((((("Picked team 1 (" $ cast53(Team0Size)) @ ">") @ cast53(Team1Size)) $ ")"), PRI)
+  013f: goto 0x018b
+  0142: CurrentTeam = cast3d(obj'Core.Random'.static.RandomInt(2))
+  015f: LogTeams(("Picked random team" @ cast52(CurrentTeam)), PRI)
+  018b: return CurrentTeam
+  0191: return return
+  0197: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.AssignTeams  (script 332 bytes)
+  0000: GRI = GetGRI()
+  0010: I = 0
+  0017: if !((I < GRI.PRIArray.Length)) goto 0x0149
+  0030: PRI = TnPlayerReplicationInfo(I[GRI.PRIArray])
+  004f: if !((PRI == none)) goto 0x005d
+  005a: goto 0x013f
+  005d: if !(PRI.bBot) goto 0x0072
+  006f: goto 0x013f
+  0072: if !((PRI.Owner == none)) goto 0x0089
+  0086: goto 0x013f
+  0089: if !(FindTeamFromReservation(Team, PRI.UniqueId)) goto 0x0107
+  00a5: LogTeams((("Assigned team" @ cast52(Team)) @ "from reservation"), PRI)
+  00e0: ChangeTeam(Controller(PRI.Owner), cast3a(Team))
+  0104: goto 0x013f
+  0107: LogTeams("ERROR: Fail to assign team from reservation", )
+  013f: AddAdd_PreInt(I)
+  0146: goto 0x0017
+  0149: return nothing
+  014b: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.FindTeamFromReservation  (script 99 bytes)
+  0000: Reservations = GetReservations()
+  0010: if !(((Reservations == none) || !Reservations.IsMember(NetId))) goto 0x003c
+  003a: return false
+  003c: Team = Reservations.GetTeamIndexForPlayer(NetId)
+  005a: return true
+  005c: return return
+  0062: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.ForceToTeam  (script 292 bytes)
+  0000: GRI = GetGRI()
+  0010: I = 0
+  0017: if !((I < GRI.PRIArray.Length)) goto 0x0121
+  0030: PRI = TnPlayerReplicationInfo(I[GRI.PRIArray])
+  004f: if !((PRI == none)) goto 0x005d
+  005a: goto 0x0117
+  005d: if !(PRI.bBot) goto 0x0072
+  006f: goto 0x0117
+  0072: if !((PRI.Owner == none)) goto 0x0089
+  0086: goto 0x0117
+  0089: if !((PRI.Team != none)) goto 0x00a0
+  009d: goto 0x0117
+  00a0: C = Controller(PRI.Owner)
+  00b9: Team = PickTeam(cast3d(255), C)
+  00d2: LogTeams(("Player forced to team" @ cast52(Team)), PRI)
+  0101: ChangeTeam(C, cast3a(Team))
+  0117: AddAdd_PreInt(I)
+  011e: goto 0x0017
+  0121: return nothing
+  0123: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.DisbandTeams  (script 226 bytes)
+  0000: GRI = GetGRI()
+  0010: foreach GRI.PRIArray(PRI,) (end 0x00ad)
+  0028: if !((PRI == none)) goto 0x0037
+  0033: iternext
+  0034: goto 0x00ad
+  0037: if !(PRI.bBot) goto 0x004d
+  0049: iternext
+  004a: goto 0x00ad
+  004d: if !((PRI.Owner == none)) goto 0x0065
+  0061: iternext
+  0062: goto 0x00ad
+  0065: if !((PRI.Team == none)) goto 0x007d
+  0079: iternext
+  007a: goto 0x00ad
+  007d: PRI.Team.RemoveFromTeam(Controller(PRI.Owner))
+  00ac: iternext
+  00ad: iterpop
+  00ae: LogTeams("Disbanded teams", )
+  00ca: GetReservationInterface().RefreshReservationTeams()
+  00df: return nothing
+  00e1: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.GetGRI  (script 27 bytes)
+  0000: return TnGameReplicationInfo(self.Game.GameReplicationInfo)
+  0014: return return
+  001a: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.GetReservationInterface  (script 36 bytes)
+  0000: return obj'Engine.GameEngine'.static.GetOnlineSubsystem().ReservationInterface
+  001d: return return
+  0023: <eos>
+
+function TransContent.TnTeamHandlerTwoTeams.GetReservations  (script 29 bytes)
+  0000: return GetReservationInterface().GetReservations()
+  0016: return return
+  001c: <eos>
+
+function TransContent.TnTeamHandlerTwoTeamsLobby.AreTeamsUnbalanced  (script 326 bytes)
+  0000: if !(AreTeamsUnbalanced()) goto 0x000b
+  0009: return true
+  000b: PartyCollection = GetReservations()
+  001b: if !((PartyCollection == none)) goto 0x0028
+  0026: return true
+  0028: foreach PartyCollection.Parties(Party,) (end 0x011f)
+  0040: switch (Party.TeamIndex)
+  0052: case 0: (next 0x0071)
+  0056: (Team0Size += Party.Members.Length)
+  006e: goto 0x011e
+  0071: case 1: (next 0x0090)
+  0075: (Team1Size += Party.Members.Length)
+  008d: goto 0x011e
+  0090: default:
+  0093: LogTeams(((("ERROR: Trying to balance teams when party" @ obj'Engine.OnlineSubsystem'.static.UniqueNetIdToString(0[Party.Members].NetId)) @ "has team") @ cast53(Party.TeamIndex)), )
+  011b: goto 0x011e
+  011e: iternext
+  011f: iterpop
+  0120: return (obj'Core.Math'.static.Abs(cast3f((Team0Size - Team1Size))) > cast3f(1))
+  013f: return return
+  0145: <eos>
+
+function TransContent.TnGameLobbyGameTeam.ShouldPickTeamFromReservation  (script 32 bytes)
+  0000: return GetGRI().IsCountdownBelowThreshold()
+  0019: return return
+  001f: <eos>
+
+function TransContent.TnGameReplicationInfoGameLobbySurvival.SetMapId  (script 69 bytes)
+  0000: SetMapId(NewMapId)
+  000b: G = TnGameLobbyGameSurvival(self.WorldInfo.Game)
+  0024: if !((G != none)) goto 0x0042
+  002f: G.ReassignTeams()
+  0042: return nothing
+  0044: <eos>
+
+function TransContent.TnHealingAura.ReplicatedEvent  (script 88 bytes)
+  0000: if !((VarName == 'Blueprint')) goto 0x002a
+  0013: Initialize(self.Blueprint, self._InstigatorController)
+  0027: goto 0x0055
+  002a: if !((VarName == 'InstigatorTeam')) goto 0x004a
+  003d: InitializeMaterial()
+  0047: goto 0x0055
+  004a: ReplicatedEvent(VarName)
+  0055: return nothing
+  0057: <eos>
+
+function TransContent.TnHealingAura.Initialize  (script 164 bytes)
+  0000: self.Blueprint = Blueprint_
+  000b: if !((cast3a(self.Role) == cast3a(3))) goto 0x005a
+  001b: self.Blueprint.LifeSpan = self.LifespanModifier.ModifyFloat(self.Blueprint.LifeSpan, TnPawn(self.Instigator), )
+  005a: self._InstigatorController = InstigatorController
+  0065: if !((self._InstigatorController != none)) goto 0x0089
+  0070: self.InstigatorTeam = self._InstigatorController.GetTeamNum()
+  0089: InitializeMaterial()
+  0093: GotoState('Healing', , , )
+  00a1: return nothing
+  00a3: <eos>
+
+function TransContent.TnHealingAura.InitializeMaterial  (script 70 bytes)
+  0000: Material = GetMaterialOverride()
+  000c: if !((Material != none)) goto 0x0043
+  0017: self.StaticMeshComponent.ClearMaterials()
+  002a: self.StaticMeshComponent.SetMaterial(0, Material)
+  0043: return nothing
+  0045: <eos>
+
+function TransContent.TnHealingAura.GetMaterialOverride  (script 54 bytes)
+  0000: switch (self.InstigatorTeam)
+  0007: case 0: (next 0x0012)
+  000c: return self.AutobotMaterial
+  0012: case 1: (next 0x001d)
+  0017: return self.DecepticonMaterial
+  001d: case cast3d(255): (next 0x002a)
+  0024: return self.DecepticonMaterial
+  002a: default:
+  002d: return none
+  002f: return return
+  0035: <eos>
+
+function TransContent.TnHealingAura.Deactivate  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TransContent.TnHealingAura.IsHealing  (script 21 bytes)
+  0000: return IsInState('Healing', )
+  000e: return return
+  0014: <eos>
+
+function TransContent.TnHealingAura.Healing.BeginState  (script 33 bytes)
+  0000: SetTimer(self.Blueprint.LifeSpan, false, 'Deactivate', )
+  001e: return nothing
+  0020: <eos>
+
+function TransContent.TnHealingAura.Healing.Tick  (script 157 bytes)
+  0000: Heal(DeltaTime)
+  000b: if !((self.CurrentScaleLerp < 1.0)) goto 0x008f
+  001a: self.CurrentScaleLerp = obj'Core.Math'.static.FMin(1.0, (self.CurrentScaleLerp + (DeltaTime / self.Blueprint.ScaleTime)))
+  004e: NewScale = obj'Core.Math'.static.FMax(0.01, ((1500.0 * self.RadiusToMeshRatio) * self.CurrentScaleLerp))
+  0077: self.StaticMeshComponent.SetScale(NewScale)
+  008f: Tick(DeltaTime)
+  009a: return nothing
+  009c: <eos>
+
+function TransContent.TnHealingAura.Healing.Heal  (script 265 bytes)
+  0000: foreach TouchingActors(obj'Engine.Pawn', P) (end 0x0105)
+  0017: if !((P == none)) goto 0x0026
+  0022: iternext
+  0023: goto 0x0105
+  0026: if !((!P.IsSameTeam(self.Instigator) && (self.Instigator != P))) goto 0x0058
+  0054: iternext
+  0055: goto 0x0105
+  0058: if !(P.HealDamage((self.Blueprint.HealthPerSecond * DeltaTime), self._InstigatorController, obj'TransGame.TnHealTypeRepairGrenade')) goto 0x009a
+  008f: HandleHealGrenadeXP(P)
+  009a: HitInfo.HitComponent = P.Mesh
+  00b9: P.PlayHit(0.0, self.Instigator.Controller, P.Location, obj'TransGame.TnHealTypeAoeHeal', vect(0,0,0), HitInfo)
+  0104: iternext
+  0105: iterpop
+  0106: return nothing
+  0108: <eos>
+
+function TransContent.TnHealingAura.Healing.HandleHealGrenadeXP  (script 142 bytes)
+  0000: if !(((self.Instigator != HealedTeammate) && (self.HealedTeammates.Find(HealedTeammate) == -1))) goto 0x008b
+  0028: self.HealedTeammates.AddItem(HealedTeammate)
+  0035: if !(((self.HealedTeammates.Length == 3) && (self.Instigator != none))) goto 0x008b
+  004f: PC = TnPlayerController(self.Instigator.Controller)
+  0068: if !((PC != none)) goto 0x008b
+  0073: PC.NotifyXpEvent(obj'TransGame.TnXpEventTypeHealGrenadeTeammates')
+  008b: return nothing
+  008d: <eos>
+
+function TransContent.TnHealingAura.Healing.Deactivate  (script 39 bytes)
+  0000: self.LifeSpan = self.Blueprint.ScaleTime
+  0016: GotoState('Collapsing', , , )
+  0024: return nothing
+  0026: <eos>
+
+function TransContent.TnHealingAura.Collapsing.BeginState  (script 23 bytes)
+  0000: PlaySound(self.CollapseSound, true, , , , )
+  0014: return nothing
+  0016: <eos>
+
+function TransContent.TnHealingAura.Collapsing.Tick  (script 131 bytes)
+  0000: self.CurrentScaleLerp = obj'Core.Math'.static.FMax(0.0, (self.CurrentScaleLerp - (DeltaTime / self.Blueprint.ScaleTime)))
+  0034: NewScale = obj'Core.Math'.static.FMax(0.01, ((1500.0 * self.RadiusToMeshRatio) * self.CurrentScaleLerp))
+  005d: self.StaticMeshComponent.SetScale(NewScale)
+  0075: Tick(DeltaTime)
+  0080: return nothing
+  0082: <eos>
+
+function TransContent.TnProjectileGrenadeLauncher.Tick  (script 62 bytes)
+  0000: if !((self.IsAttached && ShouldDetach())) goto 0x0030
+  0014: Explode(self.Location, vect(0,0,1))
+  0030: Tick(DeltaTime)
+  003b: return nothing
+  003d: <eos>
+
+function TransContent.TnProjectileGrenadeLauncher.ShouldDetach  (script 73 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return false
+  0012: if !((self.Base == none)) goto 0x001f
+  001d: return true
+  001f: if !(((self.BaseSkelComponent != none) && self.BaseSkelComponent.HiddenGame)) goto 0x0040
+  003e: return true
+  0040: return false
+  0042: return return
+  0048: <eos>
+
+function TransContent.TnProjectileGrenadeLauncher.ShouldExplodeOnHit  (script 27 bytes)
+  0000: if !((TnBarrierSpawnable(HitActor) != none)) goto 0x0012
+  0010: return true
+  0012: return false
+  0014: return return
+  001a: <eos>
+
+function TransContent.TnProjectileGrenadeLauncher.OnHitThing  (script 51 bytes)
+  0000: if !((cast3a(self.Role) < cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: SetPhysics(0, , )
+  0020: AttachToActor(HitActor, HitLocation)
+  0030: return nothing
+  0032: <eos>
+
+function TransContent.TnProjectileGrenadeLauncher.AttachToActor  (script 221 bytes)
+  0000: self.IsAttached = true
+  0008: HitMesh = HitActor.FindComponent(obj'Engine.SkeletalMeshComponent')
+  0026: if !((HitMesh == none)) goto 0x0045
+  0031: SetBase(HitActor, , , )
+  0043: return nothing
+  0045: BoneName = HitMesh.FindClosestBone(HitLocation, , )
+  0065: if !((BoneName == 'None')) goto 0x008c
+  0078: SetBase(HitActor, , , )
+  008a: return nothing
+  008c: SetBase(HitActor, , HitMesh, BoneName)
+  00a6: SetCollision(false, , )
+  00ac: SetRelativeRotation(rot(0,0,0))
+  00c3: SetRelativeLocation(vect(0,0,0))
+  00da: return nothing
+  00dc: <eos>
+
+function TransContent.TnProjectileHealGrenade.HealingAuraSpawned  (script 3 bytes)
+  0000: return nothing
+  0002: <eos>
+
+function TransContent.TnProjectileHealGrenade.DestroyProjectile  (script 122 bytes)
+  0000: if !((cast3a(self.Role) != cast3a(3))) goto 0x0012
+  0010: return nothing
+  0012: HealingAura = Spawn(obj'TransContent.TnHealingAura', , , self.Location, , , , )
+  0032: HealingAura.Initialize(TnProjectileDataHealGrenade(self.Data).HealingAura, self.InstigatorController)
+  005d: HealingAuraSpawned(HealingAura)
+  0071: DestroyProjectile()
+  0077: return nothing
+  0079: <eos>
+
+function TransContent.TnProjectileMangaRocketTurret.Init  (script 92 bytes)
+  0000: Init(Direction)
+  000b: if !((self.Instigator != none)) goto 0x002f
+  0016: FiringWeapon = TnWeapon(self.Instigator.Weapon)
+  002f: self.IsFromHeavyWeapon = ((FiringWeapon != none) && (cast3a(FiringWeapon.WeaponType) == cast3a(5)))
+  0059: return nothing
+  005b: <eos>
+
+function TransContent.TnProjectileMangaRocketTurret.GetProjectileDamageType  (script 28 bytes)
+  0000: if !(self.IsFromHeavyWeapon) goto 0x000f
+  0009: return obj'TransGame.TnDamageTypeHeavyRocketTurret'
+  000f: return obj'TransGame.TnDamageTypeMountedRocketTurret'
+  0015: return return
+  001b: <eos>
+
+function TransContent.TnUIControllerGameLobby.CloseCurrentUI  (script 58 bytes)
+  0000: LP = TnLocalPlayer(self._PlayerController.Player)
+  0019: if !((LP != none)) goto 0x0037
+  0024: LP.WriteCustomizationFile()
+  0037: return nothing
+  0039: <eos>
+
+function TransContent.TnWeaponAssaultRifle.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponAssaultRifle.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponAssaultRiflePlane.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponAssaultRiflePlane.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponBurstRifle.PlayWeaponEvent  (script 72 bytes)
+  0000: default=8
+  0006: if !((cast3a(AnimEvent) == cast3a(1))) goto 0x0030
+  0016: if !((0 != self.FireSoundEventCount)) goto 0x0029
+  0021: SoundEvent = 0
+  0029: AddAdd_Int(self.FireSoundEventCount)
+  0030: PlayWeaponEvent(AnimEvent, MeshForAction, SoundEvent)
+  0045: return nothing
+  0047: <eos>
+
+function TransContent.TnWeaponBurstRifle.StopFireEffects  (script 21 bytes)
+  0000: self.FireSoundEventCount = 0
+  0007: StopFireEffects(FireModeNum)
+  0012: return nothing
+  0014: <eos>
+
+function TransContent.TnWeaponBurstRifle.WeaponReloading.EndState  (script 21 bytes)
+  0000: self.FireSoundEventCount = 0
+  0007: EndState(NextStateName)
+  0012: return nothing
+  0014: <eos>
+
+function TransContent.TnWeaponDataPlasmaCannon.GetTimeToEmptyClip  (script 126 bytes)
+  0000: switch (FireMode)
+  0007: case 0: (next 0x0027)
+  000b: return (cast3f((self.MaxAmmoClipCount / FireMode[self.ShotCost])) * self.ChargeDelay1)
+  0027: case 1: (next 0x0047)
+  002b: return (cast3f((self.MaxAmmoClipCount / FireMode[self.ShotCost])) * self.ChargeDelay2)
+  0047: case 2: (next 0x0068)
+  004c: return (cast3f((self.MaxAmmoClipCount / FireMode[self.ShotCost])) * self.ChargeDelay3)
+  0068: default:
+  006b: return GetTimeToEmptyClip(FireMode)
+  0077: return return
+  007d: <eos>
+
+function TransContent.TnWeaponFlakGrenades.get_GrenadeType  (script 10 bytes)
+  0000: return 1
+  0003: return return
+  0009: <eos>
+
+function TransContent.TnWeaponFlashBangs.get_GrenadeType  (script 10 bytes)
+  0000: return 2
+  0003: return return
+  0009: <eos>
+
+function TransContent.TnWeaponGatlingGun.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponGatlingGun.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponHealGrenades.get_GrenadeType  (script 10 bytes)
+  0000: return 4
+  0003: return return
+  0009: <eos>
+
+function TransContent.TnWeaponHeavyMG.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponHeavyMG.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponIonBlaster.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponIonBlaster.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponKamikazeMines.get_GrenadeType  (script 10 bytes)
+  0000: return 3
+  0003: return return
+  0009: <eos>
+
+function TransContent.TnWeaponMountedHeavyIonBlaster.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponMountedHeavyIonBlaster.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponPlaneMachineGun.StopFireEffects  (script 27 bytes)
+  0000: CurrentWeaponMeshPlaySoundEvent(12, )
+  000d: StopFireEffects(FireModeNum)
+  0018: return nothing
+  001a: <eos>
+
+function TransContent.TnWeaponPlaneMachineGun.WeaponReloading.BeginState  (script 46 bytes)
+  0000: if !((PreviousStateName == 'WeaponFiring')) goto 0x0020
+  0013: CurrentWeaponMeshPlaySoundEvent(12, )
+  0020: BeginState(PreviousStateName)
+  002b: return nothing
+  002d: <eos>
+
+function TransContent.TnWeaponPlasmaCannon.UpdateData  (script 25 bytes)
+  0000: self.PlasmaCannonData = TnWeaponDataPlasmaCannon(self.Data)
+  0010: UpdateData()
+  0016: return nothing
+  0018: <eos>
+
+function TransContent.TnWeaponPlasmaCannon.GetChargeDelay  (script 106 bytes)
+  0000: if !((self.PlasmaCannonData == none)) goto 0x0011
+  000b: return 0.0
+  0011: switch (ChargeState)
+  0018: case 2: (next 0x002c)
+  001d: return self.PlasmaCannonData.ChargeDelay1
+  002c: case 3: (next 0x0040)
+  0031: return self.PlasmaCannonData.ChargeDelay2
+  0040: case 4: (next 0x0054)
+  0045: return self.PlasmaCannonData.ChargeDelay3
+  0054: default:
+  0057: return GetChargeDelay(ChargeState)
+  0063: return return
+  0069: <eos>
+
+function TransContent.TnWeaponPlasmaCannon.GetChargeDrainRate  (script 39 bytes)
+  0000: if !((self.PlasmaCannonData == none)) goto 0x0011
+  000b: return 0.0
+  0011: return self.PlasmaCannonData.ChargeDrainRate
+  0020: return return
+  0026: <eos>
+
+function TransContent.TnWeaponPlasmaCannon.IsChargeStateAvailable  (script 117 bytes)
+  0000: if !((self.PlasmaCannonData == none)) goto 0x000d
+  000b: return false
+  000d: switch (ChargeState)
+  0014: case 2: (next 0x002d)
+  0019: return (self.PlasmaCannonData.ChargeDelay1 >= cast3f(0))
+  002d: case 3: (next 0x0046)
+  0032: return (self.PlasmaCannonData.ChargeDelay2 >= cast3f(0))
+  0046: case 4: (next 0x005f)
+  004b: return (self.PlasmaCannonData.ChargeDelay3 >= cast3f(0))
+  005f: default:
+  0062: return IsChargeStateAvailable(ChargeState)
+  006e: return return
+  0074: <eos>
+
+function TransContent.TnWeaponPlasmaCannon.IsWeaponFullyCharged  (script 27 bytes)
+  0000: if !((self.PlasmaCannonData == none)) goto 0x000d
+  000b: return true
+  000d: return IsWeaponFullyCharged()
+  0014: return return
+  001a: <eos>
+
+function TransContent.TnWeaponPoke.WeaponEquipping.BeginState  (script 82 bytes)
+  0000: if !((cast3a(self.Instigator.Role) == cast3a(3))) goto 0x0044
+  0019: SetTimer(self.SecondsUntilDeactivated, false, 'Deactivate', )
+  002c: TnPawn(self.Instigator).DisableTransforming()
+  0044: BeginState(PreviousStateName)
+  004f: return nothing
+  0051: <eos>
+
+function TransContent.TnWeaponPoke.Deactivate  (script 22 bytes)
+  0000: self.InvManager.NextWeapon()
+  0013: return nothing
+  0015: <eos>
+
+function TransContent.TnWeaponPoke.WeaponIsDown  (script 61 bytes)
+  0000: WeaponIsDown()
+  0006: if !((cast3a(self.Instigator.Role) == cast3a(3))) goto 0x003a
+  001f: TnPawn(self.Instigator).EnableTransforming()
+  0037: DestroyActor()
+  003a: return nothing
+  003c: <eos>
+
+function TransContent.TnWeaponRocketLauncher.OnBeginStateWeaponFiring  (script 31 bytes)
+  0000: OnBeginStateWeaponFiring()
+  0006: PlayDialogNotify(7, TnPawn(self.Owner))
+  001c: return nothing
+  001e: <eos>
+
+function TransContent.TnWeaponRocketPlane.ShouldPutDownImmediately  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
+
+function TransContent.TnWeaponRocketTurretKillStreak.TryTransferAmmoFrom  (script 85 bytes)
+  0000: if !((TnWeaponRocketTurretKillStreak(OtherWeapon) != none)) goto 0x004c
+  0010: self.AmmoClipCount = obj'Core.Math'.static.Min(GetMaxAmmoClipCount(), (self.AmmoClipCount + OtherWeapon.AmmoClipCount))
+  0040: SyncAmmoToClient()
+  004a: return true
+  004c: return false
+  004e: return return
+  0054: <eos>
+
+function TransContent.TnWeaponRocketVehicle.ShouldPutDownImmediately  (script 9 bytes)
+  0000: return true
+  0002: return return
+  0008: <eos>
