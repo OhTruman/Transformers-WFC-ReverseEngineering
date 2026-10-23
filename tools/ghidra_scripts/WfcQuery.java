@@ -169,6 +169,23 @@ public class WfcQuery extends GhidraScript {
                     }
                     break;
                 }
+                case "findwstr": {
+                    // every location of a big-endian UTF-16 string (UE3 TCHAR names on Xenon), plus refs to it and to it+2
+                    String s = p[1];
+                    byte[] pat = new byte[s.length() * 2];
+                    for (int i = 0; i < s.length(); i++) { pat[2 * i] = 0; pat[2 * i + 1] = (byte) s.charAt(i); }
+                    Address at = currentProgram.getMinAddress();
+                    int hits = 0;
+                    while (at != null && hits < 16) {
+                        at = currentProgram.getMemory().findBytes(at, pat, null, true, monitor);
+                        if (at == null) break;
+                        out.printf("  wstr %s%n", at);
+                        refs(at); refs(at.add(2));
+                        hits++;
+                        at = at.add(2);
+                    }
+                    break;
+                }
                 case "words": {
                     // raw big-endian u32 words (vtables, data tables)
                     Address a = A(p[1]);
