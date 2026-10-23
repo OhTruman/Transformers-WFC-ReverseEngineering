@@ -130,6 +130,22 @@ public class WfcQuery extends GhidraScript {
                     }
                     break;
                 }
+                case "opscanr": {
+                    // opscan limited to [start, end): opscanr <needle> <mnemonic-prefix> <start> <end>
+                    String[] r = q.trim().split("\\s+");   // this command takes 4 args; the shared split keeps only 3
+                    String needle = r[1].toLowerCase(), mn = r[2].toLowerCase();
+                    Address s = A(r[3]), e = A(r[4]);
+                    int hits = 0;
+                    for (Instruction ins : L.getInstructions(s, true)) {
+                        if (ins.getAddress().compareTo(e) >= 0) break;
+                        String t = ins.toString().toLowerCase();
+                        if (!t.startsWith(mn) || !t.contains(needle)) continue;
+                        Function f = currentProgram.getFunctionManager().getFunctionContaining(ins.getAddress());
+                        out.printf("  %s  %s  in %s%n", ins.getAddress(), ins, f == null ? "?" : f.getEntryPoint());
+                        if (++hits > 2000) break;
+                    }
+                    break;
+                }
                 case "funcs": {
                     // function entries in [start, end) with body size and caller count
                     Address s = A(p[1]), e = A(p[2]);
