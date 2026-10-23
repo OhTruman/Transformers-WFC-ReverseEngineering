@@ -30,7 +30,7 @@ The status column says what the build should do today.
 | Matinee | slerp shortest-path for bUseQuatInterpolation | **C (0x82B82FA8)** | shortest path: second weight negated when dot < 0; plain lerp weights (1 − α, α) when \|dot\| ≥ 0.9999 (0x3F7FF972); no renormalize before the quat → rotator (0x82B8A0F0). A1 uses it on 311 move tracks | MATINEE_NATIVE §2 |
 | Matinee | Lookup-key end tangents | **C (0x82BFFD80)** | first / last key → tangents zeroed (memset 12 bytes); interior keys Catmull-Rom with (1 − Tension) · 0.5 | MATINEE_NATIVE §3 |
 | Matinee | groups bound to empty SeqVar_Objects (165) | C mechanism / H cause | actor tracks no-op; sound / event / fade tracks still run | MATINEE_NATIVE §7, PROVISIONALS_CLOSED §5 |
-| Matinee | AnimNodeSlot "skip weights" flag (+0xC4 bit 31) meaning | H | ignore (always apply weights) | MATINEE_NATIVE §9 |
+| Matinee | AnimNodeSlot "skip weights" flag (+0xC4 bit 31) meaning | **HIGH** | **AnimNodeSlot has exactly one BoolProperty, `bIsPlayingCustomAnim`** (Engine.xxx class children); bit 31 = the first declared bool. So Matinee's MAT_SetAnimWeights skips a slot that **script is driving with PlayCustomAnim**. Build: skip the Matinee weight write while the slot plays a custom anim. Missing for C: the parent-class layout confirming +0xC4 is AnimNodeSlot's first field | MATINEE_NATIVE §9 |
 | Dialog | subtitle canvas placement / font | H | stock: highest-priority line, centred bottom title-safe, word-wrapped, white with shadow | DIALOG_TIMING §5 |
 | Dialog | UseSubtitles = false lines hidden | HIGH (data pattern) | show only lines with UseSubtitles. The English wave cues have 1,648 true vs 8,697 false: true = story conversation lines, false = combat barks (reload / grenade / taunts). The native consumer (cue +0x10 bool in the subtitle queue) wasn't located; there's no name string in the exe | PROVISIONALS_CLOSED §6 |
 | Dialog | conversation's second variable per line | **C (data) + H (use)** | VariableLinks come in pairs per line: `Speaker_N` (the speaking actor, required by CheckForErrors), then **`Face_N`**. Face is linked in only 69 links across the whole campaign, **0 in A1**. H: the speaker faces / looks at that actor. Implement as an optional look-at | DIALOG_TIMING |
@@ -86,3 +86,30 @@ groups whose actor has a Base.
 - **The streaming time-slice budget:** the engine's per-frame budget constant in 0x82D5FB28's caller. Gameplay doesn't need it
   (stock is fine).
 - **The checkpoint body binary / field order:** not needed (no byte compatibility).
+
+## Pass 2: D5_OME
+
+**What D5 uses** (authored.db, D5 packages):
+- 101 move tracks (22 RelativeToInitial, 2 quat, 99 lookup);
+- 13 FaceFX tracks;
+- 42 conversations;
+- **3 Bink movies:** FMV_d5itext (+ _INT / _FRA), FMV_d5otext (+ _INT / _FRA), and **FMV_d5outro.bik** (TnSeqAct_MissionComplete).
+
+**Row by row:**
+- **AnimNodeSlot skip flag:** HIGH (above). Applies to D5's 155 AnimControl tracks.
+- **FMV audio:** new data (C, the Bink header of FMV_d5outro.bik):
+  - 1280×720, 1,277 frames;
+  - **10 audio tracks, all mono 48 kHz, ids 0–9** (flags 0x5000).
+  - The text-overlay movies come as separate _INT / _FRA files, so on-screen language is per file.
+  - **Still UNKNOWN:** which of the 10 tracks the game enables (H: a 5.1 bed + per-language voice). Missing evidence: the full-screen
+    Bink player's sound-track selection call. Its strings exist (`HmCreateRenderingThreadFullScreenBinkMoviePlayerCommand`,
+    UCodecMovieBink) but static analysis resolved no references; it needs a dynamic trace or a manual vtable walk.
+  - Build: mix all 10 at equal gain until confirmed. It's audible but safe.
+- **RandomSeed writer:** UNKNOWN, but its scope is now known. **Only two materials in the whole game use
+  MaterialExpressionRandomSeed:** `TR_AllShader_p…CHR_Transformer_NormSpec_Cust_E_Mat` (custom-character skin) and
+  `ENV_AllShader_p…DarkEnergonCrystal_MAT`.
+  - D5 is affected only if its characters use Cust_E. Build default 0 (the first variant).
+  - Missing: the FMeshElement +0xBC writer (a store scan over the mesh-element fill paths).
+- **FaceFX bone mapping:** PROVISIONAL. D5's 13 FaceFX tracks drive Megatron / Soundwave / Breakdown faces; it needs Gameplay's
+  full-skeleton check. The Trypticon jaw row doesn't apply to D5.
+- **RelativeToInitial order:** 22 tracks in D5, same open item as A1.
