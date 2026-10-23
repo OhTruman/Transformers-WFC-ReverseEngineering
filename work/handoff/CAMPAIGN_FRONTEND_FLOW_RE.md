@@ -83,6 +83,10 @@ PRESENTATION_AUDIT_3).
      - `<OnlinePlayerData:ProfileData.<key>Available>`: unlocked;
      - `…<key>Difficulty>`: the best difficulty completed, shown on the button.
    - The **button is enabled only if Available and the map provider is enabled**.
+   - **New-profile defaults** (C, TnProfileSettings DefaultSettings):
+     - only **A1 (96) and D1 (101) Available**; A2–A5 and D2–D5 locked;
+     - every `<key>Checkpoint` = 0 (start only) and every `<key>Difficulty` = −1.
+     - CompleteMission unlocks the next map in the faction order: [96..100] / [101..105].
    - **Focus:** the current SelectedMapID if enabled, else the first enabled chapter. Left / right navigation.
    - **A** → `Online.SetSelectedMapID(id)`. If the chapter has checkpoint thumbs → the checkpoint stage, else `mapSelected()`.
    - **X** = Difficulty (opens DifficultySelect).
