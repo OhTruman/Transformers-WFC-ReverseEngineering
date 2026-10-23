@@ -117,6 +117,27 @@ public class WfcQuery extends GhidraScript {
                     }
                     break;
                 }
+                case "opscan": {
+                    // instructions whose text contains a displacement / immediate, optionally filtered by mnemonic prefix
+                    String needle = p[1].toLowerCase(), mn = p.length > 2 ? p[2].toLowerCase() : "";
+                    int hits = 0;
+                    for (Instruction ins : L.getInstructions(true)) {
+                        String s = ins.toString().toLowerCase();
+                        if (!s.startsWith(mn) || !s.contains(needle)) continue;
+                        Function f = currentProgram.getFunctionManager().getFunctionContaining(ins.getAddress());
+                        out.printf("  %s  %s  in %s%n", ins.getAddress(), ins, f == null ? "?" : f.getEntryPoint());
+                        if (++hits > 400) break;
+                    }
+                    break;
+                }
+                case "words": {
+                    // raw big-endian u32 words (vtables, data tables)
+                    Address a = A(p[1]);
+                    int n = p.length > 2 ? Integer.parseInt(p[2]) : 16;
+                    for (int i = 0; i < n; i++, a = a.add(4))
+                        out.printf("  %s  %08x%n", a, currentProgram.getMemory().getInt(a));
+                    break;
+                }
                 case "named": {
                     // user-named functions (prior manual labels), optional substring filter
                     String needle = p.length > 1 ? p[1].toLowerCase() : "";
