@@ -221,3 +221,16 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
   - when the dodge is exceeded it ends **with horizontal velocity zeroed**.
   - So original bots stop at the nav edge and fall from there.
 - **Fix:** bot side.
+
+## #9 Particle kill flags (for the stuck hover trails) (C, shipped exe)
+- **bKillOnDeactivate** (DeactivateSystem 0x83035C18):
+  - the PSC's deactivated / suppress bits are set;
+  - each emitter instance with **its own** kill-on-deactivate flag (instance +0xA8 bit 0x10000000) is **destroyed at once**, so
+    its particles vanish;
+  - other emitters stop spawning and their particles live out;
+  - the attached audio fades over template +0x84.
+- **bKillOnCompleted** (HasCompleted 0x830288A8):
+  - an instance completes when loops ≠ 0, SecondsSinceCreation ≥ Duration × Loops, **and ActiveParticles == 0** (after a
+    deactivate: just ActiveParticles == 0);
+  - only then, with the flag (bit 0x8000000), is the instance freed.
+  - **It never cuts live particles.**
