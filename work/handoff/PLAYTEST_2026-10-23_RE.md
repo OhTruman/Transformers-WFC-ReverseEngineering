@@ -170,7 +170,8 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
   - **Reflection term** = ReflectionColor (c7) × 0.5 × Cube × Brightness (c11).
   - **Streaks** = x = (CLR_A + CLR_B) × 0.65 (Gorge 0.62); max(|x|, 0.0001).
     - **x^5 = (x²)²·|x|** (Gorge **x^6 = (x²)²·x²**).
-    - Plus UniformVector_0 (c6: a folded vector; value set at runtime, PARTIAL).
+    - Plus UniformVector_0 (c6) = **SelectionColor** (the stock UE3 editor selection tint: first entry of the cooked uniform
+      expression set; 0 at runtime, so add nothing).
   - **Emissive** = streaks + reflection term × **4**.
 - **DepthBiasedAlpha, exactly the UE3 template:**
   - sceneDepth = 1 / (depthSample·c2.z − c2.w) (DeviceDepthConversion);
@@ -182,7 +183,8 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
   oC0.a = SceneColorBiasFactor.y × blend × VC.R. Additive blend, so the RGB is premultiplied by opacity.
 - **Distortion PS:**
   - the same 4 normal fetches, unpacked and lerped (0.5);
-  - **desaturate with (0.3, 0.59, 0.11)** → scalar d;
+  - **desaturate** → scalar d: ORB / Complex parent with the default (0.3, 0.59, 0.11); the **Gorge parent with its authored
+    LuminanceFactors (0.041452, 0.21952, 0.47044)** (corrected after Rendering checked the Gorge literal pool);
   - × the distortion scale (the literal 80 = graph 20 × a template factor of 4: PARTIAL);
   - × VC.R;
   - written as the UE3 accumulate encoding: oC0.xy = max(d, 0) (positive offset), oC0.zw = |d| clamped (negative offset);
