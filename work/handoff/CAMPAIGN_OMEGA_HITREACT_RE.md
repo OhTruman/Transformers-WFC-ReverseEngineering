@@ -88,3 +88,52 @@ Builds on CAMPAIGN_SETPIECES §1 (the Omega state machine, OmegaStatus outputs) 
 - **Playback:** EnqueueLocalAnimation (local, not replicated: each machine plays it from its own ClientPlayHit), MaskType 0, the
   mesh's root-motion modes, override 0.
 - **Players and AI both** play them (same robot forms). The HitRX grunt is a separate AnimNotify_Dialog on the clips / anims.
+
+## 3. Batch answers (2026-10-23, C unless marked)
+
+**SetMoveToObjective / AI ranges:** `TnAiController.RangeSet` (CDO) in enum order, in UU:
+
+| Range | UU |
+|---|---|
+| Invalid | −1 |
+| **Touch** | 0–175 |
+| **Striking** | 176–600 |
+| **Close** | 601–1500 |
+| **Medium** | 1501–3000 |
+| **Far** | 3001–5000 |
+| **Retreated** | 5001–7000 |
+| **OutOfRange** | 7001+ |
+
+- The enum names come from the authored uses; the order is consistent with RANGE_Close = 1500 (AI_LAYER).
+- `TnAiRangeDetector` tests the centre distance, and the distance minus both collision radii ("nearest").
+
+**Destruction triggers:**
+- a state's link fires when the piece is notified with that **TransitionTrigger**;
+- `ApplyDestructionTrigger(T)` = `NotifyTrigger(FLT_MAX, T)` on every piece, an instant transition where a state links T.
+- `HmGenericDamageDestructionTrigger`: ordinary damage. H: it's the damage types' default trigger. It subtracts from the state's
+  **InitialHealth**, and the link fires at ≤ 0, after the blueprint modifiers and the damage type's DestructibleDamageScale.
+- `HmTimerExpiredDestructionTrigger`: the state's **AutomaticTransitionTime** elapsed.
+- `HmNotificationDestructionTrigger`: applied **by script** to specific destructibles: TnDeathPlayer on death pieces, Trypticon's
+  head / back stages. H: also by state-notification effects.
+- `TnTractorBeamDestructionTrigger`: `TnDestructibleActor.NotifyLockOnBegin` (Omega's tractor lock).
+- `TnCorruptionDestructionTrigger`: `TnOmegaBatteryDestructibleActor` accepts damage whose type's DestructionTrigger is Corruption
+  (TnDamageTypeCorruption), and its Corrupt() → `NotifyTrigger(100, Corruption)`.
+- `HmDamageDependentsDestructionEffect`: forwards DamageAmount to the piece's DependentPieceHandles.
+- `TnPawnBaseDiedDestructionTrigger`: the attached pawn died.
+
+**Escalation / campaign ability resource:**
+- `TnAbility.GetResourceRequired` = **ResourceRequired (100 on every ability CDO) × ResourceAmountModifier**, **only when
+  GetCurrentSkillDataIndex == 1** (campaign and Escalation). Otherwise 0, i.e. versus uses cooldowns.
+- **In campaign / Escalation the resource replaces the cooldown:**
+  - `AbilityIsAvailable` needs Resource ≥ required (and no running cooldown);
+  - on trigger, **Resource = 0** and **no cooldown is started** (TriggerAbility only starts the cooldown when the requirement is 0);
+  - the 0.x s spam-prevention timer still applies.
+- **The cap** = the requirement (SetResource clamps 0…required).
+- **HUD** = the normalized Resource / required (UpdateResourceUI on change and replication).
+- **Gain:** only `AddResource`, i.e. TnAbilityResourcePickup **+3 each**. So about 34 pickups per use, i.e. about 8 soldier kills
+  (4 + 1 each) or 4 Brutes.
+- In the campaign the difficulty's `AbilityResourceModifier` scales the requirement (×0.75 … 1.25 by level); Escalation has no
+  difficulty buffs.
+
+**SeqAct_TnAiShootAtActor / UseTurret / UseInteract:** CAMPAIGN_KISMET_WFC_CLASSES §5 / §8 and CAMPAIGN_KISMET_HANDLERS
+(SeqAct_TnAiUseTurret), summarised in the message to Gameplay.
