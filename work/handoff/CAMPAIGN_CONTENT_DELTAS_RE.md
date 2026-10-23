@@ -310,3 +310,64 @@ the turret gives the MP-pool **GatlingGun / HeavyRocketTurret**.
 - SetLootTable, SpawnPickupRewards, ToggleDestructible, DownRevive, LockPlayerInTurret;
 - interact Enabled / Disabled;
 - the destructible state notification branches.
+
+### 2.2a Interact runtime rules (C, TnInteractBase script + CDOs; 2026-10-23, for Gameplay)
+
+**States:** Asleep → TouchingUser → AdjustingUser → Interacting → (Asleep | Disabled).
+
+**Kismet event:** `TnSeqEvent_Interact`. Outputs by event type: **Touch 0, Untouch 1, Adjusting 2 (BeginAdjust), Begin Use 3, End Use
+4**. Instigator = the current user. CDO MaxTriggerCount 0, bPlayerOnly true (89 instances set it false).
+
+**1. Use test:**
+- in the TouchCylinder (radius **TouchDistance**: base 1000; Button / Hacking / Detpack / Omega battery 500, DarkEnergon 600,
+  LightEnergon 800);
+- **not downed, not already in use**;
+- the vehicle-form rule (bAllowVehicles, default robot only);
+- then every UseCondition:
+  - Button / ButtonReusable: **≤ 300 UU and ±45°**;
+  - Hacking: **≤ 200, ±45°**, and the user facing the terminal (AngleToUser dot −1…−0.5 from a 300 UU offset);
+  - DarkEnergon: **Megatron only**, ±45°;
+  - LightEnergon: **"Optimus Prime" only**, ±45° (the NonPrime variant: "Optimus");
+  - turrets: angle + distance (class defaults).
+- Each touching pawn that passes gets `SetInteractState(self, 1)`, which shows the contextual interact prompt.
+
+**2. Press, not hold:**
+- the X / Interact **tap** (button event 2; a hold is revive / pickup) → `TryInteract` → `Interact()` → `InteractCommand(P, 0)`;
+- → **AdjustingUser**: the user is slid to the hotspot at 750 UU/s and rotated, within **AdjustingUserTimeMax 1.5 s**, otherwise it
+  fails;
+- → **Interacting**: fires **Begin Use**, user god mode on (`MakeUserInvincible` default true, so no damage interruption), final
+  adjust;
+- **End Use fires when the Begin Use action sequence's latent action completes** (the user / base anims and movies), then back to
+  Asleep.
+- Being **downed** force-ends it (ClientStartDowned → ForceEndUse). Streaming out → ForceEndUse.
+
+**3. Afterwards:**
+- Button, Detpack, LightEnergon and the Omega battery run a **DisableInteract** action in their sequence (single use);
+- ButtonReusable doesn't (reusable, no cooldown; `_LastUsedTime` is recorded);
+- Hacking / DarkEnergon / Emote: as their sequences (no disable in the Hacking sequence, so reusable).
+
+**4. Enable state:**
+- default **enabled** (Asleep);
+- `InitialState Disabled` on TnInteractCorruptOmegaBattery;
+- Kismet SeqAct_Toggle → `OnToggle`: **input 0 Turn On, 1 Turn Off, 2 Toggle** → SetInteractEnabled (Disabled clears the users and
+  fires Disabled; re-enable fires Enabled).
+- The event's own bEnabled gates only the Kismet output.
+
+**5. The player during the use:** locked by the adjust and the action sequence; god mode; per class:
+- Button: holster, Interact_Button, unholster;
+- Hacking: holster, character colours, **HUD hidden**, terminal in / loop anims on the user and the console, the big screen + the
+  "hackeriffic" GFx movie, the animated camera (paused for the use), then out anims, unholster, HUD back;
+- Detpack: Detpack_Release (the base then counts down);
+- LightEnergon: equips ButterflyAxe, Interact_Energon_ROBO;
+- DarkEnergon: camera anim, Interact_DarkEnergon.
+
+**6. What it does:**
+- Detpack: the base's countdown anim, then **TnSeqEvent_DetPack "BaBoom"**; the explosion is Kismet;
+- **Hacking is not a minigame:** a canned in / loop / movie / out sequence, and End Use when it completes;
+- Light / Dark Energon: the use itself grants nothing in script. **The effect is the level Kismet on End Use** (H: per-map Kismet).
+
+**7. Turrets:** DELTAS §2.3. MountedHeavyIonBlaster / MountedRocketTurret; rip → GatlingGun / HeavyRocketTurret. Damage × 0.5 to the
+user. SlugRide locks the player in.
+
+**8. Co-op:** any player who passes the conditions (one user at a time; others are pushed to state 0 while it's in use).
+- AI use: SeqAct_TnAiUseInteract (KWFC §5). Events with bPlayerOnly true ignore AI users.
