@@ -19,7 +19,9 @@ chains:
      the generator back to level 0, so it's chargeable again;
    - **Delay 2 s** → Toggle **Turn On** the TriggerVolume.
 
-So **a factory is purchased once per generator charge**.
+~~So a factory is purchased once per generator charge.~~ **Corrected (REVIEW_ESCALATION_E2A_RE G1):** the −cost drop re-fires
+`New Power Level` (OnPowerLevelChange(false) also activates the event). That UnHides the factory again, so the item stays
+out after the first purchase and the generator is merely re-chargeable.
 
 **What "hidden" does** (Engine.PickupFactory):
 - `SetHidden(true)` → SetPickupHidden: the mesh and pickup effects are hidden, `bPickupHidden`.
