@@ -190,3 +190,22 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
   - written as the UE3 accumulate encoding: oC0.xy = max(d, 0) (positive offset), oC0.zw = |d| clamped (negative offset);
     **clip when negligible**.
   - Both screen axes get the same scalar offset (desaturated normal, so no direction).
+
+## Rust floor tessellation (per-vertex fog question; C for the data, H where marked)
+- **The Rust walkable floor is mostly BSP:** MP_IAC_Rust_Art_m has 76 brushes and 280 ModelComponents. The rest is coarse static
+  meshes:
+  - ENV_CORE_CanyonFloor_F ×89 (104 verts / 68 tris);
+  - CanyonFloor_A / B ×11 each (A: 672 / 440);
+  - Terminal_Floor_4096 ×13 (**54 verts / 36 tris for 4096 UU**);
+  - Panel_01_2048 ×7 (24 / 12).
+  Vertex counts are from the extracted cooked LOD0, which is the only LOD these meshes ship with.
+- **The original isn't finer.**
+  - It renders BSP from the Model's node polygons (fan-triangulated per node; BSP cuts are the only extra vertices), and static
+    meshes from that same cooked LOD0.
+  - The rebuild's BSP comes from the same node polygon walk, position-matched to the shipped BSPCollision on all 10 maps
+    (MP_COLLISION_PHYSMAT).
+  - H: if the render path uses that walk too, the triangle density is identical.
+- **The fog is per-vertex in the original too** (height-fog VS, LENS_FLARE / fog notes: uniform slabs, evaluated in the base-pass VS).
+  So large floor triangles interpolate the fog linearly in the original as well.
+- If our floor shows fog banding that the original doesn't, look at the fog inputs (layer heights / start distance /
+  ExtinctionDistance cut-off per vertex), not the tessellation.
