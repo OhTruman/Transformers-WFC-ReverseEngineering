@@ -34,8 +34,9 @@ This consolidates the chapter-level flow with the original's class, event and fu
 2. **Load-time streaming** (CAMPAIGN_STREAMING §3):
    - `?Checkpoint=` given (a menu pick) → `Activate(Checkpoint.StreamingState)`;
    - otherwise `WorldInfo.InitialStreamingState` → blocking flush.
-   - H: InitialStreamingState isn't in authored.db. The DisplayOrder-0 checkpoint's state (A1: `LevelStart`) is the chapter-start
-     state in every chapter's export.
+   - H: InitialStreamingState isn't in authored.db. The lowest-DisplayOrder checkpoint's state is the likely chapter-start state:
+     A1 LevelStart, A2 Start_State, A3 Initial, A4 LevelStart_NoCine, A5 Streets, D1 Level_Started, D2 Gorge_Intro, D3A Start,
+     D3B IntroCine, D5 Arena. Its menu entry is index 0, which has no path.
 3. **`PendingMatch`:**
    - `CanStartMatch` = the host has a character and `AllPlayersHaveControllers`;
    - `TrySpawnPlayer` sets `RespawnFromCheckpoint = true` and returns false.
