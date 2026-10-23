@@ -119,3 +119,9 @@ That is **level = 3·difficulty + (humans − 1)**: Easy 0–2, Medium 3–5, Ha
 2. On select: `set_GameDifficulty` (clamped 0–2) → profile setting 12 → re-apply buffs.
 3. The co-op host's difficulty is the game's difficulty. Scaling with the human count is automatic through the buff level.
 4. Per chapter, show the best difficulty completed (`MapId + 32`, −1 = not completed).
+
+
+**Correction (2026-10-23, CAMPAIGN_SQUAD_AI_RE §5):**
+- Downed exists only with 2 or more humans; a solo player dies outright.
+- Bleed-out = 400 / (40 x PlayerDamageTakenDowned): 25 s / 33 s on Easy and Medium, 50 s / 67 s on Hard (2p / 3p).
+- Revive is a hold: 0.3 s plus the Revive_Heal animation; releasing aborts it.
