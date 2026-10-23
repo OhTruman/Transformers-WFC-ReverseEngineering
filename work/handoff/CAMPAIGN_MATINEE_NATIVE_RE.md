@@ -153,3 +153,6 @@ else k = the last key with StartTime <= t:
 ```
 Then `SetAnimPosition(slot, channel, name, pos, bFireNotifies, bLooping)` (§9). Past the end of a non-looping key the pose holds
 the end frame until the next key starts. Data: 1,177 of 6,609 keys loop and 202 are reversed.
+
+
+**Update (2026-10-23, CAMPAIGN_RE_ENDSTATE pass 5):** §4 / §10 are now **C** via VMX128 decoding. InitialTM = KeyTM(t0)⁻¹ × ActorTM × BaseTM⁻¹ (CalcInitialTransform 0x82C3B260); RefTM = InitialTM × BaseTM, RemoveScaling; World = KeyTM(t) × RefTM (0x82C00CC0).
