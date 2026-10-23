@@ -106,3 +106,38 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
     otherwise).
   - No enemy health bar.
 - Disguised enemies (TnBuffDisguise): ally style, shown only with line of sight, with the disguise name.
+
+## #14 Water (C: authored graph + shader-cache scan; H where marked)
+
+**Where "water" exists in MP** (shader-cache scan for water / river / pool / liquid / waterfall / lava names):
+- The only liquid materials cooked into MP maps are **energon / coolant waterfalls**:
+  - `ENV_CORE_Complex_p.ComplexWaterfall_MATINST` (Remnant, Seed, Molten, Complex);
+  - `ENV_CORE_Wall_p.Waterfall_Parent_MAT` (Gorge).
+- `WEP_Shared_p.Electric_Lava_Tech_B_Mat` is in every MP base package, but it's a weapon / effect material, not a surface.
+- No standing-water / river / pool material is cooked into any MP map.
+- If the playtest surface is something else, it's another energon liquid under a different name: tell me the map and spot.
+
+**Waterfall_Parent_MAT** (ORB CoolantRoom; ComplexWaterfall_MATINST's parent; the Gorge copy differs only in its textures, exponent
+6 vs 5 and the default colour):
+- **BLEND_Additive, MLM_Unlit, bUsesDistortion**, used with decals. Beast opacity source = emissive.
+- **Flow:** two pans of WaterFall_CLR / WaterFall_NORM:
+  - pan A: speed (0.01, −0.2), tiling Scale;
+  - pan B: speed (−0.008, −0.5), tiling 0.5·Scale;
+  - both × Time·Speed (MATINST: Speed 1.2, Scale 2.5).
+- **Emissive** = 4 · (ReflectionColor · 0.5) · Brightness · **CubeMap(world reflection vector)**^1 + ((CLR_A + CLR_B) · 0.65)^5.
+  - The cube is IaconCity_Cubemap.
+  - MATINST: Brightness 0.4, ReflectionColor (0.085, 1, 1).
+  - The ^5 makes the flowing streaks sharp and bright.
+- **Normal** = lerp of the two panned normal samples (0.5), blended again (lerp chain): animated ripples feeding the reflection
+  vector.
+- **Opacity** = **DepthBiasedAlpha**(alpha 1, bias = desaturate(reflection term), BiasScale 200, DepthBiasBlend 800) × **vertex colour
+  R**.
+  - That's a soft fade where it meets geometry (scene-depth based), masked by painted vertex colour.
+- **Distortion (refraction)** = vertex colour R × 20 × desaturate(normal blend): screen-space refraction in the distortion pass.
+
+**What to restore** (H: compare with our current render):
+1. The **distortion pass** (bUsesDistortion: the Modulate / Distortion accumulate path, MODULATE_DISTORTION_CACHE_RE).
+2. **DepthBiasedAlpha** soft edges (needs scene depth).
+3. The **cube-map reflection** on the world reflection vector, with the panned normals.
+4. The **two-speed panning**, using the MATINST Speed / Scale.
+5. **Vertex-colour R** masking of opacity and distortion.
