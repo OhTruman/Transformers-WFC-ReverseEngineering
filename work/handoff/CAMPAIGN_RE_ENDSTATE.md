@@ -34,7 +34,7 @@ The status column says what the build should do today.
 | Dialog | subtitle canvas placement / font | H | stock: highest-priority line, centred bottom title-safe, word-wrapped, white with shadow | DIALOG_TIMING §5 |
 | Dialog | UseSubtitles = false lines hidden | HIGH (data pattern) | show only lines with UseSubtitles. The English wave cues have 1,648 true vs 8,697 false: true = story conversation lines, false = combat barks (reload / grenade / taunts). The native consumer (cue +0x10 bool in the subtitle queue) wasn't located; there's no name string in the exe | PROVISIONALS_CLOSED §6 |
 | Dialog | conversation's second variable per line | **C (data) + H (use)** | VariableLinks come in pairs per line: `Speaker_N` (the speaking actor, required by CheckForErrors), then **`Face_N`**. Face is linked in only 69 links across the whole campaign, **0 in A1**. H: the speaker faces / looks at that actor. Implement as an optional look-at | DIALOG_TIMING |
-| FMV | Bink audio-track → speaker / language mapping; held last-frame timing | UNKNOWN (middleware) | track 0 = mix; hold the last frame until Stop | FMV_PLAYBACK |
+| FMV | Bink audio-track selection; speaker mapping; held last frame | **C (selection)** / H (speakers, hold) | **Play tracks 0, 1, 2, 3, 4 + (5 + language)**: INT 5, FRA 6, ITA 7, DEU 8, ESN 9, RUS 10, POL 11 (see pass 3). Never mix all ten. H: tracks 0–4 = the shared bed; the speaker layout isn't traced | FMV_PLAYBACK |
 | FMV | subtitle cue times in 1/100 s; rect order X1, Y1, X2, Y2 | H | as stated | FMV_PLAYBACK |
 | Streaming | listeners of callbacks 0x36 / 0x37 / 0x38 | not found | use as "restart requested / restore done / mid-restore" UI hooks | STREAMING_NOTIFIES |
 | Streaming | named-level step strings: +0x10 = the checkpoint actor's level | H | load that level visible (blocking) first | STREAMING_NOTIFIES |
@@ -113,3 +113,31 @@ groups whose actor has a Base.
 - **FaceFX bone mapping:** PROVISIONAL. D5's 13 FaceFX tracks drive Megatron / Soundwave / Breakdown faces; it needs Gameplay's
   full-skeleton check. The Trypticon jaw row doesn't apply to D5.
 - **RelativeToInitial order:** 22 tracks in D5, same open item as A1.
+
+## Pass 3 (2026-10-23): Bink sound-track selection (C)
+
+**The Bink library in the exe:**
+- `BinkOpen` = **0x83697C30** (both "Error reading Bink header." / "Not a Bink file." loads).
+- `BinkSetSoundTrack(count, ids*)` = **0x836977C0**: caps count at 32, copies the ids to the globals 0x838F7AA4 (count) / 0x838F7AA8
+  (ids).
+- BinkOpen without flag **0x4000** (BINKSNDTRACK) forces **count 1, track 0**.
+
+**Three callers:**
+1. **The full-screen / FMV path** (0x82CE0F00): `BinkSetSoundTrack` with the list built by **0x82CDD4B0** =
+   **[0, 1, 2, 3, 4, 5 + Lang]**.
+   - `Lang` = 0x82CBEEE0 on the current language code: **FRA 1, ITA 2, DEU 3, ESN 4, RUS 5, POL 6, otherwise (INT / JPN) 0**.
+   - The strings are at 0x821F6554–0x821F6588 and 0x82250FA4.
+2. **The texture-movie paths** (0x82C078D0 flags 0x1104400; 0x82BE81C0 flags 0x4000400): `BinkSetSoundTrack(0, 0)` with
+   BINKSNDTRACK, so **no audio tracks**. In-world movie textures are silent.
+
+**The data fits:**
+- the story FMVs (FMV_a1intro / a1outro / a2outro / d5outro, …) have **10 mono 48 kHz tracks**, i.e. 0–4 + five language voice tracks
+  5–9 (INT, FRA, ITA, DEU, ESN);
+- the per-language text movies (`*_INT.bik` / `*_FRA.bik`) have **6** tracks (0–5).
+
+**For the build (English):** play **tracks 0–5** of every FMV.
+- H: tracks 0–4 are the shared music / effects bed (five mono channels; their speaker assignment isn't traced, so a front L / R / C +
+  surround L / R guess is reasonable), and track 5 is the English voice.
+- **Never play 6–9** (the other languages).
+- The per-language text movies get the same list. In French that would request track 6, which doesn't exist in their 6-track
+  files (H: no voice there).
