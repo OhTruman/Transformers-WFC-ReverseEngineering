@@ -18,6 +18,15 @@ projectile's own MultiplayerData / Data (`*_PROJDATA`).
   - the TnBuffDecreaseWeaponSpread buff;
   - per-difficulty SpreadMultipliers (the MP index 0).
 
+### Spread application, exact (C, added after Gameplay's question)
+- **Offset = the stock UE3 Weapon.AddSpread:** RandY = FRand() − 0.5; RandZ = Sqrt(0.5 − RandY²)·(FRand() − 0.5); aim = X + RandY·S·Y +
+  RandZ·S·Z. That's a roughly disc-shaped cone of about **±0.5·S** (a uniform ±1 square would be twice as wide).
+- **S** = Data.Spread[mode] (0) + Pawn.GetWeaponSpreadModifier()
+  = CurrentSpread × SpreadMultipliers[0] × the DecreaseWeaponSpread buff, then × airborne (1 → 2) × FineAimSpreadModifier when zoomed.
+  The airborne and zoom factors apply **in robot form only**.
+- IncrementSpread runs once per fire call, after all pellets.
+- **Shotgun / EMPShotgun use a fixed SpreadPattern** (8 / 13 offsets, no randomness), scaled by GetSpread() / GetInitialSpread().
+
 ### Recoil (C)
 - `RecoilCameraParams`: PitchAdjustmentDeg (camera kick up per shot), RecoilTime, RecoilDelay. Plus CameraShakeParams
   (WEAPON_CAMERA_SHAKE_RE).
