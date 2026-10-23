@@ -156,3 +156,35 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
 3. The **cube-map reflection** on the world reflection vector, with the panned normals.
 4. The **two-speed panning**, using the MATINST Speed / Scale.
 5. **Vertex-colour R** masking of opacity and distortion.
+
+### #14 shipped pixel shaders (C: Xenos microcode, tools/shader_by_guid.py; raw dumps in work/handoff/water_ps/)
+- **Shaders:**
+  - ComplexWaterfall_MATINST (MP_UND_Complex_ART_m): base pass PS `de8001b6…` (FLocalVertexFactory, NoLightMap); distortion PS
+    `1ec1c57f…` (TDistortionMeshPixelShader<FDistortMeshAccumulatePolicy>, shared by local and decal VF).
+  - Gorge Waterfall_Parent_MAT (MP_UND_Gorge_ART_m): base `1f059d2a…`, distortion `4f8feca2…`.
+- **Base-pass PS:**
+  - **Normal:** 4 normal fetches (the two pans, each sampled twice through the lerp chain), unpacked ×2 − 1, lerped at 0.5. The
+    world-space normal comes from the TBN.
+  - **Reflection:** reflection vector R = reflect(−V, N), V from WorldCameraPosition (c3) − (PreViewTranslation-adjusted)
+    position → **cube fetch**.
+  - **Reflection term** = ReflectionColor (c7) × 0.5 × Cube × Brightness (c11).
+  - **Streaks** = x = (CLR_A + CLR_B) × 0.65 (Gorge 0.62); max(|x|, 0.0001).
+    - **x^5 = (x²)²·|x|** (Gorge **x^6 = (x²)²·x²**).
+    - Plus UniformVector_0 (c6: a folded vector; value set at runtime, PARTIAL).
+  - **Emissive** = streaks + reflection term × **4**.
+- **DepthBiasedAlpha, exactly the UE3 template:**
+  - sceneDepth = 1 / (depthSample·c2.z − c2.w) (DeviceDepthConversion);
+  - DepthBias = (1 − desaturate(reflection term)) × **c12** (the DepthBiasBlend param, 800), floored at 0.001;
+  - blend = **saturate((sceneDepth − pixelDepth) / DepthBias)**.
+  - The graph constant BiasScale 200 doesn't appear separately: c12 is the scale input.
+- **Opacity** = blend × **interpolator r1.x (vertex colour R)**. **clip if opacity < 1/255.**
+- **Output:** oC0.rgb = emissive × fog factor (r4.w) × opacity × SceneColorBiasFactor.x (c5.x: the HDR bias, WFC_HDR_SCENE_PATH);
+  oC0.a = SceneColorBiasFactor.y × blend × VC.R. Additive blend, so the RGB is premultiplied by opacity.
+- **Distortion PS:**
+  - the same 4 normal fetches, unpacked and lerped (0.5);
+  - **desaturate with (0.3, 0.59, 0.11)** → scalar d;
+  - × the distortion scale (the literal 80 = graph 20 × a template factor of 4: PARTIAL);
+  - × VC.R;
+  - written as the UE3 accumulate encoding: oC0.xy = max(d, 0) (positive offset), oC0.zw = |d| clamped (negative offset);
+    **clip when negligible**.
+  - Both screen axes get the same scalar offset (desaturated normal, so no direction).

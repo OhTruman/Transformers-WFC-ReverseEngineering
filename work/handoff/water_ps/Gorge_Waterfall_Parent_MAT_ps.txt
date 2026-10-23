@@ -1,0 +1,176 @@
+== 1f059d2a49767da20f4e50b204ce4e06 blob @0x860344 PS hdr ['0x102a1100', '0x3a8', '0x530', '0x0', '0x24', '0x344', '0x36c', '0x0', '0x0', '0x31c', '0x1c', '0x30f']
+CTAB DeviceDepthConversion float4 c2 x1, PreViewTranslation float4 c4 x1, SceneColorBiasFactor float4 c5 x1, SceneDepthTexture sampler c0 x1, ScreenPositionScaleBias float4 c1 x1, Texture2D_0 sampler c1 x1, Texture2D_1 sampler c2 x1, Texture2D_2 sampler c3 x1, TextureCube_0 sampler c4 x1, UniformScalar_0 float4 c8 x1, UniformScalar_1 float4 c9 x1, UniformScalar_2 float4 c10 x1, UniformScalar_3 float4 c11 x1, UniformScalar_4 float4 c12 x1, UniformVector_0 float4 c6 x1, UniformVector_1 float4 c7 x1, WorldCameraPosition float4 c3 x1
+float words from hdr[1]: 0 0 0 0 0.25 4 0 0 0.62 1.5 2 0.00392157 . 0.001 -1 0.0001 0.5 0.1 0 1 0.44 1.2 2.36 -0.75 -0.01 -0.05 0.008 0.5 0.01 -0.2 -0.008 -0.5
+; EXEC addr=9 count=6
+  9  MULv r9.xy__, c10.xxxx, c252.xyyy
+ 10  MULv r9.__zw, r2.xxxy, c10.xxxx
+ 11  MULv r8.xyz_, c9.xxxx, c254.xyzz
+ 12  MULv r7.xyzw, c9.xxxx, c255.zwxy
+ 13  MULADDv r7.__zw, r7.zzzw, c8.xxxx, r9.zzzw
+ 14  MULv r2.xyzw, r9.xxyy, r2.xyxy
+; EXEC addr=15 count=6
+ 15  MULADDv r10.xyzw, r8.xyzx, c8.xxxx, r2.zwzw
+ 16  MULADDv r7.xy__, r7.xyyy, c8.xxxx, r2.xyyy
+ 17  tfetch r2.xyz_, r7.zwz, tf1
+ 18  tfetch r8.xyz_, r7.xyx, tf1
+ 19  tfetch r9.xyz_, r10.xyx, tf2
+ 20  tfetch r10.xyz_, r10.zwz, tf2
+; EXEC addr=21 count=6
+ 21  MULv r15.xyz_, r6.yzxx, r5.zxyy
+ 22  MULv r14.xyz_, r6.zxyy, r5.yzxx
+ 23  SETGTv r15.___w, r6.wwww, -r6.wwww
+ 24  SETGTv r14.___w, -r6.wwww, r6.wwww
+ 25  DOT3v r2.___w, r6.zxyy, r6.zxyy
+ 26  ADDv r0._yzw, r0.xxyz, -c4.xxyz
+ 26  RECIP_IEEE r0.x___, r3.w
+; EXEC addr=27 count=6
+ 27  MULADDv r11.xyz_, -r0.yzww, c3.wwww, c3.xyzz
+ 28  MULADDv r13.xyz_, r10.xyzz, c250.zzzz, c251.zzzz
+ 29  MULADDv r10.xyz_, r9.xyzz, c250.zzzz, c251.zzzz
+ 30  MULADDv r9.xyz_, r8.xyzz, c250.zzzz, c251.zzzz
+ 31  MULADDv r12.xyz_, r2.xyzz, c250.zzzz, c251.zzzz
+ 32  MULv r0.xy__, r0.xxxx, c1.yxxx
+ 32  RECIPSQ_IEEE r0.__z_, |r2|.w
+; EXEC addr=33 count=6
+ 33  MULADDv r0.xy__, r0.xyyy, r3.yxxx, c1.zwww
+ 34  MULv r8.xyz_, r0.zzzz, r6.xyzz
+ 35  ADDv r9.xyz_, r9.xyzz, -r12.xyzz
+ 36  ADDv r13.xyz_, r13.xyzz, -r10.xyzz
+ 37  ADDv r6.xyzw, r15.xzyw, -r14.xzyw
+ 38  MULADDv r13.xyz_, r13.xyzz, c254.wwww, r10.xyzz
+; EXEC addr=39 count=6
+ 39  MULv r2.xy_w, r9.xyzz, c254.wwww
+ 39  MULs r10.x___, r6.x, r6.w
+ 40  DOT3v r0.__z_, r8.zxyy, r5.zxyy
+ 40  MULs r10._y__, r6.z, r6.w
+ 41  MULADDv r9.xyz_, -r8.xyzz, r0.zzzz, r5.xyzz
+ 42  ADDv r12.xyz_, r12.xyzz, r2.xyww
+ 42  MULs r10.__z_, r6.y, r6.w
+ 43  DOT3v r5.x___, r10.zxyy, r8.zxyy
+ 44  MULADDv r6._yzw, -r8.xxyz, r5.xxxx, r10.xxyz
+; EXEC addr=45 count=6
+ 45  ADDv r5.xyz_, r13.xyzz, -r12.xyzz
+ 46  DOT3v r5.___w, r9.zxyy, r9.zxyy
+ 47  MULv r5.xyz_, r5.zxyy, c254.wwww
+ 47  RECIPSQ_IEEE r5.___w, |r5|.w
+ 48  ADDv r12.xyz_, r12.xyzz, r5.yzxx
+ 49  MULv r9.x_z_, r9.xzzz, r5.wwww
+ 49  MUL_PREVs r6.x___, r5.w
+ 50  MULADDv r2.xy__, -r12.xyyy, c249.xxxx, r12.xyyy
+; EXEC addr=51 count=6
+ 51  CNDEv r5._yzw, c252.zzzw, r9.zzxx, r6.xxxx
+ 52  MULADDv r5.x___, -r12.zzzz, c249.xxxx, r5.xxxx
+ 53  DOT3v r5._y__, r10.zxyy, r5.yzww
+ 54  MULv r5.__z_, r6.xxxx, r5.yyyy
+ 54  ADD_PREVs r5.x___, r2.w
+ 55  MULv r5._y_w, r9.xxzz, r5.yyyy
+ 55  ADD_CONST_1 r5.x___, c253.w + r5.x
+ 56  MULADDv r2.__z_, r2.zzzz, c250.zzzz, r5.xxxx
+; EXEC addr=57 count=6
+ 57  ADDv r10.xyz_, r6.yzww, -r5.yzww
+ 58  DOT3v r5._y__, r10.zxyy, r10.zxyy
+ 59  DOT3v r5.x___, r11.zxyy, r11.zxyy
+ 59  RECIPSQ_IEEE r6.__z_, |r5|.y
+ 60  MULv r6._y__, r10.yyyy, r6.zzzz
+ 60  RECIPSQ_IEEE r5.x___, |r5|.x
+ 61  MULv r5.xyz_, r11.xyzz, -r5.xxxx
+ 62  DOT3v r5.___w, r2.zxyy, r2.zxyy
+; EXEC addr=63 count=6
+ 63  MULv r9._y_w, r10.xxzz, r6.zzzz
+ 63  RECIPSQ_IEEE r5.___w, |r5|.w
+ 64  MULv r2.xyz_, r2.xyzz, r5.wwww
+ 65  DOT2ADDv r6.__z_, r6.xyyy, r2.xyyy, c252.zzzz
+ 66  MULv r9.xyzw, r9, r2.xyxy
+ 67  ADDv r6.xy__, r9.xzzz, r9.ywww
+ 68  MULADDv r6.xyz_, r8.xzyy, r2.zzzz, r6.xyzz
+; EXEC addr=69 count=6
+ 69  DOT3v r5.___w, r5.zxyy, r6.yxzz
+ 69  MAXs r6.___w, c252.w, c252.w
+ 70  DOT4v r0.__z_, r5.zxyw, r6.yxzw
+ 71  MULADDv r5.xyz_, -r0.zzzz, r6.xzyy, r5.xyzz
+ 72  CUBEv r5.xyzw, r5.zzxy, r5.yxzz
+ 73  MAXv r6.__z_, r5.wwww, r5.wwww
+ 73  RECIP_IEEE r6.x___, |r5|.z
+ 74  MULADDv r6.xy__, r5.yxxx, r6.xxxx, c250.yyyy
+; EXEC addr=75 count=4
+ 75  tfetch r6.xyz_, r6.xyz, tf4
+ 76  tfetch r2.xyz_, r7.zwz, tf3
+ 77  tfetch r5._xyz, r7.xyx, tf3
+ 78  tfetch r5.x___, r0.yxx, tf0
+; ALLOC
+; EXEC addr=79 count=6
+ 79  MULv r0.xyz_, c7.xyzz, c254.wwww
+ 80  MULADDv r5.x___, r5.xxxx, c2.zzzz, -c2.wwww
+ 81  ADDv r5._yzw, r2.xxyz, r5.yyzw
+ 82  MULv r6._yzw, r6.xxyz, c11.xxxx
+ 82  MUL_CONST_1 r6.x___, c250.x * r5.y
+ 83  MULv r0.xyz_, r0.xyzz, r6.yzww
+ 83  RECIP_IEEE r5.x___, r5.x
+ 84  DOT3v r6.__z_, r0.zxyy, c253.xyzz
+ 84  MUL_CONST_1 r6._y__, c250.x * r5.z
+; EXEC addr=85 count=6
+ 85  ADDv r6.___w, -r6.zzzz, c252.wwww
+ 85  MUL_CONST_1 r6.__z_, c250.x * r5.w
+ 86  MULv r6.___w, r6.wwww, c12.xxxx
+ 87  MAXv r5.xyzw, r6.xywz, c251.xxyx
+ 87  ADD_PREVs r6.x___, -r3.w
+ 88  MAXv r5.xy_w, |r5.xyww|, c251.wwww
+ 88  RECIP_IEEE r5.__z_, r5.z
+ 89  MULv_sat r5.__z_, r6.xxxx, r5.zzzz
+ 90  MULv r6.xyz_, |r5.xyww|, |r5.xyww|
+; EXEC addr=91 count=6
+ 91  MULv r2.xyz_, r6.xyzz, r6.xyzz
+ 91  MUL_PREVs r5.x___, r1.x
+ 92  MULADDv r6.xyz_, r2.xyzz, r6.xyzz, c6.xyzz
+ 93  SUB_CONST_1 r5._y__, -c250.w - r5.x
+ 94  KILLGTv r5.____, c252.zzzz, r5.yyyy
+ 95  MULADDv r6.xyz_, r0.xyzz, c249.yyyy, r6.xyzz
+ 96  MULv r6.xyz_, r6.xyzz, r4.wwww
+ 96  MUL_CONST_1 r5.___w, c5.y * r5.z
+; EXEC_END addr=97 count=2
+ 97  MULv r5.xyz_, r6.xyzz, r5.xxxx
+ 98  MULv oC0.xyz_, r5.xyzz, c5.xxxx
+ 98  MUL_PREVs oC0.___w, r1.x
+== 4f8feca241015331fb3dc3a1716b4d86 blob @0x88e21b PS hdr ['0x102a1100', '0x174', '0x230', '0x0', '0x24', '0x124', '0x14c', '0x0', '0x0', '0xfc', '0x1c', '0xef']
+CTAB Texture2D_0 sampler c0 x1, Texture2D_1 sampler c1 x1, UniformScalar_0 float4 c3 x1, UniformScalar_1 float4 c4 x1, UniformScalar_2 float4 c5 x1
+float words from hdr[1]: 0 0 0 0 0 0 0 0 0 0 0 0 0.00392157 255 0 2 0.5 0.1 -255 -1 0.47044 0.041452 0.21952 80 -0.01 -0.05 0.008 0.1 0.01 -0.2 -0.008 -0.5
+; EXEC addr=4 count=6
+  4  MULv r4.xy__, c5.xxxx, c252.xyyy
+  5  MULv r4.__zw, r1.xxxy, c5.xxxx
+  6  MULv r3.xyz_, c4.xxxx, c254.xyzz
+  7  MULv r2.xyzw, c4.xxxx, c255.zwxy
+  8  MULADDv r2.__zw, r2.zzzw, c3.xxxx, r4.zzzw
+  9  MULv r1.xyzw, r4.xxyy, r1.xyxy
+; EXEC addr=10 count=6
+ 10  MULADDv r4.xyzw, r3.xyzx, c3.xxxx, r1.zwzw
+ 11  MULADDv r2.xy__, r2.xyyy, c3.xxxx, r1.xyyy
+ 12  tfetch r1.xyz_, r2.zwz, tf0
+ 13  tfetch r3.xyz_, r2.xyx, tf0
+ 14  tfetch r2.xyz_, r4.xyx, tf1
+ 15  tfetch r4.xyz_, r4.zwz, tf1
+; ALLOC
+; EXEC addr=16 count=6
+ 16  MULADDv r4.xyz_, r4.xyzz, c251.wwww, c252.wwww
+ 17  MULADDv r2.xyz_, r2.xyzz, c251.wwww, c252.wwww
+ 18  MULADDv r3.xyz_, r3.xyzz, c251.wwww, c252.wwww
+ 19  MULADDv r1.xyz_, r1.xyzz, c251.wwww, c252.wwww
+ 20  ADDv r3.xyz_, r3.xyzz, -r1.xyzz
+ 21  ADDv r4.xyz_, r4.xyzz, -r2.xyzz
+; EXEC addr=22 count=6
+ 22  MULADDv r2.xyz_, r4.xyzz, c252.xxxx, r2.xyzz
+ 23  MULADDv r1.xyz_, r3.xyzz, c252.xxxx, r1.xyzz
+ 24  ADDv r2.xyz_, r2.xyzz, -r1.xyzz
+ 25  MULADDv r0.xyz_, r2.xyzz, c252.xxxx, r1.xyzz
+ 26  DOT3v r0.x___, r0.zxyy, c253.xyzz
+ 26  MUL_PREVs r0._y__, c253.w
+ 27  MULv r0._y__, r0.yyyy, r0.xxxx
+; EXEC addr=28 count=6
+ 28  DOT2ADDv r0.x___, r0.yyyy, r0.yyyy, -c254.wwww
+ 29  MAXv r0._y__, r0.yyyy, c252.zzzz
+ 30  MINv r0._y__, r0.yyyy, c251.yyyy
+ 31  KILLGTv r0.____, c251.zzzz, r0.xxxx
+ 31  MUL_CONST_0 r0._y__, c251.x * r0.y
+ 32  MINv r0.x___, r0.yyyy, c251.zzzz
+ 33  MAXv oC0.xy__, r0.yyyy, c251.zzzz
+; EXEC_END addr=34 count=1
+ 34  MAXv oC0.__zw, |r0.xxxx|, |r0.xxxx|
