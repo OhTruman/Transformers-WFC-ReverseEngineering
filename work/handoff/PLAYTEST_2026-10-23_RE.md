@@ -107,6 +107,21 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
   - No enemy health bar.
 - Disguised enemies (TnBuffDisguise): ally style, shown only with line of sight, with the disguise name.
 
+### #8 correction and details (C, added after Frontend's follow-up)
+- **The ally health bar is drawn only for a Scientist viewer.**
+  - TnObjectiveMarkerTypeTransformerVersus.DrawLabel draws the bar only when EMT == ally (0), the marker has a name, and
+    **Owner.GetSpecialty() == "Scientist"** (the medic class).
+  - Other classes see ally names / markers through walls, but **no health bars**.
+- **No draw-distance cap and no distance fade.**
+  - AutoFocusRange **3000 UU**: allies within it draw "focused" (size 0.08, label opaque).
+  - Beyond it they draw unfocused (0.04, label still shown).
+  - Focus also comes from the marker being within 0.0273 of screen size of the centre.
+  - FocusHysterisis 1 s: the label alpha fades over 1 s after focus is lost (only for setups without unfocused labels).
+- **The LOS test** (enemy labels / disguise) = TnObjectiveMarkerTypeTransformer.HasLineOfSightTo
+  → TnLineOfSightDetector.HasLOSToActor(markerPawn, PlayerCamera) → native Engine.LinesOfSightManager.StaticHasLineOfSight.
+  - It's from the marked pawn to the viewer's camera actor.
+  - The trace end points and channel are inside the native manager: not decoded.
+
 ## #14 Water (C: authored graph + shader-cache scan; H where marked)
 
 **Where "water" exists in MP** (shader-cache scan for water / river / pool / liquid / waterfall / lava names):
