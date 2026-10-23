@@ -164,3 +164,25 @@ GameplayStarted alike**) in every loaded level's sequences, recursively:
 **Levels streamed in later** (0x82D59FA0, when a level reaches the fully-visible state and the world's setup-done flag +0x2B9 is
 set): **0x82D3BDC8 fires that level's unbound / WorldInfo startup events**, both kinds, with no checkpoint or flag condition.
 Checkpoint-bound ones are not fired there.
+
+### 6a. Chapter start and checkpoint-bound GameplayStarted (2026-10-23; amends §6)
+
+**What a menu chapter start is (C):** CP = none, plus an unbound PreGameplaySetup that sets the first checkpoint active.
+- The URL path 0x82CE8E08 → 0x82CE53A0 resolves `?Checkpoint=` to a Checkpoint and passes it to PerformPreGameplaySetup via
+  0x82CCE820. That's skipped for `?SkipBeginPlay` / `?LoadCheckpoint`.
+- Menu thumb 0 sends no `?Checkpoint`, so **CP = none**. It is not a restore of the lowest-DisplayOrder checkpoint.
+- **Both chapters checked use the same pattern:** an **unbound PreGameplaySetup that SetActiveCheckpoint's the first checkpoint**
+  (A1: PreGameplaySetup_10049 → SetActiveCheckpoint_2139 (Checkpoint_14845); D5: PreGameplaySetup_11738 → SetActiveCheckpoint_4818
+  (Checkpoint_4578)).
+- A4's chapter start streams the intro-cine state, not the checkpoint's NoCine twin.
+
+**The open contradiction:**
+- The data relies on **checkpoint-bound GameplayStarted events firing at a chapter start**. A1's GameplayStarted_7189 → LevelBegin
+  is the only sender of the intro.
+- The decoded 0x82D3BF00 filter adds bound events only for the CP argument, which is none here.
+- So **GameplayStarted binding is effectively checked against the active checkpoint after the pre-gameplay pass**: HIGH, from the
+  data pattern. That's Gameplay's rule:
+  - PreGameplaySetup by the CP argument;
+  - GameplayStarted by the CP argument, or else the checkpoint the pre-gameplay pass made active.
+- The native site that does this wasn't found. Candidates: a second activation of the queued startup events after
+  UpdatePreGameplayOp, or a CheckActivate override on GameplayStarted.
