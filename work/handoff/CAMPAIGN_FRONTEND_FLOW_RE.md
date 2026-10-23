@@ -76,8 +76,9 @@ PRESENTATION_AUDIT_3).
    - If a map is already selected, the faction stage is skipped.
    - **A:** `SelectedFaction = focus.Faction`; the others fade out (0.5 s) → the map stage.
 2. **Chapter** (`mc_missionMenu`, buttons `mc_missionChapterButton` with "CHAPTER" + roman numeral, title and description).
-   - **List source:** `<TnMenuItems:Maps>` rows whose `CompatibleGameTypes` contains CP / CCP, whose Faction isn't −1, and whose
-     faction matches the selection (the test maps have no faction, so they're hidden).
+   - **List source:** `<TnMenuItems:Maps>` rows whose `CompatibleGameTypes` contains CP / CCP, whose Faction isn't −1 (the test maps
+     have no faction, so they're hidden). Each button carries `ChapterFaction`. H: the filter to the picked faction happens
+     through that value; the compare isn't in the traced block.
    - **Per row:** MapId 96–105 → profile key A1…A5 / D1…D5:
      - `<OnlinePlayerData:ProfileData.<key>Available>`: unlocked;
      - `…<key>Difficulty>`: the best difficulty completed, shown on the button.
