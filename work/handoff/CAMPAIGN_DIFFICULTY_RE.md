@@ -45,8 +45,9 @@ That is **level = 3·difficulty + (humans − 1)**: Easy 0–2, Medium 3–5, Ha
   AbilityResourceModifier.
 - **AI:** `DifficultyBuffsAi` = DamageCausedAiVsAi.
 - These are permanent (BuffTime −1).
-- H: the level is computed when the buff is applied. A player joining mid-game changes `GetNumPlayers`, but the buffs are only
-  re-applied to newly spawned pawns or on the next `OnSetDifficulty`.
+- C (corrected 2026-10-23): `TnCampaignGame.PostLogin` calls `OnSetDifficulty`, so **a join re-applies the buffs to every pawn**
+  with the new count. A leave doesn't (there's no Logout override): existing pawns keep the old level until the next join, and
+  newly spawned pawns get the then-current level (CAMPAIGN_COOP_SYNC_RE §4).
 
 | Buff (who) | E·1p | E·2p | E·3p | M·1p | M·2p | M·3p | H·1p | H·2p | H·3p |
 |---|---|---|---|---|---|---|---|---|---|
