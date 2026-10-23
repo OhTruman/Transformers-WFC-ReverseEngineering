@@ -209,3 +209,15 @@ The full 75-weapon table, including all fields, range-damage modifiers and burst
   So large floor triangles interpolate the fog linearly in the original as well.
 - If our floor shows fog banding that the original doesn't, look at the fog inputs (layer heights / start distance /
   ExtinctionDistance cut-off per vertex), not the tessellation.
+
+## #18 Bots float (dodge) (C, TnAcrobaticsManager / TnAiActionDodge* script)
+- **Dodging:**
+  - PHYS_Flying; velocity = horizontal dir·DodgeSpeed (× the dodge-speed buff) + base velocity.
+  - **No floor check:** it ends only on DodgeTime expiry, MaxDodgeDistance exceeded, or OnHitWall (→ Falling). So flying flat off a
+    ledge for the rest of the 0.5 s is authentic **for players**.
+- **Values:** DodgeSpeed 3500 (class default) / 3000 (authored TR_Acrobatics_p blueprints); DodgeTime 0.5.
+- **The AI caps its dodge distance with the nav mesh:**
+  - `MaxDodgeDistance = clear·DodgeTraceDistance(1800) − radius`, where clear = AnchorCell.WalkLine fraction, needing ≥ 0.3;
+  - when the dodge is exceeded it ends **with horizontal velocity zeroed**.
+  - So original bots stop at the nav edge and fall from there.
+- **Fix:** bot side.
