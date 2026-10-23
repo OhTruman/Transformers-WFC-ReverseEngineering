@@ -130,6 +130,45 @@ public class WfcQuery extends GhidraScript {
                     }
                     break;
                 }
+                case "funcs": {
+                    // function entries in [start, end) with body size and caller count
+                    Address s = A(p[1]), e = A(p[2]);
+                    for (Function f : currentProgram.getFunctionManager().getFunctions(s, true)) {
+                        if (f.getEntryPoint().compareTo(e) >= 0) break;
+                        out.printf("  %s  size=%d  callers=%d%n", f.getEntryPoint(), f.getBody().getNumAddresses(),
+                                   f.getCallingFunctions(monitor).size());
+                    }
+                    break;
+                }
+                case "decomprange": {
+                    // decompile every function entry in [start, end)
+                    Address s = A(p[1]), e = A(p[2]);
+                    ghidra.app.decompiler.DecompInterface di = new ghidra.app.decompiler.DecompInterface();
+                    di.openProgram(currentProgram);
+                    for (Function f : currentProgram.getFunctionManager().getFunctions(s, true)) {
+                        if (f.getEntryPoint().compareTo(e) >= 0) break;
+                        ghidra.app.decompiler.DecompileResults r = di.decompileFunction(f, 60, monitor);
+                        out.printf("### %s%n%s%n", f.getEntryPoint(),
+                                   r.decompileCompleted() ? r.getDecompiledFunction().getC() : "(failed)");
+                    }
+                    di.dispose();
+                    break;
+                }
+                case "findword": {
+                    // every initialized-memory location holding the given big-endian u32 (e.g. vtable slots)
+                    int v = (int) Long.parseLong(p[1].replace("0x", ""), 16);
+                    byte[] pat = {(byte) (v >>> 24), (byte) (v >>> 16), (byte) (v >>> 8), (byte) v};
+                    Address at = currentProgram.getMinAddress();
+                    int hits = 0;
+                    while (at != null && hits < 64) {
+                        at = currentProgram.getMemory().findBytes(at, pat, null, true, monitor);
+                        if (at == null) break;
+                        out.printf("  %s%n", at);
+                        hits++;
+                        at = at.add(1);
+                    }
+                    break;
+                }
                 case "words": {
                     // raw big-endian u32 words (vtables, data tables)
                     Address a = A(p[1]);
