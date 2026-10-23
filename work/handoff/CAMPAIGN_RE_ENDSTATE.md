@@ -26,7 +26,7 @@ The status column says what the build should do today.
 
 | Area | Item | Label | Build assumption | Doc |
 |---|---|---|---|---|
-| Matinee | IMF_RelativeToInitial matrix order (VMX code) | H (operands C) | InitialTM × BaseTM, then KeyTM × RefTM | MATINEE_NATIVE §10 |
+| Matinee | IMF_RelativeToInitial matrix order (VMX code) | H (operands C) | InitialTM × BaseTM, then KeyTM × RefTM. It matters only for **307 of 4,197** RelativeToInitial groups (actors with a Base). With stock InitTrackInst (InitialTM = ActorTM × BaseTM⁻¹), only this order reproduces the actor's start pose. | MATINEE_NATIVE §10 |
 | Matinee | slerp shortest-path for bUseQuatInterpolation | H | stock FQuat Slerp (sign flip on negative dot) | MATINEE_NATIVE §2 |
 | Matinee | Lookup-key end tangents | H | zero at the first / last key | MATINEE_NATIVE §3 |
 | Matinee | groups bound to empty SeqVar_Objects (165) | C mechanism / H cause | actor tracks no-op; sound / event / fade tracks still run | MATINEE_NATIVE §7, PROVISIONALS_CLOSED §5 |
