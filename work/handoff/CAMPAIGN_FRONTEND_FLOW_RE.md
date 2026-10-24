@@ -198,3 +198,18 @@ PRESENTATION_AUDIT_3).
   WaitingOnGameStart);
 - SOLO's checkpoint saving vs co-op's: only Solo sets `bShouldSaveCheckpoints`. H: co-op records progress through the
   profile's ReachedCheckpoint, but doesn't write checkpoint saves.
+
+## 8. Addendum 2026-10-24: the lobby pick carries into the map (C; QC #38 / 40)
+- **The campaign map's GRI:** TnCampaignGame / Solo / Coop use **TnGameReplicationInfoGameBase** (the TnCampaignGameBase
+  GameReplicationInfoClass).
+  - It inherits `RetainSelectedCharacterOnTransition = True` from TnGameReplicationInfo.
+  - Only TnGameReplicationInfoMultiplayer sets it False; the Survival GRI sets it back to True.
+- **Lobby → map is seamless:** TnGame `bUseSeamlessTravel` True, and `ServerTravelToMap(URL, true, …)`. So
+  `TnPlayerReplicationInfo.CopyPropertiesTo` copies `_SelectedCharacter`, the string, the ReplicatedCharacterData and the iconic
+  name, provided `ValidateCharacterSelection` passes (the name is in the chapter's trio and not held by another PRI).
+- **Characters are cleared only when entering the lobby:** `TnGameLobbyGameCampaign.HandleSeamlessTravelPlayer` →
+  `PRI.ClearCharacter`. `TnCampaignGame.HandleSeamlessTravelPlayer` only re-sets the team.
+- **So:**
+  - A Solo / CP / CCP lobby pick spawns as that character, with **no in-map select**. In-map select is only for players with no
+    valid pick (cleared, invalid, or mid-game joiners).
+  - Returning to the lobby after a chapter clears it, so everyone re-picks.
