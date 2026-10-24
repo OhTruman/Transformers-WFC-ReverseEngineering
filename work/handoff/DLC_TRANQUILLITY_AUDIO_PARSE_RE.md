@@ -66,3 +66,12 @@
 - **Check:** re-extract block 11 of Tranquillity_AUDIO and block 1362 of Static_ART (counting from each file's first block) by
   following the STFS hash entries' next-block chain and the level-1 tables, then re-decode. If the short blocks become 131,072
   bytes, the 43 Tranquillity exports and Static's surfs 316–1128 come back.
+
+## Resolved 2026-10-24 (Integration, confirmed)
+- **Both bad blocks are STFS data block 28,900 (0x70E4):** Static_ART = first block 27,538 + 1,362; Tranquillity_AUDIO = first block
+  28,889 + 11.
+- **Cause:** the extractor's backing-block formula used `>` instead of `>=` at the 0xAA / 0x70E4 hash-table boundaries, so that one
+  block was read one table early.
+- **This is an extraction bug; the shipped data is intact.**
+- The affected files are being re-extracted. `tranquillity_audio_unrecoverable.json` and the "damaged in the shipped cook" note
+  above are **superseded**; those exports are recoverable after re-extraction.
