@@ -2634,6 +2634,7 @@
  "events": [
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "Healing_Platform",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_1283",
    "comment": null,
@@ -2647,6 +2648,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "Healing_Platform",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -2656,6 +2658,7 @@
     },
     {
      "op": "SeqAct_Interp_255",
+     "seq": "Healing_Platform",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -2680,6 +2683,7 @@
     },
     {
      "op": "SeqAct_HealDamage_5250",
+     "seq": "Healing_Platform",
      "class": "SeqAct_HealDamage",
      "via": "SeqAct_Interp_255.Heal",
      "input": "In",
@@ -2693,6 +2697,7 @@
     },
     {
      "op": "SeqAct_PlaySound_3977",
+     "seq": "Healing_Platform",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_255.stop_healing",
      "input": "Stop",
@@ -2706,6 +2711,7 @@
     },
     {
      "op": "SeqAct_PlaySound_3977",
+     "seq": "Healing_Platform",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_255.start_healing",
      "input": "Play",
@@ -2719,6 +2725,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_13435",
+     "seq": "Healing_Platform",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqAct_Interp_255.unhide_sphere",
      "input": "UnHide",
@@ -2732,6 +2739,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_13435",
+     "seq": "Healing_Platform",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqAct_Interp_255.hide_sphere",
      "input": "Hide",
@@ -2745,6 +2753,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "Healing_Platform",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_255.Completed",
      "input": "In",
@@ -2759,15 +2768,18 @@
     },
     {
      "op": "SeqAct_Delay_15417",
+     "seq": "Healing_Platform",
      "class": "SeqAct_Delay",
      "via": "SeqAct_Interp_255.Completed",
      "input": "Start",
      "depth": 2,
      "comment": "give time to reduce back to state 0 or event will refire and retrigger the matinee",
-     "vars": {}
+     "vars": {},
+     "Duration": 1.0
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "Healing_Platform",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Delay_15417.Finished",
      "input": "Turn On",
@@ -2781,6 +2793,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "Healing_Platform",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Delay_15417.Finished",
      "input": "Turn On",
@@ -2790,6 +2803,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "Healing_Platform",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -2799,6 +2813,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "Healing_Platform",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -2814,6 +2829,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_100",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_13464",
    "comment": "HEALTH NORTH",
@@ -2827,6 +2843,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_100",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -2836,6 +2853,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_15100",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_100.New Power Level",
      "input": "UnHide",
@@ -2849,6 +2867,7 @@
     },
     {
      "op": "SeqAct_Toggle_4455",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_15100.Out",
      "input": "Turn Off",
@@ -2864,6 +2883,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_11129",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_4798",
    "comment": "AMMO",
@@ -2877,6 +2897,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_11129",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -2886,6 +2907,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_9200",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_11129.New Power Level",
      "input": "UnHide",
@@ -2899,6 +2921,7 @@
     },
     {
      "op": "SeqAct_Toggle_11150",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_9200.Out",
      "input": "Turn Off",
@@ -2914,6 +2937,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_12573",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_1343",
    "comment": "AMMO",
@@ -2927,6 +2951,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_12573",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -2936,6 +2961,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_1809",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_12573.New Power Level",
      "input": "UnHide",
@@ -2949,6 +2975,7 @@
     },
     {
      "op": "SeqAct_Toggle_1811",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_1809.Out",
      "input": "Turn Off",
@@ -2964,6 +2991,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_1594",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_15907",
    "comment": null,
@@ -2977,6 +3005,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_1594",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -2986,6 +3015,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_1830",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_1594.New Power Level",
      "input": "UnHide",
@@ -2999,6 +3029,7 @@
     },
     {
      "op": "SeqAct_Toggle_4105",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_1830.Out",
      "input": "Turn Off",
@@ -3014,6 +3045,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_3366",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_6889",
    "comment": null,
@@ -3027,6 +3059,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_3366",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3036,6 +3069,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_12359",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_3366.New Power Level",
      "input": "UnHide",
@@ -3049,6 +3083,7 @@
     },
     {
      "op": "SeqAct_Toggle_1302",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_12359.Out",
      "input": "Turn Off",
@@ -3064,6 +3099,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_3884",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7606",
    "comment": null,
@@ -3077,6 +3113,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_3884",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3086,6 +3123,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_15486",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_3884.New Power Level",
      "input": "UnHide",
@@ -3099,6 +3137,7 @@
     },
     {
      "op": "SeqAct_Toggle_6267",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_15486.Out",
      "input": "Turn Off",
@@ -3114,6 +3153,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_4970",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_996",
    "comment": null,
@@ -3127,6 +3167,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_4970",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3136,6 +3177,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_11632",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_4970.New Power Level",
      "input": "UnHide",
@@ -3149,6 +3191,7 @@
     },
     {
      "op": "SeqAct_Toggle_10263",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_11632.Out",
      "input": "Turn Off",
@@ -3164,6 +3207,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_5451",
+   "seq": "Health_/_Ammo_Pickup_Generator",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_9137",
    "comment": "Level FIre",
@@ -3179,6 +3223,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_5451",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3188,6 +3233,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3021",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_5451.New Power Level",
      "input": "UnHide",
@@ -3201,6 +3247,7 @@
     },
     {
      "op": "SeqAct_Toggle_1555",
+     "seq": "Health_/_Ammo_Pickup_Generator",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_3021.Out",
      "input": "Turn Off",
@@ -3216,6 +3263,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "Left_Beam_Room_Trap",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_9449",
    "comment": null,
@@ -3229,6 +3277,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "Left_Beam_Room_Trap",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3238,6 +3287,7 @@
     },
     {
      "op": "SeqAct_Interp_11000",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -3274,6 +3324,7 @@
     },
     {
      "op": "SeqAct_PlaySound_15941",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_11000.power_up",
      "input": "Play",
@@ -3287,6 +3338,7 @@
     },
     {
      "op": "SeqAct_PlaySound_772",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_11000.power_down",
      "input": "Play",
@@ -3300,6 +3352,7 @@
     },
     {
      "op": "SeqAct_PlaySound_14964",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_11000.stop_beam",
      "input": "Stop",
@@ -3313,6 +3366,7 @@
     },
     {
      "op": "SeqAct_PlaySound_14964",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_11000.start_beam",
      "input": "Play",
@@ -3326,15 +3380,18 @@
     },
     {
      "op": "SeqAct_Delay_15417",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_Delay",
      "via": "SeqAct_Interp_11000.Completed",
      "input": "Start",
      "depth": 2,
      "comment": "give time to reduce back to state 0 or event will refire and retrigger the matinee",
-     "vars": {}
+     "vars": {},
+     "Duration": 1.0
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Delay_15417.Finished",
      "input": "Turn On",
@@ -3344,6 +3401,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "Left_Beam_Room_Trap",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_11000.Completed",
      "input": "In",
@@ -3358,6 +3416,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_11000.Completed",
      "input": "Turn On",
@@ -3371,6 +3430,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -3380,6 +3440,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "Left_Beam_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -3395,6 +3456,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_16103",
+   "seq": "Nexus_Attack",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_13980",
    "comment": null,
@@ -3408,6 +3470,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_16103",
+     "seq": "Nexus_Attack",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3417,6 +3480,7 @@
     },
     {
      "op": "SeqAct_Toggle_5337",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_16103.New Power Level",
      "input": "Turn Off",
@@ -3430,6 +3494,7 @@
     },
     {
      "op": "SeqAct_Interp_9308",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_16103.New Power Level",
      "input": "Play",
@@ -3449,6 +3514,7 @@
     },
     {
      "op": "SeqAct_PlaySound_10831",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_9308.Tryp_Kill",
      "input": "Play",
@@ -3462,6 +3528,7 @@
     },
     {
      "op": "Nexus_Attack",
+     "seq": "Nexus_Attack",
      "class": "Sequence",
      "via": "SeqAct_Interp_9308.Lowered",
      "input": "PowerSupplied",
@@ -3471,6 +3538,7 @@
     },
     {
      "op": "SeqAct_PlaySound_8232",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_PlaySound",
      "via": "Nexus_Attack.ResetNexusAttack",
      "input": "Play",
@@ -3484,6 +3552,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_15159",
+     "seq": "Nexus_Attack",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "Nexus_Attack.ResetNexusAttack",
      "input": "In",
@@ -3498,6 +3567,7 @@
     },
     {
      "op": "SeqAct_Toggle_5337",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_Toggle",
      "via": "TnSeqAct_ModifySurvivalGeneratorPower_15159.Out",
      "input": "Turn On",
@@ -3511,6 +3581,7 @@
     },
     {
      "op": "SeqAct_Interp_9308",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_Interp",
      "via": "Nexus_Attack.ResetNexusAttack",
      "input": "Reverse",
@@ -3532,6 +3603,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_10040",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7876",
    "comment": null,
@@ -3545,6 +3617,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_10040",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3554,6 +3627,7 @@
     },
     {
      "op": "SeqAct_Gate_8203",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "TnSeqEvent_SurvivalGenerator_10040.New Power Level",
      "input": "In",
@@ -3563,6 +3637,7 @@
     },
     {
      "op": "Zone_Manager_4",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqAct_Gate_8203.Out",
      "input": "Generator Used",
@@ -3584,6 +3659,7 @@
     },
     {
      "op": "SeqAct_Interp_11165",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_4.Open Matinee Door",
      "input": "Play",
@@ -3600,6 +3676,7 @@
     },
     {
      "op": "SeqAct_Gate_8203",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "SeqAct_Gate_8203.Out",
      "input": "Close",
@@ -3611,6 +3688,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_11257",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_2441",
    "comment": null,
@@ -3624,6 +3702,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_11257",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3633,6 +3712,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_12496",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "TnSeqEvent_SurvivalGenerator_11257.New Power Level",
      "input": "In",
@@ -3643,6 +3723,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_15281",
+     "seq": "Power_Generator_Action",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_12496.remote:LeftSideBackwardProgression",
      "input": 0,
@@ -3653,6 +3734,7 @@
     },
     {
      "op": "Zone_Manager_3",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqEvent_RemoteEvent_15281.Out",
      "input": "Generator Used",
@@ -3671,6 +3753,7 @@
     },
     {
      "op": "SeqAct_Interp_12776",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_3.Open Matinee Door",
      "input": "Play",
@@ -3689,6 +3772,7 @@
     },
     {
      "op": "SeqAct_Gate_8203",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "TnSeqEvent_SurvivalGenerator_11257.New Power Level",
      "input": "In",
@@ -3698,6 +3782,7 @@
     },
     {
      "op": "Zone_Manager_4",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqAct_Gate_8203.Out",
      "input": "Generator Used",
@@ -3719,6 +3804,7 @@
     },
     {
      "op": "SeqAct_Interp_11165",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_4.Open Matinee Door",
      "input": "Play",
@@ -3735,6 +3821,7 @@
     },
     {
      "op": "SeqAct_Gate_8203",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "SeqAct_Gate_8203.Out",
      "input": "Close",
@@ -3746,6 +3833,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_1203",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_2403",
    "comment": null,
@@ -3759,6 +3847,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_1203",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3768,6 +3857,7 @@
     },
     {
      "op": "Zone_Manager",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "TnSeqEvent_SurvivalGenerator_1203.New Power Level",
      "input": "Generator Used",
@@ -3788,6 +3878,7 @@
     },
     {
      "op": "SeqAct_Interp_54",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager.Open Matinee Door",
      "input": "Play",
@@ -3804,6 +3895,7 @@
     },
     {
      "op": "SeqAct_PlaySound_4417",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_54.DeployRamp",
      "input": "Play",
@@ -3817,6 +3909,7 @@
     },
     {
      "op": "SeqAct_Destroy_7609",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "SeqAct_Interp_54.Completed",
      "input": "In",
@@ -3830,6 +3923,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_12013",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "Zone_Manager.Open Matinee Door",
      "input": "In",
@@ -3840,6 +3934,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_8052",
+     "seq": "Nexus_Attack",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_12013.remote:FinalRoomUnlocked",
      "input": 0,
@@ -3850,6 +3945,7 @@
     },
     {
      "op": "SeqAct_Interp_10331",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_RemoteEvent_8052.Out",
      "input": "Play",
@@ -3866,6 +3962,7 @@
     },
     {
      "op": "SeqAct_PlaySound_1069",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_10331.Completed",
      "input": "Play",
@@ -3879,6 +3976,7 @@
     },
     {
      "op": "SeqAct_Toggle_2337",
+     "seq": "Nexus_Attack",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10331.Completed",
      "input": "Turn On",
@@ -3892,6 +3990,7 @@
     },
     {
      "op": "SeqAct_Interp_4544",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager.Open Matinee Door",
      "input": "Play",
@@ -3908,6 +4007,7 @@
     },
     {
      "op": "SeqAct_PlaySound_12965",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_4544.DEPLOY_WINDOWS_LARGE",
      "input": "Play",
@@ -3921,6 +4021,7 @@
     },
     {
      "op": "SeqAct_Destroy_14389",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "SeqAct_Interp_4544.Completed",
      "input": "In",
@@ -3936,6 +4037,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14633",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_1460",
    "comment": null,
@@ -3949,6 +4051,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14633",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -3958,6 +4061,7 @@
     },
     {
      "op": "SeqAct_Toggle_10632",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14633.New Power Level",
      "input": "Turn Off",
@@ -3971,6 +4075,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_10524",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "TnSeqEvent_SurvivalGenerator_14633.New Power Level",
      "input": "In",
@@ -3981,6 +4086,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_14929",
+     "seq": "Power_Generator_Action",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_10524.remote:OpenInitial3LeftSideDoors",
      "input": 0,
@@ -3991,6 +4097,7 @@
     },
     {
      "op": "Zone_Manager_8",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqEvent_RemoteEvent_14929.Out",
      "input": "Generator Used",
@@ -4015,6 +4122,7 @@
     },
     {
      "op": "TnSeqAct_TransformWorldProp_14617",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqAct_TransformWorldProp",
      "via": "Zone_Manager_8.Open Matinee Door",
      "input": "Transform",
@@ -4028,6 +4136,7 @@
     },
     {
      "op": "SeqAct_Destroy_3114",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "TnSeqAct_TransformWorldProp_14617.Finished",
      "input": "In",
@@ -4041,6 +4150,7 @@
     },
     {
      "op": "SeqAct_Interp_12613",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_8.Open Matinee Door",
      "input": "Play",
@@ -4060,6 +4170,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_12190",
+     "seq": "Power_Generator_Action",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_10524.remote:OpenInitial3LeftSideDoors",
      "input": 0,
@@ -4070,6 +4181,7 @@
     },
     {
      "op": "Zone_Manager_2",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqEvent_RemoteEvent_12190.Out",
      "input": "Generator Used",
@@ -4090,6 +4202,7 @@
     },
     {
      "op": "SeqAct_Interp_7549",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_2.Open Matinee Door",
      "input": "Play",
@@ -4111,6 +4224,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_15356",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_11205",
    "comment": null,
@@ -4124,6 +4238,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_15356",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4133,6 +4248,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_13953",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "TnSeqEvent_SurvivalGenerator_15356.New Power Level",
      "input": "In",
@@ -4143,6 +4259,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_8626",
+     "seq": "Power_Generator_Action",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_13953.remote:RightSideBackwardProgression",
      "input": 0,
@@ -4153,6 +4270,7 @@
     },
     {
      "op": "Zone_Manager_6",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqEvent_RemoteEvent_8626.Out",
      "input": "Generator Used",
@@ -4171,6 +4289,7 @@
     },
     {
      "op": "SeqAct_Interp_14950",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_6.Open Matinee Door",
      "input": "Play",
@@ -4189,6 +4308,7 @@
     },
     {
      "op": "SeqAct_Gate_13329",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "TnSeqEvent_SurvivalGenerator_15356.New Power Level",
      "input": "In",
@@ -4198,6 +4318,7 @@
     },
     {
      "op": "SeqAct_Gate_13329",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "SeqAct_Gate_13329.Out",
      "input": "Close",
@@ -4207,6 +4328,7 @@
     },
     {
      "op": "Zone_Manager_5",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqAct_Gate_13329.Out",
      "input": "Generator Used",
@@ -4228,6 +4350,7 @@
     },
     {
      "op": "SeqAct_Interp_11287",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_5.Open Matinee Door",
      "input": "Play",
@@ -4246,6 +4369,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_1894",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7554",
    "comment": null,
@@ -4259,6 +4383,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_1894",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4268,6 +4393,7 @@
     },
     {
      "op": "SeqAct_Gate_13329",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "TnSeqEvent_SurvivalGenerator_1894.New Power Level",
      "input": "In",
@@ -4277,6 +4403,7 @@
     },
     {
      "op": "SeqAct_Gate_13329",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Gate",
      "via": "SeqAct_Gate_13329.Out",
      "input": "Close",
@@ -4286,6 +4413,7 @@
     },
     {
      "op": "Zone_Manager_5",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqAct_Gate_13329.Out",
      "input": "Generator Used",
@@ -4307,6 +4435,7 @@
     },
     {
      "op": "SeqAct_Interp_11287",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_5.Open Matinee Door",
      "input": "Play",
@@ -4325,6 +4454,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_3147",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_15272",
    "comment": null,
@@ -4338,6 +4468,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_3147",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4347,6 +4478,7 @@
     },
     {
      "op": "Zone_Manager_9",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "TnSeqEvent_SurvivalGenerator_3147.New Power Level",
      "input": "Generator Used",
@@ -4372,6 +4504,7 @@
     },
     {
      "op": "TnSeqAct_TransformWorldProp_14076",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqAct_TransformWorldProp",
      "via": "Zone_Manager_9.Open Matinee Door",
      "input": "Transform",
@@ -4385,6 +4518,7 @@
     },
     {
      "op": "SeqAct_Destroy_4631",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "TnSeqAct_TransformWorldProp_14076.Finished",
      "input": "In",
@@ -4398,6 +4532,7 @@
     },
     {
      "op": "SeqAct_Interp_7793",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_9.Open Matinee Door",
      "input": "Play",
@@ -4418,6 +4553,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_4873",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_15987",
    "comment": null,
@@ -4431,6 +4567,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_4873",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4440,6 +4577,7 @@
     },
     {
      "op": "Zone_Manager_1",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "TnSeqEvent_SurvivalGenerator_4873.New Power Level",
      "input": "Generator Used",
@@ -4466,6 +4604,7 @@
     },
     {
      "op": "SeqAct_PlaySound_11955",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_PlaySound",
      "via": "Zone_Manager_1.Open Matinee Door",
      "input": "Play",
@@ -4479,6 +4618,7 @@
     },
     {
      "op": "SeqAct_Interp_5622",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_1.Open Matinee Door",
      "input": "Play",
@@ -4534,6 +4674,7 @@
     },
     {
      "op": "SeqAct_Interp_8917",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_5622.OpenSideDoors",
      "input": "Play",
@@ -4551,6 +4692,7 @@
     },
     {
      "op": "SeqAct_PlaySound_8485",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_PlaySound",
      "via": "SeqAct_Interp_8917.DEPLOY_WINDOWS_LARGE",
      "input": "Play",
@@ -4564,6 +4706,7 @@
     },
     {
      "op": "SeqAct_Destroy_980",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "SeqAct_Interp_8917.Completed",
      "input": "In",
@@ -4578,6 +4721,7 @@
     },
     {
      "op": "SeqAct_Destroy_12650",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "SeqAct_Interp_5622.BlowUpGenerator",
      "input": "In",
@@ -4591,6 +4735,7 @@
     },
     {
      "op": "SeqAct_Toggle_6483",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_5622.BlowUpGenerator",
      "input": "Turn On",
@@ -4604,6 +4749,7 @@
     },
     {
      "op": "SeqAct_Delay_1780",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Delay",
      "via": "SeqAct_Interp_5622.Completed",
      "input": "Start",
@@ -4614,6 +4760,7 @@
     },
     {
      "op": "SeqAct_Destroy_14868",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "SeqAct_Delay_1780.Finished",
      "input": "In",
@@ -4640,6 +4787,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_714",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7312",
    "comment": null,
@@ -4653,6 +4801,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_714",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4662,6 +4811,7 @@
     },
     {
      "op": "Zone_Manager_2",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "TnSeqEvent_SurvivalGenerator_714.New Power Level",
      "input": "Generator Used",
@@ -4682,6 +4832,7 @@
     },
     {
      "op": "SeqAct_Interp_7549",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_2.Open Matinee Door",
      "input": "Play",
@@ -4703,6 +4854,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_7989",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7911",
    "comment": null,
@@ -4716,6 +4868,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_7989",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4725,6 +4878,7 @@
     },
     {
      "op": "SeqAct_Toggle_9982",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_7989.New Power Level",
      "input": "Turn Off",
@@ -4738,6 +4892,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_11988",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "TnSeqEvent_SurvivalGenerator_7989.New Power Level",
      "input": "In",
@@ -4748,6 +4903,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_1330",
+     "seq": "Power_Generator_Action",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_11988.remote:OpenInitial3RightSideDoors",
      "input": 0,
@@ -4758,6 +4914,7 @@
     },
     {
      "op": "Zone_Manager_9",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqEvent_RemoteEvent_1330.Out",
      "input": "Generator Used",
@@ -4783,6 +4940,7 @@
     },
     {
      "op": "TnSeqAct_TransformWorldProp_14076",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqAct_TransformWorldProp",
      "via": "Zone_Manager_9.Open Matinee Door",
      "input": "Transform",
@@ -4796,6 +4954,7 @@
     },
     {
      "op": "SeqAct_Destroy_4631",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "TnSeqAct_TransformWorldProp_14076.Finished",
      "input": "In",
@@ -4809,6 +4968,7 @@
     },
     {
      "op": "SeqAct_Interp_7793",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_9.Open Matinee Door",
      "input": "Play",
@@ -4827,6 +4987,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_10261",
+     "seq": "Power_Generator_Action",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_11988.remote:OpenInitial3RightSideDoors",
      "input": 0,
@@ -4837,6 +4998,7 @@
     },
     {
      "op": "Zone_Manager_10",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "SeqEvent_RemoteEvent_10261.Out",
      "input": "Generator Used",
@@ -4862,6 +5024,7 @@
     },
     {
      "op": "SeqAct_Interp_542",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_10.Open Matinee Door",
      "input": "Play",
@@ -4883,6 +5046,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_8908",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_1963",
    "comment": null,
@@ -4896,6 +5060,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_8908",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4905,6 +5070,7 @@
     },
     {
      "op": "Zone_Manager_8",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "TnSeqEvent_SurvivalGenerator_8908.New Power Level",
      "input": "Generator Used",
@@ -4929,6 +5095,7 @@
     },
     {
      "op": "TnSeqAct_TransformWorldProp_14617",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqAct_TransformWorldProp",
      "via": "Zone_Manager_8.Open Matinee Door",
      "input": "Transform",
@@ -4942,6 +5109,7 @@
     },
     {
      "op": "SeqAct_Destroy_3114",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Destroy",
      "via": "TnSeqAct_TransformWorldProp_14617.Finished",
      "input": "In",
@@ -4955,6 +5123,7 @@
     },
     {
      "op": "SeqAct_Interp_12613",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_8.Open Matinee Door",
      "input": "Play",
@@ -4976,6 +5145,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_9014",
+   "seq": "Power_Generator_Action",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7636",
    "comment": null,
@@ -4989,6 +5159,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_9014",
+     "seq": "Power_Generator_Action",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -4998,6 +5169,7 @@
     },
     {
      "op": "Zone_Manager_10",
+     "seq": "Power_Generator_Action",
      "class": "Sequence",
      "via": "TnSeqEvent_SurvivalGenerator_9014.New Power Level",
      "input": "Generator Used",
@@ -5023,6 +5195,7 @@
     },
     {
      "op": "SeqAct_Interp_542",
+     "seq": "Power_Generator_Action",
      "class": "SeqAct_Interp",
      "via": "Zone_Manager_10.Open Matinee Door",
      "input": "Play",
@@ -5044,6 +5217,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "Right_Coolant_Room_Trap",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_10812",
    "comment": null,
@@ -5057,6 +5231,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5066,6 +5241,7 @@
     },
     {
      "op": "SeqAct_PlaySound_4296",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_PlaySound",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -5079,6 +5255,7 @@
     },
     {
      "op": "SeqAct_Interp_12613",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -5110,6 +5287,7 @@
     },
     {
      "op": "SeqAct_Switch_14681",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Switch",
      "via": "SeqAct_Interp_12613.Spawn",
      "input": "In",
@@ -5119,6 +5297,7 @@
     },
     {
      "op": "SeqAct_TnPawnFactory_1862",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_TnPawnFactory",
      "via": "SeqAct_Switch_14681.Link 3",
      "input": "Spawn Actor",
@@ -5134,6 +5313,7 @@
     },
     {
      "op": "SeqAct_TnPawnFactory_14460",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_TnPawnFactory",
      "via": "SeqAct_Switch_14681.Link 2",
      "input": "Spawn Actor",
@@ -5149,6 +5329,7 @@
     },
     {
      "op": "SeqAct_TnPawnFactory_14765",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_TnPawnFactory",
      "via": "SeqAct_Switch_14681.Link 1",
      "input": "Spawn Actor",
@@ -5164,6 +5345,7 @@
     },
     {
      "op": "SeqAct_Delay_15417",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Delay",
      "via": "SeqAct_Interp_12613.Completed",
      "input": "Start",
@@ -5174,6 +5356,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Delay_15417.Finished",
      "input": "Turn On",
@@ -5183,6 +5366,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_12613.Completed",
      "input": "Turn On",
@@ -5196,6 +5380,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_12613.Completed",
      "input": "In",
@@ -5210,6 +5395,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -5219,6 +5405,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "Right_Coolant_Room_Trap",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -5234,6 +5421,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalEvents_12639",
+   "seq": "Trypticon_Dialog",
    "class": "TnSeqEvent_SurvivalEvents",
    "originator": null,
    "comment": null,
@@ -5247,6 +5435,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalEvents_12639",
+     "seq": "Trypticon_Dialog",
      "class": "TnSeqEvent_SurvivalEvents",
      "via": null,
      "input": 0,
@@ -5256,6 +5445,7 @@
     },
     {
      "op": "SeqAct_RandomSwitch_9858",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_RandomSwitch",
      "via": "TnSeqEvent_SurvivalEvents_12639.Round End",
      "input": "In",
@@ -5265,6 +5455,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_8521",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "SeqAct_RandomSwitch_9858.Link 20",
      "input": "In",
@@ -5275,6 +5466,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_10435",
+     "seq": "Trypticon_Dialog",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_8521.remote:EnablePresets",
      "input": 0,
@@ -5285,6 +5477,7 @@
     },
     {
      "op": "SeqAct_Mixer_11876",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_Mixer",
      "via": "SeqEvent_RemoteEvent_10435.Out",
      "input": "Enable Preset",
@@ -5294,6 +5487,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_1436",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 20",
      "input": "Play",
@@ -5307,6 +5501,7 @@
     },
     {
      "op": "SeqAct_Mixer_11876",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_Mixer",
      "via": "SeqAct_PlayDialog_1436.Finished",
      "input": "Disable Preset",
@@ -5316,6 +5511,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_10291",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 19",
      "input": "Play",
@@ -5329,6 +5525,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_1429",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 18",
      "input": "Play",
@@ -5342,6 +5539,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_15667",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 17",
      "input": "Play",
@@ -5355,6 +5553,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_2147",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 16",
      "input": "Play",
@@ -5368,6 +5567,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_12807",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 15",
      "input": "Play",
@@ -5381,6 +5581,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_15663",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 14",
      "input": "Play",
@@ -5394,6 +5595,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_1547",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 13",
      "input": "Play",
@@ -5407,6 +5609,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_3026",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 12",
      "input": "Play",
@@ -5420,6 +5623,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_726",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 11",
      "input": "Play",
@@ -5433,6 +5637,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_5526",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 10",
      "input": "Play",
@@ -5446,6 +5651,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_12611",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 9",
      "input": "Play",
@@ -5459,6 +5665,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_7824",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 8",
      "input": "Play",
@@ -5472,6 +5679,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_13670",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 8",
      "input": "Play",
@@ -5485,6 +5693,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_3113",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 7",
      "input": "Play",
@@ -5498,6 +5707,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_16098",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 6",
      "input": "Play",
@@ -5511,6 +5721,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_10622",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 5",
      "input": "Play",
@@ -5524,6 +5735,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_11885",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 3",
      "input": "Play",
@@ -5537,6 +5749,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_3638",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 2",
      "input": "Play",
@@ -5550,6 +5763,7 @@
     },
     {
      "op": "SeqAct_PlayDialog_3903",
+     "seq": "Trypticon_Dialog",
      "class": "SeqAct_PlayDialog",
      "via": "SeqAct_RandomSwitch_9858.Link 1",
      "input": "Play",
@@ -5565,6 +5779,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_16131",
+   "seq": "Weapon_Pickup_Generators.Heal_Grenades",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": null,
    "comment": "HEALTH NORTH CNTER",
@@ -5578,6 +5793,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_16131",
+     "seq": "Weapon_Pickup_Generators.Heal_Grenades",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5587,6 +5803,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_12033",
+     "seq": "Weapon_Pickup_Generators.Heal_Grenades",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_16131.New Power Level",
      "input": "UnHide",
@@ -5600,6 +5817,7 @@
     },
     {
      "op": "SeqAct_Toggle_11668",
+     "seq": "Weapon_Pickup_Generators.Heal_Grenades",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_12033.Out",
      "input": "Turn Off",
@@ -5615,6 +5833,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_16131",
+   "seq": "Weapon_Pickup_Generators.Heal_Grenades_0",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_5011",
    "comment": "HEALTH NORTH CNTER",
@@ -5628,6 +5847,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_16131",
+     "seq": "Weapon_Pickup_Generators.Heal_Grenades_0",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5637,6 +5857,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_12033",
+     "seq": "Weapon_Pickup_Generators.Heal_Grenades_0",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_16131.New Power Level",
      "input": "UnHide",
@@ -5650,6 +5871,7 @@
     },
     {
      "op": "SeqAct_Toggle_11668",
+     "seq": "Weapon_Pickup_Generators.Heal_Grenades_0",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_12033.Out",
      "input": "Turn Off",
@@ -5665,6 +5887,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_16131",
+   "seq": "Weapon_Pickup_Generators.Homing_Rocket_0",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_4507",
    "comment": "HEALTH NORTH CNTER",
@@ -5678,6 +5901,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_16131",
+     "seq": "Weapon_Pickup_Generators.Homing_Rocket_0",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5687,6 +5911,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_12033",
+     "seq": "Weapon_Pickup_Generators.Homing_Rocket_0",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_16131.New Power Level",
      "input": "UnHide",
@@ -5700,6 +5925,7 @@
     },
     {
      "op": "SeqAct_Toggle_11668",
+     "seq": "Weapon_Pickup_Generators.Homing_Rocket_0",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_12033.Out",
      "input": "Turn Off",
@@ -5715,6 +5941,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_10489",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_12171",
    "comment": "K MINES",
@@ -5728,6 +5955,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_10489",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5737,6 +5965,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_7038",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_10489.New Power Level",
      "input": "UnHide",
@@ -5750,6 +5979,7 @@
     },
     {
      "op": "SeqAct_Toggle_13224",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_7038.Out",
      "input": "Turn Off",
@@ -5765,6 +5995,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_12229",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_2279",
    "comment": "SCATTER BLASTER",
@@ -5778,6 +6009,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_12229",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5787,6 +6019,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_6511",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_12229.New Power Level",
      "input": "UnHide",
@@ -5800,6 +6033,7 @@
     },
     {
      "op": "SeqAct_Toggle_14626",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_6511.Out",
      "input": "Turn Off",
@@ -5815,6 +6049,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_13162",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_15978",
    "comment": "FLAK",
@@ -5828,6 +6063,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_13162",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5837,6 +6073,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_10495",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_13162.New Power Level",
      "input": "UnHide",
@@ -5850,6 +6087,7 @@
     },
     {
      "op": "SeqAct_Toggle_14099",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_10495.Out",
      "input": "Turn Off",
@@ -5865,6 +6103,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_1327",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_2600",
    "comment": "SNIPER RIFLE",
@@ -5878,6 +6117,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_1327",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5887,6 +6127,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_16271",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_1327.New Power Level",
      "input": "UnHide",
@@ -5900,6 +6141,7 @@
     },
     {
      "op": "SeqAct_Toggle_12288",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_16271.Out",
      "input": "Turn Off",
@@ -5915,6 +6157,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_1371",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_2893",
    "comment": "K MINES",
@@ -5928,6 +6171,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_1371",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5937,6 +6181,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_2624",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_1371.New Power Level",
      "input": "UnHide",
@@ -5950,6 +6195,7 @@
     },
     {
      "op": "SeqAct_Toggle_10289",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_2624.Out",
      "input": "Turn Off",
@@ -5965,6 +6211,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_15343",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_14070",
    "comment": "BurstRifle",
@@ -5978,6 +6225,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_15343",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -5987,6 +6235,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_7151",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_15343.New Power Level",
      "input": "UnHide",
@@ -6000,6 +6249,7 @@
     },
     {
      "op": "SeqAct_Toggle_6733",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_7151.Out",
      "input": "Turn Off",
@@ -6015,6 +6265,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_1538",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_4423",
    "comment": "GRENLAUNCHER",
@@ -6028,6 +6279,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_1538",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6037,6 +6289,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_2023",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_1538.New Power Level",
      "input": "UnHide",
@@ -6050,6 +6303,7 @@
     },
     {
      "op": "SeqAct_Toggle_2400",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_2023.Out",
      "input": "Turn Off",
@@ -6065,6 +6319,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_2398",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_4856",
    "comment": null,
@@ -6078,6 +6333,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_2398",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6087,6 +6343,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_13074",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_2398.New Power Level",
      "input": "UnHide",
@@ -6100,6 +6357,7 @@
     },
     {
      "op": "SeqAct_Toggle_13500",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_13074.Out",
      "input": "Turn Off",
@@ -6115,6 +6373,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_5584",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_8999",
    "comment": "REPAIR RAY",
@@ -6128,6 +6387,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_5584",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6137,6 +6397,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_1313",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_5584.New Power Level",
      "input": "UnHide",
@@ -6150,6 +6411,7 @@
     },
     {
      "op": "SeqAct_Toggle_14152",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_1313.Out",
      "input": "Turn Off",
@@ -6165,6 +6427,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_5635",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_3079",
    "comment": "BAZOOKA",
@@ -6178,6 +6441,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_5635",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6187,6 +6451,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_10306",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_5635.New Power Level",
      "input": "UnHide",
@@ -6200,6 +6465,7 @@
     },
     {
      "op": "SeqAct_Toggle_5650",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_10306.Out",
      "input": "Turn Off",
@@ -6215,6 +6481,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_6711",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_14475",
    "comment": "SHOTGUN",
@@ -6228,6 +6495,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_6711",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6237,6 +6505,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_8320",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_6711.New Power Level",
      "input": "UnHide",
@@ -6250,6 +6519,7 @@
     },
     {
      "op": "SeqAct_Toggle_5187",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_8320.Out",
      "input": "Turn Off",
@@ -6265,6 +6535,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_8470",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_4065",
    "comment": "PLAMSA",
@@ -6278,6 +6549,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_8470",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6287,6 +6559,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3008",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_8470.New Power Level",
      "input": "UnHide",
@@ -6300,6 +6573,7 @@
     },
     {
      "op": "SeqAct_Toggle_15280",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_3008.Out",
      "input": "Turn Off",
@@ -6315,6 +6589,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_9340",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_8447",
    "comment": "Flash Gren",
@@ -6328,6 +6603,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_9340",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6337,6 +6613,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_6939",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_9340.New Power Level",
      "input": "UnHide",
@@ -6350,6 +6627,7 @@
     },
     {
      "op": "SeqAct_Toggle_9209",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_6939.Out",
      "input": "Turn Off",
@@ -6365,6 +6643,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_9862",
+   "seq": "Weapon_Pickup_Generators",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_13810",
    "comment": null,
@@ -6378,6 +6657,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_9862",
+     "seq": "Weapon_Pickup_Generators",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6387,6 +6667,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_13712",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_ToggleHidden",
      "via": "TnSeqEvent_SurvivalGenerator_9862.New Power Level",
      "input": "UnHide",
@@ -6400,6 +6681,7 @@
     },
     {
      "op": "SeqAct_Toggle_9465",
+     "seq": "Weapon_Pickup_Generators",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_ToggleHidden_13712.Out",
      "input": "Turn Off",
@@ -6415,6 +6697,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "repair_sentries.repair_sentry_LEFT_top_room",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_11565",
    "comment": null,
@@ -6428,6 +6711,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6437,6 +6721,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_14810",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "In",
@@ -6447,6 +6732,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_9969",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -6457,6 +6743,7 @@
     },
     {
      "op": "SeqAct_Delay_8146",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Delay",
      "via": "SeqEvent_RemoteEvent_9969.Out",
      "input": "Start",
@@ -6467,299 +6754,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
-     "class": "SeqAct_Toggle",
-     "via": "SeqAct_Delay_8146.Finished",
-     "input": "Turn Off",
-     "depth": 4,
-     "comment": "effect for spawning the turret",
-     "vars": {
-      "Target": [
-       "Emitter_10"
-      ]
-     }
-    },
-    {
-     "op": "SeqAct_Toggle_7608",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_9969.Out",
-     "input": "Turn On",
-     "depth": 3,
-     "comment": "effect for spawning the turret",
-     "vars": {
-      "Target": [
-       "Emitter_10"
-      ]
-     }
-    },
-    {
-     "op": "SeqAct_Toggle_960",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_9969.Out",
-     "input": "Turn Off",
-     "depth": 3,
-     "comment": "trigger that activates the survival generator",
-     "vars": {
-      "Target": [
-       "TriggerVolume_11015"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_4932",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_TnAiSentrySetDormant_9160",
-     "class": "SeqAct_TnAiSentrySetDormant",
-     "via": "SeqEvent_RemoteEvent_4932.Out",
-     "input": "Not Dormant",
-     "depth": 3,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "SeqVar_ObjectList_5105"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_15538",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Interp_6359",
-     "class": "SeqAct_Interp",
-     "via": "SeqEvent_RemoteEvent_15538.Out",
-     "input": "Play",
-     "depth": 3,
-     "comment": "power cable glows for 90 seconds",
-     "vars": {
-      "Data": [
-       "InterpData_5508"
-      ],
-      "power_cable": [
-       "StaticInterpActor_1097"
-      ],
-      "plus_sign_effect": [
-       "Emitter_5755"
-      ]
-     }
-    },
-    {
-     "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
-     "class": "TnSeqAct_ModifySurvivalGeneratorPower",
-     "via": "SeqAct_Interp_6359.Completed",
-     "input": "In",
-     "depth": 4,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "TnSurvivalGenerator_1070"
-      ]
-     },
-     "PowerToAdd": -500.0
-    },
-    {
-     "op": "SeqAct_Delay_1325",
-     "class": "SeqAct_Delay",
-     "via": "TnSeqAct_ModifySurvivalGeneratorPower_8884.Out",
-     "input": "Start",
-     "depth": 5,
-     "comment": "make sure event doesn't fire again when power is removed from the generator",
-     "vars": {}
-    },
-    {
-     "op": "SeqAct_ActivateRemoteEvent_8904",
-     "class": "SeqAct_ActivateRemoteEvent",
-     "via": "SeqAct_Delay_1325.Finished",
-     "input": "In",
-     "depth": 6,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12747",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_13757",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_12747.Out",
-     "input": "Turn On",
-     "depth": 8,
-     "comment": null,
-     "vars": {}
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12569",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_TnAiSentrySetDormant_9160",
-     "class": "SeqAct_TnAiSentrySetDormant",
-     "via": "SeqEvent_RemoteEvent_12569.Out",
-     "input": "Dormant",
-     "depth": 8,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "SeqVar_ObjectList_5105"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12332",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_960",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_12332.Out",
-     "input": "Turn On",
-     "depth": 8,
-     "comment": "trigger that activates the survival generator",
-     "vars": {
-      "Target": [
-       "TriggerVolume_11015"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12747",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_13757",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_12747.Out",
-     "input": "Turn On",
-     "depth": 8,
-     "comment": null,
-     "vars": {}
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12569",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_TnAiSentrySetDormant_9160",
-     "class": "SeqAct_TnAiSentrySetDormant",
-     "via": "SeqEvent_RemoteEvent_12569.Out",
-     "input": "Dormant",
-     "depth": 8,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "SeqVar_ObjectList_5105"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12332",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_960",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_12332.Out",
-     "input": "Turn On",
-     "depth": 8,
-     "comment": "trigger that activates the survival generator",
-     "vars": {
-      "Target": [
-       "TriggerVolume_6473"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_11908",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_13757",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_11908.Out",
-     "input": "Turn Off",
-     "depth": 3,
-     "comment": null,
-     "vars": {}
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_9969",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Delay_8146",
-     "class": "SeqAct_Delay",
-     "via": "SeqEvent_RemoteEvent_9969.Out",
-     "input": "Start",
-     "depth": 3,
-     "comment": "for client replication",
-     "vars": {},
-     "Duration": 6.0
-    },
-    {
-     "op": "SeqAct_Toggle_7608",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Delay_8146.Finished",
      "input": "Turn Off",
@@ -6773,6 +6768,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_9969.Out",
      "input": "Turn On",
@@ -6786,6 +6782,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_9969.Out",
      "input": "Turn Off",
@@ -6799,6 +6796,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_4932",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -6809,6 +6807,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqEvent_RemoteEvent_4932.Out",
      "input": "Not Dormant",
@@ -6822,6 +6821,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_15538",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -6832,6 +6832,7 @@
     },
     {
      "op": "SeqAct_Interp_6359",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_RemoteEvent_15538.Out",
      "input": "Play",
@@ -6851,6 +6852,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_6359.Completed",
      "input": "In",
@@ -6865,15 +6867,18 @@
     },
     {
      "op": "SeqAct_Delay_1325",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Delay",
      "via": "TnSeqAct_ModifySurvivalGeneratorPower_8884.Out",
      "input": "Start",
      "depth": 5,
      "comment": "make sure event doesn't fire again when power is removed from the generator",
-     "vars": {}
+     "vars": {},
+     "Duration": 1.0
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_8904",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "SeqAct_Delay_1325.Finished",
      "input": "In",
@@ -6883,7 +6888,79 @@
      "EventName": "disable_repair_turret_localevent"
     },
     {
+     "op": "SeqEvent_RemoteEvent_12747",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
+     "class": "SeqEvent_RemoteEvent",
+     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
+     "input": 0,
+     "depth": 7,
+     "comment": "disable_repair_turret_localevent",
+     "vars": {},
+     "EventName": "disable_repair_turret_localevent"
+    },
+    {
+     "op": "SeqAct_Toggle_13757",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
+     "class": "SeqAct_Toggle",
+     "via": "SeqEvent_RemoteEvent_12747.Out",
+     "input": "Turn On",
+     "depth": 8,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqEvent_RemoteEvent_12569",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
+     "class": "SeqEvent_RemoteEvent",
+     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
+     "input": 0,
+     "depth": 7,
+     "comment": "enable_repair_turret_localevent",
+     "vars": {},
+     "EventName": "disable_repair_turret_localevent"
+    },
+    {
+     "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
+     "class": "SeqAct_TnAiSentrySetDormant",
+     "via": "SeqEvent_RemoteEvent_12569.Out",
+     "input": "Dormant",
+     "depth": 8,
+     "comment": null,
+     "vars": {
+      "Target": [
+       "SeqVar_ObjectList_5105"
+      ]
+     }
+    },
+    {
+     "op": "SeqEvent_RemoteEvent_12332",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
+     "class": "SeqEvent_RemoteEvent",
+     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
+     "input": 0,
+     "depth": 7,
+     "comment": "disable_repair_turret_localevent",
+     "vars": {},
+     "EventName": "disable_repair_turret_localevent"
+    },
+    {
+     "op": "SeqAct_Toggle_960",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
+     "class": "SeqAct_Toggle",
+     "via": "SeqEvent_RemoteEvent_12332.Out",
+     "input": "Turn On",
+     "depth": 8,
+     "comment": "trigger that activates the survival generator",
+     "vars": {
+      "Target": [
+       "TriggerVolume_6473"
+      ]
+     }
+    },
+    {
      "op": "SeqEvent_RemoteEvent_11908",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -6894,6 +6971,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "repair_sentries.repair_sentry_LEFT_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_11908.Out",
      "input": "Turn Off",
@@ -6905,6 +6983,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "repair_sentries.repair_sentry_right_top_room",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_1070",
    "comment": null,
@@ -6918,6 +6997,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -6927,6 +7007,7 @@
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_14810",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "In",
@@ -6937,6 +7018,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_9969",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -6947,6 +7029,7 @@
     },
     {
      "op": "SeqAct_Delay_8146",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Delay",
      "via": "SeqEvent_RemoteEvent_9969.Out",
      "input": "Start",
@@ -6957,6 +7040,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Delay_8146.Finished",
      "input": "Turn Off",
@@ -6970,6 +7054,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_9969.Out",
      "input": "Turn On",
@@ -6983,6 +7068,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_9969.Out",
      "input": "Turn Off",
@@ -6996,6 +7082,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_4932",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -7006,6 +7093,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqEvent_RemoteEvent_4932.Out",
      "input": "Not Dormant",
@@ -7019,6 +7107,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_15538",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -7029,6 +7118,7 @@
     },
     {
      "op": "SeqAct_Interp_6359",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_RemoteEvent_15538.Out",
      "input": "Play",
@@ -7048,6 +7138,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_6359.Completed",
      "input": "In",
@@ -7062,15 +7153,18 @@
     },
     {
      "op": "SeqAct_Delay_1325",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Delay",
      "via": "TnSeqAct_ModifySurvivalGeneratorPower_8884.Out",
      "input": "Start",
      "depth": 5,
      "comment": "make sure event doesn't fire again when power is removed from the generator",
-     "vars": {}
+     "vars": {},
+     "Duration": 1.0
     },
     {
      "op": "SeqAct_ActivateRemoteEvent_8904",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_ActivateRemoteEvent",
      "via": "SeqAct_Delay_1325.Finished",
      "input": "In",
@@ -7081,6 +7175,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_12747",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
      "input": 0,
@@ -7091,6 +7186,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_12747.Out",
      "input": "Turn On",
@@ -7100,6 +7196,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_12569",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
      "input": 0,
@@ -7110,6 +7207,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqEvent_RemoteEvent_12569.Out",
      "input": "Dormant",
@@ -7123,6 +7221,7 @@
     },
     {
      "op": "SeqEvent_RemoteEvent_12332",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
      "input": 0,
@@ -7133,6 +7232,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_12332.Out",
      "input": "Turn On",
@@ -7145,72 +7245,8 @@
      }
     },
     {
-     "op": "SeqEvent_RemoteEvent_12747",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_13757",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_12747.Out",
-     "input": "Turn On",
-     "depth": 8,
-     "comment": null,
-     "vars": {}
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12569",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_TnAiSentrySetDormant_9160",
-     "class": "SeqAct_TnAiSentrySetDormant",
-     "via": "SeqEvent_RemoteEvent_12569.Out",
-     "input": "Dormant",
-     "depth": 8,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "SeqVar_ObjectList_5105"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_12332",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_8904.remote:disable_repair_turret_localevent",
-     "input": 0,
-     "depth": 7,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_960",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_12332.Out",
-     "input": "Turn On",
-     "depth": 8,
-     "comment": "trigger that activates the survival generator",
-     "vars": {
-      "Target": [
-       "TriggerVolume_6473"
-      ]
-     }
-    },
-    {
      "op": "SeqEvent_RemoteEvent_11908",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqEvent_RemoteEvent",
      "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
      "input": 0,
@@ -7221,169 +7257,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_11908.Out",
-     "input": "Turn Off",
-     "depth": 3,
-     "comment": null,
-     "vars": {}
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_9969",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Delay_8146",
-     "class": "SeqAct_Delay",
-     "via": "SeqEvent_RemoteEvent_9969.Out",
-     "input": "Start",
-     "depth": 3,
-     "comment": "for client replication",
-     "vars": {},
-     "Duration": 6.0
-    },
-    {
-     "op": "SeqAct_Toggle_7608",
-     "class": "SeqAct_Toggle",
-     "via": "SeqAct_Delay_8146.Finished",
-     "input": "Turn Off",
-     "depth": 4,
-     "comment": "effect for spawning the turret",
-     "vars": {
-      "Target": [
-       "Emitter_11578"
-      ]
-     }
-    },
-    {
-     "op": "SeqAct_Toggle_7608",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_9969.Out",
-     "input": "Turn On",
-     "depth": 3,
-     "comment": "effect for spawning the turret",
-     "vars": {
-      "Target": [
-       "Emitter_11578"
-      ]
-     }
-    },
-    {
-     "op": "SeqAct_Toggle_960",
-     "class": "SeqAct_Toggle",
-     "via": "SeqEvent_RemoteEvent_9969.Out",
-     "input": "Turn Off",
-     "depth": 3,
-     "comment": "trigger that activates the survival generator",
-     "vars": {
-      "Target": [
-       "TriggerVolume_6473"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_4932",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_TnAiSentrySetDormant_9160",
-     "class": "SeqAct_TnAiSentrySetDormant",
-     "via": "SeqEvent_RemoteEvent_4932.Out",
-     "input": "Not Dormant",
-     "depth": 3,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "SeqVar_ObjectList_5105"
-      ]
-     }
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_15538",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Interp_6359",
-     "class": "SeqAct_Interp",
-     "via": "SeqEvent_RemoteEvent_15538.Out",
-     "input": "Play",
-     "depth": 3,
-     "comment": "power cable glows for 90 seconds",
-     "vars": {
-      "Data": [
-       "InterpData_5508"
-      ],
-      "power_cable": [
-       "StaticInterpActor_7520"
-      ],
-      "plus_sign_effect": [
-       "Emitter_6111"
-      ]
-     }
-    },
-    {
-     "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
-     "class": "TnSeqAct_ModifySurvivalGeneratorPower",
-     "via": "SeqAct_Interp_6359.Completed",
-     "input": "In",
-     "depth": 4,
-     "comment": null,
-     "vars": {
-      "Target": [
-       "TnSurvivalGenerator_11565"
-      ]
-     },
-     "PowerToAdd": -500.0
-    },
-    {
-     "op": "SeqAct_Delay_1325",
-     "class": "SeqAct_Delay",
-     "via": "TnSeqAct_ModifySurvivalGeneratorPower_8884.Out",
-     "input": "Start",
-     "depth": 5,
-     "comment": "make sure event doesn't fire again when power is removed from the generator",
-     "vars": {}
-    },
-    {
-     "op": "SeqAct_ActivateRemoteEvent_8904",
-     "class": "SeqAct_ActivateRemoteEvent",
-     "via": "SeqAct_Delay_1325.Finished",
-     "input": "In",
-     "depth": 6,
-     "comment": "disable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "disable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqEvent_RemoteEvent_11908",
-     "class": "SeqEvent_RemoteEvent",
-     "via": "SeqAct_ActivateRemoteEvent_14810.remote:enable_repair_turret_localevent",
-     "input": 0,
-     "depth": 2,
-     "comment": "enable_repair_turret_localevent",
-     "vars": {},
-     "EventName": "enable_repair_turret_localevent"
-    },
-    {
-     "op": "SeqAct_Toggle_13757",
+     "seq": "repair_sentries.repair_sentry_right_top_room",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_11908.Out",
      "input": "Turn Off",
@@ -7395,6 +7269,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_6369",
+   "seq": "rocket_sentry_generator_center_room_left",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_1620",
    "comment": null,
@@ -7408,6 +7283,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_6369",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -7417,6 +7293,7 @@
     },
     {
      "op": "SeqAct_Interp_13960",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_6369.New Power Level",
      "input": "Play",
@@ -7433,6 +7310,7 @@
     },
     {
      "op": "SeqAct_Toggle_12858",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_13960.Completed",
      "input": "Turn On",
@@ -7442,6 +7320,7 @@
     },
     {
      "op": "SeqAct_Toggle_957",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_13960.Completed",
      "input": "Turn On",
@@ -7455,6 +7334,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_10256",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_13960.Completed",
      "input": "In",
@@ -7469,6 +7349,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_5174",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqAct_Interp_13960.Completed",
      "input": "Dormant",
@@ -7482,6 +7363,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_5174",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "TnSeqEvent_SurvivalGenerator_6369.New Power Level",
      "input": "Not Dormant",
@@ -7495,6 +7377,7 @@
     },
     {
      "op": "SeqAct_Toggle_2746",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_6369.New Power Level",
      "input": "Turn On",
@@ -7508,6 +7391,7 @@
     },
     {
      "op": "SeqAct_Toggle_12858",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_6369.New Power Level",
      "input": "Turn Off",
@@ -7517,6 +7401,7 @@
     },
     {
      "op": "SeqAct_Toggle_957",
+     "seq": "rocket_sentry_generator_center_room_left",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_6369.New Power Level",
      "input": "Turn Off",
@@ -7532,6 +7417,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "rocket_sentry_generator_center_room_right",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_9749",
    "comment": null,
@@ -7545,6 +7431,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -7554,6 +7441,7 @@
     },
     {
      "op": "SeqAct_Interp_16207",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -7570,6 +7458,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Turn On",
@@ -7579,6 +7468,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Turn On",
@@ -7592,6 +7482,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "In",
@@ -7606,6 +7497,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Dormant",
@@ -7619,6 +7511,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Not Dormant",
@@ -7632,6 +7525,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn On",
@@ -7645,6 +7539,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -7654,6 +7549,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "rocket_sentry_generator_center_room_right",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -7669,6 +7565,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "sentry_generator_left_eye",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_7105",
    "comment": null,
@@ -7682,6 +7579,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "sentry_generator_left_eye",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -7691,6 +7589,7 @@
     },
     {
      "op": "SeqAct_Interp_16207",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -7707,6 +7606,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Turn On",
@@ -7716,6 +7616,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Turn On",
@@ -7729,6 +7630,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "sentry_generator_left_eye",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "In",
@@ -7743,6 +7645,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Dormant",
@@ -7756,6 +7659,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Not Dormant",
@@ -7769,6 +7673,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn On",
@@ -7782,6 +7687,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -7791,6 +7697,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "sentry_generator_left_eye",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -7806,6 +7713,7 @@
   },
   {
    "event": "TnSeqEvent_SurvivalGenerator_14281",
+   "seq": "sentry_generator_right_eye",
    "class": "TnSeqEvent_SurvivalGenerator",
    "originator": "TnSurvivalGenerator_12801",
    "comment": null,
@@ -7819,6 +7727,7 @@
    "downstream": [
     {
      "op": "TnSeqEvent_SurvivalGenerator_14281",
+     "seq": "sentry_generator_right_eye",
      "class": "TnSeqEvent_SurvivalGenerator",
      "via": null,
      "input": 0,
@@ -7828,6 +7737,7 @@
     },
     {
      "op": "SeqAct_Interp_16207",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_Interp",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Play",
@@ -7844,6 +7754,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Turn On",
@@ -7853,6 +7764,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Turn On",
@@ -7866,6 +7778,7 @@
     },
     {
      "op": "TnSeqAct_ModifySurvivalGeneratorPower_8884",
+     "seq": "sentry_generator_right_eye",
      "class": "TnSeqAct_ModifySurvivalGeneratorPower",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "In",
@@ -7880,6 +7793,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "SeqAct_Interp_16207.Completed",
      "input": "Dormant",
@@ -7893,6 +7807,7 @@
     },
     {
      "op": "SeqAct_TnAiSentrySetDormant_9160",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_TnAiSentrySetDormant",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Not Dormant",
@@ -7906,6 +7821,7 @@
     },
     {
      "op": "SeqAct_Toggle_7608",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn On",
@@ -7919,6 +7835,7 @@
     },
     {
      "op": "SeqAct_Toggle_13757",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",
@@ -7928,6 +7845,7 @@
     },
     {
      "op": "SeqAct_Toggle_960",
+     "seq": "sentry_generator_right_eye",
      "class": "SeqAct_Toggle",
      "via": "TnSeqEvent_SurvivalGenerator_14281.New Power Level",
      "input": "Turn Off",

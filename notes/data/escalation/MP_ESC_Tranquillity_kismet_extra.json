@@ -6,18 +6,204 @@
    "event": "SeqEvent_RemoteEvent_12448",
    "class": "SeqEvent_RemoteEvent",
    "originator": null,
-   "comment": null,
-   "props": {},
+   "comment": "AUDIO_DRAIN_03",
+   "props": {
+    "EventName": "AUDIO_DRAIN_03"
+   },
    "vars": {},
    "downstream": [
     {
      "op": "SeqEvent_RemoteEvent_12448",
+     "seq": "",
      "class": "SeqEvent_RemoteEvent",
      "via": null,
      "input": 0,
      "depth": 0,
+     "comment": "AUDIO_DRAIN_03",
+     "vars": {},
+     "EventName": "AUDIO_DRAIN_03"
+    },
+    {
+     "op": "SeqAct_Switch_7519",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "In",
+     "depth": 1,
      "comment": null,
      "vars": {}
+    },
+    {
+     "op": "SeqAct_Delay_7140",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_7519.Link 1",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_Gate_8314",
+     "seq": "",
+     "class": "SeqAct_Gate",
+     "via": "SeqAct_Switch_7519.Link 1",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Switch_372",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "In",
+     "depth": 1,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Delay_5765",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_372.Link 2",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_Gate_9428",
+     "seq": "",
+     "class": "SeqAct_Gate",
+     "via": "SeqAct_Switch_372.Link 2",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Switch_1106",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "In",
+     "depth": 1,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_PlaySound_13695",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Stop",
+     "depth": 2,
+     "comment": "AMB_ENERGON_LAKE",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_398",
+       "HmAmbientSoundVolumeEmitter_12610"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_15772",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Play",
+     "depth": 2,
+     "comment": "EVENT_COOLANT_DROP_START",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5066"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_Delay_12076",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_PlaySound_11664",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Play",
+     "depth": 2,
+     "comment": "EVENT_COOLANT_DROP_LP",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5066"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_4246",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_LARGE_03",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5152"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_15537",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_MED_03",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_8319"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_8697",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_MIST_03",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_8048"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_3810",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_12448.Out",
+     "input": "Play",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_DRIP",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5152"
+      ]
+     }
     }
    ]
   },
@@ -26,18 +212,204 @@
    "event": "SeqEvent_RemoteEvent_4559",
    "class": "SeqEvent_RemoteEvent",
    "originator": null,
-   "comment": null,
-   "props": {},
+   "comment": "AUDIO_DRAIN_01",
+   "props": {
+    "EventName": "AUDIO_DRAIN_01"
+   },
    "vars": {},
    "downstream": [
     {
      "op": "SeqEvent_RemoteEvent_4559",
+     "seq": "",
      "class": "SeqEvent_RemoteEvent",
      "via": null,
      "input": 0,
      "depth": 0,
+     "comment": "AUDIO_DRAIN_01",
+     "vars": {},
+     "EventName": "AUDIO_DRAIN_01"
+    },
+    {
+     "op": "SeqAct_Switch_372",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "In",
+     "depth": 1,
      "comment": null,
      "vars": {}
+    },
+    {
+     "op": "SeqAct_Delay_5765",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_372.Link 2",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_Gate_9428",
+     "seq": "",
+     "class": "SeqAct_Gate",
+     "via": "SeqAct_Switch_372.Link 2",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Switch_7519",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "In",
+     "depth": 1,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Delay_7140",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_7519.Link 1",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_Gate_8314",
+     "seq": "",
+     "class": "SeqAct_Gate",
+     "via": "SeqAct_Switch_7519.Link 1",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Switch_1106",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "In",
+     "depth": 1,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_PlaySound_13695",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Stop",
+     "depth": 2,
+     "comment": "AMB_ENERGON_LAKE",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_398",
+       "HmAmbientSoundVolumeEmitter_12610"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_15772",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Play",
+     "depth": 2,
+     "comment": "EVENT_COOLANT_DROP_START",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5066"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_Delay_12076",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_PlaySound_11664",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Play",
+     "depth": 2,
+     "comment": "EVENT_COOLANT_DROP_LP",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5066"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_9248",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "Play",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_DRIP",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_6531"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_9719",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_LARGE_01",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_6531"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_16098",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_MED_01",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_8798"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_9310",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_4559.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_MIST_01",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_2393"
+      ]
+     }
     }
    ]
   },
@@ -46,18 +418,204 @@
    "event": "SeqEvent_RemoteEvent_8069",
    "class": "SeqEvent_RemoteEvent",
    "originator": null,
-   "comment": null,
-   "props": {},
+   "comment": "AUDIO_DRAIN_02",
+   "props": {
+    "EventName": "AUDIO_DRAIN_02"
+   },
    "vars": {},
    "downstream": [
     {
      "op": "SeqEvent_RemoteEvent_8069",
+     "seq": "",
      "class": "SeqEvent_RemoteEvent",
      "via": null,
      "input": 0,
      "depth": 0,
+     "comment": "AUDIO_DRAIN_02",
+     "vars": {},
+     "EventName": "AUDIO_DRAIN_02"
+    },
+    {
+     "op": "SeqAct_Switch_372",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "In",
+     "depth": 1,
      "comment": null,
      "vars": {}
+    },
+    {
+     "op": "SeqAct_Delay_5765",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_372.Link 2",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_Gate_9428",
+     "seq": "",
+     "class": "SeqAct_Gate",
+     "via": "SeqAct_Switch_372.Link 2",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Switch_7519",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "In",
+     "depth": 1,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Delay_7140",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_7519.Link 1",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_Gate_8314",
+     "seq": "",
+     "class": "SeqAct_Gate",
+     "via": "SeqAct_Switch_7519.Link 1",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_Switch_1106",
+     "seq": "",
+     "class": "SeqAct_Switch",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "In",
+     "depth": 1,
+     "comment": null,
+     "vars": {}
+    },
+    {
+     "op": "SeqAct_PlaySound_13695",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Stop",
+     "depth": 2,
+     "comment": "AMB_ENERGON_LAKE",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_398",
+       "HmAmbientSoundVolumeEmitter_12610"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_15772",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Play",
+     "depth": 2,
+     "comment": "EVENT_COOLANT_DROP_START",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5066"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_Delay_12076",
+     "seq": "",
+     "class": "SeqAct_Delay",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": 0,
+     "depth": 2,
+     "comment": null,
+     "vars": {},
+     "Duration": 1.0
+    },
+    {
+     "op": "SeqAct_PlaySound_11664",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqAct_Switch_1106.Link 3",
+     "input": "Play",
+     "depth": 2,
+     "comment": "EVENT_COOLANT_DROP_LP",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_5066"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_12580",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "Play",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_DRIP",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_11622"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_11091",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_LARGE_02",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_11622"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_12345",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_MED_02",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_4405"
+      ]
+     }
+    },
+    {
+     "op": "SeqAct_PlaySound_9590",
+     "seq": "",
+     "class": "SeqAct_PlaySound",
+     "via": "SeqEvent_RemoteEvent_8069.Out",
+     "input": "Stop",
+     "depth": 1,
+     "comment": "EMIT_ENERGON_WATERFALL_MIST_02",
+     "vars": {
+      "Target": [
+       "HmAmbientSoundVolumeEmitter_3392"
+      ]
+     }
     }
    ]
   },
@@ -72,6 +630,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "AmmoGenerator_Seq_0",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -81,6 +640,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "AmmoGenerator_Seq_0",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -105,6 +665,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "AmmoGenerator_Seq_1",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -114,6 +675,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "AmmoGenerator_Seq_1",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -138,6 +700,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "AmmoGenerator_Seq_2",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -147,6 +710,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "AmmoGenerator_Seq_2",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -171,6 +735,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "BURSTRIFLE",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -180,6 +745,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "BURSTRIFLE",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -204,6 +770,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "BattlePistol",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -213,6 +780,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "BattlePistol",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -237,6 +805,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_14757",
+     "seq": "Breaker_Two",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -246,6 +815,7 @@
     },
     {
      "op": "SeqAct_Toggle_9132",
+     "seq": "Breaker_Two",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_14757.Out",
      "input": "Turn Off",
@@ -273,6 +843,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_5968",
+     "seq": "Breaker_one",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -282,6 +853,7 @@
     },
     {
      "op": "SeqAct_Toggle_12522",
+     "seq": "Breaker_one",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_5968.Out",
      "input": "Turn Off",
@@ -309,6 +881,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_3400",
+     "seq": "Door_One",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -318,6 +891,7 @@
     },
     {
      "op": "SeqAct_Toggle_14386",
+     "seq": "Door_One",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_3400.Out",
      "input": "Turn Off",
@@ -343,6 +917,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "Door_One",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -352,6 +927,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Door_One",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -369,6 +945,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "Door_One",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -382,6 +959,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Door_One",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -410,6 +988,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_15663",
+     "seq": "Door_One_0",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -419,6 +998,7 @@
     },
     {
      "op": "SeqAct_Interp_11336",
+     "seq": "Door_One_0",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_15663.Out",
      "input": "Play",
@@ -436,6 +1016,7 @@
     },
     {
      "op": "SeqAct_Toggle_8536",
+     "seq": "Door_One_0",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_11336.Opened",
      "input": "Turn Off",
@@ -449,6 +1030,7 @@
     },
     {
      "op": "SeqAct_Interp_11336",
+     "seq": "Door_One_0",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_11336.Pause",
      "input": "Pause",
@@ -477,6 +1059,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_3400",
+     "seq": "Door_One_0",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -486,6 +1069,7 @@
     },
     {
      "op": "SeqAct_Toggle_14386",
+     "seq": "Door_One_0",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_3400.Out",
      "input": "Turn Off",
@@ -511,6 +1095,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "Door_One_0",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -520,6 +1105,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Door_One_0",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -537,6 +1123,7 @@
     },
     {
      "op": "SeqAct_Toggle_14285",
+     "seq": "Door_One_0",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Turn Off",
@@ -550,6 +1137,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Door_One_0",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -578,6 +1166,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_13526",
+     "seq": "Door_Two",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -587,6 +1176,7 @@
     },
     {
      "op": "SeqAct_Toggle_13309",
+     "seq": "Door_Two",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_13526.Out",
      "input": "Turn Off",
@@ -614,6 +1204,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_15835",
+     "seq": "Door_Two",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -623,6 +1214,7 @@
     },
     {
      "op": "SeqAct_Interp_13330",
+     "seq": "Door_Two",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_15835.Out",
      "input": "Play",
@@ -640,6 +1232,7 @@
     },
     {
      "op": "SeqAct_Toggle_14741",
+     "seq": "Door_Two",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_13330.Opened",
      "input": "Turn Off",
@@ -653,6 +1246,7 @@
     },
     {
      "op": "SeqAct_Interp_13330",
+     "seq": "Door_Two",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_13330.Pause",
      "input": "Pause",
@@ -681,6 +1275,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "Door_Two",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -690,6 +1285,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Door_Two",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -707,6 +1303,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_4680",
+     "seq": "Door_Two",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Hide",
@@ -721,6 +1318,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "Door_Two",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -734,6 +1332,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Door_Two",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -762,6 +1361,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "EMPGrenades",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -771,6 +1371,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "EMPGrenades",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -795,6 +1396,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "FlakGrenades",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -804,6 +1406,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "FlakGrenades",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -828,6 +1431,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_13526",
+     "seq": "FloodGate_2_Door",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -837,6 +1441,7 @@
     },
     {
      "op": "SeqAct_Toggle_13309",
+     "seq": "FloodGate_2_Door",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_13526.Out",
      "input": "Turn Off",
@@ -862,6 +1467,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "FloodGate_2_Door",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -871,6 +1477,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "FloodGate_2_Door",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -888,6 +1495,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "FloodGate_2_Door",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -901,6 +1509,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "FloodGate_2_Door",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -929,6 +1538,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_3556",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -938,6 +1548,7 @@
     },
     {
      "op": "SeqAct_Interp_6026",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_3556.Out",
      "input": "Play",
@@ -955,6 +1566,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_9277",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqAct_Interp_6026.Opened",
      "input": "Hide",
@@ -969,6 +1581,7 @@
     },
     {
      "op": "SeqAct_Toggle_4718",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_6026.Opened",
      "input": "Turn Off",
@@ -982,6 +1595,7 @@
     },
     {
      "op": "SeqAct_Interp_6026",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_6026.Pause",
      "input": "Pause",
@@ -1010,6 +1624,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1019,6 +1634,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -1036,6 +1652,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_8270",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Hide",
@@ -1050,6 +1667,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -1063,6 +1681,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Flood_Gate.BaseDoors",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -1091,6 +1710,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_10437",
+     "seq": "Flood_Gate",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1100,6 +1720,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_9226",
+     "seq": "Flood_Gate",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_10437.Out",
      "input": "Hide",
@@ -1123,6 +1744,7 @@
     },
     {
      "op": "SeqAct_Toggle_318",
+     "seq": "Flood_Gate",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_10437.Out",
      "input": "Turn Off",
@@ -1206,6 +1828,7 @@
     },
     {
      "op": "SeqAct_Toggle_6882",
+     "seq": "Flood_Gate",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_10437.Out",
      "input": "Turn Off",
@@ -1221,6 +1844,7 @@
     },
     {
      "op": "SeqAct_Toggle_13756",
+     "seq": "Flood_Gate",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_10437.Out",
      "input": "Turn Off",
@@ -1256,6 +1880,7 @@
    "downstream": [
     {
      "op": "SeqEvent_RemoteEvent_11181",
+     "seq": "Fog",
      "class": "SeqEvent_RemoteEvent",
      "via": null,
      "input": 0,
@@ -1266,6 +1891,7 @@
     },
     {
      "op": "SeqAct_Toggle_2379",
+     "seq": "Fog",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_RemoteEvent_11181.Out",
      "input": "Turn On",
@@ -1286,6 +1912,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "GrenadeLauncher",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1295,6 +1922,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "GrenadeLauncher",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1319,6 +1947,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "HealGrenades",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1328,6 +1957,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "HealGrenades",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1352,6 +1982,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_13526",
+     "seq": "HealRaydoor",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1361,6 +1992,7 @@
     },
     {
      "op": "SeqAct_Toggle_13309",
+     "seq": "HealRaydoor",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_13526.Out",
      "input": "Turn Off",
@@ -1381,6 +2013,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "HealRaydoor",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1390,6 +2023,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "HealRaydoor",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -1407,6 +2041,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "HealRaydoor",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -1420,6 +2055,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "HealRaydoor",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -1448,6 +2084,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "HealthGenerator",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1457,6 +2094,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "HealthGenerator",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1481,6 +2119,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "HealthGenerator_2",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1490,6 +2129,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "HealthGenerator_2",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1514,6 +2154,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "Heavy_MG",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1523,6 +2164,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "Heavy_MG",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1547,6 +2189,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "Heavy_Turret",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1556,6 +2199,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "Heavy_Turret",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1580,6 +2224,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "IonBlaster",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1589,6 +2234,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "IonBlaster",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1613,6 +2259,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "KMine_Generator",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1622,6 +2269,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "KMine_Generator",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1646,6 +2294,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "NucleonShockCannon",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1655,6 +2304,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "NucleonShockCannon",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1679,6 +2329,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "OverSheilds",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1688,6 +2339,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "OverSheilds",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1712,6 +2364,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_13526",
+     "seq": "Oversheild_Door",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1721,6 +2374,7 @@
     },
     {
      "op": "SeqAct_Toggle_13309",
+     "seq": "Oversheild_Door",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_13526.Out",
      "input": "Turn Off",
@@ -1746,6 +2400,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "Oversheild_Door",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1755,6 +2410,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Oversheild_Door",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -1772,6 +2428,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "Oversheild_Door",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -1785,6 +2442,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Oversheild_Door",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -1813,6 +2471,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_13526",
+     "seq": "Repair_Ray",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1822,6 +2481,7 @@
     },
     {
      "op": "SeqAct_Toggle_13309",
+     "seq": "Repair_Ray",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_13526.Out",
      "input": "Turn Off",
@@ -1847,6 +2507,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "Repair_Ray",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1856,6 +2517,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "Repair_Ray",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1880,6 +2542,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "Repair_Ray",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1889,6 +2552,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Repair_Ray",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -1906,6 +2570,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "Repair_Ray",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -1919,6 +2584,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "Repair_Ray",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",
@@ -1947,6 +2613,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "RocketLauncher",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1956,6 +2623,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "RocketLauncher",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -1980,6 +2648,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "ScatterBlaster",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -1989,6 +2658,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "ScatterBlaster",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -2013,6 +2683,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_1224",
+     "seq": "",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -2022,6 +2693,7 @@
     },
     {
      "op": "SeqAct_RandomSwitch_6405",
+     "seq": "",
      "class": "SeqAct_RandomSwitch",
      "via": "SeqEvent_PreGameplaySetup_1224.Out",
      "input": "In",
@@ -2031,6 +2703,7 @@
     },
     {
      "op": "SeqAct_Interp_2004",
+     "seq": "",
      "class": "SeqAct_Interp",
      "via": "SeqAct_RandomSwitch_6405.Link 5",
      "input": "Play",
@@ -2047,6 +2720,7 @@
     },
     {
      "op": "SeqAct_Interp_7934",
+     "seq": "",
      "class": "SeqAct_Interp",
      "via": "SeqAct_RandomSwitch_6405.Link 4",
      "input": "Play",
@@ -2063,6 +2737,7 @@
     },
     {
      "op": "SeqAct_Interp_9090",
+     "seq": "",
      "class": "SeqAct_Interp",
      "via": "SeqAct_RandomSwitch_6405.Link 3",
      "input": "Play",
@@ -2079,6 +2754,7 @@
     },
     {
      "op": "SeqAct_Interp_13772",
+     "seq": "",
      "class": "SeqAct_Interp",
      "via": "SeqAct_RandomSwitch_6405.Link 2",
      "input": "Play",
@@ -2095,6 +2771,7 @@
     },
     {
      "op": "SeqAct_Interp_15261",
+     "seq": "",
      "class": "SeqAct_Interp",
      "via": "SeqAct_RandomSwitch_6405.Link 1",
      "input": "Play",
@@ -2111,6 +2788,7 @@
     },
     {
      "op": "TnSeqAct_SurvivalSpawnList_4269",
+     "seq": "",
      "class": "TnSeqAct_SurvivalSpawnList",
      "via": "SeqEvent_PreGameplaySetup_1224.Out",
      "input": "In",
@@ -2131,6 +2809,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "ShotgunGenerator",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -2140,6 +2819,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "ShotgunGenerator",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -2164,6 +2844,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_4966",
+     "seq": "SniperGenerator",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -2173,6 +2854,7 @@
     },
     {
      "op": "SeqAct_ToggleHidden_3178",
+     "seq": "SniperGenerator",
      "class": "SeqAct_ToggleHidden",
      "via": "SeqEvent_PreGameplaySetup_4966.Out",
      "input": "Hide",
@@ -2197,6 +2879,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_13526",
+     "seq": "code_of_Power_0",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -2206,6 +2889,7 @@
     },
     {
      "op": "SeqAct_Toggle_13309",
+     "seq": "code_of_Power_0",
      "class": "SeqAct_Toggle",
      "via": "SeqEvent_PreGameplaySetup_13526.Out",
      "input": "Turn Off",
@@ -2231,6 +2915,7 @@
    "downstream": [
     {
      "op": "SeqEvent_PreGameplaySetup_8057",
+     "seq": "code_of_Power_0",
      "class": "SeqEvent_PreGameplaySetup",
      "via": null,
      "input": 0,
@@ -2240,6 +2925,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "code_of_Power_0",
      "class": "SeqAct_Interp",
      "via": "SeqEvent_PreGameplaySetup_8057.Out",
      "input": "Play",
@@ -2257,6 +2943,7 @@
     },
     {
      "op": "SeqAct_Toggle_14722",
+     "seq": "code_of_Power_0",
      "class": "SeqAct_Toggle",
      "via": "SeqAct_Interp_10535.Opened",
      "input": "Turn Off",
@@ -2270,6 +2957,7 @@
     },
     {
      "op": "SeqAct_Interp_10535",
+     "seq": "code_of_Power_0",
      "class": "SeqAct_Interp",
      "via": "SeqAct_Interp_10535.Pause",
      "input": "Pause",

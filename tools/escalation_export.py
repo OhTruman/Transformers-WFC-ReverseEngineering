@@ -20,6 +20,12 @@ props = lambda o: json.loads((db.execute("select props from objects where opath=
 def short(o): return o.split(".")[-1] if isinstance(o, str) else o
 
 
+def seqpath(o):
+    """The op's sequence below Main_Sequence ("" for the root): disambiguates instanced prefab sequences."""
+    p = o.split(".")
+    return ".".join(p[p.index("Main_Sequence") + 1:-1]) if "Main_Sequence" in p else ""
+
+
 def export(m, pre):
     pres = (pre,) if isinstance(pre, str) else pre
     pkgs = []
@@ -53,7 +59,9 @@ def export(m, pre):
         if c == "SeqEvent_RemoteEvent": remote[d.get("EventName")].append(o)
     for o, (c, d) in objs.items():
         if c == "SeqAct_ActivateRemoteEvent":
-            for ev in remote.get(d.get("EventName"), []): succ[o].append(("remote:" + str(d.get("EventName")), ev, 0))
+            scope = o.rsplit(".", 1)[0] + "." if d.get("bLocalEvent") else ""  # bLocalEvent: only events in its own sequence
+            for ev in remote.get(d.get("EventName"), []):
+                if ev.startswith(scope): succ[o].append(("remote:" + str(d.get("EventName")), ev, 0))
 
     def ovars(d):
         res = {}
@@ -74,8 +82,9 @@ def export(m, pre):
             seen.add(key)
             c, d = objs.get(cur, ("?", {}))
             ins = [l.get("LinkDesc") for l in d.get("InputLinks") or []]
-            order.append({"op": short(cur), "class": c, "via": via, "input": ins[inp] if inp < len(ins) else inp, "depth": depth,
+            order.append({"op": short(cur), "seq": seqpath(cur), "class": c, "via": via, "input": ins[inp] if inp < len(ins) else inp, "depth": depth,
                           "comment": d.get("ObjComment"), "vars": ovars(d),
+                          **({"Duration": 1.0} if c == "SeqAct_Delay" and "Duration" not in d else {}),  # CDO default
                           **{k: d[k] for k in ("EventName", "Duration", "PowerToAdd", "ForcedForm", "bOpen") if k in d}})
             for desc, nxt, idx in succ.get(cur, []):
                 stack.append((nxt, "%s.%s" % (short(cur), desc), idx, depth + 1))
@@ -84,7 +93,7 @@ def export(m, pre):
     evs = []
     for o, (c, d) in sorted(objs.items()):
         if c in ("TnSeqEvent_SurvivalGenerator", "TnSeqEvent_SurvivalEvents"):
-            evs.append({"event": short(o), "class": c, "originator": short(d.get("Originator")), "comment": d.get("ObjComment"),
+            evs.append({"event": short(o), "seq": seqpath(o), "class": c, "originator": short(d.get("Originator")), "comment": d.get("ObjComment"),
                         "outputs": [L.get("LinkDesc") for L in d.get("OutputLinks") or []],
                         "props": {k: v for k, v in d.items() if k not in ("OutputLinks", "InputLinks", "VariableLinks", "ParentSequence",
                                                                            "Originator", "ObjComment")},

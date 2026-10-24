@@ -14,6 +14,12 @@ AUDIO = {"SeqAct_PlaySound", "SeqAct_PlayPlayerPositionalSound", "SeqAct_Ambient
 short = lambda o: o.split(".")[-1] if isinstance(o, str) else o
 
 
+def seqpath(o):
+    """The op's sequence below Main_Sequence ("" for the root): disambiguates instanced prefab sequences."""
+    p = o.split(".")
+    return ".".join(p[p.index("Main_Sequence") + 1:-1]) if "Main_Sequence" in p else ""
+
+
 def export(db, pre):
     objs = {}
     for o, c, p in db.execute("select opath, class, props from objects where package like ?", (pre + "%",)):
@@ -26,7 +32,9 @@ def export(db, pre):
         if c == "SeqEvent_RemoteEvent": remote[d.get("EventName")].append(o)
     for o, (c, d) in objs.items():
         if c == "SeqAct_ActivateRemoteEvent":
-            for ev in remote.get(d.get("EventName"), []): succ[o].append(("remote:" + str(d.get("EventName")), ev, 0))
+            scope = o.rsplit(".", 1)[0] + "." if d.get("bLocalEvent") else ""  # bLocalEvent: only events in its own sequence
+            for ev in remote.get(d.get("EventName"), []):
+                if ev.startswith(scope): succ[o].append(("remote:" + str(d.get("EventName")), ev, 0))
 
     def ovars(d):
         res = {}
@@ -47,8 +55,9 @@ def export(db, pre):
             seen.add((cur, inp))
             c, d = objs.get(cur, ("?", {}))
             ins = [l.get("LinkDesc") for l in d.get("InputLinks") or []]
-            order.append({"op": short(cur), "class": c, "via": via, "input": ins[inp] if inp < len(ins) else inp, "depth": depth,
+            order.append({"op": short(cur), "seq": seqpath(cur), "class": c, "via": via, "input": ins[inp] if inp < len(ins) else inp, "depth": depth,
                           "comment": d.get("ObjComment"), "vars": ovars(d),
+                          **({"Duration": 1.0} if c == "SeqAct_Delay" and "Duration" not in d else {}),  # CDO default
                           **{k: d[k] for k in ("EventName", "Duration", "DamageAmount", "HealAmount", "PowerToAdd", "ValueA", "ValueB",
                                                "bOpen", "MaxTriggerCount", "ReTriggerDelay", "bPlayerOnly", "bEnabled") if k in d}})
             for desc, nxt, idx in succ.get(cur, []):
