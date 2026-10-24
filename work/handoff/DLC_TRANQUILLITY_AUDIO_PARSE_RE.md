@@ -40,3 +40,29 @@
 - Every SeqEvent_Touch, SeqVar_Object, SeqAct_PlaySound, PlayerPositionalSound and Reverb object parses after the fix.
 - Only the 6 AmbientAudioZone, 3 Delay, 2 Gate, 2 FlybySound and 1 Mixer ops are lost.
 - Treat those as defaults or skip them.
+
+## Revision 2026-10-24: Static_ART has the same defect, and both point at a 4 KB block (C for the measurements, H for the cause)
+- **MP_ESC_Static_ART_m:**
+  - Chunk 17, block 3 (uncompressed 18,219,117 … 18,350,189) decodes to **112,855 of 131,072** bytes; the reference decoder agrees.
+  - It lies inside the main BSP **Model_7832** (serial 17,972,558, size 1,874,980).
+  - Model_7832's surf array: count **1983** at Model+314,428, FBspSurf **56 bytes**.
+    - **Surfs 0–315 are valid.**
+    - **316 … 1128 fall in the corrupt or missing part** of the short block (Model+332,128 … +377,631).
+    - **With block-aligned placement (w += declared size), surfs 1129–1982 and the rest of the Model are correct.**
+  - **There's no format change in the package:** no licensee field, no inline array, no second Model. The same 56-byte struct holds
+    for the whole array.
+- **Where the corruption starts in the compressed stream:**
+
+| File | Starts at offset | 4 KB boundary |
+|---|---|---|
+| Static_ART | ≈ 5,578,752–5,578,767 | **block 1362 begins at 5,578,752** |
+| Tranquillity_AUDIO | ≈ 44,714–46,696 | **block 11 begins at 45,056** |
+
+- **Both corruption points sit on a 4 KB boundary of the extracted file**, i.e. on an STFS data-block boundary.
+  - H: **one 4 KB STFS block in each file was taken from the wrong place.** The likely causes are a fragmented file whose hash-entry
+    next-block chain wasn't followed, or a level-0 / level-1 hash-table skip error at that block.
+  - The LZO stream then desyncs and happens to re-sync to the true end-of-stream marker, which is why it "decodes cleanly" but short.
+  - **This revises the earlier "damaged in the shipped cook" conclusion:** the data is probably intact in the STFS container.
+- **Check:** re-extract block 11 of Tranquillity_AUDIO and block 1362 of Static_ART (counting from each file's first block) by
+  following the STFS hash entries' next-block chain and the level-1 tables, then re-decode. If the short blocks become 131,072
+  bytes, the 43 Tranquillity exports and Static's surfs 316–1128 come back.
