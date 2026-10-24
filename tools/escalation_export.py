@@ -3,11 +3,17 @@ spawn list (enemy table, waves, timings), generators (name key, PowerLevels, Dra
 GRI / respawn class defaults, and for every TnSeqEvent_SurvivalGenerator / TnSeqEvent_SurvivalEvents the Kismet reached
 downstream (forward walk over output links, through ActivateRemoteEvent -> SeqEvent_RemoteEvent, Delay, Gate, Switch ...),
 listing each action with its class, the input it receives, its comment and its object variables (targets).
-Usage: python escalation_export.py <outdir>"""
+Usage: python escalation_export.py <outdir>
+       python escalation_export.py <outdir> --dlc <dlc authored.db>   (the four DLC ESC maps; class defaults still from the base db)"""
 import os, sys, json, sqlite3, collections
 sys.dont_write_bytecode = True
 db = sqlite3.connect(r"F:\Transformers Rebuild\AssetTools\manifests\authored.db")
 MAPS = {"MP_ESC_BrokenHope": "MP_ESC_BrokenHope_", "MP_ESC_Remnant": "MP_ESC_Remnant_"}
+mdb = db  # map objects (the DLC run swaps this for the DLC authored.db)
+DLC_MAPS = {"MP_ESC_Tranquillity": ("MP_ESC_Tranquillity_", "TR_Tranquillity_p", "FX_Tranquility_p"),
+            "MP_ESC_District": ("MP_ESC_District_", "TR_District_p"),
+            "MP_ESC_Pulse": ("MP_ESC_Pulse_", "TR_Escalation_Pulse_m"),
+            "MP_ESC_Static": ("MP_ESC_Static_", "TR_Static_m")}
 props = lambda o: json.loads((db.execute("select props from objects where opath=?", (o,)).fetchone() or ["{}"])[0] or "{}")
 
 
@@ -15,10 +21,13 @@ def short(o): return o.split(".")[-1] if isinstance(o, str) else o
 
 
 def export(m, pre):
-    pkgs = [r[0] for r in db.execute("select distinct package from objects where package like ?", (pre + "%",))]
+    pres = (pre,) if isinstance(pre, str) else pre
+    pkgs = []
+    for q in pres:
+        pkgs += [r[0] for r in mdb.execute("select distinct package from objects where package like ?", (q + "%",)) if r[0] not in pkgs]
     objs = {}
     for pk in pkgs:
-        for o, c, p in db.execute("select opath, class, props from objects where package=?", (pk,)):
+        for o, c, p in mdb.execute("select opath, class, props from objects where package=?", (pk,)):
             objs[o] = (c, json.loads(p or "{}"))
     out = {"map": m, "packages": pkgs}
     sl = [(o, d) for o, (c, d) in objs.items() if c == "TnSurvivalSpawnList"]
@@ -86,6 +95,8 @@ def export(m, pre):
 
 if __name__ == "__main__":
     od = sys.argv[1]; os.makedirs(od, exist_ok=True)
+    if "--dlc" in sys.argv:
+        mdb = sqlite3.connect(sys.argv[sys.argv.index("--dlc") + 1]); MAPS = DLC_MAPS
     common = {"TnSurvivalGame": props("TransContent.Default__TnSurvivalGame"),
               "TnGameReplicationInfoSurvival": props("TransContent.Default__TnGameReplicationInfoSurvival"),
               "TnRespawnHelperWave": props("TransGame.Default__TnRespawnHelperWave"),
